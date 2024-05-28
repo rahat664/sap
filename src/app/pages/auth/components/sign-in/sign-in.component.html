@@ -1,0 +1,32 @@
+<div class="grid lg:grid-cols-3 h-screen">
+  <div class="hidden lg:block w-full col-span-2 bg-loginBg bg-center bg-auto bg-no-repeat h-full">
+    <div class="w-full h-full flex items-center justify-center">
+      <img src="assets/logo/login-logo.png" alt="loginLogo">
+    </div>
+  </div>
+  <div class="h-screen">
+    <div class="flex flex-col h-[calc(100vh-2.5rem)] space-y-6 justify-center px-12 items-center lg:items-start">
+      <h1 class="text-4xl font-semibold">User login</h1>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full">
+        <div class="mb-3 flex flex-col text-secondary w-full">
+          <label for="email" class="form-label">User Email</label>
+          <input formControlName="email" type="email" class="bg-input rounded-lg shadow-lg border-none px-4 py-4 "  placeholder="User Email" id="email">
+          <!--        error-message-->
+          <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="text-red">Please enter your email</div>
+        </div>
+        <div class="mb-3 flex flex-col text-secondary w-full">
+          <label for="password" class="form-label">Password</label>
+          <input formControlName="password" type="password" class="bg-input rounded-lg shadow-lg border-none px-4 py-4 "  placeholder="Password" id="password">
+          <!--        error-message-->
+          <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="text-red">
+            Please enter your password
+          </div>
+        </div>
+        <button class="btn bg-primary text-white rounded-lg px-4 py-4 w-full">Login</button>
+      </form>
+    </div>
+    <div class="text-center p-2 w-full self-end">
+      <span class="text-sm text-secondary">All Rights Reserved to Shamolima Ltd.</span>
+    </div>
+  </div>
+</div>

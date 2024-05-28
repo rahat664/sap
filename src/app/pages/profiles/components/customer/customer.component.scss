@@ -1,0 +1,10 @@
+thead > tr {
+  @apply border-b-2 border-[#A1D5DE] sticky top-0;
+}
+tbody > tr {
+  @apply border-b border-[#A1D5DE] last:border-b-0;
+}
+
+th, td {
+  @apply p-4;
+}
