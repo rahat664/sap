@@ -1,6 +1,6 @@
 <div class="grid lg:grid-cols-3 h-screen">
   <div class="hidden lg:block w-full col-span-2 bg-loginBg bg-center bg-auto bg-no-repeat h-full">
-    <div class="w-full h-full flex items-center justify-center">
+    <div class="w-full h-full flex items-center justify-center object-center object-cover">
       <img src="assets/logo/login-logo.png" alt="loginLogo">
     </div>
   </div>
@@ -10,13 +10,13 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full">
         <div class="mb-3 flex flex-col text-secondary w-full">
           <label for="email" class="form-label">User Email</label>
-          <input formControlName="email" type="email" class="bg-input rounded-lg shadow-lg border-none px-4 py-4 "  placeholder="User Email" id="email">
+          <input formControlName="email" type="email" class="bg-input rounded-lg  border-none px-4 py-4 "  placeholder="User Email" id="email">
           <!--        error-message-->
           <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="text-red">Please enter your email</div>
         </div>
         <div class="mb-3 flex flex-col text-secondary w-full">
           <label for="password" class="form-label">Password</label>
-          <input formControlName="password" type="password" class="bg-input rounded-lg shadow-lg border-none px-4 py-4 "  placeholder="Password" id="password">
+          <input formControlName="password" type="password" class="bg-input rounded-lg  border-none px-4 py-4 "  placeholder="Password" id="password">
           <!--        error-message-->
           <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="text-red">
             Please enter your password

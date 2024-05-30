@@ -1,5 +1,8 @@
-thead > tr {
-  @apply border-b-2 border-[#A1D5DE] sticky top-0;
+thead {
+  @apply sticky top-0;
+}
+.border {
+  @apply h-[0.125rem] p-0 bg-[#A1D5DE];
 }
 tbody > tr {
   @apply border-b border-[#A1D5DE] last:border-b-0;

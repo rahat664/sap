@@ -1,1 +1,52 @@
-<p>trip-list works!</p>
+<div class="p-4 flex flex-col space-y-3">
+  <h1 class="text-4xl font-semibold">Trip List</h1>
+  <!--  filter section-->
+  <div class=" w-full bg-white rounded-lg">
+    <button (click)="filterOpened = !filterOpened" class="flex  px-2 py-1 space-x-3 items-center w-full "
+            [ngClass]="{'border-b-2 border-[#0CD5F0]': filterOpened}">
+      <i class="fas fa-caret-down text-input-hint text-xl"></i>
+      <span class="text-not-black">Filter</span>
+    </button>
+    <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
+      <app-custom-input [inputPlaceholder]="inputPlaceholder" [options]="dateOptionArray" (selectedId)="onSelectDate($event)"></app-custom-input>
+      <div>
+        <input placeholder="Enter Company Name" class="w-full px-4 py-4 rounded-lg outline-none ring-none  border-none bg-input">
+      </div>
+    </div>
+  </div>
+  <div class="bg-white w-full rounded-lg max-h-96 overflow-auto">
+    <table class="table-auto w-full text-[0.875rem]">
+      <thead>
+      <tr class="whitespace-nowrap bg-white">
+        <th class="text-left">Trip no.</th>
+        <th class="text-left">Trip Date</th>
+        <th class="text-left">Company</th>
+        <th class="text-left">Loading Point</th>
+        <th class="text-left">Unloading Point</th>
+        <th class="text-left">Status</th>
+        <th class="text-left">CR(৳)</th>
+        <th class="text-left">TR(৳)</th>
+        <th class="text-left">GP(৳)</th>
+      </tr>
+      <tr>
+        <th class="border" colspan="9"></th>
+      </tr>
+      </thead>
+      <tbody class="text-web-text-secondary">
+      <tr *ngFor="let trip of tripList; index as i">
+        <td class="whitespace-nowrap">
+          <span class="text-blue">{{trip.tripId}}</span>
+        </td>
+        <td>{{trip.tripStartDatetime | date: 'dd MMM yyyy'}}</td>
+        <td>{{trip.customerName}}</td>
+        <td>{{trip.tripPoints[0]?.pointName}}, {{trip.tripPoints[0]?.pointDistrict}}</td>
+        <td>{{trip.tripPoints[1]?.pointName}}, {{trip.tripPoints[1]?.pointDistrict}}</td>
+        <td>{{trip.status}}</td>
+        <td>{{trip.customerRate ? trip.customerRate : 0}}</td>
+        <td>{{trip.transporterRate ? trip.transporterRate : 0}}</td>
+        <td>{{(trip.customerRate ? trip.customerRate : 0) - (trip.transporterRate ? trip.transporterRate : 0) }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

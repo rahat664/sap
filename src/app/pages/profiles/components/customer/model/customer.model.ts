@@ -1,0 +1,11 @@
+export class CustomerModel {
+  id: number;
+  userId: string;
+  name: string;
+  phone: string;
+  email: string;
+  userShortCode: string;
+  enabled: boolean;
+  roles: string[];
+  token: string
+}

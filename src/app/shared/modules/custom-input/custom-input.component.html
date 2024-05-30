@@ -1,0 +1,21 @@
+<div class="relative">
+  <input readonly id="customInputSelect" type="text" placeholder="{{inputPlaceholder}}"
+         class="appearance-none cursor-pointer block w-full px-4 py-4 rounded-lg outline-none ring-none  border-none bg-input">
+  <div class="absolute inset-y-0 right-2 flex items-center pr-2 pointer-events-none">
+    <i class="fas fa-angle-down text-not-black"></i>
+  </div>
+  <div *ngIf="itemsOpened" class="absolute z-10 w-full rounded-lg shadow-lg bg-input border border-gray-300">
+    <div class="py-1">
+      <ng-container *ngIf="options.length > 0">
+        <button [ngClass]="{'bg-active': option.selected}" *ngFor="let option of options;" (click)="onClickOption(option.id)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-active text-left w-full cursor-pointer"
+             >{{ option.value }}
+        </button>
+      </ng-container>
+      <ng-container *ngIf="options.length <= 0">
+        <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">No data found
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+

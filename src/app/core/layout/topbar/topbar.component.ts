@@ -15,6 +15,7 @@ import {AuthService} from "../../../pages/auth/services/auth.service";
 })
 export class TopbarComponent implements OnInit{
   isSideBarOpen: boolean = false;
+  isProfileOpened: boolean = false;
   constructor(private toggleMobileViewService: ToggleResponsiveService, private auth: AuthService) { }
 
   ngOnInit(): void {

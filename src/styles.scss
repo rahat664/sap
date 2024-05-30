@@ -1,45 +1,8 @@
-
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
-// Plus imports for other components in your app.
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-@include mat.core();
-
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$snz-web-primary: mat.define-palette(mat.$indigo-palette);
-$snz-web-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-
-// The warn palette is optional (defaults to red).
-$snz-web-warn: mat.define-palette(mat.$red-palette);
-
-// Create the theme object. A theme consists of configurations for individual
-// theming systems such as "color" or "typography".
-$snz-web-theme: mat.define-light-theme((
-  color: (
-    primary: $snz-web-primary,
-    accent: $snz-web-accent,
-    warn: $snz-web-warn,
-  ),
-  typography: mat.define-typography-config(),
-  density: 0
-));
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include mat.all-component-themes($snz-web-theme);
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 @import 'ngx-toastr/toastr';
-
+@import "@ng-select/ng-select/themes/default.theme.css";
 * {
   --webkit-box-sizing: border-box;
   --moz-box-sizing: border-box;
@@ -53,4 +16,56 @@ body {
   @apply bg-app-bg;
 }
 
-html, body { height: 100%; }
+html, body {
+  height: 100%;
+}
+
+/* modal.component.css */
+
+/* Hide the default scrollbar */
+::-webkit-scrollbar {
+  width: 0.375rem; /* Set the width of the scrollbar */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Set the background color of the scrollbar track */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Set the color of the scrollbar thumb */
+  border-radius: 0.188rem; /* Set the border radius of the scrollbar thumb */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Set the color of the scrollbar thumb on hover */
+}
+
+input::placeholder {
+  font-size: 0.75rem;
+  @apply text-input-hint
+  /* Set the font size of the placeholder text */
+}
+textarea::placeholder {
+  font-size: 0.75rem;
+  @apply text-input-hint
+}
+
+/* custom style ng-select */
+.ng-select .ng-select-container .ng-value-container .ng-placeholder {
+  font-size: 0.875rem !important;
+  color: #6b7280 !important;
+}
+.ng-select .ng-select-container {
+  font-size: 0.875rem !important;
+  border: none !important;
+  border-radius: 0.25rem !important;
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+  padding: 1.5rem .5rem !important;
+}
+
+
+
