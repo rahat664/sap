@@ -10,17 +10,22 @@
         <a class="text-xl font-bold w-64 h-16 object-center object-cover flex items-center lg:justify-center lg:border-r lg:border-gray-200 py-2">
           <img src="assets/logo/shamolima.png" class="" alt="Shamolima Logo">
         </a>
-        <form action="#" method="GET" class="hidden lg:block ml-4 w-[36rem]">
+        <form class="hidden lg:block ml-4 w-[36rem]">
           <label for="topbar-search" class="sr-only">Search</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <i class="far fa-search text-gray-500"></i>
             </div>
             <input type="text" name="email" id="topbar-search"
-                   class="border-none bg-input  text-input-hint sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full pl-10 p-2.5"
-                   placeholder="Search">
+                   class="border-none bg-input  text-web-text-secondary sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full pl-10 p-2.5"
+                   placeholder="Search" (keyup)="onSearch($event)">
           </div>
         </form>
+        <ul>
+          <li *ngFor="let result of searchSuggestions">
+            <a href="#">{{ result.name }}</a>
+          </li>
+        </ul>
       </div>
       <div class="flex items-center justify-end w-full">
         <!-- Search mobile -->
@@ -51,9 +56,20 @@
   <div *ngIf="isProfileOpened" id="dropdown"
        class="z-10 absolute top-full right-0  bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
     <ul class="py text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-      <li class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+      <li  class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
         <a (click)="onClickLogOut()"
         >Sign Out</a>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="isSearchedMenuOpened"  id="searchDropdown"
+       class="z-10 absolute top-full  left-[17rem] w-[36rem] max-h-64 overflow-y-auto  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
+    <ul class="py text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+      <li *ngFor="let result of searchSuggestions" class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+        <a class="w-full h-full flex justify-between items-center">
+          <span>{{result.customerName}}, {{result.customerPhone}}</span>
+          <span class="px-2 py-0.5 rounded-full bg-green text-white">Trip List</span>
+        </a>
       </li>
     </ul>
   </div>

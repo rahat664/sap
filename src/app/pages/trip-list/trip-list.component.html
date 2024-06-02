@@ -8,7 +8,7 @@
       <span class="text-not-black">Filter</span>
     </button>
     <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
-      <app-custom-input [inputPlaceholder]="inputPlaceholder" [options]="dateOptionArray" (selectedId)="onSelectDate($event)"></app-custom-input>
+      <app-custom-input [customOpened]="isDateOpened"  [inputPlaceholder]="inputPlaceholder" [options]="dateOptionArray" (selectedId)="onSelectDate($event)"></app-custom-input>
       <div>
         <input placeholder="Enter Company Name" class="w-full px-4 py-4 rounded-lg outline-none ring-none  border-none bg-input">
       </div>

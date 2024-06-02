@@ -17,7 +17,8 @@ export class CustomInputComponent implements OnInit{
   @Input() inputPlaceholder: string;
   @Output() selectedId: EventEmitter<number> = new EventEmitter();
   @Input() options: CustomInputSelectModel[] = [];
-   itemsOpened: boolean = false;
+  itemsOpened: boolean = false;
+  @Input() customOpened: any;
 
   ngOnInit(): void {
     document.querySelector('#customInputSelect').addEventListener('click', () => {
@@ -27,6 +28,6 @@ export class CustomInputComponent implements OnInit{
 
   onClickOption(id: number) {
     this.selectedId.emit(id);
-    this.itemsOpened = false;
+    this.itemsOpened = id === 99;
   }
 }

@@ -26,7 +26,6 @@ export class TripListComponent implements OnInit{
   filterOpened: boolean = false;
   filterForm: FormGroup;
   isDateOpened: boolean = false;
-  dateFormOpened: boolean = false;
   tripList: any[] =[];
   inputPlaceholder: string = 'Choose Date';
   dateOptionArray: CustomInputSelectModel[] = []
@@ -53,11 +52,12 @@ export class TripListComponent implements OnInit{
 
   onSelectDate($event: number) {
 // handle date selection
-    this.inputPlaceholder = this.dateOptionArray.find(x => x.id === $event)?.value;
-    this.dateOptionArray.forEach(x => x.selected = x.id === $event);
-    this.isDateOpened = false;
     if ($event === DateEnum.Custom) {
-      this.dateFormOpened = true;
+      this.isDateOpened = true;
+    } else {
+      this.isDateOpened = false;
+      this.inputPlaceholder = this.dateOptionArray.find(x => x.id === $event)?.value;
+      this.dateOptionArray.forEach(x => x.selected = x.id === $event);
     }
   }
 
