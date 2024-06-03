@@ -57,4 +57,11 @@ export class TripService {
 
     return throwError(() => new Error(message));
   }
+
+  getTripStatusCounts(): Observable<any> {
+    return this.http.get<ApiResponse>(this.url + '/tripStatusCounts').pipe(map((response) => {
+      return response.data;
+    }),
+    catchError(this.handleError));
+  }
 }

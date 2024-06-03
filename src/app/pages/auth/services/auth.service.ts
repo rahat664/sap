@@ -21,6 +21,8 @@ export class AuthService {
           const loginResponse = response.data;
           localStorage.setItem('accessToken', loginResponse.accessToken);
           localStorage.setItem('email', loginResponse.email);
+          localStorage.setItem('name', loginResponse.name);
+          localStorage.setItem('image', loginResponse.image ? loginResponse.image : '');
           return loginResponse;
         }
 

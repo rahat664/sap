@@ -3,13 +3,15 @@ import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {ToggleResponsiveService} from "../../../shared/services/toggle-responsive-services/toggle-responsive.service";
 import {AuthService} from "../../../pages/auth/services/auth.service";
 import {TripService} from "../../../pages/trip-list/services/trip.service";
+import {ImagePipe} from "../../../shared/pipes/image.pipe";
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
   imports: [
     NgOptimizedImage,
-    CommonModule
+    CommonModule,
+    ImagePipe
   ],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss'
@@ -19,11 +21,15 @@ export class TopbarComponent implements OnInit{
   isProfileOpened: boolean = false;
   searchSuggestions: any[] = [];
   isSearchedMenuOpened: boolean = false;
+  name: string;
+  image: string;
   constructor(private toggleMobileViewService: ToggleResponsiveService,
               private auth: AuthService,
               private trip: TripService) { }
 
   ngOnInit(): void {
+    this.name = localStorage.getItem('name');
+    this.image = localStorage.getItem('image');
   }
 
   toggleMobileSideBar() {

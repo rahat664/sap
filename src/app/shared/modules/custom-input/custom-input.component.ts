@@ -21,7 +21,7 @@ export class CustomInputComponent implements OnInit {
   @Input() inputPlaceholder: string;
   @Output() selectedId: EventEmitter<number> = new EventEmitter();
   @Input() options: CustomInputSelectModel[] = [];
-  itemsOpened: boolean = false;
+  @Input() itemsOpened: boolean = false;
   @Input() customOpened: any;
   months: string[] = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -175,9 +175,7 @@ export class CustomInputComponent implements OnInit {
 
 
   ngOnInit(): void {
-    document.querySelector('#customInputSelect').addEventListener('click', () => {
-      this.itemsOpened = !this.itemsOpened;
-    });
+
   }
 
   onClickOption(id: number) {

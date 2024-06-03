@@ -6,6 +6,11 @@ import {TripService} from "./services/trip.service";
 import {CustomInputComponent} from "../../shared/modules/custom-input/custom-input.component";
 import {DateEnum} from "./Enum/date.enum";
 import {CustomInputSelectModel} from "../../shared/modules/custom-input/custom-input-select.model";
+import {ButtonChipsComponent} from "./modules/button-chips/button-chips.component";
+import {ScrollByButtonDirective} from "../../shared/directive/scroll-by-button.directive";
+import {GetElementHeightDirective} from "../../shared/directive/get-element-height.directive";
+import {GiveMaxHeightDirective} from "../../shared/directive/give-max-height.directive";
+import {GetClickEventDirective} from "../../shared/directive/get-click-event.directive";
 
 @Component({
   selector: 'app-trip-list',
@@ -18,7 +23,12 @@ import {CustomInputSelectModel} from "../../shared/modules/custom-input/custom-i
     NgForOf,
     DatePipe,
     CustomInputComponent,
-    FormsModule
+    FormsModule,
+    ButtonChipsComponent,
+    ScrollByButtonDirective,
+    GetElementHeightDirective,
+    GiveMaxHeightDirective,
+    GetClickEventDirective
   ],
   templateUrl: './trip-list.component.html',
   styleUrl: './trip-list.component.scss'
@@ -37,6 +47,22 @@ export class TripListComponent implements OnInit {
   tripSuggestions: any;
   isSearchedMenuOpened: boolean = false;
   searchName: string;
+  dateFilter: number = 0;
+  searchFilter: number = 0;
+  summary = {
+    trips: 0,
+    trs: 0,
+    crs: 0,
+    gps: 0
+
+  };
+  statusButtons: any[] = [];
+  rightButtonClicked: boolean;
+  leftButtonClicked: boolean;
+  right: string = '0px'
+  height: string = '0px';
+  scrollable: boolean = true;
+  dateOpened: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private service: TripService, private datePipe: DatePipe) {
     this.filterForm = this.formBuilder.group({
@@ -49,16 +75,21 @@ export class TripListComponent implements OnInit {
   ngOnInit(): void {
     this.getTripList();
     this.generateDateOptionsArray();
+    this.getTripCount();
   }
 
   private getTripList() {
     // get trip list
     this.service.getTrips().subscribe((trip: any) => {
       this.tripList = trip.data;
+      this.summary.trs = this.tripList.reduce((acc, x) => acc + x.transporterRate, 0);
+      this.summary.crs = this.tripList.reduce((acc, x) => acc + x.customerRate, 0);
+      this.summary.gps = this.summary.crs - this.summary.trs;
     });
   }
 
   onSelectDate($event: number) {
+    this.dateFilter = 1;
 // handle date selection
     if ($event === DateEnum.Custom) {
       this.isDateOpened = true;
@@ -113,14 +144,25 @@ export class TripListComponent implements OnInit {
     this.tripList = [];
     this.service.getTrips(this.searchValue, this.from, this.to, this.status).subscribe((trip: any) => {
       this.tripList = trip.data;
+      this.summary.trs = this.tripList.reduce((acc, x) => acc + x.transporterRate, 0);
+      this.summary.crs = this.tripList.reduce((acc, x) => acc + x.customerRate, 0);
+      this.summary.gps = this.summary.crs - this.summary.trs;
     });
   }
 
   onKeyUpSearch($event: any) {
-    this.service.getTripSuggestions($event.target.value).subscribe((trip: any) => {
-      this.tripSuggestions = trip;
-      this.isSearchedMenuOpened = true;
-    });
+    if ($event.target.value.length > 0) {
+      this.service.getTripSuggestions($event.target.value).subscribe((trip: any) => {
+        this.tripSuggestions = trip;
+        this.isSearchedMenuOpened = true;
+        this.searchFilter = 1;
+      });
+    } else {
+      this.isSearchedMenuOpened = false;
+      this.searchValue = '';
+      this.getTripList();
+      this.searchFilter = 0;
+    }
   }
 
   onSelectedToDate($event: string) {
@@ -137,5 +179,53 @@ export class TripListComponent implements OnInit {
     this.tripSuggestions = [];
     this.isSearchedMenuOpened = false;
     this.onSearch();
+  }
+
+  getFilterLength() {
+    return this.dateFilter + this.searchFilter;
+  }
+
+  onClearFilter() {
+    this.searchFilter = 0;
+    this.dateFilter = 0;
+    this.searchValue = '';
+    this.from = '';
+    this.to = '';
+    this.inputPlaceholder = '';
+    this.getTripList();
+  }
+
+  onStatusClick(tripStatus: string) {
+    if (tripStatus != 'All') {
+      this.status = tripStatus;
+    } else {
+      this.status = '';
+    }
+    this.statusButtons.forEach(x => x.isActive = x.tripStatus === tripStatus);
+    this.onSearch();
+  }
+
+  onClickRightButton() {
+    this.rightButtonClicked = true;
+    this.leftButtonClicked = false;
+  }
+
+  onClickLeftButton() {
+    this.leftButtonClicked = true;
+    this.rightButtonClicked = false;
+  }
+
+  private getTripCount() {
+    this.service.getTripStatusCounts().subscribe((trip: any) => {
+      this.statusButtons = trip;
+    });
+  }
+
+  getStatusButtons() {
+    return Object.keys(this.statusButtons);
+  }
+
+  isThisStatusSelected(item: string) {
+    return this.status === item;
   }
 }

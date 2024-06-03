@@ -1,1 +1,32 @@
-<p>user-management works!</p>
+<div class="p-4 flex flex-col space-y-3">
+  <div class="flex flex-col space-y-3">
+    <h1 class="text-h1 font-semibold">Admin</h1>
+    <!--  filter section-->
+    <div class=" w-full bg-white rounded-lg">
+      <button (click)="filterOpened = !filterOpened" class="flex  px-2 py-1 space-x-3 items-center w-full "
+              [ngClass]="{'border-b-2 border-[#0CD5F0]': filterOpened}">
+        <i class="fas fa-caret-down text-input-hint text-xl"></i>
+        <span class="text-not-black text-[0.875rem]">Filter
+        <span *ngIf="getFilterLength() > 0">({{ statusFilter + roleFilter }})</span>
+        <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3">|</span>
+        <a (click)="onClearFilter()" *ngIf="getFilterLength() > 0" class="text-red">Clear all</a>
+      </span>
+      </button>
+      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
+        <app-custom-input appGetClickEvent [inputSearch]="statusInputPlaceholder"
+                          [customOpened]="false"
+                          (clickedElement)="onClickStatus($event)"
+                          [options]="statusOptionsArray"
+                          [itemsOpened]="statusOpened"
+                          (selectedId)="onSelectStatus($event)"></app-custom-input>
+        <app-custom-input [inputSearch]="roleInputPlaceholder"
+                          [customOpened]="false"
+                          [options]="roleOptionsArray"
+                          [itemsOpened]="roleOpened"
+                          appGetClickEvent (clickedElement)="onClickRole($event)"
+                          (selectedId)="onSelectStatus($event)"></app-custom-input>
+
+      </div>
+    </div>
+  </div>
+</div>

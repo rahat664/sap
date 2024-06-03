@@ -4,6 +4,8 @@ import {CustomerModel} from "./model/customer.model";
 import {CommonModule} from "@angular/common";
 import {CreatePopupComponent} from "../../../../shared/modal/create-popup/create-popup.component";
 import {CustomerCreateComponent} from "../customer-create/customer-create.component";
+import {GiveMaxHeightDirective} from "../../../../shared/directive/give-max-height.directive";
+import {GetElementHeightDirective} from "../../../../shared/directive/get-element-height.directive";
 
 @Component({
   selector: 'app-customer',
@@ -11,7 +13,9 @@ import {CustomerCreateComponent} from "../customer-create/customer-create.compon
   imports: [
     CommonModule,
     CreatePopupComponent,
-    CustomerCreateComponent
+    CustomerCreateComponent,
+    GiveMaxHeightDirective,
+    GetElementHeightDirective
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss'
@@ -19,6 +23,7 @@ import {CustomerCreateComponent} from "../customer-create/customer-create.compon
 export class CustomerComponent implements OnInit{
   customers: CustomerModel[] = []
   isOpen: boolean = false;
+  height: any;
   constructor(private service: UserService) { }
   ngOnInit(): void {
     this.getCustomer();

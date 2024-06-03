@@ -1,35 +1,79 @@
 <div class="p-4 flex flex-col space-y-3">
-  <h1 class="text-4xl font-semibold">Trip List</h1>
-  <!--  filter section-->
-  <div class=" w-full bg-white rounded-lg">
-    <button (click)="filterOpened = !filterOpened" class="flex  px-2 py-1 space-x-3 items-center w-full "
-            [ngClass]="{'border-b-2 border-[#0CD5F0]': filterOpened}">
-      <i class="fas fa-caret-down text-input-hint text-xl"></i>
-      <span class="text-not-black">Filter</span>
-    </button>
-    <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
-      <app-custom-input [inputSearch]="inputPlaceholder" (selectedFromDate)="onSelectedFromDate($event)" (selectedToDate)="onSelectedToDate($event)"
-                        (selectedFromDateToToDate)="inputPlaceholder = $event" [customOpened]="isDateOpened"
-                        inputPlaceholder="Choose Date" [options]="dateOptionArray"
-                        (selectedId)="onSelectDate($event)"></app-custom-input>
-      <div class="relative w-1/3">
-        <input (keyup)="onKeyUpSearch($event)" [(ngModel)]="searchName" placeholder="Enter Company Name"
-               class="w-full px-4 py-4 rounded-lg outline-none ring-none  border-none bg-input">
-        <div *ngIf="isSearchedMenuOpened" id="searchDropdown"
-             class="z-10 absolute top-full left-0 w-full max-h-64 overflow-y-auto  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
-          <ul class="py text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-            <li *ngFor="let result of tripSuggestions"
-                class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-              <a (click)="onClickSearchSuggestion(result)" class="w-full h-full flex justify-between items-center">
-                <span>{{ result.customerName }}, {{ result.customerPhone }}</span>
-              </a>
-            </li>
-          </ul>
+  <div appGetElementHeight (height)="height = $event" class="flex flex-col space-y-3">
+    <h1 class="text-4xl font-semibold">Trip List</h1>
+    <!--  filter section-->
+    <div class=" w-full bg-white rounded-lg">
+      <button (click)="filterOpened = !filterOpened" class="flex  px-2 py-1 space-x-3 items-center w-full "
+              [ngClass]="{'border-b-2 border-[#0CD5F0]': filterOpened}">
+        <i class="fas fa-caret-down text-input-hint text-xl"></i>
+        <span class="text-not-black text-[0.875rem]">Filter
+        <span *ngIf="getFilterLength() > 0">({{ dateFilter + searchFilter }})</span>
+        <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3">|</span>
+        <a (click)="onClearFilter()" *ngIf="getFilterLength() > 0" class="text-red">Clear all</a>
+      </span>
+      </button>
+      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
+        <app-custom-input appGetClickEvent [itemsOpened]="dateOpened" (clickedElement)="dateOpened = $event" [inputSearch]="inputPlaceholder" (selectedFromDate)="onSelectedFromDate($event)"
+                          (selectedToDate)="onSelectedToDate($event)"
+                          (selectedFromDateToToDate)="inputPlaceholder = $event" [customOpened]="isDateOpened"
+                          inputPlaceholder="Choose Date" [options]="dateOptionArray"
+                          (selectedId)="onSelectDate($event)"></app-custom-input>
+        <div class="relative w-1/3">
+          <input (keyup)="onKeyUpSearch($event)" [(ngModel)]="searchName" placeholder="Enter Company Name"
+                 class="w-full px-4 py-4 rounded-lg outline-none ring-none  border-none bg-input">
+          <div *ngIf="isSearchedMenuOpened" id="searchDropdown"
+               class="z-10 absolute top-full left-0 w-full max-h-64 overflow-y-auto  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
+            <ul class="py text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+              <li *ngFor="let result of tripSuggestions"
+                  class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                <a (click)="onClickSearchSuggestion(result)" class="w-full h-full flex justify-between items-center">
+                  <span>{{ result.customerName }}, {{ result.customerPhone }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  summary section-->
+    <div class="flex space-x-3 w-full">
+      <div class="bg-white rounded-lg text-[0.875rem] p-4 whitespace-nowrap w-[1/3]">
+        <h1 class="font-semibold">Summary ({{ tripList.length }} trips)</h1>
+        <div class="flex justify-between space-x-16 items-center py-3 border-b border-gray-300">
+          <span>Customer Rate (CR)</span>
+          <span>{{ summary?.crs }}</span>
+        </div>
+        <div class="flex justify-between items-center py-3 border-b border-gray-300">
+          <span>Transporter Rate (TR)</span>
+          <span>{{ summary?.trs }}</span>
+        </div>
+        <div class="flex justify-between items-center py-3">
+          <span>Gross Profit (GP)</span>
+          <span>{{ summary?.gps }}</span>
+        </div>
+      </div>
+      <div class="overflow-hidden relative p-4 w-full rounded-lg bg-white">
+        <div appScrollByButton (isVisible)="scrollable = $event" [rightButtonClicked]="rightButtonClicked" [leftButtonClicked]="leftButtonClicked" class="h-full  overflow-hidden">
+          <div  class="flex relative space-x-4 items-center h-full" >
+              <ng-container *ngFor="let item of getStatusButtons()">
+              <app-button-chips [count]="statusButtons[item]" [Status]="item"
+                                (click)="onStatusClick(item)"
+                                [isActive]="isThisStatusSelected(item)"></app-button-chips>
+            </ng-container>
+          </div>
+        </div>
+        <div *ngIf="scrollable" class="absolute top-2 right-2 flex space-x-1 items-center">
+          <button data-direction="left" (click)="onClickLeftButton()" [disabled]="!rightButtonClicked" class="{{rightButtonClicked ? 'text-white bg-primary': 'text-disabled bg-input-hint' }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
+            <i class="fal fa-angle-left text-xl"></i>
+          </button>
+          <button data-direction="right" (click)="onClickRightButton()" [disabled]="rightButtonClicked" class="{{!rightButtonClicked ? 'text-white bg-primary': 'text-disabled bg-input-hint' }} text-white bg-primary flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
+            <i class="fal fa-angle-right text-xl"></i>
+          </button>
         </div>
       </div>
     </div>
   </div>
-  <div class="bg-white w-full rounded-lg max-h-96 overflow-auto">
+  <div appGiveMaxHeight [anotherItemsHeight]="height" class="bg-white w-full rounded-lg overflow-auto">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
       <tr class="whitespace-nowrap bg-white">
