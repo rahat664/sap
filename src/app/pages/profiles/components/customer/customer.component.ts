@@ -6,6 +6,9 @@ import {CreatePopupComponent} from "../../../../shared/modal/create-popup/create
 import {CustomerCreateComponent} from "../customer-create/customer-create.component";
 import {GiveMaxHeightDirective} from "../../../../shared/directive/give-max-height.directive";
 import {GetElementHeightDirective} from "../../../../shared/directive/get-element-height.directive";
+import {CustomerService} from "../../services/customer.service";
+import {CustomInputComponent} from "../../../../shared/modules/custom-input/custom-input.component";
+import {GetClickEventDirective} from "../../../../shared/directive/get-click-event.directive";
 
 @Component({
   selector: 'app-customer',
@@ -15,7 +18,9 @@ import {GetElementHeightDirective} from "../../../../shared/directive/get-elemen
     CreatePopupComponent,
     CustomerCreateComponent,
     GiveMaxHeightDirective,
-    GetElementHeightDirective
+    GetElementHeightDirective,
+    CustomInputComponent,
+    GetClickEventDirective
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss'
@@ -24,18 +29,29 @@ export class CustomerComponent implements OnInit{
   customers: CustomerModel[] = []
   isOpen: boolean = false;
   height: any;
-  constructor(private service: UserService) { }
+  filterOpened: boolean;
+  statusFilter: number = 0;
+  roleFilter: number = 0;
+  constructor(private service: CustomerService) { }
   ngOnInit(): void {
     this.getCustomer();
   }
 
   getCustomer() {
-    this.service.getUser('Customer').subscribe((res: any) => {
+    this.service.getCustomer().subscribe((res: any) => {
       this.customers = res.data
     });
   }
 
   onClickAddCustomer() {
     this.isOpen = true;
+  }
+
+  getFilterLength() {
+    return this.statusFilter+this.roleFilter;
+  }
+
+  onClearFilter() {
+
   }
 }

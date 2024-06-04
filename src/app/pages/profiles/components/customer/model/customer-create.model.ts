@@ -5,6 +5,6 @@ export class CustomerCreateModel {
   contact_person: string;
   phone: string;
   address: string;
-  userShortCode: string;
+  customerCode: string;
   note: string;
 }

@@ -5,9 +5,9 @@
     <i class="fas fa-angle-down text-not-black"></i>
   </div>
   <div *ngIf="itemsOpened" [ngClass]="{'border-r-0 rounded-r-none': customOpened}" class="absolute  z-10 w-full rounded-lg  shadow-lg bg-input border border-gray-300">
-    <div class="py-1 relative">
+    <div class="py-1 relative h-48 overflow-y-scroll">
       <ng-container *ngIf="options.length > 0">
-        <button [ngClass]="{'bg-active': option.selected}" *ngFor="let option of options;" (click)="onClickOption(option.id)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-active text-left w-full cursor-pointer"
+        <button type="button" [ngClass]="{'bg-active': option.selected}" *ngFor="let option of options;" (click)="onClickOption(option.id)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-active text-left w-full cursor-pointer"
              >{{ option.value }}
         </button>
       </ng-container>

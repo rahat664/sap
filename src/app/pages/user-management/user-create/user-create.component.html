@@ -1,0 +1,47 @@
+<div class="flex w-full h-full">
+  <div class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
+    <div>
+      <img src="assets/images/customer-create.png" alt="">
+    </div>
+  </div>
+  <div class="p-8 max-h-[90vh] overflow-y-auto overflow-x-hidden">
+    <h3 class="text-not-black font-semibold text-xl mb-4">Add New User</h3>
+    <form [formGroup]="userForm" (ngSubmit)="onSave()" class="w-full  flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-[0.875rem] text-web-text-secondary">
+      <div class="flex flex-col w-full lg:col-span-2">
+        <label for="name">Full Name</label>
+        <input placeholder="Enter Full Name" class="bg-input rounded-lg  border-none p-4"  type="text" id="name" formControlName="name">
+        <!--        error-message-->
+       </div>
+      <div class="flex flex-col w-full">
+        <label for="phone">Mobile</label>
+        <input placeholder="Enter Mobile" class="bg-input rounded-lg  border-none p-4" type="text" id="phone" formControlName="phone">
+        <!--        error-message-->
+       </div>
+      <div class="flex flex-col w-full">
+        <label for="email">Email</label>
+        <input placeholder="Enter Email" class="bg-input rounded-lg  border-none p-4" type="text" id="email" formControlName="email">
+        <!--        error-message-->
+      </div>
+      <div class="flex flex-col w-full">
+        <label for="designation">Designation</label>
+        <input placeholder="Enter Designation" class="bg-input rounded-lg  border-none p-4" type="text" id="designation" formControlName="designation">
+        <!--        error-message-->
+       </div>
+      <div class="flex flex-col w-full">
+        <label for="email">Role</label>
+        <app-custom-input [inputSearch]="roleInputPlaceholder"
+                          [customOpened]="false"
+                          [options]="roleOptionsArray"
+                          [itemsOpened]="roleOpened"
+                          inputPlaceholder="Select Role"
+                          appGetClickEvent (clickedElement)="onClickRole($event)"
+                          (selectedId)="onSelectRole($event)"></app-custom-input>
+      </div>
+      <div class="lg:col-span-2 pb-4">
+        <button class="float-end py-2 px-12 flex justify-center items-center rounded-lg bg-primary text-white">
+          <span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

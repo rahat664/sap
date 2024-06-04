@@ -8,19 +8,29 @@ import {CustomerCreateModel} from "../components/customer/model/customer-create.
 })
 export class UserService {
   url =  environment.userUrl + '/api/users';
+  rolesUrl = environment.userUrl + '/api/roles';
   constructor(private http:HttpClient) { }
 
-  getUser(role: string) {
-    return this.http.get(
-      `${this.url}?role=${role}`
-    )
+  getUser(role?: string) {
+    if (role) {
+      return this.http.get(
+        `${this.url}?role=${role}`
+      )
+    } else {
+      return this.http.get(
+        `${this.url}`
+      )
+    }
   }
   addUser(body: any) {
     return this.http.post(`${this.url}`, body , {
 
     })
   }
-  customerCodeValidation(code: any) {
-    return this.http.get(`${this.url}/validate-customer-code/${code}`)
+
+  getUserRoles() {
+    return this.http.get(
+      `${this.rolesUrl}`
+    )
   }
 }

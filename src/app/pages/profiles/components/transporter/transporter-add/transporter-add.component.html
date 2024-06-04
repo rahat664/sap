@@ -1,0 +1,51 @@
+<div class="flex w-full h-full">
+  <div class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
+    <div>
+      <img src="assets/images/customer-create.png" alt="">
+    </div>
+  </div>
+  <div class="p-8 max-h-[90vh] overflow-y-auto overflow-x-hidden">
+    <h3 class="text-not-black font-semibold text-xl mb-4">Add New Transporter</h3>
+    <form [formGroup]="transporterForm" (ngSubmit)="onSave()"
+          class="w-full  flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-[0.875rem] text-web-text-secondary">
+      <div class="flex flex-col w-full lg:col-span-2">
+        <label for="name">Transporter name</label>
+        <input placeholder="Enter Transporter Name" class="bg-input rounded-lg  border-none p-4" type="text" id="name"
+               formControlName="name">
+        <!--        error-message-->
+      </div>
+      <div class="flex flex-col w-full">
+        <label for="phone">Mobile</label>
+        <input placeholder="Enter Mobile" class="bg-input rounded-lg  border-none p-4" type="text" id="phone"
+               formControlName="phone">
+        <!--        error-message-->
+      </div>
+      <div class="flex flex-col w-full">
+        <label for="truckStand">Truck Stand</label>
+        <input placeholder="Enter Truck Stand" class="bg-input rounded-lg  border-none p-4" type="text" id="truckStand"
+               formControlName="truckStand">
+        <!--        error-message-->
+      </div>
+      <div class="flex flex-col lg:col-span-2 w-full">
+        <label for="preferredPaymentMethod">Preferred Payment Method</label>
+        <app-custom-input id="preferredPaymentMethod" [inputSearch]="paymentInputPlaceholder"
+                          [customOpened]="false"
+                          [options]="paymentOptionsArray"
+                          [itemsOpened]="paymentOpened"
+                          inputPlaceholder="Select Payment Method"
+                          appGetClickEvent (clickedElement)="onClickPayment($event)"
+                          (selectedId)="onSelectPayment($event)"></app-custom-input>
+      </div>
+      <div class="flex flex-col w-full lg:col-span-2">
+        <label for="note">Note (Optional)</label>
+        <input placeholder="Enter Designation" class="bg-input rounded-lg  border-none p-4" type="text" id="note"
+               formControlName="note">
+      </div>
+      <div class="lg:col-span-2 pb-4">
+        <button class="float-end py-2 px-12 flex justify-center items-center rounded-lg bg-primary text-white">
+          <span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

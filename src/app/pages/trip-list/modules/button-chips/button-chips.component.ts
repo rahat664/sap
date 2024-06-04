@@ -15,4 +15,5 @@ export class ButtonChipsComponent {
   @Input() count: number = 0;
   @Input() Status: string = 'All';
   @Input() isActive: boolean = true;
+  @Input() isDisabled: boolean = false;
 }

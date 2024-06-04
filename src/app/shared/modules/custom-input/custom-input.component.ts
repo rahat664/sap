@@ -20,6 +20,7 @@ import {FormsModule} from "@angular/forms";
 export class CustomInputComponent implements OnInit {
   @Input() inputPlaceholder: string;
   @Output() selectedId: EventEmitter<number> = new EventEmitter();
+  @Output() isItemsOpened: EventEmitter<boolean> = new EventEmitter();
   @Input() options: CustomInputSelectModel[] = [];
   @Input() itemsOpened: boolean = false;
   @Input() customOpened: any;
@@ -181,6 +182,7 @@ export class CustomInputComponent implements OnInit {
   onClickOption(id: number) {
     this.selectedId.emit(id);
     this.itemsOpened = id === 99;
+    this.isItemsOpened.emit(this.itemsOpened);
   }
 
   onClickApply() {

@@ -11,6 +11,7 @@ import {ScrollByButtonDirective} from "../../shared/directive/scroll-by-button.d
 import {GetElementHeightDirective} from "../../shared/directive/get-element-height.directive";
 import {GiveMaxHeightDirective} from "../../shared/directive/give-max-height.directive";
 import {GetClickEventDirective} from "../../shared/directive/get-click-event.directive";
+import {statusButtons} from "./models/status-buttons";
 
 @Component({
   selector: 'app-trip-list',
@@ -56,7 +57,7 @@ export class TripListComponent implements OnInit {
     gps: 0
 
   };
-  statusButtons: any[] = [];
+  statusButtons = statusButtons;
   rightButtonClicked: boolean;
   leftButtonClicked: boolean;
   right: string = '0px'
@@ -201,7 +202,7 @@ export class TripListComponent implements OnInit {
     } else {
       this.status = '';
     }
-    this.statusButtons.forEach(x => x.isActive = x.tripStatus === tripStatus);
+    this.statusButtons.forEach(x => x.isActive = x.name === tripStatus);
     this.onSearch();
   }
 
@@ -217,15 +218,9 @@ export class TripListComponent implements OnInit {
 
   private getTripCount() {
     this.service.getTripStatusCounts().subscribe((trip: any) => {
-      this.statusButtons = trip;
+      this.statusButtons.forEach(x => {
+        x.count = trip[x.name] ?? 0;
+      });
     });
-  }
-
-  getStatusButtons() {
-    return Object.keys(this.statusButtons);
-  }
-
-  isThisStatusSelected(item: string) {
-    return this.status === item;
   }
 }
