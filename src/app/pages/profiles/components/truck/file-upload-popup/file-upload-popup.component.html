@@ -1,0 +1,26 @@
+<div class="flex flex-col justify-between p-4 w-96">
+  <div class="w-full">
+    <div class="flex space-x-3 items-center">
+      <img src="assets/svg/upload.svg" alt="">
+      <h1 class="text-body font-bold">Upload documents</h1>
+    </div>
+    <form [formGroup]="fileForm">
+      <div class="drop-area flex items-center w-full mb-4"
+           (drop)="onFileDropped($event)"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+      >
+        <label  for="file-upload" class="w-full cursor-pointer rounded-lg bg-gray-200 px-4 py-2 text-center hover:bg-gray-300">
+          <span class="text-sm font-medium">Drop your image here or browse</span>
+        </label>
+        <input type="file" id="file-upload" formControlName="fileInput" class="hidden w-full">
+      </div>
+    </form>
+  </div>
+  <div class="w-full md:w-1/2 flex flex-col items-end">
+    <p class="text-sm font-medium mb-1">Registration certificate</p>
+    <input type="text" class="border rounded-md px-2 py-1">
+    <p class="text-sm font-medium mt-2">Expire date</p>
+    <input type="text" class="border rounded-md px-2 py-1">
+  </div>
+</div>

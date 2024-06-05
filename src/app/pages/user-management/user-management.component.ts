@@ -8,7 +8,7 @@ import {UserService} from "../profiles/services/user.service";
 import {GiveMaxHeightDirective} from "../../shared/directive/give-max-height.directive";
 import {GetElementHeightDirective} from "../../shared/directive/get-element-height.directive";
 import {CreatePopupComponent} from "../../shared/modal/create-popup/create-popup.component";
-import {CustomerCreateComponent} from "../profiles/components/customer-create/customer-create.component";
+import {CustomerCreateComponent} from "../profiles/components/customer/customer-create/customer-create.component";
 import {UserModel} from "./models/user.model";
 import {UserCreateComponent} from "./user-create/user-create.component";
 

@@ -1,11 +1,12 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgIf} from "@angular/common";
-import {CustomerCreateModel} from "../customer/model/customer-create.model";
-import {UserService} from "../../services/user.service";
+import {CustomerCreateModel} from "../model/customer-create.model";
+import {UserService} from "../../../services/user.service";
 import {ToastrService} from "ngx-toastr";
 import {Subscription} from "rxjs";
-import {CustomerService} from "../../services/customer.service";
+import {CustomerService} from "../../../services/customer.service";
+import {ConvertToFormdataService} from "../../../../../shared/services/convert-to-formdata/convert-to-formdata.service";
 
 @Component({
   selector: 'app-customer-create',
@@ -20,11 +21,10 @@ import {CustomerService} from "../../services/customer.service";
 export class CustomerCreateComponent implements OnInit, OnDestroy{
   customerForm: FormGroup;
   customerModel = new CustomerCreateModel()
-  customerCodeChecked: boolean = false;
   private subs: Subscription;
   @Output() formCreated : EventEmitter<boolean> = new EventEmitter<boolean>(false)
 
-  constructor(private fb: FormBuilder, private service: CustomerService, private toastr: ToastrService ) {
+  constructor(private fb: FormBuilder, private service: CustomerService, private toastr: ToastrService, private formData: ConvertToFormdataService) {
     this.customerForm = this.fb.group({
       name: ['', Validators.required],
       code: ['', Validators.required],
@@ -53,7 +53,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
       this.customerModel.email = this.customerForm.get('email').value;
       this.customerModel.address = this.customerForm.get('address').value;
       this.customerModel.note = this.customerForm.get('note').value;
-      this.customerModel.role = 'Customer'
+      this.customerModel.role = 'Customer';
       this.service.customerCodeValidation(this.customerModel.customerCode).subscribe((res:any)=> {
         if (res.data.validation == 'Failed') {
           this.subs.unsubscribe();

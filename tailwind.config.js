@@ -38,6 +38,7 @@ module.exports = {
         'app-bg': '#F9F9F9',
         'mobile-line': '#D3DBDC',
         'active': '#E7EDED',
+        'custom-gradient' : '#0084ff0d'
       },
       borderColor: {
         'primary': '#11484F',

@@ -3,7 +3,7 @@ import {UserService} from "../../services/user.service";
 import {CustomerModel} from "./model/customer.model";
 import {CommonModule} from "@angular/common";
 import {CreatePopupComponent} from "../../../../shared/modal/create-popup/create-popup.component";
-import {CustomerCreateComponent} from "../customer-create/customer-create.component";
+import {CustomerCreateComponent} from "./customer-create/customer-create.component";
 import {GiveMaxHeightDirective} from "../../../../shared/directive/give-max-height.directive";
 import {GetElementHeightDirective} from "../../../../shared/directive/get-element-height.directive";
 import {CustomerService} from "../../services/customer.service";

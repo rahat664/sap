@@ -24,6 +24,7 @@ html, body {
 
 /* Hide the default scrollbar */
 ::-webkit-scrollbar {
+  height: 0.375rem; /* Set the height of the scrollbar */
   width: 0.375rem; /* Set the width of the scrollbar */
 }
 

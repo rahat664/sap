@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CreatePopupComponent} from "../../../../shared/modal/create-popup/create-popup.component";
-import {CustomerCreateComponent} from "../customer-create/customer-create.component";
+import {CustomerCreateComponent} from "../customer/customer-create/customer-create.component";
 import {GetElementHeightDirective} from "../../../../shared/directive/get-element-height.directive";
 import {GiveMaxHeightDirective} from "../../../../shared/directive/give-max-height.directive";
 import {NgClass, NgForOf, NgIf} from "@angular/common";

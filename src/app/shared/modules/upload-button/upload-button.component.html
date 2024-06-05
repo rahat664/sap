@@ -1,0 +1,5 @@
+<button class="py-2 px-4 flex text-link items-center bg-custom-gradient space-x-3 w-full h-full text-body rounded-md">
+  <i *ngIf="!file" class="far fa-{{icon}}"></i>
+  <img *ngIf="file" src="assets/svg/{{icon}}.svg" alt="">
+  <span>{{buttonText}}</span>
+</button>
