@@ -173,6 +173,7 @@ export class CustomInputComponent implements OnInit {
   @Output() selectedToDate: EventEmitter<string> = new EventEmitter();
   @Output() selectedFromDateToToDate: EventEmitter<string> = new EventEmitter();
   @Input() inputSearch: string = '';
+  @Input() backgroundColor: string = 'input';
 
 
   ngOnInit(): void {

@@ -1,0 +1,78 @@
+<div class="p-4 flex flex-col space-y-3">
+  <div appGetElementHeight (height)="height = $event" class="flex flex-col space-y-3">
+    <div class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      <h1 class="text-h1 font-semibold">Truck</h1>
+      <div class="flex space-x-4 items-center">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="far fa-search text-gray-500"></i>
+          </div>
+          <input type="text" name="email" id="topbar-search"
+                 class="border-none text-input-hint w-[24rem] bg-white  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
+                 placeholder="Enter truck registration number">
+        </div>
+        <button routerLink="/profile/driver/add"
+                class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+          <i class="fas fa-plus-circle"></i>
+          <span class="hidden lg:block">Add Driver</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div appGiveMaxHeight [anotherItemsHeight]="height" class="bg-white w-full rounded-lg overflow-auto relative">
+    <table class="table-auto w-full text-[0.875rem]">
+      <thead>
+      <tr class="whitespace-nowrap bg-white">
+        <th class="text-left">Driver Name</th>
+        <th class="text-left">Mobile Number</th>
+        <th class="text-left">No. of trip</th>
+        <th class="text-center">Driving License</th>
+        <th class="text-center">National ID</th>
+        <th class="text-left">Status</th>
+        <th style="width: 5%"></th>
+      </tr>
+      <tr>
+        <th class="border" colspan="7"></th>
+      </tr>
+      </thead>
+      <tbody class="text-web-text-secondary">
+      <tr *ngFor="let driver of driverList">
+        <td class="whitespace-nowrap">
+          <div class="flex items-center space-x-4">
+            <div class="w-8 h-8 rounded-full bg-another flex items-center justify-center">
+              <span class="text-white font-bold capitalize">{{ driver.name[0] }}</span>
+            </div>
+            <a routerLink="/profile/driver/{{ driver.id }}/details"
+               class="flex-1 text-link cursor-pointer">{{ driver.name}}</a>
+          </div>
+        </td>
+        <td>
+          {{driver.phone}}
+        </td>
+        <td>{{driver.noOfTrips}}</td>
+        <td class="whitespace-nowrap">
+          <div class="flex items-center justify-center h-full">
+            <i *ngIf="driver.drivingLicense" class="fas fa-check text-green"></i>
+            <app-upload-button (click)="isOpen = true" *ngIf="!driver.drivingLicense" icon="upload" [file]="true"
+                               buttonText="Upload"></app-upload-button>
+          </div>
+        </td>
+        <td class="whitespace-nowrap">
+          <div class="flex items-center justify-center h-full">
+            <i *ngIf="driver.nationalId" class="fas fa-check text-green"></i>
+            <app-upload-button *ngIf="!driver.nationalId" icon="upload" [file]="true"
+                               buttonText="Upload"></app-upload-button>
+          </div>
+        </td>
+        <td class="whitespace-nowrap"><span class="text-red">Pending</span></td>
+        <td>
+          <i class="fas fa-ellipsis-v"></i>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
+  <app-file-upload-popup></app-file-upload-popup>
+</app-create-popup>

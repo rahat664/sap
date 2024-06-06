@@ -9,5 +9,8 @@ export class UserModel {
   "role": string;
   "roles": string;
   "note": string;
+  "noOfTrips": number;
+  "drivingLicense": any;
+  "nationalId": any;
 
 }

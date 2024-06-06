@@ -1,0 +1,48 @@
+<div class="m-2 bg-white">
+  <div class="p-4 border-b-2 border-input flex justify-between items-center">
+    <h1 class="text-h1 font-semibold">Driver Add</h1>
+    <div>
+      <button
+              class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
+        <span>Save</span>
+      </button>
+    </div>
+  </div>
+  <div  class="grid lg:grid-cols-2 text-body ">
+    <div class="w-full border-r-2 border-input">
+      <div class="p-4 flex flex-col space-y-3">
+        <div class="flex space-x-3 items-center text-not-black">
+          <img src="assets/svg/user.svg" alt="">
+          <span class="text-h2 font-semibold">Driver Info</span>
+        </div>
+        <div class="grid gap-3">
+          <div class="flex flex-col space-y-1">
+            <span class="text-not-black font-semibold">Name</span>
+            <div>
+              <input placeholder="Enter driver name"
+                     class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+            </div>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <span class="text-not-black font-semibold">Mobile</span>
+            <div>
+              <input placeholder="Enter mobile no."
+                     class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-full p-4 flex flex-col space-y-3">
+      <div class="flex justify-between items-center h-8">
+        <div class="text-not-black flex space-x-3 items-center">
+          <img src="assets/svg/document.svg" alt="">
+          <span>Documents</span>
+        </div>
+      </div>
+      <div>
+        <app-file-upload-popup padding="0" [isUploadIconEnabled]="false"></app-file-upload-popup>
+      </div>
+    </div>
+  </div>
+</div>

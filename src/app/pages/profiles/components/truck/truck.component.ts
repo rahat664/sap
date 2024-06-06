@@ -50,9 +50,6 @@ export class TruckComponent implements OnInit{
   constructor(private service: TruckService) {
   }
 
-  onClickAddTruck() {
-
-  }
 
   ngOnInit(): void {
     this.getTruckList();

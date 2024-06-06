@@ -40,7 +40,7 @@
             </a>
           </li>
           <li>
-            <button routerLink="/profile" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}" (click)="onClickProfile()" type="button"
+            <button routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}" (click)="onClickProfile()" type="button"
                     class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                     aria-controls="dropdown-example" >
               <img src="assets/svg/profile.svg" alt="">
@@ -50,16 +50,20 @@
             </button>
             <ul id="dropdown-example" class="py-2 space-y-2 " *ngIf="dropdownOpen">
               <li>
-                <a routerLink="/profile/customer" routerLinkActive="active" href="#"
+                <a routerLink="/profile/customer" routerLinkActive="active"
                    class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Customer</a>
               </li>
               <li>
-                <a routerLink="/profile/transporter" routerLinkActive="active" href="#"
+                <a routerLink="/profile/transporter" routerLinkActive="active"
                    class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Transporter</a>
               </li>
               <li>
-                <a routerLink="/profile/truck" routerLinkActive="active" href="#"
+                <a routerLink="/profile/truck" routerLinkActive="active"
                    class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Truck</a>
+              </li>
+              <li>
+                <a routerLink="/profile/driver" routerLinkActive="active"
+                   class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Driver</a>
               </li>
             </ul>
           </li>

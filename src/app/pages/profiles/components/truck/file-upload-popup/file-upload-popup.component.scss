@@ -1,9 +1,5 @@
 .drop-area {
-  border: 2px dashed #ccc;
-  border-radius: 4px;
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
+  @apply border-2 border-dashed bg-input border-link rounded-lg p-5 text-center cursor-pointer;
 }
 .drop-area.dragover {
   background-color: #f0f0f0;

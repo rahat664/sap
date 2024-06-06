@@ -56,6 +56,8 @@ module.exports = {
         'app-bg': '#F9F9F9',
         'mobile-line': '#D3DBDC',
         'active': '#E7EDED',
+        'green-gradient': '#F3FCF8',
+        'red-gradient': '#FEF7F6',
       },
       backgroundImage: {
         loginBg: "url('assets/images/login-bg.png')",

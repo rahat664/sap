@@ -14,4 +14,6 @@ export class UploadButtonComponent {
   @Input() icon: string;
   @Input() buttonText: string;
   @Input() file: boolean = false;
+  @Input() isIconButton: boolean = true;
+  @Input() buttonColor: string = 'custom-gradient';
 }

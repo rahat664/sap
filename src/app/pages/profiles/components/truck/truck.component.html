@@ -11,7 +11,7 @@
                  class="border-none text-input-hint w-[24rem] bg-white  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
                  placeholder="Enter truck registration number">
         </div>
-        <button (click)="onClickAddTruck()"
+        <button routerLink="/profile/truck/add"
                 class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
           <i class="fas fa-plus-circle"></i>
           <span class="hidden lg:block">Add Truck</span>
@@ -83,8 +83,8 @@
         </td>
         <td class="whitespace-nowrap">
           <div class="flex items-center justify-center h-full">
-            <i *ngIf="truck.otherFile" class="fas fa-check text-green"></i>
-            <app-upload-button *ngIf="!truck.otherFile" icon="upload" [file]="true"
+            <i *ngIf="truck.otherFile || truck.taxFile || truck.caseFile" class="fas fa-check text-green"></i>
+            <app-upload-button *ngIf="!truck.otherFile && !truck.taxFile && !truck.caseFile" icon="upload" [file]="true"
                                buttonText="Upload"></app-upload-button>
           </div>
         </td>

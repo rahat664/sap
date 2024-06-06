@@ -1,0 +1,88 @@
+<div class="m-2 bg-white">
+  <div class="p-4 border-b-2 border-input flex justify-between items-center">
+    <h1 class="text-h1 font-semibold">Driver detail</h1>
+    <div>
+      <button (click)="inEditMode = !inEditMode" *ngIf="!inEditMode"
+              class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
+        <i class="far fa-pen text-primary"></i>
+      </button>
+      <button (click)="inEditMode = !inEditMode" *ngIf="inEditMode"
+              class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
+        <span>Save</span>
+      </button>
+    </div>
+  </div>
+  <div [ngClass]="{'border-b-2 border-input': inEditMode}" class="grid lg:grid-cols-2 text-body ">
+    <div class="w-full border-r-2 border-input">
+      <div class="p-4 flex flex-col space-y-3">
+        <div class="flex space-x-3 items-center text-not-black">
+          <img src="assets/svg/user.svg" alt="">
+          <span class="text-h2 font-semibold">Driver Info</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col space-y-1" [ngClass]="{'col-span-2': inEditMode}">
+            <span class="text-not-black font-semibold">Name</span>
+            <span *ngIf="!inEditMode" class="text-web-text-secondary">Abdul Hie</span>
+            <div *ngIf="inEditMode">
+              <input placeholder="Enter driver name"
+                     class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+            </div>
+          </div>
+          <div *ngIf="!inEditMode" class="flex flex-col space-y-1">
+            <span class="text-not-black font-semibold">Status</span>
+            <span class="text-red">Pending</span>
+          </div>
+          <div class="flex flex-col space-y-1" [ngClass]="{'col-span-2': inEditMode}">
+            <span class="text-not-black font-semibold">Mobile</span>
+            <span *ngIf="!inEditMode" class="text-web-text-secondary">01753938232</span>
+            <div *ngIf="inEditMode">
+              <input placeholder="Enter mobile no."
+                     class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+            </div>
+          </div>
+          <div *ngIf="!inEditMode" class="flex flex-col space-y-1">
+            <span class="text-not-black font-semibold">No. of trips</span>
+            <span class="text-web-text-secondary">24</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-full p-4 flex flex-col space-y-3">
+      <div class="flex justify-between items-center h-8">
+        <div class="text-not-black flex space-x-3 items-center">
+          <img src="assets/svg/document.svg" alt="">
+          <span>Documents</span>
+        </div>
+        <app-upload-button *ngIf="inEditMode" icon="upload" [file]="true"
+                           buttonText="Upload"></app-upload-button>
+      </div>
+      <div class="grid grid-cols-4 gap-3">
+        <div class="w-full flex flex-col space-y-1">
+          <div class="p-4 rounded-lg border border-input relative">
+            <img src="assets/images/dummy.jpg" alt="">
+            <span *ngIf="inEditMode"
+                  class="h-6 w-6 bg-red rounded-full flex justify-center items-center text-white absolute top-2 right-2">
+              <i class="fas fa-times"></i>
+            </span>
+          </div>
+          <div class="flex space-y-1 flex-col">
+            <span class="text-web-text-secondary font-semibold">Registration</span>
+            <span class="text-web-text-secondary">Exp:12/12/2022</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="inEditMode" class="p-4 flex justify-end items-center">
+    <div class="flex space-x-3 items-center">
+      <app-upload-button
+        buttonText="Approve"
+        buttonColor="green"
+        [isIconButton]="false"></app-upload-button>
+      <app-upload-button
+        buttonText="Reject"
+      [isIconButton]="false"
+      buttonColor="red"></app-upload-button>
+    </div>
+  </div>
+</div>
