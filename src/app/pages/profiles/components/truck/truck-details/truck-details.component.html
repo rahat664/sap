@@ -2,7 +2,7 @@
   <div class="p-4 border-b-2 border-input flex justify-between items-center">
     <h1 class="text-h1 font-semibold">Truck detail</h1>
     <div>
-      <button (click)="inEditMode = !inEditMode" *ngIf="!inEditMode"
+      <button (click)="onClickEdit()" *ngIf="!inEditMode"
               class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
         <i class="far fa-pen text-primary"></i>
       </button>
@@ -22,7 +22,7 @@
         <div class="grid grid-cols-2 gap-3">
           <div class="flex flex-col space-y-1" [ngClass]="{'col-span-2': inEditMode}">
             <span class="text-not-black font-semibold">Registration No.</span>
-            <span *ngIf="!inEditMode" class="text-web-text-secondary">Dhaka Metro TA 127865</span>
+            <span *ngIf="!inEditMode" class="text-web-text-secondary">{{getFullRegistrationName()}}</span>
             <div *ngIf="inEditMode" class="grid grid-cols-5 w-full gap-3">
               <app-custom-input class="w-full col-span-2"
                 appGetClickEvent
@@ -112,19 +112,23 @@
                            buttonText="Upload"></app-upload-button>
       </div>
       <div class="grid grid-cols-4 gap-3">
-        <div class="w-full flex flex-col space-y-1">
-          <div class="p-4 rounded-lg border border-input relative">
-            <img src="assets/images/dummy.jpg" alt="">
-            <span *ngIf="inEditMode"
-                  class="h-6 w-6 bg-red rounded-full flex justify-center items-center text-white absolute top-2 right-2">
+        <ng-container *ngFor="let document of documents">
+          <div class="w-full flex flex-col space-y-1">
+            <div class="p-4 rounded-lg border border-input relative flex items-center justify-center">
+              <div class="h-32 w-32 object-cover object-center">
+                <img class="w-full h-full" [src]="document.file ? document.file : 'assets/images/dummy.jpg'" alt="">
+              </div>
+              <span *ngIf="inEditMode"
+                    class="h-6 w-6 bg-red rounded-full flex justify-center items-center text-white absolute top-2 right-2">
               <i class="fas fa-times"></i>
             </span>
+            </div>
+            <div class="flex space-y-1 flex-col">
+              <span class="text-web-text-secondary font-semibold">{{ document.name }}</span>
+              <span class="text-web-text-secondary">Exp: {{document.expDate ? document.expDate : 'N/A'}}</span>
+            </div>
           </div>
-          <div class="flex space-y-1 flex-col">
-            <span class="text-web-text-secondary font-semibold">Registration</span>
-            <span class="text-web-text-secondary">Exp:12/12/2022</span>
-          </div>
-        </div>
+        </ng-container>
       </div>
     </div>
   </div>

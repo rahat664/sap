@@ -44,7 +44,7 @@
             <div class="w-8 h-8 rounded-full bg-another flex items-center justify-center">
               <span class="text-white font-bold capitalize">{{ truck.registration_zone[0] }}</span>
             </div>
-            <a routerLink="/profile/truck/{{ truck.id }}/details"
+            <a routerLink="/profile/truck/{{ truck.id }}/details" (click)="onClickTruckDetails(truck)"
                class="flex-1 text-link cursor-pointer">{{ getFullRegistrationName(truck) }}</a>
           </div>
         </td>

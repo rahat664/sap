@@ -1,4 +1,5 @@
 export interface TruckModel {
+  fitnessCertFile: boolean;
   preHireChecklist: string;
   numberOfTrips: number;
   tracker: any;

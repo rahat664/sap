@@ -1,25 +1,22 @@
-import {Component, Input} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CustomInputComponent} from "../../../../../shared/modules/custom-input/custom-input.component";
 import {CustomInputSelectModel} from "../../../../../shared/modules/custom-input/custom-input-select.model";
 import {GetClickEventDirective} from "../../../../../shared/directive/get-click-event.directive";
 import {fileUpload} from "../models/file-upload";
-import {NgIf} from "@angular/common";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-file-upload-popup',
   standalone: true,
   imports: [
-    ReactiveFormsModule,
     CustomInputComponent,
     GetClickEventDirective,
-    NgIf
+    CommonModule
   ],
   templateUrl: './file-upload-popup.component.html',
   styleUrl: './file-upload-popup.component.scss'
 })
 export class FileUploadPopupComponent {
-  fileForm: FormGroup;
   file: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
   fileTypeOptions: CustomInputSelectModel[] = fileUpload;
@@ -27,18 +24,16 @@ export class FileUploadPopupComponent {
   fileOpened: boolean;
   @Input() isUploadIconEnabled: boolean = true;
   @Input() padding: string= '4';
-  constructor(private fb: FormBuilder) {
-    this.fileForm = this.fb.group({
-      fileInput: [null, Validators.required],
-    });
+  @Output() fileInput: EventEmitter<any> = new EventEmitter<any>();
+  fileArray: any[] = [];
+  constructor() {
+    this.fileArray = [];
   }
   onFileDropped(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     if (event.dataTransfer && event.dataTransfer.files.length) {
       const file = event.dataTransfer.files[0];
-      this.fileForm.get('fileInput')!.patchValue(file);
-      this.fileForm.get('fileInput')!.updateValueAndValidity();
       this.previewFile(file);
     }
   }
@@ -52,18 +47,17 @@ export class FileUploadPopupComponent {
     event.stopPropagation();
   }
 
-  onSelectFileType($event: number) {
+  onSelectFileType($event: number, i: number) {
     this.fileInputPlaceholder = this.fileTypeOptions.find(option => option.id === $event).value;
+    this.fileArray[i].registrationType = this.fileInputPlaceholder;
   }
 
-  onClickFileType($event: boolean) {
-    this.fileOpened = $event;
+  onClickFileType($event: boolean, i: number) {
+    this.fileArray[i].fileOpened = $event;
   }
   onSubmit() {
-    const formData = new FormData();
-    formData.append('file', this.fileForm.get('fileInput')!.value);
-    console.log(formData.get('file'));
-    console.log(this.fileForm)
+    this.fileInput.emit(this.fileArray);
+    this.filePreview = null;
   }
 
   previewFile(file: File) {
@@ -71,15 +65,21 @@ export class FileUploadPopupComponent {
     reader.readAsDataURL(file);
     reader.onload = () => {
       this.filePreview = reader.result;
+      this.fileArray.push({file: file, preview: this.filePreview, registrationType: null, registrationExpireDate: null , fileOpened: false});
     };
   }
 
   onFileChange($event: any) {
     if ($event.target.files.length > 0) {
       const file = $event.target.files[0];
-      this.fileForm.get('fileInput')!.patchValue(file);
-      this.fileForm.get('fileInput')!.updateValueAndValidity();
-      this.previewFile(file);
+      if (file) {
+        this.previewFile(file);
+      }
     }
+  }
+
+
+  onDateChange($event: Event, i: number) {
+    this.fileArray[i].registrationExpireDate = ($event.target as HTMLInputElement).value;
   }
 }

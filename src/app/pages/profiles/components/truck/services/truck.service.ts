@@ -8,13 +8,22 @@ import {HttpClient} from "@angular/common/http";
 export class TruckService {
   url = `${environment.backendUrl}/api/trucks`
   preHireChecklistUrl = `${environment.backendUrl}/api/preHireChecklist`
+  checklistUrl = `${environment.backendUrl}/api/checklist`
   constructor(private http:HttpClient) { }
 
   getTruckList() {
     return this.http.get(this.url);
   }
 
-  getPreHireChecklist(id: number) {
-    return this.http.get(`${this.preHireChecklistUrl}/${id}`);
+  addTruck(truck: any) {
+    return this.http.post(this.url, truck);
+  }
+
+  getPreHireChecklist(id?: number) {
+   if (id) {
+     return this.http.get(`${this.preHireChecklistUrl}/${id}`)
+   } else  {
+      return this.http.get(this.checklistUrl)
+   }
   }
 }

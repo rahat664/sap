@@ -46,6 +46,7 @@ export class TruckComponent implements OnInit{
   trackerAddOpened: boolean = false;
   selectedTruckId: number;
   isOpen: boolean = false;
+  singleTruck: TruckModel;
 
   constructor(private service: TruckService) {
   }
@@ -95,5 +96,10 @@ export class TruckComponent implements OnInit{
 
   onClickAddTruckerSave() {
     this.trackerAddOpened = false;
+  }
+
+  onClickTruckDetails(truck: TruckModel) {
+    localStorage.removeItem('truck');
+    localStorage.setItem('truck', JSON.stringify(truck));
   }
 }
