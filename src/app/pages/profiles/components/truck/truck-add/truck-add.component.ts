@@ -11,6 +11,10 @@ import {registrationCategoryList} from "../models/registration-category";
 import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {TruckService} from "../services/truck.service";
 import {PreHireChecklistModel} from "../models/pre-hire-checklist.model";
+import {PreHireChecklistComponent} from "../pre-hire-checklist/pre-hire-checklist.component";
+import {CreatePopupComponent} from "../../../../../shared/modal/create-popup/create-popup.component";
+import {ToastrService} from "ngx-toastr";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-truck-add',
@@ -22,7 +26,9 @@ import {PreHireChecklistModel} from "../models/pre-hire-checklist.model";
     UploadButtonComponent,
     NgClass,
     FileUploadPopupComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PreHireChecklistComponent,
+    CreatePopupComponent
   ],
   templateUrl: './truck-add.component.html',
   styleUrl: './truck-add.component.scss'
@@ -41,8 +47,9 @@ export class TruckAddComponent implements OnInit {
   truckAddForm: FormGroup;
   prehireChecklist: PreHireChecklistModel[] = [];
   singleChecklist: any = {};
+  prehireCheckListOpened: boolean;
 
-  constructor(private fb: FormBuilder, private service: TruckService) {
+  constructor(private fb: FormBuilder, private service: TruckService, private toastr: ToastrService, private router: Router) {
     this.truckAddForm = this.fb.group({
       registration_zone: [null],
       registration_category: [null],
@@ -116,6 +123,12 @@ export class TruckAddComponent implements OnInit {
         checklist: this.singleChecklist
       });
     });
+    this.truckAddForm.get('registration_serial').valueChanges.subscribe((value) => {
+      this.numberOnly(value);
+    });
+    this.truckAddForm.get('registration_num').valueChanges.subscribe((value) => {
+      this.numberOnly(value);
+    });
   }
 
   onClickSave() {
@@ -140,14 +153,16 @@ export class TruckAddComponent implements OnInit {
       });
       formData.append('payload', JSON.stringify(payload));
 
-      // Debug output to check the content of the FormData
-      (formData as any).forEach((value: any, key: string) => {
-        console.log(`${key}, ${value}`);
-      });
-
       this.service.addTruck(formData).subscribe((res: any) => {
-        console.log(res);
-      });
+        // Handle response
+        this.toastr.success('Truck added successfully');
+        this.router.navigate(['/profile/truck']);
+      },
+        error => {
+          // Handle error
+          this.toastr.error('Failed to add truck');
+        }
+        );
     }
   }
 
@@ -191,5 +206,15 @@ export class TruckAddComponent implements OnInit {
           break;
       }
     });
+  }
+
+  private numberOnly(value: any) {
+    const reg = /^[0-9]*$/;
+    if (!reg.test(value)) {
+      this.truckAddForm.patchValue({
+        registration_serial: value.replace(/[^0-9]/g, ''),
+        registration_num: value.replace(/[^0-9]/g, '')
+      });
+    }
   }
 }

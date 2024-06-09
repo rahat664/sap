@@ -22,7 +22,7 @@
       <input type="file" id="file-upload" (change)="onFileChange($event)" class="hidden w-full">
     </div>
   </div>
-  <div class="flex flex-col bg-input px-4 py-2 space-y-2 rounded-lg">
+  <div class="flex flex-col bg-input px-4 py-2 space-y-2 rounded-lg" *ngIf="fileArray.length > 0">
     <ng-container *ngFor="let file of fileArray; index as i">
       <div class="flex  py-2  space-x-3 items-center">
         <div class="w-full flex space-x-3 flex-1 items-center">
@@ -48,5 +48,5 @@
       </div>
     </ng-container>
   </div>
-  <button (click)="onSubmit()" class="self-end bg-primary text-white rounded-lg px-4 py-2">Upload</button>
+  <button *ngIf="fileArray.length > 0" [disabled]="!filePreview" (click)="onSubmit()" class="self-end bg-primary text-white rounded-lg px-4 py-2">Upload</button>
 </div>

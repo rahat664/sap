@@ -38,9 +38,9 @@
                                   (selectedId)="onSelectRegistrationType($event)"
                                   [inputSearch]="registrationTypePlaceholder"
                 ></app-custom-input>
-                <input placeholder="Registration Serial" formControlName="registration_serial"
+                <input placeholder="Registration Serial" maxlength="2" minlength="2" formControlName="registration_serial"
                        class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
-                <input placeholder="Registration No." formControlName="registration_num"
+                <input  placeholder="Registration No." maxlength="4" minlength="4" formControlName="registration_num"
                        class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
               </div>
             </div>
@@ -52,7 +52,7 @@
               <img src="assets/svg/list.svg" alt="">
               <span class="text-not-black font-semibold">Pre hire check list (16/22)</span>
             </div>
-            <a class="text-link">Browse list</a>
+            <a (click)="prehireCheckListOpened = true" class="text-link cursor-pointer">Browse list</a>
           </div>
         </div>
         <div class="p-4 flex flex-col space-y-3">
@@ -93,4 +93,6 @@
     </div>
   </form>
 </div>
-
+<app-create-popup [isOpen]="prehireCheckListOpened" (close)="prehireCheckListOpened = false">
+  <app-pre-hire-checklist></app-pre-hire-checklist>
+</app-create-popup>

@@ -19,7 +19,7 @@ import {CommonModule} from "@angular/common";
 export class FileUploadPopupComponent {
   file: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
-  fileTypeOptions: CustomInputSelectModel[] = fileUpload;
+  @Input() fileTypeOptions: CustomInputSelectModel[] = fileUpload;
   fileInputPlaceholder: string = '';
   fileOpened: boolean;
   @Input() isUploadIconEnabled: boolean = true;
