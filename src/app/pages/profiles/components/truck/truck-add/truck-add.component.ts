@@ -5,7 +5,7 @@ import {NgClass, NgIf} from "@angular/common";
 import {UploadButtonComponent} from "../../../../../shared/modules/upload-button/upload-button.component";
 import {FileUploadPopupComponent} from "../file-upload-popup/file-upload-popup.component";
 import {manufacturerList} from "../models/manufacturer-list";
-import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
+import {CustomInputSelectModel} from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import {registrationZoneList} from "../models/registration-zone";
 import {registrationCategoryList} from "../models/registration-category";
 import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
@@ -48,6 +48,7 @@ export class TruckAddComponent implements OnInit {
   prehireChecklist: PreHireChecklistModel[] = [];
   singleChecklist: any = {};
   prehireCheckListOpened: boolean;
+  isExpiryAvailable: boolean;
 
   constructor(private fb: FormBuilder, private service: TruckService, private toastr: ToastrService, private router: Router) {
     this.truckAddForm = this.fb.group({
@@ -73,9 +74,6 @@ export class TruckAddComponent implements OnInit {
     this.manufacturerPlaceholder = this.manufacturerList.find(option => option.id === $event).value;
     this.manufacturerList.forEach(option => {
       option.selected = option.id === $event;
-    });
-    this.truckAddForm.patchValue({
-      truckManufacturer: this.manufacturerPlaceholder
     });
   }
 
@@ -114,15 +112,6 @@ export class TruckAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.service.getPreHireChecklist().subscribe((res: any) => {
-      this.prehireChecklist = res.data;
-      this.prehireChecklist.forEach((item: PreHireChecklistModel) => {
-        this.singleChecklist[item.id] = 'PASS';
-      });
-      this.truckAddForm.patchValue({
-        checklist: this.singleChecklist
-      });
-    });
     this.truckAddForm.get('registration_serial').valueChanges.subscribe((value) => {
       this.numberOnly(value);
     });
@@ -141,7 +130,7 @@ export class TruckAddComponent implements OnInit {
         const control = this.truckAddForm.get(key);
         const value = control.value;
 
-        if (key.endsWith('File')){
+        if (key.endsWith('File')) {
           if (value) {
             formData.append(key, value);
           }
@@ -154,15 +143,15 @@ export class TruckAddComponent implements OnInit {
       formData.append('payload', JSON.stringify(payload));
 
       this.service.addTruck(formData).subscribe((res: any) => {
-        // Handle response
-        this.toastr.success('Truck added successfully');
-        this.router.navigate(['/profile/truck']);
-      },
+          // Handle response
+          this.toastr.success('Truck added successfully');
+          this.router.navigate(['/profile/truck']);
+        },
         error => {
           // Handle error
           this.toastr.error('Failed to add truck');
         }
-        );
+      );
     }
   }
 
@@ -170,35 +159,41 @@ export class TruckAddComponent implements OnInit {
     $event.forEach((file: any) => {
       switch (file.registrationType) {
         case 'Registration Paper':
+          this.isExpiryAvailable = false;
           this.truckAddForm.patchValue({
             regPaperFile: file.file,
           });
           break;
         case 'Fitness':
+          this.isExpiryAvailable = true;
           this.truckAddForm.patchValue({
             fitnessCertFile: file.file,
             fitnessCertExpDate: file.registrationExpireDate
           });
           break;
         case 'Route Permit':
+          this.isExpiryAvailable = true;
           this.truckAddForm.patchValue({
             routePermitFile: file.file,
             routePermitExpDate: file.registrationExpireDate
           });
           break;
         case 'Tax':
+          this.isExpiryAvailable = true;
           this.truckAddForm.patchValue({
             taxFile: file.file,
             taxExpDate: file.registrationExpireDate
           });
           break;
         case 'Case':
+          this.isExpiryAvailable = true;
           this.truckAddForm.patchValue({
             caseFile: file.file,
             caseExpDate: file.registrationExpireDate
           });
           break;
         case 'Other':
+          this.isExpiryAvailable = false;
           this.truckAddForm.patchValue({
             otherFile: file.file,
             otherExpire: file.registrationExpireDate
@@ -216,5 +211,12 @@ export class TruckAddComponent implements OnInit {
         registration_num: value.replace(/[^0-9]/g, '')
       });
     }
+  }
+
+  onClickPrehiredChecklist($event: any) {
+    this.singleChecklist = $event;
+    this.truckAddForm.patchValue({
+      checklist: $event
+    })
   }
 }

@@ -15,8 +15,6 @@ export class GetClickEventDirective {
     // get event by specific element
     if (event.target.id === 'customInputSelect') {
       this.clickedElement.emit(this.elementClicked = !this.elementClicked);
-    } else {
-      this.clickedElement.emit(false);
     }
   }
 

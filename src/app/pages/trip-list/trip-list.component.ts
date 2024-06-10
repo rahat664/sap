@@ -12,6 +12,7 @@ import {GetElementHeightDirective} from "../../shared/directive/get-element-heig
 import {GiveMaxHeightDirective} from "../../shared/directive/give-max-height.directive";
 import {GetClickEventDirective} from "../../shared/directive/get-click-event.directive";
 import {statusButtons} from "./models/status-buttons";
+import {LoadingComponent} from "../../shared/modules/loading/loading.component";
 
 @Component({
   selector: 'app-trip-list',
@@ -29,7 +30,8 @@ import {statusButtons} from "./models/status-buttons";
     ScrollByButtonDirective,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
-    GetClickEventDirective
+    GetClickEventDirective,
+    LoadingComponent
   ],
   templateUrl: './trip-list.component.html',
   styleUrl: './trip-list.component.scss'
@@ -64,6 +66,7 @@ export class TripListComponent implements OnInit {
   height: string = '0px';
   scrollable: boolean = true;
   dateOpened: boolean = false;
+  loading: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private service: TripService, private datePipe: DatePipe) {
     this.filterForm = this.formBuilder.group({
@@ -77,15 +80,15 @@ export class TripListComponent implements OnInit {
     this.getTripList();
     this.generateDateOptionsArray();
     this.getTripCount();
+    this.getTripSummary();
   }
 
   private getTripList() {
+    this.loading = true;
     // get trip list
     this.service.getTrips().subscribe((trip: any) => {
       this.tripList = trip.data;
-      this.summary.trs = this.tripList.reduce((acc, x) => acc + x.transporterRate, 0);
-      this.summary.crs = this.tripList.reduce((acc, x) => acc + x.customerRate, 0);
-      this.summary.gps = this.summary.crs - this.summary.trs;
+      this.loading = false;
     });
   }
 
@@ -141,13 +144,12 @@ export class TripListComponent implements OnInit {
   }
 
   onSearch() {
+    this.loading = true;
     // handle search
     this.tripList = [];
     this.service.getTrips(this.searchValue, this.from, this.to, this.status).subscribe((trip: any) => {
       this.tripList = trip.data;
-      this.summary.trs = this.tripList.reduce((acc, x) => acc + x.transporterRate, 0);
-      this.summary.crs = this.tripList.reduce((acc, x) => acc + x.customerRate, 0);
-      this.summary.gps = this.summary.crs - this.summary.trs;
+      this.loading = false;
     });
   }
 
@@ -168,6 +170,9 @@ export class TripListComponent implements OnInit {
 
   onSelectedToDate($event: string) {
     this.filterForm.get('startDate').setValue($event);
+    this.from = this.filterForm.get('startDate').value;
+    this.to = this.filterForm.get('endDate').value;
+    this.onSearch();
   }
 
   onSelectedFromDate($event: string) {
@@ -221,6 +226,15 @@ export class TripListComponent implements OnInit {
       this.statusButtons.forEach(x => {
         x.count = trip[x.name] ?? 0;
       });
+    });
+  }
+
+  private getTripSummary() {
+    this.service.getSummary().subscribe((trip: any) => {
+      this.summary.trips = trip.trips;
+      this.summary.trs = trip.trs;
+      this.summary.crs = trip.crs;
+      this.summary.gps = trip.gps;
     });
   }
 }

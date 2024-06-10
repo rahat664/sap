@@ -26,7 +26,7 @@ export class UserService {
   }
 
   addUser(body: any) {
-    return this.http.post(`${this.url}`, body, {})
+    return this.http.post(`${this.url}/create`, body, {})
   }
 
   getUserRoles() {
@@ -37,5 +37,9 @@ export class UserService {
 
   addDriver(body: any) {
     return this.http.post(`${this.url}/add-driver`, body, {})
+  }
+
+  editDriver(body: any) {
+    return this.http.put(`${this.url}/edit-driver`, body, {})
   }
 }

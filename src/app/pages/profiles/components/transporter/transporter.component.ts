@@ -12,6 +12,7 @@ import {CustomInputSelectModel} from "../../../../shared/modules/custom-input/cu
 import {districts} from "./models/districts";
 import {UserService} from "../../services/user.service";
 import {TransporterAddComponent} from "./transporter-add/transporter-add.component";
+import {LoadingComponent} from "../../../../shared/modules/loading/loading.component";
 
 @Component({
   selector: 'app-transporter',
@@ -28,7 +29,8 @@ import {TransporterAddComponent} from "./transporter-add/transporter-add.compone
     FormsModule,
     CustomInputComponent,
     GetClickEventDirective,
-    TransporterAddComponent
+    TransporterAddComponent,
+    LoadingComponent
   ],
   templateUrl: './transporter.component.html',
   styleUrl: './transporter.component.scss'
@@ -46,6 +48,7 @@ export class TransporterComponent implements OnInit{
   districtOptionsArray: CustomInputSelectModel[] = districts;
   districtOpened: boolean;
   transporterList: UserModel[] = [];
+  loading: boolean;
 
   constructor(private service: UserService) {
 
@@ -86,8 +89,16 @@ export class TransporterComponent implements OnInit{
   }
 
   private getCustomerList() {
+    this.loading = true;
     this.service.getUser('Transporter').subscribe((res: any) => {
       this.transporterList = res.data;
+      this.loading = false;
     });
+  }
+
+  onClickTransporter($event: boolean) {
+    this.isOpen = !$event;
+    this.transporterList = [];
+    this.getCustomerList();
   }
 }

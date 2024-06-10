@@ -30,7 +30,12 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'trip-list',
+    pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: 'trip-list',
     pathMatch: 'full'
   }
 ];

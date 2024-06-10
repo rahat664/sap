@@ -26,4 +26,7 @@ export class TruckService {
       return this.http.get(this.checklistUrl)
    }
   }
+  editTruck(truck: any) {
+    return this.http.put(`${this.url}/${truck.id}`, truck);
+  }
 }

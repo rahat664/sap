@@ -9,4 +9,6 @@ export class CustomerModel {
   roles: string[];
   token: string;
   address: string;
+  customerCode: string;
+  user: any[];
 }

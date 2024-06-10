@@ -11,6 +11,7 @@ import {CreatePopupComponent} from "../../shared/modal/create-popup/create-popup
 import {CustomerCreateComponent} from "../profiles/components/customer/customer-create/customer-create.component";
 import {UserModel} from "./models/user.model";
 import {UserCreateComponent} from "./user-create/user-create.component";
+import {LoadingComponent} from "../../shared/modules/loading/loading.component";
 
 @Component({
   selector: 'app-user-management',
@@ -25,7 +26,8 @@ import {UserCreateComponent} from "./user-create/user-create.component";
     GiveMaxHeightDirective,
     GetElementHeightDirective,
     CreatePopupComponent,
-    UserCreateComponent
+    UserCreateComponent,
+    LoadingComponent
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
@@ -49,6 +51,8 @@ export class UserManagementComponent {
   isOpen: boolean = false;
   actionOpened: boolean = false;
   selectedId: number;
+  loading: boolean;
+  elementHeight: any;
 
   constructor(private service: UserService) {
   }
@@ -107,8 +111,10 @@ export class UserManagementComponent {
   }
 
   private getUserList() {
+    this.loading = true;
     this.service.getUser().subscribe((res: any) => {
       this.Users = res.data;
+      this.loading = false;
     })
   }
 
@@ -120,5 +126,19 @@ export class UserManagementComponent {
       this.actionOpened = true;
     }
     this.selectedId = id;
+  }
+
+  onCreateUser($event: boolean) {
+    this.isOpen = !$event;
+    this.Users = [];
+    this.getUserList();
+  }
+
+  getMinHeightClass() {
+    if (this.loading) {
+      return `min-h-[${this.elementHeight}px]`
+    } else {
+      return ''
+    }
   }
 }

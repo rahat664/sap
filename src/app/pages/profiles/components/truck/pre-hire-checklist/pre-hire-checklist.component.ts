@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {TruckService} from "../services/truck.service";
 import {PreHireChecklistModel} from "../models/pre-hire-checklist.model";
 import {NgForOf} from "@angular/common";
@@ -14,6 +14,8 @@ import {NgForOf} from "@angular/common";
 })
 export class PreHireChecklistComponent implements OnInit {
   preHireCheckList: PreHireChecklistModel[] = [];
+  object: any={};
+  @Output() preHireCheckListObject: EventEmitter<any> = new EventEmitter();
 
   constructor(private service: TruckService) {
   }
@@ -28,6 +30,17 @@ export class PreHireChecklistComponent implements OnInit {
     });
   }
 
-  onChange($event: any) {
+  onChange($event: any, id: number) {
+    this.preHireCheckList.forEach((item) => {
+      if (item.id === id){
+        this.object[item.id] = $event.target.value;
+      }
+    });
+  }
+
+  protected readonly onclick = onclick;
+
+  onclickSave() {
+    this.preHireCheckListObject.emit(this.object);
   }
 }

@@ -1,6 +1,6 @@
 <div class="m-2 bg-white">
   <div class="p-4 border-b-2 border-input flex justify-between items-center">
-    <h1 class="text-h1 font-semibold">Driver Add</h1>
+    <h1 class="text-h1 font-semibold">Add Driver</h1>
     <div>
       <button (click)="onDriverSave()"
               class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
@@ -10,7 +10,6 @@
   </div>
   <div class="grid lg:grid-cols-2 text-body ">
     <div class="w-full border-r-2 border-input">
-      <form [formGroup]="driverAddForm">
         <div class="p-4 flex flex-col space-y-3">
           <div class="flex space-x-3 items-center text-not-black">
             <img src="assets/svg/user.svg" alt="">
@@ -20,20 +19,19 @@
             <div class="flex flex-col space-y-1">
               <span class="text-not-black font-semibold">Name</span>
               <div>
-                <input placeholder="Enter driver name" formControlName="driverName"
+                <input [(ngModel)]="driverName" placeholder="Enter driver name"
                        class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
               </div>
             </div>
             <div class="flex flex-col space-y-1">
               <span class="text-not-black font-semibold">Mobile</span>
               <div>
-                <input placeholder="Enter mobile no." formControlName="driverPhone"
+                <input [(ngModel)]="driverPhone" placeholder="Enter mobile no."
                        class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
               </div>
             </div>
           </div>
         </div>
-      </form>
     </div>
     <div class="w-full p-4 flex flex-col space-y-3">
       <div class="flex justify-between items-center h-8">

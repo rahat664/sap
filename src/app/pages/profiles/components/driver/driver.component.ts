@@ -10,29 +10,32 @@ import {RouterLink} from "@angular/router";
 import {UploadButtonComponent} from "../../../../shared/modules/upload-button/upload-button.component";
 import {UserModel} from "../../../user-management/models/user.model";
 import {UserService} from "../../services/user.service";
+import {LoadingComponent} from "../../../../shared/modules/loading/loading.component";
 
 @Component({
   selector: 'app-driver',
   standalone: true,
-    imports: [
-        CreatePopupComponent,
-        CustomInputComponent,
-        FileUploadPopupComponent,
-        GetClickEventDirective,
-        GetElementHeightDirective,
-        GiveMaxHeightDirective,
-        NgForOf,
-        NgIf,
-        RouterLink,
-        UploadButtonComponent
-    ],
+  imports: [
+    CreatePopupComponent,
+    CustomInputComponent,
+    FileUploadPopupComponent,
+    GetClickEventDirective,
+    GetElementHeightDirective,
+    GiveMaxHeightDirective,
+    NgForOf,
+    NgIf,
+    RouterLink,
+    UploadButtonComponent,
+    LoadingComponent
+  ],
   templateUrl: './driver.component.html',
   styleUrl: './driver.component.scss'
 })
-export class DriverComponent implements OnInit{
+export class DriverComponent implements OnInit {
   isOpen: boolean;
   driverList: UserModel[] = [];
   height: string;
+  loading: boolean;
 
   constructor(private user: UserService) {
   }
@@ -42,8 +45,17 @@ export class DriverComponent implements OnInit{
   }
 
   private getDriverList() {
+    this.loading = true;
     this.user.getUser('Driver').subscribe((res: any) => {
       this.driverList = res.data;
+      this.loading = false;
     });
+  }
+
+  onClickDriverName(driver: UserModel) {
+    if (localStorage.getItem('driver')) {
+      localStorage.removeItem('driver')
+    }
+    localStorage.setItem('driver', JSON.stringify(driver));
   }
 }

@@ -8,13 +8,14 @@ import {NgForOf, NgIf} from "@angular/common";
 import {ReactiveFormsModule} from "@angular/forms";
 import {TransporterAddComponent} from "../transporter/transporter-add/transporter-add.component";
 import {TruckModel} from "./models/truck.model";
-import {HttpClient} from "@angular/common/http";
 import {TruckService} from "./services/truck.service";
 import {RouterLink} from "@angular/router";
 import {UploadButtonComponent} from "../../../../shared/modules/upload-button/upload-button.component";
 import {CustomInputSelectModel} from "../../../../shared/modules/custom-input/custom-input-select.model";
 import {manufacturerList} from "./models/manufacturer-list";
 import {FileUploadPopupComponent} from "./file-upload-popup/file-upload-popup.component";
+import {TruckInnerModel} from "./models/truck-inner.model";
+import {LoadingComponent} from "../../../../shared/modules/loading/loading.component";
 
 @Component({
   selector: 'app-truck',
@@ -31,22 +32,23 @@ import {FileUploadPopupComponent} from "./file-upload-popup/file-upload-popup.co
     TransporterAddComponent,
     RouterLink,
     UploadButtonComponent,
-    FileUploadPopupComponent
+    FileUploadPopupComponent,
+    LoadingComponent
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss'
 })
 export class TruckComponent implements OnInit{
   height: string = '';
-  truckList: TruckModel[] = [];
+  truckList: TruckInnerModel[] = [];
   manufactureOpened: boolean;
   manufacturerList: CustomInputSelectModel[] = manufacturerList
   manufacturerPlaceholder: string = '';
-  trackerName: string;
   trackerAddOpened: boolean = false;
   selectedTruckId: number;
   isOpen: boolean = false;
-  singleTruck: TruckModel;
+  preHireCheckList: any[] = [];
+  loading: boolean;
 
   constructor(private service: TruckService) {
   }
@@ -57,25 +59,20 @@ export class TruckComponent implements OnInit{
   }
 
   private getTruckList() {
+    this.loading = true;
     this.service.getTruckList().subscribe((res: any) => {
-      this.truckList = res.data;
       res.data.forEach((truck: TruckModel) => {
-        this.getPreHireCheckList(truck.id);
+        truck.truck.preHireCheckList = truck.preHireChecklistList;
+        this.truckList.push(truck.truck);
       });
+      this.loading = false;
     });
   }
 
-  getFullRegistrationName(truck: TruckModel) {
+  getFullRegistrationName(truck: any) {
     return `${truck.registration_zone} ${truck.registration_category} ${truck.registration_serial} ${truck.registration_num}`
   }
 
-  getPreHireCheckList(id: number): void{
-    this.service.getPreHireChecklist(id).subscribe((res: any) => {
-      const truck = this.truckList.find((truck: TruckModel) => truck.id === id);
-      const passedPreHireChecklist = res.data.filter((checklist: any) => checklist.status === 'PASS');
-      truck.preHireChecklist = `${passedPreHireChecklist.length}/${res.data.length}`;
-    });
-  }
 
   onClickManufacturer($event: boolean) {
     this.manufactureOpened = $event;
@@ -98,7 +95,7 @@ export class TruckComponent implements OnInit{
     this.trackerAddOpened = false;
   }
 
-  onClickTruckDetails(truck: TruckModel) {
+  onClickTruckDetails(truck: TruckInnerModel) {
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
   }

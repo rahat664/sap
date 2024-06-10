@@ -38,7 +38,7 @@
     <!--  summary section-->
     <div class="flex space-x-3 w-full">
       <div class="bg-white rounded-lg text-[0.875rem] p-4 whitespace-nowrap w-[1/3]">
-        <h1 class="font-semibold">Summary ({{ tripList.length }} trips)</h1>
+        <h1 class="font-semibold">Summary ({{ summary.trips }} trips)</h1>
         <div class="flex justify-between space-x-16 items-center py-3 border-b border-gray-300">
           <span>Customer Rate (CR)</span>
           <span>{{ summary?.crs }}</span>
@@ -73,7 +73,7 @@
       </div>
     </div>
   </div>
-  <div appGiveMaxHeight [anotherItemsHeight]="height" class="bg-white w-full rounded-lg overflow-auto">
+  <div appGiveMaxHeight [anotherItemsHeight]="height" class="bg-white w-full relative rounded-lg overflow-auto">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
       <tr class="whitespace-nowrap bg-white">
@@ -92,19 +92,33 @@
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
-      <tr *ngFor="let trip of tripList; index as i">
-        <td class="whitespace-nowrap">
-          <span class="text-blue">{{ trip.tripId }}</span>
-        </td>
-        <td>{{ trip.tripStartDatetime | date: 'dd MMM yyyy' }}</td>
-        <td>{{ trip.customerName }}</td>
-        <td>{{ trip.tripPoints[0]?.pointName }}, {{ trip.tripPoints[0]?.pointDistrict }}</td>
-        <td>{{ trip.tripPoints[1]?.pointName }}, {{ trip.tripPoints[1]?.pointDistrict }}</td>
-        <td>{{ trip.status }}</td>
-        <td>{{ trip.customerRate ? trip.customerRate : 0 }}</td>
-        <td>{{ trip.transporterRate ? trip.transporterRate : 0 }}</td>
-        <td>{{ (trip.customerRate ? trip.customerRate : 0) - (trip.transporterRate ? trip.transporterRate : 0) }}</td>
-      </tr>
+      <ng-container *ngIf="!loading">
+        <tr *ngFor="let trip of tripList; index as i">
+          <td class="whitespace-nowrap">
+            <span class="text-blue">{{ trip.tripId }}</span>
+          </td>
+          <td>{{ trip.tripStartDatetime | date: 'dd MMM yyyy' }}</td>
+          <td>{{ trip.customerName }}</td>
+          <td>{{ trip.tripPoints[0]?.pointName }}, {{ trip.tripPoints[0]?.pointDistrict }}</td>
+          <td>{{ trip.tripPoints[1]?.pointName }}, {{ trip.tripPoints[1]?.pointDistrict }}</td>
+          <td>{{ trip.status }}</td>
+          <td>{{ trip.customerRate ? trip.customerRate : 0 }}</td>
+          <td>{{ trip.transporterRate ? trip.transporterRate : 0 }}</td>
+          <td>{{ (trip.customerRate ? trip.customerRate : 0) - (trip.transporterRate ? trip.transporterRate : 0) }}</td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <tr *ngIf="tripList.length === 0">
+          <td class="text-center" colspan="9">No data found</td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" colspan="9">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
       </tbody>
     </table>
   </div>

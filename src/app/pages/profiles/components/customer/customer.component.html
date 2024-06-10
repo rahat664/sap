@@ -32,12 +32,12 @@
       </div>
     </div>
   </div>
-  <div appGiveMaxHeight [anotherItemsHeight]="height" class="bg-white w-full rounded-lg overflow-auto">
+  <div appGiveMaxHeight [anotherItemsHeight]="height" class="bg-white relative w-full rounded-lg overflow-auto">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
         <tr class="whitespace-nowrap bg-white">
           <th class="text-left">Company name</th>
-          <th class="text-left">Customer code</th>
+          <th class="text-center">Customer code</th>
           <th class="text-left">Contact person</th>
           <th class="text-left">Mobile</th>
           <th class="text-left">Email</th>
@@ -48,29 +48,47 @@
           <th class="border" colspan="7"></th>
         </tr>
       </thead>
-      <tbody class="text-web-text-secondary">
-        <tr *ngFor="let customer of customers">
-          <td class="whitespace-nowrap">
-            <div class="flex items-center space-x-4">
-              <div class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
-                <span class="text-white font-bold capitalize">{{customer.name[0]}}</span>
+      <tbody class="text-web-text-secondary ">
+        <ng-container *ngIf="!loading">
+          <tr *ngFor="let customer of customers">
+            <td class="whitespace-nowrap">
+              <div class="flex items-center space-x-4">
+                <div class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
+                  <span class="text-white font-bold capitalize">{{customer.name[0]}}</span>
+                </div>
+                <span class="flex-1">{{customer.name}}</span>
               </div>
-              <span class="flex-1">{{customer.name}}</span>
-            </div>
-          </td>
-          <td class="text-center">{{customer.userId}}</td>
-          <td></td>
-          <td>{{customer.phone}}</td>
-          <td>{{customer.email}}</td>
-          <td>{{ customer.address }}</td>
-          <td>
-            <i class="fas fa-ellipsis-v"></i>
-          </td>
-        </tr>
+            </td>
+            <td class="text-center">{{customer.customerCode}}</td>
+            <td>
+              <ng-container *ngFor="let user of customer?.user">
+                <span>{{user?.name}}</span>
+              </ng-container>
+            </td>
+            <td>{{customer.phone}}</td>
+            <td>{{customer.email}}</td>
+            <td>{{ customer.address }}</td>
+            <td>
+              <i class="fas fa-ellipsis-v"></i>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="!loading">
+          <tr *ngIf="customers.length === 0">
+            <td class="text-center" colspan="7">No data found</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="loading">
+          <tr>
+            <td class="h-full" colspan="7">
+              <app-loading></app-loading>
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>
 </div>
 <app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
-  <app-customer-create (formCreated)="isOpen = !$event"></app-customer-create>
+  <app-customer-create (formCreated)="onCreateCustomer($event)"></app-customer-create>
 </app-create-popup>

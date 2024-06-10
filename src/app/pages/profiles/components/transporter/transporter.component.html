@@ -53,7 +53,7 @@
       </div>
     </div>
   </div>
-  <div appGiveMaxHeight [anotherItemsHeight]="height" class="bg-white w-full rounded-lg overflow-auto">
+  <div appGiveMaxHeight [anotherItemsHeight]="height" class="bg-white relative w-full rounded-lg overflow-auto">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
       <tr class="whitespace-nowrap bg-white">
@@ -68,26 +68,40 @@
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
-      <tr *ngFor="let transporter of transporterList">
-        <td class="whitespace-nowrap">
-          <div class="flex items-center space-x-4">
-            <div class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
-              <span class="text-white font-bold capitalize">{{transporter.name[0]}}</span>
+      <ng-container *ngIf="!loading">
+        <tr *ngFor="let transporter of transporterList">
+          <td class="whitespace-nowrap">
+            <div class="flex items-center space-x-4">
+              <div class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
+                <span class="text-white font-bold capitalize">{{transporter.name[0]}}</span>
+              </div>
+              <span class="flex-1">{{transporter.name}}</span>
             </div>
-            <span class="flex-1">{{transporter.name}}</span>
-          </div>
-        </td>
-        <td>{{transporter.phone}}</td>
-        <td></td>
-        <td></td>
-        <td>
-          <i class="fas fa-ellipsis-v"></i>
-        </td>
-      </tr>
+          </td>
+          <td>{{transporter.phone}}</td>
+          <td></td>
+          <td></td>
+          <td>
+            <i class="fas fa-ellipsis-v"></i>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <tr *ngIf="transporterList.length === 0">
+          <td class="text-center" colspan="5">No data found</td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" colspan="5">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
       </tbody>
     </table>
   </div>
 </div>
 <app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
-  <app-transporter-add (formCreated)="isOpen = !$event"></app-transporter-add>
+  <app-transporter-add (formCreated)="onClickTransporter($event)"></app-transporter-add>
 </app-create-popup>

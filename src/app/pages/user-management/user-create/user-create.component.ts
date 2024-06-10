@@ -31,6 +31,7 @@ export class UserCreateComponent implements OnInit {
   roleOpened: boolean = false;
   userModel: UserModel = new UserModel();
 
+
   constructor(private service: UserService, private fb: FormBuilder, private toastr: ToastrService) {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
@@ -44,12 +45,17 @@ export class UserCreateComponent implements OnInit {
   onSave() {
     if (this.userForm.valid) {
       this.userModel.name = this.userForm.get('name').value;
-      this.userModel.phone = this.userForm.get('phone').value;
+      this.userModel.mobile = this.userForm.get('phone').value;
       this.userModel.email = this.userForm.get('email').value;
       this.userModel.role = this.userForm.get('role').value;
+      this.userModel.designation = this.userForm.get('designation').value;
       this.service.addUser(this.userModel).subscribe((res:any) => {
         this.formCreated.emit(true);
-        this.toastr.success('User Created Successfully');
+        if (res.status === 201) {
+          this.toastr.success('User created successfully');
+        } else {
+          this.toastr.error(res.message);
+        }
       });
     }
   }

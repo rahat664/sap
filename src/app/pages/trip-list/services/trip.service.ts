@@ -64,4 +64,11 @@ export class TripService {
     }),
     catchError(this.handleError));
   }
+
+  getSummary(): Observable<any> {
+    return this.http.get<ApiResponse>(this.url + '/summary').pipe(map((response) => {
+      return response.data;
+    }),
+    catchError(this.handleError));
+  }
 }

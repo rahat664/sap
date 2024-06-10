@@ -23,20 +23,28 @@ export class FileUploadPopupComponent {
   fileInputPlaceholder: string = '';
   fileOpened: boolean;
   @Input() isUploadIconEnabled: boolean = true;
-  @Input() padding: string= '4';
+  @Input() padding: string = '4';
   @Output() fileInput: EventEmitter<any> = new EventEmitter<any>();
   fileArray: any[] = [];
+  callFromModal: boolean;
+  @Input() isExpiryAvailable!: boolean;
+
   constructor() {
     this.fileArray = [];
   }
+
   onFileDropped(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     if (event.dataTransfer && event.dataTransfer.files.length) {
       const file = event.dataTransfer.files[0];
-      this.previewFile(file);
+      if (file) {
+        this.previewFile(file);
+      }
+
     }
   }
+
   onDragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -50,26 +58,33 @@ export class FileUploadPopupComponent {
   onSelectFileType($event: number, i: number) {
     this.fileInputPlaceholder = this.fileTypeOptions.find(option => option.id === $event).value;
     this.fileArray[i].registrationType = this.fileInputPlaceholder;
+    this.fileInput.emit(this.fileArray);
   }
 
   onClickFileType($event: boolean, i: number) {
     this.fileArray[i].fileOpened = $event;
   }
+
   onSubmit() {
-    this.fileInput.emit(this.fileArray);
-    this.filePreview = null;
   }
 
   previewFile(file: File) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      this.filePreview = reader.result;
-      this.fileArray.push({file: file, preview: this.filePreview, registrationType: null, registrationExpireDate: null , fileOpened: false});
+      this.fileArray.push({
+        file: file,
+        preview: reader.result,
+        registrationType: null,
+        registrationExpireDate: null,
+        fileOpened: false
+      });
+      this.fileInput.emit(this.fileArray);
     };
   }
 
   onFileChange($event: any) {
+    this.isExpiryAvailable = false;
     if ($event.target.files.length > 0) {
       const file = $event.target.files[0];
       if (file) {
@@ -81,5 +96,6 @@ export class FileUploadPopupComponent {
 
   onDateChange($event: Event, i: number) {
     this.fileArray[i].registrationExpireDate = ($event.target as HTMLInputElement).value;
+    this.fileInput.emit(this.fileArray);
   }
 }

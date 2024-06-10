@@ -48,7 +48,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
     if (this.customerForm.valid) {
       this.customerModel.name = this.customerForm.get('name').value;
       this.customerModel.customerCode = this.customerForm.get('code').value;
-      this.customerModel.contact_person = this.customerForm.get('contactPerson').value;
+      this.customerModel.contactPerson = this.customerForm.get('contactPerson').value;
       this.customerModel.phone = this.customerForm.get('phone').value;
       this.customerModel.email = this.customerForm.get('email').value;
       this.customerModel.address = this.customerForm.get('address').value;

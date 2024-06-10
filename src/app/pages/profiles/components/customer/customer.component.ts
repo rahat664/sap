@@ -9,6 +9,7 @@ import {GetElementHeightDirective} from "../../../../shared/directive/get-elemen
 import {CustomerService} from "../../services/customer.service";
 import {CustomInputComponent} from "../../../../shared/modules/custom-input/custom-input.component";
 import {GetClickEventDirective} from "../../../../shared/directive/get-click-event.directive";
+import {LoadingComponent} from "../../../../shared/modules/loading/loading.component";
 
 @Component({
   selector: 'app-customer',
@@ -20,7 +21,8 @@ import {GetClickEventDirective} from "../../../../shared/directive/get-click-eve
     GiveMaxHeightDirective,
     GetElementHeightDirective,
     CustomInputComponent,
-    GetClickEventDirective
+    GetClickEventDirective,
+    LoadingComponent
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss'
@@ -32,14 +34,17 @@ export class CustomerComponent implements OnInit{
   filterOpened: boolean;
   statusFilter: number = 0;
   roleFilter: number = 0;
+  loading: boolean;
   constructor(private service: CustomerService) { }
   ngOnInit(): void {
     this.getCustomer();
   }
 
   getCustomer() {
+    this.loading = true;
     this.service.getCustomer().subscribe((res: any) => {
       this.customers = res.data
+      this.loading = false;
     });
   }
 
@@ -53,5 +58,11 @@ export class CustomerComponent implements OnInit{
 
   onClearFilter() {
 
+  }
+
+  onCreateCustomer($event: boolean) {
+    this.isOpen = !$event;
+    this.customers = [];
+    this.getCustomer();
   }
 }
