@@ -5,7 +5,7 @@ import {Directive, ElementRef, EventEmitter, HostListener, Output} from '@angula
   standalone: true
 })
 export class GetOutsideModalClickDirective {
-  @Output() clickOutside = new EventEmitter<void>(false);
+  @Output() clickOutside = new EventEmitter<boolean>(false);
 
   constructor(private elementRef: ElementRef) {}
 
