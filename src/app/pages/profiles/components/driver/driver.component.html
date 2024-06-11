@@ -14,7 +14,7 @@
         <button routerLink="/profile/driver/add"
                 class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
           <i class="fas fa-plus-circle"></i>
-          <span class="hidden lg:block">Add Driver</span>
+          <span class="hidden lg:block">Add New Driver</span>
         </button>
       </div>
     </div>
@@ -29,7 +29,7 @@
         <th class="text-center">Driving License</th>
         <th class="text-center">National ID</th>
         <th class="text-left">Status</th>
-        <th style="width: 5%"></th>
+<!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
         <th class="border" colspan="7"></th>
@@ -54,7 +54,7 @@
           <td class="whitespace-nowrap">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="driver.driverFilesUrls?.drivingLicenseBack || driver.driverFilesUrls?.drivingLicenseFront" class="fas fa-check text-green"></i>
-              <app-upload-button (click)="isOpen = true"
+              <app-upload-button (click)="onClickLicenseUpload(driver)"
                                  *ngIf="!driver.driverFilesUrls?.drivingLicenseBack && ! driver.driverFilesUrls?.drivingLicenseFront"
                                  icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
@@ -63,24 +63,24 @@
           <td class="whitespace-nowrap">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="driver.driverFilesUrls?.nidFront || driver.driverFilesUrls?.nidBack" class="fas fa-check text-green"></i>
-              <app-upload-button *ngIf="!driver.driverFilesUrls?.nidBack && !driver.driverFilesUrls?.nidFront" icon="upload" [file]="true"
+              <app-upload-button (click)="onClickNidUpload(driver)" *ngIf="!driver.driverFilesUrls?.nidBack && !driver.driverFilesUrls?.nidFront" icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap"><span class="text-red">Pending</span></td>
-          <td>
-            <i class="fas fa-ellipsis-v"></i>
-          </td>
+<!--          <td>-->
+<!--            <i class="fas fa-ellipsis-v"></i>-->
+<!--          </td>-->
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="driverList.length === 0">
-          <td class="text-center" colspan="7">No data found</td>
+          <td class="text-center" colspan="6">No data found</td>
         </tr>
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="7">
+          <td class="h-full" colspan="6">
             <app-loading></app-loading>
           </td>
         </tr>
@@ -89,6 +89,6 @@
     </table>
   </div>
 </div>
-<app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
-  <app-file-upload-popup></app-file-upload-popup>
+<app-create-popup (isModalClosed)="isOpen = !$event; isNewOpen = !$event" [isOpen]="isOpen">
+  <app-file-upload-popup [singleDriver]="singleDriver"  [callFromModal]="true" [isNewOpen]="isNewOpen" [fileTypeOptions]="newDriverFileType" [isFromDriver]="true"></app-file-upload-popup>
 </app-create-popup>

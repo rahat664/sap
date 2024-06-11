@@ -13,10 +13,18 @@ export class UserService {
   constructor(private http: HttpClient) {
   }
 
-  getUser(role?: string) {
+  getUser(role?: string, status?: string) {
     if (role) {
       return this.http.get(
         `${this.url}?role=${role}`
+      )
+    } else if (status) {
+      return this.http.get(
+        `${this.url}?status=${status}`
+      )
+    } else if (role && status) {
+      return this.http.get(
+        `${this.url}?role=${role}&status=${status}`
       )
     } else {
       return this.http.get(

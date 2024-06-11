@@ -9,6 +9,11 @@ import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 import {TruckService} from "../../truck/services/truck.service";
 import {UserService} from "../../../services/user.service";
+import {CreatePopupComponent} from "../../../../../shared/modal/create-popup/create-popup.component";
+import {FileUploadPopupComponent} from "../../truck/file-upload-popup/file-upload-popup.component";
+import {driverFileType} from "../../customer/model/driver-file-type";
+import {identity} from "rxjs";
+import {DriverEditSharedService} from "../../../services/driver-edit-shared.service";
 
 @Component({
   selector: 'app-driver-details',
@@ -20,7 +25,9 @@ import {UserService} from "../../../services/user.service";
     UploadButtonComponent,
     NgClass,
     NgForOf,
-    FormsModule
+    FormsModule,
+    CreatePopupComponent,
+    FileUploadPopupComponent
   ],
   templateUrl: './driver-details.component.html',
   styleUrl: './driver-details.component.scss'
@@ -32,118 +39,34 @@ export class DriverDetailsComponent {
   driverName: string;
   driverPhone: string;
   private driverUpdateForm: FormGroup;
+  isUploadPopupOpen: boolean;
 
   constructor(
-    private fb: FormBuilder,
-    private service: UserService,
-    private toastr: ToastrService,
-    private router: Router
+    private driverEditSharedService: DriverEditSharedService
   ) {
-    this.driverUpdateForm = this.fb.group({
-      driverId: [''],
-      driverName: [''],
-      driverPhone: [''],
-      nidFront: [null],
-      nidBack: [null],
-      drivingLicenseFront: [null],
-      drivingLicenseBack: [null],
-      other: [null]
-    });
   }
 
   ngOnInit(): void {
+    this.documents= [];
     this.singleDriver = JSON.parse(localStorage.getItem('driver'));
-    this.bindDriverValueWithForm(this.singleDriver);
-    if (this.singleDriver.driverFilesUrls.drivingLicenseFront) {
-      this.documents.push({
-        name: 'Driving License Front',
-        url: this.singleDriver.driverFilesUrls.drivingLicenseFront
-      });
-    }
-    if (this.singleDriver.driverFilesUrls.drivingLicenseBack) {
-      this.documents.push({
-        name: 'Driving License Back',
-        url: this.singleDriver.driverFilesUrls.drivingLicenseBack
-      });
-    }
-    if (this.singleDriver.driverFilesUrls.nidFront) {
-      this.documents.push({
-        name: 'NID Front',
-        url: this.singleDriver.driverFilesUrls.nidFront
-      });
-    }
-    if (this.singleDriver.driverFilesUrls.nidBack) {
-      this.documents.push({
-        name: 'NID Back',
-        url: this.singleDriver.driverFilesUrls.nidBack
-      });
-    }
-    if (this.singleDriver.driverFilesUrls.other) {
-      this.documents.push({
-        name: 'Other',
-        url: this.singleDriver.driverFilesUrls.other
-      });
-    }
+    this.driverEditSharedService.bindDriverValueWithForm(this.singleDriver);
+    this.driverEditSharedService.getDocument(this.singleDriver);
+    this.documents = this.driverEditSharedService.documents;
+    this.driverName = this.driverEditSharedService.driverName;
+    this.driverPhone = this.driverEditSharedService.driverPhone;
   }
-
-  private bindDriverValueWithForm(singleDriver: UserModel) {
-    this.driverName = singleDriver.name;
-    this.driverPhone = singleDriver.phone;
-    this.driverUpdateForm.patchValue({
-      driverName: singleDriver.name,
-      driverPhone: singleDriver.phone,
-      driverId: singleDriver.userId
-    });
-    // bind link as a file in the form
-  }
-
-  // fetchFileFromUrl(url: string) {
-  //   this.http.get(url, { responseType: 'blob' }).subscribe(blob => {
-  //     const fileName = url.split('/').pop();
-  //     const file = new File([blob], fileName, { type: blob.type });
-  //
-  //     if (fileInput) {
-  //       fileInput.setValue(file);
-  //     }
-  //   });
-  // }
 
   onDriverUpdate() {
-    this.driverUpdateForm.patchValue({
-      driverName: this.driverName,
-      driverPhone: this.driverPhone
-    });
-    if (this.driverUpdateForm.valid) {
-      const formData = new FormData();
-      const payload: { [key: string]: any } = {};
+    this.driverEditSharedService.onDriverUpdate(this.driverName, this.driverPhone);
+  }
+  protected readonly driverFileType = driverFileType;
 
-// Iterate over form controls
-      Object.keys(this.driverUpdateForm.controls).forEach(key => {
-        const control = this.driverUpdateForm.get(key);
-        const value = control.value;
+  onClickCloseButton(document: any) {
+    this.driverEditSharedService.onClickCloseButton(document);
+    this.documents = this.driverEditSharedService.documents;
+  }
 
-        if (key != 'driverName' && key != 'driverPhone' && key != 'driverId') {
-          if (value) {
-            formData.append(key, value);
-          }
-          // Append file controls directly to the FormData
-        } else {
-          // Add other controls to the payload object
-          payload[key] = value;
-        }
-      });
-      formData.append('payload', JSON.stringify(payload));
-
-      this.service.editDriver(formData).subscribe((res: any) => {
-          // Handle response
-          this.toastr.success('Driver added successfully');
-          this.router.navigate(['/profile/driver']);
-        },
-        error => {
-          // Handle error
-          this.toastr.error('Failed to add truck');
-        }
-      );
-    }
+  onChangeFile($event: any) {
+    this.driverEditSharedService.onChangeFile($event);
   }
 }

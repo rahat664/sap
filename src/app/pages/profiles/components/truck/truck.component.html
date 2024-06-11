@@ -31,10 +31,10 @@
         <th class="text-center">Truck fitness</th>
         <th class="text-center">Route permit</th>
         <th class="text-center">Other Document</th>
-        <th style="width: 5%"></th>
+<!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
-        <th class="border" colspan="9"></th>
+        <th class="border" colspan="8"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -89,19 +89,19 @@
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
-          <td>
-            <i class="fas fa-ellipsis-v"></i>
-          </td>
+<!--          <td>-->
+<!--            <i class="fas fa-ellipsis-v"></i>-->
+<!--          </td>-->
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="truckList.length === 0">
-          <td class="text-center" colspan="9">No data found</td>
+          <td class="text-center" colspan="8">No data found</td>
         </tr>
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="9">
+          <td class="h-full" colspan="8">
             <app-loading></app-loading>
           </td>
         </tr>

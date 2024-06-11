@@ -45,12 +45,19 @@ export class TransporterAddComponent implements OnInit{
       this.transporterModel.note = this.transporterForm.get('note').value;
       this.transporterModel.role = 'Transporter';
       this.service.addUser(this.transporterModel).subscribe(
-        res => {
-          this.toastr.success('Transporter added successfully');
-          this.formCreated.emit(true);
+        (res: any) => {
+          if (res.status == 'OK') {
+            this.toastr.success(res.message);
+            this.formCreated.emit(true);
+            this.transporterForm.reset();
+          } else {
+            this.toastr.error(res.message);
+            this.formCreated.emit(false);
+          }
         },
         error => {
-          this.toastr.error('Failed to add transporter');
+          this.toastr.error('Something went wrong');
+          this.formCreated.emit(false);
         }
       )
     }
@@ -66,5 +73,9 @@ export class TransporterAddComponent implements OnInit{
   onSelectPayment($event: number) {
     // this.transporterForm.get('preferredPaymentMethod').setValue($event);
     this.paymentInputPlaceholder = this.paymentOptionsArray.find(item => item.id === $event).value;
+    this.paymentOpened = false;
+    this.transporterForm.patchValue({
+      preferredPaymentMethod: this.paymentInputPlaceholder
+    });
   }
 }

@@ -79,8 +79,8 @@ export class TripListComponent implements OnInit {
   ngOnInit(): void {
     this.getTripList();
     this.generateDateOptionsArray();
-    this.getTripCount();
     this.getTripSummary();
+    this.getTripCount()
   }
 
   private getTripList() {
@@ -236,5 +236,13 @@ export class TripListComponent implements OnInit {
       this.summary.crs = trip.crs;
       this.summary.gps = trip.gps;
     });
+  }
+
+  getCountOfGp(trip: any) {
+    if (trip.customerRate && trip.transporterRate) {
+      return trip.customerRate - trip.transporterRate;
+    } else {
+      return 'N/A';
+    }
   }
 }

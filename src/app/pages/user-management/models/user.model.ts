@@ -19,8 +19,10 @@ export class UserModel {
     "nidBack": string;
     "nidFront": string;
     "other": string;
-  }
+  };
+  paymentMethod: string;
   designation: string;
   createdOn: string;
+  truckStand: string;
 
 }

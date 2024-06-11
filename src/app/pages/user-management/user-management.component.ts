@@ -71,14 +71,53 @@ export class UserManagementComponent {
     this.roleFilter = 0;
     this.statusInputPlaceholder = '';
     this.roleInputPlaceholder = '';
+    this.statusOptionsArray.forEach((item) => {
+      item.selected = false;
+    });
+    this.roleOptionsArray.forEach((item) => {
+      item.selected = false;
+    });
+    this.Users = [];
+    this.getUserList();
   }
 
   onSelectStatus($event: number) {
     this.statusFilter = 1;
     if ($event === 3) {
       this.statusInputPlaceholder = 'All';
+      this.Users = [];
+      if (this.roleFilter === 0) {
+        this.getUserList();
+      } else {
+        this.service.getUser().subscribe((res: any) => {
+          this.Users = res.data.filter((item) => {
+            return item.roles[0] === this.roleInputPlaceholder;
+          });
+        });
+      }
     } else {
       this.statusInputPlaceholder = this.statusOptionsArray.find((item) => item.id === $event).value;
+      if ($event === 1) {
+        this.service.getUser().subscribe((res: any) => {
+          this.Users = res.data.filter((item) => {
+            if (this.roleFilter === 0) {
+              return item.enabled === true;
+            } else {
+              return item.enabled === true && item.roles[0] === this.roleInputPlaceholder;
+            }
+          });
+        });
+      } else {
+        this.service.getUser().subscribe((res: any) => {
+          this.Users = res.data.filter((item) => {
+            if (this.roleFilter === 0) {
+              return item.enabled === false;
+            } else {
+              return item.enabled === false && item.roles[0] === this.roleInputPlaceholder;
+            }
+          });
+        });
+      }
     }
   }
 
@@ -104,6 +143,34 @@ export class UserManagementComponent {
   onSelectRole($event: number) {
     this.roleInputPlaceholder = this.roleOptionsArray.find((item) => item.id === $event).value;
     this.roleFilter = 1;
+    this.Users = [];
+    if (this.statusFilter === 0) {
+      this.service.getUser().subscribe((res: any) => {
+        this.Users = res.data.filter((item) => {
+          return item.roles[0] === this.roleInputPlaceholder;
+        });
+      });
+    } else {
+      if (this.statusInputPlaceholder === 'All') {
+        this.service.getUser().subscribe((res: any) => {
+          this.Users = res.data.filter((item) => {
+            return item.roles[0] === this.roleInputPlaceholder;
+          });
+        });
+      } else if (this.statusInputPlaceholder === 'Active') {
+        this.service.getUser().subscribe((res: any) => {
+          this.Users = res.data.filter((item) => {
+            return item.enabled === true && item.roles[0] === this.roleInputPlaceholder;
+          });
+        });
+      } else {
+        this.service.getUser().subscribe((res: any) => {
+          this.Users = res.data.filter((item) => {
+            return item.enabled === false && item.roles[0] === this.roleInputPlaceholder;
+          });
+        });
+      }
+    }
   }
 
   onClickAddUser() {

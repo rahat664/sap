@@ -104,7 +104,7 @@
           <td>{{ trip.status }}</td>
           <td>{{ trip.customerRate ? trip.customerRate : 0 }}</td>
           <td>{{ trip.transporterRate ? trip.transporterRate : 0 }}</td>
-          <td>{{ (trip.customerRate ? trip.customerRate : 0) - (trip.transporterRate ? trip.transporterRate : 0) }}</td>
+          <td>{{ getCountOfGp(trip) }}</td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">

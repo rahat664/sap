@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {CustomInputComponent} from "../../../../../shared/modules/custom-input/custom-input.component";
 import {CustomInputSelectModel} from "../../../../../shared/modules/custom-input/custom-input-select.model";
 import {GetClickEventDirective} from "../../../../../shared/directive/get-click-event.directive";
 import {fileUpload} from "../models/file-upload";
 import {CommonModule} from "@angular/common";
+import {DriverEditSharedService} from "../../../services/driver-edit-shared.service";
 
 @Component({
   selector: 'app-file-upload-popup',
@@ -16,7 +17,7 @@ import {CommonModule} from "@angular/common";
   templateUrl: './file-upload-popup.component.html',
   styleUrl: './file-upload-popup.component.scss'
 })
-export class FileUploadPopupComponent {
+export class FileUploadPopupComponent{
   file: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
   @Input() fileTypeOptions: CustomInputSelectModel[] = fileUpload;
@@ -25,14 +26,22 @@ export class FileUploadPopupComponent {
   @Input() isUploadIconEnabled: boolean = true;
   @Input() padding: string = '4';
   @Output() fileInput: EventEmitter<any> = new EventEmitter<any>();
-  fileArray: any[] = [];
-  callFromModal: boolean;
+  @Input() fileArray: any[] = [];
+  @Input() callFromModal: boolean;
   @Input() isExpiryAvailable!: boolean;
+  @Input() isFromDriver!: boolean;
+  @Input() isNewOpen!: any;
+  @Input() singleDriver: any;
 
-  constructor() {
+  constructor(private sharedDriverEditService: DriverEditSharedService) {
     this.fileArray = [];
   }
 
+  ngOnChanges() {
+    if (this.isNewOpen) {
+      this.fileArray = [];
+    }
+  }
   onFileDropped(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -58,14 +67,27 @@ export class FileUploadPopupComponent {
   onSelectFileType($event: number, i: number) {
     this.fileInputPlaceholder = this.fileTypeOptions.find(option => option.id === $event).value;
     this.fileArray[i].registrationType = this.fileInputPlaceholder;
-    this.fileInput.emit(this.fileArray);
+    if (!this.callFromModal) {
+      this.fileInput.emit(this.fileArray);
+    }
   }
 
   onClickFileType($event: boolean, i: number) {
     this.fileArray[i].fileOpened = $event;
   }
 
+  @Output() modalClosed: EventEmitter<any> = new EventEmitter<any>();
+
   onSubmit() {
+    this.sharedDriverEditService.isUploadPopupOpen.next(false);
+    this.fileInput.emit(this.fileArray);
+    if (this.isFromDriver) {
+      this.sharedDriverEditService.getDocument(this.singleDriver);
+      this.sharedDriverEditService.bindDriverValueWithForm(this.singleDriver);
+      this.sharedDriverEditService.onChangeFile(this.fileArray);
+      this.sharedDriverEditService.onDriverUpdate(this.singleDriver.name, this.singleDriver.phone);
+      this.modalClosed.emit(this.sharedDriverEditService.isUploadPopupOpen);
+    }
   }
 
   previewFile(file: File) {
@@ -79,7 +101,9 @@ export class FileUploadPopupComponent {
         registrationExpireDate: null,
         fileOpened: false
       });
-      this.fileInput.emit(this.fileArray);
+      if (!this.callFromModal) {
+        this.fileInput.emit(this.fileArray);
+      }
     };
   }
 
@@ -96,6 +120,8 @@ export class FileUploadPopupComponent {
 
   onDateChange($event: Event, i: number) {
     this.fileArray[i].registrationExpireDate = ($event.target as HTMLInputElement).value;
-    this.fileInput.emit(this.fileArray);
+    if (!this.callFromModal) {
+      this.fileInput.emit(this.fileArray);
+    }
   }
 }

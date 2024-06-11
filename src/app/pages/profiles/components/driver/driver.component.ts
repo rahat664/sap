@@ -11,6 +11,8 @@ import {UploadButtonComponent} from "../../../../shared/modules/upload-button/up
 import {UserModel} from "../../../user-management/models/user.model";
 import {UserService} from "../../services/user.service";
 import {LoadingComponent} from "../../../../shared/modules/loading/loading.component";
+import {driverFileType} from "../customer/model/driver-file-type";
+import {DriverEditSharedService} from "../../services/driver-edit-shared.service";
 
 @Component({
   selector: 'app-driver',
@@ -36,12 +38,14 @@ export class DriverComponent implements OnInit {
   driverList: UserModel[] = [];
   height: string;
   loading: boolean;
+  newDriverFileType: any[];
 
-  constructor(private user: UserService) {
+  constructor(private user: UserService, private sharedService: DriverEditSharedService) {
   }
 
   ngOnInit(): void {
     this.getDriverList();
+    this.makeSureUploadCompletedOrNot();
   }
 
   private getDriverList() {
@@ -57,5 +61,53 @@ export class DriverComponent implements OnInit {
       localStorage.removeItem('driver')
     }
     localStorage.setItem('driver', JSON.stringify(driver));
+  }
+
+  driverFileType = driverFileType;
+  fileArray: any[];
+  isNewOpen: any;
+  singleDriver: any;
+
+  onClickLicenseUpload(driver: UserModel) {
+    this.isNewOpen = true;
+    this.singleDriver = driver;
+    this.isOpen = true;
+    if (localStorage.getItem('driver')) {
+      localStorage.removeItem('driver')
+    }
+    localStorage.setItem('driver', JSON.stringify(driver))
+    const DFT = [];
+    this.driverFileType.filter((item) => {
+        if(item.value.includes('License')) {
+          DFT.push(item);
+        }
+    });
+    this.newDriverFileType = DFT;
+  }
+
+  onClickNidUpload(driver: UserModel) {
+    this.isNewOpen = true;
+    this.singleDriver = driver;
+    this.isOpen = true;
+    if (localStorage.getItem('driver')) {
+      localStorage.removeItem('driver')
+    }
+    localStorage.setItem('driver', JSON.stringify(driver))
+    const DFT = [];
+    this.driverFileType.filter((item) => {
+        if(item.value.includes('NID')) {
+          DFT.push(item);
+        }
+    });
+    this.newDriverFileType = DFT;
+  }
+
+  private makeSureUploadCompletedOrNot() {
+    this.sharedService.completeUpload.subscribe((res: boolean) => {
+      if (res) {
+        this.driverList = [];
+        this.getDriverList();
+      }
+    });
   }
 }

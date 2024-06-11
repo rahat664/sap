@@ -214,6 +214,7 @@ export class TruckAddComponent implements OnInit {
   }
 
   onClickPrehiredChecklist($event: any) {
+    this.prehireCheckListOpened = $event;
     this.singleChecklist = $event;
     this.truckAddForm.patchValue({
       checklist: $event

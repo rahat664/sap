@@ -39,7 +39,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
   ngOnInit(): void {
     this.subs = this.customerForm.get('name').valueChanges.subscribe((value)=> {
       let fourDigitName = ""
-      fourDigitName = value.toString().substring(0,4).toUpperCase()
+      fourDigitName = value?.toString().substring(0,4).toUpperCase()
       this.customerForm.get('code').setValue(fourDigitName)
     })
   }
