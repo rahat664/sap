@@ -80,7 +80,7 @@
           </td>
           <td>{{transporter.phone}}</td>
           <td>{{transporter.truckStand}}</td>
-          <td>{{transporter.paymentMethod}}</td>
+          <td>{{transporter.paymentMethod?.bank_name ? transporter.paymentMethod?.bank_name : 'Cash'}}</td>
 <!--          <td>-->
 <!--            <i class="fas fa-ellipsis-v"></i>-->
 <!--          </td>-->

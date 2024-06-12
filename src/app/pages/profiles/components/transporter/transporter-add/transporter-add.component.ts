@@ -55,16 +55,15 @@ export class TransporterAddComponent implements OnInit{
       this.transporterModel.note = this.transporterForm.get('note').value;
       this.transporterModel.role = 'Transporter';
       this.transporterModel.truckStand = this.transporterForm.get('truckStand').value;
-      this.transporterModel.paymentMethod = this.transporterForm.get('preferredPaymentMethod').value;
-      switch (this.transporterModel.paymentMethod) {
+      this.transporterModel.paymentMethods = this.transporterForm.get('preferredPaymentMethod').value;
+      switch (this.transporterModel.paymentMethods) {
         case 'Bkash':
           this.transporterModel.acc_holder_name = this.transporterForm.get('bkashName').value;
           this.transporterModel.bank_acc_no = this.transporterForm.get('bkashNumber').value;
           this.transporterModel.acc_type = this.transporterForm.get('bkashType').value;
-          this.transporterModel.bank_name = null;
+          this.transporterModel.bank_name = 'Bkash';
           this.transporterModel.branch_name = null;
           this.transporterForm.patchValue({
-            bankName: null,
             bankBranch: null,
             bankAccountName: null,
             bankAccountNumber: null
@@ -86,10 +85,9 @@ export class TransporterAddComponent implements OnInit{
           this.transporterModel.acc_holder_name = null;
           this.transporterModel.bank_acc_no = null;
           this.transporterModel.acc_type = null;
-          this.transporterModel.bank_name = null;
+          this.transporterModel.bank_name = 'Cash';
           this.transporterModel.branch_name = null;
           this.transporterForm.patchValue({
-            bankName: null,
             bankBranch: null,
             bankAccountName: null,
             bankAccountNumber: null,
@@ -111,7 +109,7 @@ export class TransporterAddComponent implements OnInit{
           }
         },
         error => {
-          this.toastr.error('Something went wrong');
+          this.toastr.error(error.error.message);
           this.formCreated.emit(false);
         }
       )

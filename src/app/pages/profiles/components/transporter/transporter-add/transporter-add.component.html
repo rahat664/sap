@@ -37,17 +37,17 @@
                           (selectedId)="onSelectPayment($event)"></app-custom-input>
       </div>
       <ng-container *ngIf="paymentInputPlaceholder == 'Bkash'">
-        <div>
+        <div class="flex flex-col">
           <label for="note">Bkash Account Name</label>
           <input placeholder="Enter Bkash Account Name" class="bg-input rounded-lg  border-none p-4" type="text" id="note"
                  formControlName="bkashName">
         </div>
-        <div>
+        <div class="flex flex-col">
           <label for="note">Bkash Number</label>
           <input placeholder="Enter Bkash number" class="bg-input rounded-lg  border-none p-4" type="text" id="note"
                  formControlName="bkashNumber">
         </div>
-        <div class="flex flex-col lg:col-span-2">
+        <div class="flex flex-col lg:col-span-2" >
           <label for="accountType">Account Type</label>
           <app-custom-input id="accountType" [inputSearch]="bkashPaymentTypePlaceholder"
                             [customOpened]="false"
@@ -58,7 +58,7 @@
                             (selectedId)="onSelectBkashType($event)"></app-custom-input>
         </div>
       </ng-container>
-      <ng-container>
+      <ng-container *ngIf="paymentInputPlaceholder == 'Bank'">
         <div class="flex flex-col">
           <label for="note">Bank Name</label>
           <input placeholder="Enter bank name" class="bg-input rounded-lg  border-none p-4" type="text" id="note"
@@ -82,7 +82,7 @@
       </ng-container>
       <div class="flex flex-col w-full lg:col-span-2">
         <label for="note">Note (Optional)</label>
-        <input placeholder="Enter Designation" class="bg-input rounded-lg  border-none p-4" type="text" id="note"
+        <input placeholder="Enter Note." class="bg-input rounded-lg  border-none p-4" type="text" id="note"
                formControlName="note">
       </div>
       <div class="lg:col-span-2 pb-4">

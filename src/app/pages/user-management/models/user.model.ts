@@ -25,10 +25,17 @@ export class UserModel {
     "nidFront": string;
     "other": string;
   };
-  paymentMethod: string;
+  paymentMethod: {
+    "user_id": string;
+    "bank_name": string;
+    "bank_acc_no": string;
+    "branch_name": string;
+    "acc_holder_name": string;
+  };
   designation: string;
   createdOn: string;
   truckStand: string;
+  paymentMethods: string;
 }
 
 
