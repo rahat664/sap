@@ -44,7 +44,8 @@ export class TransporterAddComponent implements OnInit{
       this.transporterModel.phone = this.transporterForm.get('phone').value;
       this.transporterModel.note = this.transporterForm.get('note').value;
       this.transporterModel.role = 'Transporter';
-      this.service.addUser(this.transporterModel).subscribe(
+      this.transporterModel.truckStand = this.transporterForm.get('truckStand').value;
+      this.service.addUserFromTransport(this.transporterModel).subscribe(
         (res: any) => {
           if (res.status == 'OK') {
             this.toastr.success(res.message);

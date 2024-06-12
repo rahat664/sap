@@ -22,4 +22,20 @@ export class CustomerService {
   customerCodeValidation(code: any) {
     return this.http.get(`${this.url}/validate-customer-code/${code}`)
   }
+
+  searchCustomer(searchValue?: string , phone?: string) {
+    if (searchValue) {
+      return this.http.get(
+        `${this.url}?search=${searchValue}`
+      )
+    } else if (phone) {
+      return this.http.get(
+        `${this.url}?phone=${phone}`
+      )
+    } else {
+      return this.http.get(
+        `${this.url}`
+      )
+    }
+  }
 }

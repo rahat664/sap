@@ -33,6 +33,11 @@ export class UserService {
     }
   }
 
+  addUserFromTransport(body: any) {
+    return this.http.post(`${this.url}`, body, {})
+
+  }
+
   addUser(body: any) {
     return this.http.post(`${this.url}/create`, body, {})
   }

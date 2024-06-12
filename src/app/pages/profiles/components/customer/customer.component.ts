@@ -66,7 +66,31 @@ export class CustomerComponent implements OnInit{
     this.getCustomer();
   }
 
-  onKeyUpSearch($event: KeyboardEvent) {
+  onKeyUpSearch($event: any) {
+    const target = $event.target.value;
+    if (target.length > 0) {
+      this.customers = [];
+      if (target.length == 11) {
+        if (this.checkIfAllInputIsNumber(target)) {
+          this.service.searchCustomer(null,target).subscribe((res: any) => {
+            this.customers = res.data;
+          })
+        } else {
+          this.service.searchCustomer(target, null).subscribe((res: any) => {
+            this.customers = res.data;
+          });
+        }
+      } else {
+        this.service.searchCustomer(target, null).subscribe((res: any) => {
+          this.customers = res.data;
+        });
+      }
+    } else {
+      this.getCustomer();
+    }
+  }
 
+  private checkIfAllInputIsNumber(target: any) {
+    return !isNaN(target);
   }
 }

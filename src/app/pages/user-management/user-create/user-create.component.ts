@@ -51,7 +51,8 @@ export class UserCreateComponent implements OnInit {
       this.userModel.designation = this.userForm.get('designation').value;
       this.service.addUser(this.userModel).subscribe((res:any) => {
         this.formCreated.emit(true);
-        if (res.status === 201) {
+        if (res.status === 'OK') {
+          this.userForm.reset();
           this.toastr.success('User created successfully');
         } else {
           this.toastr.error(res.message);

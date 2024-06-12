@@ -63,9 +63,10 @@ export class SignInComponent implements OnInit{
               if (response.status === 'OK') {
                 this.toaster.success(response.message);
                 localStorage.setItem('accessToken', response.data.accessToken);
-                localStorage.setItem('email', response.email);
-                localStorage.setItem('name', response.name);
-                localStorage.setItem('image', response.image ? response.image : '');
+                localStorage.setItem('email', response.data.email);
+                localStorage.setItem('name', response.data.name);
+                localStorage.setItem('image', response.data.image ? response.data.image : '');
+                localStorage.setItem('role', response.data.roles[0]);
                 this.router.navigate(['trip-list']);
               } else {
                 this.toaster.error(response.message);
