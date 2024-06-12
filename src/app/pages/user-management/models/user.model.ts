@@ -11,6 +11,11 @@ export class UserModel {
   "roles": string;
   "note": string;
   "noOfTrips": number;
+  'bank_name' : string;
+  'bank_acc_no' : string;
+  'branch_name' : string;
+  'acc_holder_name' : string;
+  'acc_type' : string;
   "drivingLicense": any;
   "nationalId": any;
   driverFilesUrls: {

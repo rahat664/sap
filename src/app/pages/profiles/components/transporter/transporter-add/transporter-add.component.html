@@ -36,6 +36,50 @@
                           appGetClickEvent (clickedElement)="onClickPayment($event)"
                           (selectedId)="onSelectPayment($event)"></app-custom-input>
       </div>
+      <ng-container *ngIf="paymentInputPlaceholder == 'Bkash'">
+        <div>
+          <label for="note">Bkash Account Name</label>
+          <input placeholder="Enter Bkash Account Name" class="bg-input rounded-lg  border-none p-4" type="text" id="note"
+                 formControlName="bkashName">
+        </div>
+        <div>
+          <label for="note">Bkash Number</label>
+          <input placeholder="Enter Bkash number" class="bg-input rounded-lg  border-none p-4" type="text" id="note"
+                 formControlName="bkashNumber">
+        </div>
+        <div class="flex flex-col lg:col-span-2">
+          <label for="accountType">Account Type</label>
+          <app-custom-input id="accountType" [inputSearch]="bkashPaymentTypePlaceholder"
+                            [customOpened]="false"
+                            [options]="bkashPaymentMethod"
+                            [itemsOpened]="bkashOpened"
+                            inputPlaceholder="Select Account Type"
+                            appGetClickEvent (clickedElement)="onClickBkashType($event)"
+                            (selectedId)="onSelectBkashType($event)"></app-custom-input>
+        </div>
+      </ng-container>
+      <ng-container>
+        <div class="flex flex-col">
+          <label for="note">Bank Name</label>
+          <input placeholder="Enter bank name" class="bg-input rounded-lg  border-none p-4" type="text" id="note"
+                 formControlName="bankName">
+        </div>
+        <div class="flex flex-col">
+          <label for="note">Bank Branch</label>
+          <input placeholder="Enter bank branch" class="bg-input rounded-lg  border-none p-4" type="text" id="note"
+                 formControlName="bankBranch">
+        </div>
+        <div class="flex flex-col">
+          <label for="note">Bank Account Name</label>
+          <input placeholder="Enter bank account name" class="bg-input rounded-lg  border-none p-4" type="text" id="note"
+                 formControlName="bankAccountName">
+        </div>
+        <div class="flex flex-col">
+          <label for="note">Bank Account No.</label>
+          <input placeholder="Enter bank account no." class="bg-input rounded-lg  border-none p-4" type="text" id="note"
+                 formControlName="bankAccountNumber">
+        </div>
+      </ng-container>
       <div class="flex flex-col w-full lg:col-span-2">
         <label for="note">Note (Optional)</label>
         <input placeholder="Enter Designation" class="bg-input rounded-lg  border-none p-4" type="text" id="note"

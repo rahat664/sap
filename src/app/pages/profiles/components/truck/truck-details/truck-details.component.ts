@@ -4,8 +4,7 @@ import {UploadButtonComponent} from "../../../../../shared/modules/upload-button
 import {manufacturerList} from "../models/manufacturer-list";
 import {CustomInputComponent} from "../../../../../shared/modules/custom-input/custom-input.component";
 import {GetClickEventDirective} from "../../../../../shared/directive/get-click-event.directive";
-import {CustomInputSelectModel} from "../../../../../shared/modules/custom-input/custom-input-select.model";
-import {TruckModel} from "../models/truck.model";
+import {CustomInputSelectModel} from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import {TruckInnerModel} from "../models/truck-inner.model";
 import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {TruckService} from "../services/truck.service";
