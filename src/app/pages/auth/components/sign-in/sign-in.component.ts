@@ -60,8 +60,12 @@ export class SignInComponent implements OnInit{
       this.loginRequestPayload.password = this.password.value;
       this.auth.login(this.loginRequestPayload).subscribe({
         next: (response) => {
-          this.toaster.success('Login Successful');
-          this.router.navigateByUrl('/dashboard');
+          if (response.status === "OK") {
+            this.toaster.success(response.messages);
+            this.router.navigate(['trip-list']);
+          } else {
+            this.toaster.error(response.messages);
+          }
         },
         error: (error) => {
           this.toaster.error(error.message);

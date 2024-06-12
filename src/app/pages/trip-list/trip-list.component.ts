@@ -208,6 +208,9 @@ export class TripListComponent implements OnInit {
       this.status = '';
     }
     this.statusButtons.forEach(x => x.isActive = x.name === tripStatus);
+    this.searchValue = '';
+    this.from = '';
+    this.to = '';
     this.onSearch();
   }
 

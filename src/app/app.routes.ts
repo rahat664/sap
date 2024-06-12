@@ -16,17 +16,20 @@ export const routes: Routes = [
   {
     path: 'trip-list',
     title: 'Trip List',
-    loadComponent: () => import('./pages/trip-list/trip-list.component').then(c => c.TripListComponent)
+    loadComponent: () => import('./pages/trip-list/trip-list.component').then(c => c.TripListComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'user-management',
     title: 'User Management',
-    loadComponent: () => import('./pages/user-management/user-management.component').then(c => c.UserManagementComponent)
+    loadComponent: () => import('./pages/user-management/user-management.component').then(c => c.UserManagementComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'profile',
     title: 'Profile',
-    loadChildren: () => import('./pages/profiles/profile.routes').then(m => m.profileRoutes)
+    loadChildren: () => import('./pages/profiles/profile.routes').then(m => m.profileRoutes),
+    canActivate: [authGuard]
   },
   {
     path: '',

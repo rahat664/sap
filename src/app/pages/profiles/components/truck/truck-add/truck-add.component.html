@@ -93,6 +93,6 @@
     </div>
   </form>
 </div>
-<app-create-popup [isOpen]="prehireCheckListOpened" (close)="prehireCheckListOpened = false">
+<app-create-popup (isModalClosed)="prehireCheckListOpened = $event" [isOpen]="prehireCheckListOpened" (close)="prehireCheckListOpened = false">
   <app-pre-hire-checklist (preHireCheckListObject)="onClickPrehiredChecklist($event)"></app-pre-hire-checklist>
 </app-create-popup>
