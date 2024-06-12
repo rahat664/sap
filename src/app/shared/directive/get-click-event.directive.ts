@@ -1,4 +1,6 @@
 import {Directive, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {DriverEditSharedService} from "../../pages/profiles/services/driver-edit-shared.service";
+import {Subscription} from "rxjs";
 
 @Directive({
   selector: '[appGetClickEvent]',
@@ -9,6 +11,7 @@ export class GetClickEventDirective {
 
   @Output() clickedElement: EventEmitter<boolean> = new EventEmitter();
   elementClicked: boolean = false;
+  private subs: Subscription;
 
   @HostListener('click', ['$event'])
   onClick(event: any) {
@@ -18,7 +21,16 @@ export class GetClickEventDirective {
     }
   }
 
-  constructor(private el: ElementRef) {
+  constructor(private el: ElementRef, private shared: DriverEditSharedService) {
   }
 
+  ngOnInit() {
+    this.subs = this.shared.closeInputSelect.subscribe((data) => {
+      this.elementClicked = data;
+    });
+    console.log(this.elementClicked)
+  }
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 }

@@ -4,6 +4,7 @@ import {DriverEditSharedService} from "../../../pages/profiles/services/driver-e
 import {Subscription} from "rxjs";
 import {GetOutsideModalClickDirective} from "../../directive/get-outside-modal-click.directive";
 
+
 @Component({
   selector: 'app-create-popup',
   standalone: true,
@@ -27,6 +28,10 @@ export class CreatePopupComponent {
     this.isOpen = false;
     this.isModalClosed.emit(true);
   }
+
+  ngOnChanges() {
+    console.log('this.isOpen', this.isOpen)
+  }
   ngOnInit(): void {
      this.subs = this.sharedDriverEditService.isUploadPopupOpen.subscribe((res: any) => {
       this.isOpen = res;
@@ -34,5 +39,13 @@ export class CreatePopupComponent {
   }
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+
+  onClick($event: boolean) {
+    console.log('clicked', $event)
+    if ($event) {
+      this.closeModal();
+    }
   }
 }

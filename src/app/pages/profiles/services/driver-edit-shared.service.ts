@@ -16,6 +16,8 @@ export class DriverEditSharedService{
   driverUpdateForm: FormGroup;
   isUploadPopupOpen: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   completeUpload: BehaviorSubject<any> = new BehaviorSubject<any>(false);
+  closePopup: BehaviorSubject<any> = new BehaviorSubject<any>(false);
+  closeInputSelect: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   constructor(
     private fb: FormBuilder,
     private service: UserService,

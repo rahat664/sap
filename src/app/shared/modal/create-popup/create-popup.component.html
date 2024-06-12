@@ -4,7 +4,7 @@
             class="absolute top-4 right-4 p-1 h-4 w-4 flex items-center justify-center">
       <i class="fal fa-times text-lg"></i>
     </button>
-    <div appGetOutsideModalClick (clickOutside)="isOpen = !$event">
+    <div appGetOutsideModalClick (clickOutside)="onClick($event)">
       <ng-content></ng-content>
     </div>
   </div>

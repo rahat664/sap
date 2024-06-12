@@ -3,6 +3,7 @@ import {CustomInputSelectModel} from "./custom-input-select.model";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {FormsModule} from "@angular/forms";
+import {DriverEditSharedService} from "../../../pages/profiles/services/driver-edit-shared.service";
 
 @Component({
   selector: 'app-custom-input',
@@ -38,6 +39,9 @@ export class CustomInputComponent implements OnInit {
   selectedToYear: number; // Default selected year
   selectedFromMonthInString: string;
   selectedToMonthInString: string;
+
+  constructor(private shared: DriverEditSharedService) {
+  }
 
   onFromMonthChange(month: string) {
     switch (month) {
@@ -184,6 +188,7 @@ export class CustomInputComponent implements OnInit {
     this.selectedId.emit(id);
     this.itemsOpened = id === 99;
     this.isItemsOpened.emit(this.itemsOpened);
+    this.shared.closeInputSelect.next(this.itemsOpened);
   }
 
   onClickApply() {
@@ -192,5 +197,6 @@ export class CustomInputComponent implements OnInit {
     this.selectedFromDateToToDate.emit(`${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`);
     this.customOpened = false;
     this.itemsOpened = false;
+    this.isItemsOpened.emit(this.itemsOpened);
   }
 }
