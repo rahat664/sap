@@ -14,26 +14,7 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { }
 
   login(payload: LoginRequest): Observable<any> {
-
-
-    return this.http.post<ApiResponse>(environment.userUrl + '/auth/login', payload).pipe(map (response => {
-        if(response.statusCode == 200){
-          const loginResponse = response.data;
-          localStorage.setItem('accessToken', loginResponse.accessToken);
-          localStorage.setItem('email', loginResponse.email);
-          localStorage.setItem('name', loginResponse.name);
-          localStorage.setItem('image', loginResponse.image ? loginResponse.image : '');
-          return loginResponse;
-        }
-
-        if(response.statusCode == 400){
-
-          throw new Error(response.message);
-        }
-      }
-    )).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.post<ApiResponse>(environment.userUrl + '/auth/login', payload)
   }
 
   private handleError(error: HttpErrorResponse) {

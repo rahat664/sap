@@ -65,4 +65,8 @@ export class CustomerComponent implements OnInit{
     this.customers = [];
     this.getCustomer();
   }
+
+  onKeyUpSearch($event: KeyboardEvent) {
+
+  }
 }

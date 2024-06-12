@@ -59,13 +59,17 @@ export class SignInComponent implements OnInit{
       this.loginRequestPayload.email = this.email.value;
       this.loginRequestPayload.password = this.password.value;
       this.auth.login(this.loginRequestPayload).subscribe({
-        next: (response) => {
-          if (response.status === "OK") {
-            this.toaster.success(response.messages);
-            this.router.navigate(['trip-list']);
-          } else {
-            this.toaster.error(response.messages);
-          }
+        next: (response: any) => {
+              if (response.status === 'OK') {
+                this.toaster.success(response.message);
+                localStorage.setItem('accessToken', response.data.accessToken);
+                localStorage.setItem('email', response.email);
+                localStorage.setItem('name', response.name);
+                localStorage.setItem('image', response.image ? response.image : '');
+                this.router.navigate(['trip-list']);
+              } else {
+                this.toaster.error(response.message);
+              }
         },
         error: (error) => {
           this.toaster.error(error.message);
