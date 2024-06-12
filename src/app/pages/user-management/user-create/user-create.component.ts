@@ -7,6 +7,7 @@ import {CustomInputComponent} from "../../../shared/modules/custom-input/custom-
 import {GetClickEventDirective} from "../../../shared/directive/get-click-event.directive";
 import {UserModel} from "../models/user.model";
 import {ToastrService} from "ngx-toastr";
+import {roles} from "../models/role-file";
 
 @Component({
   selector: 'app-user-create',
@@ -48,7 +49,7 @@ export class UserCreateComponent implements OnInit {
       this.userModel.mobile = this.userForm.get('phone').value;
       this.userModel.email = this.userForm.get('email').value;
       this.userModel.role = this.userForm.get('role').value;
-      this.userModel.designation = this.userForm.get('designation').value;
+      this.userModel.designation = this.userForm.get('designation').value + '|' + this.roleInputPlaceholder;
       this.service.addUser(this.userModel).subscribe((res:any) => {
         this.formCreated.emit(true);
         if (res.status === 'OK') {
@@ -62,27 +63,29 @@ export class UserCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getRoleList();
+    // this.getRoleList();
   }
 
-  private getRoleList() {
-    this.service.getUserRoles().subscribe((res: any) => {
-      res.data.forEach((role: any) => {
-        this.roleOptionsArray.push({id: role.id, value: role.name, selected: false})
-      })
-    });
-  }
+  // private getRoleList() {
+  //   this.service.getUserRoles().subscribe((res: any) => {
+  //     res.data.forEach((role: any) => {
+  //       this.roleOptionsArray.push({id: role.id, value: role.name, selected: false})
+  //     })
+  //   });
+  // }
 
   onClickRole($event: boolean) {
     this.roleOpened = $event;
   }
 
   onSelectRole($event: number) {
-    this.roleOptionsArray.forEach((role) => {
+    this.roles.forEach((role) => {
       role.selected = role.id === $event;
     });
-    this.roleInputPlaceholder = this.roleOptionsArray.find((role) => role.id === $event).value;
+    this.roleInputPlaceholder = this.roles.find((role) => role.id === $event).value;
     this.roleOpened = false;
-    this.userForm.get('role').setValue(this.roleInputPlaceholder);
+    this.userForm.get('role').setValue('Admin');
   }
+
+  protected readonly roles = roles
 }

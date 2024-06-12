@@ -2,7 +2,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "strict": false,
     "noImplicitOverride": true,
@@ -13,7 +12,6 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "importHelpers": true,
@@ -24,32 +22,6 @@
       "ES2022",
       "dom"
     ],
-    "paths": {
-      "@angular/*": [
-        "node_modules/@angular/*"
-      ],
-      "@app/*": [
-        "src/app/*"
-      ],
-      "@env/*": [
-        "src/environments/*"
-      ],
-      "@core/*": [
-        "src/app/core/*"
-      ],
-      "@shared/*": [
-        "src/app/shared/*"
-      ],
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@modules/*": [
-        "src/app/modules/*"
-      ],
-      "@services/*": [
-        "src/app/services/*"
-      ],
-    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

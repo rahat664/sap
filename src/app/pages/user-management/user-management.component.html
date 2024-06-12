@@ -61,8 +61,8 @@
           <td class="whitespace-nowrap">{{user.name}}</td>
           <td>{{user.phone}}</td>
           <td>{{user.email}}</td>
-          <td>{{user.roles[0]}}</td>
-          <td>{{user.designation}}</td>
+          <td>{{user.designation?.split('|')[1] ? user.designation?.split('|')[1] : user.roles[0]}}</td>
+          <td>{{user.designation?.split('|')[0]}}</td>
           <td>{{user.enabled ? 'Active': 'Inactive'}}</td>
           <td>{{user.createdOn}}</td>
 <!--          <td>-->

@@ -29,5 +29,7 @@ export class UserModel {
   designation: string;
   createdOn: string;
   truckStand: string;
-
 }
+
+
+

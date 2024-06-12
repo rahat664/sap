@@ -7,10 +7,10 @@ import {GetClickEventDirective} from "../../shared/directive/get-click-event.dir
 import {UserService} from "../profiles/services/user.service";
 import {GiveMaxHeightDirective} from "../../shared/directive/give-max-height.directive";
 import {GetElementHeightDirective} from "../../shared/directive/get-element-height.directive";
-import {CreatePopupComponent} from "../../shared/modal/create-popup/create-popup.component";
-import {CustomerCreateComponent} from "../profiles/components/customer/customer-create/customer-create.component";
 import {UserModel} from "./models/user.model";
 import {UserCreateComponent} from "./user-create/user-create.component";
+import {roles} from "./models/role-file";
+import {CreatePopupComponent} from "../../shared/modal/create-popup/create-popup.component";
 import {LoadingComponent} from "../../shared/modules/loading/loading.component";
 
 @Component({
@@ -43,7 +43,7 @@ export class UserManagementComponent {
     {id: 2, value: 'Inactive', selected: false},
     {id: 3, value: 'All', selected: true}
   ];
-  roleOptionsArray: CustomInputSelectModel[] = []
+  roleOptionsArray: CustomInputSelectModel[] = roles;
   statusOpened: boolean = false;
   roleOpened: boolean = false;
   height: string = '0px';
@@ -58,7 +58,6 @@ export class UserManagementComponent {
   }
 
   ngOnInit() {
-    this.getUserRoles();
     this.getUserList();
   }
 
@@ -81,6 +80,8 @@ export class UserManagementComponent {
     this.getUserList();
   }
 
+  // TODO: 'Have to fix the issue with the status filter'
+
   onSelectStatus($event: number) {
     this.statusFilter = 1;
     if ($event === 3) {
@@ -91,7 +92,7 @@ export class UserManagementComponent {
       } else {
         this.service.getUser().subscribe((res: any) => {
           this.Users = res.data.filter((item) => {
-            return item.roles[0] === this.roleInputPlaceholder;
+            return item.designation?.split('|')[1] === this.roleInputPlaceholder;
           });
         });
       }
@@ -133,12 +134,15 @@ export class UserManagementComponent {
   }
 
   private getUserRoles() {
-    this.service.getUserRoles().subscribe((res: any) => {
-      res.data.forEach((item: { id: any; name: any; }) => {
-        this.roleOptionsArray.push({id: item.id, value: item.name, selected: false})
-      })
-    })
+    // this.service.getUserRoles().subscribe((res: any) => {
+    //   res.data.forEach((item: { id: any; name: any; }) => {
+    //     this.roleOptionsArray.push({id: item.id, value: item.name, selected: false})
+    //   })
+    // })
+
   }
+
+  // TODO: 'Have to fix the issue with the role filter'
 
   onSelectRole($event: number) {
     this.roleInputPlaceholder = this.roleOptionsArray.find((item) => item.id === $event).value;
@@ -147,14 +151,14 @@ export class UserManagementComponent {
     if (this.statusFilter === 0) {
       this.service.getUser().subscribe((res: any) => {
         this.Users = res.data.filter((item) => {
-          return item.roles[0] === this.roleInputPlaceholder;
+          return item.designation?.split('|')[1] === this.roleInputPlaceholder;
         });
       });
     } else {
       if (this.statusInputPlaceholder === 'All') {
         this.service.getUser().subscribe((res: any) => {
           this.Users = res.data.filter((item) => {
-            return item.roles[0] === this.roleInputPlaceholder;
+            return item.designation?.split('|')[1] === this.roleInputPlaceholder;
           });
         });
       } else if (this.statusInputPlaceholder === 'Active') {
