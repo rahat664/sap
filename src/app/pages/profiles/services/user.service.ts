@@ -55,4 +55,10 @@ export class UserService {
   editDriver(body: any) {
     return this.http.put(`${this.url}/edit-driver`, body, {})
   }
+
+  getDriver() {
+    return this.http.get(
+      `${this.url}/drivers`
+    )
+  }
 }

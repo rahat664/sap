@@ -137,34 +137,34 @@ export class DriverEditSharedService {
 
   getDocument(singleDriver: UserModel) {
     this.documents = [];
-    if (singleDriver.driverFilesUrls.drivingLicenseFront) {
+    if (singleDriver.driverFilesUrls?.drivingLicenseFront) {
       this.documents.push({
         name: 'Driving License Front',
-        url: singleDriver.driverFilesUrls.drivingLicenseFront
+        url: singleDriver.driverFilesUrls?.drivingLicenseFront
       });
     }
-    if (singleDriver.driverFilesUrls.drivingLicenseBack) {
+    if (singleDriver.driverFilesUrls?.drivingLicenseBack) {
       this.documents.push({
         name: 'Driving License Back',
-        url: singleDriver.driverFilesUrls.drivingLicenseBack
+        url: singleDriver.driverFilesUrls?.drivingLicenseBack
       });
     }
-    if (singleDriver.driverFilesUrls.nidFront) {
+    if (singleDriver.driverFilesUrls?.nidFront) {
       this.documents.push({
         name: 'NID Front',
-        url: singleDriver.driverFilesUrls.nidFront
+        url: singleDriver.driverFilesUrls?.nidFront
       });
     }
-    if (singleDriver.driverFilesUrls.nidBack) {
+    if (singleDriver.driverFilesUrls?.nidBack) {
       this.documents.push({
         name: 'NID Back',
-        url: singleDriver.driverFilesUrls.nidBack
+        url: singleDriver.driverFilesUrls?.nidBack
       });
     }
-    if (singleDriver.driverFilesUrls.other) {
+    if (singleDriver.driverFilesUrls?.other) {
       this.documents.push({
         name: 'Other',
-        url: singleDriver.driverFilesUrls.other
+        url: singleDriver.driverFilesUrls?.other
       });
     }
     return this.documents;
