@@ -36,10 +36,10 @@ export class UserCreateComponent implements OnInit {
   constructor(private service: UserService, private fb: FormBuilder, private toastr: ToastrService) {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
-      phone: ['', Validators.required],
-      email: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(11), Validators.maxLength(11)]],
+      email: ['', [Validators.required, Validators.email]],
       designation: [''],
-      role: ['', Validators.required],
+      role: ['', [Validators.required]],
     });
   }
 

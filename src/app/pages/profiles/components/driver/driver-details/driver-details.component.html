@@ -74,7 +74,7 @@
             </div>
             <div class="flex space-y-1 flex-col">
               <span class="text-web-text-secondary font-semibold">{{ document.name }}</span>
-              <span class="text-web-text-secondary">Exp: {{document.expDate ? document.expDate : 'N/A'}}</span>
+              <span class="text-web-text-secondary">Exp: {{document.expDate ? (document.expDate | date : 'dd MMM yyyy') : 'N/A'}}</span>
             </div>
           </div>
         </ng-container>

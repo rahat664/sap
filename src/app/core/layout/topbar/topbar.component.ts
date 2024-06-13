@@ -4,6 +4,7 @@ import {ToggleResponsiveService} from "../../../shared/services/toggle-responsiv
 import {AuthService} from "../../../pages/auth/services/auth.service";
 import {TripService} from "../../../pages/trip-list/services/trip.service";
 import {ImagePipe} from "../../../shared/pipes/image.pipe";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-topbar',
@@ -11,7 +12,8 @@ import {ImagePipe} from "../../../shared/pipes/image.pipe";
   imports: [
     NgOptimizedImage,
     CommonModule,
-    ImagePipe
+    ImagePipe,
+    RouterLink
   ],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss'

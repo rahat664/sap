@@ -32,6 +32,8 @@ export class FileUploadPopupComponent{
   @Input() isFromDriver!: boolean;
   @Input() isNewOpen!: any;
   @Input() singleDriver: any;
+  @Input() singleTruck: any;
+  @Input() isFromTruck!: boolean;
 
   constructor(private sharedDriverEditService: DriverEditSharedService) {
     this.fileArray = [];
@@ -86,6 +88,12 @@ export class FileUploadPopupComponent{
       this.sharedDriverEditService.bindDriverValueWithForm(this.singleDriver);
       this.sharedDriverEditService.onChangeFile(this.fileArray);
       this.sharedDriverEditService.onDriverUpdate(this.singleDriver.name, this.singleDriver.phone);
+      this.modalClosed.emit(this.sharedDriverEditService.isUploadPopupOpen);
+    } else if (this.isFromTruck) {
+      this.sharedDriverEditService.getTruckDocument(this.singleTruck);
+      this.sharedDriverEditService.bindTruckValueWithForm(this.singleTruck);
+      this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
+      this.sharedDriverEditService.onTruckUpdate();
       this.modalClosed.emit(this.sharedDriverEditService.isUploadPopupOpen);
     }
   }

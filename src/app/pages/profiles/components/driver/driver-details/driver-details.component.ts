@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {CustomInputComponent} from "../../../../../shared/modules/custom-input/custom-input.component";
 import {GetClickEventDirective} from "../../../../../shared/directive/get-click-event.directive";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
+import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {UploadButtonComponent} from "../../../../../shared/modules/upload-button/upload-button.component";
 import {UserModel} from "../../../../user-management/models/user.model";
 import {FormBuilder, FormGroup, FormsModule} from "@angular/forms";
@@ -18,17 +18,18 @@ import {DriverEditSharedService} from "../../../services/driver-edit-shared.serv
 @Component({
   selector: 'app-driver-details',
   standalone: true,
-  imports: [
-    CustomInputComponent,
-    GetClickEventDirective,
-    NgIf,
-    UploadButtonComponent,
-    NgClass,
-    NgForOf,
-    FormsModule,
-    CreatePopupComponent,
-    FileUploadPopupComponent
-  ],
+    imports: [
+        CustomInputComponent,
+        GetClickEventDirective,
+        NgIf,
+        UploadButtonComponent,
+        NgClass,
+        NgForOf,
+        FormsModule,
+        CreatePopupComponent,
+        FileUploadPopupComponent,
+        DatePipe
+    ],
   templateUrl: './driver-details.component.html',
   styleUrl: './driver-details.component.scss'
 })

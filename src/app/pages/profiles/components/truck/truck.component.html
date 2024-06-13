@@ -30,11 +30,13 @@
         <th class="text-center">Registration</th>
         <th class="text-center">Truck fitness</th>
         <th class="text-center">Route permit</th>
+        <th class="text-center">Case</th>
+        <th class="text-center">Tax</th>
         <th class="text-center">Other Document</th>
 <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
-        <th class="border" colspan="8"></th>
+        <th class="border" colspan="10"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -64,31 +66,46 @@
           <td class="whitespace-nowrap">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="truck.regPaperFile" class="fas fa-check text-green"></i>
-              <app-upload-button (click)="isOpen = true" *ngIf="!truck.regPaperFile" icon="upload" [file]="true"
+              <app-upload-button (click)="onClickUpdate('reg', truck)" *ngIf="!truck.regPaperFile" icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="truck.fitnessFile" class="fas fa-check text-green"></i>
-              <app-upload-button *ngIf="!truck.fitnessFile" icon="upload" [file]="true"
+              <app-upload-button (click)="onClickUpdate('fit',truck)" *ngIf="!truck.fitnessFile" icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="truck.routePermitFile" class="fas fa-check text-green"></i>
-              <app-upload-button *ngIf="!truck.routePermitFile" icon="upload" [file]="true"
+              <app-upload-button (click)="onClickUpdate('route',truck)" *ngIf="!truck.routePermitFile" icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap">
             <div class="flex items-center justify-center h-full">
-              <i *ngIf="truck.otherFile || truck.taxFile || truck.caseFile" class="fas fa-check text-green"></i>
-              <app-upload-button *ngIf="!truck.otherFile && !truck.taxFile && !truck.caseFile" icon="upload" [file]="true"
+              <i *ngIf="truck.caseFile" class="fas fa-check text-green"></i>
+              <app-upload-button (click)="onClickUpdate('case',truck)" *ngIf="!truck.caseFile" icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
+          <td class="whitespace-nowrap">
+            <div class="flex items-center justify-center h-full">
+              <i *ngIf="truck.taxFile" class="fas fa-check text-green"></i>
+              <app-upload-button (click)="onClickUpdate('tax',truck)" *ngIf="!truck.taxFile" icon="upload" [file]="true"
+                                 buttonText="Upload"></app-upload-button>
+            </div>
+          </td>
+          <td class="whitespace-nowrap">
+            <div class="flex items-center justify-center h-full">
+              <i *ngIf="truck.otherFile" class="fas fa-check text-green"></i>
+              <app-upload-button (click)="onClickUpdate('other',truck)" *ngIf="!truck.otherFile" icon="upload" [file]="true"
+                                 buttonText="Upload"></app-upload-button>
+            </div>
+          </td>
+
 <!--          <td>-->
 <!--            <i class="fas fa-ellipsis-v"></i>-->
 <!--          </td>-->
@@ -96,12 +113,12 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="truckList.length === 0">
-          <td class="text-center" colspan="8">No data found</td>
+          <td class="text-center" colspan="10">No data found</td>
         </tr>
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="8">
+          <td class="h-full" colspan="10">
             <app-loading></app-loading>
           </td>
         </tr>
@@ -140,6 +157,6 @@
     </table>
   </div>
 </div>
-<app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
-  <app-file-upload-popup></app-file-upload-popup>
+<app-create-popup (isModalClosed)="isOpen = !$event; isNewOpen = !$event" [isOpen]="isOpen">
+  <app-file-upload-popup [singleTruck]="singleTruck"  [callFromModal]="true" [isNewOpen]="isNewOpen" [fileTypeOptions]="newDriverFileType" [isFromTruck]="true"></app-file-upload-popup>
 </app-create-popup>

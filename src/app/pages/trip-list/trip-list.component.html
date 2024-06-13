@@ -27,7 +27,7 @@
               <li *ngFor="let result of tripSuggestions"
                   class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                 <a (click)="onClickSearchSuggestion(result)" class="w-full h-full flex justify-between items-center">
-                  <span>{{ result.customerName }}, {{ result.customerPhone }}</span>
+                  <span>{{ result.name }}, {{ result.phone }}</span>
                 </a>
               </li>
             </ul>

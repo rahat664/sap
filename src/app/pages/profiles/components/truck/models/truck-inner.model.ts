@@ -1,28 +1,27 @@
-export class TruckInnerModel {
-  fitnessCertFile: boolean;
+export interface TruckInnerModel {
+  id: number;
+  name: string | null;
+  registration_zone: string;
+  registration_category: string;
+  registration_serial: string;
+  registration_num: string;
+  driver_code: string | null;
+  driver_name: string | null;
+  driver_phone: string | null;
+  helper_code: string | null;
+  helper_name: string | null;
+  helper_phone: string | null;
+  regPaperFile: string | null;
+  fitnessFile: string | null;
+  routePermitFile: string | null;
+  taxFile: string | null;
+  caseFile: string | null;
+  otherFile: string | null;
+  fitnessCertExpDate: string | null;
+  routePermitExpDate: string | null;
+  taxExpDate: string | null;
+  caseExpDate: string | null;
+  preHireCheckList: string | null;
   numberOfTrips: number;
-  tracker: any;
-  id: number
-  name: any
-  registration_zone: string
-  registration_category: string
-  registration_serial: string
-  registration_num: string
-  driver_code: any
-  driver_name: any
-  driver_phone: any
-  helper_code: any
-  helper_name: any
-  helper_phone: any
-  regPaperFile: any
-  fitnessFile: any
-  routePermitFile: any
-  taxFile: any
-  caseFile: any
-  otherFile: any
-  fitnessCertExpDate: any
-  routePermitExpDate: any
-  taxExpDate: any
-  caseExpDate: any
-  preHireCheckList: number;
+  tracker: string | null;
 }

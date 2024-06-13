@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {UploadButtonComponent} from "../../../../../shared/modules/upload-button/upload-button.component";
 import {FileUploadPopupComponent} from "../../truck/file-upload-popup/file-upload-popup.component";
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {driverFileType} from "../../customer/model/driver-file-type";
 import {UserService} from "../../../services/user.service";
@@ -27,13 +27,14 @@ export class DriverAddComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private router: Router, private service: UserService, private toastr: ToastrService) {
     this.driverAddForm=this.fb.group({
-      driverName: [''],
-      driverPhone: [''],
+      driverName: ['', Validators.required],
+      driverPhone: ['',[Validators.required, Validators.pattern('01[3-9][0-9]{8}'), Validators.minLength(11), Validators.maxLength(11)]],
       nidFront: [null],
       nidBack: [null],
       drivingLicenseFront: [null],
       drivingLicenseBack: [null],
-      other: [null]
+      other: [null],
+      drivingLicenseExpiryDate: [null],
     });
   }
 
@@ -92,7 +93,7 @@ export class DriverAddComponent implements OnInit {
         const control = this.driverAddForm.get(key);
         const value = control.value;
 
-        if (key != 'driverName' && key != 'driverPhone'){
+        if (key != 'driverName' && key != 'driverPhone' && key != 'drivingLicenseExpiryDate'){
           if (value) {
             formData.append(key, value);
           }
@@ -106,12 +107,16 @@ export class DriverAddComponent implements OnInit {
 
       this.service.addDriver(formData).subscribe((res: any) => {
           // Handle response
-          this.toastr.success('Driver added successfully');
-          this.router.navigate(['/profile/driver']);
+          if (res.status == "OK") {
+            this.toastr.success(res.message);
+            this.router.navigate(['/profiles/driver']);
+          } else {
+            this.toastr.error(res.message);
+          }
         },
         error => {
           // Handle error
-          this.toastr.error('Failed to add truck');
+          this.toastr.error(error.error.message)
         }
       );
     }

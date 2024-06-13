@@ -29,11 +29,17 @@
         <label for="phone">Mobile</label>
         <input placeholder="Enter Mobile Number" class="bg-input rounded-lg  border-none p-4" type="text" id="phone" formControlName="phone">
 <!--        error-message-->
-        <div *ngIf="customerForm.get('phone').invalid && customerForm.get('phone').touched" class="text-red text-xs">Mobile number is required</div>
+        <div *ngIf="customerForm.get('phone').dirty" class="text-red text-xs">
+          <span>{{getErrorMessage()}}</span>
+        </div>
       </div>
       <div class="flex flex-col w-full">
         <label for="email">Email (Optional)</label>
         <input placeholder="Enter Email" class="bg-input rounded-lg  border-none p-4" type="email" id="email" formControlName="email">
+<!--        error-message-->
+        <div *ngIf="customerForm.get('email').dirty" class="text-red text-xs">
+          <span>{{getErrorMessage()}}</span>
+        </div>
       </div>
       <div class="flex flex-col w-full lg:col-span-2">
         <label for="address">Address (Optional)</label>

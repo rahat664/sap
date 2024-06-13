@@ -13,6 +13,7 @@ import {GiveMaxHeightDirective} from "../../shared/directive/give-max-height.dir
 import {GetClickEventDirective} from "../../shared/directive/get-click-event.directive";
 import {statusButtons} from "./models/status-buttons";
 import {LoadingComponent} from "../../shared/modules/loading/loading.component";
+import {CustomerService} from "../profiles/services/customer.service";
 
 @Component({
   selector: 'app-trip-list',
@@ -68,7 +69,12 @@ export class TripListComponent implements OnInit {
   dateOpened: boolean = false;
   loading: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private service: TripService, private datePipe: DatePipe) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private service: TripService,
+    private datePipe: DatePipe,
+    private customer: CustomerService
+    ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
       startDate: [''],
@@ -155,8 +161,9 @@ export class TripListComponent implements OnInit {
 
   onKeyUpSearch($event: any) {
     if ($event.target.value.length > 0) {
-      this.service.getTripSuggestions($event.target.value).subscribe((trip: any) => {
-        this.tripSuggestions = trip;
+      this.tripSuggestions = [];
+      this.customer.searchCustomer($event.target.value, null).subscribe((company: any) => {
+        this.tripSuggestions = company.data;
         this.isSearchedMenuOpened = true;
         this.searchFilter = 1;
       });
@@ -180,8 +187,8 @@ export class TripListComponent implements OnInit {
   }
 
   onClickSearchSuggestion(result: any) {
-    this.searchValue = result.tripId.toLowerCase();
-    this.searchName = result.customerName
+    this.searchValue = result.customerCode.toLowerCase();
+    this.searchName = result.name;
     this.tripSuggestions = [];
     this.isSearchedMenuOpened = false;
     this.onSearch();

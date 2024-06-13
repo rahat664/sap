@@ -16,6 +16,7 @@ import {manufacturerList} from "./models/manufacturer-list";
 import {FileUploadPopupComponent} from "./file-upload-popup/file-upload-popup.component";
 import {TruckInnerModel} from "./models/truck-inner.model";
 import {LoadingComponent} from "../../../../shared/modules/loading/loading.component";
+import {DriverEditSharedService} from "../../services/driver-edit-shared.service";
 
 @Component({
   selector: 'app-truck',
@@ -49,8 +50,11 @@ export class TruckComponent implements OnInit{
   isOpen: boolean = false;
   preHireCheckList: any[] = [];
   loading: boolean;
+  isNewOpen: boolean;
+  singleTruck: TruckInnerModel;
+  newDriverFileType: CustomInputSelectModel[] = [];
 
-  constructor(private service: TruckService) {
+  constructor(private service: TruckService, private shared: DriverEditSharedService) {
   }
 
 
@@ -62,7 +66,7 @@ export class TruckComponent implements OnInit{
     this.loading = true;
     this.service.getTruckList().subscribe((res: any) => {
       res.data.forEach((truck: TruckModel) => {
-        truck.truck.preHireCheckList = truck.preHireChecklistList;
+        truck.truck.preHireCheckList = String(truck.preHireChecklistList);
         this.truckList.push(truck.truck);
       });
       this.loading = false;
@@ -98,5 +102,45 @@ export class TruckComponent implements OnInit{
   onClickTruckDetails(truck: TruckInnerModel) {
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
+  }
+
+  onClickUpdate(fit: string, truck: TruckInnerModel) {
+    this.isNewOpen = true;
+    this.singleTruck = truck;
+    this.isOpen = true;
+    if (fit == 'fit') {
+      this.newDriverFileType = [
+        {id: 2, value: 'Fitness', selected: false}
+      ]
+    } if (fit == 'reg') {
+      this.newDriverFileType = [
+        {id: 1, value: 'Registration Paper', selected: false}
+      ]
+    } if (fit == 'route') {
+      this.newDriverFileType = [
+        {id: 3, value: 'Route Permit', selected: false}
+      ]
+    } if (fit == 'tax') {
+      this.newDriverFileType = [
+        {id: 4, value: 'Tax', selected: false}
+      ]
+    } if (fit == 'case') {
+      this.newDriverFileType = [
+        {id: 5, value: 'Case', selected: false}
+      ]
+    } if (fit == 'other') {
+      this.newDriverFileType = [
+        {id: 6, value: 'Other', selected: false}
+      ]
+    }
+  }
+
+  private makeSureUploadCompletedOrNot() {
+    this.shared.completeTruckUpload.subscribe((res: boolean) => {
+      if (res) {
+        this.truckList = [];
+        this.getTruckList();
+      }
+    });
   }
 }

@@ -19,7 +19,7 @@
         <span class="text-sm font-medium">Drop your image here or <a
           class="text-link cursor-pointer text-decoration-underline">browse</a></span>
       </label>
-      <input type="file" id="file-upload" (change)="onFileChange($event)"  class="hidden w-full">
+      <input type="file" id="file-upload" (change)="onFileChange($event)" class="hidden w-full">
     </div>
   </div>
   <div class="flex flex-col bg-input px-4 py-2 space-y-2 rounded-lg" *ngIf="fileArray.length > 0">
@@ -38,8 +38,10 @@
                             appGetClickEvent (clickedElement)="onClickFileType($event, i)"
                             [itemsOpened]="file.fileOpened"
           ></app-custom-input>
-          <div *ngIf="isExpiryAvailable">
-            <input type="date" (change)="onDateChange($event, i)" placeholder="Expire date " class="border-none bg-white w-full flex-1 rounded-md p-4">
+          <div
+            *ngIf="file.registrationType == 'Case' || file.registrationType == 'Fitness' || file.registrationType == 'Route Permit' || file.registrationType == 'Tax' || file.registrationType == 'Driving License Front'">
+            <input type="date" (change)="onDateChange($event, i)" placeholder="Expire date "
+                   class="border-none bg-white w-full flex-1 rounded-md p-4">
           </div>
         </div>
         <span class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
@@ -48,5 +50,7 @@
       </div>
     </ng-container>
   </div>
-  <button *ngIf="fileArray.length > 0 && callFromModal" (click)="onSubmit()" class="self-end bg-primary text-white rounded-lg px-4 py-2">Upload</button>
+  <button *ngIf="fileArray.length > 0 && callFromModal" (click)="onSubmit()"
+          class="self-end bg-primary text-white rounded-lg px-4 py-2">Upload
+  </button>
 </div>

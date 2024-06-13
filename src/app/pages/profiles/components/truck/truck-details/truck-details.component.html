@@ -1,7 +1,7 @@
 <div class="m-2 bg-white">
   <div class="p-4 border-b-2 border-input flex justify-between items-center">
     <h1 class="text-h1 font-semibold">Truck detail</h1>
-    <div>
+    <div class="flex space-x-3">
       <button (click)="onClickEdit()" *ngIf="!inEditMode"
               class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
         <i class="far fa-pen text-primary"></i>
@@ -9,6 +9,10 @@
       <button (click)="onClickSave()" *ngIf="inEditMode"
               class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
         <span>Update</span>
+      </button>
+      <button (click)="inEditMode = false" *ngIf="inEditMode"
+              class="px-4 py-2 text-blue border border-blue rounded-lg text-center font-semibold">
+        <span>Cancel</span>
       </button>
     </div>
   </div>
@@ -62,7 +66,7 @@
           <div class="flex justify-between items-center">
             <div class="flex space-x-3 items-center text-not-black">
               <img src="assets/svg/list.svg" alt="">
-              <span class="text-not-black font-semibold">Pre hire check list (16/22)</span>
+              <span class="text-not-black font-semibold">Pre hire check list ({{singleTruck.preHireCheckList}}/22)</span>
             </div>
             <a class="text-link">Browse list</a>
           </div>
@@ -111,7 +115,7 @@
             <img src="assets/svg/document.svg" alt="">
             <span>Documents</span>
           </div>
-          <app-upload-button *ngIf="inEditMode" icon="upload" [file]="true"
+          <app-upload-button (click)="isUploadPopupOpen = true" *ngIf="inEditMode" icon="upload" [file]="true"
                              buttonText="Upload"></app-upload-button>
         </div>
         <div class="grid grid-cols-4 gap-3">
@@ -119,16 +123,16 @@
             <div class="w-full flex flex-col space-y-1">
               <div class="p-4 rounded-lg border border-input relative flex items-center justify-center">
                 <div class="h-32 w-32 object-cover object-center">
-                  <img class="w-full h-full" [src]="document.file ? document.file : 'assets/images/dummy.jpg'" alt="">
+                  <img class="w-full h-full" [src]="document.url ? document.url : 'assets/images/dummy.jpg'" alt="">
                 </div>
-                <span *ngIf="inEditMode"
+                <button (click)="onClickClose(document)" *ngIf="inEditMode"
                       class="h-6 w-6 bg-red rounded-full flex justify-center items-center text-white absolute top-2 right-2">
               <i class="fas fa-times"></i>
-            </span>
+            </button>
               </div>
               <div class="flex space-y-1 flex-col">
                 <span class="text-web-text-secondary font-semibold">{{ document.name }}</span>
-                <span class="text-web-text-secondary">Exp: {{ document.expDate ? document.expDate : 'N/A' }}</span>
+                <span class="text-web-text-secondary">Exp: {{ document.expDate ? (document.expDate | date : 'dd MMM yyyy') : 'N/A' }}</span>
               </div>
             </div>
           </ng-container>
@@ -137,3 +141,6 @@
     </div>
   </form>
 </div>
+<app-create-popup [isOpen]="isUploadPopupOpen" (isModalClosed)="isUploadPopupOpen = !$event">
+  <app-file-upload-popup (fileInput)="onAddFile($event)" [callFromModal]="true" ></app-file-upload-popup>
+</app-create-popup>

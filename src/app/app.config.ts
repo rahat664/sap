@@ -16,9 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideToastr({
       positionClass: 'toast-top-right',
       preventDuplicates: true,
-      timeOut: 2000,
-      closeButton: true,
-      progressBar: true
+      timeOut: 2000
     }),
     importProvidersFrom(BrowserAnimationsModule),
     provideAnimations(),

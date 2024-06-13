@@ -36,6 +36,7 @@ export class UserModel {
   createdOn: string;
   truckStand: string;
   paymentMethods: string;
+  drivingLicenseExpiryDate: any;
 }
 
 

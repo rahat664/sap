@@ -8,7 +8,7 @@ import {manufacturerList} from "../models/manufacturer-list";
 import {CustomInputSelectModel} from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import {registrationZoneList} from "../models/registration-zone";
 import {registrationCategoryList} from "../models/registration-category";
-import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {TruckService} from "../services/truck.service";
 import {PreHireChecklistModel} from "../models/pre-hire-checklist.model";
 import {PreHireChecklistComponent} from "../pre-hire-checklist/pre-hire-checklist.component";
@@ -52,20 +52,20 @@ export class TruckAddComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private service: TruckService, private toastr: ToastrService, private router: Router) {
     this.truckAddForm = this.fb.group({
-      registration_zone: [null],
-      registration_category: [null],
-      registration_serial: [null],
-      registration_num: [null],
-      regPaperFile: [null],
-      fitnessCertFile: [null],
+      registration_zone: [null, Validators.required],
+      registration_category: [null, Validators.required],
+      registration_serial: [null, Validators.required],
+      registration_num: [null, Validators.required],
       fitnessCertExpDate: [null],
-      routePermitFile: [null],
       routePermitExpDate: [null],
-      taxFile: [null],
-      taxExpDate: [null],
-      caseFile: [null],
       caseExpDate: [null],
-      otherFile: [null],
+      taxExpDate: [null],
+      regPaperFile: [null],
+      taxFile: [null],
+      fitnessCertificateFile: [null],
+      routePermitFile: [null],
+      casePaperFile: [null],
+      others: [null],
       checklist: [null],
     });
   }
@@ -130,7 +130,7 @@ export class TruckAddComponent implements OnInit {
         const control = this.truckAddForm.get(key);
         const value = control.value;
 
-        if (key.endsWith('File')) {
+        if (key.endsWith('File') || key === 'others') {
           if (value) {
             formData.append(key, value);
           }
@@ -144,12 +144,16 @@ export class TruckAddComponent implements OnInit {
 
       this.service.addTruck(formData).subscribe((res: any) => {
           // Handle response
-          this.toastr.success('Truck added successfully');
-          this.router.navigate(['/profile/truck']);
+          if (res.status == "OK") {
+            this.toastr.success(res.message);
+            this.router.navigate(['/profiles/truck']);
+          } else {
+            this.toastr.error(res.message);
+          }
         },
         error => {
           // Handle error
-          this.toastr.error('Failed to add truck');
+          this.toastr.error(error.error.message);
         }
       );
     }
@@ -159,7 +163,6 @@ export class TruckAddComponent implements OnInit {
     $event.forEach((file: any) => {
       switch (file.registrationType) {
         case 'Registration Paper':
-          this.isExpiryAvailable = false;
           this.truckAddForm.patchValue({
             regPaperFile: file.file,
           });
@@ -167,7 +170,7 @@ export class TruckAddComponent implements OnInit {
         case 'Fitness':
           this.isExpiryAvailable = true;
           this.truckAddForm.patchValue({
-            fitnessCertFile: file.file,
+            fitnessCertificateFile: file.file,
             fitnessCertExpDate: file.registrationExpireDate
           });
           break;
@@ -179,24 +182,21 @@ export class TruckAddComponent implements OnInit {
           });
           break;
         case 'Tax':
-          this.isExpiryAvailable = true;
           this.truckAddForm.patchValue({
             taxFile: file.file,
             taxExpDate: file.registrationExpireDate
           });
           break;
         case 'Case':
-          this.isExpiryAvailable = true;
           this.truckAddForm.patchValue({
-            caseFile: file.file,
+            casePaperFile: file.file,
             caseExpDate: file.registrationExpireDate
           });
           break;
         case 'Other':
           this.isExpiryAvailable = false;
           this.truckAddForm.patchValue({
-            otherFile: file.file,
-            otherExpire: file.registrationExpireDate
+            others: file.file,
           });
           break;
       }

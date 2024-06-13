@@ -7,6 +7,7 @@ import {ToastrService} from "ngx-toastr";
 import {Subscription} from "rxjs";
 import {CustomerService} from "../../../services/customer.service";
 import {ConvertToFormdataService} from "../../../../../shared/services/convert-to-formdata/convert-to-formdata.service";
+import {ValidationService} from "../../../../../shared/services/validation/validation.service";
 
 @Component({
   selector: 'app-customer-create',
@@ -24,15 +25,20 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
   private subs: Subscription;
   @Output() formCreated : EventEmitter<boolean> = new EventEmitter<boolean>(false)
 
-  constructor(private fb: FormBuilder, private service: CustomerService, private toastr: ToastrService, private formData: ConvertToFormdataService) {
+  constructor(
+    private fb: FormBuilder,
+    private service: CustomerService,
+    private toastr: ToastrService,
+    private validation: ValidationService
+    ) {
     this.customerForm = this.fb.group({
       name: ['', Validators.required],
       code: ['', Validators.required],
-      email: [''],
-      phone: ['', Validators.required],
+      email: [null, [Validators.email]],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(11), Validators.maxLength(11)]],
       contactPerson: ['', Validators.required],
-      address: [''],
-      note: ['']
+      address: [null],
+      note: [null]
     });
   }
 
@@ -41,6 +47,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
       let fourDigitName = ""
       fourDigitName = value?.toString().substring(0,4).toUpperCase()
       this.customerForm.get('code').setValue(fourDigitName)
+    })
+    this.customerForm.get('phone').valueChanges.subscribe((value)=> {
+      this.validation.mobileNumberValidation(value, this.customerForm)
     })
   }
 
@@ -89,5 +98,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
 
   ngOnDestroy(): void {
     this.customerForm.reset()
+  }
+
+  getErrorMessage() {
+    return this.validation.getErrorMessage(this.customerForm)
   }
 }

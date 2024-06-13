@@ -104,7 +104,7 @@ export class UserManagementComponent {
             if (this.roleFilter === 0) {
               return item.enabled === true;
             } else {
-              return item.enabled === true && item.roles[0] === this.roleInputPlaceholder;
+              return item.enabled === true && item.designation?.split('|')[1] === this.roleInputPlaceholder;
             }
           });
         });
@@ -114,7 +114,7 @@ export class UserManagementComponent {
             if (this.roleFilter === 0) {
               return item.enabled === false;
             } else {
-              return item.enabled === false && item.roles[0] === this.roleInputPlaceholder;
+              return item.enabled === false && item.designation?.split('|')[1] === this.roleInputPlaceholder;
             }
           });
         });
@@ -164,13 +164,13 @@ export class UserManagementComponent {
       } else if (this.statusInputPlaceholder === 'Active') {
         this.service.getUser().subscribe((res: any) => {
           this.Users = res.data.filter((item) => {
-            return item.enabled === true && item.roles[0] === this.roleInputPlaceholder;
+            return item.enabled === true && item.designation?.split('|')[1] === this.roleInputPlaceholder;
           });
         });
       } else {
         this.service.getUser().subscribe((res: any) => {
           this.Users = res.data.filter((item) => {
-            return item.enabled === false && item.roles[0] === this.roleInputPlaceholder;
+            return item.enabled === false && item.designation?.split('|')[1] === this.roleInputPlaceholder;
           });
         });
       }

@@ -27,6 +27,6 @@ export class TruckService {
    }
   }
   editTruck(truck: any) {
-    return this.http.put(`${this.url}/${truck.id}`, truck);
+    return this.http.put(`${this.url}`, truck);
   }
 }
