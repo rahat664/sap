@@ -64,6 +64,7 @@ export class UserCreateComponent implements OnInit {
 
   ngOnInit(): void {
     // this.getRoleList();
+
   }
 
   // private getRoleList() {

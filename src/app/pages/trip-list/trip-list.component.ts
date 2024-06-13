@@ -108,12 +108,6 @@ export class TripListComponent implements OnInit {
       this.inputPlaceholder = this.dateOptionArray.find(x => x.id === $event)?.value;
       this.dateOptionArray.forEach(x => x.selected = x.id === $event);
       switch ($event) {
-        case DateEnum.Today:
-          this.from = new Date().toISOString();
-          this.to = new Date().toISOString();
-          this.from = this.datePipe.transform(this.from, 'dd-MM-yyyy');
-          this.to = this.datePipe.transform(this.to, 'dd-MM-yyyy');
-          break;
         case DateEnum.LastSevenDays:
           this.from = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString();
           this.to = new Date().toISOString();
@@ -141,7 +135,6 @@ export class TripListComponent implements OnInit {
   private generateDateOptionsArray() {
     // generate date options array
     this.dateOptionArray = [
-      {id: DateEnum.Today, value: 'Today', selected: false},
       {id: DateEnum.LastSevenDays, value: 'Last 7 days', selected: false},
       {id: DateEnum.LastFifteenDays, value: 'Last 15 days', selected: false},
       {id: DateEnum.LastThirtyDays, value: 'Last 30 days', selected: false},
