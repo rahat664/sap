@@ -50,7 +50,7 @@ export class DriverComponent implements OnInit {
 
   private getDriverList() {
     this.loading = true;
-    this.user.getUser('Driver').subscribe((res: any) => {
+    this.user.getDriver().subscribe((res: any) => {
       this.driverList = res.data;
       this.loading = false;
     });

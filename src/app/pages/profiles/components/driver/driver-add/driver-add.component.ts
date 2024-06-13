@@ -27,8 +27,8 @@ export class DriverAddComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private router: Router, private service: UserService, private toastr: ToastrService) {
     this.driverAddForm=this.fb.group({
-      driverName: ['', Validators.required],
-      driverPhone: ['',[Validators.required, Validators.pattern('01[3-9][0-9]{8}'), Validators.minLength(11), Validators.maxLength(11)]],
+      driverName: [''],
+      driverPhone: [''],
       nidFront: [null],
       nidBack: [null],
       drivingLicenseFront: [null],
@@ -58,7 +58,8 @@ export class DriverAddComponent implements OnInit {
           break;
         case 'Driving License Front':
           this.driverAddForm.patchValue({
-            drivingLicenseFront: $event.file
+            drivingLicenseFront: $event.file,
+            drivingLicenseExpiryDate: $event.registrationExpireDate
           })
           break;
         case 'Driving License Back':
@@ -85,6 +86,9 @@ export class DriverAddComponent implements OnInit {
       driverPhone: this.driverPhone
     });
     if (this.driverAddForm.valid) {
+      if (!this.driverAddForm.get('drivingLicenseExpiryDate').value) {
+        this.driverAddForm.removeControl('drivingLicenseExpiryDate')
+      }
       const formData = new FormData();
       const payload: { [key: string]: any } = {};
 
@@ -109,7 +113,7 @@ export class DriverAddComponent implements OnInit {
           // Handle response
           if (res.status == "OK") {
             this.toastr.success(res.message);
-            this.router.navigate(['/profiles/driver']);
+            this.router.navigate(['/profile/driver']);
           } else {
             this.toastr.error(res.message);
           }

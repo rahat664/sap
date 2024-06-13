@@ -140,31 +140,36 @@ export class DriverEditSharedService {
     if (singleDriver.driverFilesUrls?.drivingLicenseFront) {
       this.documents.push({
         name: 'Driving License Front',
-        url: singleDriver.driverFilesUrls?.drivingLicenseFront
+        url: singleDriver.driverFilesUrls?.drivingLicenseFront,
+        expDate: singleDriver.drivingLicenseExpiryDate
       });
     }
     if (singleDriver.driverFilesUrls?.drivingLicenseBack) {
       this.documents.push({
         name: 'Driving License Back',
-        url: singleDriver.driverFilesUrls?.drivingLicenseBack
+        url: singleDriver.driverFilesUrls?.drivingLicenseBack,
+        expDate: singleDriver.drivingLicenseExpiryDate
       });
     }
     if (singleDriver.driverFilesUrls?.nidFront) {
       this.documents.push({
         name: 'NID Front',
-        url: singleDriver.driverFilesUrls?.nidFront
+        url: singleDriver.driverFilesUrls?.nidFront,
+        expDate: null
       });
     }
     if (singleDriver.driverFilesUrls?.nidBack) {
       this.documents.push({
         name: 'NID Back',
-        url: singleDriver.driverFilesUrls?.nidBack
+        url: singleDriver.driverFilesUrls?.nidBack,
+        expDate: null
       });
     }
     if (singleDriver.driverFilesUrls?.other) {
       this.documents.push({
         name: 'Other',
-        url: singleDriver.driverFilesUrls?.other
+        url: singleDriver.driverFilesUrls?.other,
+        expDate: null
       });
     }
     return this.documents;

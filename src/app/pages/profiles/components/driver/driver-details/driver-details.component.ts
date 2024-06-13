@@ -51,8 +51,7 @@ export class DriverDetailsComponent {
     this.documents= [];
     this.singleDriver = JSON.parse(localStorage.getItem('driver'));
     this.driverEditSharedService.bindDriverValueWithForm(this.singleDriver);
-    this.driverEditSharedService.getDocument(this.singleDriver);
-    this.documents = this.driverEditSharedService.documents;
+    this.documents =  this.driverEditSharedService.getDocument(this.singleDriver);
     this.driverName = this.driverEditSharedService.driverName;
     this.driverPhone = this.driverEditSharedService.driverPhone;
   }
