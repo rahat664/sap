@@ -38,7 +38,7 @@
         <input placeholder="Enter Email" class="bg-input rounded-lg  border-none p-4" type="email" id="email" formControlName="email">
 <!--        error-message-->
         <div *ngIf="customerForm.get('email').dirty" class="text-red text-xs">
-          <span>{{getErrorMessage()}}</span>
+          <span>{{getEmailErrorMessage()}}</span>
         </div>
       </div>
       <div class="flex flex-col w-full lg:col-span-2">

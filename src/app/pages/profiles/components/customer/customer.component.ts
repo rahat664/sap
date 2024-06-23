@@ -67,6 +67,7 @@ export class CustomerComponent implements OnInit{
   }
 
   onKeyUpSearch($event: any) {
+    this.loading = true;
     const target = $event.target.value;
     if (target.length > 0) {
       this.customers = [];
@@ -78,11 +79,13 @@ export class CustomerComponent implements OnInit{
         } else {
           this.service.searchCustomer(target, null).subscribe((res: any) => {
             this.customers = res.data;
+            this.loading = false;
           });
         }
       } else {
         this.service.searchCustomer(target, null).subscribe((res: any) => {
           this.customers = res.data;
+          this.loading = false;
         });
       }
     } else {

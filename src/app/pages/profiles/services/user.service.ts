@@ -1,7 +1,9 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {environment} from "../../../../environments/environment";
 import {CustomerCreateModel} from "../components/customer/model/customer-create.model";
+import {catchError, map, Observable, throwError} from "rxjs";
+import {ApiResponse} from "../../auth/models/response/api-response";
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +50,15 @@ export class UserService {
     )
   }
 
+  getUsers(page: number): Observable<any> {
+    return this.http.get<ApiResponse>(this.url + '/getAll?page='+page).pipe(map((response) => {
+
+        return response.data;
+
+      }),
+      catchError(this.handleError));
+  }
+
   addDriver(body: any) {
     return this.http.post(`${this.url}/add-driver`, body, {})
   }
@@ -60,5 +71,40 @@ export class UserService {
     return this.http.get(
       `${this.url}/drivers`
     )
+  }
+
+
+  private handleError(error: HttpErrorResponse) {
+
+    let message = "";
+
+    if (error.status === 0) {
+
+      message = 'Network connection problem!'
+    } else {
+
+      message = error.message;
+    }
+
+    return throwError(() => new Error(message));
+  }
+
+  changeStatus(id: number, status: string): Observable<any> {
+
+    const payload = {
+      id:id,
+      status: status
+    };
+
+    return this.http.put<ApiResponse>(this.url + '/updateStatus', payload).pipe(map (response => {
+        if(response.statusCode == 204){
+          return response.message;
+        }
+
+        throw new Error(response.message);
+      }
+    )).pipe(
+      catchError(this.handleError)
+    );
   }
 }

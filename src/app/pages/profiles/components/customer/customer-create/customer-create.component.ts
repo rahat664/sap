@@ -45,8 +45,19 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
   ngOnInit(): void {
     this.subs = this.customerForm.get('name').valueChanges.subscribe((value)=> {
       let fourDigitName = ""
-      fourDigitName = value?.toString().substring(0,4).toUpperCase()
-      this.customerForm.get('code').setValue(fourDigitName)
+      let valueWithoutSpace = value?.toString().replace(/\s/g, '')
+      if (valueWithoutSpace.length >= 4) {
+        fourDigitName = valueWithoutSpace?.toString().substring(0,4).toUpperCase()
+        this.customerForm.get('code').setValue(fourDigitName)
+      } else {
+        // fill the missing characters with random number 1-9
+        fourDigitName = valueWithoutSpace?.toString().toUpperCase()
+        let missingChar = 4 - fourDigitName.length
+        for (let i = 0; i < missingChar; i++) {
+          fourDigitName += Math.floor(Math.random() * 9) + 1
+        }
+        this.customerForm.get('code').setValue(fourDigitName)
+      }
     })
     this.customerForm.get('phone').valueChanges.subscribe((value)=> {
       this.validation.mobileNumberValidation(value, this.customerForm)
@@ -102,5 +113,15 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
 
   getErrorMessage() {
     return this.validation.getErrorMessage(this.customerForm)
+  }
+
+  getEmailErrorMessage() {
+    if (this.customerForm?.get('email').hasError('email')) {
+      return 'Invalid email address';
+    } else if (this.customerForm?.get('email').hasError('required')) {
+      return 'You must enter a value';
+    } else {
+      return '';
+    }
   }
 }

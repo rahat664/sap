@@ -8,6 +8,7 @@ import {UserModel} from "../../../../user-management/models/user.model";
 import {bkashPaymentMethod, paymentMethod} from "../models/payment-method";
 import {CustomInputSelectModel} from "../../../../../shared/modules/custom-input/custom-input-select.model";
 import {NgIf} from "@angular/common";
+import {ValidationService} from "../../../../../shared/services/validation/validation.service";
 
 @Component({
   selector: 'app-transporter-add',
@@ -30,7 +31,7 @@ export class TransporterAddComponent implements OnInit{
   @Output() formCreated = new EventEmitter<boolean>();
   bkashPaymentTypePlaceholder: string;
 
-  constructor(private service: UserService, private toastr: ToastrService, private fb: FormBuilder) {
+  constructor(private service: UserService, private validation: ValidationService,private toastr: ToastrService, private fb: FormBuilder) {
     this.transporterForm = this.fb.group({
       name: ['', Validators.required],
       phone: ['', Validators.required],
@@ -114,9 +115,15 @@ export class TransporterAddComponent implements OnInit{
         }
       )
     }
+    else {
+      this.transporterForm.markAllAsTouched();
+    }
   }
 
   ngOnInit(): void {
+    this.transporterForm.get('phone').valueChanges.subscribe((value) => {
+      this.validation.mobileNumberValidation(value, this.transporterForm);
+    });
   }
 
   onClickPayment($event: boolean) {
@@ -135,6 +142,8 @@ export class TransporterAddComponent implements OnInit{
 
   protected readonly bkashPaymentMethod = bkashPaymentMethod;
   bkashOpened: boolean;
+  nameErrorMessage: string;
+  phoneErrorMessage: string;
 
   onClickBkashType($event: boolean) {
     this.bkashOpened = $event;
@@ -147,5 +156,17 @@ export class TransporterAddComponent implements OnInit{
     this.transporterForm.patchValue({
       bkashType: this.bkashPaymentTypePlaceholder
     });
+  }
+
+  getErrorMessage() {
+    return this.validation.getErrorMessage(this.transporterForm);
+  }
+
+  getNameErrorMessage() {
+    if (this.transporterForm.get('name').hasError('required')) {
+      return 'You must enter a value';
+    } else {
+      return '';
+    }
   }
 }

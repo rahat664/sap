@@ -22,6 +22,7 @@ export class DriverEditSharedService {
   completeTruckUpload: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   closeInputSelect: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   truckDocuments: any;
+  isConfirmModalOpen: BehaviorSubject<any> = new BehaviorSubject<any>(false);
 
   constructor(
     private fb: FormBuilder,

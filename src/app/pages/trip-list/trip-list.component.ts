@@ -248,4 +248,9 @@ export class TripListComponent implements OnInit {
       return 'N/A';
     }
   }
+
+  onClickFilterOpened() {
+    this.filterOpened = !this.filterOpened;
+    this.dateOpened = false;
+  }
 }

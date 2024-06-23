@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {driverFileType} from "../../customer/model/driver-file-type";
 import {UserService} from "../../../services/user.service";
 import {ToastrService} from "ngx-toastr";
+import {ValidationService} from "../../../../../shared/services/validation/validation.service";
 
 
 @Component({
@@ -24,11 +25,12 @@ import {ToastrService} from "ngx-toastr";
 })
 export class DriverAddComponent implements OnInit {
   driverAddForm: FormGroup;
+  driverPhoneErrorMessage: string;
 
-  constructor(private fb: FormBuilder, private router: Router, private service: UserService, private toastr: ToastrService) {
-    this.driverAddForm=this.fb.group({
-      driverName: [''],
-      driverPhone: [''],
+  constructor(private fb: FormBuilder, private validation: ValidationService, private router: Router, private service: UserService, private toastr: ToastrService) {
+    this.driverAddForm = this.fb.group({
+      driverName: ['', Validators.required],
+      driverPhone: ['', [Validators.required, Validators.pattern('01[0-9]{9}'), Validators.minLength(11), Validators.maxLength(11)]],
       nidFront: [null],
       nidBack: [null],
       drivingLicenseFront: [null],
@@ -39,7 +41,17 @@ export class DriverAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.driverAddForm.get('driverName').valueChanges.subscribe((value: string) => {
+      if (this.driverAddForm.get('driverName').hasError('required')) {
+        this.driverNameErrorMessage = 'You must enter a value';
+      } else {
+        this.driverNameErrorMessage = '';
+      }
+    });
+    this.driverAddForm.get('driverPhone').valueChanges.subscribe((value: string) => {
+      this.numberOnlyValidation(value);
+      this.driverPhoneErrorMessage = this.validation.getDriverNumberValidation(this.driverAddForm.get('driverPhone'));
+    });
   }
 
   onAddFile($event: any) {
@@ -79,12 +91,9 @@ export class DriverAddComponent implements OnInit {
   protected readonly driverFileType = driverFileType;
   driverName: string;
   driverPhone: string;
+  driverNameErrorMessage: string;
 
   onDriverSave() {
-    this.driverAddForm.patchValue({
-      driverName: this.driverName,
-      driverPhone: this.driverPhone
-    });
     if (this.driverAddForm.valid) {
       if (!this.driverAddForm.get('drivingLicenseExpiryDate').value) {
         this.driverAddForm.removeControl('drivingLicenseExpiryDate')
@@ -97,7 +106,7 @@ export class DriverAddComponent implements OnInit {
         const control = this.driverAddForm.get(key);
         const value = control.value;
 
-        if (key != 'driverName' && key != 'driverPhone' && key != 'drivingLicenseExpiryDate'){
+        if (key != 'driverName' && key != 'driverPhone' && key != 'drivingLicenseExpiryDate') {
           if (value) {
             formData.append(key, value);
           }
@@ -123,6 +132,28 @@ export class DriverAddComponent implements OnInit {
           this.toastr.error(error.error.message)
         }
       );
+    } else {
+      this.driverAddForm.markAllAsTouched();
+      this.driverPhoneErrorMessage = this.validation.getDriverNumberValidation(this.driverAddForm.get('driverPhone'));
+      if (this.driverAddForm.get('driverName').hasError('required')) {
+        this.driverNameErrorMessage = 'You must enter a value';
+      }
+    }
+  }
+
+  private numberOnlyValidation(value: any) {
+    if (value?.substring(0, 2) != '01') {
+      this.driverAddForm?.get('driverPhone').setErrors({invalidNumber: true});
+    }
+    if (isNaN(value)) {
+      this.driverAddForm?.get('driverPhone').setValue('');
+    }
+    let onlyNumbers = value?.replace(/[^\d]/g, '');
+    if (onlyNumbers.length > 11) {
+      this.driverAddForm?.get('driverPhone').setValue(onlyNumbers.substring(0, 11));
+    }
+    if (onlyNumbers.length < 11) {
+      this.driverAddForm?.get('driverPhone').setErrors({minLength: true});
     }
   }
 }

@@ -3,7 +3,7 @@ import {
   AfterViewChecked,
   Directive,
   ElementRef,
-  EventEmitter,
+  EventEmitter, HostListener,
   Input,
   OnInit,
   Output
@@ -17,6 +17,8 @@ export class GiveMaxHeightDirective implements OnInit, AfterViewChecked{
   @Input() anotherItemsHeight: string = '0px';
   @Output() elementHeight: EventEmitter<any> = new EventEmitter<any>();
   topBarHeight: string = '110px';
+  @Output() inBottomEnd: EventEmitter<boolean> = new EventEmitter<any>(false);
+  @Input() totalPage: number;
 
   constructor(private el:ElementRef) { }
 
@@ -29,5 +31,15 @@ export class GiveMaxHeightDirective implements OnInit, AfterViewChecked{
       this.el.nativeElement.style.maxHeight = 'calc(100vh - ' + this.anotherItemsHeight + ' - ' + this.topBarHeight + ')';
       this.elementHeight.emit(this.el.nativeElement.style.maxHeight);
     }, 0);
+  }
+
+  @HostListener('scroll', ['$event']) onScroll(event: any) {
+    //detect that the user has scrolled to the bottom of the div
+    console.log(event.target.offsetHeight)
+    console.log(event.target.scrollTop)
+    console.log(event.target.scrollHeight)
+    if (event.target.offsetHeight + event.target.scrollTop >= (event.target.scrollHeight - (this.totalPage + 5))) {
+      this.inBottomEnd.emit(true);
+    }
   }
 }

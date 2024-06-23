@@ -10,11 +10,11 @@ import {registrationZoneList} from "../models/registration-zone";
 import {registrationCategoryList} from "../models/registration-category";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {TruckService} from "../services/truck.service";
-import {PreHireChecklistModel} from "../models/pre-hire-checklist.model";
 import {PreHireChecklistComponent} from "../pre-hire-checklist/pre-hire-checklist.component";
 import {CreatePopupComponent} from "../../../../../shared/modal/create-popup/create-popup.component";
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
+import {ValidationService} from "../../../../../shared/services/validation/validation.service";
 
 @Component({
   selector: 'app-truck-add',
@@ -45,17 +45,25 @@ export class TruckAddComponent implements OnInit {
   registrationOpenedType: boolean;
   registrationTypePlaceholder: string;
   truckAddForm: FormGroup;
-  prehireChecklist: PreHireChecklistModel[] = [];
   singleChecklist: any = {};
   prehireCheckListOpened: boolean;
   isExpiryAvailable: boolean;
+  registrationErrorMessage: string = '';
+  registrationCategoryErrorMessage: string = '';
+  registrationSerialErrorMessage: string = '';
+  registrationNumErrorMessage: string = '';
 
-  constructor(private fb: FormBuilder, private service: TruckService, private toastr: ToastrService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private service: TruckService,
+    private toastr: ToastrService,
+    private router: Router,
+    private validation: ValidationService) {
     this.truckAddForm = this.fb.group({
       registration_zone: [null, Validators.required],
       registration_category: [null, Validators.required],
-      registration_serial: [null, Validators.required],
-      registration_num: [null, Validators.required],
+      registration_serial: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(2), Validators.pattern('^[0-9]*$')]],
+      registration_num: [null, [Validators.required, Validators.minLength(4), Validators.maxLength(4), Validators.pattern('^[0-9]*$')]],
       fitnessCertExpDate: [null],
       routePermitExpDate: [null],
       caseExpDate: [null],
@@ -82,6 +90,7 @@ export class TruckAddComponent implements OnInit {
   }
 
   onSelectRegistrationZone($event: number) {
+    this.registrationErrorMessage = '';
     this.registrationZonePlaceholder = this.registrationZoneList.find(option => option.id === $event).value;
     this.registrationZoneList.forEach(option => {
       option.selected = option.id === $event;
@@ -97,6 +106,7 @@ export class TruckAddComponent implements OnInit {
   }
 
   onSelectRegistrationType($event: number) {
+    this.registrationCategoryErrorMessage = '';
     this.registrationTypePlaceholder = this.registrationListType.find(option => option.id === $event).value;
     this.registrationListType.forEach(option => {
       option.selected = option.id === $event;
@@ -114,13 +124,16 @@ export class TruckAddComponent implements OnInit {
   ngOnInit(): void {
     this.truckAddForm.get('registration_serial').valueChanges.subscribe((value) => {
       this.numberOnly(value);
+      this.registrationSerialErrorMessage = this.validation.getRegistrationSerialValidation(this.truckAddForm.get('registration_serial'));
     });
     this.truckAddForm.get('registration_num').valueChanges.subscribe((value) => {
       this.numberOnly(value);
+      this.registrationNumErrorMessage = this.validation.getRegistrationSerialValidation(this.truckAddForm.get('registration_num'));
     });
   }
 
   onClickSave() {
+    console.log(this.truckAddForm);
     if (this.truckAddForm.valid) {
       const formData = new FormData();
       const payload: { [key: string]: any } = {};
@@ -156,6 +169,14 @@ export class TruckAddComponent implements OnInit {
           this.toastr.error(error.error.message);
         }
       );
+    }
+    else {
+      this.truckAddForm.markAllAsTouched();
+      this.registrationErrorMessage = this.validation.getDropdownValidation(this.truckAddForm.get('registration_zone'));
+      this.registrationCategoryErrorMessage = this.validation.getDropdownValidation(this.truckAddForm.get('registration_category'));
+      this.registrationSerialErrorMessage = this.validation.getRegistrationSerialValidation(this.truckAddForm.get('registration_serial'));
+      this.registrationNumErrorMessage = this.validation.getRegistrationSerialValidation(this.truckAddForm.get('registration_num'));
+      console.log(this.registrationErrorMessage);
     }
   }
 

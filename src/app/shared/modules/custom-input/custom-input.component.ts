@@ -4,6 +4,7 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {FormsModule} from "@angular/forms";
 import {DriverEditSharedService} from "../../../pages/profiles/services/driver-edit-shared.service";
+import {GetOutsideModalClickDirective} from "../../directive/get-outside-modal-click.directive";
 
 @Component({
   selector: 'app-custom-input',
@@ -13,7 +14,8 @@ import {DriverEditSharedService} from "../../../pages/profiles/services/driver-e
     NgIf,
     NgClass,
     NgSelectModule,
-    FormsModule
+    FormsModule,
+    GetOutsideModalClickDirective
   ],
   templateUrl: './custom-input.component.html',
   styleUrl: './custom-input.component.scss'
@@ -25,6 +27,7 @@ export class CustomInputComponent implements OnInit {
   @Input() options: CustomInputSelectModel[] = [];
   @Input() itemsOpened: boolean = false;
   @Input() customOpened: any;
+  @Input() isError: boolean = false;
   months: string[] = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -178,10 +181,15 @@ export class CustomInputComponent implements OnInit {
   @Output() selectedFromDateToToDate: EventEmitter<string> = new EventEmitter();
   @Input() inputSearch: string = '';
   @Input() backgroundColor: string = 'input';
+  @Input() errorMessage: string;
 
 
   ngOnInit(): void {
-
+    this.isError = false;
+    if (this.options.length == 1) {
+      this.inputPlaceholder = this.options[0].value;
+      this.selectedId.emit(this.options[0].id);
+    }
   }
 
   onClickOption(id: number) {

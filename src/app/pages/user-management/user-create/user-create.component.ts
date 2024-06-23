@@ -8,6 +8,7 @@ import {GetClickEventDirective} from "../../../shared/directive/get-click-event.
 import {UserModel} from "../models/user.model";
 import {ToastrService} from "ngx-toastr";
 import {roles} from "../models/role-file";
+import {ValidationService} from "../../../shared/services/validation/validation.service";
 
 @Component({
   selector: 'app-user-create',
@@ -33,7 +34,7 @@ export class UserCreateComponent implements OnInit {
   userModel: UserModel = new UserModel();
 
 
-  constructor(private service: UserService, private fb: FormBuilder, private toastr: ToastrService) {
+  constructor(private service: UserService, private validation:ValidationService, private fb: FormBuilder, private toastr: ToastrService) {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(11), Validators.maxLength(11)]],
@@ -63,6 +64,9 @@ export class UserCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userForm.get('phone').valueChanges.subscribe((value)=> {
+      this.validation.mobileNumberValidation(value, this.userForm)
+    });
     // this.getRoleList();
 
   }
@@ -89,4 +93,24 @@ export class UserCreateComponent implements OnInit {
   }
 
   protected readonly roles = roles
+
+  getNameErrorMessage() {
+    if (this.userForm.get('name').hasError('required')) {
+      return 'You must enter a value';
+    } else {
+      return '';
+    }
+  }
+  getPhoneErrorMessage() {
+    return  this.validation.getErrorMessage(this.userForm);
+  }
+  getEmailErrorMessage() {
+    if (this.userForm.get('email').hasError('email')) {
+      return 'Invalid email address';
+    } else if (this.userForm.get('email').hasError('required')) {
+      return 'You must enter a value';
+    } else {
+      return '';
+    }
+  }
 }

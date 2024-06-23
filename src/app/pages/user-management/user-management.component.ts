@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {CustomInputComponent} from "../../shared/modules/custom-input/custom-input.component";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {ReactiveFormsModule} from "@angular/forms";
@@ -12,6 +12,9 @@ import {UserCreateComponent} from "./user-create/user-create.component";
 import {roles} from "./models/role-file";
 import {CreatePopupComponent} from "../../shared/modal/create-popup/create-popup.component";
 import {LoadingComponent} from "../../shared/modules/loading/loading.component";
+import {ValidationService} from "../../shared/services/validation/validation.service";
+import {ConfirmModalComponent} from "../../shared/modules/confirm-modal/confirm-modal.component";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-user-management',
@@ -27,7 +30,8 @@ import {LoadingComponent} from "../../shared/modules/loading/loading.component";
     GetElementHeightDirective,
     CreatePopupComponent,
     UserCreateComponent,
-    LoadingComponent
+    LoadingComponent,
+    ConfirmModalComponent
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
@@ -36,8 +40,8 @@ export class UserManagementComponent {
   filterOpened: boolean;
   statusFilter: number = 0;
   roleFilter: number = 0;
-  statusInputPlaceholder: string = 'Select Status';
-  roleInputPlaceholder: string = 'Select Role';
+  statusInputPlaceholder: string = '';
+  roleInputPlaceholder: string = '';
   statusOptionsArray: CustomInputSelectModel[] = [
     {id: 1, value: 'Active', selected: false},
     {id: 2, value: 'Inactive', selected: false},
@@ -53,12 +57,18 @@ export class UserManagementComponent {
   selectedId: number;
   loading: boolean;
   elementHeight: any;
+  page: number = 0;
+  @ViewChild('scrollContainer') scrollContainer: ElementRef;
+  totalPages: any;
+  status: string;
+  id: number;
 
-  constructor(private service: UserService) {
+  constructor(private service: UserService, private validation: ValidationService, private toastr: ToastrService) {
   }
 
   ngOnInit() {
     this.getUserList();
+
   }
 
   getFilterLength() {
@@ -142,7 +152,9 @@ export class UserManagementComponent {
 
   }
 
-  // TODO: 'Have to fix the issue with the role filter'
+  confirmOpened: boolean = false;
+  buttonText: string;
+  userName: string;
 
   onSelectRole($event: number) {
     this.roleInputPlaceholder = this.roleOptionsArray.find((item) => item.id === $event).value;
@@ -182,11 +194,14 @@ export class UserManagementComponent {
   }
 
   private getUserList() {
+    this.page = 0;
+    this.Users = [];
     this.loading = true;
-    this.service.getUser().subscribe((res: any) => {
-      this.Users = res.data;
+    this.service.getUsers(this.page).subscribe((res: any) => {
+      this.Users =  res.responses;
       this.loading = false;
-    })
+      this.totalPages = res.totalPages;
+    });
   }
 
 
@@ -197,6 +212,34 @@ export class UserManagementComponent {
       this.actionOpened = true;
     }
     this.selectedId = id;
+  }
+
+  changeStatus(id: number, name: string, status: string) {
+    this.userName = name;
+    this.id = id;
+    this.status = status;
+    this.buttonText = status;
+    this.statusOpened = false;
+    if (status == 'Inactive') {
+      this.confirmOpened = true;
+    } else if (status == 'Active') {
+      this.confirmOpened = true;
+    } else if (status == 'Removed') {
+      this.confirmOpened = true;
+    }
+  }
+
+  confirmAction() {
+    this.service.changeStatus(this.id, this.status).subscribe({
+      next: (response: any) => {
+        this.toastr.success(response);
+        this.Users = [];
+        this.getUserList();
+      },
+      error: (err) => {
+        this.toastr.error(err);
+      }
+    });
   }
 
   onCreateUser($event: boolean) {
@@ -211,5 +254,38 @@ export class UserManagementComponent {
     } else {
       return ''
     }
+  }
+
+  onClickFilterOpened() {
+    this.filterOpened = !this.filterOpened;
+    this.statusOpened = false;
+    this.roleOpened = false;
+  }
+
+  onBottom($event: boolean) {
+    if ($event && (this.page < this.totalPages-1)) {
+      this.page++;
+      this.service.getUsers(this.page).subscribe((res: any) => {
+        this.Users.push(...res.responses);
+      });
+    }
+  }
+
+  performChangeStatus() {
+    this.service.changeStatus(this.id, this.status).subscribe({
+      next: (response: any) => {
+        this.toastr.success(response);
+        this.status = '';
+        this.id = null;
+        this.confirmOpened = false;
+        this.buttonText = '';
+        this.userName = '';
+        this.selectedId = null;
+        this.getUserList();
+      },
+      error: (err) => {
+        this.toastr.error(err);
+      }
+    });
   }
 }

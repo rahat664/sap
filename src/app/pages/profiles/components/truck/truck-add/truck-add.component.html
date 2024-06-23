@@ -20,28 +20,44 @@
             <div class="flex flex-col space-y-1">
               <span class="text-not-black font-semibold">Registration No.</span>
               <div class="grid grid-cols-5 w-full gap-3">
-                <app-custom-input class="w-full col-span-2"
-                                  appGetClickEvent
-                                  (clickedElement)="onClickRegistrationZone($event)"
-                                  [options]="registrationZoneList"
-                                  inputPlaceholder="Zone"
-                                  [itemsOpened]="registrationZoneOpened"
-                                  (selectedId)="onSelectRegistrationZone($event)"
-                                  [inputSearch]="registrationZonePlaceholder"
-                ></app-custom-input>
-                <app-custom-input class="w-full"
-                                  appGetClickEvent
-                                  (clickedElement)="onClickRegistrationType($event)"
-                                  [options]="registrationListType"
-                                  inputPlaceholder="Category"
-                                  [itemsOpened]="registrationOpenedType"
-                                  (selectedId)="onSelectRegistrationType($event)"
-                                  [inputSearch]="registrationTypePlaceholder"
-                ></app-custom-input>
-                <input placeholder="Serial" maxlength="2" minlength="2" formControlName="registration_serial"
-                       class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
-                <input  placeholder="No." maxlength="4" minlength="4" formControlName="registration_num"
-                       class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+                <div class="flex flex-col w-full">
+                  <app-custom-input class="w-full col-span-2"
+                                    appGetClickEvent
+                                    [isError]="registrationErrorMessage !== ''"
+                                    [errorMessage]="registrationErrorMessage"
+                                    (clickedElement)="onClickRegistrationZone($event)"
+                                    [options]="registrationZoneList"
+                                    inputPlaceholder="Zone"
+                                    [itemsOpened]="registrationZoneOpened"
+                                    (selectedId)="onSelectRegistrationZone($event)"
+                                    [inputSearch]="registrationZonePlaceholder"
+                  ></app-custom-input>
+                  <span class="text-red text-body">{{registrationErrorMessage}}</span>
+                </div>
+                <div class="flex flex-col w-full">
+                  <app-custom-input class="w-full"
+                                    appGetClickEvent
+                                    [isError]="registrationErrorMessage !== ''"
+                                    [errorMessage]="registrationCategoryErrorMessage"
+                                    (clickedElement)="onClickRegistrationType($event)"
+                                    [options]="registrationListType"
+                                    inputPlaceholder="Category"
+                                    [itemsOpened]="registrationOpenedType"
+                                    (selectedId)="onSelectRegistrationType($event)"
+                                    [inputSearch]="registrationTypePlaceholder"
+                  ></app-custom-input>
+                  <span class="text-red text-body">{{registrationCategoryErrorMessage}}</span>
+                </div>
+                <div class="flex flex-col w-full">
+                  <input placeholder="Serial" maxlength="2" minlength="2" formControlName="registration_serial"
+                         class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+                  <span class="text-red text-body">{{registrationSerialErrorMessage}}</span>
+                </div>
+                <div class="flex flex-col w-full">
+                  <input minlength="4" maxlength="4" placeholder="Number" formControlName="registration_num"
+                         class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+                  <span class="text-red text-body">{{registrationNumErrorMessage}}</span>
+                </div>
               </div>
             </div>
           </div>

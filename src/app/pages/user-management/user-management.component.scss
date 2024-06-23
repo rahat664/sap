@@ -1,5 +1,7 @@
 thead {
   @apply sticky top-0;
+  background-color: white !important;
+  z-index: 30;
 }
 .border {
   @apply h-[0.125rem] p-0 bg-[#A1D5DE];
