@@ -22,16 +22,22 @@
               <div>
                 <input formControlName="driverName" placeholder="Enter driver name"
                        class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+
+                <span *ngIf="driverAddForm.get('driverName').touched"  class="text-red text-xs">{{getDriverNameError()}}</span>
               </div>
-              <span class="text-red text-body">{{driverNameErrorMessage}}</span>
             </div>
             <div  class="flex flex-col space-y-1">
               <span class="text-not-black font-semibold">Mobile</span>
               <div>
                 <input formControlName="driverPhone" placeholder="Enter mobile no."
                        class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+                <div *ngIf="driverAddForm.get('driverPhone').dirty && !driverAddForm.get('driverPhone').touched" class="text-red text-xs">
+                  <span>{{getDriverPhoneErrorWithoutTouch()}}</span>
+                </div>
+                <div *ngIf="driverAddForm.get('driverPhone').touched" class="text-red text-xs">
+                  <span>{{getDriverPhoneErrorWithTouch()}}</span>
+                </div>
               </div>
-
             </div>
           </div>
         </div>

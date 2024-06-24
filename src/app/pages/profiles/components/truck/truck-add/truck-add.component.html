@@ -20,8 +20,8 @@
             <div class="flex flex-col space-y-1">
               <span class="text-not-black font-semibold">Registration No.</span>
               <div class="grid grid-cols-5 w-full gap-3">
-                <div class="flex flex-col w-full">
-                  <app-custom-input class="w-full col-span-2"
+                <div class="flex flex-col w-full col-span-2">
+                  <app-custom-input class="w-full"
                                     appGetClickEvent
                                     [isError]="registrationErrorMessage !== ''"
                                     [errorMessage]="registrationErrorMessage"
@@ -32,9 +32,9 @@
                                     (selectedId)="onSelectRegistrationZone($event)"
                                     [inputSearch]="registrationZonePlaceholder"
                   ></app-custom-input>
-                  <span class="text-red text-body">{{registrationErrorMessage}}</span>
+                  <span class="text-red text-xs">{{registrationErrorMessage}}</span>
                 </div>
-                <div class="flex flex-col w-full">
+                <div class="flex flex-col">
                   <app-custom-input class="w-full"
                                     appGetClickEvent
                                     [isError]="registrationErrorMessage !== ''"
@@ -46,17 +46,17 @@
                                     (selectedId)="onSelectRegistrationType($event)"
                                     [inputSearch]="registrationTypePlaceholder"
                   ></app-custom-input>
-                  <span class="text-red text-body">{{registrationCategoryErrorMessage}}</span>
+                  <span class="text-red text-xs">{{registrationCategoryErrorMessage}}</span>
                 </div>
                 <div class="flex flex-col w-full">
                   <input placeholder="Serial" maxlength="2" minlength="2" formControlName="registration_serial"
                          class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
-                  <span class="text-red text-body">{{registrationSerialErrorMessage}}</span>
+                  <span *ngIf="registrationSerialErrorMessage" class="text-red text-xs">{{registrationSerialErrorMessage}}</span>
                 </div>
                 <div class="flex flex-col w-full">
                   <input minlength="4" maxlength="4" placeholder="Number" formControlName="registration_num"
                          class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
-                  <span class="text-red text-body">{{registrationNumErrorMessage}}</span>
+                  <span *ngIf="registrationNumErrorMessage" class="text-red text-xs">{{registrationNumErrorMessage}}</span>
                 </div>
               </div>
             </div>

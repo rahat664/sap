@@ -28,7 +28,6 @@ export class GetClickEventDirective {
     this.subs = this.shared.closeInputSelect.subscribe((data) => {
       this.elementClicked = data;
     });
-    console.log(this.elementClicked)
   }
   ngOnDestroy() {
     this.subs.unsubscribe();

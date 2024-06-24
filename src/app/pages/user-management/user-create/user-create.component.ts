@@ -113,4 +113,8 @@ export class UserCreateComponent implements OnInit {
       return '';
     }
   }
+
+  getPhoneErrorMessageWithTouch() {
+    return this.validation.getErrorMessageWithTouch(this.userForm);
+  }
 }

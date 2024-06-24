@@ -142,8 +142,6 @@ export class TransporterAddComponent implements OnInit{
 
   protected readonly bkashPaymentMethod = bkashPaymentMethod;
   bkashOpened: boolean;
-  nameErrorMessage: string;
-  phoneErrorMessage: string;
 
   onClickBkashType($event: boolean) {
     this.bkashOpened = $event;
@@ -168,5 +166,9 @@ export class TransporterAddComponent implements OnInit{
     } else {
       return '';
     }
+  }
+
+  getPhoneErrorMessageWithTouch() {
+    return this.validation.getErrorMessageWithTouch(this.transporterForm);
   }
 }

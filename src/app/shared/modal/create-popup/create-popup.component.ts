@@ -30,7 +30,6 @@ export class CreatePopupComponent {
   }
 
   ngOnChanges() {
-    console.log('this.isOpen', this.isOpen)
   }
   ngOnInit(): void {
      this.subs = this.sharedDriverEditService.isUploadPopupOpen.subscribe((res: any) => {
@@ -43,7 +42,6 @@ export class CreatePopupComponent {
 
 
   onClick($event: boolean) {
-    console.log('clicked', $event)
     if ($event) {
       this.closeModal();
     }

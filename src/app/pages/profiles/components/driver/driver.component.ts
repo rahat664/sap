@@ -39,6 +39,8 @@ export class DriverComponent implements OnInit {
   height: string;
   loading: boolean;
   newDriverFileType: any[];
+  private page: number;
+  totalPages: number;
 
   constructor(private user: UserService, private sharedService: DriverEditSharedService) {
   }
@@ -49,9 +51,11 @@ export class DriverComponent implements OnInit {
   }
 
   private getDriverList() {
+    this.page = 0;
     this.loading = true;
-    this.user.getDriver().subscribe((res: any) => {
-      this.driverList = res.data;
+    this.user.getDriver(this.page).subscribe((res: any) => {
+      this.driverList = res.data.responses;
+      this.totalPages = res.data.totalPages;
       this.loading = false;
     });
   }
@@ -107,7 +111,17 @@ export class DriverComponent implements OnInit {
       if (res) {
         this.driverList = [];
         this.getDriverList();
+        this.isNewOpen = false;
+        this.isOpen = false;
       }
     });
+  }
+  onBottom($event: boolean) {
+    if ($event && (this.page < this.totalPages-1)) {
+      this.page++;
+      this.user.getDriver(this.page).subscribe((res: any) => {
+        this.driverList.push(...res.data.responses);
+      });
+    }
   }
 }

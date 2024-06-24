@@ -35,9 +35,6 @@ export class GiveMaxHeightDirective implements OnInit, AfterViewChecked{
 
   @HostListener('scroll', ['$event']) onScroll(event: any) {
     //detect that the user has scrolled to the bottom of the div
-    console.log(event.target.offsetHeight)
-    console.log(event.target.scrollTop)
-    console.log(event.target.scrollHeight)
     if (event.target.offsetHeight + event.target.scrollTop >= (event.target.scrollHeight - (this.totalPage + 5))) {
       this.inBottomEnd.emit(true);
     }

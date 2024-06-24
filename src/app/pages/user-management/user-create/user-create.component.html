@@ -10,7 +10,7 @@
       <div class="flex flex-col w-full lg:col-span-2">
         <label for="name">Full Name</label>
         <input placeholder="Enter Full Name" class="bg-input rounded-lg  border-none p-4"  type="text" id="name" formControlName="name">
-        <div *ngIf="userForm.get('name').dirty" class="text-red text-xs">
+        <div *ngIf="userForm.get('name').touched" class="text-red text-xs">
           <span>{{getNameErrorMessage()}}</span>
         </div>
         <!--        error-message-->
@@ -19,15 +19,19 @@
         <label for="phone">Mobile</label>
         <input placeholder="Enter Mobile" class="bg-input rounded-lg  border-none p-4" type="text" id="phone" formControlName="phone">
         <!--        error-message-->
-        <div *ngIf="userForm.get('phone').dirty" class="text-red text-xs">
+        <div *ngIf="userForm.get('phone').dirty && !userForm.get('phone').touched" class="text-red text-xs">
           <span>{{getPhoneErrorMessage()}}</span>
         </div>
+        <div *ngIf="userForm.get('phone').touched" class="text-red text-xs">
+          <span>{{getPhoneErrorMessageWithTouch()}}</span>
+        </div>
+
        </div>
       <div class="flex flex-col w-full">
         <label for="email">Email</label>
         <input placeholder="Enter Email" class="bg-input rounded-lg  border-none p-4" type="text" id="email" formControlName="email">
         <!--        error-message-->
-        <div *ngIf="userForm.get('email').dirty" class="text-red text-xs">
+        <div *ngIf="userForm.get('email').touched" class="text-red text-xs">
           <span>{{getEmailErrorMessage()}}</span>
         </div>
       </div>

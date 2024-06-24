@@ -3,11 +3,12 @@ import {ToggleResponsiveService} from "../../../shared/services/toggle-responsiv
 import {CommonModule} from "@angular/common";
 import {Subscription} from "rxjs";
 import {RouterLink, RouterLinkActive} from "@angular/router";
+import {GetOutsideModalClickDirective} from "../../../shared/directive/get-outside-modal-click.directive";
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, GetOutsideModalClickDirective],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })

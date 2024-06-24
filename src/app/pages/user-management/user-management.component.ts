@@ -135,7 +135,6 @@ export class UserManagementComponent {
   onClickStatus($event: boolean) {
     this.roleOpened = false;
     this.statusOpened = $event;
-    console.log('statusOpened', this.statusOpened);
   }
 
   onClickRole($event: boolean) {
@@ -215,11 +214,15 @@ export class UserManagementComponent {
   }
 
   changeStatus(id: number, name: string, status: string) {
+    this.userName = null;
+    this.id = null;
+    this.status = '';
+    this.buttonText = '';
     this.userName = name;
     this.id = id;
     this.status = status;
     this.buttonText = status;
-    this.statusOpened = false;
+    this.actionOpened = false;
     if (status == 'Inactive') {
       this.confirmOpened = true;
     } else if (status == 'Active') {

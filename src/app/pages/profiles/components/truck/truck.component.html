@@ -19,20 +19,20 @@
       </div>
     </div>
   </div>
-  <div appGiveMaxHeight [anotherItemsHeight]="height" class="bg-white  w-full rounded-lg overflow-auto relative">
+  <div appGiveMaxHeight (inBottomEnd)="onBottom($event)" [totalPage]="totalPages" [anotherItemsHeight]="height" class="bg-white  w-full rounded-lg overflow-auto relative">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left">Registration number</th>
         <th class="text-left">Pre-hire checklist</th>
         <th class="text-left">No. of trip</th>
-        <th class="text-center">Tracker</th>
-        <th class="text-center">Registration</th>
-        <th class="text-center">Truck fitness</th>
-        <th class="text-center">Route permit</th>
-        <th class="text-center">Case</th>
-        <th class="text-center">Tax</th>
-        <th class="text-center">Other Document</th>
+        <th class="text-center w-[10rem] inline-block">Tracker</th>
+        <th class="text-center w-[10rem] inline-block">Registration</th>
+        <th class="text-center w-[10rem] inline-block">Truck fitness</th>
+        <th class="text-center w-[10rem] inline-block">Route permit</th>
+        <th class="text-center w-[10rem] inline-block">Case</th>
+        <th class="text-center w-[10rem] inline-block">Tax</th>
+        <th class="text-center w-[10rem] inline-block">Other Document</th>
 <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
@@ -45,7 +45,7 @@
           <td class="whitespace-nowrap">
             <div class="flex items-center space-x-4">
               <div class="w-8 h-8 rounded-full bg-another flex items-center justify-center">
-                <span class="text-white font-bold capitalize">{{ truck.registration_zone[0] }}</span>
+                <span class="text-white font-bold capitalize">{{ truck.registrationZone[0] }}</span>
               </div>
               <a routerLink="/profile/truck/{{ truck.id }}/details" (click)="onClickTruckDetails(truck)"
                  class="flex-1 text-link cursor-pointer">{{ getFullRegistrationName(truck) }}</a>
@@ -56,49 +56,49 @@
                class="text-link cursor-pointer">{{truck.preHireCheckList}}/22</a>
           </td>
           <td class="text-center">{{ truck.numberOfTrips }}</td>
-          <td class="text-center whitespace-nowrap">
+          <td class="text-center whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
               <span *ngIf="truck.tracker">{{ truck.tracker }}</span>
               <app-upload-button (click)="onClickAddTracker(truck.id)" *ngIf="!truck.tracker" icon="plus" [file]="false"
                                  buttonText="Add Tracker"></app-upload-button>
             </div>
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap  w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="truck.regPaperFile" class="fas fa-check text-green"></i>
               <app-upload-button (click)="onClickUpdate('reg', truck)" *ngIf="!truck.regPaperFile" icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="truck.fitnessFile" class="fas fa-check text-green"></i>
               <app-upload-button (click)="onClickUpdate('fit',truck)" *ngIf="!truck.fitnessFile" icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="truck.routePermitFile" class="fas fa-check text-green"></i>
               <app-upload-button (click)="onClickUpdate('route',truck)" *ngIf="!truck.routePermitFile" icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="truck.caseFile" class="fas fa-check text-green"></i>
               <app-upload-button (click)="onClickUpdate('case',truck)" *ngIf="!truck.caseFile" icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="truck.taxFile" class="fas fa-check text-green"></i>
               <app-upload-button (click)="onClickUpdate('tax',truck)" *ngIf="!truck.taxFile" icon="upload" [file]="true"
                                  buttonText="Upload"></app-upload-button>
             </div>
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
               <i *ngIf="truck.otherFile" class="fas fa-check text-green"></i>
               <app-upload-button (click)="onClickUpdate('other',truck)" *ngIf="!truck.otherFile" icon="upload" [file]="true"

@@ -18,7 +18,7 @@ export class ConfirmModalComponent {
   @Input() buttonText: string;
   @Output() performChangeStatus = new EventEmitter<any>();
   @Input() isOpen: any;
-  @Input() isModalClosed: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+  @Output() isModalClosed: EventEmitter<boolean> = new EventEmitter<boolean>(false);
   private subs: any;
 
   constructor( private sharedDriverEditService: DriverEditSharedService) {

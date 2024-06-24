@@ -83,6 +83,7 @@ export class TruckAddComponent implements OnInit {
     this.manufacturerList.forEach(option => {
       option.selected = option.id === $event;
     });
+    this.manufactureOpened = false;
   }
 
   onClickRegistrationZone($event: boolean) {
@@ -133,7 +134,6 @@ export class TruckAddComponent implements OnInit {
   }
 
   onClickSave() {
-    console.log(this.truckAddForm);
     if (this.truckAddForm.valid) {
       const formData = new FormData();
       const payload: { [key: string]: any } = {};
@@ -176,7 +176,6 @@ export class TruckAddComponent implements OnInit {
       this.registrationCategoryErrorMessage = this.validation.getDropdownValidation(this.truckAddForm.get('registration_category'));
       this.registrationSerialErrorMessage = this.validation.getRegistrationSerialValidation(this.truckAddForm.get('registration_serial'));
       this.registrationNumErrorMessage = this.validation.getRegistrationSerialValidation(this.truckAddForm.get('registration_num'));
-      console.log(this.registrationErrorMessage);
     }
   }
 

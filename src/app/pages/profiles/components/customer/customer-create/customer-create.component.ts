@@ -19,21 +19,21 @@ import {ValidationService} from "../../../../../shared/services/validation/valid
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss'
 })
-export class CustomerCreateComponent implements OnInit, OnDestroy{
+export class CustomerCreateComponent implements OnInit, OnDestroy {
   customerForm: FormGroup;
   customerModel = new CustomerCreateModel()
   private subs: Subscription;
-  @Output() formCreated : EventEmitter<boolean> = new EventEmitter<boolean>(false)
+  @Output() formCreated: EventEmitter<boolean> = new EventEmitter<boolean>(false)
 
   constructor(
     private fb: FormBuilder,
     private service: CustomerService,
     private toastr: ToastrService,
     private validation: ValidationService
-    ) {
+  ) {
     this.customerForm = this.fb.group({
       name: ['', Validators.required],
-      code: ['', Validators.required],
+      code: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
       email: [null, [Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(11), Validators.maxLength(11)]],
       contactPerson: ['', Validators.required],
@@ -43,23 +43,27 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(): void {
-    this.subs = this.customerForm.get('name').valueChanges.subscribe((value)=> {
-      let fourDigitName = ""
-      let valueWithoutSpace = value?.toString().replace(/\s/g, '')
-      if (valueWithoutSpace.length >= 4) {
-        fourDigitName = valueWithoutSpace?.toString().substring(0,4).toUpperCase()
-        this.customerForm.get('code').setValue(fourDigitName)
-      } else {
-        // fill the missing characters with random number 1-9
-        fourDigitName = valueWithoutSpace?.toString().toUpperCase()
-        let missingChar = 4 - fourDigitName.length
-        for (let i = 0; i < missingChar; i++) {
-          fourDigitName += Math.floor(Math.random() * 9) + 1
-        }
-        this.customerForm.get('code').setValue(fourDigitName)
+    this.customerForm.get('code').valueChanges.subscribe((value) => {
+      //only allow 4 characters
+      if (value.length > 4) {
+        this.customerForm.get('code').setValue(value.substring(0, 4))
+      }
+      if (value.length == 4) {
+        this.checkCustomerCodeIsAlreadyExistOrNot(value)
       }
     })
-    this.customerForm.get('phone').valueChanges.subscribe((value)=> {
+    this.subs = this.customerForm.get('name').valueChanges.subscribe((value) => {
+      if (value.length > 0 && this.customerForm.get('code').invalid) {
+        let fourDigitName = ""
+        let valueWithoutSpace = value?.toString().replace(/\s/g, '')
+        if (valueWithoutSpace.length >= 4) {
+          fourDigitName = valueWithoutSpace?.toString().substring(0, 4).toUpperCase()
+          this.customerForm.get('code').setValue(fourDigitName)
+          this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName)
+        }
+      }
+    })
+    this.customerForm.get('phone').valueChanges.subscribe((value) => {
       this.validation.mobileNumberValidation(value, this.customerForm)
     })
   }
@@ -74,13 +78,13 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
       this.customerModel.address = this.customerForm.get('address').value;
       this.customerModel.note = this.customerForm.get('note').value;
       this.customerModel.role = 'Customer';
-      this.service.customerCodeValidation(this.customerModel.customerCode).subscribe((res:any)=> {
+      this.service.customerCodeValidation(this.customerModel.customerCode).subscribe((res: any) => {
         if (res.data.validation == 'Failed') {
           this.subs.unsubscribe();
           this.customerForm.get('code').setValue(res.data.Suggestion)
           this.customerModel.customerCode = res.data.Suggestion
           this.submitCustomer()
-        } else  {
+        } else {
           this.submitCustomer()
         }
       })
@@ -90,7 +94,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
   }
 
   private submitCustomer() {
-    this.service.addCustomer(this.customerModel).subscribe((res: any)=> {
+    this.service.addCustomer(this.customerModel).subscribe((res: any) => {
         if (res.status == 'OK') {
           this.toastr.success(res.message)
           this.customerForm.reset()
@@ -100,10 +104,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
           this.formCreated.emit(true);
         }
       },
-      (error: any)=> {
+      (error: any) => {
         this.toastr.error(error.error.message)
       }
-
     )
   }
 
@@ -122,6 +125,47 @@ export class CustomerCreateComponent implements OnInit, OnDestroy{
       return 'You must enter a value';
     } else {
       return '';
+    }
+  }
+
+  getPhoneErrorMessageWithTouch() {
+    return this.validation.getErrorMessageWithTouch(this.customerForm)
+  }
+
+  getCustomerCodeError() {
+    if (this.customerForm?.get('code').hasError('required')) {
+      return 'You must enter a value';
+    } else if (this.customerForm?.get('code').hasError('minlength')) {
+      return 'Minimum 4 characters required';
+    } else {
+      return '';
+    }
+  }
+
+  private checkCustomerCodeIsAlreadyExistOrNot(fourDigitName: string) {
+    this.service.customerCodeValidation(fourDigitName).subscribe((res: any) => {
+      if (res.data.validation == 'Failed') {
+        this.customerForm.get('code').setValue(res.data.Suggestion)
+        this.customerModel.customerCode = res.data.Suggestion
+      } else {
+        this.customerModel.customerCode = fourDigitName
+      }
+    })
+  }
+
+  protected readonly onfocus = onfocus;
+
+  onfocusOut($event: FocusEvent) {
+    if ($event && this.customerForm.get('name').value.length > 0 && this.customerForm.get('code').invalid) {
+      let fourDigitName = ""
+      let valueWithoutSpace = this.customerForm.get('name').value?.toString().replace(/\s/g, '')
+      if (valueWithoutSpace.length < 4) {
+        // fill the missing characters with random numbers
+        let randomNumbers = Math.floor(Math.random() * 10000).toString()
+        fourDigitName = valueWithoutSpace + randomNumbers.substring(0, 4 - valueWithoutSpace.length).toUpperCase()
+        this.customerForm.get('code').setValue(fourDigitName)
+        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName)
+      }
     }
   }
 }

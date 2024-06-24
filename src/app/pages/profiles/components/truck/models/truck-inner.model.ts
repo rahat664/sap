@@ -1,16 +1,16 @@
 export interface TruckInnerModel {
   id: number;
   name: string | null;
-  registration_zone: string;
-  registration_category: string;
-  registration_serial: string;
-  registration_num: string;
-  driver_code: string | null;
-  driver_name: string | null;
-  driver_phone: string | null;
-  helper_code: string | null;
-  helper_name: string | null;
-  helper_phone: string | null;
+  registrationZone: string;
+  registrationCategory: string;
+  registrationSerial: string;
+  registrationNum: string;
+  driverCode: string | null;
+  driverName: string | null;
+  driverPhone: string | null;
+  helperCode: string | null;
+  helperName: string | null;
+  helperPhone: string | null;
   regPaperFile: string | null;
   fitnessFile: string | null;
   routePermitFile: string | null;

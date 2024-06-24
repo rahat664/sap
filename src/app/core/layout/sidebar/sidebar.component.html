@@ -48,7 +48,7 @@
               <i *ngIf="dropdownOpen" class="fas fa-caret-up text-gray-500"></i>
               <i *ngIf="!dropdownOpen" class="fas fa-caret-down text-gray-500"></i>
             </button>
-            <ul id="dropdown-example" class="py-2 space-y-2 " *ngIf="dropdownOpen">
+            <ul appGetOutsideModalClick  id="dropdown-example" class="py-2 space-y-2 " *ngIf="dropdownOpen">
               <li>
                 <a routerLink="/profile/customer" routerLinkActive="active"
                    class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Customer</a>

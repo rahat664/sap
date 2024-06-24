@@ -11,8 +11,8 @@ export class TruckService {
   checklistUrl = `${environment.backendUrl}/api/checklist`
   constructor(private http:HttpClient) { }
 
-  getTruckList() {
-    return this.http.get(this.url);
+  getTruckList(page: number) {
+    return this.http.get(`${this.url}?page=${page}`);
   }
 
   addTruck(truck: any) {

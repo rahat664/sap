@@ -64,6 +64,7 @@ module.exports = {
       },
       fontSize: {
         'h1': '2rem',
+        'h1_mobile': '1.25rem',
         'h2': '1rem',
         'h2_medium': '1rem',
         'h2_regular': '1rem',

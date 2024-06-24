@@ -97,14 +97,14 @@ export class TruckDetailsComponent implements OnInit{
   }
 
   getFullRegistrationName() {
-    return `${this.singleTruck.registration_zone} ${this.singleTruck.registration_category} ${this.singleTruck.registration_serial} ${this.singleTruck.registration_num}`
+    return `${this.singleTruck.registrationZone} ${this.singleTruck.registrationCategory} ${this.singleTruck.registrationSerial} ${this.singleTruck.registrationNum}`
   }
 
   ngOnInit(): void {
     this.singleTruck = JSON.parse(localStorage.getItem('truck'));
     this.truckAddForm = this.shared.truckUpdateForm
-    this.registrationTypePlaceholder = this.singleTruck?.registration_category;
-    this.registrationZonePlaceholder = this.singleTruck?.registration_zone;
+    this.registrationTypePlaceholder = this.singleTruck?.registrationCategory;
+    this.registrationZonePlaceholder = this.singleTruck?.registrationZone;
     this.truckAddForm.get('registration_serial').valueChanges.subscribe((value) => {
       this.numberOnly(value);
     });
@@ -113,7 +113,7 @@ export class TruckDetailsComponent implements OnInit{
       this.numberOnly(value);
     });
     this.documents = this.shared.getTruckDocument(this.singleTruck);
-    console.log(this.singleTruck)
+
   }
 
   onClickSave() {

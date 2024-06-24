@@ -66,10 +66,10 @@ export class DriverEditSharedService {
   bindTruckValueWithForm(singleTruck: TruckInnerModel) {
     this.truckUpdateForm.patchValue({
       id: singleTruck.id,
-      registration_zone: singleTruck.registration_zone,
-      registration_category: singleTruck.registration_category,
-      registration_serial: singleTruck.registration_serial,
-      registration_num: singleTruck.registration_num,
+      registration_zone: singleTruck.registrationZone,
+      registration_category: singleTruck.registrationCategory,
+      registration_serial: singleTruck.registrationSerial,
+      registration_num: singleTruck.registrationNum,
       fitnessCertExpDate: singleTruck.fitnessCertExpDate,
       routePermitExpDate: singleTruck.routePermitExpDate,
       caseExpDate: singleTruck.caseExpDate,
@@ -177,7 +177,6 @@ export class DriverEditSharedService {
   }
 
   onTruckUpdate() {
-    console.log(this.truckUpdateForm)
     if (this.truckUpdateForm.valid) {
       const formData = new FormData();
       const payload: { [key: string]: any } = {};
@@ -256,7 +255,7 @@ export class DriverEditSharedService {
         },
         error => {
           // Handle error
-          this.toastr.error('Failed to add truck');
+          this.toastr.error(error.error.message);
           this.isUploadPopupOpen.next(false);
         }
       );

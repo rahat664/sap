@@ -7,17 +7,22 @@ export class ValidationService {
 
   constructor() { }
   getErrorMessage(value:any) {
+    if (value?.get('phone').hasError('invalidNumber')) {
+      return 'Please enter a valid phone number';
+    } else {
+      return '';
+    }
+  }
+
+  getErrorMessageWithTouch(value: any) {
     if (value?.get('phone').hasError('required')) {
       return 'You must enter a value';
-    }
-    else if (value?.get('phone').hasError('invalidNumber')) {
-      return 'Phone number must start with 01';
-    }
-    else if (value?.get('phone').hasError('minLength')) {
+    } else if (value?.get('phone').hasError('minLength')) {
       return 'Phone number must be 11 digit';
-    }
-    else if (value?.get('phone').hasError('pattern')) {
-      return 'Phone number must be a number';
+    } else if (value?.get('phone').hasError('maxLength')) {
+      return 'Phone number must be 11 digit';
+    } else if (value?.get('phone').hasError('invalidNumber')) {
+      return 'Phone number must start with 01';
     } else {
       return '';
     }
@@ -44,7 +49,11 @@ export class ValidationService {
     if (isNaN(value)) {
       customerForm?.get('phone').setValue(value.substring(0, value.length - 1));
     }
-    if (value?.substring(0, 2) != '01') {
+    if (value?.substring(0, 1) != '0' && value.substring(0, 1)) {
+      // return error to the parent
+      return customerForm?.get('phone').setErrors({invalidNumber: true});
+    }
+    if (value?.substring(1, 2) != '1' && value.substring(1, 2)) {
       // return error to the parent
       return customerForm?.get('phone').setErrors({invalidNumber: true});
     }
@@ -64,7 +73,6 @@ export class ValidationService {
   }
 
   getDropdownValidation(value: any) {
-    console.log(value)
     if (value?.hasError('required')) {
       return 'You must select a value';
     } else {

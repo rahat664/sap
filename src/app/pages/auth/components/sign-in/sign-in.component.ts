@@ -61,7 +61,7 @@ export class SignInComponent implements OnInit{
       this.auth.login(this.loginRequestPayload).subscribe({
         next: (response: any) => {
               if (response.status === 'OK') {
-                this.toaster.success(response.message);
+                this.toaster.success('Login successful');
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('email', response.data.email);
                 localStorage.setItem('name', response.data.name);
@@ -69,7 +69,7 @@ export class SignInComponent implements OnInit{
                 localStorage.setItem('role', response.data.roles[0]);
                 this.router.navigate(['trip-list']);
               } else {
-                this.toaster.error(response.message);
+                this.toaster.error('Login failed. Please try again');
               }
         },
         error: (error) => {
@@ -78,6 +78,20 @@ export class SignInComponent implements OnInit{
       })
     } else {
       this.loginForm.markAllAsTouched();
+    }
+  }
+
+  togglePassword() {
+    let password = document.getElementById('password');
+    let icon = document.getElementById('icon');
+    if (password.getAttribute('type') === 'password') {
+      password.setAttribute('type', 'text');
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    } else {
+      password.setAttribute('type', 'password');
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
     }
   }
 }

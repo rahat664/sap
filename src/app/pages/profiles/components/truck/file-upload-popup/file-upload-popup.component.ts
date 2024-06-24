@@ -72,6 +72,7 @@ export class FileUploadPopupComponent{
     if (!this.callFromModal) {
       this.fileInput.emit(this.fileArray);
     }
+    this.fileArray[i].fileOpened = false;
   }
 
   onClickFileType($event: boolean, i: number) {
@@ -88,13 +89,13 @@ export class FileUploadPopupComponent{
       this.sharedDriverEditService.bindDriverValueWithForm(this.singleDriver);
       this.sharedDriverEditService.onChangeFile(this.fileArray);
       this.sharedDriverEditService.onDriverUpdate(this.singleDriver.name, this.singleDriver.phone);
-      this.modalClosed.emit(this.sharedDriverEditService.isUploadPopupOpen);
+      this.modalClosed.emit(false);
     } else if (this.isFromTruck) {
       this.sharedDriverEditService.getTruckDocument(this.singleTruck);
       this.sharedDriverEditService.bindTruckValueWithForm(this.singleTruck);
       this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
       this.sharedDriverEditService.onTruckUpdate();
-      this.modalClosed.emit(this.sharedDriverEditService.isUploadPopupOpen);
+      this.modalClosed.emit(false);
     }
   }
 

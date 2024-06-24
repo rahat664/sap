@@ -53,6 +53,8 @@ export class TruckComponent implements OnInit{
   isNewOpen: boolean;
   singleTruck: TruckInnerModel;
   newDriverFileType: CustomInputSelectModel[] = [];
+  private page: number = 0;
+  totalPages: number;
 
   constructor(private service: TruckService, private shared: DriverEditSharedService) {
   }
@@ -60,21 +62,24 @@ export class TruckComponent implements OnInit{
 
   ngOnInit(): void {
     this.getTruckList();
+    this.makeSureUploadCompletedOrNot();
   }
 
   private getTruckList() {
+    this.page = 0;
     this.loading = true;
-    this.service.getTruckList().subscribe((res: any) => {
-      res.data.forEach((truck: TruckModel) => {
+    this.service.getTruckList(this.page).subscribe((res: any) => {
+      res.data.responses.forEach((truck: TruckModel) => {
         truck.truck.preHireCheckList = String(truck.preHireChecklistList);
         this.truckList.push(truck.truck);
       });
+      this.totalPages = res.data.totalPages;
       this.loading = false;
     });
   }
 
-  getFullRegistrationName(truck: any) {
-    return `${truck.registration_zone} ${truck.registration_category} ${truck.registration_serial} ${truck.registration_num}`
+  getFullRegistrationName(truck: TruckInnerModel) {
+    return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial} ${truck.registrationNum}`
   }
 
 
@@ -142,5 +147,16 @@ export class TruckComponent implements OnInit{
         this.getTruckList();
       }
     });
+  }
+  onBottom($event: boolean) {
+    if ($event && (this.page < this.totalPages-1)) {
+      this.page++;
+      this.service.getTruckList(this.page).subscribe((res: any) => {
+        res.data.responses.forEach((truck: TruckModel) => {
+          truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+          this.truckList.push(truck.truck);
+        });
+      });
+    }
   }
 }

@@ -11,6 +11,7 @@ import {ApiResponse} from "../../auth/models/response/api-response";
 export class UserService {
   url = environment.userUrl + '/api/users';
   rolesUrl = environment.userUrl + '/api/roles';
+  departmentsUrl = environment.userUrl + '/api/departments';
 
   constructor(private http: HttpClient) {
   }
@@ -51,7 +52,7 @@ export class UserService {
   }
 
   getUsers(page: number): Observable<any> {
-    return this.http.get<ApiResponse>(this.url + '/getAll?page='+page).pipe(map((response) => {
+    return this.http.get<ApiResponse>(this.url + '/admins?page='+page).pipe(map((response) => {
 
         return response.data;
 
@@ -67,9 +68,9 @@ export class UserService {
     return this.http.put(`${this.url}/edit-driver`, body, {})
   }
 
-  getDriver() {
+  getDriver(page:number) {
     return this.http.get(
-      `${this.url}/drivers`
+      `${this.url}/drivers?page=${page}`
     )
   }
 
@@ -106,5 +107,9 @@ export class UserService {
     )).pipe(
       catchError(this.handleError)
     );
+  }
+
+  getAllDepartments() {
+    this.http.get(`${this.departmentsUrl}`)
   }
 }

@@ -14,6 +14,7 @@ import {GetClickEventDirective} from "../../shared/directive/get-click-event.dir
 import {statusButtons} from "./models/status-buttons";
 import {LoadingComponent} from "../../shared/modules/loading/loading.component";
 import {CustomerService} from "../profiles/services/customer.service";
+import {GetOutsideModalClickDirective} from "../../shared/directive/get-outside-modal-click.directive";
 
 @Component({
   selector: 'app-trip-list',
@@ -32,7 +33,8 @@ import {CustomerService} from "../profiles/services/customer.service";
     GetElementHeightDirective,
     GiveMaxHeightDirective,
     GetClickEventDirective,
-    LoadingComponent
+    LoadingComponent,
+    GetOutsideModalClickDirective
   ],
   templateUrl: './trip-list.component.html',
   styleUrl: './trip-list.component.scss'
@@ -74,7 +76,7 @@ export class TripListComponent implements OnInit {
     private service: TripService,
     private datePipe: DatePipe,
     private customer: CustomerService
-    ) {
+  ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
       startDate: [''],
@@ -103,8 +105,10 @@ export class TripListComponent implements OnInit {
 // handle date selection
     if ($event === DateEnum.Custom) {
       this.isDateOpened = true;
+      this.dateOpened = true;
     } else {
       this.isDateOpened = false;
+      this.dateOpened = false;
       this.inputPlaceholder = this.dateOptionArray.find(x => x.id === $event)?.value;
       this.dateOptionArray.forEach(x => x.selected = x.id === $event);
       switch ($event) {
@@ -172,6 +176,8 @@ export class TripListComponent implements OnInit {
     this.filterForm.get('startDate').setValue($event);
     this.from = this.filterForm.get('startDate').value;
     this.to = this.filterForm.get('endDate').value;
+    this.dateOpened = false;
+    this.isDateOpened = false;
     this.onSearch();
   }
 
@@ -252,5 +258,7 @@ export class TripListComponent implements OnInit {
   onClickFilterOpened() {
     this.filterOpened = !this.filterOpened;
     this.dateOpened = false;
+    this.isDateOpened = false;
+    this.isSearchedMenuOpened = false;
   }
 }

@@ -5,6 +5,7 @@ import {AuthService} from "../../../pages/auth/services/auth.service";
 import {TripService} from "../../../pages/trip-list/services/trip.service";
 import {ImagePipe} from "../../../shared/pipes/image.pipe";
 import {RouterLink} from "@angular/router";
+import {GetOutsideModalClickDirective} from "../../../shared/directive/get-outside-modal-click.directive";
 
 @Component({
   selector: 'app-topbar',
@@ -13,7 +14,8 @@ import {RouterLink} from "@angular/router";
     NgOptimizedImage,
     CommonModule,
     ImagePipe,
-    RouterLink
+    RouterLink,
+    GetOutsideModalClickDirective
   ],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss'
@@ -46,6 +48,7 @@ export class TopbarComponent implements OnInit{
 
   onClickLogOut() {
     this.auth.logout()
+    this.isProfileOpened = false;
   }
 
   onSearch($event: any) {

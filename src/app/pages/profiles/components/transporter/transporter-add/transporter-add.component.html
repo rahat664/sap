@@ -12,7 +12,7 @@
         <label for="name">Transporter name</label>
         <input placeholder="Enter Transporter Name" class="bg-input rounded-lg  border-none p-4" type="text" id="name"
                formControlName="name">
-        <div *ngIf="transporterForm.get('name').dirty" class="text-red text-xs">
+        <div *ngIf="transporterForm.get('name').touched" class="text-red text-xs">
           <span>{{getNameErrorMessage()}}</span>
         </div>
         <!--        error-message-->
@@ -21,8 +21,11 @@
         <label for="phone">Mobile</label>
         <input placeholder="Enter Mobile" class="bg-input rounded-lg  border-none p-4" type="text" id="phone"
                formControlName="phone">
-        <div *ngIf="transporterForm.get('phone').dirty" class="text-red text-xs">
+        <div *ngIf="transporterForm.get('phone').dirty && !transporterForm.get('phone').touched" class="text-red text-xs">
           <span>{{getErrorMessage()}}</span>
+        </div>
+        <div *ngIf="transporterForm.get('phone').touched" class="text-red text-xs">
+          <span>{{getPhoneErrorMessageWithTouch()}}</span>
         </div>
         <!--        error-message-->
       </div>

@@ -118,7 +118,7 @@
 <app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
   <app-user-create *ngIf="isOpen" (formCreated)="onCreateUser($event)"></app-user-create>
 </app-create-popup>
-<app-confirm-modal  [isOpen]="confirmOpened" [buttonText]="buttonText" [userName]="userName" (performChangeStatus)="performChangeStatus()"></app-confirm-modal>
+<app-confirm-modal (isModalClosed)="confirmOpened = !$event"  [isOpen]="confirmOpened" [buttonText]="buttonText" [userName]="userName" (performChangeStatus)="performChangeStatus()"></app-confirm-modal>
 
 
 
