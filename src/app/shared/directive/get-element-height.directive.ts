@@ -1,10 +1,10 @@
-import {AfterViewChecked, Directive, ElementRef, EventEmitter, OnInit, Output} from '@angular/core';
+import {AfterViewChecked, Directive, ElementRef, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
 
 @Directive({
   selector: '[appGetElementHeight]',
   standalone: true
 })
-export class GetElementHeightDirective implements OnInit, AfterViewChecked{
+export class GetElementHeightDirective implements OnInit{
 
   @Output() height: EventEmitter<any> = new EventEmitter<any>();
 
@@ -16,10 +16,9 @@ export class GetElementHeightDirective implements OnInit, AfterViewChecked{
     this.height.emit(this.el.nativeElement.offsetHeight +  'px');
   }
 
-  ngAfterViewChecked(): void {
-    setTimeout(() => {
-      this.height.emit(this.el.nativeElement.offsetHeight +  'px');
-    }, 0);
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.height.emit(this.el.nativeElement.offsetHeight +  'px');
   }
 
 

@@ -38,12 +38,8 @@ import {LoadingComponent} from "../../../../shared/modules/loading/loading.compo
 export class TransporterComponent implements OnInit{
   height: string = '';
   isOpen: boolean;
-  filterOpened: boolean = false;
   districtFilter: number = 0;
   truckFilter: number = 0;
-  searchName: any;
-  isSearchedMenuOpened: any;
-  transporterSuggestions: any[] = [];
   districtInputPlaceholder: string;
   districtOptionsArray: CustomInputSelectModel[] = districts;
   districtOpened: boolean;

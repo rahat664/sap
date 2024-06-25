@@ -17,6 +17,9 @@ import {FileUploadPopupComponent} from "./file-upload-popup/file-upload-popup.co
 import {TruckInnerModel} from "./models/truck-inner.model";
 import {LoadingComponent} from "../../../../shared/modules/loading/loading.component";
 import {DriverEditSharedService} from "../../services/driver-edit-shared.service";
+import {
+  CheckTheHeightCrossMaxHeightOrNotDirective
+} from "../../../../shared/directive/check-the-height-cross-max-height-or-not.directive";
 
 @Component({
   selector: 'app-truck',
@@ -34,7 +37,8 @@ import {DriverEditSharedService} from "../../services/driver-edit-shared.service
     RouterLink,
     UploadButtonComponent,
     FileUploadPopupComponent,
-    LoadingComponent
+    LoadingComponent,
+    CheckTheHeightCrossMaxHeightOrNotDirective
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss'
@@ -71,6 +75,7 @@ export class TruckComponent implements OnInit{
     this.service.getTruckList(this.page).subscribe((res: any) => {
       res.data.responses.forEach((truck: TruckModel) => {
         truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+        truck.truck.noOfTrips = truck.noOfTrips;
         this.truckList.push(truck.truck);
       });
       this.totalPages = res.data.totalPages;
@@ -154,9 +159,24 @@ export class TruckComponent implements OnInit{
       this.service.getTruckList(this.page).subscribe((res: any) => {
         res.data.responses.forEach((truck: TruckModel) => {
           truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+          truck.truck.noOfTrips = truck.noOfTrips;
           this.truckList.push(truck.truck);
         });
       });
     }
+  }
+  onMaxHeightCross($event: boolean) {
+    setTimeout(() => {
+      if (!$event && this.totalPages > 1 && this.page != 1) {
+        this.page = 1
+        this.service.getTruckList(this.page).subscribe((res: any) => {
+          res.data.responses.forEach((truck: TruckModel) => {
+            truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+            truck.truck.noOfTrips = truck.noOfTrips;
+            this.truckList.push(truck.truck);
+          });
+        });
+      }
+    }, 1);
   }
 }

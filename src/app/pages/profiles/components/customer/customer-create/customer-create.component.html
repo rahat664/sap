@@ -9,21 +9,21 @@
     <form [formGroup]="customerForm" class="w-full  flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-[0.875rem] text-web-text-secondary">
       <div class="flex flex-col w-full lg:col-span-2">
         <label for="name">Customer Name</label>
-        <input (focusout)="onfocusOut($event)" placeholder="Enter Customer Name" class="bg-input rounded-lg  border-none p-4"  type="text" id="name" formControlName="name">
+        <input [minlength]="2" [maxlength]="50" (focusout)="onfocusOut($event)" placeholder="Enter Customer Name" class="bg-input rounded-lg  border-none p-4"  type="text" id="name" formControlName="name">
 <!--        error-message-->
-        <div *ngIf="customerForm.get('name').invalid && customerForm.get('name').touched" class="text-red text-xs">Customer name is required</div>
+        <div *ngIf="customerForm.get('name').invalid && customerForm.get('name').touched" class="text-red text-xs">{{getCustomerNameErrorMessage()}}</div>
       </div>
       <div class="flex flex-col w-full">
         <label for="code">Customer Code</label>
-        <input placeholder="Enter Customer Code" class="bg-input rounded-lg  border-none p-4" type="text" id="code" formControlName="code">
+        <input [minlength]="4" [maxlength]="4" placeholder="Enter Customer Code" class="bg-input rounded-lg  border-none p-4" type="text" id="code" formControlName="code">
 <!--        error-message-->
         <div *ngIf="customerForm.get('code').invalid && customerForm.get('code').touched" class="text-red text-xs">{{getCustomerCodeError()}}</div>
       </div>
       <div class="flex flex-col w-full">
         <label for="contact">Contact Person</label>
-        <input placeholder="Enter Contact Person" class="bg-input rounded-lg  border-none p-4" type="text" id="contact" formControlName="contactPerson">
+        <input [minlength]="2" [maxlength]="50" placeholder="Enter Contact Person" class="bg-input rounded-lg  border-none p-4" type="text" id="contact" formControlName="contactPerson">
 <!--        error-message-->
-        <div *ngIf="customerForm.get('contactPerson').invalid && customerForm.get('contactPerson').touched" class="text-red text-xs">Contact person is required</div>
+        <div *ngIf="customerForm.get('contactPerson').invalid && customerForm.get('contactPerson').touched" class="text-red text-xs">{{getContactPersonErrorMessage()}}</div>
       </div>
       <div class="flex flex-col w-full">
         <label for="phone">Mobile</label>

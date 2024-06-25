@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
 import {authGuard} from "./pages/auth/guards/auth.guard";
+import {isAlreadyLoggedInGuard} from "./pages/auth/guards/is-already-logged-in.guard";
 
 export const routes: Routes = [
   {
     path: 'auth/login',
     title: 'Login',
-    loadComponent: () => import('./pages/auth/components/sign-in/sign-in.component').then(c => c.SignInComponent)
+    loadComponent: () => import('./pages/auth/components/sign-in/sign-in.component').then(c => c.SignInComponent),
+    canActivate: [isAlreadyLoggedInGuard]
   },
   {
     path: 'dashboard',

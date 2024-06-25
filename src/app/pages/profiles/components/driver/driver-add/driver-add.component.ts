@@ -160,7 +160,7 @@ export class DriverAddComponent implements OnInit {
   getDriverPhoneErrorWithoutTouch() {
     console.log(this.driverAddForm?.get('driverPhone').hasError('invalidNumber'))
     if (this.driverAddForm?.get('driverPhone').hasError('invalidNumber')) {
-      return 'Please enter a valid number';
+      return 'Invalid driver number';
     } else {
       return '';
     }
@@ -168,13 +168,13 @@ export class DriverAddComponent implements OnInit {
 
   getDriverPhoneErrorWithTouch() {
     if (this.driverAddForm?.get('driverPhone').hasError('required')) {
-      return 'You must enter a value';
+      return 'Driver number required';
     } else if (this.driverAddForm?.get('driverPhone').hasError('minlength')) {
-      return 'Minimum 11 characters required';
+      return 'Invalid driver number';
     } else if (this.driverAddForm?.get('driverPhone').hasError('maxlength')) {
-      return 'Maximum 11 characters allowed';
+      return 'Invalid driver number';
     } else if (this.driverAddForm?.get('driverPhone').hasError('invalidNumber')) {
-      return 'Please enter a valid number';
+      return 'Invalid driver number';
     } else {
       return '';
     }
@@ -182,11 +182,11 @@ export class DriverAddComponent implements OnInit {
 
   getDriverNameError() {
     if (this.driverAddForm?.get('driverName').hasError('required')) {
-      return 'You must enter a value';
+      return 'Driver name required';
     } else if (this.driverAddForm?.get('driverName').hasError('minlength')) {
-      return 'Minimum 2 characters required';
+      return 'Invalid driver name';
     } else if (this.driverAddForm?.get('driverName').hasError('maxlength')) {
-      return 'Maximum 50 characters allowed';
+      return 'Invalid driver name';
     } else {
       return '';
     }

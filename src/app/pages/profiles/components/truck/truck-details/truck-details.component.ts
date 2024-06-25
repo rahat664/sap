@@ -16,6 +16,7 @@ import {DriverEditSharedService} from "../../../services/driver-edit-shared.serv
 import {driverFileType} from "../../customer/model/driver-file-type";
 import {CreatePopupComponent} from "../../../../../shared/modal/create-popup/create-popup.component";
 import {FileUploadPopupComponent} from "../file-upload-popup/file-upload-popup.component";
+import {ImageGalleryComponent} from "../../../../../shared/modules/image-gallery/image-gallery.component";
 
 @Component({
   selector: 'app-truck-details',
@@ -30,7 +31,8 @@ import {FileUploadPopupComponent} from "../file-upload-popup/file-upload-popup.c
     DatePipe,
     ReactiveFormsModule,
     CreatePopupComponent,
-    FileUploadPopupComponent
+    FileUploadPopupComponent,
+    ImageGalleryComponent
   ],
   templateUrl: './truck-details.component.html',
   styleUrl: './truck-details.component.scss'

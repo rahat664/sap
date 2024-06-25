@@ -8,19 +8,19 @@
           <i *ngIf="isSideBarOpen" class="fas fa-times w-4"></i>
         </button>
         <a routerLink="/" class="cursor-pointer text-xl font-bold w-64 h-16 object-center object-cover flex items-center lg:justify-center lg:border-r lg:border-gray-200 py-2">
-          <img src="assets/logo/shamolima.png" class="" alt="Shamolima Logo">
+          <img  src="assets/logo/shamolima.png" class="notPreview" alt="Shamolima Logo">
         </a>
-        <form class="hidden lg:block ml-4 w-[36rem]">
-          <label for="topbar-search" class="sr-only">Search</label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="far fa-search text-gray-500"></i>
-            </div>
-            <input type="text" name="email" id="topbar-search"
-                   class="border-none bg-input  text-web-text-secondary sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full pl-10 p-2.5"
-                   placeholder="Search" (keyup)="onSearch($event)">
-          </div>
-        </form>
+<!--        <form class="hidden lg:block ml-4 w-[36rem]">-->
+<!--          <label for="topbar-search" class="sr-only">Search</label>-->
+<!--          <div class="relative">-->
+<!--            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">-->
+<!--              <i class="far fa-search text-gray-500"></i>-->
+<!--            </div>-->
+<!--            <input type="text" name="email" id="topbar-search"-->
+<!--                   class="border-none bg-input  text-web-text-secondary sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full pl-10 p-2.5"-->
+<!--                   placeholder="Search" (keyup)="onSearch($event)">-->
+<!--          </div>-->
+<!--        </form>-->
         <ul>
           <li *ngFor="let result of searchSuggestions">
             <a >{{ result.name }}</a>
@@ -36,16 +36,18 @@
           <i class="fas fa-search"></i>
         </button>
 
-        <button id="dropdownDefaultButton" (click)="isProfileOpened = !isProfileOpened"
-                class="hidden lg:flex space-x-2 items-center font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600"
-                type="button">
+        <div class="flex items-center">
           <div class="w-8 h-8 overflow-hidden rounded-full border border-gray-400 object-center object-cover">
             <img class="w-full h-full" [src]="image | image" alt="profile-img">
           </div>
-          <span class="text-gray-500">{{ name }}</span>
-          <i *ngIf="!isProfileOpened" class="fas fa-caret-down ml-2 text-not-black"></i>
-          <i *ngIf="isProfileOpened" class="fas fa-caret-up ml-2 text-not-black"></i>
-        </button>
+          <button id="dropdownDefaultButton" (click)="isProfileOpened = !isProfileOpened"
+                  class="hidden lg:flex space-x-2 items-center font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600"
+                  type="button">
+            <span class="text-gray-500">{{ name }}</span>
+            <i *ngIf="!isProfileOpened" class="fas fa-caret-down ml-2 text-not-black"></i>
+            <i *ngIf="isProfileOpened" class="fas fa-caret-up ml-2 text-not-black"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>

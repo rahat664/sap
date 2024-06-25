@@ -37,7 +37,8 @@ export class SignInComponent implements OnInit{
       email: new FormControl('', [
         Validators.required,
         Validators.minLength(3),
-        Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")
+        Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"),
+        Validators.email
       ]),
       password: new FormControl('', [
         Validators.required,
@@ -92,6 +93,30 @@ export class SignInComponent implements OnInit{
       password.setAttribute('type', 'password');
       icon.classList.remove('fa-eye');
       icon.classList.add('fa-eye-slash');
+    }
+  }
+
+  getEmailError() {
+    if (this.email.hasError('required')) {
+      return 'Email is required';
+    } else if (this.email.hasError('minlength')) {
+      return 'Invalid email';
+    } else if (this.email.hasError('pattern')) {
+      return 'Invalid email';
+    } else if (this.email.hasError('email')) {
+      return 'Invalid email';
+    } else {
+      return '';
+    }
+  }
+
+  getPasswordError() {
+    if (this.password.hasError('required')) {
+      return 'Password required';
+    } else if (this.password.hasError('minlength')) {
+      return 'Invalid password';
+    } else {
+      return '';
     }
   }
 }

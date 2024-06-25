@@ -19,7 +19,7 @@
       </div>
     </div>
   </div>
-  <div appGiveMaxHeight (inBottomEnd)="onBottom($event)" [totalPage]="totalPages" [anotherItemsHeight]="height" class="bg-white w-full rounded-lg overflow-auto relative">
+  <div appGiveMaxHeight (inBottomEnd)="onBottom($event)" [totalPage]="totalPages" [anotherItemsHeight]="height" appCheckTheHeightCrossMaxHeightOrNot (maxHeightCrossed)="onMaxHeightCross($event)" class="bg-white w-full rounded-lg overflow-auto relative">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
       <tr class="whitespace-nowrap bg-white">

@@ -129,7 +129,7 @@ export class TruckAddComponent implements OnInit {
     });
     this.truckAddForm.get('registration_num').valueChanges.subscribe((value) => {
       this.numberOnly(value);
-      this.registrationNumErrorMessage = this.validation.getRegistrationSerialValidation(this.truckAddForm.get('registration_num'));
+      this.registrationNumErrorMessage = this.validation.getRegistrationNoValidation(this.truckAddForm.get('registration_num'));
     });
   }
 
@@ -159,7 +159,7 @@ export class TruckAddComponent implements OnInit {
           // Handle response
           if (res.status == "OK") {
             this.toastr.success(res.message);
-            this.router.navigate(['/profiles/truck']);
+            this.router.navigate(['/profile/truck']);
           } else {
             this.toastr.error(res.message);
           }
@@ -175,7 +175,7 @@ export class TruckAddComponent implements OnInit {
       this.registrationErrorMessage = this.validation.getDropdownValidation(this.truckAddForm.get('registration_zone'));
       this.registrationCategoryErrorMessage = this.validation.getDropdownValidation(this.truckAddForm.get('registration_category'));
       this.registrationSerialErrorMessage = this.validation.getRegistrationSerialValidation(this.truckAddForm.get('registration_serial'));
-      this.registrationNumErrorMessage = this.validation.getRegistrationSerialValidation(this.truckAddForm.get('registration_num'));
+      this.registrationNumErrorMessage = this.validation.getRegistrationNoValidation(this.truckAddForm.get('registration_num'));
     }
   }
 

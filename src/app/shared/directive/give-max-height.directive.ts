@@ -13,7 +13,7 @@ import {
   selector: '[appGiveMaxHeight]',
   standalone: true
 })
-export class GiveMaxHeightDirective implements OnInit, AfterViewChecked{
+export class GiveMaxHeightDirective implements OnInit{
   @Input() anotherItemsHeight: string = '0px';
   @Output() elementHeight: EventEmitter<any> = new EventEmitter<any>();
   topBarHeight: string = '110px';
@@ -26,11 +26,11 @@ export class GiveMaxHeightDirective implements OnInit, AfterViewChecked{
     this.el.nativeElement.style.maxHeight = 'calc(100vh - ' + this.anotherItemsHeight + ' - ' + this.topBarHeight + ')';
     this.elementHeight.emit(this.el.nativeElement.style.maxHeight);
   }
-  ngAfterViewChecked(): void {
-    setTimeout(() => {
-      this.el.nativeElement.style.maxHeight = 'calc(100vh - ' + this.anotherItemsHeight + ' - ' + this.topBarHeight + ')';
-      this.elementHeight.emit(this.el.nativeElement.style.maxHeight);
-    }, 0);
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.el.nativeElement.style.maxHeight = 'calc(100vh - ' + this.anotherItemsHeight + ' - ' + this.topBarHeight + ')';
+    this.elementHeight.emit(this.el.nativeElement.style.maxHeight);
   }
 
   @HostListener('scroll', ['$event']) onScroll(event: any) {

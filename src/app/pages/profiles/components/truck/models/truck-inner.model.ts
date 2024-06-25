@@ -22,6 +22,6 @@ export interface TruckInnerModel {
   taxExpDate: string | null;
   caseExpDate: string | null;
   preHireCheckList: string | null;
-  numberOfTrips: number;
+  noOfTrips: number;
   tracker: string | null;
 }

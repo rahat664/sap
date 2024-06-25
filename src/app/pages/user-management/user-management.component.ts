@@ -15,6 +15,9 @@ import {LoadingComponent} from "../../shared/modules/loading/loading.component";
 import {ValidationService} from "../../shared/services/validation/validation.service";
 import {ConfirmModalComponent} from "../../shared/modules/confirm-modal/confirm-modal.component";
 import {ToastrService} from "ngx-toastr";
+import {
+  CheckTheHeightCrossMaxHeightOrNotDirective
+} from "../../shared/directive/check-the-height-cross-max-height-or-not.directive";
 
 @Component({
   selector: 'app-user-management',
@@ -31,7 +34,8 @@ import {ToastrService} from "ngx-toastr";
     CreatePopupComponent,
     UserCreateComponent,
     LoadingComponent,
-    ConfirmModalComponent
+    ConfirmModalComponent,
+    CheckTheHeightCrossMaxHeightOrNotDirective
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
@@ -290,5 +294,15 @@ export class UserManagementComponent {
         this.toastr.error(err);
       }
     });
+  }
+  onMaxHeightCross($event: boolean) {
+    setTimeout(() => {
+      if (!$event && this.totalPages > 1 && this.page != 1) {
+        this.page = 1
+        this.service.getUsers(this.page).subscribe((res: any) => {
+          this.Users.push(...res.responses);
+        });
+      }
+    }, 1);
   }
 }

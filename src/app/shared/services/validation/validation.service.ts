@@ -8,7 +8,7 @@ export class ValidationService {
   constructor() { }
   getErrorMessage(value:any) {
     if (value?.get('phone').hasError('invalidNumber')) {
-      return 'Please enter a valid phone number';
+      return 'Invalid number';
     } else {
       return '';
     }
@@ -16,13 +16,13 @@ export class ValidationService {
 
   getErrorMessageWithTouch(value: any) {
     if (value?.get('phone').hasError('required')) {
-      return 'You must enter a value';
+      return 'Number required';
     } else if (value?.get('phone').hasError('minLength')) {
-      return 'Phone number must be 11 digit';
+      return 'Invalid number';
     } else if (value?.get('phone').hasError('maxLength')) {
-      return 'Phone number must be 11 digit';
+      return 'Invalid  number';
     } else if (value?.get('phone').hasError('invalidNumber')) {
-      return 'Phone number must start with 01';
+      return 'Invalid  number';
     } else {
       return '';
     }
@@ -30,15 +30,15 @@ export class ValidationService {
 
   getDriverNumberValidation(value: any) {
     if (value?.hasError('required')) {
-      return 'You must enter a value';
+      return 'Driver number required';
     }  if(value?.hasError('pattern')){
-      return 'Only numbers are allowed';
+      return 'Invalid number';
     }  if (value?.hasError('minlength')) {
-      return 'Phone number must be 11 digit';
+      return 'Invalid number';
     }  if (value?.hasError('maxlength')) {
-      return 'Phone number must be 11 digit';
+      return 'Invalid number';
     }  if (value?.hasError('invalidNumber')) {
-      return 'Phone number must start with 01';
+      return 'Invalid number';
     } else {
       return '';
     }
@@ -47,13 +47,13 @@ export class ValidationService {
   mobileNumberValidation(value: any, customerForm: any) {
     // set error if the starting two digits are not 01
     if (isNaN(value)) {
-      customerForm?.get('phone').setValue(value.substring(0, value.length - 1));
+      customerForm?.get('phone').setValue(value?.substring(0, value.length - 1));
     }
-    if (value?.substring(0, 1) != '0' && value.substring(0, 1)) {
+    if (value?.substring(0, 1) != '0' && value?.substring(0, 1)) {
       // return error to the parent
       return customerForm?.get('phone').setErrors({invalidNumber: true});
     }
-    if (value?.substring(1, 2) != '1' && value.substring(1, 2)) {
+    if (value?.substring(1, 2) != '1' && value?.substring(1, 2)) {
       // return error to the parent
       return customerForm?.get('phone').setErrors({invalidNumber: true});
     }
@@ -82,26 +82,26 @@ export class ValidationService {
 
   getRegistrationSerialValidation(value: any) {
     if (value?.hasError('required')) {
-      return 'You must enter a value';
+      return 'Registration serial required';
     } else if(value?.hasError('pattern')){
-      return 'Only numbers are allowed';
+      return 'Invalid input';
     } else if (value?.hasError('minlength')) {
-      return 'Registration Serial must be 2 digit';
+      return 'Invalid input';
     } else if (value?.hasError('maxlength')) {
-      return 'Registration Serial must be 2 digit';
+      return 'Invalid input';
     } else {
       return '';
     }
   }
   getRegistrationNoValidation(value: any) {
     if (value?.hasError('required')) {
-      return 'You must enter a value';
+      return 'Registration No required';
     } else if(value?.hasError('pattern')){
-      return 'Only numbers are allowed';
+      return 'Invalid input';
     } else if (value?.hasError('minlength')) {
-      return 'Registration No must be 4 digit';
+      return 'Invalid input';
     } else if (value?.hasError('maxlength')) {
-      return 'Registration No must be 4 digit';
+      return 'Invalid input';
     } else {
       return '';
     }

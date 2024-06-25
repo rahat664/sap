@@ -36,7 +36,7 @@ export class UserCreateComponent implements OnInit {
 
   constructor(private service: UserService, private validation:ValidationService, private fb: FormBuilder, private toastr: ToastrService) {
     this.userForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(11), Validators.maxLength(11)]],
       email: ['', [Validators.required, Validators.email]],
       designation: [''],
@@ -60,6 +60,8 @@ export class UserCreateComponent implements OnInit {
           this.toastr.error(res.message);
         }
       });
+    } else {
+      this.userForm.markAllAsTouched();
     }
   }
 
@@ -96,7 +98,11 @@ export class UserCreateComponent implements OnInit {
 
   getNameErrorMessage() {
     if (this.userForm.get('name').hasError('required')) {
-      return 'You must enter a value';
+      return 'Name required';
+    } else if (this.userForm.get('name').hasError('minlength')) {
+      return 'Invalid name';
+    } else if (this.userForm.get('name').hasError('maxlength')) {
+      return 'Invalid name';
     } else {
       return '';
     }
@@ -108,7 +114,7 @@ export class UserCreateComponent implements OnInit {
     if (this.userForm.get('email').hasError('email')) {
       return 'Invalid email address';
     } else if (this.userForm.get('email').hasError('required')) {
-      return 'You must enter a value';
+      return 'Email required';
     } else {
       return '';
     }

@@ -14,7 +14,7 @@ class PermissionService {
       return true;
     } else {
       // Redirect to the login page with the return url
-      this.router.navigate(['/auth/login'], { queryParams: { returnUrl: _state.url } });
+      this.router.navigate(['/auth/login']);
       return false;
     }
   }

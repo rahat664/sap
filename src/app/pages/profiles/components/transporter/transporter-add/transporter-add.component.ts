@@ -22,7 +22,7 @@ import {ValidationService} from "../../../../../shared/services/validation/valid
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss'
 })
-export class TransporterAddComponent implements OnInit{
+export class TransporterAddComponent implements OnInit {
   transporterForm: FormGroup;
   transporterModel: UserModel = new UserModel();
   paymentOpened: boolean;
@@ -31,10 +31,10 @@ export class TransporterAddComponent implements OnInit{
   @Output() formCreated = new EventEmitter<boolean>();
   bkashPaymentTypePlaceholder: string;
 
-  constructor(private service: UserService, private validation: ValidationService,private toastr: ToastrService, private fb: FormBuilder) {
+  constructor(private service: UserService, private validation: ValidationService, private toastr: ToastrService, private fb: FormBuilder) {
     this.transporterForm = this.fb.group({
-      name: ['', Validators.required],
-      phone: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+      phone: ['', [Validators.required, Validators.pattern('01[0-9]{9}'), Validators.minLength(11), Validators.maxLength(11)]],
       truckStand: [''],
       preferredPaymentMethod: [''],
       bkashName: [null],
@@ -114,8 +114,7 @@ export class TransporterAddComponent implements OnInit{
           this.formCreated.emit(false);
         }
       )
-    }
-    else {
+    } else {
       this.transporterForm.markAllAsTouched();
     }
   }
@@ -162,7 +161,11 @@ export class TransporterAddComponent implements OnInit{
 
   getNameErrorMessage() {
     if (this.transporterForm.get('name').hasError('required')) {
-      return 'You must enter a value';
+      return 'Name required';
+    } else if (this.transporterForm.get('name').hasError('minlength')) {
+      return 'Invalid name';
+    } else if (this.transporterForm.get('name').hasError('maxlength')) {
+      return 'Invalid name';
     } else {
       return '';
     }

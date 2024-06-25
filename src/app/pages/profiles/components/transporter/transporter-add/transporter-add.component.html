@@ -10,7 +10,7 @@
           class="w-full  flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-[0.875rem] text-web-text-secondary">
       <div class="flex flex-col w-full lg:col-span-2">
         <label for="name">Transporter name</label>
-        <input placeholder="Enter Transporter Name" class="bg-input rounded-lg  border-none p-4" type="text" id="name"
+        <input [minlength]="2" [maxlength]="50" placeholder="Enter Transporter Name" class="bg-input rounded-lg  border-none p-4" type="text" id="name"
                formControlName="name">
         <div *ngIf="transporterForm.get('name').touched" class="text-red text-xs">
           <span>{{getNameErrorMessage()}}</span>
@@ -19,7 +19,7 @@
       </div>
       <div class="flex flex-col w-full">
         <label for="phone">Mobile</label>
-        <input placeholder="Enter Mobile" class="bg-input rounded-lg  border-none p-4" type="text" id="phone"
+        <input [minlength]="11" [maxlength]="11" placeholder="Enter Mobile" class="bg-input rounded-lg  border-none p-4" type="text" id="phone"
                formControlName="phone">
         <div *ngIf="transporterForm.get('phone').dirty && !transporterForm.get('phone').touched" class="text-red text-xs">
           <span>{{getErrorMessage()}}</span>

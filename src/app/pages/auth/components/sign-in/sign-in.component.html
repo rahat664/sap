@@ -12,18 +12,18 @@
           <label for="email" class="form-label">User Email</label>
           <input [autocomplete]="false"  formControlName="email" type="email" class="bg-input rounded-lg  border-none px-4 py-4 "  placeholder="User Email" id="email">
           <!--        error-message-->
-          <div *ngIf="email?.invalid && (email?.touched)" class="text-red">Please enter valid email</div>
+          <div *ngIf="email?.invalid && (email?.touched)" class="text-red text-xs">{{getEmailError()}}</div>
         </div>
         <div class="mb-3 flex flex-col text-secondary w-full">
           <label for="password" class="form-label">Password</label>
 <!--          password field with eye icon-->
           <div class="relative bg-input rounded-lg  border-none">
-            <input [autocomplete]="false" formControlName="password" type="password" class="border-none rounded-lg outline-none px-4 py-4 w-full" placeholder="Password" id="password">
+            <input [autocomplete]="false" formControlName="password" type="password" class="border-none bg-input rounded-lg outline-none px-4 py-4 w-full" placeholder="Password" id="password">
             <i id="icon" class="fas fa-eye-slash absolute right-4 top-4 cursor-pointer" (click)="togglePassword()"></i>
           </div>
           <!--        error-message-->
-          <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="text-red">
-            Please enter your password
+          <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="text-red text-xs">
+            <span>{{getPasswordError()}}</span>
           </div>
         </div>
         <button class="btn bg-primary text-white rounded-lg px-4 py-4 w-full">Login</button>

@@ -19,7 +19,7 @@
       </div>
     </div>
   </div>
-  <div appGiveMaxHeight (inBottomEnd)="onBottom($event)" [totalPage]="totalPages" [anotherItemsHeight]="height" class="bg-white  w-full rounded-lg overflow-auto relative">
+  <div appCheckTheHeightCrossMaxHeightOrNot (maxHeightCrossed)="onMaxHeightCross($event)" appGiveMaxHeight (inBottomEnd)="onBottom($event)" [totalPage]="totalPages" [anotherItemsHeight]="height" class="bg-white  w-full rounded-lg overflow-auto relative">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
       <tr class="whitespace-nowrap bg-white">
@@ -55,7 +55,7 @@
             <a routerLink="/profile/truck/{{ truck.id }}/pre-hire-checklist"
                class="text-link cursor-pointer">{{truck.preHireCheckList}}/22</a>
           </td>
-          <td class="text-center">{{ truck.numberOfTrips }}</td>
+          <td class="text-center">{{ truck.noOfTrips }}</td>
           <td class="text-center whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
               <span *ngIf="truck.tracker">{{ truck.tracker }}</span>

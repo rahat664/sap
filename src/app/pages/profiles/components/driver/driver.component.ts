@@ -13,6 +13,9 @@ import {UserService} from "../../services/user.service";
 import {LoadingComponent} from "../../../../shared/modules/loading/loading.component";
 import {driverFileType} from "../customer/model/driver-file-type";
 import {DriverEditSharedService} from "../../services/driver-edit-shared.service";
+import {
+  CheckTheHeightCrossMaxHeightOrNotDirective
+} from "../../../../shared/directive/check-the-height-cross-max-height-or-not.directive";
 
 @Component({
   selector: 'app-driver',
@@ -28,7 +31,8 @@ import {DriverEditSharedService} from "../../services/driver-edit-shared.service
     NgIf,
     RouterLink,
     UploadButtonComponent,
-    LoadingComponent
+    LoadingComponent,
+    CheckTheHeightCrossMaxHeightOrNotDirective
   ],
   templateUrl: './driver.component.html',
   styleUrl: './driver.component.scss'
@@ -123,5 +127,16 @@ export class DriverComponent implements OnInit {
         this.driverList.push(...res.data.responses);
       });
     }
+  }
+
+  onMaxHeightCross($event: boolean) {
+    setTimeout(() => {
+      if (!$event && this.totalPages > 1 && this.page != 1) {
+        this.page = 1
+        this.user.getDriver(this.page).subscribe((res: any) => {
+          this.driverList.push(...res.data.responses);
+        });
+      }
+    }, 1);
   }
 }

@@ -78,7 +78,7 @@
       <thead>
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left">Trip no.</th>
-        <th class="text-left">Trip Date</th>
+        <th class="text-left whitespace-nowrap">Trip Date</th>
         <th class="text-left">Company</th>
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
@@ -97,7 +97,7 @@
           <td class="whitespace-nowrap">
             <span class="text-blue">{{ trip.tripId }}</span>
           </td>
-          <td>{{ trip.tripStartDatetime | date: 'dd MMM yyyy' }}</td>
+          <td class="whitespace-nowrap">{{ trip.tripStartDatetime | date: 'dd MMM yyyy' }}</td>
           <td>{{ trip.customerName }}</td>
           <td>{{ trip.tripPoints[0]?.pointName }}, {{ trip.tripPoints[0]?.pointDistrict }}</td>
           <td>{{ trip.tripPoints[1]?.pointName }}, {{ trip.tripPoints[1]?.pointDistrict }}</td>

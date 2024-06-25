@@ -21,21 +21,21 @@
           </li>
           <li>
             <a routerLink="/dashboard" routerLinkActive="active" class="cursor-pointer text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
-              <img src="assets/svg/dashboard.svg" alt="">
+              <img class="notPreview" src="assets/svg/dashboard.svg" alt="">
               <span class="ml-3">Dashboard</span>
             </a>
           </li>
           <li>
             <a routerLink="/trip-list" routerLinkActive="active"
                class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
-              <img src="assets/svg/trip-list.svg" alt="">
+              <img class="notPreview" src="assets/svg/trip-list.svg" alt="">
               <span class="ml-3 flex-1 whitespace-nowrap">Trip List</span>
             </a>
           </li>
           <li>
             <a routerLink="/user-management" routerLinkActive="active"
                class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
-              <img src="assets/svg/user-management.svg" alt="">
+              <img class="notPreview" src="assets/svg/user-management.svg" alt="">
               <span class="ml-3 flex-1 whitespace-nowrap">User Management</span>
             </a>
           </li>
@@ -43,7 +43,7 @@
             <button routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}" (click)="onClickProfile()" type="button"
                     class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                     aria-controls="dropdown-example" >
-              <img src="assets/svg/profile.svg" alt="">
+              <img class="notPreview" src="assets/svg/profile.svg" alt="">
               <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Profiles</span>
               <i *ngIf="dropdownOpen" class="fas fa-caret-up text-gray-500"></i>
               <i *ngIf="!dropdownOpen" class="fas fa-caret-down text-gray-500"></i>

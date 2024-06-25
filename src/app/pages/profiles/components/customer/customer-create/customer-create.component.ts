@@ -32,11 +32,11 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     private validation: ValidationService
   ) {
     this.customerForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       code: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
       email: [null, [Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(11), Validators.maxLength(11)]],
-      contactPerson: ['', Validators.required],
+      contactPerson: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       address: [null],
       note: [null]
     });
@@ -122,7 +122,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     if (this.customerForm?.get('email').hasError('email')) {
       return 'Invalid email address';
     } else if (this.customerForm?.get('email').hasError('required')) {
-      return 'You must enter a value';
+      return 'Email address required';
     } else {
       return '';
     }
@@ -134,9 +134,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
 
   getCustomerCodeError() {
     if (this.customerForm?.get('code').hasError('required')) {
-      return 'You must enter a value';
+      return 'Customer code required';
     } else if (this.customerForm?.get('code').hasError('minlength')) {
-      return 'Minimum 4 characters required';
+      return 'Invalid customer code';
     } else {
       return '';
     }
@@ -166,6 +166,30 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
         this.customerForm.get('code').setValue(fourDigitName)
         this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName)
       }
+    }
+  }
+
+  getContactPersonErrorMessage() {
+    if (this.customerForm?.get('contactPerson').hasError('required')) {
+      return 'Contact person required';
+    } else if (this.customerForm?.get('contactPerson').hasError('minlength')) {
+      return 'Invalid contact person';
+    } else if (this.customerForm?.get('contactPerson').hasError('maxlength')) {
+      return 'Invalid contact person';
+    } else {
+      return '';
+    }
+  }
+
+  getCustomerNameErrorMessage() {
+    if (this.customerForm?.get('name').hasError('required')) {
+      return 'Customer name required';
+    } else if (this.customerForm?.get('name').hasError('minlength')) {
+      return 'Invalid customer name';
+    } else if (this.customerForm?.get('name').hasError('maxlength')) {
+      return 'Invalid customer name';
+    } else {
+      return '';
     }
   }
 }
