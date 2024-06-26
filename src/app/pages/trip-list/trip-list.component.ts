@@ -40,21 +40,21 @@ import {GetOutsideModalClickDirective} from "../../shared/directive/get-outside-
   styleUrl: './trip-list.component.scss'
 })
 export class TripListComponent implements OnInit {
-  filterOpened: boolean = false;
+  filterOpened = false;
   filterForm: FormGroup;
-  isDateOpened: boolean = false;
+  isDateOpened = false;
   tripList: any[] = [];
-  inputPlaceholder: string = '';
+  inputPlaceholder = '';
   dateOptionArray: CustomInputSelectModel[] = []
   searchValue: string;
   from: string;
   to: string;
   status: string;
   tripSuggestions: any;
-  isSearchedMenuOpened: boolean = false;
+  isSearchedMenuOpened = false;
   searchName: string;
-  dateFilter: number = 0;
-  searchFilter: number = 0;
+  dateFilter = 0;
+  searchFilter = 0;
   summary = {
     trips: 0,
     trs: 0,
@@ -65,11 +65,11 @@ export class TripListComponent implements OnInit {
   statusButtons = statusButtons;
   rightButtonClicked: boolean;
   leftButtonClicked: boolean;
-  right: string = '0px'
-  height: string = '0px';
-  scrollable: boolean = true;
-  dateOpened: boolean = false;
-  loading: boolean = false;
+  right = '0px'
+  height = '0px';
+  scrollable = true;
+  dateOpened = false;
+  loading = false;
 
   constructor(
     private formBuilder: FormBuilder,

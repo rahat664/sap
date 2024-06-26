@@ -1,11 +1,11 @@
-import {Directive, ElementRef, EventEmitter, HostListener, Output} from '@angular/core';
+import {Directive, ElementRef, EventEmitter, HostListener, Output, OnInit} from '@angular/core';
 import {DriverEditSharedService} from "../../pages/profiles/services/driver-edit-shared.service";
 
 @Directive({
   selector: '[appGetOutsideModalClick]',
   standalone: true
 })
-export class GetOutsideModalClickDirective {
+export class GetOutsideModalClickDirective implements OnInit {
   @Output() clickOutside = new EventEmitter<boolean>(false);
 
   constructor(private elementRef: ElementRef, private shared: DriverEditSharedService) {}

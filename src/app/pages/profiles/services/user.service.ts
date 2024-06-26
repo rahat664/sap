@@ -51,13 +51,41 @@ export class UserService {
     )
   }
 
-  getUsers(page: number): Observable<any> {
-    return this.http.get<ApiResponse>(this.url + '/admins?page='+page).pipe(map((response) => {
-
-        return response.data;
-
-      }),
-      catchError(this.handleError));
+  getUsers(page: number, status ?: string, search ?: string, department ?: string): Observable<any> {
+    // take all possible parameters and return the response
+    if (status && !search && !department) {
+      return this.http.get(
+        `${this.url}/admins?page=${page}&status=${status}`
+      )
+    } else if (search && !status && !department) {
+      return this.http.get(
+        `${this.url}/admins?page=${page}&search=${search}`
+      )
+    } else if (department && !status && !search) {
+      return this.http.get(
+        `${this.url}/admins?page=${page}&department=${department}`
+      )
+    } else if (status && search && !department) {
+      return this.http.get(
+        `${this.url}/admins?page=${page}&status=${status}&search=${search}`
+      )
+    } else if (status && department && !search) {
+      return this.http.get(
+        `${this.url}/admins?page=${page}&status=${status}&department=${department}`
+      )
+    } else if (search && department && !status) {
+      return this.http.get(
+        `${this.url}/admins?page=${page}&search=${search}&department=${department}`
+      )
+    } else if (status && search && department) {
+      return this.http.get(
+        `${this.url}/admins?page=${page}&status=${status}&search=${search}&department=${department}`
+      )
+    } else {
+      return this.http.get(
+        `${this.url}/admins?page=${page}`
+      )
+    }
   }
 
   addDriver(body: any) {
@@ -68,10 +96,16 @@ export class UserService {
     return this.http.put(`${this.url}/edit-driver`, body, {})
   }
 
-  getDriver(page:number) {
-    return this.http.get(
-      `${this.url}/drivers?page=${page}`
-    )
+  getDriver(page:number, search?: string) {
+    if (search) {
+      return this.http.get(
+        `${this.url}/drivers?page=${page}&search=${search}`
+      )
+    } else {
+      return this.http.get(
+        `${this.url}/drivers?page=${page}`
+      )
+    }
   }
 
 

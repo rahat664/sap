@@ -7,7 +7,7 @@ import {
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges, AfterViewInit
 } from '@angular/core';
 import {ignoreElements} from "rxjs";
 
@@ -15,7 +15,7 @@ import {ignoreElements} from "rxjs";
   selector: '[appScrollByButton]',
   standalone: true
 })
-export class ScrollByButtonDirective implements OnInit, OnChanges{
+export class ScrollByButtonDirective implements OnInit, OnChanges, AfterViewInit{
   @Input() rightButtonClicked = false;
   @Input() leftButtonClicked = false;
   @Output() isVisible: EventEmitter<boolean> = new EventEmitter<boolean>(false);

@@ -26,11 +26,11 @@ export class UserCreateComponent implements OnInit {
   userForm: FormGroup;
   roleOptionsArray: CustomInputSelectModel[] = []
 
-  @Input() isOpen: boolean = false;
+  @Input() isOpen = false;
 
   @Output() formCreated: EventEmitter<boolean> = new EventEmitter<boolean>(false)
-  roleInputPlaceholder: string = '';
-  roleOpened: boolean = false;
+  roleInputPlaceholder = '';
+  roleOpened = false;
   userModel: UserModel = new UserModel();
 
 

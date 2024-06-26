@@ -7,7 +7,7 @@
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <i class="far fa-search text-gray-500"></i>
           </div>
-          <input type="text" name="email" id="topbar-search"
+          <input (keyup)="onKeyUpSearch($event)" type="text" name="email" id="topbar-search"
                  class="border-none text-input-hint w-[24rem] bg-white  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
                  placeholder="Search  name, mobile, email">
         </div>
@@ -77,16 +77,16 @@
           <td>{{user.createdOn}}</td>
           <td>
             <div class="relative w-full">
-              <button [disabled]="user.status == 'Removed'"  (click)="actionOpen(user.id)" class="cursor-pointer w-full"><i class="fas fa-ellipsis-v"></i></button>
+              <button [disabled]="user.status === 'Removed'"  (click)="actionOpen(user.id)" class="cursor-pointer w-full"><i class="fas fa-ellipsis-v"></i></button>
               <div *ngIf="selectedId == user.id && actionOpened" class="absolute bg-white shadow-md rounded-lg z-50 py-2 w-32 right-0 {{selectedId == Users[0].id ? 'top' : 'bottom'}}-full">
                 <ul class="text-[0.875rem]">
-                  <li *ngIf="user.status == 'Active'" class="py-2 px-4 hover:bg-input cursor-pointer">
+                  <li *ngIf="user.status === 'Active'" class="py-2 px-4 hover:bg-input cursor-pointer">
                     <a (click)="changeStatus(user.id, user.name, 'Inactive')" class="w-full flex space-x-3 items-center">
                       <img class="notPreview" src="./assets/svg/user-inactive.svg" alt="">
                       <span>Inactive</span>
                     </a>
                   </li>
-                  <li *ngIf="user.status == 'Inactive'" class="py-2 px-4 hover:bg-input">
+                  <li *ngIf="user.status === 'Inactive'" class="py-2 px-4 hover:bg-input">
                     <a (click)="changeStatus(user.id, user.name, 'Active')"
                       class="w-full flex space-x-3 items-center cursor-pointer">
                       <img class="notPreview" src="./assets/svg/user-active.svg" alt="">

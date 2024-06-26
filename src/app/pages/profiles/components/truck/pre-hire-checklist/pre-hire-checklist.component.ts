@@ -15,7 +15,7 @@ import {NgForOf} from "@angular/common";
 export class PreHireChecklistComponent implements OnInit {
   preHireCheckList: PreHireChecklistModel[] = [];
   object: any={};
-  @Output() preHireCheckListObject: EventEmitter<any> = new EventEmitter();
+  @Output() preHireCheckListObject = new EventEmitter<any>();
 
   constructor(private service: TruckService) {
   }

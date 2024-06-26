@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CustomInputComponent} from "../../../../../shared/modules/custom-input/custom-input.component";
 import {GetClickEventDirective} from "../../../../../shared/directive/get-click-event.directive";
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
@@ -33,8 +33,8 @@ import {DriverEditSharedService} from "../../../services/driver-edit-shared.serv
   templateUrl: './driver-details.component.html',
   styleUrl: './driver-details.component.scss'
 })
-export class DriverDetailsComponent {
-  inEditMode: boolean = false;
+export class DriverDetailsComponent implements OnInit {
+  inEditMode = false;
   singleDriver: UserModel;
   documents: any[] = [];
   driverName: string;

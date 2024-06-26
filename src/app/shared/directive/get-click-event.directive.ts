@@ -1,4 +1,4 @@
-import {Directive, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {Directive, ElementRef, EventEmitter, HostListener, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {DriverEditSharedService} from "../../pages/profiles/services/driver-edit-shared.service";
 import {Subscription} from "rxjs";
 
@@ -6,11 +6,11 @@ import {Subscription} from "rxjs";
   selector: '[appGetClickEvent]',
   standalone: true
 })
-export class GetClickEventDirective {
+export class GetClickEventDirective implements OnInit, OnDestroy {
 
 
-  @Output() clickedElement: EventEmitter<boolean> = new EventEmitter();
-  elementClicked: boolean = false;
+  @Output() clickedElement = new EventEmitter<boolean>();
+  elementClicked = false;
   private subs: Subscription;
 
   @HostListener('click', ['$event'])

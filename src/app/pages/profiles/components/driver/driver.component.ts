@@ -16,6 +16,7 @@ import {DriverEditSharedService} from "../../services/driver-edit-shared.service
 import {
   CheckTheHeightCrossMaxHeightOrNotDirective
 } from "../../../../shared/directive/check-the-height-cross-max-height-or-not.directive";
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-driver',
@@ -45,6 +46,7 @@ export class DriverComponent implements OnInit {
   newDriverFileType: any[];
   private page: number;
   totalPages: number;
+  searchValue: string;
 
   constructor(private user: UserService, private sharedService: DriverEditSharedService) {
   }
@@ -57,11 +59,23 @@ export class DriverComponent implements OnInit {
   private getDriverList() {
     this.page = 0;
     this.loading = true;
-    this.user.getDriver(this.page).subscribe((res: any) => {
-      this.driverList = res.data.responses;
-      this.totalPages = res.data.totalPages;
-      this.loading = false;
-    });
+    if (this.searchValue){
+      //subscribe with debounce time
+      this.user.getDriver(this.page, this.searchValue).pipe(
+        debounceTime(500)
+      ).subscribe((res: any) => {
+        this.driverList = res.data.responses;
+        this.totalPages = res.data.totalPages;
+        this.loading = false;
+      }
+      )
+    } else {
+      this.user.getDriver(this.page).subscribe((res: any) => {
+        this.driverList = res.data.responses;
+        this.totalPages = res.data.totalPages;
+        this.loading = false;
+      });
+    }
   }
 
   onClickDriverName(driver: UserModel) {
@@ -138,5 +152,18 @@ export class DriverComponent implements OnInit {
         });
       }
     }, 1);
+  }
+
+  onKeyUpSearch($event: KeyboardEvent) {
+    this.loading = true;
+    const target = ($event.target as HTMLInputElement).value;
+    if (target.length > 0) {
+      this.searchValue = target;
+    } else {
+      this.searchValue = null;
+    }
+    this.driverList = [];
+    this.getDriverList();
+
   }
 }

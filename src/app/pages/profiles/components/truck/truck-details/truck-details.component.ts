@@ -38,7 +38,7 @@ import {ImageGalleryComponent} from "../../../../../shared/modules/image-gallery
   styleUrl: './truck-details.component.scss'
 })
 export class TruckDetailsComponent implements OnInit{
-  inEditMode: boolean = false;
+  inEditMode = false;
   manufacturerList: CustomInputSelectModel[] = manufacturerList;
   manufactureOpened: boolean;
   manufacturerPlaceholder: string;

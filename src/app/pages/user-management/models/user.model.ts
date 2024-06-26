@@ -31,7 +31,9 @@ export class UserModel {
     "bank_acc_no": string;
     "branch_name": string;
     "acc_holder_name": string;
+    "paymentMethod": string;
   };
+  PaymentMethod: string;
   designation: string;
   createdOn: string;
   truckStand: string;

@@ -44,20 +44,20 @@ import {
   styleUrl: './truck.component.scss'
 })
 export class TruckComponent implements OnInit{
-  height: string = '';
+  height = '';
   truckList: TruckInnerModel[] = [];
   manufactureOpened: boolean;
   manufacturerList: CustomInputSelectModel[] = manufacturerList
-  manufacturerPlaceholder: string = '';
-  trackerAddOpened: boolean = false;
+  manufacturerPlaceholder = '';
+  trackerAddOpened = false;
   selectedTruckId: number;
-  isOpen: boolean = false;
+  isOpen = false;
   preHireCheckList: any[] = [];
   loading: boolean;
   isNewOpen: boolean;
   singleTruck: TruckInnerModel;
   newDriverFileType: CustomInputSelectModel[] = [];
-  private page: number = 0;
+  private page = 0;
   totalPages: number;
 
   constructor(private service: TruckService, private shared: DriverEditSharedService) {
@@ -178,5 +178,15 @@ export class TruckComponent implements OnInit{
         });
       }
     }, 1);
+  }
+
+  onKeyUpSearch($event: KeyboardEvent) {
+    this.loading = true;
+    const target = ($event.target as HTMLInputElement).value;
+    if (target.length) {
+      this.truckList = [];
+    } else {
+      this.getTruckList();
+    }
   }
 }

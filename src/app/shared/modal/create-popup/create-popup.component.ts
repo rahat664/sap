@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnChanges, OnInit, OnDestroy} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {DriverEditSharedService} from "../../../pages/profiles/services/driver-edit-shared.service";
 import {Subscription} from "rxjs";
@@ -15,8 +15,8 @@ import {GetOutsideModalClickDirective} from "../../directive/get-outside-modal-c
   templateUrl: './create-popup.component.html',
   styleUrl: './create-popup.component.scss'
 })
-export class CreatePopupComponent {
-  @Input() isOpen: boolean = false;
+export class CreatePopupComponent implements OnChanges, OnInit, OnDestroy {
+  @Input() isOpen = false;
   @Output() isModalClosed: EventEmitter<boolean> = new EventEmitter<boolean>(false);
   private subs: Subscription;
 

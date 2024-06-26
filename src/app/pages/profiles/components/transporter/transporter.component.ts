@@ -36,10 +36,10 @@ import {LoadingComponent} from "../../../../shared/modules/loading/loading.compo
   styleUrl: './transporter.component.scss'
 })
 export class TransporterComponent implements OnInit{
-  height: string = '';
+  height = '';
   isOpen: boolean;
-  districtFilter: number = 0;
-  truckFilter: number = 0;
+  districtFilter = 0;
+  truckFilter = 0;
   districtInputPlaceholder: string;
   districtOptionsArray: CustomInputSelectModel[] = districts;
   districtOpened: boolean;
@@ -64,7 +64,13 @@ export class TransporterComponent implements OnInit{
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
+    this.loading = true;
+    const value = ($event.target as HTMLInputElement).value;
+    if (value.length > 0) {
 
+    } else {
+      this.getTransporterList();
+    }
   }
 
   onClickSearchSuggestion(result: any) {
@@ -81,10 +87,10 @@ export class TransporterComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.getCustomerList();
+    this.getTransporterList();
   }
 
-  private getCustomerList() {
+  private getTransporterList() {
     this.loading = true;
     this.service.getUser('Transporter').subscribe((res: any) => {
       this.transporterList = res.data;
@@ -95,6 +101,6 @@ export class TransporterComponent implements OnInit{
   onClickTransporter($event: boolean) {
     this.isOpen = !$event;
     this.transporterList = [];
-    this.getCustomerList();
+    this.getTransporterList();
   }
 }

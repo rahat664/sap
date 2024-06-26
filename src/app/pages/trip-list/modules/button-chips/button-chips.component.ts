@@ -12,8 +12,8 @@ import {NgClass} from "@angular/common";
   styleUrl: './button-chips.component.scss'
 })
 export class ButtonChipsComponent {
-  @Input() count: number = 0;
-  @Input() Status: string = 'All';
-  @Input() isActive: boolean = true;
-  @Input() isDisabled: boolean = false;
+  @Input() count = 0;
+  @Input() Status = 'All';
+  @Input() isActive = true;
+  @Input() isDisabled = false;
 }

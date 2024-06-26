@@ -16,6 +16,13 @@ export class GetElementHeightDirective implements OnInit{
     this.height.emit(this.el.nativeElement.offsetHeight +  'px');
   }
 
+  ngAfterViewChecked() {
+    setTimeout(() => {
+      this.height.emit(this.el.nativeElement.offsetHeight +  'px');
+    }, 0);
+
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.height.emit(this.el.nativeElement.offsetHeight +  'px');

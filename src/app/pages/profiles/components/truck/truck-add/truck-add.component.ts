@@ -48,10 +48,10 @@ export class TruckAddComponent implements OnInit {
   singleChecklist: any = {};
   prehireCheckListOpened: boolean;
   isExpiryAvailable: boolean;
-  registrationErrorMessage: string = '';
-  registrationCategoryErrorMessage: string = '';
-  registrationSerialErrorMessage: string = '';
-  registrationNumErrorMessage: string = '';
+  registrationErrorMessage = '';
+  registrationCategoryErrorMessage = '';
+  registrationSerialErrorMessage = '';
+  registrationNumErrorMessage = '';
 
   constructor(
     private fb: FormBuilder,
@@ -136,7 +136,7 @@ export class TruckAddComponent implements OnInit {
   onClickSave() {
     if (this.truckAddForm.valid) {
       const formData = new FormData();
-      const payload: { [key: string]: any } = {};
+      const payload: Record<string, any> = {};
 
 // Iterate over form controls
       Object.keys(this.truckAddForm.controls).forEach(key => {

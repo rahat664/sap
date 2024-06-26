@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
 import {GetOutsideModalClickDirective} from "../../directive/get-outside-modal-click.directive";
 import {NgIf} from "@angular/common";
 import {DriverEditSharedService} from "../../../pages/profiles/services/driver-edit-shared.service";
@@ -13,7 +13,7 @@ import {DriverEditSharedService} from "../../../pages/profiles/services/driver-e
   templateUrl: './confirm-modal.component.html',
   styleUrl: './confirm-modal.component.scss'
 })
-export class ConfirmModalComponent {
+export class ConfirmModalComponent implements OnInit, OnDestroy {
   @Input() userName: string;
   @Input() buttonText: string;
   @Output() performChangeStatus = new EventEmitter<any>();

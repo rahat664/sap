@@ -7,7 +7,7 @@
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <i class="far fa-search text-gray-500"></i>
           </div>
-          <input type="text" name="email" id="topbar-search"
+          <input (keyup)="onKeyUpSearch($event)" type="text" name="email" id="topbar-search"
                  class="border-none text-input-hint w-[24rem] bg-white  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
                  placeholder="Enter truck registration number">
         </div>

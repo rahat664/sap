@@ -14,9 +14,9 @@ import {
   standalone: true
 })
 export class GiveMaxHeightDirective implements OnInit{
-  @Input() anotherItemsHeight: string = '0px';
+  @Input() anotherItemsHeight = '0px';
   @Output() elementHeight: EventEmitter<any> = new EventEmitter<any>();
-  topBarHeight: string = '110px';
+  topBarHeight = '110px';
   @Output() inBottomEnd: EventEmitter<boolean> = new EventEmitter<any>(false);
   @Input() totalPage: number;
 
@@ -33,9 +33,16 @@ export class GiveMaxHeightDirective implements OnInit{
     this.elementHeight.emit(this.el.nativeElement.style.maxHeight);
   }
 
+  ngAfterViewChecked() {
+    setTimeout(() => {
+      this.el.nativeElement.style.maxHeight = 'calc(100vh - ' + this.anotherItemsHeight + ' - ' + this.topBarHeight + ')';
+      this.elementHeight.emit(this.el.nativeElement.style.maxHeight);
+    }, 0);
+  }
+
   @HostListener('scroll', ['$event']) onScroll(event: any) {
     //detect that the user has scrolled to the bottom of the div
-    if (event.target.offsetHeight + event.target.scrollTop >= (event.target.scrollHeight - (this.totalPage + 5))) {
+    if (event.target.offsetHeight + event.target.scrollTop >= (event.target.scrollHeight - (this.totalPage + 30))) {
       this.inBottomEnd.emit(true);
     }
   }

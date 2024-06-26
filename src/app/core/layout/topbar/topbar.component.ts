@@ -21,10 +21,10 @@ import {GetOutsideModalClickDirective} from "../../../shared/directive/get-outsi
   styleUrl: './topbar.component.scss'
 })
 export class TopbarComponent implements OnInit{
-  isSideBarOpen: boolean = false;
-  isProfileOpened: boolean = false;
+  isSideBarOpen = false;
+  isProfileOpened = false;
   searchSuggestions: any[] = [];
-  isSearchedMenuOpened: boolean = false;
+  isSearchedMenuOpened = false;
   name: string;
   image: string;
   constructor(private toggleMobileViewService: ToggleResponsiveService,

@@ -179,7 +179,7 @@ export class DriverEditSharedService {
   onTruckUpdate() {
     if (this.truckUpdateForm.valid) {
       const formData = new FormData();
-      const payload: { [key: string]: any } = {};
+      const payload: Record<string, any> = {};
       Object.keys(this.truckUpdateForm.controls).forEach(key => {
         const control = this.truckUpdateForm.get(key);
         const value = control.value;
@@ -221,7 +221,7 @@ export class DriverEditSharedService {
     });
     if (this.driverUpdateForm.valid) {
       const formData = new FormData();
-      const payload: { [key: string]: any } = {};
+      const payload: Record<string, any> = {};
 
 // Iterate over form controls
       Object.keys(this.driverUpdateForm.controls).forEach(key => {

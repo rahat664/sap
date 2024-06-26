@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, OnChanges} from '@angular/core';
 import {CustomInputComponent} from "../../../../../shared/modules/custom-input/custom-input.component";
 import {CustomInputSelectModel} from "../../../../../shared/modules/custom-input/custom-input-select.model";
 import {GetClickEventDirective} from "../../../../../shared/directive/get-click-event.directive";
@@ -17,14 +17,14 @@ import {DriverEditSharedService} from "../../../services/driver-edit-shared.serv
   templateUrl: './file-upload-popup.component.html',
   styleUrl: './file-upload-popup.component.scss'
 })
-export class FileUploadPopupComponent{
+export class FileUploadPopupComponent implements OnChanges{
   file: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
   @Input() fileTypeOptions: CustomInputSelectModel[] = fileUpload;
-  fileInputPlaceholder: string = '';
+  fileInputPlaceholder = '';
   fileOpened: boolean;
-  @Input() isUploadIconEnabled: boolean = true;
-  @Input() padding: string = '4';
+  @Input() isUploadIconEnabled = true;
+  @Input() padding = '4';
   @Output() fileInput: EventEmitter<any> = new EventEmitter<any>();
   @Input() fileArray: any[] = [];
   @Input() callFromModal: boolean;

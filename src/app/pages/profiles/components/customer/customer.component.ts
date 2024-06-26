@@ -29,11 +29,11 @@ import {LoadingComponent} from "../../../../shared/modules/loading/loading.compo
 })
 export class CustomerComponent implements OnInit{
   customers: CustomerModel[] = []
-  isOpen: boolean = false;
+  isOpen = false;
   height: any;
   filterOpened: boolean;
-  statusFilter: number = 0;
-  roleFilter: number = 0;
+  statusFilter = 0;
+  roleFilter = 0;
   loading: boolean;
   constructor(private service: CustomerService) { }
   ngOnInit(): void {

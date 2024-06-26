@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ValidationService {
 
-  constructor() { }
-  getErrorMessage(value:any) {
+  constructor() {
+
+  }
+  getErrorMessage(value:FormGroup) {
     if (value?.get('phone').hasError('invalidNumber')) {
       return 'Invalid number';
     } else {
@@ -14,7 +17,7 @@ export class ValidationService {
     }
   }
 
-  getErrorMessageWithTouch(value: any) {
+  getErrorMessageWithTouch(value: FormGroup) {
     if (value?.get('phone').hasError('required')) {
       return 'Number required';
     } else if (value?.get('phone').hasError('minLength')) {
@@ -28,7 +31,7 @@ export class ValidationService {
     }
   }
 
-  getDriverNumberValidation(value: any) {
+  getDriverNumberValidation(value: AbstractControl) {
     if (value?.hasError('required')) {
       return 'Driver number required';
     }  if(value?.hasError('pattern')){
@@ -44,9 +47,9 @@ export class ValidationService {
     }
   }
 
-  mobileNumberValidation(value: any, customerForm: any) {
+  mobileNumberValidation(value: string , customerForm: FormGroup) {
     // set error if the starting two digits are not 01
-    if (isNaN(value)) {
+    if (isNaN(Number(value))) {
       customerForm?.get('phone').setValue(value?.substring(0, value.length - 1));
     }
     if (value?.substring(0, 1) != '0' && value?.substring(0, 1)) {
@@ -60,19 +63,19 @@ export class ValidationService {
 
     // prevent the change if the value is not a number
     // take only numbers
-    let onlyNumbers = value?.replace(/[^\d]/g, '');
+    const onlyNumbers = value?.replace(/[^\d]/g, '');
     // if the length is greater than 11 prevent the change
-    if (onlyNumbers.length > 11) {
+    if (onlyNumbers?.length > 11) {
       customerForm?.get('phone').setValue(onlyNumbers.substring(0, 11));
     }
     // if the length is less than 11 give error
-    if (onlyNumbers.length < 11) {
+    if (onlyNumbers?.length < 11) {
      customerForm?.get('phone').setErrors({minLength: true});
     }
 
   }
 
-  getDropdownValidation(value: any) {
+  getDropdownValidation(value: AbstractControl) {
     if (value?.hasError('required')) {
       return 'You must select a value';
     } else {
@@ -80,7 +83,7 @@ export class ValidationService {
     }
   }
 
-  getRegistrationSerialValidation(value: any) {
+  getRegistrationSerialValidation(value: AbstractControl) {
     if (value?.hasError('required')) {
       return 'Registration serial required';
     } else if(value?.hasError('pattern')){
@@ -93,7 +96,7 @@ export class ValidationService {
       return '';
     }
   }
-  getRegistrationNoValidation(value: any) {
+  getRegistrationNoValidation(value: AbstractControl) {
     if (value?.hasError('required')) {
       return 'Registration No required';
     } else if(value?.hasError('pattern')){

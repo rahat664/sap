@@ -8,7 +8,6 @@ import {BrowserAnimationsModule, provideAnimations} from "@angular/platform-brow
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {authInterceptor} from "./pages/auth/interceptors/auth.interceptor";
 import {DatePipe} from "@angular/common";
-import {NgxGalleryModule} from "@kolkov/ngx-gallery";
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({eventCoalescing: true}),
@@ -22,7 +21,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(BrowserAnimationsModule),
     provideAnimations(),
     provideAnimationsAsync(),
-    importProvidersFrom(NgxGalleryModule),
     DatePipe
   ]
 };

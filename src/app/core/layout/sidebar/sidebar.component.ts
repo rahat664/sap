@@ -13,8 +13,8 @@ import {GetOutsideModalClickDirective} from "../../../shared/directive/get-outsi
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent implements OnInit, OnDestroy{
-  willShow: boolean = false;
-  dropdownOpen: boolean = false;
+  willShow = false;
+  dropdownOpen = false;
   private subs: Subscription;
   constructor(private mobileViewService: ToggleResponsiveService) { }
   ngOnInit(): void {

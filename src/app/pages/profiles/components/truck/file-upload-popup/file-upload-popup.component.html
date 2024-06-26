@@ -38,7 +38,7 @@
                             [itemsOpened]="file.fileOpened"
           ></app-custom-input>
           <div
-            *ngIf="file.registrationType == 'Case' || file.registrationType == 'Fitness' || file.registrationType == 'Route Permit' || file.registrationType == 'Tax' || file.registrationType == 'Driving License Front'">
+            *ngIf="file.registrationType === 'Case' || file.registrationType === 'Fitness' || file.registrationType === 'Route Permit' || file.registrationType === 'Tax' || file.registrationType === 'Driving License Front'">
             <input type="date" (change)="onDateChange($event, i)" placeholder="Expire date "
                    class="border-none bg-white w-full flex-1 rounded-md p-4">
           </div>

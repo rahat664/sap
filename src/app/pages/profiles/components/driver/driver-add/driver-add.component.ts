@@ -99,7 +99,7 @@ export class DriverAddComponent implements OnInit {
         this.driverAddForm.removeControl('drivingLicenseExpiryDate')
       }
       const formData = new FormData();
-      const payload: { [key: string]: any } = {};
+      const payload: Record<string, any> = {};
 
 // Iterate over form controls
       Object.keys(this.driverAddForm.controls).forEach(key => {
@@ -151,7 +151,7 @@ export class DriverAddComponent implements OnInit {
     if (value?.substring(1, 2) != '1' && value?.substring(1, 2)){
       this.driverAddForm?.get('driverPhone').setErrors({invalidNumber: true});
     }
-    let onlyNumbers = value?.replace(/[^\d]/g, '');
+    const onlyNumbers = value?.replace(/[^\d]/g, '');
     if (onlyNumbers.length > 11) {
       this.driverAddForm?.get('driverPhone').setValue(onlyNumbers.substring(0, 11));
     }

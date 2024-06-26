@@ -83,8 +83,8 @@ export class SignInComponent implements OnInit{
   }
 
   togglePassword() {
-    let password = document.getElementById('password');
-    let icon = document.getElementById('icon');
+    const password = document.getElementById('password');
+    const icon = document.getElementById('icon');
     if (password.getAttribute('type') === 'password') {
       password.setAttribute('type', 'text');
       icon.classList.remove('fa-eye-slash');

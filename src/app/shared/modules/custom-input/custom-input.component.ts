@@ -1,33 +1,31 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CustomInputSelectModel} from "./custom-input-select.model";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {NgSelectModule} from "@ng-select/ng-select";
+import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {DriverEditSharedService} from "../../../pages/profiles/services/driver-edit-shared.service";
 import {GetOutsideModalClickDirective} from "../../directive/get-outside-modal-click.directive";
+import {NgSelectModule} from "@ng-select/ng-select";
 
 @Component({
   selector: 'app-custom-input',
   standalone: true,
   imports: [
-    NgForOf,
-    NgIf,
-    NgClass,
-    NgSelectModule,
+    CommonModule,
     FormsModule,
-    GetOutsideModalClickDirective
+    GetOutsideModalClickDirective,
+    NgSelectModule
   ],
   templateUrl: './custom-input.component.html',
   styleUrl: './custom-input.component.scss'
 })
 export class CustomInputComponent implements OnInit {
   @Input() inputPlaceholder: string;
-  @Output() selectedId: EventEmitter<number> = new EventEmitter();
-  @Output() isItemsOpened: EventEmitter<boolean> = new EventEmitter();
+  @Output() selectedId = new EventEmitter<number>();
+  @Output() isItemsOpened = new EventEmitter<boolean>();
   @Input() options: CustomInputSelectModel[] = [];
-  @Input() itemsOpened: boolean = false;
+  @Input() itemsOpened = false;
   @Input() customOpened: any;
-  @Input() isError: boolean = false;
+  @Input() isError = false;
   months: string[] = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -176,11 +174,11 @@ export class CustomInputComponent implements OnInit {
     return `${this.selectedToDay}-${this.selectedToMonth}-${this.selectedToYear}`;
   }
 
-  @Output() selectedFromDate: EventEmitter<string> = new EventEmitter();
-  @Output() selectedToDate: EventEmitter<string> = new EventEmitter();
-  @Output() selectedFromDateToToDate: EventEmitter<string> = new EventEmitter();
-  @Input() inputSearch: string = '';
-  @Input() backgroundColor: string = 'input';
+  @Output() selectedFromDate = new EventEmitter<string>();
+  @Output() selectedToDate = new EventEmitter<string>();
+  @Output() selectedFromDateToToDate = new EventEmitter<string>();
+  @Input() inputSearch = '';
+  @Input() backgroundColor = 'input';
   @Input() errorMessage: string;
 
 

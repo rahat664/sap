@@ -14,7 +14,7 @@ import {NgClass, NgIf} from "@angular/common";
 export class UploadButtonComponent {
   @Input() icon: string;
   @Input() buttonText: string;
-  @Input() file: boolean = false;
-  @Input() isIconButton: boolean = true;
+  @Input() file = false;
+  @Input() isIconButton = true;
   @Input() buttonColor: string;
 }
