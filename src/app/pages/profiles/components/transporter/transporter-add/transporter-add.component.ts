@@ -82,10 +82,10 @@ export class TransporterAddComponent implements OnInit {
       this.transporterModel.role = 'Transporter';
       this.transporterModel.truckStand =
         this.transporterForm.get('truckStand').value;
-      this.transporterModel.PaymentMethod = this.transporterForm.get(
+      this.transporterModel.paymentMethod = this.transporterForm.get(
         'preferredPaymentMethod'
       ).value;
-      switch (this.transporterModel.paymentMethods) {
+      switch (this.paymentInputPlaceholder) {
         case 'Bkash':
           this.transporterModel.acc_holder_name =
             this.transporterForm.get('bkashName').value;
