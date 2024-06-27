@@ -13,7 +13,7 @@
     }}" />
   <div
     class="absolute inset-y-0 right-2 flex items-center pr-2 pointer-events-none">
-    <i class="fas fa-angle-down text-not-black"></i>
+    <i class="fas fa-angle-down {{inputSearch ? 'text-not-black': 'text-input-hint'}}"></i>
   </div>
   <div
     *ngIf="itemsOpened"
