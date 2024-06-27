@@ -312,9 +312,7 @@ export class UserManagementComponent implements OnInit {
     setTimeout(() => {
       if (!$event && this.totalPages > 1 && this.page != 1) {
         this.page = 1;
-        this.service.getUsers(this.page).subscribe((res: any) => {
-          this.Users.push(...res.responses);
-        });
+        this.scrolledData();
       }
     }, 1);
   }

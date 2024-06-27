@@ -88,6 +88,18 @@ export class UserService {
     }
   }
 
+  getTransporter(page: number, search?: string) {
+    if (search) {
+      return this.http.get(
+        `${this.url}/transporters?page=${page}&search=${search}`
+      )
+    } else {
+      return this.http.get(
+        `${this.url}/transporters?page=${page}`
+      )
+    }
+  }
+
   addDriver(body: any) {
     return this.http.post(`${this.url}/add-driver`, body, {})
   }

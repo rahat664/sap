@@ -20,6 +20,7 @@ import {DriverEditSharedService} from "../../services/driver-edit-shared.service
 import {
   CheckTheHeightCrossMaxHeightOrNotDirective
 } from "../../../../shared/directive/check-the-height-cross-max-height-or-not.directive";
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-truck',
@@ -59,6 +60,7 @@ export class TruckComponent implements OnInit{
   newDriverFileType: CustomInputSelectModel[] = [];
   private page = 0;
   totalPages: number;
+  searchValue: string;
 
   constructor(private service: TruckService, private shared: DriverEditSharedService) {
   }
@@ -72,19 +74,34 @@ export class TruckComponent implements OnInit{
   private getTruckList() {
     this.page = 0;
     this.loading = true;
-    this.service.getTruckList(this.page).subscribe((res: any) => {
-      res.data.responses.forEach((truck: TruckModel) => {
-        truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-        truck.truck.noOfTrips = truck.noOfTrips;
-        this.truckList.push(truck.truck);
+    if (this.searchValue){
+      //subscribe with debounce time
+      this.service.getTruckList(this.page, this.searchValue).pipe(
+        debounceTime(500)
+      ).subscribe((res: any) => {
+        res.data.responses.forEach((truck: TruckModel) => {
+          truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+          truck.truck.noOfTrips = truck.noOfTrips;
+          this.truckList.push(truck.truck);
+        });
+        this.totalPages = res.data.totalPages;
+        this.loading = false;
       });
-      this.totalPages = res.data.totalPages;
-      this.loading = false;
-    });
+    } else {
+      this.service.getTruckList(this.page).subscribe((res: any) => {
+        res.data.responses.forEach((truck: TruckModel) => {
+          truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+          truck.truck.noOfTrips = truck.noOfTrips;
+          this.truckList.push(truck.truck);
+        });
+        this.totalPages = res.data.totalPages;
+        this.loading = false;
+      });
+    }
   }
 
   getFullRegistrationName(truck: TruckInnerModel) {
-    return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial} ${truck.registrationNum}`
+    return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial}-${truck.registrationNum}`
   }
 
 
@@ -148,6 +165,7 @@ export class TruckComponent implements OnInit{
   private makeSureUploadCompletedOrNot() {
     this.shared.completeTruckUpload.subscribe((res: boolean) => {
       if (res) {
+        this.searchValue = '';
         this.truckList = [];
         this.getTruckList();
       }
@@ -156,19 +174,17 @@ export class TruckComponent implements OnInit{
   onBottom($event: boolean) {
     if ($event && (this.page < this.totalPages-1)) {
       this.page++;
-      this.service.getTruckList(this.page).subscribe((res: any) => {
-        res.data.responses.forEach((truck: TruckModel) => {
-          truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-          truck.truck.noOfTrips = truck.noOfTrips;
-          this.truckList.push(truck.truck);
+      if (this.searchValue) {
+        this.service.getTruckList(this.page, this.searchValue).pipe(
+          debounceTime(500)
+        ).subscribe((res: any) => {
+          res.data.responses.forEach((truck: TruckModel) => {
+            truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+            truck.truck.noOfTrips = truck.noOfTrips;
+            this.truckList.push(truck.truck);
+          });
         });
-      });
-    }
-  }
-  onMaxHeightCross($event: boolean) {
-    setTimeout(() => {
-      if (!$event && this.totalPages > 1 && this.page != 1) {
-        this.page = 1
+      } else {
         this.service.getTruckList(this.page).subscribe((res: any) => {
           res.data.responses.forEach((truck: TruckModel) => {
             truck.truck.preHireCheckList = String(truck.preHireChecklistList);
@@ -177,6 +193,32 @@ export class TruckComponent implements OnInit{
           });
         });
       }
+    }
+  }
+  onMaxHeightCross($event: boolean) {
+    setTimeout(() => {
+      if (!$event && this.totalPages > 1 && this.page != 1) {
+        this.page = 1
+        if (this.searchValue) {
+          this.service.getTruckList(this.page, this.searchValue).pipe(
+            debounceTime(500)
+          ).subscribe((res: any) => {
+            res.data.responses.forEach((truck: TruckModel) => {
+              truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+              truck.truck.noOfTrips = truck.noOfTrips;
+              this.truckList.push(truck.truck);
+            });
+          });
+        } else {
+          this.service.getTruckList(this.page).subscribe((res: any) => {
+            res.data.responses.forEach((truck: TruckModel) => {
+              truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+              truck.truck.noOfTrips = truck.noOfTrips;
+              this.truckList.push(truck.truck);
+            });
+          });
+        }
+      }
     }, 1);
   }
 
@@ -184,9 +226,11 @@ export class TruckComponent implements OnInit{
     this.loading = true;
     const target = ($event.target as HTMLInputElement).value;
     if (target.length) {
-      this.truckList = [];
+      this.searchValue = target
     } else {
-      this.getTruckList();
+      this.searchValue = null;
     }
+    this.truckList = [];
+    this.getTruckList();
   }
 }

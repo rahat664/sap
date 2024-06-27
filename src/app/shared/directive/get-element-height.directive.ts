@@ -1,4 +1,13 @@
-import {AfterViewChecked, Directive, ElementRef, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
+import {
+  AfterViewChecked,
+  ChangeDetectorRef,
+  Directive,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  OnInit,
+  Output,
+} from '@angular/core';
 
 @Directive({
   selector: '[appGetElementHeight]',
@@ -8,8 +17,11 @@ export class GetElementHeightDirective implements OnInit{
 
   @Output() height: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private el: ElementRef) {
-
+  constructor(private el: ElementRef, private ref: ChangeDetectorRef) {
+    ref.detach();
+    setInterval(() => {
+      this.ref.detectChanges();
+    }, 1000);
   }
 
   ngOnInit(): void {

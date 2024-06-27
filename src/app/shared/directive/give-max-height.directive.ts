@@ -1,12 +1,12 @@
 import {
   AfterContentInit,
-  AfterViewChecked,
+  AfterViewChecked, ChangeDetectorRef,
   Directive,
   ElementRef,
   EventEmitter, HostListener,
   Input,
   OnInit,
-  Output
+  Output,
 } from '@angular/core';
 
 @Directive({
@@ -20,7 +20,12 @@ export class GiveMaxHeightDirective implements OnInit{
   @Output() inBottomEnd: EventEmitter<boolean> = new EventEmitter<any>(false);
   @Input() totalPage: number;
 
-  constructor(private el:ElementRef) { }
+  constructor(private el: ElementRef, private ref: ChangeDetectorRef) {
+    ref.detach();
+    setInterval(() => {
+      this.ref.detectChanges();
+    }, 1000);
+  }
 
   ngOnInit(): void {
     this.el.nativeElement.style.maxHeight = 'calc(100vh - ' + this.anotherItemsHeight + ' - ' + this.topBarHeight + ')';

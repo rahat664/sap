@@ -11,49 +11,52 @@
                  class="border-none text-input-hint w-[24rem] bg-white  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
                  placeholder="Search  name, mobile">
         </div>
-        <button (click)="onClickAddTransporter()" class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+        <button (click)="onClickAddTransporter()"
+                class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
           <i class="fas fa-plus-circle"></i>
           <span class="hidden lg:block">Add Transporter</span>
         </button>
       </div>
     </div>
-<!--    <div class=" w-full bg-white rounded-lg">-->
-<!--      <button (click)="onClickFilterOpened()" class="flex  px-2 py-1 space-x-3 items-center w-full "-->
-<!--              [ngClass]="{'border-b-2 border-[#0CD5F0]': filterOpened}">-->
-<!--        <i class="fas fa-caret-down text-input-hint text-xl"></i>-->
-<!--        <span class="text-not-black text-[0.875rem]">Filter-->
-<!--        <span *ngIf="getFilterLength() > 0">({{ truckFilter + districtFilter }})</span>-->
-<!--        <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3">|</span>-->
-<!--        <a (click)="onClearFilter()" *ngIf="getFilterLength() > 0" class="text-red">Clear all</a>-->
-<!--      </span>-->
-<!--      </button>-->
-<!--      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">-->
-<!--        <div class="relative w-1/3">-->
-<!--          <input (keyup)="onKeyUpSearch($event)" [(ngModel)]="searchName" placeholder="Enter Truck Stand"-->
-<!--                 class="w-full px-4 py-4 rounded-lg outline-none ring-none  border-none bg-input">-->
-<!--          <div *ngIf="isSearchedMenuOpened" id="searchDropdown"-->
-<!--               class="z-10 absolute top-full left-0 w-full max-h-64 overflow-y-auto  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">-->
-<!--            <ul class="py text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">-->
-<!--              <li *ngFor="let result of transporterSuggestions"-->
-<!--                  class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">-->
-<!--                <a (click)="onClickSearchSuggestion(result)" class="w-full h-full flex justify-between items-center">-->
-<!--                  <span>{{ result.customerName }}, {{ result.customerPhone }}</span>-->
-<!--                </a>-->
-<!--              </li>-->
-<!--            </ul>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <app-custom-input [inputSearch]="districtInputPlaceholder"-->
-<!--                          [customOpened]="false"-->
-<!--                          [options]="districtOptionsArray"-->
-<!--                          [itemsOpened]="districtOpened"-->
-<!--                          inputPlaceholder="Select District"-->
-<!--                          appGetClickEvent (clickedElement)="onClickDistrict($event)"-->
-<!--                          (selectedId)="onSelectDistrict($event)"></app-custom-input>-->
-<!--      </div>-->
-<!--    </div>-->
+    <!--    <div class=" w-full bg-white rounded-lg">-->
+    <!--      <button (click)="onClickFilterOpened()" class="flex  px-2 py-1 space-x-3 items-center w-full "-->
+    <!--              [ngClass]="{'border-b-2 border-[#0CD5F0]': filterOpened}">-->
+    <!--        <i class="fas fa-caret-down text-input-hint text-xl"></i>-->
+    <!--        <span class="text-not-black text-[0.875rem]">Filter-->
+    <!--        <span *ngIf="getFilterLength() > 0">({{ truckFilter + districtFilter }})</span>-->
+    <!--        <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3">|</span>-->
+    <!--        <a (click)="onClearFilter()" *ngIf="getFilterLength() > 0" class="text-red">Clear all</a>-->
+    <!--      </span>-->
+    <!--      </button>-->
+    <!--      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">-->
+    <!--        <div class="relative w-1/3">-->
+    <!--          <input (keyup)="onKeyUpSearch($event)" [(ngModel)]="searchName" placeholder="Enter Truck Stand"-->
+    <!--                 class="w-full px-4 py-4 rounded-lg outline-none ring-none  border-none bg-input">-->
+    <!--          <div *ngIf="isSearchedMenuOpened" id="searchDropdown"-->
+    <!--               class="z-10 absolute top-full left-0 w-full max-h-64 overflow-y-auto  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">-->
+    <!--            <ul class="py text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">-->
+    <!--              <li *ngFor="let result of transporterSuggestions"-->
+    <!--                  class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">-->
+    <!--                <a (click)="onClickSearchSuggestion(result)" class="w-full h-full flex justify-between items-center">-->
+    <!--                  <span>{{ result.customerName }}, {{ result.customerPhone }}</span>-->
+    <!--                </a>-->
+    <!--              </li>-->
+    <!--            </ul>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--        <app-custom-input [inputSearch]="districtInputPlaceholder"-->
+    <!--                          [customOpened]="false"-->
+    <!--                          [options]="districtOptionsArray"-->
+    <!--                          [itemsOpened]="districtOpened"-->
+    <!--                          inputPlaceholder="Select District"-->
+    <!--                          appGetClickEvent (clickedElement)="onClickDistrict($event)"-->
+    <!--                          (selectedId)="onSelectDistrict($event)"></app-custom-input>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </div>
-  <div appGiveMaxHeight [anotherItemsHeight]="height" class="bg-white relative w-full rounded-lg overflow-auto">
+  <div appGiveMaxHeight appCheckTheHeightCrossMaxHeightOrNot (maxHeightCrossed)="onMaxHeightCross($event)"
+       (inBottomEnd)="onBottom($event)" [anotherItemsHeight]="height"
+       class="bg-white relative w-full rounded-lg overflow-auto">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
       <tr class="whitespace-nowrap bg-white">
@@ -61,7 +64,7 @@
         <th class="text-left">Mobile</th>
         <th class="text-left">Truck Stand</th>
         <th class="text-left">Preferred Payment Method</th>
-<!--        <th style="width: 5%"></th>-->
+        <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
         <th class="border" colspan="4"></th>
@@ -73,17 +76,17 @@
           <td class="whitespace-nowrap">
             <div class="flex items-center space-x-4">
               <div class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
-                <span class="text-white font-bold capitalize">{{transporter.name[0]}}</span>
+                <span class="text-white font-bold capitalize">{{ transporter.name[0] }}</span>
               </div>
-              <span class="flex-1">{{transporter.name}}</span>
+              <span class="flex-1">{{ transporter.name }}</span>
             </div>
           </td>
-          <td>{{transporter.phone}}</td>
-          <td>{{transporter.truckStand}}</td>
-          <td>{{  transporter.paymentMethod?.paymentMethod ? transporter.paymentMethod?.paymentMethod : 'Cash'}}</td>
-<!--          <td>-->
-<!--            <i class="fas fa-ellipsis-v"></i>-->
-<!--          </td>-->
+          <td>{{ transporter.phone }}</td>
+          <td>{{ transporter.truckStand }}</td>
+          <td>{{ transporter.paymentMethod?.paymentMethod ? transporter.paymentMethod?.paymentMethod : 'Cash' }}</td>
+          <!--          <td>-->
+          <!--            <i class="fas fa-ellipsis-v"></i>-->
+          <!--          </td>-->
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
