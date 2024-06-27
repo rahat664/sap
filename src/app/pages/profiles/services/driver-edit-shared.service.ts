@@ -201,13 +201,13 @@ export class DriverEditSharedService {
           } else {
             this.toastr.error(res.message);
             this.isUploadPopupOpen.next(false);
-            this.completeTruckUpload.next(false);
+            this.completeTruckUpload.next(true);
           }
         },
         error => {
           this.toastr.error(error.error.message);
           this.isUploadPopupOpen.next(false);
-          this.completeTruckUpload.next(false);
+          this.completeTruckUpload.next(true);
         }
       );
     }
@@ -250,13 +250,13 @@ export class DriverEditSharedService {
           } else {
             this.toastr.error(res.message);
             this.isUploadPopupOpen.next(false);
-            this.completeUpload.next(false);
+            this.completeUpload.next(true);
           }
         },
         error => {
           // Handle error
           this.toastr.error(error.error.message);
-          this.isUploadPopupOpen.next(false);
+          this.isUploadPopupOpen.next(true);
         }
       );
     }
