@@ -76,10 +76,8 @@ export class UserCreateComponent implements OnInit {
       this.userModel.mobile = this.userForm.get('phone').value;
       this.userModel.email = this.userForm.get('email').value;
       this.userModel.role = this.userForm.get('role').value;
-      this.userModel.designation =
-        this.userForm.get('designation').value +
-        '|' +
-        this.roleInputPlaceholder;
+      this.userModel.department = this.userForm.get('role').value;
+      this.userModel.designation = this.userForm.get('designation').value;
       this.service.addUser(this.userModel).subscribe((res: any) => {
         this.formCreated.emit(true);
         if (res.status === 'OK') {
@@ -118,10 +116,12 @@ export class UserCreateComponent implements OnInit {
       role.selected = role.id === $event;
     });
     this.roleInputPlaceholder = this.roles.find(
-      role => role.id === $event
+      item => item.id === $event
     ).value;
     this.roleOpened = false;
-    this.userForm.get('role').setValue('Admin');
+    this.userForm.patchValue({
+      role: this.roleInputPlaceholder,
+    });
   }
 
   protected readonly roles = roles;
