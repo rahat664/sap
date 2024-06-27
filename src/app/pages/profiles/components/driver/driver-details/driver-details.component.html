@@ -2,86 +2,129 @@
   <div class="p-4 border-b-2 border-input flex justify-between items-center">
     <h1 class="text-h1 font-semibold">Driver detail</h1>
     <div class="flex space-x-3">
-      <button type="button" (click)="inEditMode = !inEditMode" *ngIf="!inEditMode"
-              class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
+      <button
+        type="button"
+        (click)="inEditMode = !inEditMode"
+        *ngIf="!inEditMode"
+        class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
         <i class="far fa-pen text-primary"></i>
       </button>
-      <button (click)="onDriverUpdate()" *ngIf="inEditMode"
-              class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
+      <button
+        (click)="onDriverUpdate()"
+        *ngIf="inEditMode"
+        class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
         <span>Update</span>
       </button>
-      <button (click)="inEditMode = false" *ngIf="inEditMode"
-              class="px-4 py-2 text-blue border border-blue rounded-lg text-center font-semibold">
+      <button
+        (click)="inEditMode = false"
+        *ngIf="inEditMode"
+        class="px-4 py-2 text-blue border border-blue rounded-lg text-center font-semibold">
         <span>Cancel</span>
       </button>
     </div>
   </div>
-  <div [ngClass]="{'border-b-2 border-input': inEditMode}" class="grid lg:grid-cols-2 text-body ">
+  <div
+    [ngClass]="{ 'border-b-2 border-input': inEditMode }"
+    class="grid lg:grid-cols-2 text-body">
     <div class="w-full border-r-2 border-input">
       <div class="p-4 flex flex-col space-y-3">
         <div class="flex space-x-3 items-center text-not-black">
-          <img class="notPreview" src="assets/svg/user.svg" alt="">
+          <img class="notPreview" src="assets/svg/user.svg" alt="" />
           <span class="text-h2 font-semibold">Driver Info</span>
         </div>
         <div class="grid grid-cols-2 gap-3">
-          <div class="flex flex-col space-y-1" [ngClass]="{'col-span-2': inEditMode}">
+          <div
+            class="flex flex-col space-y-1"
+            [ngClass]="{ 'col-span-2': inEditMode }">
             <span class="text-not-black font-semibold">Name</span>
-            <span *ngIf="!inEditMode" class="text-web-text-secondary">{{singleDriver.name}}</span>
+            <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
+              singleDriver.name
+            }}</span>
             <div *ngIf="inEditMode">
-              <input placeholder="Enter driver name" [(ngModel)]="driverName"
-                     class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+              <input
+                placeholder="Enter driver name"
+                [(ngModel)]="driverName"
+                class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
             </div>
           </div>
           <div *ngIf="!inEditMode" class="flex flex-col space-y-1">
             <span class="text-not-black font-semibold">Status</span>
             <span class="text-red">Pending</span>
           </div>
-          <div class="flex flex-col space-y-1" [ngClass]="{'col-span-2': inEditMode}">
+          <div
+            class="flex flex-col space-y-1"
+            [ngClass]="{ 'col-span-2': inEditMode }">
             <span class="text-not-black font-semibold">Mobile</span>
-            <span *ngIf="!inEditMode" class="text-web-text-secondary">{{singleDriver.phone}}</span>
+            <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
+              singleDriver.phone
+            }}</span>
             <div *ngIf="inEditMode">
-              <input placeholder="Enter mobile no." [(ngModel)]="driverPhone"
-                     class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+              <input
+                placeholder="Enter mobile no."
+                [(ngModel)]="driverPhone"
+                class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
             </div>
           </div>
-          <div *ngIf="!inEditMode" class="flex flex-col space-y-1">
-            <span class="text-not-black font-semibold">No. of trips</span>
-            <span class="text-web-text-secondary">24</span>
-          </div>
+<!--          <div *ngIf="!inEditMode" class="flex flex-col space-y-1">-->
+<!--            <span class="text-not-black font-semibold">No. of trips</span>-->
+<!--            <span class="text-web-text-secondary">24</span>-->
+<!--          </div>-->
         </div>
       </div>
     </div>
     <div class="w-full p-4 flex flex-col space-y-3">
       <div class="flex justify-between items-center h-8">
         <div class="text-not-black flex space-x-3 items-center">
-          <img class="notPreview" src="assets/svg/document.svg" alt="">
+          <img class="notPreview" src="assets/svg/document.svg" alt="" />
           <span>Documents</span>
         </div>
-        <app-upload-button (click)="isUploadPopupOpen=true" *ngIf="inEditMode" icon="upload" [file]="true"
-                           buttonText="Upload"></app-upload-button>
+        <app-upload-button
+          (click)="isUploadPopupOpen = true"
+          *ngIf="inEditMode"
+          icon="upload"
+          [file]="true"
+          buttonText="Upload"></app-upload-button>
       </div>
       <div class="grid grid-cols-4 gap-3">
         <ng-container *ngFor="let document of documents">
           <div class="w-full flex flex-col space-y-1">
-            <div class="p-4 rounded-lg border border-input relative flex items-center justify-center">
+            <div
+              class="p-4 rounded-lg border border-input relative flex items-center justify-center">
               <div class="h-32 w-32 object-cover object-center">
-                <img class="w-full h-full" [src]="document.url ? document.url : 'assets/images/dummy.jpg'" [alt]="document.name">
+                <img
+                  class="w-full h-full"
+                  [src]="
+                    document.url ? document.url : 'assets/images/dummy.jpg'
+                  "
+                  [alt]="document.name" />
               </div>
-              <button type="button" (click)="onClickCloseButton(document)" *ngIf="inEditMode"
-                    class="h-6 w-6 bg-red rounded-full flex justify-center items-center text-white absolute top-2 right-2">
-              <i class="fas fa-times"></i>
-            </button>
+              <button
+                type="button"
+                (click)="onClickCloseButton(document)"
+                *ngIf="inEditMode"
+                class="h-6 w-6 bg-red rounded-full flex justify-center items-center text-white absolute top-2 right-2">
+                <i class="fas fa-times"></i>
+              </button>
             </div>
             <div class="flex space-y-1 flex-col">
-              <span class="text-web-text-secondary font-semibold">{{ document.name }}</span>
-              <span class="text-web-text-secondary">Exp: {{document.expDate ? (document.expDate | date : 'dd MMM yyyy') : 'N/A'}}</span>
+              <span class="text-web-text-secondary font-semibold">{{
+                document.name
+              }}</span>
+              <span class="text-web-text-secondary"
+                >Exp:
+                {{
+                  document.expDate
+                    ? (document.expDate | date: 'dd MMM yyyy')
+                    : 'N/A'
+                }}</span
+              >
             </div>
           </div>
         </ng-container>
       </div>
     </div>
   </div>
-  <div  *ngIf="inEditMode" class="hidden p-4  justify-end items-center">
+  <div *ngIf="inEditMode" class="hidden p-4 justify-end items-center">
     <div class="flex space-x-3 items-center">
       <app-upload-button
         buttonText="Approve"
@@ -89,11 +132,16 @@
         [isIconButton]="false"></app-upload-button>
       <app-upload-button
         buttonText="Reject"
-      [isIconButton]="false"
-      buttonColor="red"></app-upload-button>
+        [isIconButton]="false"
+        buttonColor="red"></app-upload-button>
     </div>
   </div>
 </div>
-<app-create-popup [isOpen]="isUploadPopupOpen" (isModalClosed)="isUploadPopupOpen = !$event">
-  <app-file-upload-popup (fileInput)="onChangeFile($event)" [fileTypeOptions]="driverFileType" [callFromModal]="true" ></app-file-upload-popup>
+<app-create-popup
+  [isOpen]="isUploadPopupOpen"
+  (isModalClosed)="isUploadPopupOpen = !$event">
+  <app-file-upload-popup
+    (fileInput)="onChangeFile($event)"
+    [fileTypeOptions]="driverFileType"
+    [callFromModal]="true"></app-file-upload-popup>
 </app-create-popup>

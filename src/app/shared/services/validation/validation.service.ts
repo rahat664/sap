@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ValidationService {
+  constructor() {}
 
-  constructor() {
-
-  }
-  getErrorMessage(value:FormGroup) {
+  getErrorMessage(value: FormGroup) {
     if (value?.get('phone').hasError('invalidNumber')) {
       return 'Invalid number';
     } else {
@@ -34,31 +32,37 @@ export class ValidationService {
   getDriverNumberValidation(value: AbstractControl) {
     if (value?.hasError('required')) {
       return 'Driver number required';
-    }  if(value?.hasError('pattern')){
+    }
+    if (value?.hasError('pattern')) {
       return 'Invalid number';
-    }  if (value?.hasError('minlength')) {
+    }
+    if (value?.hasError('minlength')) {
       return 'Invalid number';
-    }  if (value?.hasError('maxlength')) {
+    }
+    if (value?.hasError('maxlength')) {
       return 'Invalid number';
-    }  if (value?.hasError('invalidNumber')) {
+    }
+    if (value?.hasError('invalidNumber')) {
       return 'Invalid number';
     } else {
       return '';
     }
   }
 
-  mobileNumberValidation(value: string , customerForm: FormGroup) {
+  mobileNumberValidation(value: string, customerForm: FormGroup) {
     // set error if the starting two digits are not 01
     if (isNaN(Number(value))) {
-      customerForm?.get('phone').setValue(value?.substring(0, value.length - 1));
+      customerForm
+        ?.get('phone')
+        .setValue(value?.substring(0, value.length - 1));
     }
     if (value?.substring(0, 1) != '0' && value?.substring(0, 1)) {
       // return error to the parent
-      return customerForm?.get('phone').setErrors({invalidNumber: true});
+      return customerForm?.get('phone').setErrors({ invalidNumber: true });
     }
     if (value?.substring(1, 2) != '1' && value?.substring(1, 2)) {
       // return error to the parent
-      return customerForm?.get('phone').setErrors({invalidNumber: true});
+      return customerForm?.get('phone').setErrors({ invalidNumber: true });
     }
 
     // prevent the change if the value is not a number
@@ -70,9 +74,8 @@ export class ValidationService {
     }
     // if the length is less than 11 give error
     if (onlyNumbers?.length < 11) {
-     customerForm?.get('phone').setErrors({minLength: true});
+      customerForm?.get('phone').setErrors({ minLength: true });
     }
-
   }
 
   getDropdownValidation(value: AbstractControl) {
@@ -86,7 +89,7 @@ export class ValidationService {
   getRegistrationSerialValidation(value: AbstractControl) {
     if (value?.hasError('required')) {
       return 'Registration serial required';
-    } else if(value?.hasError('pattern')){
+    } else if (value?.hasError('pattern')) {
       return 'Invalid input';
     } else if (value?.hasError('minlength')) {
       return 'Invalid input';
@@ -96,10 +99,11 @@ export class ValidationService {
       return '';
     }
   }
+
   getRegistrationNoValidation(value: AbstractControl) {
     if (value?.hasError('required')) {
       return 'Registration No required';
-    } else if(value?.hasError('pattern')){
+    } else if (value?.hasError('pattern')) {
       return 'Invalid input';
     } else if (value?.hasError('minlength')) {
       return 'Invalid input';

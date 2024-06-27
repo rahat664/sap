@@ -1,23 +1,27 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, OnChanges} from '@angular/core';
-import {CustomInputComponent} from "../../../../../shared/modules/custom-input/custom-input.component";
-import {CustomInputSelectModel} from "../../../../../shared/modules/custom-input/custom-input-select.model";
-import {GetClickEventDirective} from "../../../../../shared/directive/get-click-event.directive";
-import {fileUpload} from "../models/file-upload";
-import {CommonModule} from "@angular/common";
-import {DriverEditSharedService} from "../../../services/driver-edit-shared.service";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  OnChanges,
+} from '@angular/core';
+import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
+import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
+import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
+import { fileUpload } from '../models/file-upload';
+import { CommonModule } from '@angular/common';
+import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-file-upload-popup',
   standalone: true,
-  imports: [
-    CustomInputComponent,
-    GetClickEventDirective,
-    CommonModule
-  ],
+  imports: [CustomInputComponent, GetClickEventDirective, CommonModule],
   templateUrl: './file-upload-popup.component.html',
-  styleUrl: './file-upload-popup.component.scss'
+  styleUrl: './file-upload-popup.component.scss',
 })
-export class FileUploadPopupComponent implements OnChanges{
+export class FileUploadPopupComponent implements OnChanges {
   file: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
   @Input() fileTypeOptions: CustomInputSelectModel[] = fileUpload;
@@ -52,7 +56,6 @@ export class FileUploadPopupComponent implements OnChanges{
       if (file) {
         this.previewFile(file);
       }
-
     }
   }
 
@@ -67,7 +70,9 @@ export class FileUploadPopupComponent implements OnChanges{
   }
 
   onSelectFileType($event: number, i: number) {
-    this.fileInputPlaceholder = this.fileTypeOptions.find(option => option.id === $event).value;
+    this.fileInputPlaceholder = this.fileTypeOptions.find(
+      option => option.id === $event
+    ).value;
     this.fileArray[i].registrationType = this.fileInputPlaceholder;
     if (!this.callFromModal) {
       this.fileInput.emit(this.fileArray);
@@ -88,7 +93,10 @@ export class FileUploadPopupComponent implements OnChanges{
       this.sharedDriverEditService.getDocument(this.singleDriver);
       this.sharedDriverEditService.bindDriverValueWithForm(this.singleDriver);
       this.sharedDriverEditService.onChangeFile(this.fileArray);
-      this.sharedDriverEditService.onDriverUpdate(this.singleDriver.name, this.singleDriver.phone);
+      this.sharedDriverEditService.onDriverUpdate(
+        this.singleDriver.name,
+        this.singleDriver.phone
+      );
       this.modalClosed.emit(false);
     } else if (this.isFromTruck) {
       this.sharedDriverEditService.getTruckDocument(this.singleTruck);
@@ -108,7 +116,7 @@ export class FileUploadPopupComponent implements OnChanges{
         preview: reader.result,
         registrationType: null,
         registrationExpireDate: null,
-        fileOpened: false
+        fileOpened: false,
       });
       if (!this.callFromModal) {
         this.fileInput.emit(this.fileArray);
@@ -126,9 +134,17 @@ export class FileUploadPopupComponent implements OnChanges{
     }
   }
 
-
   onDateChange($event: Event, i: number) {
-    this.fileArray[i].registrationExpireDate = ($event.target as HTMLInputElement).value;
+    this.fileArray[i].registrationExpireDate = (
+      $event.target as HTMLInputElement
+    ).value;
+    if (!this.callFromModal) {
+      this.fileInput.emit(this.fileArray);
+    }
+  }
+
+  onCloseSelectedFile(i: number) {
+    this.fileArray.splice(i, 1);
     if (!this.callFromModal) {
       this.fileInput.emit(this.fileArray);
     }

@@ -8,10 +8,9 @@ describe('PreHireChecklistComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PreHireChecklistComponent]
-    })
-    .compileComponents();
-    
+      imports: [PreHireChecklistComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(PreHireChecklistComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

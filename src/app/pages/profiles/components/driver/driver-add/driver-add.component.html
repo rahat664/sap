@@ -2,40 +2,56 @@
   <div class="p-4 border-b-2 border-input flex justify-between items-center">
     <h1 class="text-h1 font-semibold">Add New Driver</h1>
     <div>
-      <button (click)="onDriverSave()"
-              class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
+      <button
+        (click)="onDriverSave()"
+        class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
         <span>Save</span>
       </button>
     </div>
   </div>
   <form [formGroup]="driverAddForm">
-    <div class="grid lg:grid-cols-2 text-body ">
+    <div class="grid lg:grid-cols-2 text-body">
       <div class="w-full border-r-2 border-input">
         <div class="p-4 flex flex-col space-y-3">
           <div class="flex space-x-3 items-center text-not-black">
-            <img src="assets/svg/user.svg" alt="">
+            <img src="assets/svg/user.svg" alt="" />
             <span class="text-h2 font-semibold">Driver Info</span>
           </div>
           <div class="grid gap-3">
             <div class="flex flex-col space-y-1">
               <span class="text-not-black font-semibold">Name</span>
               <div>
-                <input formControlName="driverName" placeholder="Enter driver name"
-                       class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+                <input
+                  formControlName="driverName"
+                  placeholder="Enter driver name"
+                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
 
-                <span *ngIf="driverAddForm.get('driverName').touched"  class="text-red text-xs">{{getDriverNameError()}}</span>
+                <span
+                  *ngIf="driverAddForm.get('driverName').touched"
+                  class="text-red text-xs"
+                  >{{ getDriverNameError() }}</span
+                >
               </div>
             </div>
-            <div  class="flex flex-col space-y-1">
+            <div class="flex flex-col space-y-1">
               <span class="text-not-black font-semibold">Mobile</span>
               <div>
-                <input formControlName="driverPhone" placeholder="Enter mobile no."
-                       class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
-                <div *ngIf="driverAddForm.get('driverPhone').dirty && !driverAddForm.get('driverPhone').touched" class="text-red text-xs">
-                  <span>{{getDriverPhoneErrorWithoutTouch()}}</span>
+                <input
+                  formControlName="driverPhone"
+                  placeholder="Enter mobile no."
+                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+                <div
+                  *ngIf="
+                    driverAddForm.get('driverPhone').dirty &&
+                    !driverAddForm.get('driverPhone').touched
+                  "
+                  class="text-red text-xs">
+                  <span>{{ getDriverPhoneErrorWithoutTouch() }}</span>
                 </div>
-                <div *ngIf="driverAddForm.get('driverPhone').touched" class="text-red text-xs">
-                  <span>{{getDriverPhoneErrorWithTouch()}}</span>
+                <div
+                  *ngIf="driverAddForm.get('driverPhone').touched"
+                  class="text-red text-xs">
+                  <span>{{ getDriverPhoneErrorWithTouch() }}</span>
                 </div>
               </div>
             </div>
@@ -45,13 +61,16 @@
       <div class="w-full p-4 flex flex-col space-y-3">
         <div class="flex justify-between items-center h-8">
           <div class="text-not-black flex space-x-3 items-center">
-            <img src="assets/svg/document.svg" alt="">
+            <img src="assets/svg/document.svg" alt="" />
             <span>Documents</span>
           </div>
         </div>
         <div>
-          <app-file-upload-popup [fileTypeOptions]="driverFileType" (fileInput)="onAddFile($event)" padding="0"
-                                 [isUploadIconEnabled]="false"></app-file-upload-popup>
+          <app-file-upload-popup
+            [fileTypeOptions]="driverFileType"
+            (fileInput)="onAddFile($event)"
+            padding="0"
+            [isUploadIconEnabled]="false"></app-file-upload-popup>
         </div>
       </div>
     </div>

@@ -1,22 +1,22 @@
-import {Component, OnInit} from '@angular/core';
-import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
-import {UploadButtonComponent} from "../../../../../shared/modules/upload-button/upload-button.component";
-import {manufacturerList} from "../models/manufacturer-list";
-import {CustomInputComponent} from "../../../../../shared/modules/custom-input/custom-input.component";
-import {GetClickEventDirective} from "../../../../../shared/directive/get-click-event.directive";
-import {CustomInputSelectModel} from '../../../../../shared/modules/custom-input/custom-input-select.model';
-import {TruckInnerModel} from "../models/truck-inner.model";
-import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
-import {TruckService} from "../services/truck.service";
-import {ToastrService} from "ngx-toastr";
-import {registrationCategoryList} from "../models/registration-category";
-import {registrationZoneList} from "../models/registration-zone";
-import {Router} from "@angular/router";
-import {DriverEditSharedService} from "../../../services/driver-edit-shared.service";
-import {driverFileType} from "../../customer/model/driver-file-type";
-import {CreatePopupComponent} from "../../../../../shared/modal/create-popup/create-popup.component";
-import {FileUploadPopupComponent} from "../file-upload-popup/file-upload-popup.component";
-import {ImageGalleryComponent} from "../../../../../shared/modules/image-gallery/image-gallery.component";
+import { Component, OnInit } from '@angular/core';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
+import { manufacturerList } from '../models/manufacturer-list';
+import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
+import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
+import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
+import { TruckInnerModel } from '../models/truck-inner.model';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { TruckService } from '../services/truck.service';
+import { ToastrService } from 'ngx-toastr';
+import { registrationCategoryList } from '../models/registration-category';
+import { registrationZoneList } from '../models/registration-zone';
+import { Router } from '@angular/router';
+import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
+import { driverFileType } from '../../customer/model/driver-file-type';
+import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
+import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup.component';
+import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
 
 @Component({
   selector: 'app-truck-details',
@@ -32,12 +32,12 @@ import {ImageGalleryComponent} from "../../../../../shared/modules/image-gallery
     ReactiveFormsModule,
     CreatePopupComponent,
     FileUploadPopupComponent,
-    ImageGalleryComponent
+    ImageGalleryComponent,
   ],
   templateUrl: './truck-details.component.html',
-  styleUrl: './truck-details.component.scss'
+  styleUrl: './truck-details.component.scss',
 })
-export class TruckDetailsComponent implements OnInit{
+export class TruckDetailsComponent implements OnInit {
   inEditMode = false;
   manufacturerList: CustomInputSelectModel[] = manufacturerList;
   manufactureOpened: boolean;
@@ -59,25 +59,28 @@ export class TruckDetailsComponent implements OnInit{
     private toastr: ToastrService,
     private router: Router,
     private shared: DriverEditSharedService
-  ) {
-  }
+  ) {}
 
   onClickManufacturer($event: boolean) {
     this.manufactureOpened = $event;
   }
 
   onSelectManuFacturer($event: number) {
-    this.manufacturerPlaceholder = this.manufacturerList.find(x => x.id === $event).value;
-    this.manufacturerList.forEach(x => x.selected = x.id === $event);
+    this.manufacturerPlaceholder = this.manufacturerList.find(
+      x => x.id === $event
+    ).value;
+    this.manufacturerList.forEach(x => (x.selected = x.id === $event));
     this.manufactureOpened = false;
   }
 
   onSelectRegistrationype($event: number) {
-    this.registrationTypePlaceholder = this.registrationListType.find(x => x.id === $event).value;
-    this.registrationListType.forEach(x => x.selected = x.id === $event);
+    this.registrationTypePlaceholder = this.registrationListType.find(
+      x => x.id === $event
+    ).value;
+    this.registrationListType.forEach(x => (x.selected = x.id === $event));
     this.registrationOpenedType = false;
     this.truckAddForm.patchValue({
-      registration_category: this.registrationTypePlaceholder
+      registration_category: this.registrationTypePlaceholder,
     });
   }
 
@@ -90,32 +93,35 @@ export class TruckDetailsComponent implements OnInit{
   }
 
   onSelectRegistrationZone($event: number) {
-    this.registrationZonePlaceholder = this.registrationZoneList.find(x => x.id === $event).value;
-    this.registrationZoneList.forEach(x => x.selected = x.id === $event);
+    this.registrationZonePlaceholder = this.registrationZoneList.find(
+      x => x.id === $event
+    ).value;
+    this.registrationZoneList.forEach(x => (x.selected = x.id === $event));
     this.registrationZoneOpened = false;
     this.truckAddForm.patchValue({
-      registration_zone: this.registrationZonePlaceholder
+      registration_zone: this.registrationZonePlaceholder,
     });
   }
 
   getFullRegistrationName() {
-    return `${this.singleTruck.registrationZone} ${this.singleTruck.registrationCategory} ${this.singleTruck.registrationSerial} ${this.singleTruck.registrationNum}`
+    return `${this.singleTruck.registrationZone} ${this.singleTruck.registrationCategory} ${this.singleTruck.registrationSerial} ${this.singleTruck.registrationNum}`;
   }
 
   ngOnInit(): void {
     this.singleTruck = JSON.parse(localStorage.getItem('truck'));
-    this.truckAddForm = this.shared.truckUpdateForm
+    this.truckAddForm = this.shared.truckUpdateForm;
     this.registrationTypePlaceholder = this.singleTruck?.registrationCategory;
     this.registrationZonePlaceholder = this.singleTruck?.registrationZone;
-    this.truckAddForm.get('registration_serial').valueChanges.subscribe((value) => {
-      this.numberOnly(value);
-    });
-    this.shared.bindTruckValueWithForm(this.singleTruck)
-    this.truckAddForm.get('registration_num').valueChanges.subscribe((value) => {
+    this.truckAddForm
+      .get('registration_serial')
+      .valueChanges.subscribe(value => {
+        this.numberOnly(value);
+      });
+    this.shared.bindTruckValueWithForm(this.singleTruck);
+    this.truckAddForm.get('registration_num').valueChanges.subscribe(value => {
       this.numberOnly(value);
     });
     this.documents = this.shared.getTruckDocument(this.singleTruck);
-
   }
 
   onClickSave() {
@@ -135,7 +141,7 @@ export class TruckDetailsComponent implements OnInit{
     if (!reg.test(value)) {
       this.truckAddForm.patchValue({
         registration_serial: value.replace(/[^0-9]/g, ''),
-        registration_num: value.replace(/[^0-9]/g, '')
+        registration_num: value.replace(/[^0-9]/g, ''),
       });
     }
   }
@@ -145,6 +151,6 @@ export class TruckDetailsComponent implements OnInit{
 
   onClickClose(document: any) {
     this.shared.onClickTruckCloseButton(document);
-    this.documents =  this.shared.truckDocuments;
+    this.documents = this.shared.truckDocuments;
   }
 }

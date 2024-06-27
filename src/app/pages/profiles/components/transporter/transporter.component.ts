@@ -14,9 +14,7 @@ import { UserService } from '../../services/user.service';
 import { TransporterAddComponent } from './transporter-add/transporter-add.component';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { debounceTime } from 'rxjs';
-import {
-  CheckTheHeightCrossMaxHeightOrNotDirective
-} from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
+import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 
 @Component({
   selector: 'app-transporter',
@@ -54,9 +52,7 @@ export class TransporterComponent implements OnInit {
   page: number = 0;
   totalPages: number;
 
-  constructor(private service: UserService) {
-
-  }
+  constructor(private service: UserService) {}
 
   onClickAddTransporter() {
     this.isOpen = true;
@@ -80,18 +76,18 @@ export class TransporterComponent implements OnInit {
     }
     this.transporterList = [];
     this.getTransporterList();
-
   }
 
   onBottom($event: boolean) {
-    if ($event && (this.page < this.totalPages - 1)) {
+    if ($event && this.page < this.totalPages - 1) {
       this.page++;
       if (this.searchValue) {
-        this.service.getTransporter(this.page, this.searchValue).pipe(
-          debounceTime(500),
-        ).subscribe((res: any) => {
-          this.transporterList.push(...res.data.responses);
-        });
+        this.service
+          .getTransporter(this.page, this.searchValue)
+          .pipe(debounceTime(500))
+          .subscribe((res: any) => {
+            this.transporterList.push(...res.data.responses);
+          });
       } else {
         this.service.getTransporter(this.page).subscribe((res: any) => {
           this.transporterList.push(...res.data.responses);
@@ -100,9 +96,7 @@ export class TransporterComponent implements OnInit {
     }
   }
 
-  onClickSearchSuggestion(result: any) {
-
-  }
+  onClickSearchSuggestion(result: any) {}
 
   onClickDistrict($event: boolean) {
     this.districtOpened = $event;
@@ -110,7 +104,9 @@ export class TransporterComponent implements OnInit {
 
   onSelectDistrict($event: number) {
     this.districtFilter = 1;
-    this.districtInputPlaceholder = this.districtOptionsArray.find(option => option.id === $event).value;
+    this.districtInputPlaceholder = this.districtOptionsArray.find(
+      option => option.id === $event
+    ).value;
   }
 
   ngOnInit(): void {
@@ -122,13 +118,14 @@ export class TransporterComponent implements OnInit {
   private getTransporterList() {
     this.loading = true;
     if (this.searchValue) {
-      this.service.getTransporter(this.page, this.searchValue).pipe(
-        debounceTime(500),
-      ).subscribe((res: any) => {
-        this.transporterList = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getTransporter(this.page, this.searchValue)
+        .pipe(debounceTime(500))
+        .subscribe((res: any) => {
+          this.transporterList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else {
       this.service.getTransporter(this.page).subscribe((res: any) => {
         this.transporterList = res.data.responses;
@@ -149,11 +146,12 @@ export class TransporterComponent implements OnInit {
       if (!$event && this.totalPages > 1 && this.page != 1) {
         this.page = 1;
         if (this.searchValue) {
-          this.service.getTransporter(this.page, this.searchValue).pipe(
-            debounceTime(500),
-          ).subscribe((res: any) => {
-            this.transporterList = res.data.responses;
-          });
+          this.service
+            .getTransporter(this.page, this.searchValue)
+            .pipe(debounceTime(500))
+            .subscribe((res: any) => {
+              this.transporterList = res.data.responses;
+            });
         } else {
           this.service.getTransporter(this.page).subscribe((res: any) => {
             this.transporterList = res.data.responses;

@@ -11,15 +11,18 @@ import {
 
 @Directive({
   selector: '[appCheckTheHeightCrossMaxHeightOrNot]',
-  standalone: true
+  standalone: true,
 })
-export class CheckTheHeightCrossMaxHeightOrNotDirective implements OnInit{
-
-  @Output() maxHeightCrossed: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+export class CheckTheHeightCrossMaxHeightOrNotDirective implements OnInit {
+  @Output() maxHeightCrossed: EventEmitter<boolean> = new EventEmitter<boolean>(
+    false
+  );
   private Interval: number;
 
-
-  constructor(private el: ElementRef, private ref: ChangeDetectorRef) {
+  constructor(
+    private el: ElementRef,
+    private ref: ChangeDetectorRef
+  ) {
     ref.detach();
     this.Interval = setInterval(() => {
       this.ref.detectChanges();
@@ -27,30 +30,38 @@ export class CheckTheHeightCrossMaxHeightOrNotDirective implements OnInit{
   }
 
   ngOnDestroy(): void {
-    clearInterval(this.Interval)
+    clearInterval(this.Interval);
   }
 
   ngOnInit(): void {
     setTimeout(() => {
-      if (this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight) {
+      if (
+        this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight
+      ) {
         this.maxHeightCrossed.emit(true);
       } else {
         this.maxHeightCrossed.emit(false);
       }
     }, 1000);
   }
+
   ngAfterViewChecked(): void {
     setTimeout(() => {
-      if (this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight) {
+      if (
+        this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight
+      ) {
         this.maxHeightCrossed.emit(true);
       } else {
         this.maxHeightCrossed.emit(false);
       }
     }, 0);
   }
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    if (this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight) {
+    if (
+      this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight
+    ) {
       this.maxHeightCrossed.emit(true);
     } else {
       this.maxHeightCrossed.emit(false);
@@ -59,11 +70,12 @@ export class CheckTheHeightCrossMaxHeightOrNotDirective implements OnInit{
 
   @HostListener('window:reload', ['$event'])
   onReload(event: any) {
-    if (this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight) {
+    if (
+      this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight
+    ) {
       this.maxHeightCrossed.emit(true);
     } else {
       this.maxHeightCrossed.emit(false);
     }
   }
-
 }

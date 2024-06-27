@@ -4,30 +4,42 @@ export interface Trip {
   customerName: string;
   customerCode: string | null;
   tripStartDatetime: string;
-  vehicleName: string;
-  vehicleImageUrl: string;
-  goodName: string;
+  vehicleCategory: VehicleCategory;
+  good: Good;
   tripPoints: TripPoint[];
-  truckId: number | null;
-  registrationZone: string | null;
-  registrationCategory: string | null;
-  registrationSerial: string | null;
-  registrationNum: string | null;
+  truck: Truck;
   company: string | null;
   loadingPoint: string;
   unloadingPoint: string;
   status: string;
-  cr: number;
-  tr: number | null;
-  gp: number;
+  customerRate: number | null;
+  transporterRate: number | null;
+  grossProfit: number;
   priority: boolean;
+}
+
+export interface VehicleCategory {
+  name: string;
+  imageUrl: string;
+}
+
+export interface Good {
+  id: number;
+  name: string;
 }
 
 export interface TripPoint {
   pointDistrict: string;
   pointName: string;
   pointType: 'Loading' | 'Unloading';
-  pointLat: string | null;
-  pointLon: string | null;
+  pointLat: string;
+  pointLon: string;
 }
 
+export interface Truck {
+  id: number;
+  registrationZone: string;
+  registrationCategory: string;
+  registrationSerial: string;
+  registrationNum: string;
+}

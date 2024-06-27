@@ -1,8 +1,10 @@
-<aside id="sidebar"
-       [ngClass]="{'hidden': !willShow}"
-       class="fixed z-20 h-full top-0 left-0 pt-16 lg:flex flex-shrink-0 flex-col w-64 transition-width duration-75"
-       aria-label="Sidebar">
-  <div class="relative flex-1 flex flex-col min-h-full border-r border-gray-200 bg-white pt-0">
+<aside
+  id="sidebar"
+  [ngClass]="{ hidden: !willShow }"
+  class="fixed z-20 h-full top-0 left-0 pt-16 lg:flex flex-shrink-0 flex-col w-64 transition-width duration-75"
+  aria-label="Sidebar">
+  <div
+    class="relative flex-1 flex flex-col min-h-full border-r border-gray-200 bg-white pt-0">
     <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
       <div class="flex-1 px-3 bg-white divide-y space-y-1">
         <ul class="space-y-2 pb-2">
@@ -10,60 +12,103 @@
             <form action="#" method="GET" class="lg:hidden">
               <label for="mobile-search" class="sr-only">Search</label>
               <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <i class="far fa-search text-gray-500"></i>
                 </div>
-                <input type="text" name="email" id="mobile-search"
-                       class="bg-gray-50 border-none  text-gray-900 text-sm rounded-lg focus:ring-cyan-600 block w-full pl-10 p-2.5"
-                       placeholder="Search">
+                <input
+                  type="text"
+                  name="email"
+                  id="mobile-search"
+                  class="bg-gray-50 border-none text-gray-900 text-sm rounded-lg focus:ring-cyan-600 block w-full pl-10 p-2.5"
+                  placeholder="Search" />
               </div>
             </form>
           </li>
           <li>
-            <a routerLink="/dashboard" routerLinkActive="active" class="cursor-pointer text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
-              <img class="notPreview" src="assets/svg/dashboard.svg" alt="">
+            <a
+              routerLink="/dashboard"
+              routerLinkActive="active"
+              class="cursor-pointer text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
+              <img class="notPreview" src="assets/svg/dashboard.svg" alt="" />
               <span class="ml-3">Dashboard</span>
             </a>
           </li>
           <li>
-            <a routerLink="/trip-list" routerLinkActive="active"
-               class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
-              <img class="notPreview" src="assets/svg/trip-list.svg" alt="">
+            <a
+              routerLink="/trip-list"
+              routerLinkActive="active"
+              class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
+              <img class="notPreview" src="assets/svg/trip-list.svg" alt="" />
               <span class="ml-3 flex-1 whitespace-nowrap">Trip List</span>
             </a>
           </li>
           <li>
-            <a routerLink="/user-management" routerLinkActive="active"
-               class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
-              <img class="notPreview" src="assets/svg/user-management.svg" alt="">
+            <a
+              routerLink="/user-management"
+              routerLinkActive="active"
+              class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
+              <img
+                class="notPreview"
+                src="assets/svg/user-management.svg"
+                alt="" />
               <span class="ml-3 flex-1 whitespace-nowrap">User Management</span>
             </a>
           </li>
           <li>
-            <button routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}" (click)="onClickProfile()" type="button"
-                    class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                    aria-controls="dropdown-example" >
-              <img class="notPreview" src="assets/svg/profile.svg" alt="">
-              <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Profiles</span>
+            <button
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: false }"
+              (click)="onClickProfile()"
+              type="button"
+              class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              aria-controls="dropdown-example">
+              <img class="notPreview" src="assets/svg/profile.svg" alt="" />
+              <span
+                class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
+                >Profiles</span
+              >
               <i *ngIf="dropdownOpen" class="fas fa-caret-up text-gray-500"></i>
-              <i *ngIf="!dropdownOpen" class="fas fa-caret-down text-gray-500"></i>
+              <i
+                *ngIf="!dropdownOpen"
+                class="fas fa-caret-down text-gray-500"></i>
             </button>
-            <ul appGetOutsideModalClick  id="dropdown-example" class="py-2 space-y-2 " *ngIf="dropdownOpen">
+            <ul
+              appGetOutsideModalClick
+              id="dropdown-example"
+              class="py-2 space-y-2"
+              *ngIf="dropdownOpen">
               <li>
-                <a routerLink="/profile/customer" routerLinkActive="active"
-                   class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Customer</a>
+                <a
+                  routerLink="/profile/customer"
+                  routerLinkActive="active"
+                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >Customer</a
+                >
               </li>
               <li>
-                <a routerLink="/profile/transporter" routerLinkActive="active"
-                   class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Transporter</a>
+                <a
+                  routerLink="/profile/transporter"
+                  routerLinkActive="active"
+                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >Transporter</a
+                >
               </li>
               <li>
-                <a routerLink="/profile/truck" routerLinkActive="active"
-                   class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Truck</a>
+                <a
+                  routerLink="/profile/truck"
+                  routerLinkActive="active"
+                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >Truck</a
+                >
               </li>
               <li>
-                <a routerLink="/profile/driver" routerLinkActive="active"
-                   class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Driver</a>
+                <a
+                  routerLink="/profile/driver"
+                  routerLinkActive="active"
+                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >Driver</a
+                >
               </li>
             </ul>
           </li>
@@ -73,4 +118,6 @@
   </div>
 </aside>
 
-<div class="bg-gray-900 opacity-50 hidden fixed inset-0 z-10" id="sidebarBackdrop"></div>
+<div
+  class="bg-gray-900 opacity-50 hidden fixed inset-0 z-10"
+  id="sidebarBackdrop"></div>

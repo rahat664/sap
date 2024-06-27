@@ -1,59 +1,128 @@
 <div class="flex w-full h-full">
-  <div class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
+  <div
+    class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
     <div>
-      <img src="../../../../../../assets/images/customer-create.png" alt="">
+      <img src="../../../../../../assets/images/customer-create.png" alt="" />
     </div>
   </div>
   <div class="p-8 max-h-[90vh] overflow-auto overflow-x-hidden">
     <h3 class="text-not-black font-semibold text-xl mb-4">Add New Customer</h3>
-    <form [formGroup]="customerForm" class="w-full  flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-[0.875rem] text-web-text-secondary">
+    <form
+      [formGroup]="customerForm"
+      class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-[0.875rem] text-web-text-secondary">
       <div class="flex flex-col w-full lg:col-span-2">
         <label for="name">Customer Name</label>
-        <input [minlength]="2" [maxlength]="50" (focusout)="onfocusOut($event)" placeholder="Enter Customer Name" class="bg-input rounded-lg  border-none p-4"  type="text" id="name" formControlName="name">
-<!--        error-message-->
-        <div *ngIf="customerForm.get('name').invalid && customerForm.get('name').touched" class="text-red text-xs">{{getCustomerNameErrorMessage()}}</div>
+        <input
+          [minlength]="2"
+          [maxlength]="50"
+          (focusout)="onfocusOut($event)"
+          placeholder="Enter Customer Name"
+          class="bg-input rounded-lg border-none p-4"
+          type="text"
+          id="name"
+          formControlName="name" />
+        <!--        error-message-->
+        <div
+          *ngIf="
+            customerForm.get('name').invalid && customerForm.get('name').touched
+          "
+          class="text-red text-xs">
+          {{ getCustomerNameErrorMessage() }}
+        </div>
       </div>
       <div class="flex flex-col w-full">
         <label for="code">Customer Code</label>
-        <input [minlength]="4" [maxlength]="4" placeholder="Enter Customer Code" class="bg-input rounded-lg  border-none p-4" type="text" id="code" formControlName="code">
-<!--        error-message-->
-        <div *ngIf="customerForm.get('code').invalid && customerForm.get('code').touched" class="text-red text-xs">{{getCustomerCodeError()}}</div>
+        <input
+          [minlength]="4"
+          [maxlength]="4"
+          placeholder="Enter Customer Code"
+          class="bg-input rounded-lg border-none p-4"
+          type="text"
+          id="code"
+          formControlName="code" />
+        <!--        error-message-->
+        <div
+          *ngIf="
+            customerForm.get('code').invalid && customerForm.get('code').touched
+          "
+          class="text-red text-xs">
+          {{ getCustomerCodeError() }}
+        </div>
       </div>
       <div class="flex flex-col w-full">
         <label for="contact">Contact Person</label>
-        <input [minlength]="2" [maxlength]="50" placeholder="Enter Contact Person" class="bg-input rounded-lg  border-none p-4" type="text" id="contact" formControlName="contactPerson">
-<!--        error-message-->
-        <div *ngIf="customerForm.get('contactPerson').invalid && customerForm.get('contactPerson').touched" class="text-red text-xs">{{getContactPersonErrorMessage()}}</div>
+        <input
+          [minlength]="2"
+          [maxlength]="50"
+          placeholder="Enter Contact Person"
+          class="bg-input rounded-lg border-none p-4"
+          type="text"
+          id="contact"
+          formControlName="contactPerson" />
+        <!--        error-message-->
+        <div
+          *ngIf="
+            customerForm.get('contactPerson').invalid &&
+            customerForm.get('contactPerson').touched
+          "
+          class="text-red text-xs">
+          {{ getContactPersonErrorMessage() }}
+        </div>
       </div>
       <div class="flex flex-col w-full">
         <label for="phone">Mobile</label>
-        <input placeholder="Enter Mobile Number" class="bg-input rounded-lg  border-none p-4" type="text" id="phone" formControlName="phone">
-<!--        error-message-->
-        <div *ngIf="customerForm.get('phone').dirty && !customerForm.get('phone').touched" class="text-red text-xs">
-          <span>{{getErrorMessage()}}</span>
+        <input
+          placeholder="Enter Mobile Number"
+          class="bg-input rounded-lg border-none p-4"
+          type="text"
+          id="phone"
+          formControlName="phone" />
+        <!--        error-message-->
+        <div
+          *ngIf="
+            customerForm.get('phone').dirty &&
+            !customerForm.get('phone').touched
+          "
+          class="text-red text-xs">
+          <span>{{ getErrorMessage() }}</span>
         </div>
         <div *ngIf="customerForm.get('phone').touched" class="text-red text-xs">
-          <span>{{getPhoneErrorMessageWithTouch()}}</span>
+          <span>{{ getPhoneErrorMessageWithTouch() }}</span>
         </div>
       </div>
       <div class="flex flex-col w-full">
         <label for="email">Email (Optional)</label>
-        <input placeholder="Enter Email" class="bg-input rounded-lg  border-none p-4" type="email" id="email" formControlName="email">
-<!--        error-message-->
+        <input
+          placeholder="Enter Email"
+          class="bg-input rounded-lg border-none p-4"
+          type="email"
+          id="email"
+          formControlName="email" />
+        <!--        error-message-->
         <div *ngIf="customerForm.get('email').touched" class="text-red text-xs">
-          <span>{{getEmailErrorMessage()}}</span>
+          <span>{{ getEmailErrorMessage() }}</span>
         </div>
       </div>
       <div class="flex flex-col w-full lg:col-span-2">
         <label for="address">Address (Optional)</label>
-        <textarea placeholder="Enter Address" class="bg-input rounded-lg  border-none p-4" id="address" formControlName="address"></textarea>
+        <textarea
+          placeholder="Enter Address"
+          class="bg-input rounded-lg border-none p-4"
+          id="address"
+          formControlName="address"></textarea>
       </div>
       <div class="flex flex-col w-full col-span-2">
         <label for="note">Note (Optional)</label>
-        <textarea placeholder="Enter Note" class="bg-input rounded-lg  border-none p-4" id="note" formControlName="note"></textarea>
+        <textarea
+          placeholder="Enter Note"
+          class="bg-input rounded-lg border-none p-4"
+          id="note"
+          formControlName="note"></textarea>
       </div>
       <div class="lg:col-span-2 pb-4">
-        <button (click)="onSave()" class="float-end py-2 px-12 flex justify-center items-center rounded-lg bg-primary text-white">
+        <button
+          (click)="onSave()"
+          class="float-end py-2 px-12 flex justify-center items-center rounded-lg bg-primary text-white">
           <span>Save</span>
         </button>
       </div>

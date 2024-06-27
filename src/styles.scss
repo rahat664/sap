@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import 'ngx-toastr/toastr';
-@import "@ng-select/ng-select/themes/default.theme.css";
+@import '@ng-select/ng-select/themes/default.theme.css';
 * {
   --webkit-box-sizing: border-box;
   --moz-box-sizing: border-box;
@@ -16,7 +16,8 @@ body {
   @apply bg-app-bg;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -47,31 +48,29 @@ html, body {
 input::placeholder {
   font-size: 0.75rem;
   @apply text-input-hint
-  /* Set the font size of the placeholder text */
-}
-textarea::placeholder {
-  font-size: 0.75rem;
-  @apply text-input-hint
+  /* Set the font size of the placeholder text */;
 }
 
+textarea::placeholder {
+  font-size: 0.75rem;
+  @apply text-input-hint;
+}
 
 /* custom style ng-select */
 .ng-select .ng-select-container .ng-value-container .ng-placeholder {
   font-size: 0.875rem !important;
   color: #6b7280 !important;
 }
+
 .ng-select .ng-select-container {
   font-size: 0.875rem !important;
   border: none !important;
   border-radius: 0.25rem !important;
   background-color: #f3f4f6 !important;
   color: #111827 !important;
-  padding: .5rem .5rem !important;
+  padding: 0.5rem 0.5rem !important;
 }
 
 img {
   cursor: pointer;
 }
-
-
-

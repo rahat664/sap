@@ -11,6 +11,7 @@
     "build:qa": "ng build --configuration qa",
     "build:development": "ng build --configuration development",
     "watch": "ng build --watch --configuration development",
+    "format": "prettier --write \"src/**/*.{ts,html,css,scss}\"",
     "test": "ng test",
     "lint": "ng lint"
   },

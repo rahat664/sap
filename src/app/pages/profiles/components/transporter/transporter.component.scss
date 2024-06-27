@@ -8,6 +8,7 @@ tbody > tr {
   @apply border-b border-[#A1D5DE] last:border-b-0;
 }
 
-th, td {
+th,
+td {
   @apply p-4;
 }

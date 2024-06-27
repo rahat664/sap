@@ -8,10 +8,9 @@ describe('ImagePopupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ImagePopupComponent]
-    })
-    .compileComponents();
-    
+      imports: [ImagePopupComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ImagePopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

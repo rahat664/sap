@@ -1,21 +1,19 @@
-import {Component, OnInit} from '@angular/core';
-import {CreatePopupComponent} from "../../../../shared/modal/create-popup/create-popup.component";
-import {CustomInputComponent} from "../../../../shared/modules/custom-input/custom-input.component";
-import {FileUploadPopupComponent} from "../truck/file-upload-popup/file-upload-popup.component";
-import {GetClickEventDirective} from "../../../../shared/directive/get-click-event.directive";
-import {GetElementHeightDirective} from "../../../../shared/directive/get-element-height.directive";
-import {GiveMaxHeightDirective} from "../../../../shared/directive/give-max-height.directive";
-import {NgForOf, NgIf} from "@angular/common";
-import {RouterLink} from "@angular/router";
-import {UploadButtonComponent} from "../../../../shared/modules/upload-button/upload-button.component";
-import {UserModel} from "../../../user-management/models/user.model";
-import {UserService} from "../../services/user.service";
-import {LoadingComponent} from "../../../../shared/modules/loading/loading.component";
-import {driverFileType} from "../customer/model/driver-file-type";
-import {DriverEditSharedService} from "../../services/driver-edit-shared.service";
-import {
-  CheckTheHeightCrossMaxHeightOrNotDirective
-} from "../../../../shared/directive/check-the-height-cross-max-height-or-not.directive";
+import { Component, OnInit } from '@angular/core';
+import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
+import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
+import { FileUploadPopupComponent } from '../truck/file-upload-popup/file-upload-popup.component';
+import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
+import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
+import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
+import { NgForOf, NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
+import { UserModel } from '../../../user-management/models/user.model';
+import { UserService } from '../../services/user.service';
+import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
+import { driverFileType } from '../customer/model/driver-file-type';
+import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
+import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { debounceTime } from 'rxjs';
 
 @Component({
@@ -33,10 +31,10 @@ import { debounceTime } from 'rxjs';
     RouterLink,
     UploadButtonComponent,
     LoadingComponent,
-    CheckTheHeightCrossMaxHeightOrNotDirective
+    CheckTheHeightCrossMaxHeightOrNotDirective,
   ],
   templateUrl: './driver.component.html',
-  styleUrl: './driver.component.scss'
+  styleUrl: './driver.component.scss',
 })
 export class DriverComponent implements OnInit {
   isOpen: boolean;
@@ -48,8 +46,10 @@ export class DriverComponent implements OnInit {
   totalPages: number;
   searchValue: string;
 
-  constructor(private user: UserService, private sharedService: DriverEditSharedService) {
-  }
+  constructor(
+    private user: UserService,
+    private sharedService: DriverEditSharedService
+  ) {}
 
   ngOnInit(): void {
     this.getDriverList();
@@ -59,16 +59,16 @@ export class DriverComponent implements OnInit {
   private getDriverList() {
     this.page = 0;
     this.loading = true;
-    if (this.searchValue){
+    if (this.searchValue) {
       //subscribe with debounce time
-      this.user.getDriver(this.page, this.searchValue).pipe(
-        debounceTime(500)
-      ).subscribe((res: any) => {
-        this.driverList = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      }
-      )
+      this.user
+        .getDriver(this.page, this.searchValue)
+        .pipe(debounceTime(500))
+        .subscribe((res: any) => {
+          this.driverList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else {
       this.user.getDriver(this.page).subscribe((res: any) => {
         this.driverList = res.data.responses;
@@ -80,7 +80,7 @@ export class DriverComponent implements OnInit {
 
   onClickDriverName(driver: UserModel) {
     if (localStorage.getItem('driver')) {
-      localStorage.removeItem('driver')
+      localStorage.removeItem('driver');
     }
     localStorage.setItem('driver', JSON.stringify(driver));
   }
@@ -95,14 +95,14 @@ export class DriverComponent implements OnInit {
     this.singleDriver = driver;
     this.isOpen = true;
     if (localStorage.getItem('driver')) {
-      localStorage.removeItem('driver')
+      localStorage.removeItem('driver');
     }
-    localStorage.setItem('driver', JSON.stringify(driver))
+    localStorage.setItem('driver', JSON.stringify(driver));
     const DFT = [];
-    this.driverFileType.filter((item) => {
-        if(item.value.includes('License')) {
-          DFT.push(item);
-        }
+    this.driverFileType.filter(item => {
+      if (item.value.includes('License')) {
+        DFT.push(item);
+      }
     });
     this.newDriverFileType = DFT;
   }
@@ -112,14 +112,14 @@ export class DriverComponent implements OnInit {
     this.singleDriver = driver;
     this.isOpen = true;
     if (localStorage.getItem('driver')) {
-      localStorage.removeItem('driver')
+      localStorage.removeItem('driver');
     }
-    localStorage.setItem('driver', JSON.stringify(driver))
+    localStorage.setItem('driver', JSON.stringify(driver));
     const DFT = [];
-    this.driverFileType.filter((item) => {
-        if(item.value.includes('NID')) {
-          DFT.push(item);
-        }
+    this.driverFileType.filter(item => {
+      if (item.value.includes('NID')) {
+        DFT.push(item);
+      }
     });
     this.newDriverFileType = DFT;
   }
@@ -135,7 +135,7 @@ export class DriverComponent implements OnInit {
     });
   }
   onBottom($event: boolean) {
-    if ($event && (this.page < this.totalPages-1)) {
+    if ($event && this.page < this.totalPages - 1) {
       this.page++;
       this.user.getDriver(this.page).subscribe((res: any) => {
         this.driverList.push(...res.data.responses);
@@ -146,7 +146,7 @@ export class DriverComponent implements OnInit {
   onMaxHeightCross($event: boolean) {
     setTimeout(() => {
       if (!$event && this.totalPages > 1 && this.page != 1) {
-        this.page = 1
+        this.page = 1;
         this.user.getDriver(this.page).subscribe((res: any) => {
           this.driverList.push(...res.data.responses);
         });
@@ -162,8 +162,8 @@ export class DriverComponent implements OnInit {
     } else {
       this.searchValue = null;
     }
+    this.page = 0;
     this.driverList = [];
     this.getDriverList();
-
   }
 }

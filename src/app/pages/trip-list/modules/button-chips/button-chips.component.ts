@@ -1,15 +1,13 @@
-import {Component, Input} from '@angular/core';
-import {count} from "rxjs";
-import {NgClass} from "@angular/common";
+import { Component, Input } from '@angular/core';
+import { count } from 'rxjs';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-button-chips',
   standalone: true,
-  imports: [
-    NgClass
-  ],
+  imports: [NgClass],
   templateUrl: './button-chips.component.html',
-  styleUrl: './button-chips.component.scss'
+  styleUrl: './button-chips.component.scss',
 })
 export class ButtonChipsComponent {
   @Input() count = 0;

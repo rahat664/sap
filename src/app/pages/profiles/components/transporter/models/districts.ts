@@ -1,4 +1,4 @@
-import {CustomInputSelectModel} from "../../../../../shared/modules/custom-input/custom-input-select.model";
+import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 
 export const districts: CustomInputSelectModel[] = [
   { id: 1, value: 'Bagerhat', selected: false },
@@ -12,7 +12,7 @@ export const districts: CustomInputSelectModel[] = [
   { id: 9, value: 'Chapai Nawabganj', selected: false },
   { id: 10, value: 'Chattogram', selected: false },
   { id: 11, value: 'Chuadanga', selected: false },
-  { id: 12, value: 'Cox\'s Bazar', selected: false },
+  { id: 12, value: "Cox's Bazar", selected: false },
   { id: 13, value: 'Cumilla', selected: false },
   { id: 14, value: 'Dhaka', selected: false },
   { id: 15, value: 'Dinajpur', selected: false },
@@ -64,5 +64,5 @@ export const districts: CustomInputSelectModel[] = [
   { id: 61, value: 'Sunamganj', selected: false },
   { id: 62, value: 'Sylhet', selected: false },
   { id: 63, value: 'Tangail', selected: false },
-  { id: 64, value: 'Thakurgaon', selected: false }
+  { id: 64, value: 'Thakurgaon', selected: false },
 ];

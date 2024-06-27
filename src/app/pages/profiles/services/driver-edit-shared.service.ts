@@ -1,15 +1,15 @@
-import {Injectable, OnInit} from '@angular/core';
-import {UserModel} from "../../user-management/models/user.model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UserService} from "./user.service";
-import {ToastrService} from "ngx-toastr";
-import {Router} from "@angular/router";
-import {BehaviorSubject} from "rxjs";
-import {TruckInnerModel} from "../components/truck/models/truck-inner.model";
-import {TruckService} from "../components/truck/services/truck.service";
+import { Injectable, OnInit } from '@angular/core';
+import { UserModel } from '../../user-management/models/user.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UserService } from './user.service';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { TruckInnerModel } from '../components/truck/models/truck-inner.model';
+import { TruckService } from '../components/truck/services/truck.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DriverEditSharedService {
   driverName: string;
@@ -40,7 +40,7 @@ export class DriverEditSharedService {
       drivingLicenseFront: [null],
       drivingLicenseBack: [null],
       drivingLicenseExpiryDate: [null],
-      other: [null]
+      other: [null],
     });
 
     this.truckUpdateForm = this.fb.group({
@@ -58,9 +58,8 @@ export class DriverEditSharedService {
       fitnessCertificateFile: [null],
       routePermitFile: [null],
       casePaperFile: [null],
-      others: [null]
+      others: [null],
     });
-
   }
 
   bindTruckValueWithForm(singleTruck: TruckInnerModel) {
@@ -84,7 +83,7 @@ export class DriverEditSharedService {
       driverName: singleDriver.name,
       driverPhone: singleDriver.phone,
       driverId: singleDriver.userId,
-      drivingLicenseExpiryDate: singleDriver.drivingLicenseExpiryDate
+      drivingLicenseExpiryDate: singleDriver.drivingLicenseExpiryDate,
     });
   }
 
@@ -94,47 +93,46 @@ export class DriverEditSharedService {
       this.truckDocuments.push({
         name: 'Registration Paper',
         url: singleTruck.regPaperFile,
-        expDate: null
+        expDate: null,
       });
     }
     if (singleTruck.fitnessFile) {
       this.truckDocuments.push({
         name: 'Fitness',
         url: singleTruck.fitnessFile,
-        expDate: singleTruck.fitnessCertExpDate
+        expDate: singleTruck.fitnessCertExpDate,
       });
     }
     if (singleTruck.routePermitFile) {
       this.truckDocuments.push({
         name: 'Route Permit',
         url: singleTruck.routePermitFile,
-        expDate: singleTruck.routePermitExpDate
+        expDate: singleTruck.routePermitExpDate,
       });
     }
     if (singleTruck.taxFile) {
       this.truckDocuments.push({
         name: 'Tax',
         url: singleTruck.taxFile,
-        expDate: singleTruck.taxExpDate
+        expDate: singleTruck.taxExpDate,
       });
     }
     if (singleTruck.caseFile) {
       this.truckDocuments.push({
         name: 'Case',
         url: singleTruck.caseFile,
-        expDate: singleTruck.caseExpDate
+        expDate: singleTruck.caseExpDate,
       });
     }
     if (singleTruck.otherFile) {
       this.truckDocuments.push({
         name: 'Other',
         url: singleTruck.otherFile,
-        expDate: null
+        expDate: null,
       });
     }
     return this.truckDocuments;
   }
-
 
   getDocument(singleDriver: UserModel) {
     this.documents = [];
@@ -142,35 +140,35 @@ export class DriverEditSharedService {
       this.documents.push({
         name: 'Driving License Front',
         url: singleDriver.driverFilesUrls?.drivingLicenseFront,
-        expDate: singleDriver.drivingLicenseExpiryDate
+        expDate: singleDriver.drivingLicenseExpiryDate,
       });
     }
     if (singleDriver.driverFilesUrls?.drivingLicenseBack) {
       this.documents.push({
         name: 'Driving License Back',
         url: singleDriver.driverFilesUrls?.drivingLicenseBack,
-        expDate: singleDriver.drivingLicenseExpiryDate
+        expDate: singleDriver.drivingLicenseExpiryDate,
       });
     }
     if (singleDriver.driverFilesUrls?.nidFront) {
       this.documents.push({
         name: 'NID Front',
         url: singleDriver.driverFilesUrls?.nidFront,
-        expDate: null
+        expDate: null,
       });
     }
     if (singleDriver.driverFilesUrls?.nidBack) {
       this.documents.push({
         name: 'NID Back',
         url: singleDriver.driverFilesUrls?.nidBack,
-        expDate: null
+        expDate: null,
       });
     }
     if (singleDriver.driverFilesUrls?.other) {
       this.documents.push({
         name: 'Other',
         url: singleDriver.driverFilesUrls?.other,
-        expDate: null
+        expDate: null,
       });
     }
     return this.documents;
@@ -193,7 +191,8 @@ export class DriverEditSharedService {
         }
       });
       formData.append('payload', JSON.stringify(payload));
-      this.truck.editTruck(formData).subscribe((res: any) => {
+      this.truck.editTruck(formData).subscribe(
+        (res: any) => {
           if (res.status === 'OK') {
             this.toastr.success(res.message);
             this.router.navigate(['/profile/truck']);
@@ -217,13 +216,13 @@ export class DriverEditSharedService {
   onDriverUpdate(driverName: string, driverPhone: string) {
     this.driverUpdateForm.patchValue({
       driverName: driverName,
-      driverPhone: driverPhone
+      driverPhone: driverPhone,
     });
     if (this.driverUpdateForm.valid) {
       const formData = new FormData();
       const payload: Record<string, any> = {};
 
-// Iterate over form controls
+      // Iterate over form controls
       Object.keys(this.driverUpdateForm.controls).forEach(key => {
         const control = this.driverUpdateForm.get(key);
         const value = control.value;
@@ -240,7 +239,8 @@ export class DriverEditSharedService {
       });
       formData.append('payload', JSON.stringify(payload));
 
-      this.service.editDriver(formData).subscribe((res: any) => {
+      this.service.editDriver(formData).subscribe(
+        (res: any) => {
           // Handle response
           if (res.status === 'OK') {
             this.toastr.success(res.message);
@@ -263,50 +263,54 @@ export class DriverEditSharedService {
   }
 
   onClickTruckCloseButton(document: any) {
-    this.truckDocuments = this.truckDocuments.filter((doc: any) => doc.name !== document.name);
+    this.truckDocuments = this.truckDocuments.filter(
+      (doc: any) => doc.name !== document.name
+    );
     if (document.name === 'Registration Paper') {
       this.truckUpdateForm.patchValue({
-        regPaperFile: null
+        regPaperFile: null,
       });
     } else if (document.name === 'Fitness') {
       this.truckUpdateForm.patchValue({
         fitnessCertificateFile: null,
-        fitnessCertExpDate: null
+        fitnessCertExpDate: null,
       });
     } else if (document.name === 'Route Permit') {
       this.truckUpdateForm.patchValue({
         routePermitFile: null,
-        routePermitExpDate: null
+        routePermitExpDate: null,
       });
     } else if (document.name === 'Tax') {
       this.truckUpdateForm.patchValue({
         taxFile: null,
-        taxExpDate: null
+        taxExpDate: null,
       });
     } else if (document.name === 'Case') {
       this.truckUpdateForm.patchValue({
         casePaperFile: null,
-        caseExpDate: null
+        caseExpDate: null,
       });
     } else if (document.name === 'Other') {
       this.truckUpdateForm.patchValue({
-        otherFile: null
+        otherFile: null,
       });
     }
   }
 
   onClickCloseButton(document: any) {
-    this.documents = this.documents.filter((doc: any) => doc.name !== document.name);
+    this.documents = this.documents.filter(
+      (doc: any) => doc.name !== document.name
+    );
     if (document.name === 'Driving License Front') {
-      this.driverUpdateForm.patchValue({drivingLicenseFront: null});
+      this.driverUpdateForm.patchValue({ drivingLicenseFront: null });
     } else if (document.name === 'Driving License Back') {
-      this.driverUpdateForm.patchValue({drivingLicenseBack: null});
+      this.driverUpdateForm.patchValue({ drivingLicenseBack: null });
     } else if (document.name === 'NID Front') {
-      this.driverUpdateForm.patchValue({nidFront: null});
+      this.driverUpdateForm.patchValue({ nidFront: null });
     } else if (document.name === 'NID Back') {
-      this.driverUpdateForm.patchValue({nidBack: null});
+      this.driverUpdateForm.patchValue({ nidBack: null });
     } else if (document.name === 'Other') {
-      this.driverUpdateForm.patchValue({other: null});
+      this.driverUpdateForm.patchValue({ other: null });
     }
   }
 
@@ -315,23 +319,25 @@ export class DriverEditSharedService {
       $event.forEach((file: any) => {
         this.documents.push({
           name: file.registrationType,
-          url: file.preview
+          url: file.preview,
         });
         switch (file.registrationType) {
           case 'Driving License Front':
-            this.driverUpdateForm.patchValue({drivingLicenseFront: file.file});
+            this.driverUpdateForm.patchValue({
+              drivingLicenseFront: file.file,
+            });
             break;
           case 'Driving License Back':
-            this.driverUpdateForm.patchValue({drivingLicenseBack: file.file});
+            this.driverUpdateForm.patchValue({ drivingLicenseBack: file.file });
             break;
           case 'NID Front':
-            this.driverUpdateForm.patchValue({nidFront: file.file});
+            this.driverUpdateForm.patchValue({ nidFront: file.file });
             break;
           case 'NID Back':
-            this.driverUpdateForm.patchValue({nidBack: file.file});
+            this.driverUpdateForm.patchValue({ nidBack: file.file });
             break;
           case 'Other':
-            this.driverUpdateForm.patchValue({other: file.file});
+            this.driverUpdateForm.patchValue({ other: file.file });
             break;
         }
       });
@@ -344,7 +350,7 @@ export class DriverEditSharedService {
         this.truckDocuments.push({
           name: file.registrationType,
           url: file.preview,
-          expDate: file.registrationExpireDate
+          expDate: file.registrationExpireDate,
         });
         switch (file.registrationType) {
           case 'Registration Paper':
@@ -355,25 +361,25 @@ export class DriverEditSharedService {
           case 'Fitness':
             this.truckUpdateForm.patchValue({
               fitnessCertificateFile: file.file,
-              fitnessCertExpDate: file.registrationExpireDate
+              fitnessCertExpDate: file.registrationExpireDate,
             });
             break;
           case 'Route Permit':
             this.truckUpdateForm.patchValue({
               routePermitFile: file.file,
-              routePermitExpDate: file.registrationExpireDate
+              routePermitExpDate: file.registrationExpireDate,
             });
             break;
           case 'Tax':
             this.truckUpdateForm.patchValue({
               taxFile: file.file,
-              taxExpDate: file.registrationExpireDate
+              taxExpDate: file.registrationExpireDate,
             });
             break;
           case 'Case':
             this.truckUpdateForm.patchValue({
               casePaperFile: file.file,
-              caseExpDate: file.registrationExpireDate
+              caseExpDate: file.registrationExpireDate,
             });
             break;
           case 'Other':

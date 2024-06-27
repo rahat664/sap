@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from "rxjs";
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ImageGalleryService {
   private imageSubject = new BehaviorSubject<string>(null);
   currentImage$ = this.imageSubject.asObservable();
-  constructor() { }
+
+  constructor() {}
 
   setCurrentImage(image: string) {
     this.imageSubject.next(image);

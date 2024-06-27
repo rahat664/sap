@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConvertToFormdataService {
-
-  constructor() { }
+  constructor() {}
 
   convertToFormData(data: any): FormData {
     const formData = new FormData();

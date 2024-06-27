@@ -8,10 +8,9 @@ describe('DriverDetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DriverDetailsComponent]
-    })
-    .compileComponents();
-    
+      imports: [DriverDetailsComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(DriverDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

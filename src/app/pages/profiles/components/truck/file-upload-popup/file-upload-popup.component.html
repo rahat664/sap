@@ -1,55 +1,86 @@
-<div class="flex flex-col space-y-4 justify-between p-{{padding}} text-bodys">
+<div class="flex flex-col space-y-4 justify-between p-{{ padding }} text-bodys">
   <div class="flex flex-col space-y-3">
     <div *ngIf="isUploadIconEnabled" class="flex space-x-3 items-center">
-      <span class="h-6 w-6 rounded-full bg-input flex items-center justify-center">
-        <img src="assets/svg/upload.svg" alt="">
+      <span
+        class="h-6 w-6 rounded-full bg-input flex items-center justify-center">
+        <img src="assets/svg/upload.svg" alt="" />
       </span>
       <h1 class="text-body font-bold">Upload documents</h1>
     </div>
-    <label for="file-upload" class="drop-area flex items-center space-y-3 flex-col w-full"
-         (drop)="onFileDropped($event)"
-         (dragover)="onDragOver($event)"
-         (dragleave)="onDragLeave($event)"
-    >
-      <img *ngIf="!filePreview" src="assets/svg/fileupload.svg" alt="">
-      <div *ngIf="filePreview" class="h-64 w-64 overflow-hidden object-center object-cover">
-        <img class="h-full w-full" [src]="filePreview" alt="File Preview"/>
+    <label
+      for="file-upload"
+      class="drop-area flex items-center space-y-3 flex-col w-full"
+      (drop)="onFileDropped($event)"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)">
+      <img *ngIf="!filePreview" src="assets/svg/fileupload.svg" alt="" />
+      <div
+        *ngIf="filePreview"
+        class="h-64 w-64 overflow-hidden object-center object-cover">
+        <img class="h-full w-full" [src]="filePreview" alt="File Preview" />
       </div>
-        <span class="text-sm font-medium">Drop your image here or <a
-          class="text-link cursor-pointer text-decoration-underline">browse</a></span>
+      <span class="text-sm font-medium"
+        >Drop your image here or
+        <a class="text-link cursor-pointer text-decoration-underline"
+          >browse</a
+        ></span
+      >
 
-      <input type="file" id="file-upload" (change)="onFileChange($event)" class="hidden w-full">
+      <input
+        type="file"
+        id="file-upload"
+        (change)="onFileChange($event)"
+        class="hidden w-full" />
     </label>
   </div>
-  <div class="flex flex-col bg-input px-4 py-2 space-y-2 rounded-lg" *ngIf="fileArray.length > 0">
+  <div
+    class="flex flex-col bg-input px-4 py-2 space-y-2 rounded-lg"
+    *ngIf="fileArray.length > 0">
     <ng-container *ngFor="let file of fileArray; index as i">
-      <div class="flex  py-2  space-x-3 items-center">
+      <div class="flex py-2 space-x-3 items-center">
         <div class="w-full flex space-x-3 flex-1 items-center">
           <div class="h-12 w-12 overflow-hidden">
-            <img class="h-full w-full" [src]="file.preview ? file.preview : 'assets/svg/fileupload.svg'" alt="">
+            <img
+              class="h-full w-full"
+              [src]="file.preview ? file.preview : 'assets/svg/fileupload.svg'"
+              alt="" />
           </div>
-          <app-custom-input class="w-full flex-1"
-                            backgroundColor="white"
-                            inputPlaceholder="Select type"
-                            [options]="fileTypeOptions"
-                            (selectedId)="onSelectFileType($event, i)"
-                            [inputSearch]="file.registrationType"
-                            appGetClickEvent (clickedElement)="onClickFileType($event, i)"
-                            [itemsOpened]="file.fileOpened"
-          ></app-custom-input>
+          <app-custom-input
+            class="w-full flex-1"
+            backgroundColor="white"
+            inputPlaceholder="Select type"
+            [options]="fileTypeOptions"
+            (selectedId)="onSelectFileType($event, i)"
+            [inputSearch]="file.registrationType"
+            appGetClickEvent
+            (clickedElement)="onClickFileType($event, i)"
+            [itemsOpened]="file.fileOpened"></app-custom-input>
           <div
-            *ngIf="file.registrationType === 'Case' || file.registrationType === 'Fitness' || file.registrationType === 'Route Permit' || file.registrationType === 'Tax' || file.registrationType === 'Driving License Front'">
-            <input type="date" (change)="onDateChange($event, i)" placeholder="Expire date "
-                   class="border-none bg-white w-full flex-1 rounded-md p-4">
+            *ngIf="
+              file.registrationType === 'Case' ||
+              file.registrationType === 'Fitness' ||
+              file.registrationType === 'Route Permit' ||
+              file.registrationType === 'Tax' ||
+              file.registrationType === 'Driving License Front'
+            ">
+            <input
+              type="date"
+              (change)="onDateChange($event, i)"
+              placeholder="Expire date "
+              class="border-none bg-white w-full flex-1 rounded-md p-4" />
           </div>
         </div>
-        <span class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
-      <i class="fal fa-times text-primary"></i>
-    </span>
+        <button (click)="onCloseSelectedFile(i)"
+          class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+          <i class="fal fa-times text-primary"></i>
+        </button>
       </div>
     </ng-container>
   </div>
-  <button *ngIf="fileArray.length > 0 && callFromModal" (click)="onSubmit()"
-          class="self-end bg-primary text-white rounded-lg px-4 py-2">Upload
+  <button
+    *ngIf="fileArray.length > 0 && callFromModal"
+    (click)="onSubmit()"
+    class="self-end bg-primary text-white rounded-lg px-4 py-2">
+    Upload
   </button>
 </div>

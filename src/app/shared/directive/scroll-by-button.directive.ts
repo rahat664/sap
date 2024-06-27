@@ -7,21 +7,23 @@ import {
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges, AfterViewInit
+  SimpleChanges,
+  AfterViewInit,
 } from '@angular/core';
-import {ignoreElements} from "rxjs";
+import { ignoreElements } from 'rxjs';
 
 @Directive({
   selector: '[appScrollByButton]',
-  standalone: true
+  standalone: true,
 })
-export class ScrollByButtonDirective implements OnInit, OnChanges, AfterViewInit{
+export class ScrollByButtonDirective
+  implements OnInit, OnChanges, AfterViewInit
+{
   @Input() rightButtonClicked = false;
   @Input() leftButtonClicked = false;
   @Output() isVisible: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
-  constructor(private el: ElementRef) {
-  }
+  constructor(private el: ElementRef) {}
 
   ngOnInit(): void {
     this.detectThatElementIsScrollableOrNot();
@@ -32,24 +34,29 @@ export class ScrollByButtonDirective implements OnInit, OnChanges, AfterViewInit
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.rightButtonClicked){
+    if (this.rightButtonClicked) {
       this.scrollElementToRightEnd();
     }
-    if(this.leftButtonClicked){
+    if (this.leftButtonClicked) {
       this.scrollElementToLeftEnd();
     }
   }
-  scrollElementToRightEnd(){
+
+  scrollElementToRightEnd() {
     this.el.nativeElement.scrollLeft = this.el.nativeElement.scrollWidth;
   }
-  scrollElementToLeftEnd(){
+
+  scrollElementToLeftEnd() {
     this.el.nativeElement.scrollLeft = 0;
   }
 
   private detectThatElementIsScrollableOrNot() {
-    this.isVisible.emit(this.el.nativeElement.scrollWidth > this.el.nativeElement.clientWidth);
+    this.isVisible.emit(
+      this.el.nativeElement.scrollWidth > this.el.nativeElement.clientWidth
+    );
   }
-  @HostListener('window:resize') onResize(){
+
+  @HostListener('window:resize') onResize() {
     this.detectThatElementIsScrollableOrNot();
   }
 }

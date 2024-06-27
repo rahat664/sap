@@ -1,14 +1,19 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {CustomInputComponent} from "../../../../../shared/modules/custom-input/custom-input.component";
-import {GetClickEventDirective} from "../../../../../shared/directive/get-click-event.directive";
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {UserService} from "../../../services/user.service";
-import {ToastrService} from "ngx-toastr";
-import {UserModel} from "../../../../user-management/models/user.model";
-import {bkashPaymentMethod, paymentMethod} from "../models/payment-method";
-import {CustomInputSelectModel} from "../../../../../shared/modules/custom-input/custom-input-select.model";
-import {NgIf} from "@angular/common";
-import {ValidationService} from "../../../../../shared/services/validation/validation.service";
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
+import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { UserService } from '../../../services/user.service';
+import { ToastrService } from 'ngx-toastr';
+import { UserModel } from '../../../../user-management/models/user.model';
+import { bkashPaymentMethod, paymentMethod } from '../models/payment-method';
+import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
+import { NgIf } from '@angular/common';
+import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 
 @Component({
   selector: 'app-transporter-add',
@@ -17,10 +22,10 @@ import {ValidationService} from "../../../../../shared/services/validation/valid
     CustomInputComponent,
     GetClickEventDirective,
     ReactiveFormsModule,
-    NgIf
+    NgIf,
   ],
   templateUrl: './transporter-add.component.html',
-  styleUrl: './transporter-add.component.scss'
+  styleUrl: './transporter-add.component.scss',
 })
 export class TransporterAddComponent implements OnInit {
   transporterForm: FormGroup;
@@ -31,10 +36,30 @@ export class TransporterAddComponent implements OnInit {
   @Output() formCreated = new EventEmitter<boolean>();
   bkashPaymentTypePlaceholder: string;
 
-  constructor(private service: UserService, private validation: ValidationService, private toastr: ToastrService, private fb: FormBuilder) {
+  constructor(
+    private service: UserService,
+    private validation: ValidationService,
+    private toastr: ToastrService,
+    private fb: FormBuilder
+  ) {
     this.transporterForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      phone: ['', [Validators.required, Validators.pattern('01[0-9]{9}'), Validators.minLength(11), Validators.maxLength(11)]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(50),
+        ],
+      ],
+      phone: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern('01[0-9]{9}'),
+          Validators.minLength(11),
+          Validators.maxLength(11),
+        ],
+      ],
       truckStand: [''],
       preferredPaymentMethod: [''],
       bkashName: [null],
@@ -45,7 +70,7 @@ export class TransporterAddComponent implements OnInit {
       bankAccountName: [null],
       bankAccountNumber: [null],
       role: [''],
-      note: ['']
+      note: [''],
     });
   }
 
@@ -55,31 +80,41 @@ export class TransporterAddComponent implements OnInit {
       this.transporterModel.phone = this.transporterForm.get('phone').value;
       this.transporterModel.note = this.transporterForm.get('note').value;
       this.transporterModel.role = 'Transporter';
-      this.transporterModel.truckStand = this.transporterForm.get('truckStand').value;
-      this.transporterModel.PaymentMethod = this.transporterForm.get('preferredPaymentMethod').value;
+      this.transporterModel.truckStand =
+        this.transporterForm.get('truckStand').value;
+      this.transporterModel.PaymentMethod = this.transporterForm.get(
+        'preferredPaymentMethod'
+      ).value;
       switch (this.transporterModel.paymentMethods) {
         case 'Bkash':
-          this.transporterModel.acc_holder_name = this.transporterForm.get('bkashName').value;
-          this.transporterModel.bank_acc_no = this.transporterForm.get('bkashNumber').value;
-          this.transporterModel.acc_type = this.transporterForm.get('bkashType').value;
+          this.transporterModel.acc_holder_name =
+            this.transporterForm.get('bkashName').value;
+          this.transporterModel.bank_acc_no =
+            this.transporterForm.get('bkashNumber').value;
+          this.transporterModel.acc_type =
+            this.transporterForm.get('bkashType').value;
           this.transporterModel.bank_name = 'Bkash';
           this.transporterModel.branch_name = null;
           this.transporterForm.patchValue({
             bankBranch: null,
             bankAccountName: null,
-            bankAccountNumber: null
+            bankAccountNumber: null,
           });
           break;
         case 'Bank':
-          this.transporterModel.acc_holder_name = this.transporterForm.get('bankAccountName').value;
-          this.transporterModel.bank_acc_no = this.transporterForm.get('bankAccountNumber').value;
+          this.transporterModel.acc_holder_name =
+            this.transporterForm.get('bankAccountName').value;
+          this.transporterModel.bank_acc_no =
+            this.transporterForm.get('bankAccountNumber').value;
           this.transporterModel.acc_type = null;
-          this.transporterModel.bank_name = this.transporterForm.get('bankName').value;
-          this.transporterModel.branch_name = this.transporterForm.get('bankBranch').value;
+          this.transporterModel.bank_name =
+            this.transporterForm.get('bankName').value;
+          this.transporterModel.branch_name =
+            this.transporterForm.get('bankBranch').value;
           this.transporterForm.patchValue({
             bkashName: null,
             bkashNumber: null,
-            bkashType: null
+            bkashType: null,
           });
           break;
         default:
@@ -94,8 +129,8 @@ export class TransporterAddComponent implements OnInit {
             bankAccountNumber: null,
             bkashName: null,
             bkashNumber: null,
-            bkashType: null
-          })
+            bkashType: null,
+          });
           break;
       }
       this.service.addUserFromTransport(this.transporterModel).subscribe(
@@ -113,14 +148,14 @@ export class TransporterAddComponent implements OnInit {
           this.toastr.error(error.error.message);
           this.formCreated.emit(false);
         }
-      )
+      );
     } else {
       this.transporterForm.markAllAsTouched();
     }
   }
 
   ngOnInit(): void {
-    this.transporterForm.get('phone').valueChanges.subscribe((value) => {
+    this.transporterForm.get('phone').valueChanges.subscribe(value => {
       this.validation.mobileNumberValidation(value, this.transporterForm);
     });
   }
@@ -131,11 +166,15 @@ export class TransporterAddComponent implements OnInit {
 
   onSelectPayment($event: number) {
     // this.transporterForm.get('preferredPaymentMethod').setValue($event);
-    this.paymentInputPlaceholder = this.paymentOptionsArray.find(item => item.id === $event).value;
+    this.paymentInputPlaceholder = this.paymentOptionsArray.find(
+      item => item.id === $event
+    ).value;
     this.paymentOpened = false;
-    this.paymentOptionsArray.forEach(item => item.selected = item.id === $event);
+    this.paymentOptionsArray.forEach(
+      item => (item.selected = item.id === $event)
+    );
     this.transporterForm.patchValue({
-      preferredPaymentMethod: this.paymentInputPlaceholder
+      preferredPaymentMethod: this.paymentInputPlaceholder,
     });
   }
 
@@ -147,11 +186,15 @@ export class TransporterAddComponent implements OnInit {
   }
 
   onSelectBkashType($event: number) {
-    this.bkashPaymentTypePlaceholder = this.bkashPaymentMethod.find(item => item.id === $event).value;
+    this.bkashPaymentTypePlaceholder = this.bkashPaymentMethod.find(
+      item => item.id === $event
+    ).value;
     this.bkashOpened = false;
-    this.bkashPaymentMethod.forEach(item => item.selected = item.id === $event);
+    this.bkashPaymentMethod.forEach(
+      item => (item.selected = item.id === $event)
+    );
     this.transporterForm.patchValue({
-      bkashType: this.bkashPaymentTypePlaceholder
+      bkashType: this.bkashPaymentTypePlaceholder,
     });
   }
 

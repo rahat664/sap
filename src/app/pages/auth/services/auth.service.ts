@@ -1,32 +1,33 @@
 import { Injectable } from '@angular/core';
-import {catchError, map, Observable, throwError} from "rxjs";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {ApiResponse} from "../models/response/api-response";
-import {LoginRequest} from "../models/request/login-request";
-import {environment} from "../../../../environments/environment";
-import {Router} from "@angular/router";
+import { catchError, map, Observable, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ApiResponse } from '../models/response/api-response';
+import { LoginRequest } from '../models/request/login-request';
+import { environment } from '../../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   login(payload: LoginRequest): Observable<any> {
-    return this.http.post<ApiResponse>(environment.userUrl + '/auth/login', payload)
+    return this.http.post<ApiResponse>(
+      environment.userUrl + '/auth/login',
+      payload
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
-
-    let message = "";
+    let message = '';
 
     if (error.status === 0) {
-
-      message = 'Network connection problem!'
-    }
-    else {
-
+      message = 'Network connection problem!';
+    } else {
       message = error.message;
     }
 

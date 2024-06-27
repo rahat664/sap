@@ -1,33 +1,40 @@
-import {Component, EventEmitter, Input, Output, OnInit, OnDestroy} from '@angular/core';
-import {GetOutsideModalClickDirective} from "../../directive/get-outside-modal-click.directive";
-import {NgIf} from "@angular/common";
-import {DriverEditSharedService} from "../../../pages/profiles/services/driver-edit-shared.service";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
+import { GetOutsideModalClickDirective } from '../../directive/get-outside-modal-click.directive';
+import { NgIf } from '@angular/common';
+import { DriverEditSharedService } from '../../../pages/profiles/services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-confirm-modal',
   standalone: true,
-  imports: [
-    GetOutsideModalClickDirective,
-    NgIf
-  ],
+  imports: [GetOutsideModalClickDirective, NgIf],
   templateUrl: './confirm-modal.component.html',
-  styleUrl: './confirm-modal.component.scss'
+  styleUrl: './confirm-modal.component.scss',
 })
 export class ConfirmModalComponent implements OnInit, OnDestroy {
   @Input() userName: string;
   @Input() buttonText: string;
   @Output() performChangeStatus = new EventEmitter<any>();
   @Input() isOpen: any;
-  @Output() isModalClosed: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+  @Output() isModalClosed: EventEmitter<boolean> = new EventEmitter<boolean>(
+    false
+  );
   private subs: any;
 
-  constructor( private sharedDriverEditService: DriverEditSharedService) {
-  }
+  constructor(private sharedDriverEditService: DriverEditSharedService) {}
 
   ngOnInit(): void {
-    this.subs = this.sharedDriverEditService.isConfirmModalOpen.subscribe((res: any) => {
-      this.isOpen = res;
-    });
+    this.subs = this.sharedDriverEditService.isConfirmModalOpen.subscribe(
+      (res: any) => {
+        this.isOpen = res;
+      }
+    );
   }
 
   ngOnDestroy() {

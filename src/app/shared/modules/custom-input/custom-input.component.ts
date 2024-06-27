@@ -1,10 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {CustomInputSelectModel} from "./custom-input-select.model";
-import {CommonModule} from "@angular/common";
-import {FormsModule} from "@angular/forms";
-import {DriverEditSharedService} from "../../../pages/profiles/services/driver-edit-shared.service";
-import {GetOutsideModalClickDirective} from "../../directive/get-outside-modal-click.directive";
-import {NgSelectModule} from "@ng-select/ng-select";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CustomInputSelectModel } from './custom-input-select.model';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DriverEditSharedService } from '../../../pages/profiles/services/driver-edit-shared.service';
+import { GetOutsideModalClickDirective } from '../../directive/get-outside-modal-click.directive';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-custom-input',
@@ -13,10 +13,10 @@ import {NgSelectModule} from "@ng-select/ng-select";
     CommonModule,
     FormsModule,
     GetOutsideModalClickDirective,
-    NgSelectModule
+    NgSelectModule,
   ],
   templateUrl: './custom-input.component.html',
-  styleUrl: './custom-input.component.scss'
+  styleUrl: './custom-input.component.scss',
 })
 export class CustomInputComponent implements OnInit {
   @Input() inputPlaceholder: string;
@@ -27,60 +27,72 @@ export class CustomInputComponent implements OnInit {
   @Input() customOpened: any;
   @Input() isError = false;
   months: string[] = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
-  days: number[] = Array.from({length: 31}, (_, i) => i + 1);
-  years: number[] = Array.from({length: new Date().getFullYear() - 1980 + 1}, (_, i) => 1980 + i);
+  days: number[] = Array.from({ length: 31 }, (_, i) => i + 1);
+  years: number[] = Array.from(
+    { length: new Date().getFullYear() - 1980 + 1 },
+    (_, i) => 1980 + i
+  );
   selectedFromMonth: string; // Default selected month
-  selectedFromDay: number; // Default selected day
-  selectedFromYear: number; // Default selected year
+  selectedFromDay: string; // Default selected day
+  selectedFromYear: string; // Default selected year
   selectedToMonth: string; // Default selected month
-  selectedToDay: number; // Default selected day
-  selectedToYear: number; // Default selected year
+  selectedToDay: string; // Default selected day
+  selectedToYear: string; // Default selected year
   selectedFromMonthInString: string;
   selectedToMonthInString: string;
 
-  constructor(private shared: DriverEditSharedService) {
-  }
+  constructor(private shared: DriverEditSharedService) {}
 
   onFromMonthChange(month: string) {
     switch (month) {
       case 'January':
         this.selectedFromMonthInString = 'January';
-        this.selectedFromMonth = '1';
+        this.selectedFromMonth = '01';
         break;
       case 'February':
         this.selectedFromMonthInString = 'February';
-        this.selectedFromMonth = '2';
+        this.selectedFromMonth = '02';
         break;
       case 'March':
         this.selectedFromMonthInString = 'March';
-        this.selectedFromMonth = '3';
+        this.selectedFromMonth = '03';
         break;
       case 'April':
         this.selectedFromMonthInString = 'April';
-        this.selectedFromMonth = '4';
+        this.selectedFromMonth = '04';
         break;
       case 'May':
         this.selectedFromMonthInString = 'May';
-        this.selectedFromMonth = '5';
+        this.selectedFromMonth = '05';
         break;
       case 'June':
         this.selectedFromMonthInString = 'June';
-        this.selectedFromMonth = '6';
+        this.selectedFromMonth = '06';
         break;
       case 'July':
         this.selectedFromMonthInString = 'July';
-        this.selectedFromMonth = '7';
+        this.selectedFromMonth = '07';
         break;
       case 'August':
         this.selectedFromMonthInString = 'August';
-        this.selectedFromMonth = '8';
+        this.selectedFromMonth = '08';
         break;
       case 'September':
         this.selectedFromMonthInString = 'September';
-        this.selectedFromMonth = '9';
+        this.selectedFromMonth = '09';
         break;
       case 'October':
         this.selectedFromMonthInString = 'October';
@@ -98,50 +110,51 @@ export class CustomInputComponent implements OnInit {
   }
 
   onFromDayChange(day: number) {
-    this.selectedFromDay = day;
+    this.selectedFromDay =
+      day.toString().length === 1 ? `0${day}` : day.toString();
   }
 
   onFromYearChange(year: number) {
-    this.selectedFromYear = year;
+    this.selectedFromYear = year.toString();
   }
 
   onToMonthChange(month: string) {
     switch (month) {
       case 'January':
         this.selectedToMonthInString = 'January';
-        this.selectedToMonth = '1';
+        this.selectedToMonth = '01';
         break;
       case 'February':
         this.selectedToMonthInString = 'February';
-        this.selectedToMonth = '2';
+        this.selectedToMonth = '02';
         break;
       case 'March':
         this.selectedToMonthInString = 'March';
-        this.selectedToMonth = '3';
+        this.selectedToMonth = '03';
         break;
       case 'April':
         this.selectedToMonthInString = 'April';
-        this.selectedToMonth = '4';
+        this.selectedToMonth = '04';
         break;
       case 'May':
         this.selectedToMonthInString = 'May';
-        this.selectedToMonth = '5';
+        this.selectedToMonth = '05';
         break;
       case 'June':
         this.selectedToMonthInString = 'June';
-        this.selectedToMonth = '6';
+        this.selectedToMonth = '06';
         break;
       case 'July':
         this.selectedToMonthInString = 'July';
-        this.selectedToMonth = '7';
+        this.selectedToMonth = '07';
         break;
       case 'August':
         this.selectedToMonthInString = 'August';
-        this.selectedToMonth = '8';
+        this.selectedToMonth = '08';
         break;
       case 'September':
         this.selectedToMonthInString = 'September';
-        this.selectedToMonth = '9';
+        this.selectedToMonth = '09';
         break;
       case 'October':
         this.selectedToMonthInString = 'October';
@@ -159,19 +172,20 @@ export class CustomInputComponent implements OnInit {
   }
 
   onToDayChange(day: number) {
-    this.selectedToDay = day;
+    this.selectedToDay =
+      day.toString().length === 1 ? `0${day}` : day.toString();
   }
 
   onToYearChange(year: number) {
-    this.selectedToYear = year;
+    this.selectedToYear = year.toString();
   }
 
   combineFromIntoSingleDate() {
-    return `${this.selectedFromDay}-${this.selectedFromMonth}-${this.selectedFromYear}`;
+    return `${this.selectedFromYear}-${this.selectedFromMonth}-${this.selectedFromDay}`;
   }
 
   combineToIntoSingleDate() {
-    return `${this.selectedToDay}-${this.selectedToMonth}-${this.selectedToYear}`;
+    return `${this.selectedToYear}-${this.selectedToMonth}-${this.selectedToDay}`;
   }
 
   @Output() selectedFromDate = new EventEmitter<string>();
@@ -180,7 +194,6 @@ export class CustomInputComponent implements OnInit {
   @Input() inputSearch = '';
   @Input() backgroundColor = 'input';
   @Input() errorMessage: string;
-
 
   ngOnInit(): void {
     this.isError = false;
@@ -200,7 +213,9 @@ export class CustomInputComponent implements OnInit {
   onClickApply() {
     this.selectedFromDate.emit(this.combineFromIntoSingleDate());
     this.selectedToDate.emit(this.combineToIntoSingleDate());
-    this.selectedFromDateToToDate.emit(`${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`);
+    this.selectedFromDateToToDate.emit(
+      `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`
+    );
     this.customOpened = false;
     this.itemsOpened = false;
     this.isItemsOpened.emit(this.itemsOpened);

@@ -1,24 +1,21 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {TruckService} from "../services/truck.service";
-import {PreHireChecklistModel} from "../models/pre-hire-checklist.model";
-import {NgForOf} from "@angular/common";
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { TruckService } from '../services/truck.service';
+import { PreHireChecklistModel } from '../models/pre-hire-checklist.model';
+import { NgForOf } from '@angular/common';
 
 @Component({
   selector: 'app-pre-hire-checklist',
   standalone: true,
-  imports: [
-    NgForOf
-  ],
+  imports: [NgForOf],
   templateUrl: './pre-hire-checklist.component.html',
-  styleUrl: './pre-hire-checklist.component.scss'
+  styleUrl: './pre-hire-checklist.component.scss',
 })
 export class PreHireChecklistComponent implements OnInit {
   preHireCheckList: PreHireChecklistModel[] = [];
-  object: any={};
+  object: any = {};
   @Output() preHireCheckListObject = new EventEmitter<any>();
 
-  constructor(private service: TruckService) {
-  }
+  constructor(private service: TruckService) {}
 
   ngOnInit(): void {
     this.getPreHireChecklist();
@@ -31,8 +28,8 @@ export class PreHireChecklistComponent implements OnInit {
   }
 
   onChange($event: any, id: number) {
-    this.preHireCheckList.forEach((item) => {
-      if (item.id === id){
+    this.preHireCheckList.forEach(item => {
+      if (item.id === id) {
         this.object[item.id] = $event.target.value;
       }
     });

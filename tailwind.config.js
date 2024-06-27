@@ -1,7 +1,7 @@
 module.exports = {
   content: [
-    "./src/**/*.{html,ts}",
-    "./node_modules/flowbite/**/*.js" // add this line
+    './src/**/*.{html,ts}',
+    './node_modules/flowbite/**/*.js', // add this line
   ],
   theme: {
     extend: {
@@ -38,7 +38,7 @@ module.exports = {
         'app-bg': '#F9F9F9',
         'mobile-line': '#D3DBDC',
         'active': '#E7EDED',
-        'custom-gradient' : '#0084ff0d'
+        'custom-gradient': '#0084ff0d',
       },
       borderColor: {
         'primary': '#11484F',
@@ -60,7 +60,7 @@ module.exports = {
         'red-gradient': '#FEF7F6',
       },
       backgroundImage: {
-        loginBg: "url('assets/images/login-bg.png')",
+        loginBg: 'url(\'assets/images/login-bg.png\')',
       },
       fontSize: {
         'h1': '2rem',
@@ -71,10 +71,10 @@ module.exports = {
         'h3': '1.25rem',
         'body_title': '0.875rem',
         'body': '0.875rem',
-      }
-    }
+      },
+    },
   },
   plugins: [
     require('flowbite/plugin'),
   ],
-}
+};

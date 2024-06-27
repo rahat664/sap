@@ -2,10 +2,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'image',
-  standalone: true
+  standalone: true,
 })
 export class ImagePipe implements PipeTransform {
-
   transform(value: unknown, ...args: unknown[]): unknown {
     if (value) {
       return value;
@@ -13,5 +12,4 @@ export class ImagePipe implements PipeTransform {
       return 'assets/images/user.png';
     }
   }
-
 }

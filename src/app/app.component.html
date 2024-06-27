@@ -6,6 +6,9 @@
 <ng-container *ngIf="isLoginPage()">
   <router-outlet></router-outlet>
 </ng-container>
-<app-image-popup [isOpen]="isOpen" (isModalClosed)="isOpen = !$event" class="w-[75vw]">
+<app-image-popup
+  [isOpen]="isOpen"
+  (isModalClosed)="isOpen = !$event"
+  class="w-[75vw]">
   <app-image-gallery></app-image-gallery>
 </app-image-popup>

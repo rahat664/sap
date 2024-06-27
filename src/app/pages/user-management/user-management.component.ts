@@ -1,4 +1,10 @@
-import { Component, ElementRef, HostListener, ViewChild, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild,
+  OnInit,
+} from '@angular/core';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -15,9 +21,7 @@ import { LoadingComponent } from '../../shared/modules/loading/loading.component
 import { ValidationService } from '../../shared/services/validation/validation.service';
 import { ConfirmModalComponent } from '../../shared/modules/confirm-modal/confirm-modal.component';
 import { ToastrService } from 'ngx-toastr';
-import {
-  CheckTheHeightCrossMaxHeightOrNotDirective,
-} from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
+import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { debounceTime } from 'rxjs';
 
 @Component({
@@ -71,18 +75,20 @@ export class UserManagementComponent implements OnInit {
   searchValue: string;
   departmentFilter: string;
 
-  constructor(private service: UserService, private validation: ValidationService, private toastr: ToastrService) {
-  }
+  constructor(
+    private service: UserService,
+    private validation: ValidationService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     this.searchValue = '';
     this.statusValue = 'Active';
-    this.statusOptionsArray.forEach((item) => {
+    this.statusOptionsArray.forEach(item => {
       item.selected = item.value === this.statusValue;
     });
     this.departmentFilter = '';
     this.getUserList();
-
   }
 
   getFilterLength() {
@@ -97,10 +103,10 @@ export class UserManagementComponent implements OnInit {
     this.roleFilter = 0;
     this.statusInputPlaceholder = 'Active';
     this.roleInputPlaceholder = '';
-    this.statusOptionsArray.forEach((item) => {
+    this.statusOptionsArray.forEach(item => {
       item.selected = false;
     });
-    this.roleOptionsArray.forEach((item) => {
+    this.roleOptionsArray.forEach(item => {
       item.selected = false;
     });
     this.Users = [];
@@ -112,8 +118,11 @@ export class UserManagementComponent implements OnInit {
   onSelectStatus($event: number) {
     this.roleOpened = false;
     this.statusFilter = 1;
-    this.statusInputPlaceholder = this.statusOptionsArray.find((item) => item.id === $event).value;
-    this.statusOptionsArray.forEach((item) => {
+    this.page = 0;
+    this.statusInputPlaceholder = this.statusOptionsArray.find(
+      item => item.id === $event
+    ).value;
+    this.statusOptionsArray.forEach(item => {
       item.selected = item.id === $event;
     });
     if ($event == 3) {
@@ -141,7 +150,6 @@ export class UserManagementComponent implements OnInit {
     //     this.roleOptionsArray.push({id: item.id, value: item.name, selected: false})
     //   })
     // })
-
   }
 
   confirmOpened = false;
@@ -150,13 +158,15 @@ export class UserManagementComponent implements OnInit {
 
   onSelectRole($event: number) {
     this.statusOpened = false;
-    this.roleInputPlaceholder = this.roleOptionsArray.find((item) => item.id === $event).value;
+    this.page = 0;
+    this.roleInputPlaceholder = this.roleOptionsArray.find(
+      item => item.id === $event
+    ).value;
     this.roleFilter = 1;
     this.departmentFilter = this.roleInputPlaceholder;
     this.Users = [];
     this.getUserList();
   }
-
 
   onClickAddUser() {
     this.isOpen = true;
@@ -167,57 +177,79 @@ export class UserManagementComponent implements OnInit {
     this.Users = [];
     this.loading = true;
     if (this.departmentFilter && !this.searchValue && !this.statusValue) {
-      this.service.getUsers(this.page, null, null, this.departmentFilter).subscribe((res: any) => {
-        this.Users = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
-    } else if (this.searchValue && !this.statusValue && !this.departmentFilter) {
-      this.service.getUsers(this.page, null, this.searchValue, null).pipe(
-        debounceTime(500)
-
-      ).subscribe((res: any) => {
-        this.Users = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
-    } else if (this.statusValue && !this.searchValue && !this.departmentFilter) {
-      this.service.getUsers(this.page, this.statusValue, null, null).subscribe((res: any) => {
-        this.Users = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getUsers(this.page, null, null, this.departmentFilter)
+        .subscribe((res: any) => {
+          this.Users = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
+    } else if (
+      this.searchValue &&
+      !this.statusValue &&
+      !this.departmentFilter
+    ) {
+      this.service
+        .getUsers(this.page, null, this.searchValue, null)
+        .pipe(debounceTime(500))
+        .subscribe((res: any) => {
+          this.Users = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
+    } else if (
+      this.statusValue &&
+      !this.searchValue &&
+      !this.departmentFilter
+    ) {
+      this.service
+        .getUsers(this.page, this.statusValue, null, null)
+        .subscribe((res: any) => {
+          this.Users = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else if (this.statusValue && this.searchValue && !this.departmentFilter) {
       // search with debounceTime
-      this.service.getUsers(this.page, this.statusValue, this.searchValue, null).pipe(
-        debounceTime(500)
-      ).subscribe((res: any) => {
-        this.Users = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getUsers(this.page, this.statusValue, this.searchValue, null)
+        .pipe(debounceTime(500))
+        .subscribe((res: any) => {
+          this.Users = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else if (this.statusValue && this.departmentFilter && !this.searchValue) {
-      this.service.getUsers(this.page, this.statusValue, null, this.departmentFilter).subscribe((res: any) => {
-        this.Users = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getUsers(this.page, this.statusValue, null, this.departmentFilter)
+        .subscribe((res: any) => {
+          this.Users = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else if (this.searchValue && this.departmentFilter && !this.statusValue) {
-      this.service.getUsers(this.page, null, this.searchValue, this.departmentFilter).pipe(
-        debounceTime(500)
-      ).subscribe((res: any) => {
-        this.Users = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getUsers(this.page, null, this.searchValue, this.departmentFilter)
+        .pipe(debounceTime(500))
+        .subscribe((res: any) => {
+          this.Users = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else if (this.statusValue && this.searchValue && this.departmentFilter) {
-      this.service.getUsers(this.page, this.statusValue, this.searchValue, this.departmentFilter).pipe(
-        debounceTime(500)
-      ).subscribe((res: any) => {
-        this.Users = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getUsers(
+          this.page,
+          this.statusValue,
+          this.searchValue,
+          this.departmentFilter
+        )
+        .pipe(debounceTime(500))
+        .subscribe((res: any) => {
+          this.Users = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else {
       this.service.getUsers(this.page).subscribe((res: any) => {
         this.Users = res.data.responses;
@@ -226,7 +258,6 @@ export class UserManagementComponent implements OnInit {
       });
     }
   }
-
 
   actionOpen(id: number) {
     if (id === this.selectedId) {
@@ -249,13 +280,14 @@ export class UserManagementComponent implements OnInit {
     this.actionOpened = false;
     if (status == 'Inactive') {
       this.confirmOpened = true;
-    } if (status == 'Active') {
+    }
+    if (status == 'Active') {
       this.confirmOpened = true;
-    } if (status == 'Removed') {
+    }
+    if (status == 'Removed') {
       this.confirmOpened = true;
     }
   }
-
 
   onCreateUser($event: boolean) {
     this.isOpen = !$event;
@@ -278,9 +310,9 @@ export class UserManagementComponent implements OnInit {
   }
 
   onBottom($event: boolean) {
-    if ($event && (this.page < this.totalPages - 1)) {
+    if ($event && this.page < this.totalPages - 1) {
       this.page++;
-      this.scrolledData()
+      this.scrolledData();
     }
   }
 
@@ -301,12 +333,11 @@ export class UserManagementComponent implements OnInit {
         this.roleFilter = 0;
         this.getUserList();
       },
-      error: (err) => {
+      error: err => {
         this.toastr.error(err);
       },
     });
   }
-
 
   onMaxHeightCross($event: boolean) {
     setTimeout(() => {
@@ -318,60 +349,87 @@ export class UserManagementComponent implements OnInit {
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
-      this.loading = true;
-      const target = ($event.target as HTMLInputElement).value;
-      if (target.length) {
-        this.searchValue = target;
-      } else {
-        this.searchValue = '';
-      }
-      this.Users = [];
-      this.getUserList();
+    this.loading = true;
+    const target = ($event.target as HTMLInputElement).value;
+    if (target.length) {
+      this.searchValue = target;
+    } else {
+      this.searchValue = '';
+    }
+    this.Users = [];
+    this.getUserList();
   }
 
   private scrolledData() {
     if (this.departmentFilter && !this.searchValue && !this.statusValue) {
-      this.service.getUsers(this.page, null, null, this.departmentFilter).subscribe((res: any) => {
-        this.Users.push(...res.data.responses);
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
-    } else if (this.searchValue && !this.statusValue && !this.departmentFilter) {
-      this.service.getUsers(this.page, null, this.searchValue, null).subscribe((res: any) => {
-        this.Users.push(...res.data.responses);
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
-    } else if (this.statusValue && !this.searchValue && !this.departmentFilter) {
-      this.service.getUsers(this.page, this.statusValue, null, null).subscribe((res: any) => {
-        this.Users.push(...res.data.responses);
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getUsers(this.page, null, null, this.departmentFilter)
+        .subscribe((res: any) => {
+          this.Users.push(...res.data.responses);
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
+    } else if (
+      this.searchValue &&
+      !this.statusValue &&
+      !this.departmentFilter
+    ) {
+      this.service
+        .getUsers(this.page, null, this.searchValue, null)
+        .subscribe((res: any) => {
+          this.Users.push(...res.data.responses);
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
+    } else if (
+      this.statusValue &&
+      !this.searchValue &&
+      !this.departmentFilter
+    ) {
+      this.service
+        .getUsers(this.page, this.statusValue, null, null)
+        .subscribe((res: any) => {
+          this.Users.push(...res.data.responses);
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else if (this.statusValue && this.searchValue && !this.departmentFilter) {
-      this.service.getUsers(this.page, this.statusValue, this.searchValue, null).subscribe((res: any) => {
-        this.Users.push(...res.data.responses);
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getUsers(this.page, this.statusValue, this.searchValue, null)
+        .subscribe((res: any) => {
+          this.Users.push(...res.data.responses);
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else if (this.statusValue && this.departmentFilter && !this.searchValue) {
-      this.service.getUsers(this.page, this.statusValue, null, this.departmentFilter).subscribe((res: any) => {
-        this.Users.push(...res.data.responses);
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
-    } else if (this.searchValue && this.departmentFilter && !this.statusValue ) {
-      this.service.getUsers(this.page, null, this.searchValue, this.departmentFilter).subscribe((res: any) => {
-        this.Users.push(...res.data.responses);
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getUsers(this.page, this.statusValue, null, this.departmentFilter)
+        .subscribe((res: any) => {
+          this.Users.push(...res.data.responses);
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
+    } else if (this.searchValue && this.departmentFilter && !this.statusValue) {
+      this.service
+        .getUsers(this.page, null, this.searchValue, this.departmentFilter)
+        .subscribe((res: any) => {
+          this.Users.push(...res.data.responses);
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else if (this.statusValue && this.searchValue && this.departmentFilter) {
-      this.service.getUsers(this.page, this.statusValue, this.searchValue, this.departmentFilter).subscribe((res: any) => {
-        this.Users.push(...res.data.responses)
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getUsers(
+          this.page,
+          this.statusValue,
+          this.searchValue,
+          this.departmentFilter
+        )
+        .subscribe((res: any) => {
+          this.Users.push(...res.data.responses);
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     } else {
       this.service.getUsers(this.page).subscribe((res: any) => {
         this.Users.push(...res.data.responses);

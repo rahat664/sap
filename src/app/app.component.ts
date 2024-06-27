@@ -1,13 +1,13 @@
-import {Component, HostListener, OnInit} from '@angular/core';
-import {Router, RouterOutlet} from '@angular/router';
-import {LayoutComponent} from "./core/layout/layout.component";
-import {initFlowbite} from "flowbite";
-import {TopbarComponent} from "./core/layout/topbar/topbar.component";
-import {CommonModule} from "@angular/common";
-import {AuthService} from "./pages/auth/services/auth.service";
-import {ImageGalleryService} from "./shared/services/image-gallery/image-gallery.service";
-import {ImageGalleryComponent} from "./shared/modules/image-gallery/image-gallery.component";
-import {ImagePopupComponent} from "./shared/modal/image-popup/image-popup.component";
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
+import { LayoutComponent } from './core/layout/layout.component';
+import { initFlowbite } from 'flowbite';
+import { TopbarComponent } from './core/layout/topbar/topbar.component';
+import { CommonModule } from '@angular/common';
+import { AuthService } from './pages/auth/services/auth.service';
+import { ImageGalleryService } from './shared/services/image-gallery/image-gallery.service';
+import { ImageGalleryComponent } from './shared/modules/image-gallery/image-gallery.component';
+import { ImagePopupComponent } from './shared/modal/image-popup/image-popup.component';
 
 @Component({
   selector: 'app-root',
@@ -18,16 +18,20 @@ import {ImagePopupComponent} from "./shared/modal/image-popup/image-popup.compon
     TopbarComponent,
     CommonModule,
     ImageGalleryComponent,
-    ImagePopupComponent],
+    ImagePopupComponent,
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
   title = 'snz-web';
   isOpen: boolean;
 
-  constructor(private router: Router, private auth: AuthService, private imageGalleryService: ImageGalleryService) {
-  }
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+    private imageGalleryService: ImageGalleryService
+  ) {}
 
   @HostListener('click', ['$event'])
   onDocumentClick(event: MouseEvent) {

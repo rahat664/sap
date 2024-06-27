@@ -11,13 +11,15 @@ import {
 
 @Directive({
   selector: '[appGetElementHeight]',
-  standalone: true
+  standalone: true,
 })
-export class GetElementHeightDirective implements OnInit{
-
+export class GetElementHeightDirective implements OnInit {
   @Output() height: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private el: ElementRef, private ref: ChangeDetectorRef) {
+  constructor(
+    private el: ElementRef,
+    private ref: ChangeDetectorRef
+  ) {
     ref.detach();
     setInterval(() => {
       this.ref.detectChanges();
@@ -25,20 +27,17 @@ export class GetElementHeightDirective implements OnInit{
   }
 
   ngOnInit(): void {
-    this.height.emit(this.el.nativeElement.offsetHeight +  'px');
+    this.height.emit(this.el.nativeElement.offsetHeight + 'px');
   }
 
   ngAfterViewChecked() {
     setTimeout(() => {
-      this.height.emit(this.el.nativeElement.offsetHeight +  'px');
+      this.height.emit(this.el.nativeElement.offsetHeight + 'px');
     }, 0);
-
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    this.height.emit(this.el.nativeElement.offsetHeight +  'px');
+    this.height.emit(this.el.nativeElement.offsetHeight + 'px');
   }
-
-
 }

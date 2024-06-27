@@ -2,8 +2,9 @@
   <div class="p-4 border-b-2 border-input flex justify-between items-center">
     <h1 class="text-h1 font-semibold">Add New Truck</h1>
     <div>
-      <button (click)="onClickSave()"
-              class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
+      <button
+        (click)="onClickSave()"
+        class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
         <span>Save</span>
       </button>
     </div>
@@ -13,7 +14,7 @@
       <div class="w-full border-r-2 border-input">
         <div class="border-b-2 border-input p-4 flex flex-col space-y-3">
           <div class="flex space-x-3 items-center text-not-black">
-            <img src="assets/svg/truckinfo.svg" alt="">
+            <img src="assets/svg/truckinfo.svg" alt="" />
             <span class="text-h2 font-semibold">Truck Info</span>
           </div>
           <div class="grid">
@@ -21,42 +22,66 @@
               <span class="text-not-black font-semibold">Registration No.</span>
               <div class="grid grid-cols-5 w-full gap-3">
                 <div class="flex flex-col w-full col-span-2">
-                  <app-custom-input class="w-full"
-                                    appGetClickEvent
-                                    [isError]="registrationErrorMessage !== ''"
-                                    [errorMessage]="registrationErrorMessage"
-                                    (clickedElement)="onClickRegistrationZone($event)"
-                                    [options]="registrationZoneList"
-                                    inputPlaceholder="Zone"
-                                    [itemsOpened]="registrationZoneOpened"
-                                    (selectedId)="onSelectRegistrationZone($event)"
-                                    [inputSearch]="registrationZonePlaceholder"
-                  ></app-custom-input>
-                  <span class="text-red text-xs">{{registrationErrorMessage}}</span>
+                  <app-custom-input
+                    class="w-full"
+                    appGetClickEvent
+                    [isError]="registrationErrorMessage !== ''"
+                    [errorMessage]="registrationErrorMessage"
+                    (clickedElement)="onClickRegistrationZone($event)"
+                    [options]="registrationZoneList"
+                    inputPlaceholder="Zone"
+                    [itemsOpened]="registrationZoneOpened"
+                    (selectedId)="onSelectRegistrationZone($event)"
+                    [inputSearch]="
+                      registrationZonePlaceholder
+                    "></app-custom-input>
+                  <span class="text-red text-xs">{{
+                    registrationErrorMessage
+                  }}</span>
                 </div>
                 <div class="flex flex-col">
-                  <app-custom-input class="w-full"
-                                    appGetClickEvent
-                                    [isError]="registrationErrorMessage !== ''"
-                                    [errorMessage]="registrationCategoryErrorMessage"
-                                    (clickedElement)="onClickRegistrationType($event)"
-                                    [options]="registrationListType"
-                                    inputPlaceholder="Category"
-                                    [itemsOpened]="registrationOpenedType"
-                                    (selectedId)="onSelectRegistrationType($event)"
-                                    [inputSearch]="registrationTypePlaceholder"
-                  ></app-custom-input>
-                  <span class="text-red text-xs">{{registrationCategoryErrorMessage}}</span>
+                  <app-custom-input
+                    class="w-full"
+                    appGetClickEvent
+                    [isError]="registrationErrorMessage !== ''"
+                    [errorMessage]="registrationCategoryErrorMessage"
+                    (clickedElement)="onClickRegistrationType($event)"
+                    [options]="registrationListType"
+                    inputPlaceholder="Category"
+                    [itemsOpened]="registrationOpenedType"
+                    (selectedId)="onSelectRegistrationType($event)"
+                    [inputSearch]="
+                      registrationTypePlaceholder
+                    "></app-custom-input>
+                  <span class="text-red text-xs">{{
+                    registrationCategoryErrorMessage
+                  }}</span>
                 </div>
                 <div class="flex flex-col w-full">
-                  <input placeholder="Serial" maxlength="2" minlength="2" formControlName="registration_serial"
-                         class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
-                  <span *ngIf="registrationSerialErrorMessage" class="text-red text-xs">{{registrationSerialErrorMessage}}</span>
+                  <input
+                    placeholder="Serial"
+                    maxlength="2"
+                    minlength="2"
+                    formControlName="registration_serial"
+                    class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+                  <span
+                    *ngIf="registrationSerialErrorMessage"
+                    class="text-red text-xs"
+                    >{{ registrationSerialErrorMessage }}</span
+                  >
                 </div>
                 <div class="flex flex-col w-full">
-                  <input minlength="4" maxlength="4" placeholder="Number" formControlName="registration_num"
-                         class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
-                  <span *ngIf="registrationNumErrorMessage" class="text-red text-xs">{{registrationNumErrorMessage}}</span>
+                  <input
+                    minlength="4"
+                    maxlength="4"
+                    placeholder="Number"
+                    formControlName="registration_num"
+                    class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+                  <span
+                    *ngIf="registrationNumErrorMessage"
+                    class="text-red text-xs"
+                    >{{ registrationNumErrorMessage }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -65,15 +90,21 @@
         <div class="border-b-2 border-input p-4">
           <div class="flex justify-between items-center">
             <div class="flex space-x-3 items-center text-not-black">
-              <img src="assets/svg/list.svg" alt="">
-              <span class="text-not-black font-semibold">Pre hire check list</span>
+              <img src="assets/svg/list.svg" alt="" />
+              <span class="text-not-black font-semibold"
+                >Pre hire check list</span
+              >
             </div>
-            <a (click)="prehireCheckListOpened = true" class="text-link cursor-pointer">Add list</a>
+            <a
+              (click)="prehireCheckListOpened = true"
+              class="text-link cursor-pointer"
+              >Add list</a
+            >
           </div>
         </div>
         <div class="p-4 flex flex-col space-y-3">
           <div class="flex space-x-3 items-center text-not-black">
-            <img src="assets/svg/trucker.svg" alt="">
+            <img src="assets/svg/trucker.svg" alt="" />
             <span class="text-not-black font-semibold">Tracker info</span>
           </div>
           <div class="grid grid-cols-2 gap-3">
@@ -86,13 +117,13 @@
                 inputPlaceholder="Select Manufacturer"
                 [itemsOpened]="manufactureOpened"
                 (selectedId)="onSelectManuFacturer($event)"
-                [inputSearch]="manufacturerPlaceholder"
-              ></app-custom-input>
+                [inputSearch]="manufacturerPlaceholder"></app-custom-input>
             </div>
             <div class="flex flex-col space-y-1">
               <span class="text-not-black font-semibold">Tracker Id</span>
-              <input placeholder="Tracker Id"
-                     class="w-full p-4 rounded-lg outline-none ring-none  border-none bg-input">
+              <input
+                placeholder="Tracker Id"
+                class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
             </div>
           </div>
         </div>
@@ -100,15 +131,24 @@
       <div class="w-full p-4 flex flex-col space-y-3">
         <div class="flex justify-between items-center h-8">
           <div class="text-not-black flex space-x-3 items-center">
-            <img src="assets/svg/document.svg" alt="">
+            <img src="assets/svg/document.svg" alt="" />
             <span>Documents</span>
           </div>
         </div>
-        <app-file-upload-popup  (fileInput)="onAddFile($event)" padding="0" [isUploadIconEnabled]="false"></app-file-upload-popup>
+        <app-file-upload-popup
+          (fileInput)="onAddFile($event)"
+          padding="0"
+          [isUploadIconEnabled]="false"></app-file-upload-popup>
       </div>
     </div>
   </form>
 </div>
-<app-create-popup (isModalClosed)="prehireCheckListOpened = $event" [isOpen]="prehireCheckListOpened" (close)="prehireCheckListOpened = false">
-  <app-pre-hire-checklist (preHireCheckListObject)="onClickPrehiredChecklist($event)"></app-pre-hire-checklist>
+<app-create-popup
+  (isModalClosed)="prehireCheckListOpened = $event"
+  [isOpen]="prehireCheckListOpened"
+  (close)="prehireCheckListOpened = false">
+  <app-pre-hire-checklist
+    (preHireCheckListObject)="
+      onClickPrehiredChecklist($event)
+    "></app-pre-hire-checklist>
 </app-create-popup>

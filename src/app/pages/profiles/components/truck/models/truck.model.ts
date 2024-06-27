@@ -1,4 +1,4 @@
-import {TruckInnerModel} from "./truck-inner.model";
+import { TruckInnerModel } from './truck-inner.model';
 
 export interface TruckModel {
   id: number;

@@ -1,15 +1,12 @@
-import {Component, Input} from '@angular/core';
-import {NgClass, NgIf} from "@angular/common";
+import { Component, Input } from '@angular/core';
+import { NgClass, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-upload-button',
   standalone: true,
-  imports: [
-    NgIf,
-    NgClass
-  ],
+  imports: [NgIf, NgClass],
   templateUrl: './upload-button.component.html',
-  styleUrl: './upload-button.component.scss'
+  styleUrl: './upload-button.component.scss',
 })
 export class UploadButtonComponent {
   @Input() icon: string;

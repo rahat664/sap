@@ -1,38 +1,55 @@
 <div class="p-8 min-h-[90vh] overflow-y-auto">
   <h1 class="text-h1 font-semibold pb-4">Pre Hire Checklist</h1>
-  <div class="max-h-[70vh] overflow-auto border-2 border-not-black overflow-x-hidden">
+  <div
+    class="max-h-[70vh] overflow-auto border-2 border-not-black overflow-x-hidden">
     <table class="rounded-lg bg-white table-auto w-full">
       <thead class="bg-not-black text-white sticky top-0">
-      <tr>
-        <th>Inspection Item</th>
-        <th class="text-center">PASS</th>
-        <th class="text-center">FAIL</th>
-        <th class="text-center">N/A</th>
-      </tr>
+        <tr>
+          <th>Inspection Item</th>
+          <th class="text-center">PASS</th>
+          <th class="text-center">FAIL</th>
+          <th class="text-center">N/A</th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let item of preHireCheckList">
-        <td>{{ item.name }}</td>
-        <td>
-          <div class="w-full h-full flex justify-center items-center">
-            <input (change)="onChange($event,item.id)" type="radio" name="{{ item.name }}" value="PASS" >
-          </div>
-        </td>
-        <td>
-          <div class="w-full h-full flex justify-center items-center">
-            <input (change)="onChange($event,item.id)" type="radio" name="{{ item.name }}" value="FAIL">
-          </div>
-        </td>
-        <td>
-          <div class="w-full h-full flex justify-center items-center">
-            <input (change)="onChange($event, item.id)" type="radio" name="{{ item.name }}" value="NA">
-          </div>
-        </td>
-      </tr>
+        <tr *ngFor="let item of preHireCheckList">
+          <td>{{ item.name }}</td>
+          <td>
+            <div class="w-full h-full flex justify-center items-center">
+              <input
+                (change)="onChange($event, item.id)"
+                type="radio"
+                name="{{ item.name }}"
+                value="PASS" />
+            </div>
+          </td>
+          <td>
+            <div class="w-full h-full flex justify-center items-center">
+              <input
+                (change)="onChange($event, item.id)"
+                type="radio"
+                name="{{ item.name }}"
+                value="FAIL" />
+            </div>
+          </td>
+          <td>
+            <div class="w-full h-full flex justify-center items-center">
+              <input
+                (change)="onChange($event, item.id)"
+                type="radio"
+                name="{{ item.name }}"
+                value="NA" />
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
   <div class="flex justify-end pt-4">
-    <button (click)="onclickSave()" class="px-4 py-2 bg-primary text-white rounded-lg">Save</button>
+    <button
+      (click)="onclickSave()"
+      class="px-4 py-2 bg-primary text-white rounded-lg">
+      Save
+    </button>
   </div>
 </div>
