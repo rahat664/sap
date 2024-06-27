@@ -273,7 +273,7 @@ export class TripListComponent implements OnInit {
   }
 
   onSelectedToDate($event: string) {
-    this.filterForm.get('startDate').setValue($event);
+    this.filterForm.get('endDate').setValue($event);
     this.from = this.filterForm.get('startDate').value;
     this.to = this.filterForm.get('endDate').value;
     this.dateOpened = false;
@@ -283,7 +283,7 @@ export class TripListComponent implements OnInit {
   }
 
   onSelectedFromDate($event: string) {
-    this.filterForm.get('endDate').setValue($event);
+    this.filterForm.get('startDate').setValue($event);
   }
 
   onClickSearchSuggestion(result: any) {

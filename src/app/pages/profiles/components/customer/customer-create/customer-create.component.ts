@@ -138,7 +138,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     this.service.addCustomer(this.customerModel).subscribe(
       (res: any) => {
         if (res.status == 'OK') {
-          this.toastr.success(res.message);
+          this.toastr.success('Customer created successfully');
           this.customerForm.reset();
           this.formCreated.emit(true);
         } else {

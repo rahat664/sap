@@ -36,8 +36,8 @@
               [ngClass]="{ 'col-span-2': inEditMode }">
               <span class="text-not-black font-semibold">Registration No.</span>
               <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
-                getFullRegistrationName()
-              }}</span>
+                  getFullRegistrationName()
+                }}</span>
               <div *ngIf="inEditMode" class="grid grid-cols-5 w-full gap-3">
                 <app-custom-input
                   class="w-full col-span-2"
@@ -74,8 +74,8 @@
             <div *ngIf="!inEditMode" class="flex flex-col space-y-1">
               <span class="text-not-black font-semibold">No. of trips</span>
               <span class="text-web-text-secondary">{{
-                singleTruck.noOfTrips
-              }}</span>
+                  singleTruck.noOfTrips
+                }}</span>
             </div>
           </div>
         </div>
@@ -84,51 +84,52 @@
             <div class="flex space-x-3 items-center text-not-black">
               <img class="notPreview" src="assets/svg/list.svg" alt="" />
               <span class="text-not-black font-semibold"
-                >Pre hire check list ({{
+              >Pre hire check list ({{
                   singleTruck.preHireCheckList
                 }}/22)</span
               >
             </div>
-<!--            <a class="text-link">Browse list</a>-->
+            <a (click)="prehireCheckListOpened = !prehireCheckListOpened" class="text-link cursor-pointer">Browse
+              list</a>
           </div>
         </div>
-<!--        <div class="p-4 flex flex-col space-y-3">-->
-<!--          <div class="flex space-x-3 items-center text-not-black">-->
-<!--            <img class="notPreview" src="assets/svg/trucker.svg" alt="" />-->
-<!--            <span class="text-not-black font-semibold">Tracker info</span>-->
-<!--          </div>-->
-<!--          <div class="grid grid-cols-2 gap-3">-->
-<!--            <ng-container *ngIf="!inEditMode">-->
-<!--              <div class="flex flex-col space-y-1">-->
-<!--                <span class="text-not-black font-semibold">Manufacturer</span>-->
-<!--                <span class="text-web-text-secondary">Traxnet</span>-->
-<!--              </div>-->
-<!--              <div class="flex flex-col space-y-1">-->
-<!--                <span class="text-not-black font-semibold">Tracker Id</span>-->
-<!--                <span class="text-web-text-secondary">127865</span>-->
-<!--              </div>-->
-<!--            </ng-container>-->
-<!--            <ng-container *ngIf="inEditMode">-->
-<!--              <div class="flex flex-col space-y-1">-->
-<!--                <span class="text-not-black font-semibold">Manufacturer</span>-->
-<!--                <app-custom-input-->
-<!--                  appGetClickEvent-->
-<!--                  (clickedElement)="onClickManufacturer($event)"-->
-<!--                  [options]="manufacturerList"-->
-<!--                  inputPlaceholder="Select Manufacturer"-->
-<!--                  [itemsOpened]="manufactureOpened"-->
-<!--                  (selectedId)="onSelectManuFacturer($event)"-->
-<!--                  [inputSearch]="manufacturerPlaceholder"></app-custom-input>-->
-<!--              </div>-->
-<!--              <div class="flex flex-col space-y-1">-->
-<!--                <span class="text-not-black font-semibold">Tracker Id</span>-->
-<!--                <input-->
-<!--                  placeholder="Tracker Id"-->
-<!--                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />-->
-<!--              </div>-->
-<!--            </ng-container>-->
-<!--          </div>-->
-<!--        </div>-->
+        <!--        <div class="p-4 flex flex-col space-y-3">-->
+        <!--          <div class="flex space-x-3 items-center text-not-black">-->
+        <!--            <img class="notPreview" src="assets/svg/trucker.svg" alt="" />-->
+        <!--            <span class="text-not-black font-semibold">Tracker info</span>-->
+        <!--          </div>-->
+        <!--          <div class="grid grid-cols-2 gap-3">-->
+        <!--            <ng-container *ngIf="!inEditMode">-->
+        <!--              <div class="flex flex-col space-y-1">-->
+        <!--                <span class="text-not-black font-semibold">Manufacturer</span>-->
+        <!--                <span class="text-web-text-secondary">Traxnet</span>-->
+        <!--              </div>-->
+        <!--              <div class="flex flex-col space-y-1">-->
+        <!--                <span class="text-not-black font-semibold">Tracker Id</span>-->
+        <!--                <span class="text-web-text-secondary">127865</span>-->
+        <!--              </div>-->
+        <!--            </ng-container>-->
+        <!--            <ng-container *ngIf="inEditMode">-->
+        <!--              <div class="flex flex-col space-y-1">-->
+        <!--                <span class="text-not-black font-semibold">Manufacturer</span>-->
+        <!--                <app-custom-input-->
+        <!--                  appGetClickEvent-->
+        <!--                  (clickedElement)="onClickManufacturer($event)"-->
+        <!--                  [options]="manufacturerList"-->
+        <!--                  inputPlaceholder="Select Manufacturer"-->
+        <!--                  [itemsOpened]="manufactureOpened"-->
+        <!--                  (selectedId)="onSelectManuFacturer($event)"-->
+        <!--                  [inputSearch]="manufacturerPlaceholder"></app-custom-input>-->
+        <!--              </div>-->
+        <!--              <div class="flex flex-col space-y-1">-->
+        <!--                <span class="text-not-black font-semibold">Tracker Id</span>-->
+        <!--                <input-->
+        <!--                  placeholder="Tracker Id"-->
+        <!--                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />-->
+        <!--              </div>-->
+        <!--            </ng-container>-->
+        <!--          </div>-->
+        <!--        </div>-->
       </div>
       <div class="w-full p-4 flex flex-col space-y-3">
         <div class="flex justify-between items-center h-8">
@@ -165,10 +166,10 @@
               </div>
               <div class="flex space-y-1 flex-col">
                 <span class="text-web-text-secondary font-semibold">{{
-                  document.name
-                }}</span>
+                    document.name
+                  }}</span>
                 <span class="text-web-text-secondary"
-                  >Exp:
+                >Exp:
                   {{
                     document.expDate
                       ? (document.expDate | date: 'dd MMM yyyy')
@@ -190,3 +191,9 @@
     (fileInput)="onAddFile($event)"
     [callFromModal]="true"></app-file-upload-popup>
 </app-create-popup>
+<app-check-list-popup
+  [isOpen]="prehireCheckListOpened"
+  (isModalClosed)="prehireCheckListOpened = $event"
+>
+  <app-pre-hire-checklist></app-pre-hire-checklist>
+</app-check-list-popup>

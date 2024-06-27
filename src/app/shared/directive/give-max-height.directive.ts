@@ -26,10 +26,6 @@ export class GiveMaxHeightDirective implements OnInit {
     private el: ElementRef,
     private ref: ChangeDetectorRef
   ) {
-    ref.detach();
-    setInterval(() => {
-      this.ref.detectChanges();
-    }, 1000);
   }
 
   ngOnInit(): void {

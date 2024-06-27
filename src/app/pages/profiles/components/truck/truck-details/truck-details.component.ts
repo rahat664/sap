@@ -17,6 +17,8 @@ import { driverFileType } from '../../customer/model/driver-file-type';
 import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
 import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup.component';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
+import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
+import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checklist.component';
 
 @Component({
   selector: 'app-truck-details',
@@ -33,6 +35,8 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
     CreatePopupComponent,
     FileUploadPopupComponent,
     ImageGalleryComponent,
+    CheckListPopupComponent,
+    PreHireChecklistComponent,
   ],
   templateUrl: './truck-details.component.html',
   styleUrl: './truck-details.component.scss',
@@ -148,6 +152,7 @@ export class TruckDetailsComponent implements OnInit {
   protected readonly Date = Date;
   protected readonly driverFileType = driverFileType;
   isUploadPopupOpen: boolean;
+  prehireCheckListOpened: boolean = false;
 
   onClickClose(document: any) {
     this.shared.onClickTruckCloseButton(document);

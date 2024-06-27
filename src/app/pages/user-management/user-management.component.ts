@@ -52,9 +52,10 @@ export class UserManagementComponent implements OnInit {
   statusInputPlaceholder = 'Active';
   roleInputPlaceholder = '';
   statusOptionsArray: CustomInputSelectModel[] = [
-    { id: 1, value: 'Active', selected: false },
+    { id: 1, value: 'Active', selected: true },
     { id: 2, value: 'Inactive', selected: false },
-    { id: 3, value: 'All', selected: true },
+    { id: 3, value: 'Removed', selected: false },
+    { id: 4, value: 'All', selected: false },
   ];
   roleOptionsArray: CustomInputSelectModel[] = roles;
   statusOpened = false;
@@ -116,7 +117,7 @@ export class UserManagementComponent implements OnInit {
   // TODO: 'Have to fix the issue with the status filter'
 
   onSelectStatus($event: number) {
-    this.roleOpened = false;
+    this.statusOpened = false;
     this.statusFilter = 1;
     this.page = 0;
     this.statusInputPlaceholder = this.statusOptionsArray.find(
@@ -125,7 +126,7 @@ export class UserManagementComponent implements OnInit {
     this.statusOptionsArray.forEach(item => {
       item.selected = item.id === $event;
     });
-    if ($event == 3) {
+    if ($event == 4) {
       this.statusValue = '';
     } else {
       this.statusValue = this.statusInputPlaceholder;
@@ -157,7 +158,7 @@ export class UserManagementComponent implements OnInit {
   userName: string;
 
   onSelectRole($event: number) {
-    this.statusOpened = false;
+    this.roleOpened = false;
     this.page = 0;
     this.roleInputPlaceholder = this.roleOptionsArray.find(
       item => item.id === $event

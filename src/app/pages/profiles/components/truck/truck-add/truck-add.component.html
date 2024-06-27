@@ -65,7 +65,7 @@
                     formControlName="registration_serial"
                     class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
                   <span
-                    *ngIf="registrationSerialErrorMessage"
+                    *ngIf="truckAddForm.get('registration_serial').touched && registrationSerialErrorMessage"
                     class="text-red text-xs"
                     >{{ registrationSerialErrorMessage }}</span
                   >
@@ -78,7 +78,7 @@
                     formControlName="registration_num"
                     class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
                   <span
-                    *ngIf="registrationNumErrorMessage"
+                    *ngIf="truckAddForm.get('registration_num').touched && registrationNumErrorMessage"
                     class="text-red text-xs"
                     >{{ registrationNumErrorMessage }}</span
                   >
@@ -148,6 +148,7 @@
   [isOpen]="prehireCheckListOpened"
   (close)="prehireCheckListOpened = false">
   <app-pre-hire-checklist
+    [saveButtonEnabled]="true"
     (preHireCheckListObject)="
       onClickPrehiredChecklist($event)
     "></app-pre-hire-checklist>

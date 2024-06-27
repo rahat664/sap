@@ -136,7 +136,7 @@ export class TransporterAddComponent implements OnInit {
       this.service.addUserFromTransport(this.transporterModel).subscribe(
         (res: any) => {
           if (res.status == 'OK') {
-            this.toastr.success(res.message);
+            this.toastr.success('Transporter created successfully');
             this.formCreated.emit(true);
             this.transporterForm.reset();
           } else {

@@ -39,187 +39,186 @@
     class="bg-white w-full rounded-lg overflow-auto relative">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
-        <tr class="whitespace-nowrap bg-white">
-          <th class="text-left">Registration number</th>
-          <th class="text-left">Pre-hire checklist</th>
-          <th class="text-left">No. of trip</th>
-<!--          <th class="text-center w-[10rem] inline-block">Tracker</th>-->
-          <th class="text-center w-[10rem] inline-block">Registration</th>
-          <th class="text-center w-[10rem] inline-block">Truck fitness</th>
-          <th class="text-center w-[10rem] inline-block">Route permit</th>
-          <th class="text-center w-[10rem] inline-block">Case</th>
-          <th class="text-center w-[10rem] inline-block">Tax</th>
-          <th class="text-center w-[10rem] inline-block">Other Document</th>
-          <!--        <th style="width: 5%"></th>-->
-        </tr>
-        <tr>
-          <th class="border" colspan="8"></th>
-        </tr>
+      <tr class="whitespace-nowrap bg-white">
+        <th class="text-left">Registration number</th>
+        <th class="text-left">Pre-hire checklist</th>
+        <th class="text-left">No. of trip</th>
+        <!--          <th class="text-center w-[10rem] inline-block">Tracker</th>-->
+        <th class="text-center w-[10rem] inline-block">Registration</th>
+        <th class="text-center w-[10rem] inline-block">Truck fitness</th>
+        <th class="text-center w-[10rem] inline-block">Route permit</th>
+        <th class="text-center w-[10rem] inline-block">Case</th>
+        <th class="text-center w-[10rem] inline-block">Tax</th>
+        <th class="text-center w-[10rem] inline-block">Other Document</th>
+        <!--        <th style="width: 5%"></th>-->
+      </tr>
+      <tr>
+        <th class="border" colspan="8"></th>
+      </tr>
       </thead>
       <tbody class="text-web-text-secondary">
-        <ng-container *ngIf="!loading">
-          <tr *ngFor="let truck of truckList">
-            <td class="whitespace-nowrap">
-              <div class="flex items-center space-x-4">
-                <div
-                  class="w-8 h-8 rounded-full bg-another flex items-center justify-center">
+      <ng-container *ngIf="!loading">
+        <tr *ngFor="let truck of truckList">
+          <td class="whitespace-nowrap">
+            <div class="flex items-center space-x-4">
+              <div
+                class="w-8 h-8 rounded-full bg-another flex items-center justify-center">
                   <span class="text-white font-bold capitalize">{{
-                    truck.registrationZone[0]
-                  }}</span>
-                </div>
-                <a
-                  routerLink="/profile/truck/{{ truck.id }}/details"
-                  (click)="onClickTruckDetails(truck)"
-                  class="flex-1 text-link cursor-pointer"
-                  >{{ getFullRegistrationName(truck) }}</a
-                >
+                      truck.registrationZone[0]
+                    }}</span>
               </div>
-            </td>
-            <td class="text-center">
               <a
-                routerLink="/profile/truck/{{ truck.id }}/pre-hire-checklist"
-                class="text-link cursor-pointer"
-                >{{ truck.preHireCheckList }}/22</a
+                routerLink="/profile/truck/{{ truck.id }}/details"
+                (click)="onClickTruckDetails(truck)"
+                class="flex-1 text-link cursor-pointer"
+              >{{ getFullRegistrationName(truck) }}</a
               >
-            </td>
-            <td class="text-center">{{ truck.noOfTrips }}</td>
-<!--            <td class="text-center whitespace-nowrap w-[10rem] inline-block">-->
-<!--              <div class="flex items-center justify-center h-full">-->
-<!--                <span *ngIf="truck.tracker">{{ truck.tracker }}</span>-->
-<!--                <app-upload-button-->
-<!--                  (click)="onClickAddTracker(truck.id)"-->
-<!--                  *ngIf="!truck.tracker"-->
-<!--                  icon="plus"-->
-<!--                  [file]="false"-->
-<!--                  buttonText="Add Tracker"></app-upload-button>-->
-<!--              </div>-->
-<!--            </td>-->
-            <td class="whitespace-nowrap w-[10rem] inline-block">
-              <div class="flex items-center justify-center h-full">
-                <i
-                  *ngIf="truck.regPaperFile"
-                  class="fas fa-check text-green"></i>
-                <app-upload-button
-                  (click)="onClickUpdate('reg', truck)"
-                  *ngIf="!truck.regPaperFile"
-                  icon="upload"
-                  [file]="true"
-                  buttonText="Upload"></app-upload-button>
-              </div>
-            </td>
-            <td class="whitespace-nowrap w-[10rem] inline-block">
-              <div class="flex items-center justify-center h-full">
-                <i
-                  *ngIf="truck.fitnessFile"
-                  class="fas fa-check text-green"></i>
-                <app-upload-button
-                  (click)="onClickUpdate('fit', truck)"
-                  *ngIf="!truck.fitnessFile"
-                  icon="upload"
-                  [file]="true"
-                  buttonText="Upload"></app-upload-button>
-              </div>
-            </td>
-            <td class="whitespace-nowrap w-[10rem] inline-block">
-              <div class="flex items-center justify-center h-full">
-                <i
-                  *ngIf="truck.routePermitFile"
-                  class="fas fa-check text-green"></i>
-                <app-upload-button
-                  (click)="onClickUpdate('route', truck)"
-                  *ngIf="!truck.routePermitFile"
-                  icon="upload"
-                  [file]="true"
-                  buttonText="Upload"></app-upload-button>
-              </div>
-            </td>
-            <td class="whitespace-nowrap w-[10rem] inline-block">
-              <div class="flex items-center justify-center h-full">
-                <i *ngIf="truck.caseFile" class="fas fa-check text-green"></i>
-                <app-upload-button
-                  (click)="onClickUpdate('case', truck)"
-                  *ngIf="!truck.caseFile"
-                  icon="upload"
-                  [file]="true"
-                  buttonText="Upload"></app-upload-button>
-              </div>
-            </td>
-            <td class="whitespace-nowrap w-[10rem] inline-block">
-              <div class="flex items-center justify-center h-full">
-                <i *ngIf="truck.taxFile" class="fas fa-check text-green"></i>
-                <app-upload-button
-                  (click)="onClickUpdate('tax', truck)"
-                  *ngIf="!truck.taxFile"
-                  icon="upload"
-                  [file]="true"
-                  buttonText="Upload"></app-upload-button>
-              </div>
-            </td>
-            <td class="whitespace-nowrap w-[10rem] inline-block">
-              <div class="flex items-center justify-center h-full">
-                <i *ngIf="truck.otherFile" class="fas fa-check text-green"></i>
-                <app-upload-button
-                  (click)="onClickUpdate('other', truck)"
-                  *ngIf="!truck.otherFile"
-                  icon="upload"
-                  [file]="true"
-                  buttonText="Upload"></app-upload-button>
-              </div>
-            </td>
+            </div>
+          </td>
+          <td class="text-center">
+            <a (click)="onClickCheckList(truck.id)"
+               class="text-link cursor-pointer"
+            >{{ truck.preHireCheckList }}/22</a
+            >
+          </td>
+          <td class="text-center">{{ truck.noOfTrips }}</td>
+          <!--            <td class="text-center whitespace-nowrap w-[10rem] inline-block">-->
+          <!--              <div class="flex items-center justify-center h-full">-->
+          <!--                <span *ngIf="truck.tracker">{{ truck.tracker }}</span>-->
+          <!--                <app-upload-button-->
+          <!--                  (click)="onClickAddTracker(truck.id)"-->
+          <!--                  *ngIf="!truck.tracker"-->
+          <!--                  icon="plus"-->
+          <!--                  [file]="false"-->
+          <!--                  buttonText="Add Tracker"></app-upload-button>-->
+          <!--              </div>-->
+          <!--            </td>-->
+          <td class="whitespace-nowrap w-[10rem] inline-block">
+            <div class="flex items-center justify-center h-full">
+              <i
+                *ngIf="truck.regPaperFile"
+                class="fas fa-check text-green"></i>
+              <app-upload-button
+                (click)="onClickUpdate('reg', truck)"
+                *ngIf="!truck.regPaperFile"
+                icon="upload"
+                [file]="true"
+                buttonText="Upload"></app-upload-button>
+            </div>
+          </td>
+          <td class="whitespace-nowrap w-[10rem] inline-block">
+            <div class="flex items-center justify-center h-full">
+              <i
+                *ngIf="truck.fitnessFile"
+                class="fas fa-check text-green"></i>
+              <app-upload-button
+                (click)="onClickUpdate('fit', truck)"
+                *ngIf="!truck.fitnessFile"
+                icon="upload"
+                [file]="true"
+                buttonText="Upload"></app-upload-button>
+            </div>
+          </td>
+          <td class="whitespace-nowrap w-[10rem] inline-block">
+            <div class="flex items-center justify-center h-full">
+              <i
+                *ngIf="truck.routePermitFile"
+                class="fas fa-check text-green"></i>
+              <app-upload-button
+                (click)="onClickUpdate('route', truck)"
+                *ngIf="!truck.routePermitFile"
+                icon="upload"
+                [file]="true"
+                buttonText="Upload"></app-upload-button>
+            </div>
+          </td>
+          <td class="whitespace-nowrap w-[10rem] inline-block">
+            <div class="flex items-center justify-center h-full">
+              <i *ngIf="truck.caseFile" class="fas fa-check text-green"></i>
+              <app-upload-button
+                (click)="onClickUpdate('case', truck)"
+                *ngIf="!truck.caseFile"
+                icon="upload"
+                [file]="true"
+                buttonText="Upload"></app-upload-button>
+            </div>
+          </td>
+          <td class="whitespace-nowrap w-[10rem] inline-block">
+            <div class="flex items-center justify-center h-full">
+              <i *ngIf="truck.taxFile" class="fas fa-check text-green"></i>
+              <app-upload-button
+                (click)="onClickUpdate('tax', truck)"
+                *ngIf="!truck.taxFile"
+                icon="upload"
+                [file]="true"
+                buttonText="Upload"></app-upload-button>
+            </div>
+          </td>
+          <td class="whitespace-nowrap w-[10rem] inline-block">
+            <div class="flex items-center justify-center h-full">
+              <i *ngIf="truck.otherFile" class="fas fa-check text-green"></i>
+              <app-upload-button
+                (click)="onClickUpdate('other', truck)"
+                *ngIf="!truck.otherFile"
+                icon="upload"
+                [file]="true"
+                buttonText="Upload"></app-upload-button>
+            </div>
+          </td>
 
-            <!--          <td>-->
-            <!--            <i class="fas fa-ellipsis-v"></i>-->
-            <!--          </td>-->
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="!loading">
-          <tr *ngIf="truckList.length === 0">
-            <td class="text-center" colspan="8">No data found</td>
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="loading">
-          <tr>
-            <td class="h-full" colspan="8">
-              <app-loading></app-loading>
-            </td>
-          </tr>
-        </ng-container>
-<!--        <div-->
-<!--          *ngIf="trackerAddOpened"-->
-<!--          class="custom-border flex flex-col space-y-4 p-4 bg-white rounded-lg absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2">-->
-<!--          <div class="flex justify-between">-->
-<!--            <div class="flex space-x-3 items-center">-->
-<!--              <img src="assets/svg/trucker.svg" alt="tracker" />-->
-<!--              <h3 class="text-body font-semibold">Tracker Info</h3>-->
-<!--            </div>-->
-<!--            <a class="cursor-pointer" (click)="trackerAddOpened = false"-->
-<!--              ><i class="far fa-times"></i-->
-<!--            ></a>-->
-<!--          </div>-->
-<!--          <div>-->
-<!--            <div class="flex space-x-3 items-center">-->
-<!--              <app-custom-input-->
-<!--                appGetClickEvent-->
-<!--                (clickedElement)="onClickManufacturer($event)"-->
-<!--                [options]="manufacturerList"-->
-<!--                inputPlaceholder="Select Manufacturer"-->
-<!--                [itemsOpened]="manufactureOpened"-->
-<!--                (selectedId)="onSelectManuFacturer($event)"-->
-<!--                [inputSearch]="manufacturerPlaceholder"></app-custom-input>-->
-<!--              <div class="relative">-->
-<!--                <input-->
-<!--                  placeholder="Tracker Id"-->
-<!--                  class="w-full px-4 py-4 rounded-lg outline-none ring-none border-none bg-input" />-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <button-->
-<!--            (click)="onClickAddTruckerSave()"-->
-<!--            type="button"-->
-<!--            class="float-end text-white bg-primary px-4 py-2 w-32 align-self-end self-end rounded-lg">-->
-<!--            Save-->
-<!--          </button>-->
-<!--        </div>-->
+          <!--          <td>-->
+          <!--            <i class="fas fa-ellipsis-v"></i>-->
+          <!--          </td>-->
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <tr *ngIf="truckList.length === 0">
+          <td class="text-center" colspan="8">No data found</td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" colspan="8">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
+      <!--        <div-->
+      <!--          *ngIf="trackerAddOpened"-->
+      <!--          class="custom-border flex flex-col space-y-4 p-4 bg-white rounded-lg absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2">-->
+      <!--          <div class="flex justify-between">-->
+      <!--            <div class="flex space-x-3 items-center">-->
+      <!--              <img src="assets/svg/trucker.svg" alt="tracker" />-->
+      <!--              <h3 class="text-body font-semibold">Tracker Info</h3>-->
+      <!--            </div>-->
+      <!--            <a class="cursor-pointer" (click)="trackerAddOpened = false"-->
+      <!--              ><i class="far fa-times"></i-->
+      <!--            ></a>-->
+      <!--          </div>-->
+      <!--          <div>-->
+      <!--            <div class="flex space-x-3 items-center">-->
+      <!--              <app-custom-input-->
+      <!--                appGetClickEvent-->
+      <!--                (clickedElement)="onClickManufacturer($event)"-->
+      <!--                [options]="manufacturerList"-->
+      <!--                inputPlaceholder="Select Manufacturer"-->
+      <!--                [itemsOpened]="manufactureOpened"-->
+      <!--                (selectedId)="onSelectManuFacturer($event)"-->
+      <!--                [inputSearch]="manufacturerPlaceholder"></app-custom-input>-->
+      <!--              <div class="relative">-->
+      <!--                <input-->
+      <!--                  placeholder="Tracker Id"-->
+      <!--                  class="w-full px-4 py-4 rounded-lg outline-none ring-none border-none bg-input" />-->
+      <!--              </div>-->
+      <!--            </div>-->
+      <!--          </div>-->
+      <!--          <button-->
+      <!--            (click)="onClickAddTruckerSave()"-->
+      <!--            type="button"-->
+      <!--            class="float-end text-white bg-primary px-4 py-2 w-32 align-self-end self-end rounded-lg">-->
+      <!--            Save-->
+      <!--          </button>-->
+      <!--        </div>-->
       </tbody>
     </table>
   </div>
@@ -234,3 +233,6 @@
     [fileTypeOptions]="newDriverFileType"
     [isFromTruck]="true"></app-file-upload-popup>
 </app-create-popup>
+<app-check-list-popup (isModalClosed)="isCheckListOpened= !$event" [isOpen]="isCheckListOpened">
+  <app-pre-hire-checklist [singleTruckId]="singleTruckId"></app-pre-hire-checklist>
+</app-check-list-popup>

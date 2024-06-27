@@ -44,7 +44,7 @@ export class CreatePopupComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe();
+    this.subs?.unsubscribe();
   }
 
   onClick($event: boolean) {

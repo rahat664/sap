@@ -23,10 +23,6 @@ export class CheckTheHeightCrossMaxHeightOrNotDirective implements OnInit {
     private el: ElementRef,
     private ref: ChangeDetectorRef
   ) {
-    ref.detach();
-    this.Interval = setInterval(() => {
-      this.ref.detectChanges();
-    }, 1000);
   }
 
   ngOnDestroy(): void {
@@ -43,18 +39,6 @@ export class CheckTheHeightCrossMaxHeightOrNotDirective implements OnInit {
         this.maxHeightCrossed.emit(false);
       }
     }, 1000);
-  }
-
-  ngAfterViewChecked(): void {
-    setTimeout(() => {
-      if (
-        this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight
-      ) {
-        this.maxHeightCrossed.emit(true);
-      } else {
-        this.maxHeightCrossed.emit(false);
-      }
-    }, 0);
   }
 
   @HostListener('window:resize', ['$event'])

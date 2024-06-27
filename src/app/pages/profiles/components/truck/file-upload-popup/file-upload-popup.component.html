@@ -3,7 +3,7 @@
     <div *ngIf="isUploadIconEnabled" class="flex space-x-3 items-center">
       <span
         class="h-6 w-6 rounded-full bg-input flex items-center justify-center">
-        <img src="assets/svg/upload.svg" alt="" />
+        <img class="notPreview" src="assets/svg/upload.svg" alt="" />
       </span>
       <h1 class="text-body font-bold">Upload documents</h1>
     </div>
@@ -63,6 +63,8 @@
               file.registrationType === 'Tax' ||
               file.registrationType === 'Driving License Front'
             ">
+            <!--             Date picker cannot take previous date-->
+
             <input
               type="date"
               (change)="onDateChange($event, i)"

@@ -49,18 +49,18 @@
         </button>
 
         <div class="flex items-center">
-          <div
-            class="w-8 h-8 overflow-hidden rounded-full border border-gray-400 object-center object-cover">
-            <img
-              class="w-full h-full"
-              [src]="image | image"
-              alt="profile-img" />
-          </div>
           <button
             id="dropdownDefaultButton"
             (click)="isProfileOpened = !isProfileOpened"
             class="hidden lg:flex space-x-2 items-center font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600"
             type="button">
+            <div
+              class="w-8 h-8 overflow-hidden rounded-full border border-gray-400 object-center object-cover">
+              <img
+                class="w-full h-full notPreview"
+                [src]="image | image"
+                alt="profile-img" />
+            </div>
             <span class="text-gray-500">{{ name }}</span>
             <i
               *ngIf="!isProfileOpened"

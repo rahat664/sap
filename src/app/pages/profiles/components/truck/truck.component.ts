@@ -19,6 +19,8 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
 import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { debounceTime } from 'rxjs';
+import { CheckListPopupComponent } from '../../../../shared/modal/check-list-popup/check-list-popup.component';
+import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checklist.component';
 
 @Component({
   selector: 'app-truck',
@@ -38,6 +40,8 @@ import { debounceTime } from 'rxjs';
     FileUploadPopupComponent,
     LoadingComponent,
     CheckTheHeightCrossMaxHeightOrNotDirective,
+    CheckListPopupComponent,
+    PreHireChecklistComponent,
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss',
@@ -59,6 +63,8 @@ export class TruckComponent implements OnInit {
   private page = 0;
   totalPages: number;
   searchValue: string;
+  isCheckListOpened: boolean = false;
+  singleTruckId: number;
 
   constructor(
     private service: TruckService,
@@ -237,5 +243,11 @@ export class TruckComponent implements OnInit {
     this.truckList = [];
     this.page = 0;
     this.getTruckList();
+  }
+
+
+  onClickCheckList(truck: number) {
+    this.isCheckListOpened = true;
+    this.singleTruckId = truck;
   }
 }

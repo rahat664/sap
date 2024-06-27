@@ -48,6 +48,7 @@ export class FileUploadPopupComponent implements OnChanges {
       this.fileArray = [];
     }
   }
+
   onFileDropped(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -71,7 +72,7 @@ export class FileUploadPopupComponent implements OnChanges {
 
   onSelectFileType($event: number, i: number) {
     this.fileInputPlaceholder = this.fileTypeOptions.find(
-      option => option.id === $event
+      option => option.id === $event,
     ).value;
     this.fileArray[i].registrationType = this.fileInputPlaceholder;
     if (!this.callFromModal) {
@@ -95,7 +96,7 @@ export class FileUploadPopupComponent implements OnChanges {
       this.sharedDriverEditService.onChangeFile(this.fileArray);
       this.sharedDriverEditService.onDriverUpdate(
         this.singleDriver.name,
-        this.singleDriver.phone
+        this.singleDriver.phone,
       );
       this.modalClosed.emit(false);
     } else if (this.isFromTruck) {
