@@ -13,7 +13,7 @@
       (drop)="onFileDropped($event)"
       (dragover)="onDragOver($event)"
       (dragleave)="onDragLeave($event)">
-      <img *ngIf="!filePreview" src="assets/svg/fileupload.svg" alt="" />
+      <img class="notPreview" *ngIf="!filePreview" src="assets/svg/fileupload.svg" alt="" />
       <div
         *ngIf="filePreview"
         class="h-64 w-64 overflow-hidden object-center object-cover">

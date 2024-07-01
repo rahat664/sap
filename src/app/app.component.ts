@@ -8,6 +8,8 @@ import { AuthService } from './pages/auth/services/auth.service';
 import { ImageGalleryService } from './shared/services/image-gallery/image-gallery.service';
 import { ImageGalleryComponent } from './shared/modules/image-gallery/image-gallery.component';
 import { ImagePopupComponent } from './shared/modal/image-popup/image-popup.component';
+import { HandleToastrService } from './shared/services/handle-toastr/handle-toastr.service';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +32,8 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private auth: AuthService,
-    private imageGalleryService: ImageGalleryService
+    private imageGalleryService: ImageGalleryService,
+    private handleToaster: HandleToastrService,
   ) {}
 
   @HostListener('click', ['$event'])

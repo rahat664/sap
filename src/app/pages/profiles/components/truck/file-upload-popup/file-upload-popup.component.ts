@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  OnChanges,
+  OnChanges, ChangeDetectorRef, SimpleChanges,
 } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
@@ -24,7 +24,7 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
 export class FileUploadPopupComponent implements OnChanges {
   file: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
-  @Input() fileTypeOptions: CustomInputSelectModel[] = fileUpload;
+  @Input() fileTypeOptions: CustomInputSelectModel[] | null = [];
   fileInputPlaceholder = '';
   fileOpened: boolean;
   @Input() isUploadIconEnabled = true;
@@ -39,11 +39,12 @@ export class FileUploadPopupComponent implements OnChanges {
   @Input() singleTruck: any;
   @Input() isFromTruck!: boolean;
 
-  constructor(private sharedDriverEditService: DriverEditSharedService) {
+  constructor(private sharedDriverEditService: DriverEditSharedService,
+              private cdr: ChangeDetectorRef) {
     this.fileArray = [];
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
     if (this.isNewOpen) {
       this.fileArray = [];
     }
@@ -83,6 +84,14 @@ export class FileUploadPopupComponent implements OnChanges {
 
   onClickFileType($event: boolean, i: number) {
     this.fileArray[i].fileOpened = $event;
+    this.fileArray.forEach((file, index) => {
+      this.fileTypeOptions.forEach(option => {
+        if (file.registrationType === option.value) {
+          // remove the selected file type from the dropdown
+          this.fileTypeOptions.splice(this.fileTypeOptions.indexOf(option), 1);
+        }
+      });
+    });
   }
 
   @Output() modalClosed: EventEmitter<any> = new EventEmitter<any>();
@@ -131,6 +140,8 @@ export class FileUploadPopupComponent implements OnChanges {
       const file = $event.target.files[0];
       if (file) {
         this.previewFile(file);
+        // make the file input empty
+        $event.target.value = '';
       }
     }
   }

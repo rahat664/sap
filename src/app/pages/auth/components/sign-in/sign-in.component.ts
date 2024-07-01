@@ -10,7 +10,7 @@ import { Title } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -26,7 +26,7 @@ export class SignInComponent implements OnInit {
     private titleService: Title,
     private auth: AuthService,
     private router: Router,
-    private toaster: ToastrService
+    private toaster: HandleToastrService,
   ) {
     this.loginRequestPayload = {
       email: '',
@@ -69,7 +69,7 @@ export class SignInComponent implements OnInit {
       this.auth.login(this.loginRequestPayload).subscribe({
         next: (response: any) => {
           if (response.status === 'OK') {
-            this.toaster.success('Login successful');
+            this.toaster.showSuccess('Login Succesful', '');
             localStorage.setItem('accessToken', response.data.accessToken);
             localStorage.setItem('email', response.data.email);
             localStorage.setItem('name', response.data.name);
@@ -80,11 +80,11 @@ export class SignInComponent implements OnInit {
             localStorage.setItem('role', response.data.roles[0]);
             this.router.navigate(['trip-list']);
           } else {
-            this.toaster.error('Login failed. Please try again');
+            this.toaster.showError(response.message, '');
           }
         },
         error: error => {
-          this.toaster.error(error.message);
+          this.toaster.showError(error.error.message, '');
         },
       });
     } else {

@@ -73,6 +73,7 @@ export class CustomerComponent implements OnInit {
         if (this.checkIfAllInputIsNumber(target)) {
           this.service.searchCustomer(null, target).subscribe((res: any) => {
             this.customers = res.data;
+            this.loading = false;
           });
         } else {
           this.service.searchCustomer(target, null).subscribe((res: any) => {

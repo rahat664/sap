@@ -21,6 +21,7 @@ import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/d
 import { debounceTime } from 'rxjs';
 import { CheckListPopupComponent } from '../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checklist.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-truck',
@@ -55,7 +56,6 @@ export class TruckComponent implements OnInit {
   trackerAddOpened = false;
   selectedTruckId: number;
   isOpen = false;
-  preHireCheckList: any[] = [];
   loading: boolean;
   isNewOpen: boolean;
   singleTruck: TruckInnerModel;
@@ -68,7 +68,8 @@ export class TruckComponent implements OnInit {
 
   constructor(
     private service: TruckService,
-    private shared: DriverEditSharedService
+    private shared: DriverEditSharedService,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {

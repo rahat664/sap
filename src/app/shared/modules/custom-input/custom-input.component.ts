@@ -48,9 +48,9 @@ export class CustomInputComponent implements OnInit {
   selectedFromMonth: string; // Default selected month
   selectedFromDay: string; // Default selected day
   selectedFromYear: string; // Default selected year
-  selectedToMonth: string; // Default selected month
-  selectedToDay: string; // Default selected day
-  selectedToYear: string; // Default selected year
+  selectedToMonth: string = new Date().getMonth().toString(); // Default selected month
+  selectedToDay: string = new Date().getDate().toString(); // Default selected day
+  selectedToYear: string = new Date().getFullYear().toString(); // Default selected year
   selectedFromMonthInString: string;
   selectedToMonthInString: string;
 

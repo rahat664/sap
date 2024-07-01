@@ -17,9 +17,9 @@ import {
 import { TruckService } from '../services/truck.service';
 import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checklist.component';
 import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
-import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
+import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-truck-add',
@@ -56,11 +56,12 @@ export class TruckAddComponent implements OnInit {
   registrationCategoryErrorMessage = '';
   registrationSerialErrorMessage = '';
   registrationNumErrorMessage = '';
+  countPassCheckList: number = 0;
 
   constructor(
     private fb: FormBuilder,
     private service: TruckService,
-    private toastr: ToastrService,
+    private toastr: HandleToastrService,
     private router: Router,
     private validation: ValidationService
   ) {
@@ -194,15 +195,15 @@ export class TruckAddComponent implements OnInit {
         (res: any) => {
           // Handle response
           if (res.status == 'OK') {
-            this.toastr.success(res.message);
+            this.toastr.showSuccess(res.message);
             this.router.navigate(['/profile/truck']);
           } else {
-            this.toastr.error(res.message);
+            this.toastr.showError(res.message);
           }
         },
         error => {
           // Handle error
-          this.toastr.error(error.error.message);
+          this.toastr.showError(error.error.message);
         }
       );
     } else {
@@ -280,10 +281,16 @@ export class TruckAddComponent implements OnInit {
   }
 
   onClickPrehiredChecklist($event: any) {
+    this.countPassCheckList = 0;
     this.prehireCheckListOpened = !$event;
     this.singleChecklist = $event;
     this.truckAddForm.patchValue({
       checklist: $event,
     });
+    for (const key in $event) {
+      if ($event[key] === 'PASS') {
+        this.countPassCheckList += 1;
+      }
+    }
   }
 }

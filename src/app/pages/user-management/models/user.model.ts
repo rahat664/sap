@@ -16,6 +16,7 @@ export class UserModel {
   'branch_name': string;
   'acc_holder_name': string;
   'acc_type': string;
+  completedTripCountsForDriver: number;
   'drivingLicense': any;
   'nationalId': any;
   driverFilesUrls: {

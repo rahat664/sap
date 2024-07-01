@@ -11,9 +11,9 @@ import { CustomInputSelectModel } from '../../../shared/modules/custom-input/cus
 import { CustomInputComponent } from '../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../shared/directive/get-click-event.directive';
 import { UserModel } from '../models/user.model';
-import { ToastrService } from 'ngx-toastr';
 import { roles } from '../models/role-file';
 import { ValidationService } from '../../../shared/services/validation/validation.service';
+import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-user-create',
@@ -44,7 +44,7 @@ export class UserCreateComponent implements OnInit {
     private service: UserService,
     private validation: ValidationService,
     private fb: FormBuilder,
-    private toastr: ToastrService
+    private toastr: HandleToastrService,
   ) {
     this.userForm = this.fb.group({
       name: [
@@ -82,9 +82,9 @@ export class UserCreateComponent implements OnInit {
         this.formCreated.emit(true);
         if (res.status === 'OK') {
           this.userForm.reset();
-          this.toastr.success('User created successfully');
+          this.toastr.showSuccess('User created successfully');
         } else {
-          this.toastr.error(res.message);
+          this.toastr.showError(res.message);
         }
       });
     } else {

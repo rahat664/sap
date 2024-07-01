@@ -13,12 +13,10 @@ import {
 } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { CustomerCreateModel } from '../model/customer-create.model';
-import { UserService } from '../../../services/user.service';
-import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { CustomerService } from '../../../services/customer.service';
-import { ConvertToFormdataService } from '../../../../../shared/services/convert-to-formdata/convert-to-formdata.service';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
+import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-customer-create',
@@ -38,7 +36,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private service: CustomerService,
-    private toastr: ToastrService,
+    private toastr: HandleToastrService,
     private validation: ValidationService
   ) {
     this.customerForm = this.fb.group({
@@ -138,16 +136,16 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     this.service.addCustomer(this.customerModel).subscribe(
       (res: any) => {
         if (res.status == 'OK') {
-          this.toastr.success('Customer created successfully');
+          this.toastr.showSuccess('Customer created successfully');
           this.customerForm.reset();
           this.formCreated.emit(true);
         } else {
-          this.toastr.error(res.error.message);
+          this.toastr.showError(res.error.message);
           this.formCreated.emit(true);
         }
       },
       (error: any) => {
-        this.toastr.error(error.error.message);
+        this.toastr.showError(error.error.message);
       }
     );
   }

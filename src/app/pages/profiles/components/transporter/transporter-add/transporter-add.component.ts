@@ -8,12 +8,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
-import { ToastrService } from 'ngx-toastr';
 import { UserModel } from '../../../../user-management/models/user.model';
 import { bkashPaymentMethod, paymentMethod } from '../models/payment-method';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { NgIf } from '@angular/common';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
+import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-transporter-add',
@@ -39,7 +39,7 @@ export class TransporterAddComponent implements OnInit {
   constructor(
     private service: UserService,
     private validation: ValidationService,
-    private toastr: ToastrService,
+    private toastr: HandleToastrService,
     private fb: FormBuilder
   ) {
     this.transporterForm = this.fb.group({
@@ -136,16 +136,16 @@ export class TransporterAddComponent implements OnInit {
       this.service.addUserFromTransport(this.transporterModel).subscribe(
         (res: any) => {
           if (res.status == 'OK') {
-            this.toastr.success('Transporter created successfully');
+            this.toastr.showSuccess('Transporter created successfully');
             this.formCreated.emit(true);
             this.transporterForm.reset();
           } else {
-            this.toastr.error(res.message);
+            this.toastr.showError(res.message);
             this.formCreated.emit(false);
           }
         },
         error => {
-          this.toastr.error(error.error.message);
+          this.toastr.showError(error.error.message);
           this.formCreated.emit(false);
         }
       );

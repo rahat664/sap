@@ -12,8 +12,8 @@ import {
 import { Router } from '@angular/router';
 import { driverFileType } from '../../customer/model/driver-file-type';
 import { UserService } from '../../../services/user.service';
-import { ToastrService } from 'ngx-toastr';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
+import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-driver-add',
@@ -37,7 +37,7 @@ export class DriverAddComponent implements OnInit {
     private validation: ValidationService,
     private router: Router,
     private service: UserService,
-    private toastr: ToastrService
+    private toastr: HandleToastrService,
   ) {
     this.driverAddForm = this.fb.group({
       driverName: [
@@ -159,15 +159,15 @@ export class DriverAddComponent implements OnInit {
         (res: any) => {
           // Handle response
           if (res.status == 'OK') {
-            this.toastr.success(res.message);
+            this.toastr.showSuccess(res.message);
             this.router.navigate(['/profile/driver']);
           } else {
-            this.toastr.error(res.message);
+            this.toastr.showError(res.message);
           }
         },
         error => {
           // Handle error
-          this.toastr.error(error.error.message);
+          this.toastr.showError(error.error.message);
         }
       );
     } else {

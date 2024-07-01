@@ -48,10 +48,9 @@
           <i class="fas fa-search"></i>
         </button>
 
-        <div class="flex items-center">
-          <button
+        <button class="flex items-center" (click)="isProfileOpened = !isProfileOpened">
+          <div
             id="dropdownDefaultButton"
-            (click)="isProfileOpened = !isProfileOpened"
             class="hidden lg:flex space-x-2 items-center font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600"
             type="button">
             <div
@@ -68,8 +67,8 @@
             <i
               *ngIf="isProfileOpened"
               class="fas fa-caret-up ml-2 text-not-black"></i>
-          </button>
-        </div>
+          </div>
+        </button>
       </div>
     </div>
   </div>

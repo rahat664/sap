@@ -19,6 +19,7 @@ import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
 import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checklist.component';
+import { fileUpload } from '../models/file-upload';
 
 @Component({
   selector: 'app-truck-details',
@@ -126,6 +127,7 @@ export class TruckDetailsComponent implements OnInit {
       this.numberOnly(value);
     });
     this.documents = this.shared.getTruckDocument(this.singleTruck);
+    this.truckFileTypeModify(this.documents);
   }
 
   onClickSave() {
@@ -150,12 +152,23 @@ export class TruckDetailsComponent implements OnInit {
     }
   }
   protected readonly Date = Date;
-  protected readonly driverFileType = driverFileType;
+  protected readonly truckFileType = fileUpload;
   isUploadPopupOpen: boolean;
   prehireCheckListOpened: boolean = false;
+  newTruckFileTypeOptions: CustomInputSelectModel[];
 
   onClickClose(document: any) {
     this.shared.onClickTruckCloseButton(document);
     this.documents = this.shared.truckDocuments;
+    this.truckFileTypeModify(this.documents);
+  }
+
+  private truckFileTypeModify(documents: any[]) {
+    this.newTruckFileTypeOptions = JSON.parse(JSON.stringify(this.truckFileType));
+    documents.forEach(document => {
+      this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
+        item => item.value !== document.name,
+      );
+    });
   }
 }

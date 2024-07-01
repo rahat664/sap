@@ -42,14 +42,14 @@
         <tr class="whitespace-nowrap bg-white">
           <th class="text-left">Driver Name</th>
           <th class="text-left">Mobile Number</th>
-          <!--        <th class="text-left">No. of trip</th>-->
+          <th class="text-left">No. of trip</th>
           <th class="text-center">Driving License</th>
           <th class="text-center">National ID</th>
           <th class="text-left">Status</th>
           <!--        <th style="width: 5%"></th>-->
         </tr>
         <tr>
-          <th class="border" colspan="5"></th>
+          <th class="border" colspan="6"></th>
         </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -74,7 +74,7 @@
             <td>
               {{ driver.phone }}
             </td>
-            <!--          <td>{{ driver.noOfTrips }}</td>-->
+            <td>{{ driver.completedTripCountsForDriver }}</td>
             <td class="whitespace-nowrap">
               <div class="flex items-center justify-center h-full">
                 <i
@@ -126,12 +126,12 @@
         </ng-container>
         <ng-container *ngIf="!loading">
           <tr *ngIf="driverList.length === 0">
-            <td class="text-center" colspan="5">No data found</td>
+            <td class="text-center" colspan="6">No data found</td>
           </tr>
         </ng-container>
         <ng-container *ngIf="loading">
           <tr>
-            <td class="h-full" colspan="5">
+            <td class="h-full" colspan="6">
               <app-loading></app-loading>
             </td>
           </tr>

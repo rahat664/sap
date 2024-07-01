@@ -3,4 +3,5 @@ export enum DateEnum {
   LastFifteenDays = 3,
   LastThirtyDays = 4,
   Custom = 99,
+  Today = 1,
 }

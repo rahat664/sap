@@ -2,11 +2,11 @@ import { Injectable, OnInit } from '@angular/core';
 import { UserModel } from '../../user-management/models/user.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from './user.service';
-import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { TruckInnerModel } from '../components/truck/models/truck-inner.model';
 import { TruckService } from '../components/truck/services/truck.service';
+import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Injectable({
   providedIn: 'root',
@@ -27,9 +27,9 @@ export class DriverEditSharedService {
   constructor(
     private fb: FormBuilder,
     private service: UserService,
-    private toastr: ToastrService,
     private router: Router,
-    private truck: TruckService
+    private truck: TruckService,
+    private handleToastr: HandleToastrService,
   ) {
     this.driverUpdateForm = this.fb.group({
       driverId: [''],
@@ -194,18 +194,18 @@ export class DriverEditSharedService {
       this.truck.editTruck(formData).subscribe(
         (res: any) => {
           if (res.status === 'OK') {
-            this.toastr.success(res.message);
-            this.router.navigate(['/profile/truck']);
+            this.handleToastr.showSuccess(res.message, 'Success');
             this.isUploadPopupOpen.next(false);
             this.completeTruckUpload.next(true);
+            this.router.navigate(['/profile/truck']);
           } else {
-            this.toastr.error(res.message);
+            this.handleToastr.showError(res.message, 'Error');
             this.isUploadPopupOpen.next(false);
             this.completeTruckUpload.next(true);
           }
         },
         error => {
-          this.toastr.error(error.error.message);
+          this.handleToastr.showError(error.error.message, 'Error');
           this.isUploadPopupOpen.next(false);
           this.completeTruckUpload.next(true);
         }
@@ -227,7 +227,7 @@ export class DriverEditSharedService {
         const control = this.driverUpdateForm.get(key);
         const value = control.value;
 
-        if (key != 'driverName' && key != 'driverPhone' && key != 'driverId') {
+        if (key != 'driverName' && key != 'driverPhone' && key != 'driverId' && key != 'drivingLicenseExpiryDate') {
           if (value) {
             formData.append(key, value);
           }
@@ -243,19 +243,19 @@ export class DriverEditSharedService {
         (res: any) => {
           // Handle response
           if (res.status === 'OK') {
-            this.toastr.success(res.message);
+            this.handleToastr.showSuccess(res.message, 'Success');
             this.router.navigate(['/profile/driver']);
             this.isUploadPopupOpen.next(false);
             this.completeUpload.next(true);
           } else {
-            this.toastr.error(res.message);
+            this.handleToastr.showError(res.message, 'Error');
             this.isUploadPopupOpen.next(false);
             this.completeUpload.next(true);
           }
         },
         error => {
           // Handle error
-          this.toastr.error(error.error.message);
+          this.handleToastr.showError(error.error.message, 'Error');
           this.isUploadPopupOpen.next(true);
         }
       );
@@ -325,6 +325,7 @@ export class DriverEditSharedService {
           case 'Driving License Front':
             this.driverUpdateForm.patchValue({
               drivingLicenseFront: file.file,
+              drivingLicenseExpiryDate: file.registrationExpireDate,
             });
             break;
           case 'Driving License Back':

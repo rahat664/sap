@@ -213,6 +213,12 @@ export class TripListComponent implements OnInit {
       )?.value;
       this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
       switch ($event) {
+        case DateEnum.Today:
+          this.from = new Date().toISOString();
+          this.to = new Date().toISOString();
+          this.from = this.datePipe.transform(this.from, 'yyyy-MM-dd');
+          this.to = this.datePipe.transform(this.to, 'yyyy-MM-dd');
+          break;
         case DateEnum.LastSevenDays:
           this.from = new Date(
             new Date().setDate(new Date().getDate() - 7)
@@ -246,6 +252,7 @@ export class TripListComponent implements OnInit {
   private generateDateOptionsArray() {
     // generate date options array
     this.dateOptionArray = [
+      { id: DateEnum.Today, value: 'Today', selected: false },
       { id: DateEnum.LastSevenDays, value: 'Last 7 days', selected: false },
       { id: DateEnum.LastFifteenDays, value: 'Last 15 days', selected: false },
       { id: DateEnum.LastThirtyDays, value: 'Last 30 days', selected: false },
@@ -287,6 +294,7 @@ export class TripListComponent implements OnInit {
   }
 
   onClickSearchSuggestion(result: any) {
+    this.page = 0;
     this.searchValue = result.customerCode;
     this.searchName = result.name;
     this.tripSuggestions = [];
@@ -299,16 +307,19 @@ export class TripListComponent implements OnInit {
   }
 
   onClearFilter() {
+    this.page = 0;
     this.searchFilter = 0;
     this.dateFilter = 0;
     this.searchValue = '';
     this.from = '';
     this.to = '';
     this.inputPlaceholder = '';
+    this.filterForm.get('search').setValue('');
     this.getTripList();
   }
 
   onStatusClick(tripStatus: string) {
+    this.page = 0;
     if (tripStatus != 'All') {
       this.status = tripStatus;
     } else {

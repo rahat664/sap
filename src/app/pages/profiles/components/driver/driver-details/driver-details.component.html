@@ -142,6 +142,6 @@
   (isModalClosed)="isUploadPopupOpen = !$event">
   <app-file-upload-popup
     (fileInput)="onChangeFile($event)"
-    [fileTypeOptions]="driverFileType"
+    [fileTypeOptions]="newDriverFileType"
     [callFromModal]="true"></app-file-upload-popup>
 </app-create-popup>

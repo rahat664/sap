@@ -92,13 +92,15 @@
             <div class="flex space-x-3 items-center text-not-black">
               <img src="assets/svg/list.svg" alt="" />
               <span class="text-not-black font-semibold"
-                >Pre hire check list</span
+              >Pre hire check list
+              <span *ngIf="countPassCheckList">({{ countPassCheckList }}/22)</span>
+              </span
               >
             </div>
             <a
               (click)="prehireCheckListOpened = true"
               class="text-link cursor-pointer"
-              >Add list</a
+            >{{ countPassCheckList ? 'Browse List' : 'Add List' }}</a
             >
           </div>
         </div>

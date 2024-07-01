@@ -110,7 +110,7 @@
             <td>
               <div class="relative w-full">
                 <button
-                  [disabled]="user.status === 'Removed'"
+                  *ngIf="user.status != 'Removed'"
                   (click)="actionOpen(user.id)"
                   class="cursor-pointer w-full">
                   <i class="fas fa-ellipsis-v"></i>

@@ -5,14 +5,9 @@ import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { UserModel } from '../../../../user-management/models/user.model';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { TruckService } from '../../truck/services/truck.service';
-import { UserService } from '../../../services/user.service';
 import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
 import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
 import { driverFileType } from '../../customer/model/driver-file-type';
-import { identity } from 'rxjs';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 
 @Component({
@@ -41,6 +36,7 @@ export class DriverDetailsComponent implements OnInit {
   driverPhone: string;
   private driverUpdateForm: FormGroup;
   isUploadPopupOpen: boolean;
+  newDriverFileType: any;
 
   constructor(private driverEditSharedService: DriverEditSharedService) {}
 
@@ -53,6 +49,7 @@ export class DriverDetailsComponent implements OnInit {
     );
     this.driverName = this.driverEditSharedService.driverName;
     this.driverPhone = this.driverEditSharedService.driverPhone;
+    this.driverFileTypeModify(this.documents);
   }
 
   onDriverUpdate() {
@@ -66,9 +63,20 @@ export class DriverDetailsComponent implements OnInit {
   onClickCloseButton(document: any) {
     this.driverEditSharedService.onClickCloseButton(document);
     this.documents = this.driverEditSharedService.documents;
+    this.driverFileTypeModify(this.documents);
   }
 
   onChangeFile($event: any) {
     this.driverEditSharedService.onChangeFile($event);
+  }
+
+  private driverFileTypeModify(documents: any[]) {
+    // make a copy of the documents array with true copy not shallow copy
+    this.newDriverFileType = JSON.parse(JSON.stringify(this.driverFileType));
+    documents.forEach((document) => {
+      this.newDriverFileType = this.newDriverFileType.filter(
+        (item) => item.value !== document.name,
+      );
+    });
   }
 }
