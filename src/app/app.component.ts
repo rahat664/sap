@@ -10,6 +10,7 @@ import { ImageGalleryComponent } from './shared/modules/image-gallery/image-gall
 import { ImagePopupComponent } from './shared/modal/image-popup/image-popup.component';
 import { HandleToastrService } from './shared/services/handle-toastr/handle-toastr.service';
 import { debounceTime } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -49,6 +50,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     initFlowbite();
+    this.addMapScript();
   }
 
   isLoginPage() {
@@ -57,5 +59,13 @@ export class AppComponent implements OnInit {
     } else {
       return true;
     }
+  }
+
+  private addMapScript() {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.API_KEY}&libraries=marker`;
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
   }
 }

@@ -1,0 +1,65 @@
+<div class="grid grid-cols-3 gap-2 p-2">
+  <div class="col-span-2">
+    <div class="flex justify-between py-2 items-center">
+      <h1 class="text-h1 font-semibold">New Trip</h1>
+      <button
+        class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-white text-primary border border-primary rounded-lg">
+        <i class="far fa-file-excel"></i>
+        <span class="hidden lg:block font-semibold text-primary">Create New Trip from Excel</span>
+      </button>
+    </div>
+    <form [formGroup]="tripCreateForm" class="bg-white rounded-lg px-4">
+      <div class="flex flex-col space-y-3 py-4 border-input border-b-2">
+        <div class="flex space-x-3 items-center">
+          <img src="assets/svg/candt.svg" class="notPreview" alt="candt">
+          <h1 class="text-h2 font-semibold">Customer and time</h1>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="flex flex-col space-y-1">
+            <label class="text-sm font-semibold">Customer Name</label>
+            <input
+              required
+              [minlength]="2"
+              [maxlength]="50"
+              placeholder="Customer Name"
+              class="bg-input rounded-lg border-none p-4"
+              type="text"
+              formControlName="companyName" />
+          </div>
+          <div>
+            <label class="text-sm font-semibold">Date</label>
+            <app-custom-date-picker></app-custom-date-picker>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-3 py-4 border-input border-b-2">
+        <div class="flex space-x-3 items-center">
+          <img src="assets/svg/candt.svg" class="notPreview" alt="candt">
+          <h1 class="text-h2 font-semibold">Location Info</h1>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="flex flex-col space-y-1">
+            <label class="text-sm font-semibold">Customer Name</label>
+            <input
+              required
+              [minlength]="2"
+              [maxlength]="50"
+              placeholder="Customer Name"
+              class="bg-input rounded-lg border-none p-4"
+              type="text"
+              id="name"
+              formControlName="companyName" />
+          </div>
+          <div>
+            <label class="text-sm font-semibold">Date</label>
+            <app-custom-date-picker></app-custom-date-picker>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="bg-white h-full p-4 flex flex-col space-y-3 rounded-lg">
+    <h1 class="text-h1_mobile font-semibold">Overview</h1>
+    <app-g-map origin="Dhaka" destination="Rangpur"></app-g-map>
+  </div>
+</div>

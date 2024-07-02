@@ -22,6 +22,7 @@ import { CustomerService } from '../profiles/services/customer.service';
 import { GetOutsideModalClickDirective } from '../../shared/directive/get-outside-modal-click.directive';
 import { Trip } from '../auth/models/response/trip';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-trip-list',
@@ -43,6 +44,7 @@ import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directi
     LoadingComponent,
     GetOutsideModalClickDirective,
     CheckTheHeightCrossMaxHeightOrNotDirective,
+    RouterLink,
   ],
   templateUrl: './trip-list.component.html',
   styleUrl: './trip-list.component.scss',
