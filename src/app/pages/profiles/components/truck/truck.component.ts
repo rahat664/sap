@@ -69,7 +69,6 @@ export class TruckComponent implements OnInit {
   constructor(
     private service: TruckService,
     private shared: DriverEditSharedService,
-    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
