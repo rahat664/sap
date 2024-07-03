@@ -5,7 +5,6 @@
       class="bg-input rounded-lg border-none w-full p-4"
       placeholder="Select date"
       readonly
-      (focus)="toggleCalendar()"
       (click)="toggleCalendar()"
       [value]="selectedDate | date: 'yyyy-MM-dd'"
     />

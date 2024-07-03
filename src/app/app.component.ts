@@ -29,6 +29,7 @@ import { environment } from '../environments/environment';
 export class AppComponent implements OnInit {
   title = 'snz-web';
   isOpen: boolean;
+  map: google.maps.Map;
 
   constructor(
     private router: Router,
@@ -42,9 +43,13 @@ export class AppComponent implements OnInit {
     const target = event.target as HTMLElement;
     // dont preview if IMG class is notPreview
     if (target.tagName === 'IMG' && !target.classList.contains('notPreview')) {
-      console.log('image clicked', target.getAttribute('src'));
-      this.imageGalleryService.setCurrentImage(target.getAttribute('src'));
-      this.isOpen = true;
+      if (target.getAttribute('src').includes('map')) {
+        this.isOpen = false;
+        return;
+      } else {
+        this.isOpen = true;
+        return this.imageGalleryService.setCurrentImage(target.getAttribute('src'));
+      }
     }
   }
 

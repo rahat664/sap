@@ -6,14 +6,10 @@ import { CustomInputComponent } from '../../../../../shared/modules/custom-input
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { TruckInnerModel } from '../models/truck-inner.model';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { TruckService } from '../services/truck.service';
-import { ToastrService } from 'ngx-toastr';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { registrationCategoryList } from '../models/registration-category';
 import { registrationZoneList } from '../models/registration-zone';
-import { Router } from '@angular/router';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
-import { driverFileType } from '../../customer/model/driver-file-type';
 import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
 import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup.component';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
@@ -59,10 +55,6 @@ export class TruckDetailsComponent implements OnInit {
   isExpiryAvailable: boolean;
 
   constructor(
-    private fb: FormBuilder,
-    private service: TruckService,
-    private toastr: ToastrService,
-    private router: Router,
     private shared: DriverEditSharedService
   ) {}
 

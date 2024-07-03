@@ -32,7 +32,6 @@ export class CustomDatePickerComponent implements OnInit {
   }
 
   toggleCalendar(): void {
-    this.isCalendarVisible = false;
     this.isCalendarVisible = !this.isCalendarVisible;
     this.showYearSelector = false; // Hide year selector initially
   }

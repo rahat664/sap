@@ -34,12 +34,12 @@
       </div>
       <div class="flex flex-col space-y-3 py-4 border-input border-b-2">
         <div class="flex space-x-3 items-center">
-          <img src="assets/svg/candt.svg" class="notPreview" alt="candt">
+          <img src="assets/svg/locinfo.svg" class="notPreview" alt="candt">
           <h1 class="text-h2 font-semibold">Location Info</h1>
         </div>
         <div class="grid md:grid-cols-2 gap-4">
           <div class="flex flex-col space-y-1">
-            <label class="text-sm font-semibold">Customer Name</label>
+            <label class="text-sm font-semibold">Loading Point</label>
             <input
               required
               [minlength]="2"
@@ -47,19 +47,83 @@
               placeholder="Customer Name"
               class="bg-input rounded-lg border-none p-4"
               type="text"
-              id="name"
               formControlName="companyName" />
           </div>
-          <div>
-            <label class="text-sm font-semibold">Date</label>
-            <app-custom-date-picker></app-custom-date-picker>
+          <div class="flex flex-col space-y-1 relative">
+            <label class="text-sm font-semibold">Loading District</label>
+            <input
+              (keyup)="onKeyUpStartingSearch($event)"
+              required
+              [minlength]="2"
+              [maxlength]="50"
+              placeholder="Customer Name"
+              class="bg-input rounded-lg border-none p-4"
+              type="text"
+              formControlName="loadingDistrict" />
+            <div
+              *ngIf="loadingDistrictSuggestions?.length > 0 && loadingDistrictSuggestionsShow"
+              class="absolute z-10 bg-white w-full border border-gray-300 rounded-lg shadow-md">
+              <ul class="p-2">
+                <li
+                  *ngFor="let suggestion of loadingDistrictSuggestions"
+                  (click)="onSelectLoadingDistrict(suggestion)"
+                  class="p-2 cursor-pointer hover:bg-gray-100">
+                  {{ suggestion.nameEnglish }}
+                </li>
+              </ul>
+            </div>
           </div>
+          <div class="flex flex-col space-y-1">
+            <label class="text-sm font-semibold">Unloading Point</label>
+            <input
+              required
+              [minlength]="2"
+              [maxlength]="50"
+              placeholder="Customer Name"
+              class="bg-input rounded-lg border-none p-4"
+              type="text"
+              formControlName="companyName" />
+          </div>
+          <div class="flex flex-col space-y-1 relative">
+            <label class="text-sm font-semibold">Unloading District</label>
+            <input
+              (keyup)="onKeyUpUnloadingSearch($event)"
+              required
+              [minlength]="2"
+              [maxlength]="50"
+              placeholder="Customer Name"
+              class="bg-input rounded-lg border-none p-4"
+              type="text"
+              id="name"
+              formControlName="unloadingDistrict" />
+            <div
+              *ngIf="unloadingDistrictSuggestions?.length > 0 && unloadingDistrictSuggestionsShow"
+              class="absolute z-10 bg-white w-full border border-gray-300 rounded-lg shadow-md">
+              <ul class="p-2">
+                <li
+                  *ngFor="let suggestion of unloadingDistrictSuggestions"
+                  (click)="onSelectUnloadingDistrict(suggestion)"
+                  class="p-2 cursor-pointer hover:bg-gray-100">
+                  {{ suggestion.nameEnglish }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-3 py-4 border-input border-b-2">
+        <div class="flex space-x-3 items-center">
+          <img src="assets/svg/vehicleinfo.svg" class="notPreview" alt="candt">
+          <h1 class="text-h2 font-semibold">Vehicle Info</h1>
         </div>
       </div>
     </form>
   </div>
   <div class="bg-white h-full p-4 flex flex-col space-y-3 rounded-lg">
     <h1 class="text-h1_mobile font-semibold">Overview</h1>
-    <app-g-map origin="Dhaka" destination="Rangpur"></app-g-map>
+    <app-g-map
+      [starting]="this.startingPoint"
+      [destination]="this.destinationPoint"
+    ></app-g-map>
   </div>
 </div>
