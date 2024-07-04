@@ -59,6 +59,7 @@ export class DriverDetailsComponent implements OnInit {
     );
   }
   protected readonly driverFileType = driverFileType;
+  isNewOpen: boolean = false;
 
   onClickCloseButton(document: any) {
     this.driverEditSharedService.onClickCloseButton(document);

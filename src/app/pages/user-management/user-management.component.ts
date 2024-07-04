@@ -20,9 +20,9 @@ import { CreatePopupComponent } from '../../shared/modal/create-popup/create-pop
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 import { ValidationService } from '../../shared/services/validation/validation.service';
 import { ConfirmModalComponent } from '../../shared/modules/confirm-modal/confirm-modal.component';
-import { ToastrService } from 'ngx-toastr';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { debounceTime } from 'rxjs';
+import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-user-management',
@@ -79,7 +79,7 @@ export class UserManagementComponent implements OnInit {
   constructor(
     private service: UserService,
     private validation: ValidationService,
-    private toastr: ToastrService
+    private toastr: HandleToastrService,
   ) {}
 
   ngOnInit() {
@@ -320,7 +320,7 @@ export class UserManagementComponent implements OnInit {
   performChangeStatus() {
     this.service.changeStatus(this.id, this.status).subscribe({
       next: (response: any) => {
-        this.toastr.success(response);
+        this.toastr.showSuccess(response);
         this.status = '';
         this.id = null;
         this.confirmOpened = false;
@@ -335,7 +335,7 @@ export class UserManagementComponent implements OnInit {
         this.getUserList();
       },
       error: err => {
-        this.toastr.error(err);
+        this.toastr.showError(err);
       },
     });
   }
@@ -352,7 +352,7 @@ export class UserManagementComponent implements OnInit {
   onKeyUpSearch($event: KeyboardEvent) {
     this.loading = true;
     const target = ($event.target as HTMLInputElement).value;
-    if (target.length) {
+    if (target?.length) {
       this.searchValue = target;
     } else {
       this.searchValue = '';

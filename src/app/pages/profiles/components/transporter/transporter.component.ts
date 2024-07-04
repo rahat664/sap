@@ -69,7 +69,7 @@ export class TransporterComponent implements OnInit {
 
   onKeyUpSearch($event: KeyboardEvent) {
     const value = ($event.target as HTMLInputElement).value;
-    if (value.length > 0) {
+    if (value?.length > 0) {
       this.searchValue = value;
     } else {
       this.searchValue = '';

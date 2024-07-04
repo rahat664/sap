@@ -58,7 +58,7 @@ export class CustomDatePickerComponent implements OnInit {
     }
 
     // Fill in the blanks for the last week
-    while (dates.length % 7 !== 0) {
+    while (dates?.length % 7 !== 0) {
       dates.push(null);
     }
 

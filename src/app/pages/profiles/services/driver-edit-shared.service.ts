@@ -31,6 +31,10 @@ export class DriverEditSharedService {
     private truck: TruckService,
     private handleToastr: HandleToastrService,
   ) {
+    this.initForms();
+  }
+
+  private initForms() {
     this.driverUpdateForm = this.fb.group({
       driverId: [''],
       driverName: [''],
@@ -88,128 +92,47 @@ export class DriverEditSharedService {
   }
 
   getTruckDocument(singleTruck: TruckInnerModel) {
-    this.truckDocuments = [];
-    if (singleTruck.regPaperFile) {
-      this.truckDocuments.push({
-        name: 'Registration Paper',
-        url: singleTruck.regPaperFile,
-        expDate: null,
-      });
-    }
-    if (singleTruck.fitnessFile) {
-      this.truckDocuments.push({
-        name: 'Fitness',
-        url: singleTruck.fitnessFile,
-        expDate: singleTruck.fitnessCertExpDate,
-      });
-    }
-    if (singleTruck.routePermitFile) {
-      this.truckDocuments.push({
-        name: 'Route Permit',
-        url: singleTruck.routePermitFile,
-        expDate: singleTruck.routePermitExpDate,
-      });
-    }
-    if (singleTruck.taxFile) {
-      this.truckDocuments.push({
-        name: 'Tax',
-        url: singleTruck.taxFile,
-        expDate: singleTruck.taxExpDate,
-      });
-    }
-    if (singleTruck.caseFile) {
-      this.truckDocuments.push({
-        name: 'Case',
-        url: singleTruck.caseFile,
-        expDate: singleTruck.caseExpDate,
-      });
-    }
-    if (singleTruck.otherFile) {
-      this.truckDocuments.push({
-        name: 'Other',
-        url: singleTruck.otherFile,
-        expDate: null,
-      });
-    }
+    this.truckDocuments = this.generateDocumentList(singleTruck, [
+      { key: 'regPaperFile', name: 'Registration Paper', expDateKey: null },
+      { key: 'fitnessFile', name: 'Fitness', expDateKey: 'fitnessCertExpDate' },
+      { key: 'routePermitFile', name: 'Route Permit', expDateKey: 'routePermitExpDate' },
+      { key: 'taxFile', name: 'Tax', expDateKey: 'taxExpDate' },
+      { key: 'caseFile', name: 'Case', expDateKey: 'caseExpDate' },
+      { key: 'otherFile', name: 'Other', expDateKey: null },
+    ]);
     return this.truckDocuments;
   }
 
   getDocument(singleDriver: UserModel) {
-    this.documents = [];
-    if (singleDriver.driverFilesUrls?.drivingLicenseFront) {
-      this.documents.push({
-        name: 'Driving License Front',
-        url: singleDriver.driverFilesUrls?.drivingLicenseFront,
-        expDate: singleDriver.drivingLicenseExpiryDate,
-      });
-    }
-    if (singleDriver.driverFilesUrls?.drivingLicenseBack) {
-      this.documents.push({
-        name: 'Driving License Back',
-        url: singleDriver.driverFilesUrls?.drivingLicenseBack,
-        expDate: singleDriver.drivingLicenseExpiryDate,
-      });
-    }
-    if (singleDriver.driverFilesUrls?.nidFront) {
-      this.documents.push({
-        name: 'NID Front',
-        url: singleDriver.driverFilesUrls?.nidFront,
-        expDate: null,
-      });
-    }
-    if (singleDriver.driverFilesUrls?.nidBack) {
-      this.documents.push({
-        name: 'NID Back',
-        url: singleDriver.driverFilesUrls?.nidBack,
-        expDate: null,
-      });
-    }
-    if (singleDriver.driverFilesUrls?.other) {
-      this.documents.push({
-        name: 'Other',
-        url: singleDriver.driverFilesUrls?.other,
-        expDate: null,
-      });
-    }
+    this.documents = this.generateDocumentList(singleDriver, [
+      { key: 'drivingLicenseFront', name: 'Driving License Front', expDateKey: 'drivingLicenseExpiryDate' },
+      { key: 'drivingLicenseBack', name: 'Driving License Back', expDateKey: 'drivingLicenseExpiryDate' },
+      { key: 'nidFront', name: 'NID Front', expDateKey: null },
+      { key: 'nidBack', name: 'NID Back', expDateKey: null },
+      { key: 'other', name: 'Other', expDateKey: null },
+    ], 'driverFilesUrls');
     return this.documents;
+  }
+
+  private generateDocumentList(entity: any, mappings: any[], fileUrlsKey = '') {
+    const documents = [];
+    const fileUrls = fileUrlsKey ? entity[fileUrlsKey] : entity;
+    mappings.forEach(mapping => {
+      if (fileUrls[mapping.key]) {
+        documents.push({
+          name: mapping.name,
+          url: fileUrls[mapping.key],
+          expDate: mapping.expDateKey ? entity[mapping.expDateKey] : null,
+          expAvailable: !!mapping.expDateKey,
+        });
+      }
+    });
+    return documents;
   }
 
   onTruckUpdate() {
     if (this.truckUpdateForm.valid) {
-      const formData = new FormData();
-      const payload: Record<string, any> = {};
-      Object.keys(this.truckUpdateForm.controls).forEach(key => {
-        const control = this.truckUpdateForm.get(key);
-        const value = control.value;
-
-        if (key.endsWith('File') || key === 'others') {
-          if (value) {
-            formData.append(key, value);
-          }
-        } else {
-          payload[key] = value;
-        }
-      });
-      formData.append('payload', JSON.stringify(payload));
-      this.truck.editTruck(formData).subscribe(
-        (res: any) => {
-          if (res.status === 'OK') {
-            this.handleToastr.showSuccess(res.message, 'Success');
-            this.isUploadPopupOpen.next(false);
-            this.completeTruckUpload.next(true);
-            this.router.navigate(['/profile/truck']);
-          } else {
-            this.handleToastr.showError(res.message, 'Error');
-            this.isUploadPopupOpen.next(false);
-            this.completeTruckUpload.next(true);
-          }
-        },
-        error => {
-          this.handleToastr.showError(error.error.message, 'Error');
-          this.isUploadPopupOpen.next(false);
-          this.completeTruckUpload.next(true);
-        }
-      );
+      this.submitUpdateForm(this.truckUpdateForm, this.truck.editTruck.bind(this.truck), '/profile/truck', this.completeTruckUpload);
     }
   }
 
@@ -219,177 +142,135 @@ export class DriverEditSharedService {
       driverPhone: driverPhone,
     });
     if (this.driverUpdateForm.valid) {
-      const formData = new FormData();
-      const payload: Record<string, any> = {};
-
-      // Iterate over form controls
-      Object.keys(this.driverUpdateForm.controls).forEach(key => {
-        const control = this.driverUpdateForm.get(key);
-        const value = control.value;
-
-        if (key != 'driverName' && key != 'driverPhone' && key != 'driverId' && key != 'drivingLicenseExpiryDate') {
-          if (value) {
-            formData.append(key, value);
-          }
-          // Append file controls directly to the FormData
-        } else {
-          // Add other controls to the payload object
-          payload[key] = value;
-        }
-      });
-      formData.append('payload', JSON.stringify(payload));
-
-      this.service.editDriver(formData).subscribe(
-        (res: any) => {
-          // Handle response
-          if (res.status === 'OK') {
-            this.handleToastr.showSuccess(res.message, 'Success');
-            this.router.navigate(['/profile/driver']);
-            this.isUploadPopupOpen.next(false);
-            this.completeUpload.next(true);
-          } else {
-            this.handleToastr.showError(res.message, 'Error');
-            this.isUploadPopupOpen.next(false);
-            this.completeUpload.next(true);
-          }
-        },
-        error => {
-          // Handle error
-          this.handleToastr.showError(error.error.message, 'Error');
-          this.isUploadPopupOpen.next(true);
-        }
-      );
+      this.submitUpdateForm(this.driverUpdateForm, this.service.editDriver.bind(this.service), '/profile/driver', this.completeUpload);
     }
+  }
+
+  private submitUpdateForm(form: FormGroup, serviceMethod: Function, navigatePath: string, completeSubject: BehaviorSubject<any>) {
+    const formData = new FormData();
+    const payload: Record<string, any> = {};
+
+    Object.keys(form.controls).forEach(key => {
+      const control = form.get(key);
+      const value = control.value;
+
+      const files = ['drivingLicenseFront', 'drivingLicenseBack', 'nidFront', 'nidBack', 'other'];
+
+      if (key.endsWith('File') || key === 'others' || files.includes(key)) {
+        if (value) {
+          formData.append(key, value);
+        }
+      } else {
+        payload[key] = value;
+      }
+    });
+    formData.append('payload', JSON.stringify(payload));
+
+    serviceMethod(formData).subscribe(
+      (res: any) => {
+        if (res.status === 'OK') {
+          this.handleToastr.showSuccess(res.message, 'Success');
+          this.isUploadPopupOpen.next(false);
+          completeSubject.next(true);
+          localStorage.removeItem('driver');
+          localStorage.removeItem('truck');
+          this.router.navigate([navigatePath]);
+        } else {
+          this.handleToastr.showError(res.message, 'Error');
+          this.isUploadPopupOpen.next(false);
+          completeSubject.next(true);
+        }
+      },
+      error => {
+        this.handleToastr.showError(error.error.message, 'Error');
+        this.isUploadPopupOpen.next(false);
+        completeSubject.next(true);
+      },
+    );
   }
 
   onClickTruckCloseButton(document: any) {
-    this.truckDocuments = this.truckDocuments.filter(
-      (doc: any) => doc.name !== document.name
-    );
-    if (document.name === 'Registration Paper') {
-      this.truckUpdateForm.patchValue({
-        regPaperFile: null,
-      });
-    } else if (document.name === 'Fitness') {
-      this.truckUpdateForm.patchValue({
-        fitnessCertificateFile: null,
-        fitnessCertExpDate: null,
-      });
-    } else if (document.name === 'Route Permit') {
-      this.truckUpdateForm.patchValue({
-        routePermitFile: null,
-        routePermitExpDate: null,
-      });
-    } else if (document.name === 'Tax') {
-      this.truckUpdateForm.patchValue({
-        taxFile: null,
-        taxExpDate: null,
-      });
-    } else if (document.name === 'Case') {
-      this.truckUpdateForm.patchValue({
-        casePaperFile: null,
-        caseExpDate: null,
-      });
-    } else if (document.name === 'Other') {
-      this.truckUpdateForm.patchValue({
-        otherFile: null,
-      });
-    }
+    this.handleDocumentClose(document, this.truckUpdateForm, this.truckDocuments, 'truckFilesUrls');
   }
 
   onClickCloseButton(document: any) {
-    this.documents = this.documents.filter(
-      (doc: any) => doc.name !== document.name
-    );
-    if (document.name === 'Driving License Front') {
-      this.driverUpdateForm.patchValue({ drivingLicenseFront: null });
-    } else if (document.name === 'Driving License Back') {
-      this.driverUpdateForm.patchValue({ drivingLicenseBack: null });
-    } else if (document.name === 'NID Front') {
-      this.driverUpdateForm.patchValue({ nidFront: null });
-    } else if (document.name === 'NID Back') {
-      this.driverUpdateForm.patchValue({ nidBack: null });
-    } else if (document.name === 'Other') {
-      this.driverUpdateForm.patchValue({ other: null });
+    this.handleDocumentClose(document, this.driverUpdateForm, this.documents, 'driverFilesUrls');
+  }
+
+  private handleDocumentClose(document: any, form: FormGroup, documents: any[], name) {
+    const documentKeyMap = {
+      'Registration Paper': 'regPaperFile',
+      'Fitness': 'fitnessCertificateFile',
+      'Route Permit': 'routePermitFile',
+      'Tax': 'taxFile',
+      'Case': 'casePaperFile',
+      'Other': name === 'driverFilesUrls' ? 'other' : 'otherFile',
+      'Driving License Front': 'drivingLicenseFront',
+      'Driving License Back': 'drivingLicenseBack',
+      'NID Front': 'nidFront',
+      'NID Back': 'nidBack',
+    };
+    documents = documents.filter((doc: any) => doc.name !== document.name);
+    if (name === 'driverFilesUrls') {
+      this.documents = documents;
+    } else {
+      this.truckDocuments = documents;
+    }
+    const formControlName = documentKeyMap[document.name];
+    const resetValue = formControlName?.includes('ExpDate') ? null : undefined;
+    if (formControlName) {
+      form.patchValue({ [formControlName]: resetValue });
     }
   }
 
   onChangeFile($event: any) {
-    if ($event.length) {
-      $event.forEach((file: any) => {
-        this.documents.push({
-          name: file.registrationType,
-          url: file.preview,
-        });
-        switch (file.registrationType) {
-          case 'Driving License Front':
-            this.driverUpdateForm.patchValue({
-              drivingLicenseFront: file.file,
-              drivingLicenseExpiryDate: file.registrationExpireDate,
-            });
-            break;
-          case 'Driving License Back':
-            this.driverUpdateForm.patchValue({ drivingLicenseBack: file.file });
-            break;
-          case 'NID Front':
-            this.driverUpdateForm.patchValue({ nidFront: file.file });
-            break;
-          case 'NID Back':
-            this.driverUpdateForm.patchValue({ nidBack: file.file });
-            break;
-          case 'Other':
-            this.driverUpdateForm.patchValue({ other: file.file });
-            break;
-        }
-      });
-    }
+    this.handleFileChange($event, this.driverUpdateForm, this.documents, 'driverFilesUrls');
   }
 
   onChangeTruckFile($event: any) {
-    if ($event.length) {
-      $event.forEach((file: any) => {
-        this.truckDocuments.push({
+    this.handleFileChange($event, this.truckUpdateForm, this.truckDocuments, 'truckFilesUrls');
+  }
+
+  private handleFileChange(files: any[], form: FormGroup, documents: any[], name) {
+    if (files?.length) {
+      files.forEach(file => {
+        documents.push({
           name: file.registrationType,
           url: file.preview,
           expDate: file.registrationExpireDate,
         });
-        switch (file.registrationType) {
-          case 'Registration Paper':
-            this.truckUpdateForm.patchValue({
-              regPaperFile: file.file,
-            });
-            break;
-          case 'Fitness':
-            this.truckUpdateForm.patchValue({
-              fitnessCertificateFile: file.file,
-              fitnessCertExpDate: file.registrationExpireDate,
-            });
-            break;
-          case 'Route Permit':
-            this.truckUpdateForm.patchValue({
-              routePermitFile: file.file,
-              routePermitExpDate: file.registrationExpireDate,
-            });
-            break;
-          case 'Tax':
-            this.truckUpdateForm.patchValue({
-              taxFile: file.file,
-              taxExpDate: file.registrationExpireDate,
-            });
-            break;
-          case 'Case':
-            this.truckUpdateForm.patchValue({
-              casePaperFile: file.file,
-              caseExpDate: file.registrationExpireDate,
-            });
-            break;
-          case 'Other':
-            this.truckUpdateForm.patchValue({
-              others: file.file,
-            });
-            break;
-        }
+        form.patchValue({
+          [this.getFileControlName(file.registrationType, name)]: file.file,
+          ...(file.registrationExpireDate && { [this.getExpDateControlName(file.registrationType)]: file.registrationExpireDate }),
+        });
       });
     }
+  }
+
+  private getFileControlName(registrationType: string, name) {
+    const controlNameMap = {
+      'Driving License Front': 'drivingLicenseFront',
+      'Driving License Back': 'drivingLicenseBack',
+      'NID Front': 'nidFront',
+      'NID Back': 'nidBack',
+      'Other': name === 'driverFilesUrls' ? 'other' : 'others',
+      'Registration Paper': 'regPaperFile',
+      'Fitness': 'fitnessCertificateFile',
+      'Route Permit': 'routePermitFile',
+      'Tax': 'taxFile',
+      'Case': 'casePaperFile',
+    };
+    return controlNameMap[registrationType];
+  }
+
+  private getExpDateControlName(registrationType: string) {
+    const expDateControlNameMap = {
+      'Driving License Front': 'drivingLicenseExpiryDate',
+      'Fitness': 'fitnessCertExpDate',
+      'Route Permit': 'routePermitExpDate',
+      'Tax': 'taxExpDate',
+      'Case': 'caseExpDate',
+    };
+    return expDateControlNameMap[registrationType];
   }
 }

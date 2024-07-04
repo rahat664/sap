@@ -43,18 +43,20 @@ export class CustomInputComponent implements OnInit {
   days: number[] = Array.from({ length: 31 }, (_, i) => i + 1);
   years: number[] = Array.from(
     { length: new Date().getFullYear() - 1980 + 1 },
-    (_, i) => 1980 + i
+    (_, i) => 1980 + i,
   );
   selectedFromMonth: string; // Default selected month
   selectedFromDay: string; // Default selected day
   selectedFromYear: string; // Default selected year
-  selectedToMonth: string = new Date().getMonth().toString(); // Default selected month
-  selectedToDay: string = new Date().getDate().toString(); // Default selected day
+  // Default selected date for To date
+  selectedToMonth: string = new Date().getMonth().toString().length === 1 ? `0${new Date().getMonth().toString()}` : new Date().getMonth().toString(); // Default selected month
+  selectedToDay: string = new Date().getDate().toString().length === 1 ? `0${new Date().getDate().toString()}` : new Date().getDate().toString(); // Default selected day
   selectedToYear: string = new Date().getFullYear().toString(); // Default selected year
   selectedFromMonthInString: string;
   selectedToMonthInString: string;
 
-  constructor(private shared: DriverEditSharedService) {}
+  constructor(private shared: DriverEditSharedService) {
+  }
 
   onFromMonthChange(month: string) {
     switch (month) {
@@ -111,7 +113,7 @@ export class CustomInputComponent implements OnInit {
 
   onFromDayChange(day: number) {
     this.selectedFromDay =
-      day.toString().length === 1 ? `0${day}` : day.toString();
+      day.toString()?.length === 1 ? `0${day}` : day.toString();
   }
 
   onFromYearChange(year: number) {
@@ -172,8 +174,7 @@ export class CustomInputComponent implements OnInit {
   }
 
   onToDayChange(day: number) {
-    this.selectedToDay =
-      day.toString().length === 1 ? `0${day}` : day.toString();
+    this.selectedToDay = day.toString()?.length === 1 ? `0${day}` : day.toString();
   }
 
   onToYearChange(year: number) {
@@ -197,10 +198,11 @@ export class CustomInputComponent implements OnInit {
 
   ngOnInit(): void {
     this.isError = false;
-    if (this.options.length == 1) {
+    if (this.options?.length == 1) {
       this.inputPlaceholder = this.options[0].value;
       this.selectedId.emit(this.options[0].id);
     }
+    this.onToMonthChange(this.months[new Date().getMonth()]);
   }
 
   onClickOption(id: number) {
@@ -214,7 +216,7 @@ export class CustomInputComponent implements OnInit {
     this.selectedFromDate.emit(this.combineFromIntoSingleDate());
     this.selectedToDate.emit(this.combineToIntoSingleDate());
     this.selectedFromDateToToDate.emit(
-      `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`
+      `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`,
     );
     this.customOpened = false;
     this.itemsOpened = false;

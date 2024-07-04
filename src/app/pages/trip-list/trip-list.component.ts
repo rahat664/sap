@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TripService } from './services/trip.service';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
@@ -47,7 +42,7 @@ import { RouterLink } from '@angular/router';
     RouterLink,
   ],
   templateUrl: './trip-list.component.html',
-  styleUrl: './trip-list.component.scss',
+  styleUrls: ['./trip-list.component.scss'],
 })
 export class TripListComponent implements OnInit {
   filterOpened = false;
@@ -56,13 +51,13 @@ export class TripListComponent implements OnInit {
   tripList: Trip[] = [];
   inputPlaceholder = '';
   dateOptionArray: CustomInputSelectModel[] = [];
-  searchValue: string;
-  from: string;
-  to: string;
-  status: string;
-  tripSuggestions: any;
+  searchValue = '';
+  from = '';
+  to = '';
+  status = '';
+  tripSuggestions: any[] = [];
   isSearchedMenuOpened = false;
-  searchName: string;
+  searchName = '';
   dateFilter = 0;
   searchFilter = 0;
   summary = {
@@ -72,15 +67,15 @@ export class TripListComponent implements OnInit {
     gps: 0,
   };
   statusButtons = statusButtons;
-  rightButtonClicked: boolean;
-  leftButtonClicked: boolean;
+  rightButtonClicked = false;
+  leftButtonClicked = false;
   right = '0px';
   height = '0px';
   scrollable = true;
   dateOpened = false;
   loading = false;
-  page: number = 0;
-  totalPages: number;
+  page = 0;
+  totalPages = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -102,157 +97,50 @@ export class TripListComponent implements OnInit {
   }
 
   private getTripList() {
-    this.loading = true;
-    // get trip list
-    if (this.searchValue && !this.from && !this.to && !this.status) {
-      this.service
-        .getTrips(this.page, this.searchValue, null, null, null)
-        .subscribe((trip: any) => {
-          this.tripList = trip.data.responses;
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (this.searchValue && this.from && this.to && this.status) {
-      this.service
-        .getTrips(this.page, this.searchValue, this.from, this.to, this.status)
-        .subscribe((trip: any) => {
-          this.tripList = trip.data.responses;
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (this.searchValue && this.from && this.to && !this.status) {
-      this.service
-        .getTrips(this.page, this.searchValue, this.from, this.to, null)
-        .subscribe((trip: any) => {
-          this.tripList = trip.data.responses;
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (this.searchValue && !this.from && !this.to && this.status) {
-      this.service
-        .getTrips(this.page, this.searchValue, null, null, this.status)
-        .subscribe((trip: any) => {
-          this.tripList = trip.data.responses;
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (!this.searchValue && this.from && this.to && this.status) {
-      this.service
-        .getTrips(this.page, null, this.from, this.to, this.status)
-        .subscribe((trip: any) => {
-          this.tripList = trip.data.responses;
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (!this.searchValue && this.from && this.to && !this.status) {
-      this.service
-        .getTrips(this.page, null, this.from, this.to, null)
-        .subscribe((trip: any) => {
-          this.tripList = trip.data.responses;
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (!this.searchValue && !this.from && !this.to && this.status) {
-      this.service
-        .getTrips(this.page, null, null, null, this.status)
-        .subscribe((trip: any) => {
-          this.tripList = trip.data.responses;
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else {
-      this.service.getTrips(this.page).subscribe((trip: any) => {
-        this.tripList = trip.data.responses;
-        this.summary = trip.data.summary;
-        this.totalPages = trip.data.totalPages;
-        this.statusButtons.forEach(
-          x => (x.count = trip.data.statusCount[x.name])
-        );
-        this.loading = false;
+    this.service
+      .getTrips(this.page, this.searchValue, this.from, this.to, this.status)
+      .subscribe((trip: any) => {
+        this.updateTripList(trip);
       });
-    }
   }
 
   onSelectDate($event: number) {
     this.dateFilter = 1;
-    // handle date selection
     if ($event === DateEnum.Custom) {
       this.isDateOpened = true;
       this.dateOpened = true;
     } else {
       this.isDateOpened = false;
       this.dateOpened = false;
-      this.inputPlaceholder = this.dateOptionArray.find(
-        x => x.id === $event
-      )?.value;
-      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
-      switch ($event) {
-        case DateEnum.Today:
-          this.from = new Date().toISOString();
-          this.to = new Date().toISOString();
-          this.from = this.datePipe.transform(this.from, 'yyyy-MM-dd');
-          this.to = this.datePipe.transform(this.to, 'yyyy-MM-dd');
-          break;
-        case DateEnum.LastSevenDays:
-          this.from = new Date(
-            new Date().setDate(new Date().getDate() - 7)
-          ).toISOString();
-          this.to = new Date().toISOString();
-          this.from = this.datePipe.transform(this.from, 'yyyy-MM-dd');
-          this.to = this.datePipe.transform(this.to, 'yyyy-MM-dd');
-          break;
-        case DateEnum.LastFifteenDays:
-          this.from = new Date(
-            new Date().setDate(new Date().getDate() - 15)
-          ).toISOString();
-          this.to = new Date().toISOString();
-          this.from = this.datePipe.transform(this.from, 'yyyy-MM-dd');
-          this.to = this.datePipe.transform(this.to, 'yyyy-MM-dd');
-          break;
-        case DateEnum.LastThirtyDays:
-          this.from = new Date(
-            new Date().setDate(new Date().getDate() - 30)
-          ).toISOString();
-          this.to = new Date().toISOString();
-          this.from = this.datePipe.transform(this.from, 'yyyy-MM-dd');
-          this.to = this.datePipe.transform(this.to, 'yyyy-MM-dd');
-          break;
-      }
+      this.inputPlaceholder = this.dateOptionArray.find((x) => x.id === $event)?.value || '';
+      this.dateOptionArray.forEach((x) => (x.selected = x.id === $event));
+      this.setDateRange($event);
       this.page = 0;
       this.getTripList();
     }
   }
 
+  private setDateRange(dateEnum: DateEnum) {
+    let fromDate = new Date();
+    let toDate = new Date();
+    switch (dateEnum) {
+      case DateEnum.Today:
+        break;
+      case DateEnum.LastSevenDays:
+        fromDate.setDate(fromDate.getDate() - 7);
+        break;
+      case DateEnum.LastFifteenDays:
+        fromDate.setDate(fromDate.getDate() - 15);
+        break;
+      case DateEnum.LastThirtyDays:
+        fromDate.setDate(fromDate.getDate() - 30);
+        break;
+    }
+    this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
+    this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+  }
+
   private generateDateOptionsArray() {
-    // generate date options array
     this.dateOptionArray = [
       { id: DateEnum.Today, value: 'Today', selected: false },
       { id: DateEnum.LastSevenDays, value: 'Last 7 days', selected: false },
@@ -263,15 +151,13 @@ export class TripListComponent implements OnInit {
   }
 
   onKeyUpSearch($event: any) {
-    if ($event.target.value.length > 0) {
-      this.tripSuggestions = [];
-      this.customer
-        .searchCustomer($event.target.value, null)
-        .subscribe((company: any) => {
-          this.tripSuggestions = company.data;
-          this.isSearchedMenuOpened = true;
-          this.searchFilter = 1;
-        });
+    const value = $event.target.value;
+    if (value?.length > 0) {
+      this.customer.searchCustomer(value, null).subscribe((company: any) => {
+        this.tripSuggestions = company.data.content;
+        this.isSearchedMenuOpened = true;
+        this.searchFilter = 1;
+      });
     } else {
       this.isSearchedMenuOpened = false;
       this.searchValue = '';
@@ -282,9 +168,9 @@ export class TripListComponent implements OnInit {
   }
 
   onSelectedToDate($event: string) {
-    this.filterForm.get('endDate').setValue($event);
-    this.from = this.filterForm.get('startDate').value;
-    this.to = this.filterForm.get('endDate').value;
+    this.filterForm.get('endDate')?.setValue($event);
+    this.from = this.filterForm.get('startDate')?.value || '';
+    this.to = this.filterForm.get('endDate')?.value || '';
     this.dateOpened = false;
     this.isDateOpened = false;
     this.page = 0;
@@ -292,7 +178,7 @@ export class TripListComponent implements OnInit {
   }
 
   onSelectedFromDate($event: string) {
-    this.filterForm.get('startDate').setValue($event);
+    this.filterForm.get('startDate')?.setValue($event);
   }
 
   onClickSearchSuggestion(result: any) {
@@ -313,21 +199,19 @@ export class TripListComponent implements OnInit {
     this.searchFilter = 0;
     this.dateFilter = 0;
     this.searchValue = '';
+    this.searchName = '';
     this.from = '';
     this.to = '';
     this.inputPlaceholder = '';
-    this.filterForm.get('search').setValue('');
+    this.tripSuggestions = [];
+    this.filterForm.reset();
     this.getTripList();
   }
 
   onStatusClick(tripStatus: string) {
     this.page = 0;
-    if (tripStatus != 'All') {
-      this.status = tripStatus;
-    } else {
-      this.status = '';
-    }
-    this.statusButtons.forEach(x => (x.isActive = x.name === tripStatus));
+    this.status = tripStatus !== 'All' ? tripStatus : '';
+    this.statusButtons.forEach((x) => (x.isActive = x.name === tripStatus));
     this.getTripList();
   }
 
@@ -342,11 +226,7 @@ export class TripListComponent implements OnInit {
   }
 
   getCountOfGp(trip: any) {
-    if (trip.customerRate && trip.transporterRate) {
-      return trip.customerRate - trip.transporterRate;
-    } else {
-      return 'N/A';
-    }
+    return trip.customerRate && trip.transporterRate ? trip.customerRate - trip.transporterRate : 'N/A';
   }
 
   onClickFilterOpened() {
@@ -359,7 +239,7 @@ export class TripListComponent implements OnInit {
   onBottom($event: boolean) {
     if ($event && this.page < this.totalPages - 1) {
       this.page++;
-      this.scrolledData();
+      this.getTripList();
     }
   }
 
@@ -367,106 +247,23 @@ export class TripListComponent implements OnInit {
     setTimeout(() => {
       if (!$event && this.totalPages > 1 && this.page < 1) {
         this.page = 1;
-        this.scrolledData();
+        this.getTripList();
       }
     }, 1);
   }
 
-  scrolledData() {
-    if (this.searchValue && !this.from && !this.to && !this.status) {
-      this.service
-        .getTrips(this.page, this.searchValue, null, null, null)
-        .subscribe((trip: any) => {
-          this.tripList.push(...trip.data.responses);
-          this.summary = trip.data.summary;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.totalPages = trip.data.totalPages;
-          this.loading = false;
-        });
-    } else if (this.searchValue && this.from && this.to && this.status) {
-      this.service
-        .getTrips(this.page, this.searchValue, this.from, this.to, this.status)
-        .subscribe((trip: any) => {
-          this.tripList.push(...trip.data.responses);
-          this.totalPages = trip.data.totalPages;
-          this.summary = trip.data.summary;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (this.searchValue && this.from && this.to && !this.status) {
-      this.service
-        .getTrips(this.page, this.searchValue, this.from, this.to, null)
-        .subscribe((trip: any) => {
-          this.tripList.push(...trip.data.responses);
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (this.searchValue && !this.from && !this.to && this.status) {
-      this.service
-        .getTrips(this.page, this.searchValue, null, null, this.status)
-        .subscribe((trip: any) => {
-          this.tripList.push(...trip.data.responses);
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (!this.searchValue && this.from && this.to && this.status) {
-      this.service
-        .getTrips(this.page, null, this.from, this.to, this.status)
-        .subscribe((trip: any) => {
-          this.tripList.push(...trip.data.responses);
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (!this.searchValue && this.from && this.to && !this.status) {
-      this.service
-        .getTrips(this.page, null, this.from, this.to, null)
-        .subscribe((trip: any) => {
-          this.tripList.push(...trip.data.responses);
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
-    } else if (!this.searchValue && !this.from && !this.to && this.status) {
-      this.service
-        .getTrips(this.page, null, null, null, this.status)
-        .subscribe((trip: any) => {
-          this.tripList.push(...trip.data.responses);
-          this.summary = trip.data.summary;
-          this.totalPages = trip.data.totalPages;
-          this.statusButtons.forEach(
-            x => (x.count = trip.data.statusCount[x.name])
-          );
-          this.loading = false;
-        });
+  private updateTripList(trip: any) {
+    if (this.page === 0) {
+      this.loading = true;
+      this.tripList = trip.data.responses;
     } else {
-      this.service.getTrips(this.page).subscribe((trip: any) => {
-        this.tripList.push(...trip.data.responses);
-        this.totalPages = trip.data.totalPages;
-        this.summary = trip.data.summary;
-        this.statusButtons.forEach(
-          x => (x.count = trip.data.statusCount[x.name])
-        );
-        this.loading = false;
-      });
+      this.loading = false;
+      this.tripList.push(...trip.data.responses);
     }
+    this.summary = trip.data.summary;
+    this.totalPages = trip.data.totalPages;
+    this.statusButtons.forEach((x) => (x.count = trip.data.statusCount[x.name]));
+    this.loading = false;
   }
+
 }

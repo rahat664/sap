@@ -43,7 +43,7 @@ export class CustomerComponent implements OnInit {
   getCustomer() {
     this.loading = true;
     this.service.getCustomer().subscribe((res: any) => {
-      this.customers = res.data;
+      this.customers = res.data.content;
       this.loading = false;
     });
   }
@@ -67,23 +67,23 @@ export class CustomerComponent implements OnInit {
   onKeyUpSearch($event: any) {
     this.loading = true;
     const target = $event.target.value;
-    if (target.length > 0) {
+    if (target?.length > 0) {
       this.customers = [];
-      if (target.length == 11) {
+      if (target?.length == 11) {
         if (this.checkIfAllInputIsNumber(target)) {
           this.service.searchCustomer(null, target).subscribe((res: any) => {
-            this.customers = res.data;
+            this.customers = res.data.content;
             this.loading = false;
           });
         } else {
           this.service.searchCustomer(target, null).subscribe((res: any) => {
-            this.customers = res.data;
+            this.customers = res.data.content;
             this.loading = false;
           });
         }
       } else {
         this.service.searchCustomer(target, null).subscribe((res: any) => {
-          this.customers = res.data;
+          this.customers = res.data.content;
           this.loading = false;
         });
       }

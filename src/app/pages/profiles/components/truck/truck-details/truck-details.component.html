@@ -168,7 +168,7 @@
                 <span class="text-web-text-secondary font-semibold">{{
                     document.name
                   }}</span>
-                <span class="text-web-text-secondary"
+                <span *ngIf="document.expAvailable" class="text-web-text-secondary"
                 >Exp:
                   {{
                     document.expDate

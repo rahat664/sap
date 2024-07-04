@@ -55,12 +55,12 @@ export class TopbarComponent implements OnInit {
 
   onSearch($event: any) {
     const search = $event.target.value;
-    if (search.length > 0) {
+    if (search?.length > 0) {
       this.searchSuggestions = [];
       this.trip.getTripSuggestions(search).subscribe({
         next: (response: any) => {
           this.searchSuggestions = response;
-          this.isSearchedMenuOpened = this.searchSuggestions.length !== 0;
+          this.isSearchedMenuOpened = this.searchSuggestions?.length !== 0;
         },
       });
     } else {

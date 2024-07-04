@@ -6,5 +6,6 @@ export const environment = {
   // backendUrl: 'http://192.168.1.161:8081',
   locationUrl: 'http://location-service.dev.snztech.world',
   API_KEY: 'AIzaSyC2rHKS9XgtjpFkAukMms8AtyTFvJwVLLc',
+  placesApiUrl: 'https://maps.googleapis.com/maps/api/place',
 };
 

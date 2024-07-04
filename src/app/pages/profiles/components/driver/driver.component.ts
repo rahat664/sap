@@ -100,7 +100,7 @@ export class DriverComponent implements OnInit {
     localStorage.setItem('driver', JSON.stringify(driver));
     const DFT = [];
     this.driverFileType.filter(item => {
-      if (item.value.includes('License')) {
+      if (item.value?.includes('License')) {
         DFT.push(item);
       }
     });
@@ -117,7 +117,7 @@ export class DriverComponent implements OnInit {
     localStorage.setItem('driver', JSON.stringify(driver));
     const DFT = [];
     this.driverFileType.filter(item => {
-      if (item.value.includes('NID')) {
+      if (item.value?.includes('NID')) {
         DFT.push(item);
       }
     });
@@ -157,7 +157,7 @@ export class DriverComponent implements OnInit {
   onKeyUpSearch($event: KeyboardEvent) {
     this.loading = true;
     const target = ($event.target as HTMLInputElement).value;
-    if (target.length > 0) {
+    if (target?.length > 0) {
       this.searchValue = target;
     } else {
       this.searchValue = null;

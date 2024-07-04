@@ -53,7 +53,7 @@ export class FileUploadPopupComponent implements OnChanges {
   onFileDropped(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    if (event.dataTransfer && event.dataTransfer.files.length) {
+    if (event.dataTransfer && event.dataTransfer.files?.length) {
       const file = event.dataTransfer.files[0];
       if (file) {
         this.previewFile(file);
@@ -136,7 +136,7 @@ export class FileUploadPopupComponent implements OnChanges {
 
   onFileChange($event: any) {
     this.isExpiryAvailable = false;
-    if ($event.target.files.length > 0) {
+    if ($event.target.files?.length > 0) {
       const file = $event.target.files[0];
       if (file) {
         this.previewFile(file);

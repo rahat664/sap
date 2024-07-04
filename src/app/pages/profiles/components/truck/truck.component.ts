@@ -234,7 +234,7 @@ export class TruckComponent implements OnInit {
   onKeyUpSearch($event: KeyboardEvent) {
     this.loading = true;
     const target = ($event.target as HTMLInputElement).value;
-    if (target.length) {
+    if (target?.length) {
       this.searchValue = target;
     } else {
       this.searchValue = null;

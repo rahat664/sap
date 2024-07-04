@@ -9,8 +9,7 @@ import { ImageGalleryService } from './shared/services/image-gallery/image-galle
 import { ImageGalleryComponent } from './shared/modules/image-gallery/image-gallery.component';
 import { ImagePopupComponent } from './shared/modal/image-popup/image-popup.component';
 import { HandleToastrService } from './shared/services/handle-toastr/handle-toastr.service';
-import { debounceTime } from 'rxjs';
-import { environment } from '../environments/environment';
+import { GeolocationService } from './shared/services/location/geolocation.service';
 
 @Component({
   selector: 'app-root',
@@ -36,6 +35,7 @@ export class AppComponent implements OnInit {
     private auth: AuthService,
     private imageGalleryService: ImageGalleryService,
     private handleToaster: HandleToastrService,
+    private geoLocation: GeolocationService,
   ) {}
 
   @HostListener('click', ['$event'])
@@ -67,10 +67,13 @@ export class AppComponent implements OnInit {
   }
 
   private addMapScript() {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.API_KEY}&libraries=marker`;
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
+    this.geoLocation.loadGoogleMapsApi().then(() => {
+      this.geoLocation.getCurrentPosition().then(coords => {
+        this.map = new google.maps.Map(document.getElementById('map'), {
+          center: { lat: coords.latitude, lng: coords.longitude },
+          zoom: 8,
+        });
+      });
+    });
   }
 }

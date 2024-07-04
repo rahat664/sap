@@ -54,7 +54,7 @@ export class ValidationService {
     if (isNaN(Number(value))) {
       customerForm
         ?.get('phone')
-        .setValue(value?.substring(0, value.length - 1));
+        .setValue(value?.substring(0, value?.length - 1));
     }
     if (value?.substring(0, 1) != '0' && value?.substring(0, 1)) {
       // return error to the parent

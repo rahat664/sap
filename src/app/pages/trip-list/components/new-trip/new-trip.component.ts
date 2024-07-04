@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CustomDatePickerComponent } from '../../../../shared/modules/custom-date-picker/custom-date-picker.component';
 import { GMapComponent } from '../../../../shared/modules/g-map/g-map.component';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { District, districts } from '../../../../shared/models/ditrict-with-latlng.model';
 import { CommonModule } from '@angular/common';
+import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
+
+declare var google: any;
 
 @Component({
   selector: 'app-new-trip',
@@ -18,7 +21,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './new-trip.component.html',
   styleUrl: './new-trip.component.scss',
 })
-export class NewTripComponent {
+export class NewTripComponent implements OnInit {
   tripCreateForm: FormGroup;
   startingPoint: any;
   destinationPoint: any;
@@ -28,7 +31,7 @@ export class NewTripComponent {
   loadingDistrictSuggestionsShow: boolean = false;
   unloadingDistrictSuggestionsShow: boolean = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private geoLocation: GeolocationService) {
     this.tripCreateForm = this.fb.group({
       companyName: ['', [Validators.required]],
       loadingDistrict: [''],
@@ -58,5 +61,14 @@ export class NewTripComponent {
     this.destinationPoint = { lat: Number(suggestion.latitude), lng: Number(suggestion.longitude) };
     this.tripCreateForm.get('unloadingDistrict').setValue(suggestion.nameEnglish);
     this.unloadingDistrictSuggestionsShow = false;
+  }
+
+  ngOnInit(): void {
+    this.geoLocation.searchLocation('dhanmondi').subscribe((res: any) => {
+      console.log();
+      this.geoLocation.getPlaceDetails(res.suggestions[0].placePrediction.placeId).subscribe((res: any) => {
+        console.log(res.result.geometry.location);
+      });
+    });
   }
 }

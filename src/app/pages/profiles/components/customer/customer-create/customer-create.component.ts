@@ -78,18 +78,18 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.customerForm.get('code').valueChanges.subscribe(value => {
       //only allow 4 characters
-      if (value.length > 4) {
-        this.customerForm.get('code').setValue(value.substring(0, 4));
+      if (value?.length > 4) {
+        this.customerForm.get('code').setValue(value?.substring(0, 4));
       }
-      if (value.length == 4) {
+      if (value?.length == 4) {
         this.checkCustomerCodeIsAlreadyExistOrNot(value);
       }
     });
     this.subs = this.customerForm.get('name').valueChanges.subscribe(value => {
-      if (value.length > 0 && this.customerForm.get('code').invalid) {
+      if (value?.length > 0 && this.customerForm.get('code').invalid) {
         let fourDigitName = '';
         const valueWithoutSpace = value?.toString().replace(/\s/g, '');
-        if (valueWithoutSpace.length >= 4) {
+        if (valueWithoutSpace?.length >= 4) {
           fourDigitName = valueWithoutSpace
             ?.toString()
             .substring(0, 4)
@@ -198,7 +198,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   onfocusOut($event: FocusEvent) {
     if (
       $event &&
-      this.customerForm.get('name').value.length > 0 &&
+      this.customerForm.get('name').value?.length > 0 &&
       this.customerForm.get('code').invalid
     ) {
       let fourDigitName = '';
@@ -206,13 +206,13 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
         .get('name')
         .value?.toString()
         .replace(/\s/g, '');
-      if (valueWithoutSpace.length < 4) {
+      if (valueWithoutSpace?.length < 4) {
         // fill the missing characters with random numbers
         const randomNumbers = Math.floor(Math.random() * 10000).toString();
         fourDigitName =
           valueWithoutSpace +
           randomNumbers
-            .substring(0, 4 - valueWithoutSpace.length)
+            .substring(0, 4 - valueWithoutSpace?.length)
             .toUpperCase();
         this.customerForm.get('code').setValue(fourDigitName);
         this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);

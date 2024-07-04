@@ -274,8 +274,8 @@ export class TruckAddComponent implements OnInit {
     const reg = /^[0-9]*$/;
     if (!reg.test(value)) {
       this.truckAddForm.patchValue({
-        registration_serial: value.replace(/[^0-9]/g, ''),
-        registration_num: value.replace(/[^0-9]/g, ''),
+        registration_serial: value?.replace(/[^0-9]/g, ''),
+        registration_num: value?.replace(/[^0-9]/g, ''),
       });
     }
   }

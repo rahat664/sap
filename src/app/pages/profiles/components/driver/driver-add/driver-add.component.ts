@@ -192,7 +192,7 @@ export class DriverAddComponent implements OnInit {
       this.driverAddForm?.get('driverPhone').setErrors({ invalidNumber: true });
     }
     const onlyNumbers = value?.replace(/[^\d]/g, '');
-    if (onlyNumbers.length > 11) {
+    if (onlyNumbers?.length > 11) {
       this.driverAddForm
         ?.get('driverPhone')
         .setValue(onlyNumbers.substring(0, 11));

@@ -1,9 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { GeolocationService } from '../../services/location/geolocation.service';
 import { mapStyles } from '../../models/map-options';
-import LatLngLiteral = google.maps.LatLngLiteral;
 
-declare var google: any;
+declare const google: any;
 
 
 @Component({
@@ -26,8 +25,8 @@ export class GMapComponent implements OnInit, OnChanges {
 
   @Input() lat: number;
   @Input() lng: number;
-  @Input() starting: LatLngLiteral;
-  @Input() destination: LatLngLiteral;
+  @Input() starting: google.maps.LatLngLiteral;
+  @Input() destination: google.maps.LatLngLiteral;
   map: google.maps.Map;
   directionsService: google.maps.DirectionsService;
   directionsRenderer: google.maps.DirectionsRenderer;
@@ -60,7 +59,7 @@ export class GMapComponent implements OnInit, OnChanges {
   private initMap(latLng: { lng: number; lat: number }) {
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: latLng,
-      zoom: 8,
+      zoom: 16,
       zoomControl: false,
       streetViewControl: false,
       mapTypeControl: false,
@@ -68,6 +67,8 @@ export class GMapComponent implements OnInit, OnChanges {
       keyboardShortcuts: false,
       disableDefaultUI: true,
     });
+    // implement map styles
+    this.map.setOptions({ styles: mapStyles });
     this.setupMapComponents();
     this.updateRoute(latLng);
   }
@@ -130,7 +131,7 @@ export class GMapComponent implements OnInit, OnChanges {
       });
     });
     this.startMarker?.setPosition(route.legs[0].start_location);
-    this.endMarker.setPosition(route.legs[route.legs.length - 1].end_location);
+    this.endMarker.setPosition(route.legs[route.legs?.length - 1].end_location);
     this.startMarker.setIcon({
       url: '/assets/svg/start.svg',
       scaledSize: new google.maps.Size(30, 30),
@@ -144,7 +145,7 @@ export class GMapComponent implements OnInit, OnChanges {
     this.startMarker.setAnimation(google.maps.Animation.DROP);
     this.endMarker.setAnimation(google.maps.Animation.DROP);
     this.startMarker.setTitle(route.legs[0].start_address);
-    this.endMarker.setTitle(route.legs[route.legs.length - 1].end_address);
+    this.endMarker.setTitle(route.legs[route.legs?.length - 1].end_address);
     this.startMarker.setMap(this.map);
     this.endMarker.setMap(this.map);
   }

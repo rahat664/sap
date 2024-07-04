@@ -1,4 +1,5 @@
 import {
+  APP_INITIALIZER,
   ApplicationConfig,
   importProvidersFrom,
   provideZoneChangeDetection,
@@ -10,8 +11,11 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './pages/auth/interceptors/auth.interceptor';
 import { DatePipe } from '@angular/common';
 import { provideHotToastConfig } from '@ngneat/hot-toast';
-import { AgmCoreModule } from '@agm/core';
-import { environment } from '../environments/environment';
+import { GeolocationService } from './shared/services/location/geolocation.service';
+
+export function initializeApp(gmapsLoader: GeolocationService): () => Promise<void> {
+  return () => gmapsLoader.loadGoogleMapsApi();
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,5 +24,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideHotToastConfig({}),
     DatePipe,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [GeolocationService],
+      multi: true,
+    },
   ],
 };

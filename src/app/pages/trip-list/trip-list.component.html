@@ -20,12 +20,12 @@
         <!--            class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"-->
         <!--            placeholder="Search name, mobile" />-->
         <!--        </div>-->
-        <button
-          routerLink="/trip-list/trip-create"
-          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
-          <i class="fas fa-plus-circle"></i>
-          <span class="hidden lg:block">Create New Trip</span>
-        </button>
+        <!--        <button-->
+        <!--          routerLink="/trip-list/trip-create"-->
+        <!--          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">-->
+        <!--          <i class="fas fa-plus-circle"></i>-->
+        <!--          <span class="hidden lg:block">Create New Trip</span>-->
+        <!--        </button>-->
       </div>
     </div>
     <!--  filter section-->
@@ -210,7 +210,7 @@
           </tr>
         </ng-container>
         <ng-container *ngIf="!loading">
-          <tr *ngIf="tripList.length === 0">
+          <tr *ngIf="tripList?.length === 0">
             <td class="text-center" colspan="9">No data found</td>
           </tr>
         </ng-container>

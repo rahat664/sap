@@ -20,7 +20,7 @@
     [ngClass]="{ 'border-r-0 rounded-r-none': customOpened }"
     class="absolute z-50 w-full rounded-lg shadow-lg bg-input border border-gray-300">
     <div class="py-1 relative max-h-48 overflow-y-scroll">
-      <ng-container *ngIf="options.length > 0">
+      <ng-container *ngIf="options?.length > 0">
         <button
           type="button"
           [ngClass]="{ 'bg-active': option.selected }"
@@ -30,7 +30,7 @@
           {{ option.value }}
         </button>
       </ng-container>
-      <ng-container *ngIf="options.length <= 0">
+      <ng-container *ngIf="options?.length <= 0">
         <div
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
           No data found
