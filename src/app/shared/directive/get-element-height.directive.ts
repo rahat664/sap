@@ -18,7 +18,7 @@ export class GetElementHeightDirective implements OnInit {
 
   constructor(
     private el: ElementRef,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
   ) {
   }
 
@@ -26,14 +26,25 @@ export class GetElementHeightDirective implements OnInit {
     this.height.emit(this.el.nativeElement.offsetHeight + 'px');
   }
 
-  ngAfterViewChecked() {
-    setTimeout(() => {
-      this.height.emit(this.el.nativeElement.offsetHeight + 'px');
-    }, 0);
-  }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.height.emit(this.el.nativeElement.offsetHeight + 'px');
   }
+
+  // detect route change
+  @HostListener('window:popstate', ['$event']) onPopState(event: any) {
+    this.height.emit(this.el.nativeElement.offsetHeight + 'px');
+  }
+
+  // detect dom change
+  @HostListener('document:DOMSubtreeModified', ['$event']) onDomChange(event: any) {
+    this.height.emit(this.el.nativeElement.offsetHeight + 'px');
+  }
+
+  // detect removal of dom element
+  @HostListener('document:DOMNodeRemoved', ['$event']) onDomNodeRemoved(event: any) {
+    this.height.emit(this.el.nativeElement.offsetHeight + 'px');
+  }
+
 }

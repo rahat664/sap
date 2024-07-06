@@ -1,3 +1,4 @@
+// src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -10,16 +11,14 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {}
+  constructor(private http: HttpClient, private router: Router) {
+  }
 
-  login(payload: LoginRequest): Observable<any> {
-    return this.http.post<ApiResponse>(
-      environment.userUrl + '/auth/login',
-      payload
-    );
+  login(payload: LoginRequest): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(environment.userUrl + '/auth/login', payload)
+      .pipe(
+        catchError(this.handleError),
+      );
   }
 
   private handleError(error: HttpErrorResponse) {

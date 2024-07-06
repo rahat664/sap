@@ -1,65 +1,43 @@
-import {
-  AfterViewChecked,
-  ChangeDetectorRef,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
 
 @Directive({
   selector: '[appCheckTheHeightCrossMaxHeightOrNot]',
   standalone: true,
 })
-export class CheckTheHeightCrossMaxHeightOrNotDirective implements OnInit {
-  @Output() maxHeightCrossed: EventEmitter<boolean> = new EventEmitter<boolean>(
-    false
-  );
-  private Interval: number;
+export class CheckTheHeightCrossMaxHeightOrNotDirective {
+  @Output() maxHeightCrossed: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
-  constructor(
-    private el: ElementRef,
-    private ref: ChangeDetectorRef
-  ) {
+  private checkHeight() {
+    const isMaxHeightCrossed = this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight;
+    this.maxHeightCrossed.emit(isMaxHeightCrossed);
   }
 
-  ngOnDestroy(): void {
-    clearInterval(this.Interval);
+  constructor(private el: ElementRef) {
   }
 
   ngOnInit(): void {
     setTimeout(() => {
-      if (
-        this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight
-      ) {
-        this.maxHeightCrossed.emit(true);
-      } else {
-        this.maxHeightCrossed.emit(false);
-      }
-    }, 1000);
+      this.checkHeight();
+    }, 1000); // Delayed check after component initialization
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    if (
-      this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight
-    ) {
-      this.maxHeightCrossed.emit(true);
-    } else {
-      this.maxHeightCrossed.emit(false);
-    }
+  onResize() {
+    this.checkHeight();
   }
 
   @HostListener('window:reload', ['$event'])
-  onReload(event: any) {
-    if (
-      this.el.nativeElement.scrollHeight > this.el.nativeElement.clientHeight
-    ) {
-      this.maxHeightCrossed.emit(true);
-    } else {
-      this.maxHeightCrossed.emit(false);
-    }
+  onReload() {
+    this.checkHeight();
+  }
+
+  // detect route change
+  @HostListener('window:popstate', ['$event']) onPopState(event: any) {
+    this.checkHeight();
+  }
+
+  // detect dom change
+  @HostListener('document:DOMSubtreeModified', ['$event']) onDomChange(event: any) {
+    this.checkHeight();
   }
 }
