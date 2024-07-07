@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
     private auth: AuthService,
     private imageGalleryService: ImageGalleryService,
     private handleToaster: HandleToastrService,
-    private geoLocation: GeolocationService,
+    private geoLocation: GeolocationService
   ) {}
 
   @HostListener('click', ['$event'])
@@ -48,7 +48,9 @@ export class AppComponent implements OnInit {
         return;
       } else {
         this.isOpen = true;
-        return this.imageGalleryService.setCurrentImage(target.getAttribute('src'));
+        return this.imageGalleryService.setCurrentImage(
+          target.getAttribute('src')
+        );
       }
     }
   }

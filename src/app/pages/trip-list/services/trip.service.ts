@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import {
   catchError,
@@ -16,43 +20,42 @@ import { ApiResponse } from '../../auth/models/response/api-response';
 })
 export class TripService {
   url = `${environment.backendUrl}/api/trips`;
+  tripTemplateUrl = `${environment.backendUrl}/api/trip_templates`;
+  vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
+  goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
 
   constructor(private http: HttpClient) {}
 
   getTrips(
     page: number,
+    size?: number,
     search?: string,
     startDate?: string,
     endDate?: string,
-    status?: string
+    status?: string,
+    tripId?: string
   ): Observable<any> {
-    if (search && !startDate && !endDate && !status) {
-      return this.http.get(`${this.url}?page=${page}&customerCode=${search}`);
-    } else if (search && startDate && endDate && status) {
-      return this.http.get(
-        `${this.url}?page=${page}&customerCode=${search}&from=${startDate}&to=${endDate}&status=${status}`
-      );
-    } else if (search && startDate && endDate && !status) {
-      return this.http.get(
-        `${this.url}?page=${page}&customerCode=${search}&from=${startDate}&to=${endDate}`
-      );
-    } else if (search && !startDate && !endDate && status) {
-      return this.http.get(
-        `${this.url}?page=${page}&customerCode=${search}&status=${status}`
-      );
-    } else if (!search && startDate && endDate && status) {
-      return this.http.get(
-        `${this.url}?page=${page}&from=${startDate}&to=${endDate}&status=${status}`
-      );
-    } else if (!search && startDate && endDate && !status) {
-      return this.http.get(
-        `${this.url}?page=${page}&from=${startDate}&to=${endDate}`
-      );
-    } else if (!search && !startDate && !endDate && status) {
-      return this.http.get(`${this.url}?page=${page}&status=${status}`);
-    } else {
-      return this.http.get(`${this.url}?page=${page}`);
+    let params = new HttpParams().set('page', page.toString());
+    if (size) {
+      params = params.set('size', size.toString());
     }
+    if (search) {
+      params = params.set('customerCode', search);
+    }
+    if (startDate) {
+      params = params.set('from', startDate);
+    }
+    if (endDate) {
+      params = params.set('to', endDate);
+    }
+    if (status) {
+      params = params.set('status', status);
+    }
+    if (tripId) {
+      params = params.set('search', tripId);
+    }
+
+    return this.http.get(`${this.url}`, { params });
   }
 
   getTripSuggestions(search: string): Observable<any> {
@@ -94,5 +97,17 @@ export class TripService {
       }),
       catchError(this.handleError)
     );
+  }
+
+  getTripTemplate(userId) {
+    return this.http.get(`${this.tripTemplateUrl}?customerCode=${userId}`);
+  }
+
+  getVehicleTypeList() {
+    return this.http.get(`${this.vehicleTypeUrl}`);
+  }
+
+  getGoodsOptions() {
+    return this.http.get(`${this.goodsOptionsUrl}`);
   }
 }

@@ -11,6 +11,10 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { AuthState } from '../../ngrx/auth.reducer';
+import { Store } from '@ngrx/store';
+import { selectAuthError, selectAuthLoading } from '../../ngrx/auth.selectors';
+import { login } from '../../ngrx/auth.action';
 
 @Component({
   selector: 'app-sign-in',
@@ -22,11 +26,15 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 export class SignInComponent implements OnInit {
   loginForm: FormGroup;
   loginRequestPayload: LoginRequest;
+  loading$ = this.store.select(selectAuthLoading);
+  error$ = this.store.select(selectAuthError);
+
   constructor(
     private titleService: Title,
     private auth: AuthService,
     private router: Router,
     private toaster: HandleToastrService,
+    private store: Store<{ auth: AuthState }>
   ) {
     this.loginRequestPayload = {
       email: '',
@@ -66,27 +74,7 @@ export class SignInComponent implements OnInit {
     if (this.loginForm.valid) {
       this.loginRequestPayload.email = this.email.value;
       this.loginRequestPayload.password = this.password.value;
-      this.auth.login(this.loginRequestPayload).subscribe({
-        next: (response: any) => {
-          if (response.status === 'OK') {
-            this.toaster.showSuccess('Login Succesful', '');
-            localStorage.setItem('accessToken', response.data.accessToken);
-            localStorage.setItem('email', response.data.email);
-            localStorage.setItem('name', response.data.name);
-            localStorage.setItem(
-              'image',
-              response.data.image ? response.data.image : ''
-            );
-            localStorage.setItem('role', response.data.roles[0]);
-            this.router.navigate(['trip-list']);
-          } else {
-            this.toaster.showError(response.message, '');
-          }
-        },
-        error: error => {
-          this.toaster.showError(error.error.message, '');
-        },
-      });
+      this.store.dispatch(login({ payload: this.loginRequestPayload }));
     } else {
       this.loginForm.markAllAsTouched();
     }

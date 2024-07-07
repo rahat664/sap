@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomDatePickerComponent } from '../../../../shared/modules/custom-date-picker/custom-date-picker.component';
 import { GMapComponent } from '../../../../shared/modules/g-map/g-map.component';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { District, districts } from '../../../../shared/models/ditrict-with-latlng.model';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
-
-declare var google: any;
+import { CustomerService } from '../../../profiles/services/customer.service';
+import { GetOutsideModalClickDirective } from '../../../../shared/directive/get-outside-modal-click.directive';
+import { TripService } from '../../services/trip.service';
+import { CreateTripPageComponent } from '../create-trip-page/create-trip-page.component';
 
 @Component({
   selector: 'app-new-trip',
@@ -17,58 +17,72 @@ declare var google: any;
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
+    GetOutsideModalClickDirective,
+    CreateTripPageComponent,
   ],
   templateUrl: './new-trip.component.html',
   styleUrl: './new-trip.component.scss',
 })
 export class NewTripComponent implements OnInit {
-  tripCreateForm: FormGroup;
-  startingPoint: any;
-  destinationPoint: any;
-  private districts: District[];
-  unloadingDistrictSuggestions: District[];
-  loadingDistrictSuggestions: District[];
-  loadingDistrictSuggestionsShow: boolean = false;
-  unloadingDistrictSuggestionsShow: boolean = false;
+  companySuggestions: any;
+  isCustomerMenuOpened: boolean;
+  customerName: string;
+  createButtonEnabled: boolean;
+  templates: any;
+  selectedTemplate: any;
+  customerSelectMenuOpened: boolean = false;
+  isTemplateEnabled: boolean;
 
-  constructor(private fb: FormBuilder, private geoLocation: GeolocationService) {
-    this.tripCreateForm = this.fb.group({
-      companyName: ['', [Validators.required]],
-      loadingDistrict: [''],
-      unloadingDistrict: [''],
+  constructor(
+    private customer: CustomerService,
+    private service: TripService
+  ) {}
+
+  ngOnInit(): void {}
+
+  onKeyUpCustomerSearch($event: KeyboardEvent) {
+    this.companySuggestions = [];
+    const target = $event.target as HTMLInputElement;
+    if (target.value) {
+      this.customer
+        .searchCustomer(target.value, null)
+        .subscribe((company: any) => {
+          this.isCustomerMenuOpened = true;
+          this.companySuggestions = company.data.content;
+        });
+    } else {
+      this.isCustomerMenuOpened = false;
+      this.companySuggestions = [];
+    }
+  }
+
+  onClickCustomerSearchSuggestion(result: any) {
+    this.createButtonEnabled = true;
+    this.customerName = result.name;
+    this.companySuggestions = [];
+    this.isCustomerMenuOpened = false;
+    this.getTripTemplate(result.customerCode);
+  }
+
+  onCreateTrip() {
+    this.customerSelectMenuOpened = false;
+    this.isTemplateEnabled = false;
+    this.selectedTemplate = null;
+  }
+
+  getTripTemplate(userId) {
+    this.service.getTripTemplate(userId).subscribe((res: any) => {
+      this.templates = res.data;
     });
   }
 
-  onKeyUpUnloadingSearch($event: KeyboardEvent) {
-    this.districts = districts;
-    this.unloadingDistrictSuggestions = this.districts.filter(district => district.nameEnglish.toLowerCase().includes(($event.target as HTMLInputElement).value.toLowerCase()));
-    this.unloadingDistrictSuggestionsShow = true;
+  getTripRoute(templatePoints: any) {
+    return templatePoints[0].point_name + ' to ' + templatePoints[1].point_name;
   }
 
-  onKeyUpStartingSearch($event: KeyboardEvent) {
-    this.districts = districts;
-    this.loadingDistrictSuggestions = this.districts.filter(district => district.nameEnglish.toLowerCase().includes(($event.target as HTMLInputElement).value.toLowerCase()));
-    this.loadingDistrictSuggestionsShow = true;
-  }
-
-  onSelectLoadingDistrict(suggestion: District) {
-    this.startingPoint = { lat: Number(suggestion.latitude), lng: Number(suggestion.longitude) };
-    this.tripCreateForm.get('loadingDistrict').setValue(suggestion.nameEnglish);
-    this.loadingDistrictSuggestionsShow = false;
-  }
-
-  onSelectUnloadingDistrict(suggestion: District) {
-    this.destinationPoint = { lat: Number(suggestion.latitude), lng: Number(suggestion.longitude) };
-    this.tripCreateForm.get('unloadingDistrict').setValue(suggestion.nameEnglish);
-    this.unloadingDistrictSuggestionsShow = false;
-  }
-
-  ngOnInit(): void {
-    this.geoLocation.searchLocation('dhanmondi').subscribe((res: any) => {
-      console.log();
-      this.geoLocation.getPlaceDetails(res.suggestions[0].placePrediction.placeId).subscribe((res: any) => {
-        console.log(res.result.geometry.location);
-      });
-    });
+  setTemplate(tripTemplate: any) {
+    this.customerSelectMenuOpened = false;
+    this.selectedTemplate = tripTemplate;
+    this.isTemplateEnabled = true;
   }
 }

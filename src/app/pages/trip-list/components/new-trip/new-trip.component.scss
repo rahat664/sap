@@ -1,0 +1,16 @@
+thead {
+  @apply sticky;
+}
+
+.custom-borders {
+  @apply h-[0.1rem] p-0 bg-input-hint;
+}
+
+tbody > tr {
+  @apply border-b border-input-hint last:border-b-0;
+}
+
+th,
+td {
+  @apply p-4;
+}

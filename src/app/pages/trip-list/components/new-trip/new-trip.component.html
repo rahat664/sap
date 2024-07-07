@@ -1,129 +1,92 @@
-<div class="grid grid-cols-3 gap-2 p-2">
-  <div class="col-span-2">
-    <div class="flex justify-between py-2 items-center">
+<div class="flex flex-col space-y-3" *ngIf="customerSelectMenuOpened">
+  <div class="flex flex-col space-y-3">
+    <div class="flex mx-4 justify-between py-2 items-center">
       <h1 class="text-h1 font-semibold">New Trip</h1>
-      <button
-        class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-white text-primary border border-primary rounded-lg">
-        <i class="far fa-file-excel"></i>
-        <span class="hidden lg:block font-semibold text-primary">Create New Trip from Excel</span>
+    </div>
+    <div class="bg-white p-4 m-4 rounded-lg flex justify-between items-center">
+      <div class="flex flex-1 flex-col relative">
+        <label for="customerName" class="form-label">Customer Name</label>
+        <input
+          [(ngModel)]="customerName"
+          type="text"
+          class="bg-input rounded-lg border-none px-4 py-4 w-1/3"
+          placeholder="Customer Name"
+          id="customerName"
+          (keyup)="onKeyUpCustomerSearch($event)"
+        />
+        <div
+          appGetOutsideModalClick
+          (clickOutside)="isCustomerMenuOpened = !$event"
+          *ngIf="isCustomerMenuOpened"
+          id="customerDropdown"
+          class="absolute w-1/3 bg-white top-full rounded-lg shadow-lg"
+        >
+          <ul class="py-2 text-sm text-gray-700">
+            <li
+              *ngFor="let result of companySuggestions"
+              class="block cursor-pointer px-4 py-2 hover:bg-gray-100"
+            >
+              <a
+                (click)="onClickCustomerSearchSuggestion(result)"
+                class="w-full h-full flex justify-between items-center"
+              >
+                <span>{{ result.name }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button *ngIf="createButtonEnabled" class="bg-primary text-white rounded-lg px-16 py-2"
+              (click)="onCreateTrip()">Create
+        Trip
       </button>
     </div>
-    <form [formGroup]="tripCreateForm" class="bg-white rounded-lg px-4">
-      <div class="flex flex-col space-y-3 py-4 border-input border-b-2">
-        <div class="flex space-x-3 items-center">
-          <img src="assets/svg/candt.svg" class="notPreview" alt="candt">
-          <h1 class="text-h2 font-semibold">Customer and time</h1>
-        </div>
-        <div class="grid md:grid-cols-2 gap-4">
-          <div class="flex flex-col space-y-1">
-            <label class="text-sm font-semibold">Customer Name</label>
-            <input
-              required
-              [minlength]="2"
-              [maxlength]="50"
-              placeholder="Customer Name"
-              class="bg-input rounded-lg border-none p-4"
-              type="text"
-              formControlName="companyName" />
-          </div>
-          <div>
-            <label class="text-sm font-semibold">Date</label>
-            <app-custom-date-picker></app-custom-date-picker>
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col space-y-3 py-4 border-input border-b-2">
-        <div class="flex space-x-3 items-center">
-          <img src="assets/svg/locinfo.svg" class="notPreview" alt="candt">
-          <h1 class="text-h2 font-semibold">Location Info</h1>
-        </div>
-        <div class="grid md:grid-cols-2 gap-4">
-          <div class="flex flex-col space-y-1">
-            <label class="text-sm font-semibold">Loading Point</label>
-            <input
-              required
-              [minlength]="2"
-              [maxlength]="50"
-              placeholder="Customer Name"
-              class="bg-input rounded-lg border-none p-4"
-              type="text"
-              formControlName="companyName" />
-          </div>
-          <div class="flex flex-col space-y-1 relative">
-            <label class="text-sm font-semibold">Loading District</label>
-            <input
-              (keyup)="onKeyUpStartingSearch($event)"
-              required
-              [minlength]="2"
-              [maxlength]="50"
-              placeholder="Customer Name"
-              class="bg-input rounded-lg border-none p-4"
-              type="text"
-              formControlName="loadingDistrict" />
-            <div
-              *ngIf="loadingDistrictSuggestions?.length > 0 && loadingDistrictSuggestionsShow"
-              class="absolute z-10 bg-white w-full border border-gray-300 rounded-lg shadow-md">
-              <ul class="p-2">
-                <li
-                  *ngFor="let suggestion of loadingDistrictSuggestions"
-                  (click)="onSelectLoadingDistrict(suggestion)"
-                  class="p-2 cursor-pointer hover:bg-gray-100">
-                  {{ suggestion.nameEnglish }}
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="flex flex-col space-y-1">
-            <label class="text-sm font-semibold">Unloading Point</label>
-            <input
-              required
-              [minlength]="2"
-              [maxlength]="50"
-              placeholder="Customer Name"
-              class="bg-input rounded-lg border-none p-4"
-              type="text"
-              formControlName="companyName" />
-          </div>
-          <div class="flex flex-col space-y-1 relative">
-            <label class="text-sm font-semibold">Unloading District</label>
-            <input
-              (keyup)="onKeyUpUnloadingSearch($event)"
-              required
-              [minlength]="2"
-              [maxlength]="50"
-              placeholder="Customer Name"
-              class="bg-input rounded-lg border-none p-4"
-              type="text"
-              id="name"
-              formControlName="unloadingDistrict" />
-            <div
-              *ngIf="unloadingDistrictSuggestions?.length > 0 && unloadingDistrictSuggestionsShow"
-              class="absolute z-10 bg-white w-full border border-gray-300 rounded-lg shadow-md">
-              <ul class="p-2">
-                <li
-                  *ngFor="let suggestion of unloadingDistrictSuggestions"
-                  (click)="onSelectUnloadingDistrict(suggestion)"
-                  class="p-2 cursor-pointer hover:bg-gray-100">
-                  {{ suggestion.nameEnglish }}
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col space-y-3 py-4 border-input border-b-2">
-        <div class="flex space-x-3 items-center">
-          <img src="assets/svg/vehicleinfo.svg" class="notPreview" alt="candt">
-          <h1 class="text-h2 font-semibold">Vehicle Info</h1>
-        </div>
-      </div>
-    </form>
   </div>
-  <div class="bg-white h-full p-4 flex flex-col space-y-3 rounded-lg">
-    <h1 class="text-h1_mobile font-semibold">Overview</h1>
-    <app-g-map
-      [starting]="this.startingPoint"
-      [destination]="this.destinationPoint"
-    ></app-g-map>
+  <div class="bg-white mx-4 rounded-lg" *ngIf="templates">
+    <div class="px-4 py-2 flex justify-between items-center">
+      <h1 class="text-body">Saved Template</h1>
+      <button class="border border-primary text-primary font-semibold rounded-lg px-4 py-2">Create Template</button>
+    </div>
+    <div>
+      <table class="table-auto w-full text-[0.875rem]">
+        <thead>
+        <tr>
+          <th class="text-left">Name</th>
+          <th class="text-left">Route</th>
+          <th class="text-left">Goods</th>
+          <th class="text-left">Customer</th>
+          <th class="text-left"></th>
+        </tr>
+        <tr>
+          <th class="custom-borders" colspan="9"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let tripTemplate of templates">
+          <td>
+            <a (click)="setTemplate(tripTemplate)" class="w-full text-link cursor-pointer">{{ tripTemplate.name }}</a>
+          </td>
+          <td>{{ getTripRoute(tripTemplate.points) }}</td>
+          <td>{{ tripTemplate.good.name }}</td>
+          <td>{{ customerName }}</td>
+          <td>
+            <div class="relative w-full text-right">
+              <button
+                class="cursor-pointer w-full">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
+</div>
+<div *ngIf="!customerSelectMenuOpened">
+  <app-create-trip-page
+    [customerName]="customerName"
+    [template]="selectedTemplate"
+    [templateEnabled]="isTemplateEnabled"
+  ></app-create-trip-page>
 </div>

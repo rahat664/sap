@@ -117,9 +117,7 @@
                 </button>
                 <div
                   *ngIf="selectedId == user.id && actionOpened"
-                  class="absolute bg-white shadow-md rounded-lg z-50 py-2 w-32 right-0 {{
-                    selectedId == Users[0].id ? 'top' : 'bottom'
-                  }}-full">
+                  class="absolute bg-white shadow-md rounded-lg z-50 py-2 w-32 right-0 top-full origin-top-right">
                   <ul class="text-[0.875rem]">
                     <li
                       *ngIf="user.status === 'Active'"

@@ -15,6 +15,7 @@ import {
 })
 export class CustomerService {
   url = environment.userUrl + '/api/customers';
+
   constructor(private http: HttpClient) {}
 
   getCustomer() {
@@ -24,6 +25,7 @@ export class CustomerService {
   addCustomer(body: any) {
     return this.http.post(`${this.url}`, body, {});
   }
+
   customerCodeValidation(code: any) {
     return this.http.get(`${this.url}/validate-customer-code/${code}`);
   }

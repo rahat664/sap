@@ -34,8 +34,10 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.clear();
-    this.router.navigateByUrl('/auth/login');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('name');
+    localStorage.removeItem('image');
+    this.router.navigate(['/auth/login']);
   }
 
   isLoggedIn() {

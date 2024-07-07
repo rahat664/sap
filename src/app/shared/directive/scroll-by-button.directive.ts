@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Directive,
   ElementRef,
   EventEmitter,
@@ -8,9 +9,8 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  AfterViewInit,
 } from '@angular/core';
-import { ignoreElements } from 'rxjs';
+import { Event } from '@angular/router';
 
 @Directive({
   selector: '[appScrollByButton]',
@@ -26,10 +26,14 @@ export class ScrollByButtonDirective
   constructor(private el: ElementRef) {}
 
   ngOnInit(): void {
-    this.detectThatElementIsScrollableOrNot();
+    setTimeout(() => {
+      this.detectThatElementIsScrollableOrNot();
+    }, 1000);
   }
 
-  ngAfterViewInit() {
+  // detect route change
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event: Event) {
     this.detectThatElementIsScrollableOrNot();
   }
 
@@ -51,12 +55,20 @@ export class ScrollByButtonDirective
   }
 
   private detectThatElementIsScrollableOrNot() {
+    console.log(
+      this.el.nativeElement.scrollWidth,
+      this.el.nativeElement.clientWidth
+    );
     this.isVisible.emit(
       this.el.nativeElement.scrollWidth > this.el.nativeElement.clientWidth
     );
   }
 
   @HostListener('window:resize') onResize() {
+    this.detectThatElementIsScrollableOrNot();
+  }
+
+  ngAfterViewInit(): void {
     this.detectThatElementIsScrollableOrNot();
   }
 }
