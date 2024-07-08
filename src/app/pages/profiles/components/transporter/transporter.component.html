@@ -57,7 +57,6 @@
     <!--        <app-custom-input [inputSearch]="districtInputPlaceholder"-->
     <!--                          [customOpened]="false"-->
     <!--                          [options]="districtOptionsArray"-->
-    <!--                          [itemsOpened]="districtOpened"-->
     <!--                          inputPlaceholder="Select District"-->
     <!--                          appGetClickEvent (clickedElement)="onClickDistrict($event)"-->
     <!--                          (selectedId)="onSelectDistrict($event)"></app-custom-input>-->
@@ -74,57 +73,57 @@
     class="bg-white relative w-full rounded-lg overflow-auto">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
-        <tr class="whitespace-nowrap bg-white">
-          <th class="text-left">Transporter name</th>
-          <th class="text-left">Mobile</th>
-          <th class="text-left">Truck Stand</th>
-          <th class="text-left">Preferred Payment Method</th>
-          <!--        <th style="width: 5%"></th>-->
-        </tr>
-        <tr>
-          <th class="border" colspan="4"></th>
-        </tr>
+      <tr class="whitespace-nowrap bg-white">
+        <th class="text-left">Transporter name</th>
+        <th class="text-left">Mobile</th>
+        <th class="text-left">Truck Stand</th>
+        <th class="text-left">Preferred Payment Method</th>
+        <!--        <th style="width: 5%"></th>-->
+      </tr>
+      <tr>
+        <th class="border" colspan="4"></th>
+      </tr>
       </thead>
       <tbody class="text-web-text-secondary">
-        <ng-container *ngIf="!loading">
-          <tr *ngFor="let transporter of transporterList">
-            <td class="whitespace-nowrap">
-              <div class="flex items-center space-x-4">
-                <div
-                  class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
+      <ng-container *ngIf="!loading">
+        <tr *ngFor="let transporter of transporterList">
+          <td class="whitespace-nowrap">
+            <div class="flex items-center space-x-4">
+              <div
+                class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
                   <span class="text-white font-bold capitalize">{{
-                    transporter.name[0]
-                  }}</span>
-                </div>
-                <span class="flex-1">{{ transporter.name }}</span>
+                      transporter.name[0]
+                    }}</span>
               </div>
-            </td>
-            <td>{{ transporter.phone }}</td>
-            <td>{{ transporter.truckStand }}</td>
-            <td>
-              {{
-                transporter.paymentMethod?.paymentMethod
-                  ? transporter.paymentMethod?.paymentMethod
-                  : 'Cash'
-              }}
-            </td>
-            <!--          <td>-->
-            <!--            <i class="fas fa-ellipsis-v"></i>-->
-            <!--          </td>-->
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="!loading">
-          <tr *ngIf="transporterList?.length === 0">
-            <td class="text-center" colspan="4">No data found</td>
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="loading">
-          <tr>
-            <td class="h-full" colspan="4">
-              <app-loading></app-loading>
-            </td>
-          </tr>
-        </ng-container>
+              <span class="flex-1">{{ transporter.name }}</span>
+            </div>
+          </td>
+          <td>{{ transporter.phone }}</td>
+          <td>{{ transporter.truckStand }}</td>
+          <td>
+            {{
+              transporter.paymentMethod?.paymentMethod
+                ? transporter.paymentMethod?.paymentMethod
+                : 'Cash'
+            }}
+          </td>
+          <!--          <td>-->
+          <!--            <i class="fas fa-ellipsis-v"></i>-->
+          <!--          </td>-->
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <tr *ngIf="transporterList?.length === 0">
+          <td class="text-center" colspan="4">No data found</td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" colspan="4">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
       </tbody>
     </table>
   </div>

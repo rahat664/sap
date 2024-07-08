@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { CustomInputSelectModel } from './custom-input-select.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -23,8 +30,8 @@ export class CustomInputComponent implements OnInit {
   @Output() selectedId = new EventEmitter<number>();
   @Output() isItemsOpened = new EventEmitter<boolean>();
   @Input() options: CustomInputSelectModel[] = [];
-  @Input() itemsOpened = false;
-  @Input() customOpened: any;
+  itemsOpened = false;
+  customOpened: any;
   @Input() isError = false;
   months: string[] = [
     'January',
@@ -43,20 +50,25 @@ export class CustomInputComponent implements OnInit {
   days: number[] = Array.from({ length: 31 }, (_, i) => i + 1);
   years: number[] = Array.from(
     { length: new Date().getFullYear() - 1980 + 1 },
-    (_, i) => 1980 + i,
+    (_, i) => 1980 + i
   );
   selectedFromMonth: string; // Default selected month
   selectedFromDay: string; // Default selected day
   selectedFromYear: string; // Default selected year
   // Default selected date for To date
-  selectedToMonth: string = new Date().getMonth().toString().length === 1 ? `0${new Date().getMonth().toString()}` : new Date().getMonth().toString(); // Default selected month
-  selectedToDay: string = new Date().getDate().toString().length === 1 ? `0${new Date().getDate().toString()}` : new Date().getDate().toString(); // Default selected day
+  selectedToMonth: string =
+    new Date().getMonth().toString().length === 1
+      ? `0${new Date().getMonth().toString()}`
+      : new Date().getMonth().toString(); // Default selected month
+  selectedToDay: string =
+    new Date().getDate().toString().length === 1
+      ? `0${new Date().getDate().toString()}`
+      : new Date().getDate().toString(); // Default selected day
   selectedToYear: string = new Date().getFullYear().toString(); // Default selected year
   selectedFromMonthInString: string;
   selectedToMonthInString: string;
 
-  constructor(private shared: DriverEditSharedService) {
-  }
+  constructor(private shared: DriverEditSharedService) {}
 
   onFromMonthChange(month: string) {
     switch (month) {
@@ -174,7 +186,8 @@ export class CustomInputComponent implements OnInit {
   }
 
   onToDayChange(day: number) {
-    this.selectedToDay = day.toString()?.length === 1 ? `0${day}` : day.toString();
+    this.selectedToDay =
+      day.toString()?.length === 1 ? `0${day}` : day.toString();
   }
 
   onToYearChange(year: number) {
@@ -197,29 +210,42 @@ export class CustomInputComponent implements OnInit {
   @Input() errorMessage: string;
 
   ngOnInit(): void {
-    this.isError = false;
     if (this.options?.length == 1) {
       this.inputPlaceholder = this.options[0].value;
       this.selectedId.emit(this.options[0].id);
     }
+    this.isError = false;
     this.onToMonthChange(this.months[new Date().getMonth()]);
+    this.shared.closeInputSelect.subscribe(data => {
+      this.itemsOpened = data;
+    });
   }
 
   onClickOption(id: number) {
     this.selectedId.emit(id);
-    this.itemsOpened = id === 99;
-    this.isItemsOpened.emit(this.itemsOpened);
-    this.shared.closeInputSelect.next(this.itemsOpened);
+    if (id === 99) {
+      this.itemsOpened = true;
+      this.customOpened = true;
+    } else {
+      this.itemsOpened = false;
+    }
   }
 
   onClickApply() {
     this.selectedFromDate.emit(this.combineFromIntoSingleDate());
     this.selectedToDate.emit(this.combineToIntoSingleDate());
     this.selectedFromDateToToDate.emit(
-      `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`,
+      `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`
     );
-    this.customOpened = false;
+    this.shared.closeInputSelect.next(false);
     this.itemsOpened = false;
-    this.isItemsOpened.emit(this.itemsOpened);
+    this.customOpened = false;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.options?.length == 1) {
+      this.inputPlaceholder = this.options[0].value;
+      this.selectedId.emit(this.options[0].id);
+    }
   }
 }

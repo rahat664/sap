@@ -2,9 +2,9 @@ import {
   Component,
   EventEmitter,
   Input,
-  Output,
-  OnInit,
   OnDestroy,
+  OnInit,
+  Output,
 } from '@angular/core';
 import { GetOutsideModalClickDirective } from '../../directive/get-outside-modal-click.directive';
 import { NgIf } from '@angular/common';
@@ -26,6 +26,8 @@ export class ConfirmModalComponent implements OnInit, OnDestroy {
     false
   );
   private subs: any;
+  @Input() fromDoc: boolean = false;
+  @Input() fileName: string;
 
   constructor(private sharedDriverEditService: DriverEditSharedService) {}
 

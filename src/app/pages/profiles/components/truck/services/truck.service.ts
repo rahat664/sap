@@ -9,6 +9,7 @@ export class TruckService {
   url = `${environment.backendUrl}/api/trucks`;
   preHireChecklistUrl = `${environment.backendUrl}/api/preHireChecklist`;
   checklistUrl = `${environment.backendUrl}/api/checklist`;
+
   constructor(private http: HttpClient) {}
 
   getTruckList(page: number, search?: string) {
@@ -30,7 +31,14 @@ export class TruckService {
       return this.http.get(this.checklistUrl);
     }
   }
+
   editTruck(truck: any) {
     return this.http.put(`${this.url}`, truck);
+  }
+
+  deleteTruckFiles(deletedTruckFilesUrl: any, truckId: number) {
+    return this.http.delete(
+      `${this.url}/${truckId}/documents?documentUrl=${deletedTruckFilesUrl}`
+    );
   }
 }

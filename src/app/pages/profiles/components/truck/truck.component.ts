@@ -67,7 +67,7 @@ export class TruckComponent implements OnInit {
 
   constructor(
     private service: TruckService,
-    private shared: DriverEditSharedService,
+    private shared: DriverEditSharedService
   ) {}
 
   ngOnInit(): void {
@@ -176,6 +176,7 @@ export class TruckComponent implements OnInit {
       }
     });
   }
+
   onBottom($event: boolean) {
     if ($event && this.page < this.totalPages - 1) {
       this.page++;
@@ -201,6 +202,7 @@ export class TruckComponent implements OnInit {
       }
     }
   }
+
   onMaxHeightCross($event: boolean) {
     setTimeout(() => {
       if (!$event && this.totalPages > 1 && this.page != 1) {
@@ -244,9 +246,12 @@ export class TruckComponent implements OnInit {
     this.getTruckList();
   }
 
-
   onClickCheckList(truck: number) {
     this.isCheckListOpened = true;
     this.singleTruckId = truck;
+  }
+
+  onClickAddTruck() {
+    this.shared.closeInputSelect.next(false);
   }
 }

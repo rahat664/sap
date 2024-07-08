@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { UserModel } from '../../user-management/models/user.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from './user.service';
@@ -23,13 +23,15 @@ export class DriverEditSharedService {
   closeInputSelect: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   truckDocuments: any;
   isConfirmModalOpen: BehaviorSubject<any> = new BehaviorSubject<any>(false);
+  deletedDriverFiles: any[] = [];
+  deletedTruckFiles: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private service: UserService,
     private router: Router,
     private truck: TruckService,
-    private handleToastr: HandleToastrService,
+    private handleToastr: HandleToastrService
   ) {
     this.initForms();
   }
@@ -95,7 +97,11 @@ export class DriverEditSharedService {
     this.truckDocuments = this.generateDocumentList(singleTruck, [
       { key: 'regPaperFile', name: 'Registration Paper', expDateKey: null },
       { key: 'fitnessFile', name: 'Fitness', expDateKey: 'fitnessCertExpDate' },
-      { key: 'routePermitFile', name: 'Route Permit', expDateKey: 'routePermitExpDate' },
+      {
+        key: 'routePermitFile',
+        name: 'Route Permit',
+        expDateKey: 'routePermitExpDate',
+      },
       { key: 'taxFile', name: 'Tax', expDateKey: 'taxExpDate' },
       { key: 'caseFile', name: 'Case', expDateKey: 'caseExpDate' },
       { key: 'otherFile', name: 'Other', expDateKey: null },
@@ -104,13 +110,25 @@ export class DriverEditSharedService {
   }
 
   getDocument(singleDriver: UserModel) {
-    this.documents = this.generateDocumentList(singleDriver, [
-      { key: 'drivingLicenseFront', name: 'Driving License Front', expDateKey: 'drivingLicenseExpiryDate' },
-      { key: 'drivingLicenseBack', name: 'Driving License Back', expDateKey: 'drivingLicenseExpiryDate' },
-      { key: 'nidFront', name: 'NID Front', expDateKey: null },
-      { key: 'nidBack', name: 'NID Back', expDateKey: null },
-      { key: 'other', name: 'Other', expDateKey: null },
-    ], 'driverFilesUrls');
+    this.documents = this.generateDocumentList(
+      singleDriver,
+      [
+        {
+          key: 'drivingLicenseFront',
+          name: 'Driving License Front',
+          expDateKey: 'drivingLicenseExpiryDate',
+        },
+        {
+          key: 'drivingLicenseBack',
+          name: 'Driving License Back',
+          expDateKey: 'drivingLicenseExpiryDate',
+        },
+        { key: 'nidFront', name: 'NID Front', expDateKey: null },
+        { key: 'nidBack', name: 'NID Back', expDateKey: null },
+        { key: 'other', name: 'Other', expDateKey: null },
+      ],
+      'driverFilesUrls'
+    );
     return this.documents;
   }
 
@@ -130,9 +148,86 @@ export class DriverEditSharedService {
     return documents;
   }
 
+  deleteTruckFile(document: any) {
+    const length = this.deletedTruckFiles.length;
+    for (let i = 0; i < length; i++) {
+      if (i == length - 1) {
+        this.truck
+          .deleteTruckFiles(
+            document[i].preview,
+            this.truckUpdateForm.get('id').value
+          )
+          .subscribe({
+            next: (res: any) => {
+              if (res.status == 'OK') {
+                this.deletedTruckFiles = [];
+                this.submitUpdateForm(
+                  this.truckUpdateForm,
+                  this.truck.editTruck.bind(this.truck),
+                  '/profile/truck',
+                  this.completeTruckUpload
+                );
+              }
+            },
+          });
+      } else {
+        this.truck
+          .deleteTruckFiles(
+            document[i].preview,
+            this.truckUpdateForm.get('id').value
+          )
+          .subscribe();
+      }
+    }
+  }
+
   onTruckUpdate() {
     if (this.truckUpdateForm.valid) {
-      this.submitUpdateForm(this.truckUpdateForm, this.truck.editTruck.bind(this.truck), '/profile/truck', this.completeTruckUpload);
+      console.log(this.deletedTruckFiles.length);
+      if (this.deletedTruckFiles.length) {
+        this.deleteTruckFile(this.deletedTruckFiles);
+      } else {
+        this.deletedDriverFiles = [];
+        this.submitUpdateForm(
+          this.truckUpdateForm,
+          this.truck.editTruck.bind(this.truck),
+          '/profile/truck',
+          this.completeTruckUpload
+        );
+      }
+    }
+  }
+
+  deleteDriverFile(document: any) {
+    const length = this.deletedDriverFiles.length;
+    for (let i = 0; i < length; i++) {
+      if (i == length - 1) {
+        this.service
+          .deleteDriverFiles(
+            document[i].preview,
+            JSON.parse(localStorage.getItem('driver')).id
+          )
+          .subscribe({
+            next: (res: any) => {
+              if (res.status == 'OK') {
+                this.deletedDriverFiles = [];
+                this.submitUpdateForm(
+                  this.driverUpdateForm,
+                  this.service.editDriver.bind(this.service),
+                  '/profile/driver',
+                  this.completeUpload
+                );
+              }
+            },
+          });
+      } else {
+        this.service
+          .deleteDriverFiles(
+            document[i].preview,
+            this.driverUpdateForm.get('driverId').value
+          )
+          .subscribe();
+      }
     }
   }
 
@@ -142,11 +237,26 @@ export class DriverEditSharedService {
       driverPhone: driverPhone,
     });
     if (this.driverUpdateForm.valid) {
-      this.submitUpdateForm(this.driverUpdateForm, this.service.editDriver.bind(this.service), '/profile/driver', this.completeUpload);
+      if (this.deletedDriverFiles.length) {
+        this.deleteDriverFile(this.deletedDriverFiles);
+      } else {
+        this.deletedDriverFiles = [];
+        this.submitUpdateForm(
+          this.driverUpdateForm,
+          this.service.editDriver.bind(this.service),
+          '/profile/driver',
+          this.completeUpload
+        );
+      }
     }
   }
 
-  private submitUpdateForm(form: FormGroup, serviceMethod: Function, navigatePath: string, completeSubject: BehaviorSubject<any>) {
+  private submitUpdateForm(
+    form: FormGroup,
+    serviceMethod: Function,
+    navigatePath: string,
+    completeSubject: BehaviorSubject<any>
+  ) {
     const formData = new FormData();
     const payload: Record<string, any> = {};
 
@@ -154,7 +264,13 @@ export class DriverEditSharedService {
       const control = form.get(key);
       const value = control.value;
 
-      const files = ['drivingLicenseFront', 'drivingLicenseBack', 'nidFront', 'nidBack', 'other'];
+      const files = [
+        'drivingLicenseFront',
+        'drivingLicenseBack',
+        'nidFront',
+        'nidBack',
+        'other',
+      ];
 
       if (key.endsWith('File') || key === 'others' || files.includes(key)) {
         if (value) {
@@ -185,26 +301,41 @@ export class DriverEditSharedService {
         this.handleToastr.showError(error.error.message, 'Error');
         this.isUploadPopupOpen.next(false);
         completeSubject.next(true);
-      },
+      }
     );
   }
 
   onClickTruckCloseButton(document: any) {
-    this.handleDocumentClose(document, this.truckUpdateForm, this.truckDocuments, 'truckFilesUrls');
+    this.handleDocumentClose(
+      document,
+      this.truckUpdateForm,
+      this.truckDocuments,
+      'truckFilesUrls'
+    );
   }
 
   onClickCloseButton(document: any) {
-    this.handleDocumentClose(document, this.driverUpdateForm, this.documents, 'driverFilesUrls');
+    this.handleDocumentClose(
+      document,
+      this.driverUpdateForm,
+      this.documents,
+      'driverFilesUrls'
+    );
   }
 
-  private handleDocumentClose(document: any, form: FormGroup, documents: any[], name) {
+  private handleDocumentClose(
+    document: any,
+    form: FormGroup,
+    documents: any[],
+    name
+  ) {
     const documentKeyMap = {
       'Registration Paper': 'regPaperFile',
-      'Fitness': 'fitnessCertificateFile',
+      Fitness: 'fitnessCertificateFile',
       'Route Permit': 'routePermitFile',
-      'Tax': 'taxFile',
-      'Case': 'casePaperFile',
-      'Other': name === 'driverFilesUrls' ? 'other' : 'otherFile',
+      Tax: 'taxFile',
+      Case: 'casePaperFile',
+      Other: name === 'driverFilesUrls' ? 'other' : 'otherFile',
       'Driving License Front': 'drivingLicenseFront',
       'Driving License Back': 'drivingLicenseBack',
       'NID Front': 'nidFront',
@@ -213,8 +344,16 @@ export class DriverEditSharedService {
     documents = documents.filter((doc: any) => doc.name !== document.name);
     if (name === 'driverFilesUrls') {
       this.documents = documents;
+      this.deletedDriverFiles.push({
+        registrationType: document.name,
+        preview: document.url,
+      });
     } else {
       this.truckDocuments = documents;
+      this.deletedTruckFiles.push({
+        registrationType: document.name,
+        preview: document.url,
+      });
     }
     const formControlName = documentKeyMap[document.name];
     const resetValue = formControlName?.includes('ExpDate') ? null : undefined;
@@ -224,16 +363,40 @@ export class DriverEditSharedService {
   }
 
   onChangeFile($event: any) {
-    this.handleFileChange($event, this.driverUpdateForm, this.documents, 'driverFilesUrls');
+    this.handleFileChange(
+      $event,
+      this.driverUpdateForm,
+      this.documents,
+      'driverFilesUrls'
+    );
   }
 
   onChangeTruckFile($event: any) {
-    this.handleFileChange($event, this.truckUpdateForm, this.truckDocuments, 'truckFilesUrls');
+    this.handleFileChange(
+      $event,
+      this.truckUpdateForm,
+      this.truckDocuments,
+      'truckFilesUrls'
+    );
   }
 
-  private handleFileChange(files: any[], form: FormGroup, documents: any[], name) {
+  private handleFileChange(
+    files: any[],
+    form: FormGroup,
+    documents: any[],
+    name
+  ) {
     if (files?.length) {
       files.forEach(file => {
+        if (name === 'driverFilesUrls') {
+          this.deletedDriverFiles = this.deletedDriverFiles.filter(
+            (deletedFile: any) => deletedFile !== file.registrationType
+          );
+        } else {
+          this.deletedTruckFiles = this.deletedTruckFiles.filter(
+            (deletedFile: any) => deletedFile.registrationType !== file.name
+          );
+        }
         documents.push({
           name: file.registrationType,
           url: file.preview,
@@ -241,9 +404,13 @@ export class DriverEditSharedService {
         });
         form.patchValue({
           [this.getFileControlName(file.registrationType, name)]: file.file,
-          ...(file.registrationExpireDate && { [this.getExpDateControlName(file.registrationType)]: file.registrationExpireDate }),
+          ...(file.registrationExpireDate && {
+            [this.getExpDateControlName(file.registrationType)]:
+              file.registrationExpireDate,
+          }),
         });
       });
+      this.isUploadPopupOpen.next(false);
     }
   }
 
@@ -253,12 +420,12 @@ export class DriverEditSharedService {
       'Driving License Back': 'drivingLicenseBack',
       'NID Front': 'nidFront',
       'NID Back': 'nidBack',
-      'Other': name === 'driverFilesUrls' ? 'other' : 'others',
+      Other: name === 'driverFilesUrls' ? 'other' : 'others',
       'Registration Paper': 'regPaperFile',
-      'Fitness': 'fitnessCertificateFile',
+      Fitness: 'fitnessCertificateFile',
       'Route Permit': 'routePermitFile',
-      'Tax': 'taxFile',
-      'Case': 'casePaperFile',
+      Tax: 'taxFile',
+      Case: 'casePaperFile',
     };
     return controlNameMap[registrationType];
   }
@@ -266,10 +433,10 @@ export class DriverEditSharedService {
   private getExpDateControlName(registrationType: string) {
     const expDateControlNameMap = {
       'Driving License Front': 'drivingLicenseExpiryDate',
-      'Fitness': 'fitnessCertExpDate',
+      Fitness: 'fitnessCertExpDate',
       'Route Permit': 'routePermitExpDate',
-      'Tax': 'taxExpDate',
-      'Case': 'caseExpDate',
+      Tax: 'taxExpDate',
+      Case: 'caseExpDate',
     };
     return expDateControlNameMap[registrationType];
   }

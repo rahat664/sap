@@ -38,20 +38,34 @@
           </div>
           <h1 class="text-h1_mobile font-bold text-not-black">Attention</h1>
         </div>
+        <div
+          class="flex flex-col space-y-3 items-center"
+          *ngIf="buttonText === 'Remove' && fromDoc">
+          <div
+            class="flex items-center justify-center h-16 bg-another w-16 rounded-full">
+            <img src="./assets/svg/attention.svg" alt="" />
+          </div>
+          <h1 class="text-h1_mobile font-bold text-not-black">Attention</h1>
+        </div>
         <span
           *ngIf="buttonText === 'Inactive'"
           class="text-center text-web-text-secondary mt-4"
-          >"{{ userName }}" will be mark as inactive</span
+        >"{{ userName }}" will be mark as inactive</span
         >
         <span
           *ngIf="buttonText === 'Active'"
           class="text-center text-web-text-secondary mt-4"
-          >"{{ userName }}" will be mark as active</span
+        >"{{ userName }}" will be mark as active</span
         >
         <span
           *ngIf="buttonText === 'Removed'"
           class="text-center text-web-text-secondary mt-4"
-          >"{{ userName }}" will be removed from the list</span
+        >"{{ userName }}" will be removed from the list</span
+        >
+        <span
+          *ngIf="buttonText === 'Remove' && fromDoc"
+          class="text-center text-web-text-secondary mt-4"
+        >"{{ fileName }}" will be removed from the document after update</span
         >
         <button
           *ngIf="buttonText === 'Active'"
@@ -67,6 +81,12 @@
         </button>
         <button
           *ngIf="buttonText === 'Removed'"
+          (click)="performChangeStatuses()"
+          class="bg-red text-white px-4 py-2 mt-4 rounded-lg">
+          Remove
+        </button>
+        <button
+          *ngIf="buttonText === 'Remove' && fromDoc"
           (click)="performChangeStatuses()"
           class="bg-red text-white px-4 py-2 mt-4 rounded-lg">
           Remove

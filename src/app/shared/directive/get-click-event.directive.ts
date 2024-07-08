@@ -1,4 +1,11 @@
-import { Directive, EventEmitter, HostListener, Output, OnInit, OnDestroy } from '@angular/core';
+import {
+  Directive,
+  EventEmitter,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { DriverEditSharedService } from '../../pages/profiles/services/driver-edit-shared.service';
 import { Subscription } from 'rxjs';
 
@@ -12,20 +19,22 @@ export class GetClickEventDirective implements OnInit, OnDestroy {
 
   @HostListener('click', ['$event'])
   onClick(event: MouseEvent) {
-    if (event.target && (event.target as HTMLElement).id === 'customInputSelect') {
-      this.clickedElement.emit(true);
+    if (
+      event.target &&
+      (event.target as HTMLElement).id === 'customInputSelect'
+    ) {
+      this.shared.closeInputSelect.next(true);
     } else {
       this.clickedElement.emit(false);
     }
   }
 
-  constructor(private shared: DriverEditSharedService) {
-  }
+  constructor(private shared: DriverEditSharedService) {}
 
   ngOnInit() {
-    this.subs.add(this.shared.closeInputSelect.subscribe(data => {
+    this.subs = this.shared.closeInputSelect.subscribe(data => {
       this.clickedElement.emit(data);
-    }));
+    });
   }
 
   ngOnDestroy() {

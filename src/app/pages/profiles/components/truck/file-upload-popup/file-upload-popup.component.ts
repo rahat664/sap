@@ -1,16 +1,15 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
-  OnDestroy,
-  OnInit,
+  OnChanges,
   Output,
-  OnChanges, ChangeDetectorRef, SimpleChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
-import { fileUpload } from '../models/file-upload';
 import { CommonModule } from '@angular/common';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 
@@ -38,9 +37,12 @@ export class FileUploadPopupComponent implements OnChanges {
   @Input() singleDriver: any;
   @Input() singleTruck: any;
   @Input() isFromTruck!: boolean;
+  newFileType: any;
 
-  constructor(private sharedDriverEditService: DriverEditSharedService,
-              private cdr: ChangeDetectorRef) {
+  constructor(
+    private sharedDriverEditService: DriverEditSharedService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.fileArray = [];
   }
 
@@ -73,25 +75,22 @@ export class FileUploadPopupComponent implements OnChanges {
 
   onSelectFileType($event: number, i: number) {
     this.fileInputPlaceholder = this.fileTypeOptions.find(
-      option => option.id === $event,
+      option => option.id === $event
     ).value;
     this.fileArray[i].registrationType = this.fileInputPlaceholder;
     if (!this.callFromModal) {
       this.fileInput.emit(this.fileArray);
     }
     this.fileArray[i].fileOpened = false;
+    // remove the file type option from the dropdown
   }
 
   onClickFileType($event: boolean, i: number) {
     this.fileArray[i].fileOpened = $event;
-    this.fileArray.forEach((file, index) => {
-      this.fileTypeOptions.forEach(option => {
-        if (file.registrationType === option.value) {
-          // remove the selected file type from the dropdown
-          this.fileTypeOptions.splice(this.fileTypeOptions.indexOf(option), 1);
-        }
-      });
-    });
+    this.newFileType = JSON.parse(JSON.stringify(this.fileTypeOptions));
+    this.newFileType = this.newFileType.filter(
+      item => item.value !== this.fileArray[i].registrationType
+    );
   }
 
   @Output() modalClosed: EventEmitter<any> = new EventEmitter<any>();
@@ -103,17 +102,21 @@ export class FileUploadPopupComponent implements OnChanges {
       this.sharedDriverEditService.getDocument(this.singleDriver);
       this.sharedDriverEditService.bindDriverValueWithForm(this.singleDriver);
       this.sharedDriverEditService.onChangeFile(this.fileArray);
+      this.fileArray = [];
       this.sharedDriverEditService.onDriverUpdate(
         this.singleDriver.name,
-        this.singleDriver.phone,
+        this.singleDriver.phone
       );
       this.modalClosed.emit(false);
     } else if (this.isFromTruck) {
       this.sharedDriverEditService.getTruckDocument(this.singleTruck);
       this.sharedDriverEditService.bindTruckValueWithForm(this.singleTruck);
       this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
+      this.fileArray = [];
       this.sharedDriverEditService.onTruckUpdate();
       this.modalClosed.emit(false);
+    } else {
+      this.fileArray = [];
     }
   }
 
@@ -128,6 +131,7 @@ export class FileUploadPopupComponent implements OnChanges {
         registrationExpireDate: null,
         fileOpened: false,
       });
+      this.sharedDriverEditService.closeInputSelect.next(false);
       if (!this.callFromModal) {
         this.fileInput.emit(this.fileArray);
       }

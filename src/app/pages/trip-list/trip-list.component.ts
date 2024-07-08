@@ -23,6 +23,7 @@ import { GetOutsideModalClickDirective } from '../../shared/directive/get-outsid
 import { Trip } from '../auth/models/response/trip';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { RouterLink } from '@angular/router';
+import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-trip-list',
@@ -90,7 +91,8 @@ export class TripListComponent implements OnInit {
     private formBuilder: FormBuilder,
     private service: TripService,
     private datePipe: DatePipe,
-    private customer: CustomerService
+    private customer: CustomerService,
+    private shared: DriverEditSharedService
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -100,6 +102,7 @@ export class TripListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.page = 0;
     this.getTripList();
     this.generateDateOptionsArray();
@@ -116,24 +119,28 @@ export class TripListComponent implements OnInit {
         this.status,
         this.tripId
       )
-      .subscribe((trip: any) => {
-        this.updateTripList(trip);
-      });
+      .subscribe(
+        (trip: any) => {
+          this.updateTripList(trip);
+        },
+        error => {
+          this.loading = false;
+        }
+      );
   }
 
   onSelectDate($event: number) {
     this.dateFilter = 1;
     if ($event === DateEnum.Custom) {
-      this.isDateOpened = true;
-      this.dateOpened = true;
+      this.shared.closeInputSelect.next(true);
     } else {
-      this.isDateOpened = false;
-      this.dateOpened = false;
+      this.shared.closeInputSelect.next(false);
       this.inputPlaceholder =
         this.dateOptionArray.find(x => x.id === $event)?.value || '';
       this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
       this.setDateRange($event);
       this.page = 0;
+      this.loading = true;
       this.getTripList();
     }
   }
@@ -200,6 +207,7 @@ export class TripListComponent implements OnInit {
   }
 
   onClickSearchSuggestion(result: any) {
+    this.loading = true;
     this.page = 0;
     this.searchValue = result.customerCode;
     this.searchName = result.name;
@@ -225,10 +233,12 @@ export class TripListComponent implements OnInit {
     this.inputPlaceholder = '';
     this.tripSuggestions = [];
     this.filterForm.reset();
+    this.loading = true;
     this.getTripList();
   }
 
   onStatusClick(tripStatus: string) {
+    this.loading = true;
     this.page = 0;
     this.status = tripStatus !== 'All' ? tripStatus : '';
     this.statusButtons.forEach(x => (x.isActive = x.name === tripStatus));
@@ -256,11 +266,13 @@ export class TripListComponent implements OnInit {
     this.dateOpened = false;
     this.isDateOpened = false;
     this.isSearchedMenuOpened = false;
+    this.shared.closeInputSelect.next(false);
   }
 
   onBottom($event: boolean) {
     if ($event && this.page < this.totalPages - 1) {
       this.page++;
+      this.loading = false;
       this.getTripList();
     }
   }
@@ -269,17 +281,17 @@ export class TripListComponent implements OnInit {
     setTimeout(() => {
       if ($event && this.totalPages > 1 && this.page < 1) {
         this.page = 1;
+        this.loading = false;
         this.getTripList();
       }
     }, 300);
   }
 
   private updateTripList(trip: any) {
+    this.loading = false;
     if (this.page === 0) {
-      this.loading = true;
       this.tripList = trip.data.responses;
     } else {
-      this.loading = false;
       this.tripList.push(...trip.data.responses);
     }
     this.summary = trip.data.summary;
@@ -308,6 +320,7 @@ export class TripListComponent implements OnInit {
     this.tripId = result.tripId;
     this.tripIdSuggestions = [];
     this.isTripSearchedMenuOpened = false;
+    this.loading = true;
     this.getTripList();
   }
 }

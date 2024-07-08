@@ -2,10 +2,10 @@ import {
   Component,
   EventEmitter,
   Input,
-  Output,
   OnChanges,
-  OnInit,
   OnDestroy,
+  OnInit,
+  Output,
 } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { DriverEditSharedService } from '../../../pages/profiles/services/driver-edit-shared.service';

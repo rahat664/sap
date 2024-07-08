@@ -68,6 +68,7 @@ export class TransporterComponent implements OnInit {
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
+    this.page = 0;
     const value = ($event.target as HTMLInputElement).value;
     if (value?.length > 0) {
       this.searchValue = value;
@@ -136,6 +137,7 @@ export class TransporterComponent implements OnInit {
   }
 
   onClickTransporter($event: boolean) {
+    this.page = 0;
     this.isOpen = !$event;
     this.transporterList = [];
     this.getTransporterList();
@@ -143,18 +145,18 @@ export class TransporterComponent implements OnInit {
 
   onMaxHeightCross($event: boolean) {
     setTimeout(() => {
-      if (!$event && this.totalPages > 1 && this.page != 1) {
+      if ($event && this.totalPages > 1 && this.page != 1) {
         this.page = 1;
         if (this.searchValue) {
           this.service
             .getTransporter(this.page, this.searchValue)
             .pipe(debounceTime(500))
             .subscribe((res: any) => {
-              this.transporterList = res.data.responses;
+              this.transporterList.push(...res.data.responses);
             });
         } else {
           this.service.getTransporter(this.page).subscribe((res: any) => {
-            this.transporterList = res.data.responses;
+            this.transporterList.push(...res.data.responses);
           });
         }
       }

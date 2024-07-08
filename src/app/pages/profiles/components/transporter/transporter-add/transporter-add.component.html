@@ -70,9 +70,7 @@
         <app-custom-input
           id="preferredPaymentMethod"
           [inputSearch]="paymentInputPlaceholder"
-          [customOpened]="false"
           [options]="paymentOptionsArray"
-          [itemsOpened]="paymentOpened"
           inputPlaceholder="Select Payment Method"
           appGetClickEvent
           (clickedElement)="onClickPayment($event)"
@@ -102,9 +100,7 @@
           <app-custom-input
             id="accountType"
             [inputSearch]="bkashPaymentTypePlaceholder"
-            [customOpened]="false"
             [options]="bkashPaymentMethod"
-            [itemsOpened]="bkashOpened"
             inputPlaceholder="Select Account Type"
             appGetClickEvent
             (clickedElement)="onClickBkashType($event)"

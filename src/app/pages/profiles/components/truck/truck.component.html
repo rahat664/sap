@@ -21,6 +21,7 @@
             placeholder="Enter truck registration number" />
         </div>
         <button
+          (click)="onClickAddTruck()"
           routerLink="/profile/truck/add"
           class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
           <i class="fas fa-plus-circle"></i>
@@ -202,7 +203,6 @@
       <!--                (clickedElement)="onClickManufacturer($event)"-->
       <!--                [options]="manufacturerList"-->
       <!--                inputPlaceholder="Select Manufacturer"-->
-      <!--                [itemsOpened]="manufactureOpened"-->
       <!--                (selectedId)="onSelectManuFacturer($event)"-->
       <!--                [inputSearch]="manufacturerPlaceholder"></app-custom-input>-->
       <!--              <div class="relative">-->

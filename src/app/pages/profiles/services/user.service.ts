@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { CustomerCreateModel } from '../components/customer/model/customer-create.model';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../../auth/models/response/api-response';
 
@@ -135,5 +134,12 @@ export class UserService {
 
   getAllDepartments() {
     this.http.get(`${this.departmentsUrl}`);
+  }
+
+  deleteDriverFiles(deletedDriverFiles: any, id: number) {
+    return this.http.delete(
+      `${this.url}/${id}/documents?documentUrl=${deletedDriverFiles}`,
+      deletedDriverFiles
+    );
   }
 }

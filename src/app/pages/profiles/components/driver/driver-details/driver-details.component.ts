@@ -4,11 +4,12 @@ import { GetClickEventDirective } from '../../../../../shared/directive/get-clic
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { UserModel } from '../../../../user-management/models/user.model';
-import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { FormGroup, FormsModule } from '@angular/forms';
 import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
 import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
 import { driverFileType } from '../../customer/model/driver-file-type';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
+import { ConfirmModalComponent } from '../../../../../shared/modules/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-driver-details',
@@ -24,6 +25,7 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
     CreatePopupComponent,
     FileUploadPopupComponent,
     DatePipe,
+    ConfirmModalComponent,
   ],
   templateUrl: './driver-details.component.html',
   styleUrl: './driver-details.component.scss',
@@ -37,10 +39,14 @@ export class DriverDetailsComponent implements OnInit {
   private driverUpdateForm: FormGroup;
   isUploadPopupOpen: boolean;
   newDriverFileType: any;
+  closedDocument: any;
 
   constructor(private driverEditSharedService: DriverEditSharedService) {}
 
   ngOnInit(): void {
+    this.driverEditSharedService.isUploadPopupOpen.subscribe(res => {
+      this.isUploadPopupOpen = res;
+    });
     this.documents = [];
     this.singleDriver = JSON.parse(localStorage.getItem('driver'));
     this.driverEditSharedService.bindDriverValueWithForm(this.singleDriver);
@@ -58,13 +64,16 @@ export class DriverDetailsComponent implements OnInit {
       this.driverPhone
     );
   }
+
   protected readonly driverFileType = driverFileType;
   isNewOpen: boolean = false;
+  isConfirmModalOpen: boolean;
+  fileName: string;
 
   onClickCloseButton(document: any) {
-    this.driverEditSharedService.onClickCloseButton(document);
-    this.documents = this.driverEditSharedService.documents;
-    this.driverFileTypeModify(this.documents);
+    this.fileName = document.name;
+    this.isConfirmModalOpen = true;
+    this.closedDocument = document;
   }
 
   onChangeFile($event: any) {
@@ -74,10 +83,17 @@ export class DriverDetailsComponent implements OnInit {
   private driverFileTypeModify(documents: any[]) {
     // make a copy of the documents array with true copy not shallow copy
     this.newDriverFileType = JSON.parse(JSON.stringify(this.driverFileType));
-    documents.forEach((document) => {
+    documents.forEach(document => {
       this.newDriverFileType = this.newDriverFileType.filter(
-        (item) => item.value !== document.name,
+        item => item.value !== document.name
       );
     });
+  }
+
+  performRemove($event: any) {
+    this.isConfirmModalOpen = false;
+    this.driverEditSharedService.onClickCloseButton(this.closedDocument);
+    this.documents = this.driverEditSharedService.documents;
+    this.driverFileTypeModify(this.documents);
   }
 }

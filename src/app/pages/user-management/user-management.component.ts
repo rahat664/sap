@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  ViewChild,
-  OnInit,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -23,6 +17,7 @@ import { ConfirmModalComponent } from '../../shared/modules/confirm-modal/confir
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { debounceTime } from 'rxjs';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
+import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-user-management',
@@ -80,6 +75,7 @@ export class UserManagementComponent implements OnInit {
     private service: UserService,
     private validation: ValidationService,
     private toastr: HandleToastrService,
+    private shared: DriverEditSharedService
   ) {}
 
   ngOnInit() {
@@ -171,6 +167,7 @@ export class UserManagementComponent implements OnInit {
 
   onClickAddUser() {
     this.isOpen = true;
+    this.shared.closeInputSelect.next(false);
   }
 
   private getUserList() {
@@ -306,6 +303,7 @@ export class UserManagementComponent implements OnInit {
 
   onClickFilterOpened() {
     this.filterOpened = !this.filterOpened;
+    this.shared.closeInputSelect.next(false);
     this.statusOpened = false;
     this.roleOpened = false;
   }

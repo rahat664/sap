@@ -7,12 +7,12 @@
       class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
       <h1 class="text-h1 font-semibold">Trip List</h1>
       <div class="flex space-x-4 items-center">
-        <button
-          routerLink="/trip-list/trip-create"
-          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
-          <i class="fas fa-plus-circle"></i>
-          <span class="hidden lg:block">Create New Trip</span>
-        </button>
+        <!--        <button-->
+        <!--          routerLink="/trip-list/trip-create"-->
+        <!--          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">-->
+        <!--          <i class="fas fa-plus-circle"></i>-->
+        <!--          <span class="hidden lg:block">Create New Trip</span>-->
+        <!--        </button>-->
       </div>
     </div>
     <!--  filter section-->
@@ -41,13 +41,11 @@
       <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
         <app-custom-input
           appGetClickEvent
-          [itemsOpened]="dateOpened"
           (clickedElement)="dateOpened = $event"
           [inputSearch]="inputPlaceholder"
           (selectedFromDate)="onSelectedFromDate($event)"
           (selectedToDate)="onSelectedToDate($event)"
           (selectedFromDateToToDate)="inputPlaceholder = $event"
-          [customOpened]="isDateOpened"
           inputPlaceholder="Select Date"
           [options]="dateOptionArray"
           (selectedId)="onSelectDate($event)"></app-custom-input>

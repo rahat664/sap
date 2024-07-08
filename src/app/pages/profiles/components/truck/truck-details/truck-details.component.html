@@ -45,7 +45,6 @@
                   (clickedElement)="onClickRegistrationZone($event)"
                   [options]="registrationZoneList"
                   inputPlaceholder="Zone"
-                  [itemsOpened]="registrationZoneOpened"
                   (selectedId)="onSelectRegistrationZone($event)"
                   [inputSearch]="
                     registrationZonePlaceholder
@@ -56,7 +55,6 @@
                   (clickedElement)="onClickRegistrationType($event)"
                   [options]="registrationListType"
                   inputPlaceholder="Category"
-                  [itemsOpened]="registrationOpenedType"
                   (selectedId)="onSelectRegistrationype($event)"
                   [inputSearch]="
                     registrationTypePlaceholder
@@ -117,7 +115,6 @@
         <!--                  (clickedElement)="onClickManufacturer($event)"-->
         <!--                  [options]="manufacturerList"-->
         <!--                  inputPlaceholder="Select Manufacturer"-->
-        <!--                  [itemsOpened]="manufactureOpened"-->
         <!--                  (selectedId)="onSelectManuFacturer($event)"-->
         <!--                  [inputSearch]="manufacturerPlaceholder"></app-custom-input>-->
         <!--              </div>-->
@@ -199,3 +196,13 @@
 >
   <app-pre-hire-checklist></app-pre-hire-checklist>
 </app-check-list-popup>
+<app-confirm-modal
+  [isOpen]="isConfirmModalOpen"
+  buttonText="Remove"
+  [fromDoc]="true"
+  [fileName]="fileName"
+  (isModalClosed)="isConfirmModalOpen = !$event"
+  (performChangeStatus)="performRemove($event)"
+
+>
+</app-confirm-modal>

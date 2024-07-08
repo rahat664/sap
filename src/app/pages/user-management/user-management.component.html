@@ -36,18 +36,18 @@
         [ngClass]="{ 'border-b-2 border-[#0CD5F0]': filterOpened }">
         <i class="fas fa-caret-down text-input-hint text-xl"></i>
         <span class="text-not-black text-[0.875rem]"
-          >Filter
+        >Filter
           <span *ngIf="getFilterLength() > 0"
-            >({{ statusFilter + roleFilter }})</span
+          >({{ statusFilter + roleFilter }})</span
           >
           <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3"
-            >|</span
+          >|</span
           >
           <a
             (click)="onClearFilter()"
             *ngIf="getFilterLength() > 0"
             class="text-red"
-            >Clear all</a
+          >Clear all</a
           >
         </span>
       </button>
@@ -55,17 +55,13 @@
         <app-custom-input
           appGetClickEvent
           [inputSearch]="statusInputPlaceholder"
-          [customOpened]="false"
           (clickedElement)="onClickStatus($event)"
           [options]="statusOptionsArray"
-          [itemsOpened]="statusOpened"
           inputPlaceholder="Select Status"
           (selectedId)="onSelectStatus($event)"></app-custom-input>
         <app-custom-input
           [inputSearch]="roleInputPlaceholder"
-          [customOpened]="false"
           [options]="roleOptionsArray"
-          [itemsOpened]="roleOpened"
           inputPlaceholder="Select Department"
           appGetClickEvent
           (clickedElement)="onClickRole($event)"
@@ -83,101 +79,101 @@
     class="bg-white w-full relative rounded-lg overflow-auto">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
-        <tr class="whitespace-nowrap bg-white">
-          <th class="text-left">Name</th>
-          <th class="text-left">Mobile</th>
-          <th class="text-left">Email</th>
-          <th class="text-left">Department</th>
-          <th class="text-left">Designation</th>
-          <th class="text-left">Status</th>
-          <th class="text-left">Created On</th>
-          <th style="width: 5% !important"></th>
-        </tr>
-        <tr>
-          <th class="border" colspan="8"></th>
-        </tr>
+      <tr class="whitespace-nowrap bg-white">
+        <th class="text-left">Name</th>
+        <th class="text-left">Mobile</th>
+        <th class="text-left">Email</th>
+        <th class="text-left">Department</th>
+        <th class="text-left">Designation</th>
+        <th class="text-left">Status</th>
+        <th class="text-left">Created On</th>
+        <th style="width: 5% !important"></th>
+      </tr>
+      <tr>
+        <th class="border" colspan="8"></th>
+      </tr>
       </thead>
       <tbody class="text-web-text-secondary">
-        <ng-container *ngIf="!loading">
-          <tr *ngFor="let user of Users">
-            <td class="whitespace-nowrap">{{ user.name }}</td>
-            <td>{{ user.mobile }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.department }}</td>
-            <td>{{ user.designation }}</td>
-            <td>{{ user.status }}</td>
-            <td>{{ user.createdOn }}</td>
-            <td>
-              <div class="relative w-full">
-                <button
-                  *ngIf="user.status != 'Removed'"
-                  (click)="actionOpen(user.id)"
-                  class="cursor-pointer w-full">
-                  <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <div
-                  *ngIf="selectedId == user.id && actionOpened"
-                  class="absolute bg-white shadow-md rounded-lg z-50 py-2 w-32 right-0 top-full origin-top-right">
-                  <ul class="text-[0.875rem]">
-                    <li
-                      *ngIf="user.status === 'Active'"
-                      class="py-2 px-4 hover:bg-input cursor-pointer">
-                      <a
-                        (click)="changeStatus(user.id, user.name, 'Inactive')"
-                        class="w-full flex space-x-3 items-center">
-                        <img
-                          class="notPreview"
-                          src="./assets/svg/user-inactive.svg"
-                          alt="" />
-                        <span>Inactive</span>
-                      </a>
-                    </li>
-                    <li
-                      *ngIf="user.status === 'Inactive'"
-                      class="py-2 px-4 hover:bg-input">
-                      <a
-                        (click)="changeStatus(user.id, user.name, 'Active')"
-                        class="w-full flex space-x-3 items-center cursor-pointer">
-                        <img
-                          class="notPreview"
-                          src="./assets/svg/user-active.svg"
-                          alt="" />
-                        <span>Active</span>
-                      </a>
-                    </li>
-                    <li class="py-2 px-4 hover:bg-input">
-                      <a
-                        (click)="changeStatus(user.id, user.name, 'Removed')"
-                        class="w-full flex space-x-3 items-center cursor-pointer">
-                        <img
-                          class="notPreview"
-                          src="./assets/svg/user-remove.svg"
-                          alt="" />
-                        <span class="text-red">Remove</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+      <ng-container *ngIf="!loading">
+        <tr *ngFor="let user of Users">
+          <td class="whitespace-nowrap">{{ user.name }}</td>
+          <td>{{ user.mobile }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.department }}</td>
+          <td>{{ user.designation }}</td>
+          <td>{{ user.status }}</td>
+          <td>{{ user.createdOn }}</td>
+          <td>
+            <div class="relative w-full">
+              <button
+                *ngIf="user.status != 'Removed'"
+                (click)="actionOpen(user.id)"
+                class="cursor-pointer w-full">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+              <div
+                *ngIf="selectedId == user.id && actionOpened"
+                class="absolute bg-white shadow-md rounded-lg z-50 py-2 w-32 right-0 top-full origin-top-right">
+                <ul class="text-[0.875rem]">
+                  <li
+                    *ngIf="user.status === 'Active'"
+                    class="py-2 px-4 hover:bg-input cursor-pointer">
+                    <a
+                      (click)="changeStatus(user.id, user.name, 'Inactive')"
+                      class="w-full flex space-x-3 items-center">
+                      <img
+                        class="notPreview"
+                        src="./assets/svg/user-inactive.svg"
+                        alt="" />
+                      <span>Inactive</span>
+                    </a>
+                  </li>
+                  <li
+                    *ngIf="user.status === 'Inactive'"
+                    class="py-2 px-4 hover:bg-input">
+                    <a
+                      (click)="changeStatus(user.id, user.name, 'Active')"
+                      class="w-full flex space-x-3 items-center cursor-pointer">
+                      <img
+                        class="notPreview"
+                        src="./assets/svg/user-active.svg"
+                        alt="" />
+                      <span>Active</span>
+                    </a>
+                  </li>
+                  <li class="py-2 px-4 hover:bg-input">
+                    <a
+                      (click)="changeStatus(user.id, user.name, 'Removed')"
+                      class="w-full flex space-x-3 items-center cursor-pointer">
+                      <img
+                        class="notPreview"
+                        src="./assets/svg/user-remove.svg"
+                        alt="" />
+                      <span class="text-red">Remove</span>
+                    </a>
+                  </li>
+                </ul>
               </div>
-            </td>
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="!loading">
-          <tr *ngIf="Users?.length === 0">
-            <td class="h-full" colspan="9">
-              <div class="flex items-center justify-center">
-                <p class="text-center">No data found</p>
-              </div>
-            </td>
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="loading">
-          <tr>
-            <td class="h-full" colspan="9">
-              <app-loading></app-loading>
-            </td>
-          </tr>
-        </ng-container>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <tr *ngIf="Users?.length === 0">
+          <td class="h-full" colspan="9">
+            <div class="flex items-center justify-center">
+              <p class="text-center">No data found</p>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" colspan="9">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
       </tbody>
     </table>
   </div>

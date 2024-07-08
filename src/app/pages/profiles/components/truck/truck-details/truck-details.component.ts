@@ -16,6 +16,7 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
 import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checklist.component';
 import { fileUpload } from '../models/file-upload';
+import { ConfirmModalComponent } from '../../../../../shared/modules/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-truck-details',
@@ -34,6 +35,7 @@ import { fileUpload } from '../models/file-upload';
     ImageGalleryComponent,
     CheckListPopupComponent,
     PreHireChecklistComponent,
+    ConfirmModalComponent,
   ],
   templateUrl: './truck-details.component.html',
   styleUrl: './truck-details.component.scss',
@@ -53,10 +55,10 @@ export class TruckDetailsComponent implements OnInit {
   documents: any[] = [];
   truckAddForm: FormGroup;
   isExpiryAvailable: boolean;
+  isConfirmModalOpen: boolean;
+  closedDocument: boolean;
 
-  constructor(
-    private shared: DriverEditSharedService
-  ) {}
+  constructor(private shared: DriverEditSharedService) {}
 
   onClickManufacturer($event: boolean) {
     this.manufactureOpened = $event;
@@ -105,6 +107,9 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.shared.isUploadPopupOpen.subscribe(value => {
+      this.isUploadPopupOpen = value;
+    });
     this.singleTruck = JSON.parse(localStorage.getItem('truck'));
     this.truckAddForm = this.shared.truckUpdateForm;
     this.registrationTypePlaceholder = this.singleTruck?.registrationCategory;
@@ -134,6 +139,7 @@ export class TruckDetailsComponent implements OnInit {
   onClickEdit() {
     this.inEditMode = !this.inEditMode;
   }
+
   private numberOnly(value: any) {
     const reg = /^[0-9]*$/;
     if (!reg.test(value)) {
@@ -143,24 +149,35 @@ export class TruckDetailsComponent implements OnInit {
       });
     }
   }
+
   protected readonly Date = Date;
   protected readonly truckFileType = fileUpload;
   isUploadPopupOpen: boolean;
   prehireCheckListOpened: boolean = false;
   newTruckFileTypeOptions: CustomInputSelectModel[];
+  fileName: string;
 
   onClickClose(document: any) {
-    this.shared.onClickTruckCloseButton(document);
-    this.documents = this.shared.truckDocuments;
-    this.truckFileTypeModify(this.documents);
+    this.isConfirmModalOpen = true;
+    this.closedDocument = document;
+    this.fileName = document.name;
   }
 
   private truckFileTypeModify(documents: any[]) {
-    this.newTruckFileTypeOptions = JSON.parse(JSON.stringify(this.truckFileType));
+    this.newTruckFileTypeOptions = JSON.parse(
+      JSON.stringify(this.truckFileType)
+    );
     documents.forEach(document => {
       this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
-        item => item.value !== document.name,
+        item => item.value !== document.name
       );
     });
+  }
+
+  performRemove($event: any) {
+    this.isConfirmModalOpen = false;
+    this.shared.onClickTruckCloseButton(this.closedDocument);
+    this.documents = this.shared.truckDocuments;
+    this.truckFileTypeModify(this.documents);
   }
 }

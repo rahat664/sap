@@ -38,8 +38,8 @@
             [ngClass]="{ 'col-span-2': inEditMode }">
             <span class="text-not-black font-semibold">Name</span>
             <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
-              singleDriver.name
-            }}</span>
+                singleDriver.name
+              }}</span>
             <div *ngIf="inEditMode">
               <input
                 placeholder="Enter driver name"
@@ -56,8 +56,8 @@
             [ngClass]="{ 'col-span-2': inEditMode }">
             <span class="text-not-black font-semibold">Mobile</span>
             <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
-              singleDriver.phone
-            }}</span>
+                singleDriver.phone
+              }}</span>
             <div *ngIf="inEditMode">
               <input
                 placeholder="Enter mobile no."
@@ -65,10 +65,10 @@
                 class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
             </div>
           </div>
-<!--          <div *ngIf="!inEditMode" class="flex flex-col space-y-1">-->
-<!--            <span class="text-not-black font-semibold">No. of trips</span>-->
-<!--            <span class="text-web-text-secondary">24</span>-->
-<!--          </div>-->
+          <!--          <div *ngIf="!inEditMode" class="flex flex-col space-y-1">-->
+          <!--            <span class="text-not-black font-semibold">No. of trips</span>-->
+          <!--            <span class="text-web-text-secondary">24</span>-->
+          <!--          </div>-->
         </div>
       </div>
     </div>
@@ -108,10 +108,10 @@
             </div>
             <div class="flex space-y-1 flex-col">
               <span class="text-web-text-secondary font-semibold">{{
-                document.name
-              }}</span>
+                  document.name
+                }}</span>
               <span *ngIf="document.expAvailable" class="text-web-text-secondary"
-                >Exp:
+              >Exp:
                 {{
                   document.expDate
                     ? (document.expDate | date: 'dd MMM yyyy')
@@ -146,3 +146,13 @@
     [fileTypeOptions]="newDriverFileType"
     [callFromModal]="true"></app-file-upload-popup>
 </app-create-popup>
+<app-confirm-modal
+  [isOpen]="isConfirmModalOpen"
+  buttonText="Remove"
+  [fromDoc]="true"
+  [fileName]="fileName"
+  (isModalClosed)="isConfirmModalOpen = !$event"
+  (performChangeStatus)="performRemove($event)"
+
+>
+</app-confirm-modal>
