@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { GetOutsideModalClickDirective } from '../../directive/get-outside-modal-click.directive';
 
 @Component({
   selector: 'app-custom-date-picker',
@@ -10,6 +11,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     CommonModule,
     FormsModule,
     NgSelectModule,
+    GetOutsideModalClickDirective,
   ],
   templateUrl: './custom-date-picker.component.html',
   styleUrl: './custom-date-picker.component.scss',
@@ -41,8 +43,16 @@ export class CustomDatePickerComponent implements OnInit {
   }
 
   generateCalendar(): void {
-    const start = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), 1);
-    const end = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 0);
+    const start = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth(),
+      1
+    );
+    const end = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + 1,
+      0
+    );
 
     const dates: (Date | null)[] = [];
 
@@ -70,7 +80,7 @@ export class CustomDatePickerComponent implements OnInit {
   }
 
   isDisabled(date: Date): boolean {
-    return date < this.minDate || date > this.maxDate;
+    return date < this.minDate;
   }
 
   selectDate(date: Date): void {
@@ -82,13 +92,21 @@ export class CustomDatePickerComponent implements OnInit {
   }
 
   previousMonth(): void {
-    this.currentMonth = new Date(this.selectedYear, this.currentMonth.getMonth() - 1, 1);
+    this.currentMonth = new Date(
+      this.selectedYear,
+      this.currentMonth.getMonth() - 1,
+      1
+    );
     this.selectedYear = this.currentMonth.getFullYear();
     this.generateCalendar();
   }
 
   nextMonth(): void {
-    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 1);
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + 1,
+      1
+    );
     this.selectedYear = this.currentMonth.getFullYear();
     this.generateCalendar();
   }
@@ -110,4 +128,3 @@ export class CustomDatePickerComponent implements OnInit {
     this.selectedYear = this.currentMonth.getFullYear();
   }
 }
-

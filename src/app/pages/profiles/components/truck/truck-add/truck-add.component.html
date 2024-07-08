@@ -36,8 +36,8 @@
                       registrationZonePlaceholder
                     "></app-custom-input>
                   <span class="text-red text-xs">{{
-                    registrationErrorMessage
-                  }}</span>
+                      registrationErrorMessage
+                    }}</span>
                 </div>
                 <div class="flex flex-col">
                   <app-custom-input
@@ -54,8 +54,8 @@
                       registrationTypePlaceholder
                     "></app-custom-input>
                   <span class="text-red text-xs">{{
-                    registrationCategoryErrorMessage
-                  }}</span>
+                      registrationCategoryErrorMessage
+                    }}</span>
                 </div>
                 <div class="flex flex-col w-full">
                   <input
@@ -67,7 +67,7 @@
                   <span
                     *ngIf="truckAddForm.get('registration_serial').touched && registrationSerialErrorMessage"
                     class="text-red text-xs"
-                    >{{ registrationSerialErrorMessage }}</span
+                  >{{ registrationSerialErrorMessage }}</span
                   >
                 </div>
                 <div class="flex flex-col w-full">
@@ -80,7 +80,7 @@
                   <span
                     *ngIf="truckAddForm.get('registration_num').touched && registrationNumErrorMessage"
                     class="text-red text-xs"
-                    >{{ registrationNumErrorMessage }}</span
+                  >{{ registrationNumErrorMessage }}</span
                   >
                 </div>
               </div>
@@ -139,6 +139,7 @@
         </div>
         <app-file-upload-popup
           (fileInput)="onAddFile($event)"
+          [fileTypeOptions]="fileUpload"
           padding="0"
           [isUploadIconEnabled]="false"></app-file-upload-popup>
       </div>

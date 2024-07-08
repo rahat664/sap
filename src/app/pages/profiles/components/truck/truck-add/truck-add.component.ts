@@ -20,6 +20,7 @@ import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/c
 import { Router } from '@angular/router';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
+import { fileUpload } from '../models/file-upload';
 
 @Component({
   selector: 'app-truck-add',
@@ -57,6 +58,7 @@ export class TruckAddComponent implements OnInit {
   registrationSerialErrorMessage = '';
   registrationNumErrorMessage = '';
   countPassCheckList: number = 0;
+  preHireCheckList: any;
 
   constructor(
     private fb: FormBuilder,
@@ -151,6 +153,7 @@ export class TruckAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getPrehireChecklist();
     this.truckAddForm
       .get('registration_serial')
       .valueChanges.subscribe(value => {
@@ -171,6 +174,11 @@ export class TruckAddComponent implements OnInit {
 
   onClickSave() {
     if (this.truckAddForm.valid) {
+      if (this.truckAddForm.get('checklist').value === null) {
+        this.truckAddForm.patchValue({
+          checklist: this.singleChecklist,
+        });
+      }
       const formData = new FormData();
       const payload: Record<string, any> = {};
 
@@ -292,5 +300,16 @@ export class TruckAddComponent implements OnInit {
         this.countPassCheckList += 1;
       }
     }
+  }
+
+  protected readonly fileUpload = fileUpload;
+
+  private getPrehireChecklist() {
+    this.service.getPreHireChecklist().subscribe((res: any) => {
+      this.preHireCheckList = res.data;
+      this.preHireCheckList.forEach((item: any) => {
+        this.singleChecklist[item.id] = 'NA';
+      });
+    });
   }
 }
