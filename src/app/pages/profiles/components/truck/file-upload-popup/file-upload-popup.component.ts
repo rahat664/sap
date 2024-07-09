@@ -84,13 +84,23 @@ export class FileUploadPopupComponent implements OnChanges {
       this.fileInput.emit(this.fileArray);
     }
     this.fileArray[i].fileOpened = false;
-    this.fileArrayRegType = this.fileInputPlaceholder;
-    this.arrayIndex = i;
-    // remove the file type option from the dropdown
+    const registrationTypesSet = new Set(
+      this.fileArray.map(file => file.registrationType)
+    );
+
+    // Filter the fileTypeOptions based on the registrationTypesSet
+    this.newFileType = this.fileTypeOptions.filter(
+      filetype => !registrationTypesSet.has(filetype.value)
+    );
+
+    // Assign the filtered options to each file's registrationOptions
+    this.fileArray[i + 1].registrationOptions = this.newFileType;
   }
 
   onClickFileType($event: boolean, i: number) {
     this.fileArray[i].fileOpened = $event;
+    this.fileArray[i].registrationOptions = this.fileTypeOptions;
+    // Create a set of registration types from fileArray for quick lookup
   }
 
   @Output() modalClosed: EventEmitter<any> = new EventEmitter<any>();
@@ -121,11 +131,6 @@ export class FileUploadPopupComponent implements OnChanges {
   }
 
   previewFile(file: File) {
-    this.newFileType = JSON.parse(JSON.stringify(this.fileTypeOptions));
-    // filter new file type without the fileArrayRegType
-    this.newFileType = this.newFileType.filter(
-      item => item.value !== this.fileArrayRegType
-    );
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {

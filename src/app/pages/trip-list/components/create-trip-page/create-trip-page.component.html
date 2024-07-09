@@ -1,13 +1,13 @@
 <div>
-  <div class="mx-4 flex justify-between items-center">
+  <div class="mx-4 py-2 flex justify-between items-center">
     <h1 class="text-h1 font-semibold">New Trip</h1>
     <button
-      class="bg-primary text-white rounded-lg px-16 py-2"
+      class="bg-primary text-white rounded-lg px-16 py-3"
       (click)="onCreateTrip()">Create Trip
     </button>
   </div>
-  <form class="rounded-lg bg-white w-full grid lg:grid-cols-4">
-    <div class="mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input">
+  <form [formGroup]="tripForm" class="rounded-lg bg-white w-full">
+    <div class="mx-8 flex flex-col space-y-3 py-8  border-b-2 border-input">
       <div class="flex items-center space-x-3">
         <img class="notPreview" src="assets/svg/candt.svg" alt="candt">
         <span class="text-h2 font-semibold">Customer and time</span>
@@ -20,6 +20,7 @@
             class="bg-input rounded-lg border-none px-4 py-4"
             placeholder="Customer Name"
             id="customerName"
+            [value]="customerName"
           />
         </div>
         <div class="flex flex-col space-y-1 w-full">
@@ -28,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div class="mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input">
+    <div class="mx-8 flex flex-col space-y-3 py-8  border-b-2 border-input">
       <div class="flex items-center space-x-3">
         <img class="notPreview" src="assets/svg/locinfo.svg" alt="candt">
         <span class="text-h2 font-semibold">Location info</span>
@@ -41,6 +42,7 @@
             class="bg-input rounded-lg border-none px-4 py-4"
             placeholder="Address"
             id="loadingPoint"
+            formControlName="loadingPointName"
           />
         </div>
         <div class="flex flex-col space-y-1 w-full">
@@ -50,6 +52,7 @@
             class="bg-input rounded-lg border-none px-4 py-4"
             placeholder="District name"
             id="loadingDistrict"
+            formControlName="loadingPointDistrict"
           />
         </div>
         <div class="flex flex-col space-y-1 w-full">
@@ -59,6 +62,7 @@
             class="bg-input rounded-lg border-none px-4 py-4"
             placeholder="Address"
             id="unLoadingPoint"
+            formControlName="unloadingPointName"
           />
         </div>
         <div class="flex flex-col space-y-1 w-full">
@@ -68,6 +72,7 @@
             class="bg-input rounded-lg border-none px-4 py-4"
             placeholder="District name"
             id="unLoadingDistrict"
+            formControlName="unloadingPointDistrict"
           />
         </div>
       </div>
@@ -135,7 +140,7 @@
         <div class="flex flex-col space-y-1 w-full">
           <label for="numOfVehicle" class="form-label text-body">No. of vehicle</label>
           <input
-            type="text"
+            type="number"
             class="bg-input rounded-lg border-none px-4 py-4"
             placeholder="Enter number"
             id="numOfVehicle"
@@ -144,20 +149,41 @@
         <div class="flex flex-col space-y-1 w-full">
           <label for="size" class="form-label text-body">Size</label>
           <input
-            type="text"
+            type="number"
+            step=".1"
+            min="1"
             class="bg-input rounded-lg border-none px-4 py-4"
             placeholder="Feet"
             id="size"
           />
+          <div class="w-full flex space-x-2 items-center">
+            <span>Sug:</span>
+            <button type="button" (click)="onClickTruckSizeSuggestions(suggestion)"
+                    class="w-12 h-6 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                    [ngClass]="{'bg-green text-white': suggestion.selected}"
+                    *ngFor="let suggestion of truckSizeSuggestions">
+              <span>{{ suggestion.value }}</span>
+            </button>
+          </div>
         </div>
         <div class="flex flex-col space-y-1 w-full">
           <label for="capacity" class="form-label text-body">Capacity</label>
           <input
-            type="text"
+            type="number"
+            step=".1"
             class="bg-input rounded-lg border-none px-4 py-4"
             placeholder="Capacity"
             id="capacity"
           />
+          <div class="w-full flex space-x-2 items-center">
+            <span>Sug:</span>
+            <button type="button" (click)="onClickTruckCapacitySuggestions(suggestion)"
+                    class="w-12 h-6 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                    [ngClass]="{'bg-green text-white': suggestion.selected}"
+                    *ngFor="let suggestion of truckCapacitySuggestions">
+              <span>{{ suggestion.value }}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -212,9 +238,20 @@
       </div>
       <textarea class="bg-input rounded-lg border-none px-4 py-4 w-full" placeholder="Write here"></textarea>
     </div>
-    <div class="flex space-x-3 items-center col-span-3 mx-8 mb-8">
-      <input type="checkbox">
+    <div class="flex space-x-3 items-center col-span-3 mx-8 pb-8">
+      <input type="checkbox" (change)="toggleSaveAsTemplateInputField($any($event))">
       <span class="text-body">Save as template for future use</span>
+    </div>
+    <div class="mx-8 pb-8" *ngIf="saveTemplateInputEnabled">
+      <div class="grid lg:grid-cols-2 gap-4 w-full">
+        <div class="flex flex-col space-y-1">
+          <label class="form-label text-body" for="templateName">Template Name</label>
+          <input type="text"
+                 class="bg-input rounded-lg border-none px-4 py-4"
+                 placeholder="Template Name"
+                 id="templateName">
+        </div>
+      </div>
     </div>
   </form>
 </div>

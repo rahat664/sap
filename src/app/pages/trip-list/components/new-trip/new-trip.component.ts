@@ -30,7 +30,7 @@ export class NewTripComponent implements OnInit {
   createButtonEnabled: boolean;
   templates: any;
   selectedTemplate: any;
-  customerSelectMenuOpened: boolean = false;
+  customerSelectMenuOpened: boolean = true;
   isTemplateEnabled: boolean;
 
   constructor(
@@ -38,7 +38,9 @@ export class NewTripComponent implements OnInit {
     private service: TripService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.manageStore();
+  }
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {
     this.companySuggestions = [];
@@ -84,5 +86,74 @@ export class NewTripComponent implements OnInit {
     this.customerSelectMenuOpened = false;
     this.selectedTemplate = tripTemplate;
     this.isTemplateEnabled = true;
+  }
+
+  private manageStore() {
+    const cachedTruckSize = [
+      {
+        value: 5,
+        selected: false,
+      },
+      {
+        value: 10,
+        selected: false,
+      },
+      {
+        value: 12,
+        selected: false,
+      },
+      {
+        value: 12.5,
+        selected: false,
+      },
+      {
+        value: 13,
+        selected: false,
+      },
+    ];
+    const cachedTruckCapacity = [
+      {
+        value: 5,
+        selected: false,
+      },
+      {
+        value: 10,
+        selected: false,
+      },
+      {
+        value: 12,
+        selected: false,
+      },
+      {
+        value: 12.5,
+        selected: false,
+      },
+      {
+        value: 13,
+        selected: false,
+      },
+    ];
+
+    const fetchedTruckSize = JSON.parse(
+      localStorage.getItem('cachedTruckSize')
+    );
+    if (fetchedTruckSize) {
+      this.service.cachedTruckSize.next(fetchedTruckSize);
+    } else {
+      localStorage.setItem('cachedTruckSize', JSON.stringify(cachedTruckSize));
+      this.service.cachedTruckSize.next(cachedTruckSize);
+    }
+    const fetchedTruckCapacity = JSON.parse(
+      localStorage.getItem('cachedTruckCapacity')
+    );
+    if (fetchedTruckCapacity) {
+      this.service.cachedTruckCapacity.next(fetchedTruckCapacity);
+    } else {
+      this.service.cachedTruckCapacity.next(cachedTruckSize);
+      localStorage.setItem(
+        'cachedTruckCapacity',
+        JSON.stringify(cachedTruckCapacity)
+      );
+    }
   }
 }

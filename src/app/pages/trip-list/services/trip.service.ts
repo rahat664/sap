@@ -6,6 +6,7 @@ import {
 } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import {
+  BehaviorSubject,
   catchError,
   debounceTime,
   distinctUntilChanged,
@@ -23,6 +24,8 @@ export class TripService {
   tripTemplateUrl = `${environment.backendUrl}/api/trip_templates`;
   vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
+  cachedTruckSize: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  cachedTruckCapacity: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
   constructor(private http: HttpClient) {}
 

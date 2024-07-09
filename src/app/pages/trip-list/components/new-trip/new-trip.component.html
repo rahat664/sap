@@ -1,6 +1,6 @@
 <div class="flex flex-col space-y-3" *ngIf="customerSelectMenuOpened">
   <div class="flex flex-col space-y-3">
-    <div class="flex mx-4 justify-between py-2 items-center">
+    <div class="flex mx-4 justify-between py-3 items-center">
       <h1 class="text-h1 font-semibold">New Trip</h1>
     </div>
     <div class="bg-white p-4 m-4 rounded-lg flex justify-between items-center">
@@ -36,7 +36,7 @@
           </ul>
         </div>
       </div>
-      <button *ngIf="createButtonEnabled" class="bg-primary text-white rounded-lg px-16 py-2"
+      <button *ngIf="createButtonEnabled" class="bg-primary text-white rounded-lg px-16 py-3"
               (click)="onCreateTrip()">Create
         Trip
       </button>
