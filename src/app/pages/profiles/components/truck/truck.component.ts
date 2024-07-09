@@ -170,7 +170,6 @@ export class TruckComponent implements OnInit {
       if (res) {
         this.isNewOpen = false;
         this.isOpen = false;
-        this.searchValue = '';
         this.truckList = [];
         this.getTruckList();
       }

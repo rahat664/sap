@@ -38,6 +38,8 @@ export class FileUploadPopupComponent implements OnChanges {
   @Input() singleTruck: any;
   @Input() isFromTruck!: boolean;
   newFileType: any;
+  fileArrayRegType: string = '';
+  arrayIndex: number;
 
   constructor(
     private sharedDriverEditService: DriverEditSharedService,
@@ -82,15 +84,13 @@ export class FileUploadPopupComponent implements OnChanges {
       this.fileInput.emit(this.fileArray);
     }
     this.fileArray[i].fileOpened = false;
+    this.fileArrayRegType = this.fileInputPlaceholder;
+    this.arrayIndex = i;
     // remove the file type option from the dropdown
   }
 
   onClickFileType($event: boolean, i: number) {
     this.fileArray[i].fileOpened = $event;
-    this.newFileType = JSON.parse(JSON.stringify(this.fileTypeOptions));
-    this.newFileType = this.newFileType.filter(
-      item => item.value !== this.fileArray[i].registrationType
-    );
   }
 
   @Output() modalClosed: EventEmitter<any> = new EventEmitter<any>();
@@ -121,6 +121,11 @@ export class FileUploadPopupComponent implements OnChanges {
   }
 
   previewFile(file: File) {
+    this.newFileType = JSON.parse(JSON.stringify(this.fileTypeOptions));
+    // filter new file type without the fileArrayRegType
+    this.newFileType = this.newFileType.filter(
+      item => item.value !== this.fileArrayRegType
+    );
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
@@ -130,6 +135,7 @@ export class FileUploadPopupComponent implements OnChanges {
         registrationType: null,
         registrationExpireDate: null,
         fileOpened: false,
+        registrationOptions: this.newFileType,
       });
       this.sharedDriverEditService.closeInputSelect.next(false);
       if (!this.callFromModal) {

@@ -14,6 +14,7 @@ import { CustomInputSelectModel } from '../../../../../shared/modules/custom-inp
 import { NgIf } from '@angular/common';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
+import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-transporter-add',
@@ -40,7 +41,8 @@ export class TransporterAddComponent implements OnInit {
     private service: UserService,
     private validation: ValidationService,
     private toastr: HandleToastrService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private shared: DriverEditSharedService
   ) {
     this.transporterForm = this.fb.group({
       name: [
@@ -165,6 +167,7 @@ export class TransporterAddComponent implements OnInit {
   }
 
   onSelectPayment($event: number) {
+    this.shared.closeInputSelect.next(false);
     // this.transporterForm.get('preferredPaymentMethod').setValue($event);
     this.paymentInputPlaceholder = this.paymentOptionsArray.find(
       item => item.id === $event

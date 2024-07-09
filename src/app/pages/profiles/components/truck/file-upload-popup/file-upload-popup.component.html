@@ -49,7 +49,7 @@
             class="w-full flex-1"
             backgroundColor="white"
             inputPlaceholder="Select type"
-            [options]="newFileType"
+            [options]="file.registrationOptions"
             (selectedId)="onSelectFileType($event, i)"
             [inputSearch]="file.registrationType"
             appGetClickEvent
