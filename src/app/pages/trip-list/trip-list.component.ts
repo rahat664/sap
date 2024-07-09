@@ -284,7 +284,7 @@ export class TripListComponent implements OnInit {
         this.loading = false;
         this.getTripList();
       }
-    }, 300);
+    }, 1000);
   }
 
   private updateTripList(trip: any) {
