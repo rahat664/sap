@@ -21,7 +21,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
   willShow = false;
   dropdownOpen = false;
   private subs: Subscription;
+
   constructor(private mobileViewService: ToggleResponsiveService) {}
+
   ngOnInit(): void {
     this.subs = this.mobileViewService.isSidebarOpen.subscribe(value => {
       this.willShow = value;

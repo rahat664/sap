@@ -14,6 +14,27 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import {
+  MatButtonToggle,
+  MatButtonToggleModule,
+} from '@angular/material/button-toggle';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import {
+  MatOption,
+  MatSelect,
+  MatSelectModule,
+} from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerModule,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -27,7 +48,23 @@ import {
     GetClickEventDirective,
     ReactiveFormsModule,
     FormsModule,
+    MatButtonToggle,
+    MatButtonToggleModule,
+    MatButtonModule,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    TextFieldModule,
+    MatDatepickerInput,
+    MatDatepicker,
+    MatDatepickerToggle,
+    MatDatepickerModule,
+    MatIcon,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './create-trip-page.component.html',
   styleUrl: './create-trip-page.component.scss',
 })
@@ -42,6 +79,9 @@ export class CreateTripPageComponent implements OnInit {
   truckCapacitySuggestions: any[];
   truckSizeSuggestions: any[];
   saveTemplateInputEnabled: boolean;
+  private readonly _currentYear = new Date().getFullYear();
+  readonly minDate = new Date(this._currentYear - 20, 0, 1);
+  readonly maxDate = new Date(this._currentYear + 1, 11, 31);
 
   constructor(
     private service: TripService,
@@ -151,4 +191,6 @@ export class CreateTripPageComponent implements OnInit {
       unloadingPointName: ['', Validators.required],
     });
   }
+
+  triggerResize() {}
 }

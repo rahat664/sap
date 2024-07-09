@@ -2,13 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 @import '@ng-select/ng-select/themes/default.theme.css';
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+
 * {
   --webkit-box-sizing: border-box;
   --moz-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif !important;
 }
 
 body {
@@ -47,7 +49,8 @@ body {
 input::placeholder {
   font-size: 0.75rem;
   @apply text-input-hint
-  /* Set the font size of the placeholder text */;
+    /* Set the font size of the placeholder text */
+  ;
 }
 
 textarea::placeholder {
@@ -72,4 +75,37 @@ textarea::placeholder {
 
 img {
   cursor: pointer;
+}
+
+.fal, .far, .fas, .fad, .fab {
+  font-family: "Font Awesome 5 Pro", serif !important;
+}
+
+.mat-mdc-text-field-wrapper {
+  width: 100%;
+  border-radius: 8px !important;
+  background-color: #F5FBFC !important;
+}
+
+.mat-mdc-text-field-wrapper:focus-within {
+  border: 1px solid #2563EB !important;
+}
+
+.mdc-notched-outline {
+  display: none !important;
+}
+
+.custom-icon {
+  margin-left: auto; /* Align the icon to the right */
+  color: red; /* Change the icon color */
+}
+
+mat-select::ng-deep .mat-select-arrow {
+  display: none; /* Hide the default arrow */
+}
+
+.mat-mdc-select-arrow {
+  content: url('./assets/svg/arrow-down.svg');
+  width: 100% !important;
+  height: 100% !important;
 }

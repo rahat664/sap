@@ -30,7 +30,7 @@ export class NewTripComponent implements OnInit {
   createButtonEnabled: boolean;
   templates: any;
   selectedTemplate: any;
-  customerSelectMenuOpened: boolean = true;
+  customerSelectMenuOpened: boolean = false;
   isTemplateEnabled: boolean;
 
   constructor(

@@ -15,17 +15,26 @@
       <div class="grid lg:grid-cols-2 gap-4 w-full ">
         <div class="flex flex-col space-y-1 w-full">
           <label for="customerName" class="form-label text-body">Customer Name</label>
-          <input
-            type="text"
-            class="bg-input rounded-lg border-none px-4 py-4"
-            placeholder="Customer Name"
-            id="customerName"
-            [value]="customerName"
-          />
+          <!--          <input-->
+          <!--            type="text"-->
+          <!--            class="bg-input rounded-lg border-none px-4 py-4"-->
+          <!--            placeholder="Customer Name"-->
+          <!--            id="customerName"-->
+          <!--            [value]="customerName"-->
+          <!--          />-->
+          <mat-form-field appearance="outline" id="customerName">
+            <input matInput placeholder="Enter Customer Name">
+          </mat-form-field>
         </div>
         <div class="flex flex-col space-y-1 w-full">
           <label for="date" class="form-label text-body">Date</label>
-          <app-custom-date-picker id="date"></app-custom-date-picker>
+          <mat-form-field id="date" class="example-full-width" appearance="outline">
+            <input matInput placeholder="select date" (focus)="picker.open()" (click)="picker.open()" [min]="minDate"
+                   [max]="maxDate"
+                   [matDatepicker]="picker" />
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
         </div>
       </div>
     </div>
@@ -46,7 +55,7 @@
           />
         </div>
         <div class="flex flex-col space-y-1 w-full">
-          <label for="customerName" class="form-label text-body">Loading District</label>
+          <label for="loadingPoint" class="form-label text-body">Loading District</label>
           <input
             type="text"
             class="bg-input rounded-lg border-none px-4 py-4"
@@ -196,13 +205,14 @@
           </div>
           <div class="flex flex-col space-y-1 w-full">
             <label for="goods" class="form-label text-body">Goods Type</label>
-            <app-custom-input id="goods"
-                              [inputSearch]="goodsInputPlaceholder"
-                              [options]="goodsOptionsArray"
-                              inputPlaceholder="Select Goods Type"
-                              appGetClickEvent
-                              (clickedElement)="onClickPayment($event)"
-                              (selectedId)="onSelectPayment($event)"></app-custom-input>
+            <mat-form-field appearance="outline" id="goods">
+              <mat-select [(value)]="leftButtonClicked" placeholder="Select Goods">
+                <mat-option>None</mat-option>
+                <mat-option value="option1">Option 1</mat-option>
+                <mat-option value="option2">Option 2</mat-option>
+                <mat-option value="option3">Option 3</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
         </div>
         <div class="flex flex-col space-y-3">
