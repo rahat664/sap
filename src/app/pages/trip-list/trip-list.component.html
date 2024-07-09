@@ -84,7 +84,7 @@
             class="w-full px-4 py-4 rounded-lg outline-none ring-none border-none bg-input" />
           <div
             appGetOutsideModalClick
-            (clickOutside)="isSearchedMenuOpened = !$event"
+            (clickOutside)="isTripSearchedMenuOpened = !$event"
             *ngIf="isTripSearchedMenuOpened"
             id="tripIdDropdown"
             class="z-10 absolute top-full left-0 w-full max-h-64 overflow-y-auto bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
@@ -113,16 +113,16 @@
         <div
           class="flex justify-between space-x-16 items-center py-3 border-b border-gray-300">
           <span>Customer Rate (CR)</span>
-          <span>{{ summary.crs ? summary.crs : 0 }}</span>
+          <span>{{ (summary.crs ? summary.crs : 0) | number }}</span>
         </div>
         <div
           class="flex justify-between items-center py-3 border-b border-gray-300">
           <span>Transporter Rate (TR)</span>
-          <span>{{ summary.trs ? summary.trs : 0 }}</span>
+          <span>{{ (summary.trs ? summary.trs : 0) | number }}</span>
         </div>
         <div class="flex justify-between items-center py-3">
           <span>Gross Profit (GP)</span>
-          <span>{{ summary.gps ? summary.gps : 0 }}</span>
+          <span>{{ (summary.gps ? summary.gps : 0) |number }}</span>
         </div>
       </div>
       <div class="overflow-hidden relative p-4 w-full rounded-lg bg-white">
@@ -135,7 +135,6 @@
           <div class="flex relative space-x-4 items-center h-full">
             <ng-container *ngFor="let item of statusButtons">
               <app-button-chips
-                [isDisabled]="item.count === 0"
                 [count]="item.count"
                 [Status]="item.name"
                 (click)="onStatusClick(item.name)"
@@ -216,9 +215,9 @@
             {{ trip.tripPoints[1]?.pointDistrict }}
           </td>
           <td>{{ trip.status }}</td>
-          <td>{{ trip.customerRate ? trip.customerRate : 0 }}</td>
-          <td>{{ trip.transporterRate ? trip.transporterRate : 0 }}</td>
-          <td>{{ getCountOfGp(trip) }}</td>
+          <td>{{ (trip.customerRate ? trip.customerRate : 0) | number }}</td>
+          <td>{{ (trip.transporterRate ? trip.transporterRate : 0) | number }}</td>
+          <td>{{ getCountOfGp(trip) == 'N/A' ? 'N/A' : (getCountOfGp(trip) | number) }}</td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">

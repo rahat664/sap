@@ -203,33 +203,33 @@ export class TruckComponent implements OnInit {
   }
 
   onMaxHeightCross($event: boolean) {
-    setTimeout(() => {
-      if (!$event && this.totalPages > 1 && this.page != 1) {
-        this.page = 1;
-        if (this.searchValue) {
-          this.service
-            .getTruckList(this.page, this.searchValue)
-            .pipe(debounceTime(500))
-            .subscribe((res: any) => {
-              res.data.responses.forEach((truck: TruckModel) => {
-                truck.truck.preHireCheckList = String(
-                  truck.preHireChecklistList
-                );
-                truck.truck.noOfTrips = truck.noOfTrips;
-                this.truckList.push(truck.truck);
-              });
-            });
-        } else {
-          this.service.getTruckList(this.page).subscribe((res: any) => {
-            res.data.responses.forEach((truck: TruckModel) => {
-              truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-              truck.truck.noOfTrips = truck.noOfTrips;
-              this.truckList.push(truck.truck);
-            });
-          });
-        }
-      }
-    }, 1);
+    // setTimeout(() => {
+    //   if (!$event && this.totalPages > 1 && this.page != 1) {
+    //     this.page = 1;
+    //     if (this.searchValue) {
+    //       this.service
+    //         .getTruckList(this.page, this.searchValue)
+    //         .pipe(debounceTime(500))
+    //         .subscribe((res: any) => {
+    //           res.data.responses.forEach((truck: TruckModel) => {
+    //             truck.truck.preHireCheckList = String(
+    //               truck.preHireChecklistList
+    //             );
+    //             truck.truck.noOfTrips = truck.noOfTrips;
+    //             this.truckList.push(truck.truck);
+    //           });
+    //         });
+    //     } else {
+    //       this.service.getTruckList(this.page).subscribe((res: any) => {
+    //         res.data.responses.forEach((truck: TruckModel) => {
+    //           truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+    //           truck.truck.noOfTrips = truck.noOfTrips;
+    //           this.truckList.push(truck.truck);
+    //         });
+    //       });
+    //     }
+    //   }
+    // }, 1);
   }
 
   onKeyUpSearch($event: KeyboardEvent) {

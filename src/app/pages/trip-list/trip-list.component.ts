@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
@@ -46,12 +46,13 @@ import { DriverEditSharedService } from '../profiles/services/driver-edit-shared
     GetOutsideModalClickDirective,
     CheckTheHeightCrossMaxHeightOrNotDirective,
     RouterLink,
+    DecimalPipe,
   ],
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.scss'],
 })
 export class TripListComponent implements OnInit {
-  filterOpened = false;
+  filterOpened = true;
   filterForm: FormGroup;
   isDateOpened = false;
   tripList: Trip[] = [];
@@ -278,13 +279,13 @@ export class TripListComponent implements OnInit {
   }
 
   onMaxHeightCross($event: boolean) {
-    setTimeout(() => {
-      if ($event && this.totalPages > 1 && this.page < 1) {
-        this.page = 1;
-        this.loading = false;
-        this.getTripList();
-      }
-    }, 1000);
+    // setTimeout(() => {
+    //   if (!$event && this.totalPages > 1 && this.page < 1) {
+    //     this.page = 1;
+    //     this.loading = false;
+    //     this.getTripList();
+    //   }
+    // }, 1000);
   }
 
   private updateTripList(trip: any) {

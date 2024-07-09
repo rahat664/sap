@@ -41,7 +41,7 @@ import { DriverEditSharedService } from '../profiles/services/driver-edit-shared
   styleUrl: './user-management.component.scss',
 })
 export class UserManagementComponent implements OnInit {
-  filterOpened: boolean;
+  filterOpened: boolean = true;
   statusFilter = 0;
   roleFilter = 0;
   statusInputPlaceholder = 'Active';
@@ -339,12 +339,12 @@ export class UserManagementComponent implements OnInit {
   }
 
   onMaxHeightCross($event: boolean) {
-    setTimeout(() => {
-      if (!$event && this.totalPages > 1 && this.page != 1) {
-        this.page = 1;
-        this.scrolledData();
-      }
-    }, 1);
+    // setTimeout(() => {
+    //   if (!$event && this.totalPages > 1 && this.page != 1) {
+    //     this.page = 1;
+    //     this.scrolledData();
+    //   }
+    // }, 1);
   }
 
   onKeyUpSearch($event: KeyboardEvent) {

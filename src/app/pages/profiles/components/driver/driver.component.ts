@@ -134,6 +134,7 @@ export class DriverComponent implements OnInit {
       }
     });
   }
+
   onBottom($event: boolean) {
     if ($event && this.page < this.totalPages - 1) {
       this.page++;
@@ -144,14 +145,14 @@ export class DriverComponent implements OnInit {
   }
 
   onMaxHeightCross($event: boolean) {
-    setTimeout(() => {
-      if (!$event && this.totalPages > 1 && this.page != 1) {
-        this.page = 1;
-        this.user.getDriver(this.page).subscribe((res: any) => {
-          this.driverList.push(...res.data.responses);
-        });
-      }
-    }, 1);
+    // setTimeout(() => {
+    //   if (!$event && this.totalPages > 1 && this.page != 1) {
+    //     this.page = 1;
+    //     this.user.getDriver(this.page).subscribe((res: any) => {
+    //       this.driverList.push(...res.data.responses);
+    //     });
+    //   }
+    // }, 1);
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
