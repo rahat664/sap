@@ -11,4 +11,5 @@ export class CustomerModel {
   address: string;
   customerCode: string;
   user: any[];
+  creationDate: any;
 }

@@ -25,6 +25,7 @@ export class DriverEditSharedService {
   isConfirmModalOpen: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   deletedDriverFiles: any[] = [];
   deletedTruckFiles: any[] = [];
+  deletedIndices: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -154,7 +155,7 @@ export class DriverEditSharedService {
       if (i == length - 1) {
         this.truck
           .deleteTruckFiles(
-            document[i].preview,
+            document[i].documents.url,
             this.truckUpdateForm.get('id').value
           )
           .subscribe({
@@ -173,7 +174,7 @@ export class DriverEditSharedService {
       } else {
         this.truck
           .deleteTruckFiles(
-            document[i].preview,
+            document[i].documents.url,
             this.truckUpdateForm.get('id').value
           )
           .subscribe();
@@ -183,7 +184,6 @@ export class DriverEditSharedService {
 
   onTruckUpdate() {
     if (this.truckUpdateForm.valid) {
-      console.log(this.deletedTruckFiles.length);
       if (this.deletedTruckFiles.length) {
         this.deleteTruckFile(this.deletedTruckFiles);
       } else {
@@ -204,7 +204,7 @@ export class DriverEditSharedService {
       if (i == length - 1) {
         this.service
           .deleteDriverFiles(
-            document[i].preview,
+            document[i].documents.url,
             JSON.parse(localStorage.getItem('driver')).id
           )
           .subscribe({
@@ -223,11 +223,20 @@ export class DriverEditSharedService {
       } else {
         this.service
           .deleteDriverFiles(
-            document[i].preview,
+            document[i].documents.url,
             this.driverUpdateForm.get('driverId').value
           )
           .subscribe();
       }
+    }
+  }
+
+  restoreDeletedDocument() {
+    if (this.deletedTruckFiles) {
+      this.deletedTruckFiles.forEach((file: any) => {
+        this.truckDocuments.splice(file.index, 0, file.documents);
+      });
+      this.deletedTruckFiles = [];
     }
   }
 
@@ -341,19 +350,19 @@ export class DriverEditSharedService {
       'NID Front': 'nidFront',
       'NID Back': 'nidBack',
     };
+    const fileIndex = documents.findIndex(
+      (doc: any) => doc.name === document.name
+    );
     documents = documents.filter((doc: any) => doc.name !== document.name);
     if (name === 'driverFilesUrls') {
       this.documents = documents;
       this.deletedDriverFiles.push({
-        registrationType: document.name,
-        preview: document.url,
+        documents: document,
+        index: fileIndex,
       });
     } else {
       this.truckDocuments = documents;
-      this.deletedTruckFiles.push({
-        registrationType: document.name,
-        preview: document.url,
-      });
+      this.deletedTruckFiles.push(document);
     }
     const formControlName = documentKeyMap[document.name];
     const resetValue = formControlName?.includes('ExpDate') ? null : undefined;

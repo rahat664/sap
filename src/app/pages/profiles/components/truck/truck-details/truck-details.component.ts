@@ -56,7 +56,7 @@ export class TruckDetailsComponent implements OnInit {
   truckAddForm: FormGroup;
   isExpiryAvailable: boolean;
   isConfirmModalOpen: boolean;
-  closedDocument: boolean;
+  closedDocument: any[] = [];
 
   constructor(private shared: DriverEditSharedService) {}
 
@@ -107,6 +107,7 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    localStorage.removeItem('previousDocument');
     this.shared.isUploadPopupOpen.subscribe(value => {
       this.isUploadPopupOpen = value;
     });
@@ -124,6 +125,7 @@ export class TruckDetailsComponent implements OnInit {
       this.numberOnly(value);
     });
     this.documents = this.shared.getTruckDocument(this.singleTruck);
+    localStorage.setItem('previousDocument', JSON.stringify(this.documents));
     this.truckFileTypeModify(this.documents);
   }
 
@@ -179,5 +181,12 @@ export class TruckDetailsComponent implements OnInit {
     this.shared.onClickTruckCloseButton(this.closedDocument);
     this.documents = this.shared.truckDocuments;
     this.truckFileTypeModify(this.documents);
+  }
+
+  onClickCancel() {
+    this.inEditMode = false;
+    this.documents = [];
+    this.documents = JSON.parse(localStorage.getItem('previousDocument'));
+    localStorage.removeItem('previousDocument');
   }
 }

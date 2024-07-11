@@ -14,6 +14,7 @@ import { driverFileType } from '../../customer/model/driver-file-type';
 import { UserService } from '../../../services/user.service';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
+import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 
 @Component({
   selector: 'app-driver-add',
@@ -24,6 +25,7 @@ import { HandleToastrService } from '../../../../../shared/services/handle-toast
     FileUploadPopupComponent,
     ReactiveFormsModule,
     FormsModule,
+    AlphabetOnlyDirective,
   ],
   templateUrl: './driver-add.component.html',
   styleUrl: './driver-add.component.scss',
@@ -37,7 +39,7 @@ export class DriverAddComponent implements OnInit {
     private validation: ValidationService,
     private router: Router,
     private service: UserService,
-    private toastr: HandleToastrService,
+    private toastr: HandleToastrService
   ) {
     this.driverAddForm = this.fb.group({
       driverName: [
@@ -200,9 +202,6 @@ export class DriverAddComponent implements OnInit {
   }
 
   getDriverPhoneErrorWithoutTouch() {
-    console.log(
-      this.driverAddForm?.get('driverPhone').hasError('invalidNumber')
-    );
     if (this.driverAddForm?.get('driverPhone').hasError('invalidNumber')) {
       return 'Invalid driver number';
     } else {

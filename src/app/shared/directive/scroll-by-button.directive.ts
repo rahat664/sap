@@ -55,10 +55,6 @@ export class ScrollByButtonDirective
   }
 
   private detectThatElementIsScrollableOrNot() {
-    console.log(
-      this.el.nativeElement.scrollWidth,
-      this.el.nativeElement.clientWidth
-    );
     this.isVisible.emit(
       this.el.nativeElement.scrollWidth > this.el.nativeElement.clientWidth
     );

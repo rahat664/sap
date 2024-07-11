@@ -44,6 +44,7 @@ export class DriverDetailsComponent implements OnInit {
   constructor(private driverEditSharedService: DriverEditSharedService) {}
 
   ngOnInit(): void {
+    localStorage.removeItem('previousDriverDocument');
     this.driverEditSharedService.isUploadPopupOpen.subscribe(res => {
       this.isUploadPopupOpen = res;
     });
@@ -55,6 +56,10 @@ export class DriverDetailsComponent implements OnInit {
     );
     this.driverName = this.driverEditSharedService.driverName;
     this.driverPhone = this.driverEditSharedService.driverPhone;
+    localStorage.setItem(
+      'previousDriverDocument',
+      JSON.stringify(this.documents)
+    );
     this.driverFileTypeModify(this.documents);
   }
 
@@ -95,5 +100,12 @@ export class DriverDetailsComponent implements OnInit {
     this.driverEditSharedService.onClickCloseButton(this.closedDocument);
     this.documents = this.driverEditSharedService.documents;
     this.driverFileTypeModify(this.documents);
+  }
+
+  onClickCancel() {
+    this.inEditMode = false;
+    this.documents = [];
+    this.documents = JSON.parse(localStorage.getItem('previousDriverDocument'));
+    localStorage.removeItem('previousDriverDocument');
   }
 }

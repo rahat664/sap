@@ -40,48 +40,41 @@ export class UserService {
 
   getUsers(
     page: number,
+    size?: number,
     status?: string,
     search?: string,
     department?: string
   ): Observable<any> {
-    // take all possible parameters and return the response
-    if (status && !search && !department) {
-      return this.http.get(`${this.url}/admins?page=${page}&status=${status}`);
-    } else if (search && !status && !department) {
-      return this.http.get(`${this.url}/admins?page=${page}&search=${search}`);
-    } else if (department && !status && !search) {
-      return this.http.get(
-        `${this.url}/admins?page=${page}&department=${department}`
-      );
-    } else if (status && search && !department) {
-      return this.http.get(
-        `${this.url}/admins?page=${page}&status=${status}&search=${search}`
-      );
-    } else if (status && department && !search) {
-      return this.http.get(
-        `${this.url}/admins?page=${page}&status=${status}&department=${department}`
-      );
-    } else if (search && department && !status) {
-      return this.http.get(
-        `${this.url}/admins?page=${page}&search=${search}&department=${department}`
-      );
-    } else if (status && search && department) {
-      return this.http.get(
-        `${this.url}/admins?page=${page}&status=${status}&search=${search}&department=${department}`
-      );
-    } else {
-      return this.http.get(`${this.url}/admins?page=${page}`);
+    const params: any = { page };
+
+    if (size) {
+      params.size = size;
     }
+    if (status) {
+      params.status = status;
+    }
+    if (search) {
+      params.search = search;
+    }
+    if (department) {
+      params.department = department;
+    }
+
+    const queryString = Object.keys(params)
+      .map(key => `${key}=${encodeURIComponent(params[key])}`)
+      .join('&');
+
+    return this.http.get(`${this.url}/admins?${queryString}`);
   }
 
-  getTransporter(page: number, search?: string) {
+  getTransporter(page: number, size: number, search?: string): Observable<any> {
+    let apiUrl = `${this.url}/transporters?page=${page}&size=${size}`;
+
     if (search) {
-      return this.http.get(
-        `${this.url}/transporters?page=${page}&search=${search}`
-      );
-    } else {
-      return this.http.get(`${this.url}/transporters?page=${page}`);
+      apiUrl += `&search=${encodeURIComponent(search)}`;
     }
+
+    return this.http.get(apiUrl);
   }
 
   addDriver(body: any) {
@@ -92,12 +85,14 @@ export class UserService {
     return this.http.put(`${this.url}/edit-driver`, body, {});
   }
 
-  getDriver(page: number, search?: string) {
+  getDriver(page: number, size: number, search?: string): Observable<any> {
+    let apiUrl = `${this.url}/drivers?page=${page}&size=${size}`;
+
     if (search) {
-      return this.http.get(`${this.url}/drivers?page=${page}&search=${search}`);
-    } else {
-      return this.http.get(`${this.url}/drivers?page=${page}`);
+      apiUrl += `&search=${encodeURIComponent(search)}`;
     }
+
+    return this.http.get(apiUrl);
   }
 
   private handleError(error: HttpErrorResponse) {

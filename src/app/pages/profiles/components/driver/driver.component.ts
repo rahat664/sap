@@ -5,7 +5,7 @@ import { FileUploadPopupComponent } from '../truck/file-upload-popup/file-upload
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { UserModel } from '../../../user-management/models/user.model';
@@ -32,6 +32,7 @@ import { debounceTime } from 'rxjs';
     UploadButtonComponent,
     LoadingComponent,
     CheckTheHeightCrossMaxHeightOrNotDirective,
+    DatePipe,
   ],
   templateUrl: './driver.component.html',
   styleUrl: './driver.component.scss',
@@ -45,6 +46,7 @@ export class DriverComponent implements OnInit {
   private page: number;
   totalPages: number;
   searchValue: string;
+  private size: number = 30;
 
   constructor(
     private user: UserService,
@@ -62,7 +64,7 @@ export class DriverComponent implements OnInit {
     if (this.searchValue) {
       //subscribe with debounce time
       this.user
-        .getDriver(this.page, this.searchValue)
+        .getDriver(this.page, this.size, this.searchValue)
         .pipe(debounceTime(500))
         .subscribe((res: any) => {
           this.driverList = res.data.responses;
@@ -70,7 +72,7 @@ export class DriverComponent implements OnInit {
           this.loading = false;
         });
     } else {
-      this.user.getDriver(this.page).subscribe((res: any) => {
+      this.user.getDriver(this.page, this.size).subscribe((res: any) => {
         this.driverList = res.data.responses;
         this.totalPages = res.data.totalPages;
         this.loading = false;
@@ -136,12 +138,12 @@ export class DriverComponent implements OnInit {
   }
 
   onBottom($event: boolean) {
-    if ($event && this.page < this.totalPages - 1) {
-      this.page++;
-      this.user.getDriver(this.page).subscribe((res: any) => {
-        this.driverList.push(...res.data.responses);
-      });
-    }
+    // if ($event && this.page < this.totalPages - 1) {
+    //   this.page++;
+    //   this.user.getDriver(this.page, this.size).subscribe((res: any) => {
+    //     this.driverList.push(...res.data.responses);
+    //   });
+    // }
   }
 
   onMaxHeightCross($event: boolean) {

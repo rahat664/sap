@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,12 +13,13 @@ export class TruckService {
 
   constructor(private http: HttpClient) {}
 
-  getTruckList(page: number, search?: string) {
+  getTruckList(page: number, size: number, search?: string): Observable<any> {
+    let apiUrl = `${this.url}?page=${page}&size=${size}`;
     if (search) {
-      return this.http.get(`${this.url}?page=${page}&search=${search}`);
-    } else {
-      return this.http.get(`${this.url}?page=${page}`);
+      apiUrl += `&search=${encodeURIComponent(search)}`;
     }
+
+    return this.http.get(apiUrl);
   }
 
   addTruck(truck: any) {
@@ -40,5 +42,9 @@ export class TruckService {
     return this.http.delete(
       `${this.url}/${truckId}/documents?documentUrl=${deletedTruckFilesUrl}`
     );
+  }
+
+  validateTruckInformation(body) {
+    return this.http.post(`${this.url}/checkVehicle`, body);
   }
 }

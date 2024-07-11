@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../services/user.service';
 import { CustomerModel } from './model/customer.model';
 import { CommonModule } from '@angular/common';
 import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
@@ -35,15 +34,21 @@ export class CustomerComponent implements OnInit {
   statusFilter = 0;
   roleFilter = 0;
   loading: boolean;
+  size: number = 30;
+  page: number = 0;
+  totalPages: number;
+
   constructor(private service: CustomerService) {}
+
   ngOnInit(): void {
     this.getCustomer();
   }
 
   getCustomer() {
     this.loading = true;
-    this.service.getCustomer().subscribe((res: any) => {
+    this.service.searchCustomer(this.page, this.size).subscribe((res: any) => {
       this.customers = res.data.content;
+      this.totalPages = res.data.totalPages;
       this.loading = false;
     });
   }
@@ -71,21 +76,30 @@ export class CustomerComponent implements OnInit {
       this.customers = [];
       if (target?.length == 11) {
         if (this.checkIfAllInputIsNumber(target)) {
-          this.service.searchCustomer(null, target).subscribe((res: any) => {
-            this.customers = res.data.content;
-            this.loading = false;
-          });
+          this.service
+            .searchCustomer(this.page, this.size, null, target)
+            .subscribe((res: any) => {
+              this.customers = res.data.content;
+              this.totalPages = res.data.totalPages;
+              this.loading = false;
+            });
         } else {
-          this.service.searchCustomer(target, null).subscribe((res: any) => {
-            this.customers = res.data.content;
-            this.loading = false;
-          });
+          this.service
+            .searchCustomer(this.page, this.size, target, null)
+            .subscribe((res: any) => {
+              this.customers = res.data.content;
+              this.totalPages = res.data.totalPages;
+              this.loading = false;
+            });
         }
       } else {
-        this.service.searchCustomer(target, null).subscribe((res: any) => {
-          this.customers = res.data.content;
-          this.loading = false;
-        });
+        this.service
+          .searchCustomer(this.page, this.size, target, null)
+          .subscribe((res: any) => {
+            this.customers = res.data.content;
+            this.totalPages = res.data.totalPages;
+            this.loading = false;
+          });
       }
     } else {
       this.getCustomer();
@@ -94,5 +108,17 @@ export class CustomerComponent implements OnInit {
 
   private checkIfAllInputIsNumber(target: any) {
     return !isNaN(target);
+  }
+
+  onScrollEnd($event: boolean) {
+    if ($event && this.page < this.totalPages - 1) {
+      this.page = this.page + 1;
+      this.service
+        .searchCustomer(this.page, this.size)
+        .subscribe((res: any) => {
+          this.customers.push(...res.data.content);
+          this.totalPages = res.data.totalPages;
+        });
+    }
   }
 }

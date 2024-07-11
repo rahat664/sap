@@ -3,7 +3,7 @@ import { CreatePopupComponent } from '../../../../shared/modal/create-popup/crea
 import { CustomerCreateComponent } from '../customer/customer-create/customer-create.component';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UserModel } from '../../../user-management/models/user.model';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
@@ -34,6 +34,7 @@ import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/d
     TransporterAddComponent,
     LoadingComponent,
     CheckTheHeightCrossMaxHeightOrNotDirective,
+    DatePipe,
   ],
   templateUrl: './transporter.component.html',
   styleUrl: './transporter.component.scss',
@@ -51,6 +52,7 @@ export class TransporterComponent implements OnInit {
   searchValue: string;
   page: number = 0;
   totalPages: number;
+  size: number = 30;
 
   constructor(private service: UserService) {}
 
@@ -84,15 +86,17 @@ export class TransporterComponent implements OnInit {
       this.page++;
       if (this.searchValue) {
         this.service
-          .getTransporter(this.page, this.searchValue)
+          .getTransporter(this.page, this.size, this.searchValue)
           .pipe(debounceTime(500))
           .subscribe((res: any) => {
             this.transporterList.push(...res.data.responses);
           });
       } else {
-        this.service.getTransporter(this.page).subscribe((res: any) => {
-          this.transporterList.push(...res.data.responses);
-        });
+        this.service
+          .getTransporter(this.page, this.size)
+          .subscribe((res: any) => {
+            this.transporterList.push(...res.data.responses);
+          });
       }
     }
   }
@@ -120,7 +124,7 @@ export class TransporterComponent implements OnInit {
     this.loading = true;
     if (this.searchValue) {
       this.service
-        .getTransporter(this.page, this.searchValue)
+        .getTransporter(this.page, this.size, this.searchValue)
         .pipe(debounceTime(500))
         .subscribe((res: any) => {
           this.transporterList = res.data.responses;
@@ -128,11 +132,13 @@ export class TransporterComponent implements OnInit {
           this.loading = false;
         });
     } else {
-      this.service.getTransporter(this.page).subscribe((res: any) => {
-        this.transporterList = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.service
+        .getTransporter(this.page, this.size)
+        .subscribe((res: any) => {
+          this.transporterList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     }
   }
 
@@ -149,15 +155,17 @@ export class TransporterComponent implements OnInit {
         this.page = 1;
         if (this.searchValue) {
           this.service
-            .getTransporter(this.page, this.searchValue)
+            .getTransporter(this.page, this.size, this.searchValue)
             .pipe(debounceTime(500))
             .subscribe((res: any) => {
               this.transporterList.push(...res.data.responses);
             });
         } else {
-          this.service.getTransporter(this.page).subscribe((res: any) => {
-            this.transporterList.push(...res.data.responses);
-          });
+          this.service
+            .getTransporter(this.page, this.size)
+            .subscribe((res: any) => {
+              this.transporterList.push(...res.data.responses);
+            });
         }
       }
     }, 1);

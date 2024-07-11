@@ -86,7 +86,7 @@
         <th class="text-left">Department</th>
         <th class="text-left">Designation</th>
         <th class="text-left">Status</th>
-        <th class="text-left">Created On</th>
+        <th class="text-left whitespace-nowrap">Created On</th>
         <th style="width: 5% !important"></th>
       </tr>
       <tr>
@@ -102,7 +102,7 @@
           <td>{{ user.department }}</td>
           <td>{{ user.designation }}</td>
           <td>{{ user.status }}</td>
-          <td>{{ user.createdOn }}</td>
+          <td class="whitespace-nowrap">{{ user.createdOn ? (user.createdOn | date : 'dd MMM, yyyy') : '' }}</td>
           <td>
             <div class="relative w-full">
               <button

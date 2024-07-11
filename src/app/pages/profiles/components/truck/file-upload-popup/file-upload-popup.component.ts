@@ -104,6 +104,7 @@ export class FileUploadPopupComponent implements OnChanges {
   }
 
   @Output() modalClosed: EventEmitter<any> = new EventEmitter<any>();
+  @Input() isUploadDisabled: boolean = false;
 
   onSubmit() {
     this.sharedDriverEditService.isUploadPopupOpen.next(false);

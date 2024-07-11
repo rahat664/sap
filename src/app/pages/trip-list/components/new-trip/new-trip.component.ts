@@ -47,7 +47,7 @@ export class NewTripComponent implements OnInit {
     const target = $event.target as HTMLInputElement;
     if (target.value) {
       this.customer
-        .searchCustomer(target.value, null)
+        .searchCustomer(0, 1000, target.value, null)
         .subscribe((company: any) => {
           this.isCustomerMenuOpened = true;
           this.companySuggestions = company.data.content;

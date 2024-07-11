@@ -15,6 +15,7 @@ import { NgIf } from '@angular/common';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
+import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 
 @Component({
   selector: 'app-transporter-add',
@@ -24,6 +25,7 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
     GetClickEventDirective,
     ReactiveFormsModule,
     NgIf,
+    AlphabetOnlyDirective,
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',

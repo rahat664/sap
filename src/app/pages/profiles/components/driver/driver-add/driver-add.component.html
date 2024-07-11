@@ -22,6 +22,7 @@
               <span class="text-not-black font-semibold">Name</span>
               <div>
                 <input
+                  appAlphabetOnly
                   formControlName="driverName"
                   placeholder="Enter driver name"
                   class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
@@ -29,7 +30,7 @@
                 <span
                   *ngIf="driverAddForm.get('driverName').touched"
                   class="text-red text-xs"
-                  >{{ getDriverNameError() }}</span
+                >{{ getDriverNameError() }}</span
                 >
               </div>
             </div>

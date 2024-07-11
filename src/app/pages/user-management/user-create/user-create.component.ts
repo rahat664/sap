@@ -14,6 +14,7 @@ import { UserModel } from '../models/user.model';
 import { roles } from '../models/role-file';
 import { ValidationService } from '../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
+import { AlphabetOnlyDirective } from '../../../shared/directive/alphabet-only.directive';
 
 @Component({
   selector: 'app-user-create',
@@ -23,6 +24,7 @@ import { HandleToastrService } from '../../../shared/services/handle-toastr/hand
     ReactiveFormsModule,
     CustomInputComponent,
     GetClickEventDirective,
+    AlphabetOnlyDirective,
   ],
   templateUrl: './user-create.component.html',
   styleUrl: './user-create.component.scss',
@@ -44,7 +46,7 @@ export class UserCreateComponent implements OnInit {
     private service: UserService,
     private validation: ValidationService,
     private fb: FormBuilder,
-    private toastr: HandleToastrService,
+    private toastr: HandleToastrService
   ) {
     this.userForm = this.fb.group({
       name: [
@@ -96,16 +98,7 @@ export class UserCreateComponent implements OnInit {
     this.userForm.get('phone').valueChanges.subscribe(value => {
       this.validation.mobileNumberValidation(value, this.userForm);
     });
-    // this.getRoleList();
   }
-
-  // private getRoleList() {
-  //   this.service.getUserRoles().subscribe((res: any) => {
-  //     res.data.forEach((role: any) => {
-  //       this.roleOptionsArray.push({id: role.id, value: role.name, selected: false})
-  //     })
-  //   });
-  // }
 
   onClickRole($event: boolean) {
     this.roleOpened = $event;
@@ -137,9 +130,11 @@ export class UserCreateComponent implements OnInit {
       return '';
     }
   }
+
   getPhoneErrorMessage() {
     return this.validation.getErrorMessage(this.userForm);
   }
+
   getEmailErrorMessage() {
     if (this.userForm.get('email').hasError('email')) {
       return 'Invalid email address';

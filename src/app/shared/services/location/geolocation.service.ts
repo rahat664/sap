@@ -17,9 +17,7 @@ export class GeolocationService {
   getCurrentPosition(): Promise<GeolocationCoordinates> {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          console.log(position);
-        });
+        navigator.geolocation.getCurrentPosition(position => {});
       } else {
         reject(new Error('Geolocation is not supported by this browser.'));
       }

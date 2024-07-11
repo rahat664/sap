@@ -27,7 +27,7 @@
           *ngFor="let option of options"
           (click)="onClickOption(option.id)"
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-active text-left w-full cursor-pointer">
-          {{ option.value }}
+          {{ option.showname ? option.showname : option.value }}
         </button>
       </ng-container>
       <ng-container *ngIf="options?.length <= 0">

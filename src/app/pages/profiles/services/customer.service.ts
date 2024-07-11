@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { ApiResponse } from '../../auth/models/response/api-response';
 import {
   catchError,
   debounceTime,
   distinctUntilChanged,
-  map,
+  Observable,
   throwError,
 } from 'rxjs';
 
@@ -18,8 +17,14 @@ export class CustomerService {
 
   constructor(private http: HttpClient) {}
 
-  getCustomer() {
-    return this.http.get(`${this.url}`);
+  getCustomer(page: number, size: number): Observable<any> {
+    const params = { page, size };
+
+    const queryString = Object.keys(params)
+      .map(key => `${key}=${encodeURIComponent(params[key])}`)
+      .join('&');
+
+    return this.http.get(`${this.url}/customers?${queryString}`);
   }
 
   addCustomer(body: any) {
@@ -30,30 +35,27 @@ export class CustomerService {
     return this.http.get(`${this.url}/validate-customer-code/${code}`);
   }
 
-  searchCustomer(searchValue?: string, phone?: string) {
+  searchCustomer(
+    page: number,
+    size: number,
+    searchValue?: string,
+    phone?: string
+  ): Observable<any> {
+    let apiUrl = `${this.url}?page=${page}&size=${size}`;
+
     if (searchValue) {
-      return this.http
-        .get<ApiResponse>(this.url + '?search=' + searchValue)
-        .pipe(
-          debounceTime(1000),
-          distinctUntilChanged(),
-          map(response => {
-            return response;
-          }),
-          catchError(this.handleError)
-        );
+      apiUrl += `&search=${encodeURIComponent(searchValue)}`;
     } else if (phone) {
-      return this.http.get<ApiResponse>(this.url + '?phone=' + phone).pipe(
+      apiUrl += `&phone=${encodeURIComponent(phone)}`;
+    }
+
+    return this.http
+      .get(apiUrl)
+      .pipe(
         debounceTime(1000),
         distinctUntilChanged(),
-        map(response => {
-          return response;
-        }),
         catchError(this.handleError)
       );
-    } else {
-      return this.http.get(`${this.url}`);
-    }
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -17,11 +17,12 @@ import { Subscription } from 'rxjs';
 import { CustomerService } from '../../../services/customer.service';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
+import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 
 @Component({
   selector: 'app-customer-create',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule, NgIf, AlphabetOnlyDirective],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss',
 })

@@ -89,16 +89,18 @@
           <div class="flex justify-between items-center">
             <div class="flex space-x-3 items-center text-not-black">
               <img src="assets/svg/list.svg" alt="" />
-              <span class="text-not-black font-semibold"
+              <span class="{{everyThingDisabled ? 'text-input-hint' : 'text-not-black'}} font-semibold"
               >Pre hire check list
               <span *ngIf="countPassCheckList">({{ countPassCheckList }}/22)</span>
               </span
               >
             </div>
-            <a
+            <button
+              [disabled]="everyThingDisabled"
               (click)="prehireCheckListOpened = true"
-              class="text-link cursor-pointer"
-            >{{ countPassCheckList ? 'Browse List' : 'Add List' }}</a
+              class="{{everyThingDisabled ? 'text-input-hint' : 'text-link'}}"
+            >{{ countPassCheckList ? 'Browse List' : 'Add List' }}
+            </button
             >
           </div>
         </div>
@@ -135,6 +137,7 @@
           </div>
         </div>
         <app-file-upload-popup
+          [isUploadDisabled]="everyThingDisabled"
           (fileInput)="onAddFile($event)"
           [fileTypeOptions]="fileUpload"
           padding="0"

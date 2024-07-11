@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
@@ -36,6 +36,7 @@ import { DriverEditSharedService } from '../profiles/services/driver-edit-shared
     LoadingComponent,
     ConfirmModalComponent,
     CheckTheHeightCrossMaxHeightOrNotDirective,
+    DatePipe,
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
@@ -70,6 +71,7 @@ export class UserManagementComponent implements OnInit {
   statusValue: string = 'Active';
   searchValue: string;
   departmentFilter: string;
+  size: number = 30;
 
   constructor(
     private service: UserService,
@@ -116,6 +118,7 @@ export class UserManagementComponent implements OnInit {
     this.statusOpened = false;
     this.statusFilter = 1;
     this.page = 0;
+    this.size = 50;
     this.statusInputPlaceholder = this.statusOptionsArray.find(
       item => item.id === $event
     ).value;
@@ -201,7 +204,7 @@ export class UserManagementComponent implements OnInit {
       !this.departmentFilter
     ) {
       this.service
-        .getUsers(this.page, this.statusValue, null, null)
+        .getUsers(this.page, this.size, this.statusValue, null, null)
         .subscribe((res: any) => {
           this.Users = res.data.responses;
           this.totalPages = res.data.totalPages;
@@ -210,7 +213,13 @@ export class UserManagementComponent implements OnInit {
     } else if (this.statusValue && this.searchValue && !this.departmentFilter) {
       // search with debounceTime
       this.service
-        .getUsers(this.page, this.statusValue, this.searchValue, null)
+        .getUsers(
+          this.page,
+          this.size,
+          this.statusValue,
+          this.searchValue,
+          null
+        )
         .pipe(debounceTime(500))
         .subscribe((res: any) => {
           this.Users = res.data.responses;
@@ -219,7 +228,13 @@ export class UserManagementComponent implements OnInit {
         });
     } else if (this.statusValue && this.departmentFilter && !this.searchValue) {
       this.service
-        .getUsers(this.page, this.statusValue, null, this.departmentFilter)
+        .getUsers(
+          this.page,
+          this.size,
+          this.statusValue,
+          null,
+          this.departmentFilter
+        )
         .subscribe((res: any) => {
           this.Users = res.data.responses;
           this.totalPages = res.data.totalPages;
@@ -238,6 +253,7 @@ export class UserManagementComponent implements OnInit {
       this.service
         .getUsers(
           this.page,
+          this.size,
           this.statusValue,
           this.searchValue,
           this.departmentFilter
@@ -386,7 +402,7 @@ export class UserManagementComponent implements OnInit {
       !this.departmentFilter
     ) {
       this.service
-        .getUsers(this.page, this.statusValue, null, null)
+        .getUsers(this.page, this.size, this.statusValue, null, null)
         .subscribe((res: any) => {
           this.Users.push(...res.data.responses);
           this.totalPages = res.data.totalPages;
@@ -394,7 +410,13 @@ export class UserManagementComponent implements OnInit {
         });
     } else if (this.statusValue && this.searchValue && !this.departmentFilter) {
       this.service
-        .getUsers(this.page, this.statusValue, this.searchValue, null)
+        .getUsers(
+          this.page,
+          this.size,
+          this.statusValue,
+          this.searchValue,
+          null
+        )
         .subscribe((res: any) => {
           this.Users.push(...res.data.responses);
           this.totalPages = res.data.totalPages;
@@ -402,7 +424,13 @@ export class UserManagementComponent implements OnInit {
         });
     } else if (this.statusValue && this.departmentFilter && !this.searchValue) {
       this.service
-        .getUsers(this.page, this.statusValue, null, this.departmentFilter)
+        .getUsers(
+          this.page,
+          this.size,
+          this.statusValue,
+          null,
+          this.departmentFilter
+        )
         .subscribe((res: any) => {
           this.Users.push(...res.data.responses);
           this.totalPages = res.data.totalPages;
@@ -420,6 +448,7 @@ export class UserManagementComponent implements OnInit {
       this.service
         .getUsers(
           this.page,
+          this.size,
           this.statusValue,
           this.searchValue,
           this.departmentFilter

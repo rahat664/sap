@@ -76,12 +76,13 @@
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left">Transporter name</th>
         <th class="text-left">Mobile</th>
+        <th class="text-left whitespace-nowrap">Created On</th>
         <th class="text-left">Truck Stand</th>
         <th class="text-left">Preferred Payment Method</th>
         <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
-        <th class="border" colspan="4"></th>
+        <th class="border" colspan="5"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -99,6 +100,9 @@
             </div>
           </td>
           <td>{{ transporter.phone }}</td>
+          <td
+            class="whitespace-nowrap">{{ transporter.createdOn ? (transporter.createdOn | date : 'dd MMM, yyyy') : '' }}
+          </td>
           <td>{{ transporter.truckStand }}</td>
           <td>
             {{

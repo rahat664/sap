@@ -87,6 +87,7 @@ export class TripListComponent implements OnInit {
   isTripSearchedMenuOpened: boolean = false;
   tripIdSuggestions: any[] = [];
   tripFilter: number = 0;
+  size: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -105,6 +106,7 @@ export class TripListComponent implements OnInit {
   ngOnInit(): void {
     this.loading = true;
     this.page = 0;
+    this.size = 30;
     this.getTripList();
     this.generateDateOptionsArray();
   }
@@ -113,7 +115,7 @@ export class TripListComponent implements OnInit {
     this.service
       .getTrips(
         this.page,
-        null,
+        this.size,
         this.searchValue,
         this.from,
         this.to,
@@ -141,6 +143,7 @@ export class TripListComponent implements OnInit {
       this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
       this.setDateRange($event);
       this.page = 0;
+      this.size = 30;
       this.loading = true;
       this.getTripList();
     }
@@ -188,6 +191,7 @@ export class TripListComponent implements OnInit {
       this.isSearchedMenuOpened = false;
       this.searchValue = '';
       this.page = 0;
+      this.size = 30;
       this.getTripList();
       this.searchFilter = 0;
     }
@@ -200,6 +204,7 @@ export class TripListComponent implements OnInit {
     this.dateOpened = false;
     this.isDateOpened = false;
     this.page = 0;
+    this.page = 50;
     this.getTripList();
   }
 
@@ -214,6 +219,7 @@ export class TripListComponent implements OnInit {
     this.searchName = result.name;
     this.tripSuggestions = [];
     this.isSearchedMenuOpened = false;
+    this.size = 30;
     this.getTripList();
   }
 
@@ -224,6 +230,7 @@ export class TripListComponent implements OnInit {
   onClearFilter() {
     this.tripId = '';
     this.page = 0;
+    this.size = 30;
     this.searchFilter = 0;
     this.dateFilter = 0;
     this.tripFilter = 0;
@@ -241,6 +248,7 @@ export class TripListComponent implements OnInit {
   onStatusClick(tripStatus: string) {
     this.loading = true;
     this.page = 0;
+    this.size = 30;
     this.status = tripStatus !== 'All' ? tripStatus : '';
     this.statusButtons.forEach(x => (x.isActive = x.name === tripStatus));
     this.getTripList();
@@ -273,6 +281,7 @@ export class TripListComponent implements OnInit {
   onBottom($event: boolean) {
     if ($event && this.page < this.totalPages - 1) {
       this.page++;
+      this.size = 30;
       this.loading = false;
       this.getTripList();
     }

@@ -1,4 +1,5 @@
 export interface TruckInnerModel {
+  createdOn: any;
   id: number;
   name: string | null;
   registrationZone: string;

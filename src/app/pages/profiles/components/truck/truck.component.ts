@@ -4,7 +4,7 @@ import { CustomInputComponent } from '../../../../shared/modules/custom-input/cu
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
 import { TruckModel } from './models/truck.model';
@@ -42,6 +42,7 @@ import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checkli
     CheckTheHeightCrossMaxHeightOrNotDirective,
     CheckListPopupComponent,
     PreHireChecklistComponent,
+    DatePipe,
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss',
@@ -64,6 +65,7 @@ export class TruckComponent implements OnInit {
   searchValue: string;
   isCheckListOpened: boolean = false;
   singleTruckId: number;
+  size: number = 30;
 
   constructor(
     private service: TruckService,
@@ -81,7 +83,7 @@ export class TruckComponent implements OnInit {
     if (this.searchValue) {
       //subscribe with debounce time
       this.service
-        .getTruckList(this.page, this.searchValue)
+        .getTruckList(this.page, this.size, this.searchValue)
         .pipe(debounceTime(500))
         .subscribe((res: any) => {
           res.data.responses.forEach((truck: TruckModel) => {
@@ -93,7 +95,7 @@ export class TruckComponent implements OnInit {
           this.loading = false;
         });
     } else {
-      this.service.getTruckList(this.page).subscribe((res: any) => {
+      this.service.getTruckList(this.page, this.size).subscribe((res: any) => {
         res.data.responses.forEach((truck: TruckModel) => {
           truck.truck.preHireCheckList = String(truck.preHireChecklistList);
           truck.truck.noOfTrips = truck.noOfTrips;
@@ -181,7 +183,7 @@ export class TruckComponent implements OnInit {
       this.page++;
       if (this.searchValue) {
         this.service
-          .getTruckList(this.page, this.searchValue)
+          .getTruckList(this.page, this.size, this.searchValue)
           .pipe(debounceTime(500))
           .subscribe((res: any) => {
             res.data.responses.forEach((truck: TruckModel) => {
@@ -191,13 +193,15 @@ export class TruckComponent implements OnInit {
             });
           });
       } else {
-        this.service.getTruckList(this.page).subscribe((res: any) => {
-          res.data.responses.forEach((truck: TruckModel) => {
-            truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-            truck.truck.noOfTrips = truck.noOfTrips;
-            this.truckList.push(truck.truck);
+        this.service
+          .getTruckList(this.page, this.size)
+          .subscribe((res: any) => {
+            res.data.responses.forEach((truck: TruckModel) => {
+              truck.truck.preHireCheckList = String(truck.preHireChecklistList);
+              truck.truck.noOfTrips = truck.noOfTrips;
+              this.truckList.push(truck.truck);
+            });
           });
-        });
       }
     }
   }

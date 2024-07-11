@@ -114,7 +114,6 @@ export class CustomDatePickerComponent implements OnInit {
   changeYear(year: string): void {
     // change the year and current month also to the selected year
     this.currentMonth = new Date(+year, this.currentMonth.getMonth(), 1);
-    console.log(this.currentMonth.getFullYear());
     this.selectedYear = +year;
     this.generateCalendar();
   }

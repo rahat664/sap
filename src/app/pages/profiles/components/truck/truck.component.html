@@ -43,6 +43,7 @@
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left">Registration number</th>
         <th class="text-left">Pre-hire checklist</th>
+        <th class="text-left whitespace-nowrap">Created On</th>
         <th class="text-left">No. of trip</th>
         <!--          <th class="text-center w-[10rem] inline-block">Tracker</th>-->
         <th class="text-center w-[10rem] inline-block">Registration</th>
@@ -82,6 +83,7 @@
             >{{ truck.preHireCheckList }}/22</a
             >
           </td>
+          <td class="whitespace-nowrap">{{ truck.createdOn ? (truck.createdOn | date : 'dd MMM, yyyy') : '' }}</td>
           <td class="text-center">{{ truck.noOfTrips }}</td>
           <!--            <td class="text-center whitespace-nowrap w-[10rem] inline-block">-->
           <!--              <div class="flex items-center justify-center h-full">-->

@@ -59,6 +59,8 @@ export class TruckAddComponent implements OnInit {
   registrationNumErrorMessage = '';
   countPassCheckList: number = 0;
   preHireCheckList: any;
+  private registrationInput: string;
+  everyThingDisabled: boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -138,13 +140,16 @@ export class TruckAddComponent implements OnInit {
     this.registrationCategoryErrorMessage = '';
     this.registrationTypePlaceholder = this.registrationListType.find(
       option => option.id === $event
+    ).showname;
+    this.registrationInput = this.registrationListType.find(
+      option => option.id === $event
     ).value;
     this.registrationListType.forEach(option => {
       option.selected = option.id === $event;
     });
     this.registrationOpenedType = false;
     this.truckAddForm.patchValue({
-      registration_category: this.registrationTypePlaceholder,
+      registration_category: this.registrationInput,
     });
   }
 
@@ -169,6 +174,11 @@ export class TruckAddComponent implements OnInit {
         this.validation.getRegistrationNoValidation(
           this.truckAddForm.get('registration_num')
         );
+    });
+    this.truckAddForm.valueChanges.subscribe(() => {
+      if (this.truckAddForm.valid) {
+        this.validateTruckInformation();
+      }
     });
   }
 
@@ -310,6 +320,37 @@ export class TruckAddComponent implements OnInit {
       this.preHireCheckList.forEach((item: any) => {
         this.singleChecklist[item.id] = 'NA';
       });
+    });
+  }
+
+  private validateTruckInformation() {
+    const body = {
+      registeredZone: this.truckAddForm.get('registration_zone').value,
+      registrationCategory: this.truckAddForm.get('registration_category')
+        .value,
+      registrationSerialNumber: this.truckAddForm.get('registration_serial')
+        .value,
+      registrationNumber: this.truckAddForm.get('registration_num').value,
+    };
+    this.service.validateTruckInformation(body).subscribe({
+      next: (res: any) => {
+        if (res.data == false) {
+          this.registrationErrorMessage = '';
+          this.registrationCategoryErrorMessage = '';
+          this.registrationSerialErrorMessage = '';
+          this.registrationNumErrorMessage = '';
+          this.everyThingDisabled = false;
+        } else {
+          this.everyThingDisabled = true;
+          this.registrationErrorMessage = 'This vehicle is already registered';
+          this.registrationCategoryErrorMessage =
+            'This vehicle is already registered';
+          this.registrationSerialErrorMessage =
+            'This vehicle is already registered';
+          this.registrationNumErrorMessage =
+            'This vehicle is already registered';
+        }
+      },
     });
   }
 }
