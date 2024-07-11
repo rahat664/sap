@@ -322,6 +322,11 @@ export class TripListComponent implements OnInit {
         });
     } else {
       this.isTripSearchedMenuOpened = false;
+      this.tripId = '';
+      this.page = 0;
+      this.size = 30;
+      this.tripFilter = 0;
+      this.getTripList();
     }
   }
 
