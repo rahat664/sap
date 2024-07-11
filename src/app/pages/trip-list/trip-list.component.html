@@ -135,6 +135,7 @@
           <div class="flex relative space-x-4 items-center h-full">
             <ng-container *ngFor="let item of statusButtons">
               <app-button-chips
+                [isDisabled]="loading"
                 [count]="item.count"
                 [Status]="item.name"
                 (click)="onStatusClick(item.name)"

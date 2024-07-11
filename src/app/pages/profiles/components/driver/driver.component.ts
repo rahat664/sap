@@ -85,6 +85,7 @@ export class DriverComponent implements OnInit {
       localStorage.removeItem('driver');
     }
     localStorage.setItem('driver', JSON.stringify(driver));
+    this.sharedService.closeInputSelect.next(false);
   }
 
   driverFileType = driverFileType;

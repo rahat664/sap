@@ -178,6 +178,8 @@ export class TruckAddComponent implements OnInit {
     this.truckAddForm.valueChanges.subscribe(() => {
       if (this.truckAddForm.valid) {
         this.validateTruckInformation();
+      } else {
+        this.everyThingDisabled = true;
       }
     });
   }

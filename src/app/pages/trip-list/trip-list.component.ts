@@ -107,6 +107,7 @@ export class TripListComponent implements OnInit {
     this.loading = true;
     this.page = 0;
     this.size = 30;
+    this.statusButtons.forEach(x => (x.isActive = x.name === 'All'));
     this.getTripList();
     this.generateDateOptionsArray();
   }
@@ -182,7 +183,7 @@ export class TripListComponent implements OnInit {
   onKeyUpSearch($event: any) {
     const value = $event.target.value;
     if (value?.length > 0) {
-      this.customer.searchCustomer(value, null).subscribe((company: any) => {
+      this.customer.searchCustomer(0, 100, value).subscribe((company: any) => {
         this.tripSuggestions = company.data.content;
         this.isSearchedMenuOpened = true;
         this.searchFilter = 1;

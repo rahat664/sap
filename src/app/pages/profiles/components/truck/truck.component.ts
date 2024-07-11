@@ -137,6 +137,7 @@ export class TruckComponent implements OnInit {
   onClickTruckDetails(truck: TruckInnerModel) {
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
+    this.shared.closeInputSelect.next(false);
   }
 
   onClickUpdate(fit: string, truck: TruckInnerModel) {

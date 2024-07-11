@@ -108,4 +108,9 @@ export class DriverDetailsComponent implements OnInit {
     this.documents = JSON.parse(localStorage.getItem('previousDriverDocument'));
     localStorage.removeItem('previousDriverDocument');
   }
+
+  onEditClick() {
+    this.inEditMode = true;
+    this.driverEditSharedService.closeInputSelect.next(false);
+  }
 }

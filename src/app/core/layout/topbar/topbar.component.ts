@@ -6,6 +6,7 @@ import { TripService } from '../../../pages/trip-list/services/trip.service';
 import { ImagePipe } from '../../../shared/pipes/image.pipe';
 import { RouterLink } from '@angular/router';
 import { GetOutsideModalClickDirective } from '../../../shared/directive/get-outside-modal-click.directive';
+import { DriverEditSharedService } from '../../../pages/profiles/services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-topbar',
@@ -27,10 +28,12 @@ export class TopbarComponent implements OnInit {
   isSearchedMenuOpened = false;
   name: string;
   image: string;
+
   constructor(
     private toggleMobileViewService: ToggleResponsiveService,
     private auth: AuthService,
-    private trip: TripService
+    private trip: TripService,
+    private shared: DriverEditSharedService
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +54,7 @@ export class TopbarComponent implements OnInit {
   onClickLogOut() {
     this.auth.logout();
     this.isProfileOpened = false;
+    this.shared.closeInputSelect.next(false);
   }
 
   onSearch($event: any) {
@@ -67,5 +71,9 @@ export class TopbarComponent implements OnInit {
       this.searchSuggestions = [];
       this.isSearchedMenuOpened = false;
     }
+  }
+
+  onClickLogo() {
+    this.shared.closeInputSelect.next(false);
   }
 }

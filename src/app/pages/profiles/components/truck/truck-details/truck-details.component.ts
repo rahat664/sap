@@ -139,7 +139,8 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   onClickEdit() {
-    this.inEditMode = !this.inEditMode;
+    this.inEditMode = true;
+    this.shared.closeInputSelect.next(false);
   }
 
   private numberOnly(value: any) {

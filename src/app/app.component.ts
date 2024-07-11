@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { LayoutComponent } from './core/layout/layout.component';
 import { initFlowbite } from 'flowbite';
 import { TopbarComponent } from './core/layout/topbar/topbar.component';
@@ -10,6 +10,8 @@ import { ImageGalleryComponent } from './shared/modules/image-gallery/image-gall
 import { ImagePopupComponent } from './shared/modal/image-popup/image-popup.component';
 import { HandleToastrService } from './shared/services/handle-toastr/handle-toastr.service';
 import { GeolocationService } from './shared/services/location/geolocation.service';
+import { filter } from 'rxjs';
+import { DriverEditSharedService } from './pages/profiles/services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-root',
@@ -35,7 +37,8 @@ export class AppComponent implements OnInit {
     private auth: AuthService,
     private imageGalleryService: ImageGalleryService,
     private handleToaster: HandleToastrService,
-    private geoLocation: GeolocationService
+    private geoLocation: GeolocationService,
+    private shared: DriverEditSharedService
   ) {}
 
   @HostListener('click', ['$event'])
@@ -58,6 +61,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     initFlowbite();
     this.addMapScript();
+    this.handleRouter();
   }
 
   isLoginPage() {
@@ -77,5 +81,13 @@ export class AppComponent implements OnInit {
         });
       });
     });
+  }
+
+  private handleRouter() {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.shared.closeInputSelect.next(false);
+      });
   }
 }

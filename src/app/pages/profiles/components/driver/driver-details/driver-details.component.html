@@ -4,7 +4,7 @@
     <div class="flex space-x-3">
       <button
         type="button"
-        (click)="inEditMode = !inEditMode"
+        (click)="onEditClick()"
         *ngIf="!inEditMode"
         class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
         <i class="far fa-pen text-primary"></i>
