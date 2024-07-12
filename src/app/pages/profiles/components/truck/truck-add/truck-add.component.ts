@@ -186,7 +186,7 @@ export class TruckAddComponent implements OnInit {
 
   onClickSave() {
     if (this.truckAddForm.valid) {
-      if (this.truckAddForm.get('checklist').value === null) {
+      if (this.truckAddForm.get('checklist')?.value === null) {
         this.truckAddForm.patchValue({
           checklist: this.singleChecklist,
         });
