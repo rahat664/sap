@@ -130,7 +130,7 @@ export class DriverAddComponent implements OnInit {
 
   onDriverSave() {
     if (this.driverAddForm.valid) {
-      if (!this.driverAddForm.get('drivingLicenseExpiryDate').value) {
+      if (!this.driverAddForm.get('drivingLicenseExpiryDate')?.value) {
         this.driverAddForm.removeControl('drivingLicenseExpiryDate');
       }
       const formData = new FormData();

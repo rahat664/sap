@@ -38,8 +38,6 @@ export class FileUploadPopupComponent implements OnChanges {
   @Input() singleTruck: any;
   @Input() isFromTruck!: boolean;
   newFileType: any;
-  fileArrayRegType: string = '';
-  arrayIndex: number;
 
   constructor(
     private sharedDriverEditService: DriverEditSharedService,
@@ -94,7 +92,7 @@ export class FileUploadPopupComponent implements OnChanges {
     );
 
     // Assign the filtered options to each file's registrationOptions
-    this.fileArray[i + 1].registrationOptions = this.newFileType;
+    this.fileArray[i].registrationOptions = this.newFileType;
   }
 
   onClickFileType($event: boolean, i: number) {
