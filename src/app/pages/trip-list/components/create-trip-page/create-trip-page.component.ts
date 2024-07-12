@@ -14,27 +14,15 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import {
-  MatButtonToggle,
-  MatButtonToggleModule,
-} from '@angular/material/button-toggle';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
-import {
-  MatOption,
-  MatSelect,
-  MatSelectModule,
-} from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import {
-  MatDatepicker,
-  MatDatepickerInput,
-  MatDatepickerModule,
-  MatDatepickerToggle,
-} from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { MatIcon } from '@angular/material/icon';
+import { DateTimePickerDialogComponent } from '../../../../shared/modules/date-time-picker-dialog/date-time-picker-dialog.component';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -48,21 +36,14 @@ import { MatIcon } from '@angular/material/icon';
     GetClickEventDirective,
     ReactiveFormsModule,
     FormsModule,
-    MatButtonToggle,
     MatButtonToggleModule,
     MatButtonModule,
-    MatFormField,
-    MatSelect,
-    MatOption,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
     TextFieldModule,
-    MatDatepickerInput,
-    MatDatepicker,
-    MatDatepickerToggle,
     MatDatepickerModule,
-    MatIcon,
+    DateTimePickerDialogComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './create-trip-page.component.html',

@@ -104,6 +104,13 @@
           <td>{{ user.status }}</td>
           <td>{{ user.createdOn }}</td>
           <td>
+            <button mat-button [matMenuTriggerFor]="menu">Menu</button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item>Item 1</button>
+              <button mat-menu-item>Item 2</button>
+            </mat-menu>
+          </td>
+          <td>
             <div class="relative w-full">
               <button
                 *ngIf="user.status != 'Removed'"
