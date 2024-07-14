@@ -18,14 +18,18 @@ import { provideEffects } from '@ngrx/effects';
 import { AuthEffects } from './pages/auth/ngrx/auth.effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { metaReducers } from './pages/auth/ngrx/localstorage.metareducer';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-export function initializeApp(gmapsLoader: GeolocationService): () => Promise<void> {
+export function initializeApp(
+  gmapsLoader: GeolocationService
+): () => Promise<void> {
   return () => gmapsLoader.loadGoogleMapsApi();
 }
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+    importProvidersFrom(BrowserAnimationsModule),
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideHotToastConfig({}),

@@ -14,6 +14,18 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatExpansionPanelActionRow } from '@angular/material/expansion';
+import { MatCard } from '@angular/material/card';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { TimePickerComponent } from '../../../../shared/modules/time-picker/time-picker.component';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -27,7 +39,20 @@ import {
     GetClickEventDirective,
     ReactiveFormsModule,
     FormsModule,
+    MatButtonToggleModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    TextFieldModule,
+    MatDatepickerModule,
+    MatExpansionPanelActionRow,
+    MatCard,
+    MatMenuTrigger,
+    MatMenu,
+    TimePickerComponent,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './create-trip-page.component.html',
   styleUrl: './create-trip-page.component.scss',
 })
@@ -42,6 +67,10 @@ export class CreateTripPageComponent implements OnInit {
   truckCapacitySuggestions: any[];
   truckSizeSuggestions: any[];
   saveTemplateInputEnabled: boolean;
+  private readonly _currentYear = new Date().getFullYear();
+  // give mindate validation min date is current date
+  readonly minDate = new Date();
+  readonly maxDate = new Date(this._currentYear + 1, 11, 31);
 
   constructor(
     private service: TripService,
@@ -87,6 +116,12 @@ export class CreateTripPageComponent implements OnInit {
   goodsInputPlaceholder: string;
   goodsOpened: boolean;
   private _goodsOptionsArray: CustomInputSelectModel[];
+  selectedTime = {
+    hours: 12,
+    minutes: 0,
+    period: 'AM',
+  };
+  selectedDate: any;
 
   onClickPayment($event: boolean) {
     this.goodsOpened = $event;
@@ -150,5 +185,15 @@ export class CreateTripPageComponent implements OnInit {
       unloadingPointDistrict: ['', Validators.required],
       unloadingPointName: ['', Validators.required],
     });
+  }
+
+  triggerResize() {}
+
+  onSave() {}
+
+  onDateChange($event: any) {}
+
+  onSelect($event: any) {
+    this.selectedDate = $event;
   }
 }
