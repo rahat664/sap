@@ -81,10 +81,15 @@ img {
   font-family: "Font Awesome 5 Pro", serif !important;
 }
 
+.mat-mdc-form-field {
+  height: 56px !important;
+}
+
 .mat-mdc-text-field-wrapper {
   width: 100%;
   border-radius: 8px !important;
   background-color: #F5FBFC !important;
+  height: 56px !important;
 }
 
 .mat-mdc-text-field-wrapper:focus-within {

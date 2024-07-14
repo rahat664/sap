@@ -17,20 +17,26 @@
         <div class="grid lg:grid-cols-2 gap-4 w-full ">
           <div class="flex flex-col space-y-1 w-full">
             <label for="customerName" class="form-label text-body">Customer Name</label>
-            <!--          <input-->
-            <!--            type="text"-->
-            <!--            class="bg-input rounded-lg border-none px-4 py-4"-->
-            <!--            placeholder="Customer Name"-->
-            <!--            id="customerName"-->
-            <!--            [value]="customerName"-->
-            <!--          />-->
             <mat-form-field appearance="outline" id="customerName">
               <input matInput placeholder="Enter Customer Name">
             </mat-form-field>
           </div>
           <div class="flex flex-col space-y-1 w-full">
-            <label for="date" class="form-label text-body">Date</label>
-            <app-date-time-picker-dialog></app-date-time-picker-dialog>
+            <label for="date" class="form-label text-body">Date and time</label>
+            <button class="customButton" mat-button [matMenuTriggerFor]="dateAndTime">
+              <mat-form-field appearance="outline" id="date" class="example-full-width w-full">
+                <input placeholder="Select date and time" matInput />
+                <mat-datepicker-toggle matIconSuffix></mat-datepicker-toggle>
+              </mat-form-field>
+            </button>
+            <mat-menu class="flex flex-col space-y-3" #dateAndTime="matMenu">
+              <mat-card class="w-96">
+                <mat-calendar [minDate]="minDate" (selectedChange)="onSelect($event)"></mat-calendar>
+              </mat-card>
+              <mat-card class="w-96 mt-3 flex items-center justify-center">
+                <app-time-picker (click)="$event.stopPropagation()"></app-time-picker>
+              </mat-card>
+            </mat-menu>
           </div>
         </div>
       </div>

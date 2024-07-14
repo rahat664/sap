@@ -2,7 +2,6 @@ import { defineConfig } from 'cypress';
 
 export default defineConfig({
   chromeWebSecurity: false,
-  responseTimeout: 12000000,
   experimentalModifyObstructiveThirdPartyCode: true,
   component: {
     devServer: {
@@ -19,7 +18,6 @@ export default defineConfig({
       // implement node event listeners here
       on('task', {
         log(message) {
-          console.log(message);
           return null;
         },
       });

@@ -22,7 +22,10 @@ import { MatInputModule } from '@angular/material/input';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { DateTimePickerDialogComponent } from '../../../../shared/modules/date-time-picker-dialog/date-time-picker-dialog.component';
+import { MatExpansionPanelActionRow } from '@angular/material/expansion';
+import { MatCard } from '@angular/material/card';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { TimePickerComponent } from '../../../../shared/modules/time-picker/time-picker.component';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -43,7 +46,11 @@ import { DateTimePickerDialogComponent } from '../../../../shared/modules/date-t
     MatInputModule,
     TextFieldModule,
     MatDatepickerModule,
-    DateTimePickerDialogComponent,
+    MatExpansionPanelActionRow,
+    MatCard,
+    MatMenuTrigger,
+    MatMenu,
+    TimePickerComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './create-trip-page.component.html',
@@ -61,7 +68,8 @@ export class CreateTripPageComponent implements OnInit {
   truckSizeSuggestions: any[];
   saveTemplateInputEnabled: boolean;
   private readonly _currentYear = new Date().getFullYear();
-  readonly minDate = new Date(this._currentYear - 20, 0, 1);
+  // give mindate validation min date is current date
+  readonly minDate = new Date();
   readonly maxDate = new Date(this._currentYear + 1, 11, 31);
 
   constructor(
@@ -108,6 +116,12 @@ export class CreateTripPageComponent implements OnInit {
   goodsInputPlaceholder: string;
   goodsOpened: boolean;
   private _goodsOptionsArray: CustomInputSelectModel[];
+  selectedTime = {
+    hours: 12,
+    minutes: 0,
+    period: 'AM',
+  };
+  selectedDate: any;
 
   onClickPayment($event: boolean) {
     this.goodsOpened = $event;
@@ -174,4 +188,12 @@ export class CreateTripPageComponent implements OnInit {
   }
 
   triggerResize() {}
+
+  onSave() {}
+
+  onDateChange($event: any) {}
+
+  onSelect($event: any) {
+    this.selectedDate = $event;
+  }
 }

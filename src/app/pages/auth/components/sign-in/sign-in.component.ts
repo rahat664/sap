@@ -24,6 +24,7 @@ import { login } from '../../ngrx/auth.action';
   styleUrl: './sign-in.component.scss',
 })
 export class SignInComponent implements OnInit {
+  title = 'Login';
   loginForm: FormGroup;
   loginRequestPayload: LoginRequest;
   loading$ = this.store.select(selectAuthLoading);
