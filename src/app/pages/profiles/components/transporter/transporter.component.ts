@@ -8,8 +8,6 @@ import { UserModel } from '../../../user-management/models/user.model';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
-import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
-import { districts } from './models/districts';
 import { UserService } from '../../services/user.service';
 import { TransporterAddComponent } from './transporter-add/transporter-add.component';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
@@ -45,7 +43,6 @@ export class TransporterComponent implements OnInit {
   districtFilter = 0;
   truckFilter = 0;
   districtInputPlaceholder: string;
-  districtOptionsArray: CustomInputSelectModel[] = districts;
   districtOpened: boolean;
   transporterList: UserModel[] = [];
   loading: boolean;
@@ -99,19 +96,6 @@ export class TransporterComponent implements OnInit {
           });
       }
     }
-  }
-
-  onClickSearchSuggestion(result: any) {}
-
-  onClickDistrict($event: boolean) {
-    this.districtOpened = $event;
-  }
-
-  onSelectDistrict($event: number) {
-    this.districtFilter = 1;
-    this.districtInputPlaceholder = this.districtOptionsArray.find(
-      option => option.id === $event
-    ).value;
   }
 
   ngOnInit(): void {

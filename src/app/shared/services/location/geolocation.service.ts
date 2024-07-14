@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { HttpBackend, HttpClient } from '@angular/common/http';
+import { HttpBackend, HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 export class GeolocationService {
   private apiLoaded = false;
   private httpClient: HttpClient;
+  googleMapUrl = `https://maps.googleapis.com/maps/api/place/details/json`;
 
   constructor(private httpBackend: HttpBackend) {
     this.httpClient = new HttpClient(this.httpBackend);
@@ -38,9 +39,12 @@ export class GeolocationService {
     return this.httpClient.post(url, params, { headers });
   }
 
-  getPlaceDetails(placeId: string): Observable<Object> {
-    const url = `${environment.placesApiUrl}/details/json?place_id=${placeId}&key=${environment.API_KEY}&fields=geometry`;
-    return this.httpClient.get(url);
+  getLatLong(placeId: string) {
+    const params = new HttpParams()
+      .set('place_id', placeId)
+      .set('key', environment.API_KEY)
+      .set('fields', 'geometry');
+    return this.httpClient.get(this.googleMapUrl, { params });
   }
 
   loadGoogleMapsApi(): Promise<void> {

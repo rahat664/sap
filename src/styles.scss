@@ -82,14 +82,14 @@ img {
 }
 
 .mat-mdc-form-field {
-  height: 56px !important;
+  height: 3.5rem !important;
 }
 
 .mat-mdc-text-field-wrapper {
   width: 100%;
   border-radius: 8px !important;
   background-color: #F5FBFC !important;
-  height: 56px !important;
+  height: 3.5rem !important;
 }
 
 .mat-mdc-text-field-wrapper:focus-within {
@@ -119,4 +119,11 @@ input::-webkit-inner-spin-button,
 input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input {
+  caret-color: #111827 !important;
+  --tw-ring-color: none !important;
+  --tw-ring-offset-color: none !important;
+  --tw-ring-shadow: none !important;
 }

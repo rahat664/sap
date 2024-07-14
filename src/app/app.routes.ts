@@ -31,13 +31,22 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'trip-list/trip-create',
+    path: 'trip-list/trip-create?customerselection',
     title: 'Trip Create',
     loadComponent: () =>
       import('./pages/trip-list/components/new-trip/new-trip.component').then(
-        c => c.NewTripComponent,
+        c => c.NewTripComponent
       ),
     canActivate: [authGuard],
+  },
+  // create trip with query params not id with scenerio
+  {
+    path: 'trip-list/trip-create?create',
+    title: 'Trip Create',
+    loadComponent: () =>
+      import(
+        './pages/trip-list/components/create-trip-page/create-trip-page.component'
+      ).then(c => c.CreateTripPageComponent),
   },
   {
     path: 'user-management',

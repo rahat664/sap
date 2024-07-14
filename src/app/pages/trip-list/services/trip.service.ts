@@ -24,6 +24,7 @@ export class TripService {
   tripTemplateUrl = `${environment.backendUrl}/api/trip_templates`;
   vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
+  locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
   cachedTruckSize: BehaviorSubject<any[]> = new BehaviorSubject([]);
   cachedTruckCapacity: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
@@ -112,5 +113,17 @@ export class TripService {
 
   getGoodsOptions() {
     return this.http.get(`${this.goodsOptionsUrl}`);
+  }
+
+  getLocationSuggestions(
+    address: string,
+    companyId: string,
+    includeOnlyGoogleMap?: boolean
+  ) {
+    const params = new HttpParams()
+      .set('address', address)
+      .set('companyId', companyId)
+      .set('includeOnlyGoogleMap', includeOnlyGoogleMap ? 'true' : 'false');
+    return this.http.get(this.locationSuggestionsUrl, { params });
   }
 }

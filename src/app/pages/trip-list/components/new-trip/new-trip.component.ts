@@ -7,6 +7,22 @@ import { CustomerService } from '../../../profiles/services/customer.service';
 import { GetOutsideModalClickDirective } from '../../../../shared/directive/get-outside-modal-click.directive';
 import { TripService } from '../../services/trip.service';
 import { CreateTripPageComponent } from '../create-trip-page/create-trip-page.component';
+import { RouterLink } from '@angular/router';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatCard } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import {
+  MatMenu,
+  MatMenuItem,
+  MatMenuModule,
+  MatMenuTrigger,
+} from '@angular/material/menu';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+  MatOption,
+} from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-new-trip',
@@ -19,6 +35,18 @@ import { CreateTripPageComponent } from '../create-trip-page/create-trip-page.co
     CommonModule,
     GetOutsideModalClickDirective,
     CreateTripPageComponent,
+    RouterLink,
+    MatFormField,
+    MatInput,
+    MatCard,
+    MatButton,
+    MatMenuTrigger,
+    MatMenuModule,
+    MatMenu,
+    MatMenuItem,
+    MatAutocomplete,
+    MatOption,
+    MatAutocompleteTrigger,
   ],
   templateUrl: './new-trip.component.html',
   styleUrl: './new-trip.component.scss',
