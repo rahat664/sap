@@ -127,3 +127,8 @@ input::-webkit-outer-spin-button {
   --tw-ring-offset-color: none !important;
   --tw-ring-shadow: none !important;
 }
+
+.mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background, .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background {
+  border-color: #11484F !important;
+  background-color: #11484F !important;
+}

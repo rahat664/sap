@@ -37,7 +37,7 @@
           </li>
         </ul>
       </div>
-      <div class="flex items-center justify-end w-full">
+      <div class="flex items-center space-x-3 justify-end w-full mr-2">
         <!-- Search mobile -->
         <button
           (click)="onClickSearchOnMobile()"
@@ -47,6 +47,10 @@
           <span class="sr-only">Search</span>
           <!-- Search icon -->
           <i class="fas fa-search"></i>
+        </button>
+        <button matTooltip="Logout" (click)="onClickLogOut()"
+                class="lg:hidden text-gray-500 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-lg">
+          <img class="notPreview" src="assets/svg/logout.svg" alt="logout">
         </button>
 
         <button class="flex items-center" (click)="isProfileOpened = !isProfileOpened">
@@ -88,15 +92,4 @@
       </li>
     </ul>
   </div>
-  <!--  <div *ngIf="isSearchedMenuOpened"  id="searchDropdown"-->
-  <!--       class="z-10 absolute top-full  left-[17rem] w-[36rem] max-h-64 overflow-y-auto  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">-->
-  <!--    <ul class="py text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">-->
-  <!--      <li *ngFor="let result of searchSuggestions" class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">-->
-  <!--        <a class="w-full h-full flex justify-between items-center">-->
-  <!--          <span>{{result.customerName}}, {{result.customerPhone}}</span>-->
-  <!--          <span class="px-2 py-0.5 rounded-full bg-green text-white">Trip List</span>-->
-  <!--        </a>-->
-  <!--      </li>-->
-  <!--    </ul>-->
-  <!--  </div>-->
 </nav>

@@ -5,7 +5,7 @@
     </div>
     <div class="bg-white p-4 m-4 rounded-lg flex justify-between items-center">
       <div class="flex flex-1 flex-col relative">
-        <label for="customerName" class="form-label">Customer Name</label>
+        <label for="customerName" class="form-label">Select Customer</label>
         <mat-form-field appearance="outline" class="example-full-width w-1/3">
           <input
             id="customerName"
@@ -13,6 +13,7 @@
             matInput
             (keyup)="onKeyUpCustomerSearch($event)"
             [(ngModel)]="customerName"
+            placeholder="Select customer"
             [matAutocomplete]="auto">
           <mat-autocomplete #auto="matAutocomplete">
             @for (option of companySuggestions; track option) {
@@ -24,7 +25,7 @@
       </div>
       <button
         type="button"
-        routerLink="/trip-list/trip-create?create"
+        routerLink="/trip-create/create"
         *ngIf="createButtonEnabled" class="bg-primary text-white rounded-lg px-16 py-3"
         (click)="onCreateTrip()">Create
         Trip
@@ -34,7 +35,10 @@
   <div class="bg-white mx-4 rounded-lg" *ngIf="templates">
     <div class="px-4 py-2 flex justify-between items-center">
       <h1 class="text-body">Saved Template</h1>
-      <button class="border border-primary text-primary font-semibold rounded-lg px-4 py-2">Create Template</button>
+      <button type="button" routerLink="/trip-create/create-trip-template"
+              (click)="onClickAddTemplate()"
+              class="border border-primary text-primary font-semibold rounded-lg px-4 py-2">Add Template
+      </button>
     </div>
     <div>
       <table class="table-auto w-full text-[0.875rem]">
@@ -47,7 +51,7 @@
           <th class="text-left"></th>
         </tr>
         <tr>
-          <th class="custom-borders" colspan="9"></th>
+          <th class="custom-borders" colspan="5"></th>
         </tr>
         </thead>
         <tbody>

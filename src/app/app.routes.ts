@@ -31,7 +31,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'trip-list/trip-create?customerselection',
+    path: 'trip-create/customerselection',
     title: 'Trip Create',
     loadComponent: () =>
       import('./pages/trip-list/components/new-trip/new-trip.component').then(
@@ -41,12 +41,28 @@ export const routes: Routes = [
   },
   // create trip with query params not id with scenerio
   {
-    path: 'trip-list/trip-create?create',
+    path: 'trip-create/create',
     title: 'Trip Create',
     loadComponent: () =>
       import(
         './pages/trip-list/components/create-trip-page/create-trip-page.component'
       ).then(c => c.CreateTripPageComponent),
+  },
+  {
+    path: 'trip-create/overview',
+    title: 'Trip Create',
+    loadComponent: () =>
+      import(
+        './pages/trip-list/components/trip-create-overview/trip-create-overview.component'
+      ).then(c => c.TripCreateOverviewComponent),
+  },
+  {
+    path: 'trip-create/create-trip-template',
+    title: 'Trip Create',
+    loadComponent: () =>
+      import(
+        './pages/trip-list/components/template-create/template-create.component'
+      ).then(c => c.TemplateCreateComponent),
   },
   {
     path: 'user-management',

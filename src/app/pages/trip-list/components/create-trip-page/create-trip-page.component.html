@@ -7,7 +7,6 @@
     </button>
   </div>
   <div class="p-4">
-
     <form [formGroup]="tripForm" class="rounded-lg bg-white w-full">
       <div class="mx-8 flex flex-col space-y-3 py-8  border-b-2 border-input">
         <div class="flex items-center space-x-3">
@@ -18,7 +17,7 @@
           <div class="flex flex-col space-y-1 w-full">
             <label for="customerName" class="form-label text-body">Customer Name</label>
             <mat-form-field appearance="outline" id="customerName">
-              <input matInput placeholder="Enter Customer Name">
+              <input matInput placeholder="Enter Customer Name" [value]="selectedCustomer.name">
             </mat-form-field>
           </div>
           <div class="flex flex-col space-y-1 w-full">
@@ -36,11 +35,17 @@
                               (selectedChange)="onSelect($event)"></mat-calendar>
               </mat-card>
               <mat-card class="w-96 mt-3 flex items-center justify-center">
-                <app-time-picker (timeChange)="onTimeChange($event)"
+                <app-time-picker (buttonDisabled)="isButtonDisabled($event)" [selectedDate]="returnToInputDate"
+                                 (timeChange)="onTimeChange($event)"
                                  (click)="$event.stopPropagation()"></app-time-picker>
               </mat-card>
-              <button (click)="onSelectTimeAndDate()"
-                      class="py-3 mt-3 w-full px-6 text-white bg-primary rounded-lg font-semibold">
+              <button
+                matTooltip="Can't set past time, please enter valid time"
+                matTooltipPosition="above"
+                [matTooltipDisabled]="!isDisabled"
+                [disabled]="isDisabled"
+                (click)="onSelectTimeAndDate()"
+                class="py-3 mt-3 w-full px-6 text-white bg-primary rounded-lg font-semibold">
                 <span class="w-full">Set date & time</span>
               </button>
             </mat-menu>
@@ -57,10 +62,12 @@
             <label for="loadingPoint" class="form-label text-body">Loading Point</label>
             <mat-form-field appearance="outline" class="example-full-width">
               <input
+                [errorStateMatcher]="matcher"
                 id="loadingPoint"
                 type="text"
                 matInput
                 placeholder="Address"
+                formControlName="loadingPointName"
                 (keyup)="onKeyUpLoadingPoint($event)"
                 [matAutocomplete]="auto">
               <mat-autocomplete #auto="matAutocomplete">
@@ -111,6 +118,7 @@
                 type="text"
                 matInput
                 placeholder="Address"
+                formControlName="unloadingPointName"
                 (keyup)="onKeyUpUnloadingPoint($event)"
                 [matAutocomplete]="autoUnload">
               <mat-autocomplete #autoUnload="matAutocomplete">
@@ -215,16 +223,25 @@
           </div>
         </div>
         <div class="grid lg:grid-cols-3 gap-4 w-full relative">
-          <div class="flex flex-col space-y-1 w-full">
+          <div class="flex flex-col space-y-2 w-full">
             <label for="numOfVehicle" class="form-label text-body">No. of vehicle</label>
             <mat-form-field appearance="outline" id="numOfVehicle">
-              <input formControlName="numOfTrucks" matInput placeholder="Enter No. of vehicle">
+              <input type="number" formControlName="numOfTrucks" matInput placeholder="Enter No. of vehicle">
             </mat-form-field>
+            <div class="w-full flex space-x-2 items-center">
+              <span>Sug:</span>
+              <button type="button" (click)="onClickNoOfTruckSuggestion(suggestion)"
+                      class="w-12 h-6 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                      [ngClass]="{'bg-green text-white': suggestion.selected}"
+                      *ngFor="let suggestion of numberOfTrucksSuggestions">
+                <span>{{ suggestion.value }}</span>
+              </button>
+            </div>
           </div>
           <div class="flex flex-col space-y-2 w-full">
             <label for="size" class="form-label text-body">Size</label>
             <mat-form-field appearance="outline" id="size">
-              <input matInput formControlName="truckSize" placeholder="Enter size">
+              <input type="number" step="0.1" matInput formControlName="truckSize" placeholder="Enter size">
             </mat-form-field>
             <div class="w-full flex space-x-2 items-center">
               <span>Sug:</span>
@@ -239,7 +256,8 @@
           <div class="flex flex-col space-y-2 w-full">
             <label for="capacity" class="form-label text-body">Capacity</label>
             <mat-form-field appearance="outline" id="capacity">
-              <input formControlName="truckCapacityInTon" matInput placeholder="Enter Capacity">
+              <input type="number" step="0.1" formControlName="truckCapacityInTon" matInput
+                     placeholder="Enter Capacity">
             </mat-form-field>
             <div class="w-full flex space-x-2 items-center">
               <span>Sug:</span>
@@ -262,13 +280,22 @@
             </div>
             <div class="flex flex-col space-y-1 w-full">
               <label for="goods" class="form-label text-body">Goods Type</label>
-              <mat-form-field appearance="outline" id="goods">
-                <mat-select [(value)]="leftButtonClicked" placeholder="Select Goods">
-                  <mat-option>None</mat-option>
-                  <mat-option value="option1">Option 1</mat-option>
-                  <mat-option value="option2">Option 2</mat-option>
-                  <mat-option value="option3">Option 3</mat-option>
-                </mat-select>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="goods"
+                  type="text"
+                  matInput
+                  formControlName="goodsName"
+                  placeholder="Enter Goods Type"
+                  (keyup)="onKeyUpGoods($event)"
+                  [matAutocomplete]="goods">
+                <mat-autocomplete #goods="matAutocomplete">
+                  @for (option of loadingGoodsSuggestions; track option) {
+                    <mat-option (click)="onClickGoodsSuggestion(option)" [value]="option.value">
+                      <div class="p-2 w-full text-body_title text-not-black">{{ option.value }}</div>
+                    </mat-option>
+                  }
+                </mat-autocomplete>
               </mat-form-field>
             </div>
           </div>
@@ -282,7 +309,8 @@
               <!--Add a bdt icon at the end of the input-->
               <div class="relative bg-input rounded-lg border-none">
                 <mat-form-field class="w-full" appearance="outline" id="customerRate">
-                  <input formControlName="customerRate" class="w-full" matInput placeholder="Enter Customer Rate">
+                  <input type="number" formControlName="customerRate" class="w-full" matInput
+                         placeholder="Enter Customer Rate">
                 </mat-form-field>
                 <img
                   id="icon"
@@ -300,10 +328,10 @@
           <img class="notPreview" src="assets/svg/additional.svg" alt="candt">
           <h1 class="text-h2 font-semibold">Additional info</h1>
         </div>
-        <textarea class="w-full h-28 border border-none bg-input rounded-lg p-4"
+        <textarea formControlName="note" class="w-full h-28 border border-none bg-input rounded-lg p-4"
                   placeholder="Enter additional info"></textarea>
       </div>
-      <div class="mx-8 pb-8">
+      <div class="mx-8 pb-8" *ngIf="!isFromTemplate">
         <mat-checkbox (change)="toggleSaveAsTemplateInputField($any($event))">
           Save as template for future use
         </mat-checkbox>
@@ -313,7 +341,8 @@
           <div class="flex flex-col space-y-1">
             <label class="form-label text-body" for="templateName">Template Name</label>
             <mat-form-field appearance="outline" id="templateName">
-              <input matInput placeholder="Enter Template Name">
+              <input formControlName="tripTemplateName"
+                     matInput placeholder="Enter Template Name">
             </mat-form-field>
           </div>
         </div>

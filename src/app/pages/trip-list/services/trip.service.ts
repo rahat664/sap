@@ -126,4 +126,19 @@ export class TripService {
       .set('includeOnlyGoogleMap', includeOnlyGoogleMap ? 'true' : 'false');
     return this.http.get(this.locationSuggestionsUrl, { params });
   }
+
+  getTruckName(truck_id: any) {
+    this.getVehicleTypeList().subscribe((res: any) => {
+      const truck = res.data.find(truck => truck.id === truck_id);
+      return truck ? truck.name : '';
+    });
+  }
+
+  createTrip(tripData: any) {
+    return this.http.post(this.url, tripData);
+  }
+
+  postTripTemplate(templateData) {
+    return this.http.post(this.tripTemplateUrl, templateData);
+  }
 }

@@ -23,13 +23,14 @@ export class AuthEffects {
               return loginFailure({ error: response.message });
             }
           }),
-          catchError(error => of(loginFailure({ error }))),
-        ),
-      ),
-    ),
+          catchError(error => of(loginFailure({ error })))
+        )
+      )
+    )
   );
 
-  loginSuccess$ = createEffect(() =>
+  loginSuccess$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(loginSuccess),
         tap(({ response }) => {
@@ -38,29 +39,30 @@ export class AuthEffects {
           localStorage.setItem('name', response.data.name);
           localStorage.setItem('image', response.data.image || '');
           localStorage.setItem('role', response.data.roles[0]);
+          localStorage.setItem('userPhoneNumber', response.data.phone);
           this.toaster.showSuccess('Login Successful', '');
           this.router.navigate(['/trip-list']); // Change to your desired route
-        }),
+        })
       ),
-    { dispatch: false },
+    { dispatch: false }
   );
 
-  logout$ = createEffect(() =>
+  logout$ = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(logout),
         tap(() => {
           localStorage.clear();
           this.router.navigateByUrl('/auth/login');
-        }),
+        })
       ),
-    { dispatch: false },
+    { dispatch: false }
   );
 
   constructor(
     private actions$: Actions,
     private authService: AuthService,
     private router: Router,
-    private toaster: HandleToastrService,
-  ) {
-  }
+    private toaster: HandleToastrService
+  ) {}
 }

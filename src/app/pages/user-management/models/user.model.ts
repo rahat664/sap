@@ -27,11 +27,11 @@ export class UserModel {
     other: string;
   };
   paymentMethod: {
-    user_id: string;
-    bank_name: string;
-    bank_acc_no: string;
-    branch_name: string;
-    acc_holder_name: string;
+    userId: string;
+    bankName: string;
+    bankAccNo: string;
+    branchName: string;
+    accHolderName: string;
     paymentMethod: string;
   };
   PaymentMethod: string;
