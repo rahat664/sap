@@ -22,6 +22,7 @@ import { ApiResponse } from '../../auth/models/response/api-response';
 export class TripService {
   url = `${environment.backendUrl}/api/trips`;
   tripTemplateUrl = `${environment.backendUrl}/api/trip_templates`;
+  tripPointUrl = `${environment.backendUrl}/api/tripPointEvents`;
   vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
   locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
@@ -37,7 +38,8 @@ export class TripService {
     startDate?: string,
     endDate?: string,
     status?: string,
-    tripId?: string
+    tripId?: string,
+    searchBy?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -60,6 +62,10 @@ export class TripService {
     }
 
     return this.http.get(`${this.url}`, { params });
+  }
+
+  getTripDetailsByTripId(tripId: string): Observable<any> {
+    return this.http.get(`${this.url}/${tripId}`);
   }
 
   getTripSuggestions(search: string): Observable<any> {
@@ -140,5 +146,9 @@ export class TripService {
 
   postTripTemplate(templateData) {
     return this.http.post(this.tripTemplateUrl, templateData);
+  }
+
+  getAllTripEvent(tripId: string, pointType: string) {
+    return this.http.get(`${this.tripPointUrl}/${tripId}/${pointType}`);
   }
 }

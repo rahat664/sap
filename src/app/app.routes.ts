@@ -39,6 +39,15 @@ export const routes: Routes = [
       ),
     canActivate: [authGuard],
   },
+  {
+    path: 'manage-trip',
+    title: 'Manage Trip',
+    loadComponent: () =>
+      import('./pages/manage-trip/manage-trip.component').then(
+        c => c.ManageTripComponent
+      ),
+    canActivate: [authGuard],
+  },
   // create trip with query params not id with scenerio
   {
     path: 'trip-create/create',

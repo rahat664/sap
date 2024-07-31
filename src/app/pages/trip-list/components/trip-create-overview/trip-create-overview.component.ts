@@ -74,9 +74,7 @@ export class TripCreateOverviewComponent {
         note: this.tripData.note,
         points: this.tripData.points,
       };
-      this.service.postTripTemplate(templateData).subscribe(res => {
-        console.log(res);
-      });
+      this.service.postTripTemplate(templateData).subscribe(res => {});
     }
   }
 

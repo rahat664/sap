@@ -1,0 +1,32 @@
+<button [ngClass]="{'ring ring-blue': isActivated}"
+        class="bg-white p-4 w-full flex flex-col rounded-2xl space-y-3 max-w-96 truncate text-ellipsis overflow-hidden">
+  <div class="flex justify-between items-start w-full">
+    <div class="flex flex-col space-y-1 items-start">
+      <span class="text-body_title text-not-black font-semibold">{{ tripNumber }}</span>
+      <span class="text-body text-secondary">{{ companyName }}</span>
+    </div>
+    <div class="px-2 py-1 {{getTripColorBasedOnStatus(tripStatus)}} text-white rounded-full text-xs">
+      {{ tripStatus }}
+    </div>
+  </div>
+  <div class="flex flex-col space-y-3 items-start text-xs">
+    <span class="text-secondary">{{ tripStartDateTime }}</span>
+    <div class="flex flex-col space-y-3 text-not-black">
+      <div class="flex space-x-3 items-center ">
+        <span class="w-[.563rem] h-[.563rem] bg-input-hint rounded-full relative">
+          <div
+            class="absolute  border-r border-input-hint border-dashed top-full right-1/2"></div>
+        </span>
+        <p class="whitespace-nowrap">{{ loadingPoint }}</p>
+      </div>
+      <div class="flex space-x-3 items-center">
+        <span class="w-[.563rem] h-[.563rem] bg-input-hint rounded-full relative">
+          <div
+            class="absolute h-[1.063rem] border-r border-input-hint border-dashed bottom-full mb-[1px] right-1/2"></div>
+        </span>
+        <p>{{ unloadingPoint }}</p>
+      </div>
+    </div>
+    <span class="text-secondary">{{ truckId }} | {{ truckType }} | {{ goodsName }}</span>
+  </div>
+</button>

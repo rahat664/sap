@@ -1,10 +1,10 @@
 import {
-  AfterViewChecked,
   ChangeDetectorRef,
   Directive,
   ElementRef,
   EventEmitter,
   HostListener,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
@@ -13,38 +13,47 @@ import {
   selector: '[appGetElementHeight]',
   standalone: true,
 })
-export class GetElementHeightDirective implements OnInit {
+export class GetElementHeightDirective implements OnInit, OnDestroy {
   @Output() height: EventEmitter<any> = new EventEmitter<any>();
+  private mutationObserver: MutationObserver;
 
   constructor(
     private el: ElementRef,
-    private ref: ChangeDetectorRef,
+    private ref: ChangeDetectorRef
   ) {
+    this.mutationObserver = new MutationObserver(() => {
+      this.emitHeight();
+    });
   }
 
   ngOnInit(): void {
+    this.emitHeight();
+    this.observeDOMChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.mutationObserver.disconnect();
+  }
+
+  private emitHeight(): void {
     this.height.emit(this.el.nativeElement.offsetHeight + 'px');
   }
 
+  private observeDOMChanges(): void {
+    this.mutationObserver.observe(this.el.nativeElement, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
+  }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    this.height.emit(this.el.nativeElement.offsetHeight + 'px');
+    this.emitHeight();
   }
 
   // detect route change
   @HostListener('window:popstate', ['$event']) onPopState(event: any) {
-    this.height.emit(this.el.nativeElement.offsetHeight + 'px');
+    this.emitHeight();
   }
-
-  // detect dom change
-  @HostListener('document:DOMSubtreeModified', ['$event']) onDomChange(event: any) {
-    this.height.emit(this.el.nativeElement.offsetHeight + 'px');
-  }
-
-  // detect removal of dom element
-  @HostListener('document:DOMNodeRemoved', ['$event']) onDomNodeRemoved(event: any) {
-    this.height.emit(this.el.nativeElement.offsetHeight + 'px');
-  }
-
 }

@@ -95,16 +95,42 @@ export class DriverEditSharedService {
 
   getTruckDocument(singleTruck: TruckInnerModel) {
     this.truckDocuments = this.generateDocumentList(singleTruck, [
-      { key: 'regPaperFile', name: 'Registration Paper', expDateKey: null },
-      { key: 'fitnessFile', name: 'Fitness', expDateKey: 'fitnessCertExpDate' },
+      {
+        key: 'regPaperFile',
+        showKey: 'preSignedRegPaperFile',
+        name: 'Registration Paper',
+        expDateKey: null,
+      },
+      {
+        key: 'fitnessFile',
+        showKey: 'preSignedFitnessFile',
+        name: 'Fitness',
+        expDateKey: 'fitnessCertExpDate',
+      },
       {
         key: 'routePermitFile',
+        showKey: 'preSignedRoutePermitFile',
         name: 'Route Permit',
         expDateKey: 'routePermitExpDate',
       },
-      { key: 'taxFile', name: 'Tax', expDateKey: 'taxExpDate' },
-      { key: 'caseFile', name: 'Case', expDateKey: 'caseExpDate' },
-      { key: 'otherFile', name: 'Other', expDateKey: null },
+      {
+        key: 'taxFile',
+        showKey: 'preSignedTaxFile',
+        name: 'Tax',
+        expDateKey: 'taxExpDate',
+      },
+      {
+        key: 'caseFile',
+        showKey: 'preSignedCaseFile',
+        name: 'Case',
+        expDateKey: 'caseExpDate',
+      },
+      {
+        key: 'otherFile',
+        showKey: 'preSignedOtherFile',
+        name: 'Other',
+        expDateKey: null,
+      },
     ]);
     return this.truckDocuments;
   }
@@ -115,17 +141,34 @@ export class DriverEditSharedService {
       [
         {
           key: 'drivingLicenseFront',
+          showKey: 'preSignedDrivingLicenseFront',
           name: 'Driving License Front',
           expDateKey: 'drivingLicenseExpiryDate',
         },
         {
           key: 'drivingLicenseBack',
           name: 'Driving License Back',
+          showKey: 'preSignedDrivingLicenseBack',
           expDateKey: 'drivingLicenseExpiryDate',
         },
-        { key: 'nidFront', name: 'NID Front', expDateKey: null },
-        { key: 'nidBack', name: 'NID Back', expDateKey: null },
-        { key: 'other', name: 'Other', expDateKey: null },
+        {
+          key: 'nidFront',
+          showKey: 'preSignedNidFront',
+          name: 'NID Front',
+          expDateKey: null,
+        },
+        {
+          key: 'nidBack',
+          showKey: 'preSignedNidBack',
+          name: 'NID Back',
+          expDateKey: null,
+        },
+        {
+          key: 'other',
+          showKey: 'preSignedOther',
+          name: 'Other',
+          expDateKey: null,
+        },
       ],
       'driverFilesUrls'
     );
@@ -140,6 +183,7 @@ export class DriverEditSharedService {
         documents.push({
           name: mapping.name,
           url: fileUrls[mapping.key],
+          showUrl: fileUrls[mapping.showKey],
           expDate: mapping.expDateKey ? entity[mapping.expDateKey] : null,
           expAvailable: !!mapping.expDateKey,
         });
@@ -205,7 +249,7 @@ export class DriverEditSharedService {
         this.service
           .deleteDriverFiles(
             document[i].preview,
-            this.driverUpdateForm.get('driverId').value
+            JSON.parse(localStorage.getItem('driver')).id
           )
           .subscribe({
             next: (res: any) => {

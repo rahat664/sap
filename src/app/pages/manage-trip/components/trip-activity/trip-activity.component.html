@@ -1,0 +1,48 @@
+<div class="min-h-[70vh]">
+  <div class="mx-16 flex flex-col space-y-3">
+    <div class="flex-col flex space-y-3">
+      <div class="grid grid-cols-2 px-16 pt-4">
+        <h1 class="text-h2 text-not-black font-semibold px-8">Manage Loading</h1>
+        <h1 class="text-body_title text-not-black font-semibold px-8">{{ selectedEventNameLoading }}</h1>
+      </div>
+      <div class="px-16 grid grid-cols-2 w-full border-b border-line">
+        <div class="flex flex-col w-full space-y-4 px-8 mb-6 border-r border-line">
+          <button (click)="changeTripLoadingEvent(event)" *ngFor="let event of loadingEvents"
+                  [ngClass]="{'border border-blue': event.eventName == selectedEventNameLoading}"
+                  class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
+            <img class="notPreview" *ngIf="event.urls" src="assets/svg/available.svg" alt="">
+            <img class="notPreview" *ngIf="!event.urls" src="assets/svg/not-available.svg" alt="">
+            <span class="text-body_title text-not-black font-semibold">{{ event.eventName }}</span>
+          </button>
+        </div>
+        <div class="px-8 w-full">
+          <div *ngIf="selectedEvent?.urls == null" class="w-full h-full flex items-center justify-center">
+            <div class="flex flex-col space-y-3">
+              <img src="assets/svg/no-data.svg" alt="">
+              <h1 class="text-body_title text-secondary text-center font-semibold">No Data Available</h1>
+            </div>
+          </div>
+          <div>
+            <div class="flex flex-col space-y-3">
+              <h1>Image</h1>
+              <div class="w-full flex space-x-3" *ngIf="selectedEvent?.urls != null">
+                <div class="w-[7.5rem] h-[5.375rem] flex-shrink-0 rounded-lg border border-disabled overflow-hidden"
+                     *ngFor="let url of selectedEvent?.urls">
+                  <img class="w-full h-full"
+                       [src]="url ? url : 'assets/images/dummy.jpg'" alt="">
+                </div>
+              </div>
+            </div>
+            <div>
+              <h1>Time</h1>
+              <span>{{ selectedEvent.localDateTime | date : 'dd-MMM-yyyy, hh:mm a' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+
+    </div>
+  </div>
+</div>

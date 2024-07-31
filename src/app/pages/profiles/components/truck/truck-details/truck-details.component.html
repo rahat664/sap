@@ -91,42 +91,6 @@
               list</a>
           </div>
         </div>
-        <!--        <div class="p-4 flex flex-col space-y-3">-->
-        <!--          <div class="flex space-x-3 items-center text-not-black">-->
-        <!--            <img class="notPreview" src="assets/svg/trucker.svg" alt="" />-->
-        <!--            <span class="text-not-black font-semibold">Tracker info</span>-->
-        <!--          </div>-->
-        <!--          <div class="grid grid-cols-2 gap-3">-->
-        <!--            <ng-container *ngIf="!inEditMode">-->
-        <!--              <div class="flex flex-col space-y-1">-->
-        <!--                <span class="text-not-black font-semibold">Manufacturer</span>-->
-        <!--                <span class="text-web-text-secondary">Traxnet</span>-->
-        <!--              </div>-->
-        <!--              <div class="flex flex-col space-y-1">-->
-        <!--                <span class="text-not-black font-semibold">Tracker Id</span>-->
-        <!--                <span class="text-web-text-secondary">127865</span>-->
-        <!--              </div>-->
-        <!--            </ng-container>-->
-        <!--            <ng-container *ngIf="inEditMode">-->
-        <!--              <div class="flex flex-col space-y-1">-->
-        <!--                <span class="text-not-black font-semibold">Manufacturer</span>-->
-        <!--                <app-custom-input-->
-        <!--                  appGetClickEvent-->
-        <!--                  (clickedElement)="onClickManufacturer($event)"-->
-        <!--                  [options]="manufacturerList"-->
-        <!--                  inputPlaceholder="Select Manufacturer"-->
-        <!--                  (selectedId)="onSelectManuFacturer($event)"-->
-        <!--                  [inputSearch]="manufacturerPlaceholder"></app-custom-input>-->
-        <!--              </div>-->
-        <!--              <div class="flex flex-col space-y-1">-->
-        <!--                <span class="text-not-black font-semibold">Tracker Id</span>-->
-        <!--                <input-->
-        <!--                  placeholder="Tracker Id"-->
-        <!--                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />-->
-        <!--              </div>-->
-        <!--            </ng-container>-->
-        <!--          </div>-->
-        <!--        </div>-->
       </div>
       <div class="w-full p-4 flex flex-col space-y-3">
         <div class="flex justify-between items-center h-8">
@@ -141,7 +105,7 @@
             [file]="true"
             buttonText="Upload"></app-upload-button>
         </div>
-        <div class="grid grid-cols-4 gap-3">
+        <div class="grid grid-cols-4 gap-3" *ngIf="documents.length > 0">
           <ng-container *ngFor="let document of documents">
             <div class="w-full flex flex-col space-y-1">
               <div
@@ -150,7 +114,7 @@
                   <img
                     class="w-full h-full"
                     [src]="
-                      document.url ? document.url : 'assets/images/dummy.jpg'
+                      document.showUrl ? document.showUrl : 'assets/images/dummy.jpg'
                     "
                     alt="" />
                 </div>
@@ -176,6 +140,10 @@
               </div>
             </div>
           </ng-container>
+        </div>
+        <div class="w-full flex flex-col space-y-3 justify-center items-center" *ngIf="documents.length <=0">
+          <img src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+          <p class="text-body_title text-secondary font-semibold">No Data Found</p>
         </div>
       </div>
     </div>

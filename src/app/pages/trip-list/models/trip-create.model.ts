@@ -1,8 +1,8 @@
 export class Point {
   pointDistrict: string;
   pointName: string;
-  pointLat: string;
-  pointLon: string;
+  pointLat: number;
+  pointLon: number;
   pointType: string;
 }
 

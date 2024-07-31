@@ -4,6 +4,8 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnDestroy,
+  OnInit,
   Output,
 } from '@angular/core';
 
@@ -11,7 +13,7 @@ import {
   standalone: true,
   selector: '[appGiveMaxHeight]',
 })
-export class GiveMaxHeightDirective {
+export class GiveMaxHeightDirective implements OnInit, OnDestroy {
   @Input() anotherItemsHeight = '0px';
   @Input() totalPage: number = 0;
   @Output() elementHeight: EventEmitter<string> = new EventEmitter<string>();
@@ -20,13 +22,24 @@ export class GiveMaxHeightDirective {
   );
 
   private topBarHeight = '110px';
+  private mutationObserver: MutationObserver;
 
-  constructor(private el: ElementRef) {}
+  constructor(private el: ElementRef) {
+    this.mutationObserver = new MutationObserver(() => {
+      this.setMaxHeight();
+    });
+  }
 
   ngOnInit(): void {
     setTimeout(() => {
       this.setMaxHeight();
     }, 1000);
+
+    this.observeDOMChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.mutationObserver.disconnect();
   }
 
   @HostListener('window:resize')
@@ -36,7 +49,6 @@ export class GiveMaxHeightDirective {
 
   @HostListener('scroll', ['$event'])
   onScroll(event: any): void {
-    // Detect if the user has scrolled to the bottom of the div
     const target = event.target;
     if (
       target.offsetHeight + target.scrollTop >=
@@ -46,30 +58,19 @@ export class GiveMaxHeightDirective {
     }
   }
 
-  // detect route change
-  @HostListener('window:popstate', ['$event']) onPopState(event: any) {
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event: any): void {
     setTimeout(() => {
       this.setMaxHeight();
     }, 1000);
   }
 
-  // detect dom change for every dom change
-  @HostListener('document:DOMSubtreeModified', ['$event']) onDomChange(
-    event: any
-  ) {
-    setTimeout(() => {
-      this.setMaxHeight();
-    }, 1000);
-  }
-
-  // detect removal of dom element
-  @HostListener('document:DOMNodeRemoved', ['$event']) onDomNodeRemoved(
-    event: any
-  ) {
-    // delay for 1 second to wait for the dom to be removed
-    setTimeout(() => {
-      this.setMaxHeight();
-    }, 1000);
+  private observeDOMChanges(): void {
+    this.mutationObserver.observe(document, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
   }
 
   private setMaxHeight(): void {

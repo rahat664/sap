@@ -79,11 +79,16 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.customerForm.get('code').valueChanges.subscribe(value => {
       //only allow 4 characters
-      if (value?.length > 4) {
-        this.customerForm.get('code').setValue(value?.substring(0, 4));
-      }
-      if (value?.length == 4) {
-        this.checkCustomerCodeIsAlreadyExistOrNot(value);
+      if (value.length > 0) {
+        if (value?.length > 4) {
+          this.customerForm.get('code').setValue(value?.substring(0, 4));
+        }
+        if (value?.length == 4) {
+          this.checkCustomerCodeIsAlreadyExistOrNot(value);
+        }
+      } else {
+        this.customerForm.get('code').setValue('');
+        this.customerModel.customerCode = '';
       }
     });
     this.subs = this.customerForm.get('name').valueChanges.subscribe(value => {
@@ -98,6 +103,8 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
           this.customerForm.get('code').setValue(fourDigitName);
           this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
         }
+      } else {
+        this.customerForm.get('code').setValue(' ');
       }
     });
     this.customerForm.get('phone').valueChanges.subscribe(value => {
@@ -194,8 +201,6 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     });
   }
 
-  protected readonly onfocus = onfocus;
-
   onfocusOut($event: FocusEvent) {
     if (
       $event &&
@@ -206,6 +211,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       const valueWithoutSpace = this.customerForm
         .get('name')
         .value?.toString()
+        .toUpperCase()
         .replace(/\s/g, '');
       if (valueWithoutSpace?.length < 4) {
         // fill the missing characters with random numbers

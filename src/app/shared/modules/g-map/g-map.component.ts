@@ -1,9 +1,14 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { GeolocationService } from '../../services/location/geolocation.service';
 import { mapStyles } from '../../models/map-options';
 
 declare const google: any;
-
 
 @Component({
   selector: 'app-g-map',
@@ -36,18 +41,18 @@ export class GMapComponent implements OnInit, OnChanges {
   endMarker: google.maps.Marker = new google.maps.Marker();
   initialMarker: google.maps.Marker = new google.maps.Marker();
 
-  constructor(private geoLocationService: GeolocationService) {
-    this.geoLocationService.getCurrentPosition().then(coords => {
-      this.lat = coords.latitude;
-      this.lng = coords.longitude;
-      this.initMap({ lat: this.lat, lng: this.lng });
-    }).catch(error => {
-      console.error('Error getting current position', error);
-      ``;
-    });
-  }
+  constructor(private geoLocationService: GeolocationService) {}
 
   ngOnInit(): void {
+    const currentLocation = localStorage.getItem('currentLocation');
+    if (currentLocation) {
+      const location = JSON.parse(currentLocation);
+      this.initMap({ lat: location.lat, lng: location.lng });
+    } else {
+      this.geoLocationService.getCurrentPosition().then(position => {
+        this.initMap({ lat: position.latitude, lng: position.longitude });
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -59,7 +64,7 @@ export class GMapComponent implements OnInit, OnChanges {
   private initMap(latLng: { lng: number; lat: number }) {
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: latLng,
-      zoom: 16,
+      zoom: 20,
       zoomControl: false,
       streetViewControl: false,
       mapTypeControl: false,
@@ -102,6 +107,11 @@ export class GMapComponent implements OnInit, OnChanges {
       this.startMarker.setMap(null);
       this.endMarker.setMap(null);
       this.initialMarker.setPosition(latlng);
+      this.initialMarker.setIcon({
+        url: '/assets/images/focus.png',
+        scaledSize: new google.maps.Size(30, 30),
+        labelOrigin: new google.maps.Point(15, -8),
+      });
       this.initialMarker.setMap(this.map);
     }
   }
@@ -115,13 +125,15 @@ export class GMapComponent implements OnInit, OnChanges {
       suppressMarkers: true,
       polylineOptions: {
         strokeOpacity: 0.7,
-        strokeWeight: 5,
+        strokeWeight: 1,
       },
     });
     this.directionsRenderer.setMap(this.map);
   }
 
-  private updatePolylineWithTraffic(directionsResult: google.maps.DirectionsResult): void {
+  private updatePolylineWithTraffic(
+    directionsResult: google.maps.DirectionsResult
+  ): void {
     const route = directionsResult.routes[0];
     this.clearPolylines();
     route.legs.forEach(leg => {
@@ -150,15 +162,14 @@ export class GMapComponent implements OnInit, OnChanges {
     this.endMarker.setMap(this.map);
   }
 
-
   private drawTrafficPolyline(step: google.maps.DirectionsStep): void {
     const path = step.path;
-    const strokeColor = this.getTrafficColor(step.duration?.value);
+    const strokeColor = '#11484F';
     const polyline = new google.maps.Polyline({
       path: path,
       strokeColor: strokeColor,
       strokeOpacity: 1,
-      strokeWeight: 6,
+      strokeWeight: 4,
       map: this.map,
       zIndex: 1,
     });
@@ -167,8 +178,10 @@ export class GMapComponent implements OnInit, OnChanges {
 
   private getTrafficColor(duration: number | undefined): string {
     if (!duration) return GMapComponent.TRAFFIC_COLORS.LIGHT;
-    if (duration > GMapComponent.DURATION_THRESHOLDS.HEAVY_TRAFFIC) return GMapComponent.TRAFFIC_COLORS.HEAVY;
-    if (duration > GMapComponent.DURATION_THRESHOLDS.MODERATE_TRAFFIC) return GMapComponent.TRAFFIC_COLORS.MODERATE;
+    if (duration > GMapComponent.DURATION_THRESHOLDS.HEAVY_TRAFFIC)
+      return GMapComponent.TRAFFIC_COLORS.HEAVY;
+    if (duration > GMapComponent.DURATION_THRESHOLDS.MODERATE_TRAFFIC)
+      return GMapComponent.TRAFFIC_COLORS.MODERATE;
     return GMapComponent.TRAFFIC_COLORS.LIGHT;
   }
 

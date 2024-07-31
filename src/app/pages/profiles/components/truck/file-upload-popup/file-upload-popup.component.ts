@@ -82,7 +82,7 @@ export class FileUploadPopupComponent implements OnChanges {
       this.fileInput.emit(this.fileArray);
     }
     this.fileArray[i].fileOpened = false;
-    const registrationTypesSet = new Set(
+    const registrationTypesSet: Set<any> = new Set(
       this.fileArray.map(file => file.registrationType)
     );
 

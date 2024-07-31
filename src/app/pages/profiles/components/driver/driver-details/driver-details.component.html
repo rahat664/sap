@@ -85,7 +85,7 @@
           [file]="true"
           buttonText="Upload"></app-upload-button>
       </div>
-      <div class="grid grid-cols-4 gap-3">
+      <div class="grid grid-cols-4 gap-3" *ngIf="documents.length > 0">
         <ng-container *ngFor="let document of documents">
           <div class="w-full flex flex-col space-y-1">
             <div
@@ -94,7 +94,7 @@
                 <img
                   class="w-full h-full"
                   [src]="
-                    document.url ? document.url : 'assets/images/dummy.jpg'
+                    document.showUrl ? document.showUrl : 'assets/images/dummy.jpg'
                   "
                   [alt]="document.name" />
               </div>
@@ -121,6 +121,10 @@
             </div>
           </div>
         </ng-container>
+      </div>
+      <div class="w-full flex flex-col space-y-3 justify-center items-center" *ngIf="documents.length <=0">
+        <img src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+        <p class="text-body_title text-secondary font-semibold">No Data Found</p>
       </div>
     </div>
   </div>

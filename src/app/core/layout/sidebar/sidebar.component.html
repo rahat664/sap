@@ -1,10 +1,11 @@
-<aside
+<div
+  #sideBar
   id="sidebar"
-  [ngClass]="{ hidden: !willShow }"
-  class="fixed z-20 h-full top-0 left-0 pt-16 lg:flex flex-shrink-0 flex-col w-64 transition-width duration-75"
+  *ngIf="!willShow"
+  class="fixed z-20 h-full top-0 left-0 pt-16 lg:flex flex-shrink-0 flex-col w-72 transition-width duration-75"
   aria-label="Sidebar">
   <div
-    class="relative flex-1 flex flex-col min-h-full border-r border-gray-200 bg-white pt-0">
+    class="relative flex-1 flex flex-col min-h-full border-r border-gray-200 bg-white pt-0 pb-20">
     <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
       <div class="flex-1 px-3 bg-white divide-y space-y-1">
         <ul class="space-y-2 pb-2">
@@ -60,6 +61,20 @@
               <img *ngIf="isActive('/trip-list') == false" class="notPreview" src="assets/svg/trip-list-deselect.svg"
                    alt="" />
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Trip List</span>
+            </a>
+          </li>
+          <li>
+            <a
+              (click)="clearSelectedTemplate()"
+              routerLink="/manage-trip"
+              routerLinkActive="active"
+              class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
+              <img *ngIf="isActive('/manage-trip')" class="notPreview" src="assets/svg/trip-management-select.svg"
+                   alt="" />
+              <img *ngIf="isActive('/manage-trip') == false" class="notPreview"
+                   src="assets/svg/trip-management-deselect.svg"
+                   alt="" />
+              <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Manage Trip</span>
             </a>
           </li>
           <li>
@@ -144,14 +159,14 @@
     </div>
   </div>
   <div class="fixed bottom-0 mr-0">
-    <div class="p-4 flex items-center justify-center w-64 bg-[#FAFEFF]">
+    <div class="p-4 flex items-center justify-center w-72 bg-[#FAFEFF]">
       <div class="flex flex-col items-center  space-y-3">
         <img class="w-2/3" src="assets/svg/ecoflit.svg" alt="ecoflit">
         <span class="text-[.75rem] text-secondary">© SNZ Technologies Limited {{ currentYear }}</span>
       </div>
     </div>
   </div>
-</aside>
+</div>
 
 <div
   class="bg-gray-900 opacity-50 hidden fixed inset-0 z-10"

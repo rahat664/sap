@@ -130,6 +130,7 @@ export class NewTripComponent implements OnInit {
     localStorage.setItem('selectedTemplate', JSON.stringify(tripTemplate));
     localStorage.setItem('isFromTemplate', 'true');
     this.router.navigate(['/trip-create/create']);
+    this.dontClearLocalStorage = true;
   }
 
   private manageStore() {

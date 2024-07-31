@@ -1,0 +1,70 @@
+<div class="flex">
+  <div class="flex flex-col  min-w=[25rem] max-w-[25rem]">
+    <div class="p-4 flex flex-col space-y-3">
+      <div class="flex justify-between items-center">
+        <span class="text-h2 font-semibold">Trip List</span>
+        <button (click)="onclickSideBarClose()"
+                class="h-[1.75rem] w-[1.75rem] text-white bg-[#D8E8ED] flex items-center justify-center rounded-lg">
+          <i *ngIf="sidebarClosed" class="fas fa-caret-right text-not-black text-2xl"></i>
+          <i *ngIf="!sidebarClosed" class="fas fa-caret-left text-not-black text-2xl"></i>
+        </button>
+      </div>
+      <div class="flex justify-between gap-3 items-center">
+        <div class="relative w-full">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="far fa-search text-gray-500"></i>
+          </div>
+          <input
+            (keyup)="onKeyUpSearch($event)"
+            type="text"
+            name="email"
+            id="topbar-search"
+            class="border-none text-input-hint w-full bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
+            placeholder="Search  name, mobile, email" />
+        </div>
+        <div class="p-2 rounded-lg bg-white flex items-center justify-center">
+          <img class="notPreview" src="assets/svg/filter.svg" alt="filter">
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="!loading"
+      appGiveMaxHeight (inBottomEnd)="onScrollEnd()"
+      class="flex flex-col px-4 py-1 space-y-2 h-[calc(100vh-11.7rem)] overflow-y-auto">
+      <app-trip-card
+        (click)="onclickTripCard(trip.tripId)"
+        [isActivated]="trip.tripId === activatedId"
+        *ngFor="let trip of tripList"
+        [tripNumber]="trip.tripId"
+        [companyName]="trip.customerName"
+        [tripStatus]="trip.status"
+        [tripStartDateTime]="trip.tripStartDatetime"
+        [loadingPoint]="trip.loadingPoint"
+        [unloadingPoint]="trip.unloadingPoint"
+        [truckId]="getTruckRegistrationNumber(trip.truck)"
+        [truckType]="trip.vehicleCategory.name"
+        [goodsName]="trip.good.name"
+      ></app-trip-card>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center h-[calc(100vh-11.7rem)] min-w-96"
+      *ngIf="loading"
+
+    >
+      <div class="flex justify-center animate-spin">
+        <div class="ease-linear rounded-full border-8 border-t-8 border-gray-200 h-12 w-12 "
+        ></div>
+      </div>
+      <span class="text-center w-full text-secondary">Loading...</span>
+    </div>
+  </div>
+  <div class="w-full h-[calc(100vh-4.5rem)] relative">
+    <app-g-map [starting]="startingPosition" [destination]="destinationPosition"></app-g-map>
+    <app-map-buttons [statusButtons]="statusButtons" (buttonClickEmitter)="onClickButton($event)"
+                     class="absolute top-0 right-1/2 transform translate-x-1/2">
+    </app-map-buttons>
+    <app-trip-details *ngIf="singleTripDetails" [tripDetails]="singleTripDetails"
+                      class="absolute bottom-0 w-full slide-top"></app-trip-details>
+  </div>
+</div>

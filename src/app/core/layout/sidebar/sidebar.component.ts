@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ToggleResponsiveService } from '../../../shared/services/toggle-responsive-services/toggle-responsive.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -28,9 +34,28 @@ export class SidebarComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
+  @ViewChild('sideBar') myDiv!: ElementRef;
+
+  ngOnInit(): void {}
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.myDiv.nativeElement.classList.remove('slide-right');
+    }, 1);
     this.subs = this.mobileViewService.isSidebarOpen.subscribe(value => {
-      this.willShow = value;
+      if (value) {
+        this.myDiv.nativeElement.classList.remove('slide-right');
+        this.myDiv.nativeElement.classList.add('slide-left');
+        setTimeout(() => {
+          this.willShow = value;
+        }, 500);
+      } else {
+        this.willShow = value;
+        setTimeout(() => {
+          this.myDiv.nativeElement.classList.add('slide-right');
+          this.myDiv.nativeElement.classList.remove('slide-left');
+        }, 0);
+      }
     });
   }
 

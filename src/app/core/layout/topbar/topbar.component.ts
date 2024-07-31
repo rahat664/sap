@@ -41,6 +41,9 @@ export class TopbarComponent implements OnInit {
   ngOnInit(): void {
     this.name = localStorage.getItem('name');
     this.image = localStorage.getItem('image');
+    this.toggleMobileViewService.isSidebarOpen.subscribe(value => {
+      this.isSideBarOpen = value;
+    });
   }
 
   toggleMobileSideBar() {

@@ -168,8 +168,6 @@
     appGiveMaxHeight
     [totalPage]="totalPages"
     (inBottomEnd)="onBottom($event)"
-    appCheckTheHeightCrossMaxHeightOrNot
-    (maxHeightCrossed)="onMaxHeightCross($event)"
     [anotherItemsHeight]="height"
     class="bg-white w-full relative rounded-lg overflow-auto">
     <table class="table-auto w-full text-[0.875rem]">
@@ -215,7 +213,12 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" colspan="9">No data found</td>
+          <td class="text-center" colspan="9">
+            <div class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+            </div>
+          </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="loading">

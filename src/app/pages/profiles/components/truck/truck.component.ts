@@ -73,6 +73,7 @@ export class TruckComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.truckList = [];
     this.getTruckList();
     this.makeSureUploadCompletedOrNot();
   }

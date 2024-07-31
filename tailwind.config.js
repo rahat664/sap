@@ -21,6 +21,8 @@ module.exports = {
         'app-bg': '#F9F9F9',
         'mobile-line': '#D3DBDC',
         active: '#E7EDED',
+        line: '#D3DBDC',
+        cancel: '#718096',
       },
       backgroundColor: {
         primary: '#11484F',
@@ -38,7 +40,9 @@ module.exports = {
         'app-bg': '#F9F9F9',
         'mobile-line': '#D3DBDC',
         active: '#E7EDED',
+        cancel: '#718096',
         'custom-gradient': '#0084ff0d',
+        line: '#D3DBDC',
       },
       borderColor: {
         primary: '#11484F',
@@ -53,11 +57,13 @@ module.exports = {
         red: '#F0614E',
         disabled: '#E5EAEB',
         link: '#0085FF',
+        cancel: '#718096',
         'app-bg': '#F9F9F9',
         'mobile-line': '#D3DBDC',
         active: '#E7EDED',
         'green-gradient': '#F3FCF8',
         'red-gradient': '#FEF7F6',
+        line: '#D3DBDC',
       },
       backgroundImage: {
         loginBg: "url('assets/images/login-bg.png')",

@@ -102,7 +102,6 @@ export class TemplateCreateComponent {
   ) {}
 
   ngOnInit() {
-    console.log(this.matcher);
     this.initiateForm();
     this.getVehicleTypeList();
     this.getGoodsOptions();
@@ -156,15 +155,21 @@ export class TemplateCreateComponent {
         {
           pointDistrict: this.templateForm.get('loadingPointDistrict').value,
           pointName: this.templateForm.get('loadingPointName').value,
-          pointLat: this.templateForm.get('loadingPointLatitude').value,
-          pointLon: this.templateForm.get('loadingPointLongitude').value,
+          pointLat: Number(this.templateForm.get('loadingPointLatitude').value),
+          pointLon: Number(
+            this.templateForm.get('loadingPointLongitude').value
+          ),
           pointType: 'loading',
         },
         {
           pointDistrict: this.templateForm.get('unloadingPointDistrict').value,
           pointName: this.templateForm.get('unloadingPointName').value,
-          pointLat: this.templateForm.get('unloadingPointLatitude').value,
-          pointLon: this.templateForm.get('unloadingPointLongitude').value,
+          pointLat: Number(
+            this.templateForm.get('unloadingPointLatitude').value
+          ),
+          pointLon: Number(
+            this.templateForm.get('unloadingPointLongitude').value
+          ),
           pointType: 'unloading',
         },
       ];

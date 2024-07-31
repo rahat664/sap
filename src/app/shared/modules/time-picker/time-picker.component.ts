@@ -205,7 +205,6 @@ export class TimePickerComponent {
   }
 
   onFocusOut() {
-    console.log('focus out');
     const currentHourIn12 =
       this.currentHour > 12 ? this.currentHour - 12 : this.currentHour;
     if (

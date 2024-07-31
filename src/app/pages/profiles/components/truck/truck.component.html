@@ -31,8 +31,6 @@
     </div>
   </div>
   <div
-    appCheckTheHeightCrossMaxHeightOrNot
-    (maxHeightCrossed)="onMaxHeightCross($event)"
     appGiveMaxHeight
     (inBottomEnd)="onBottom($event)"
     [totalPage]="totalPages"
@@ -55,7 +53,7 @@
         <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
-        <th class="border" colspan="8"></th>
+        <th class="border" colspan="10"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -176,12 +174,17 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="truckList?.length === 0">
-          <td class="text-center" colspan="8">No data found</td>
+          <td class="text-center" colspan="10">
+            <div class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+            </div>
+          </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="8">
+          <td class="h-full" colspan="10">
             <app-loading></app-loading>
           </td>
         </tr>

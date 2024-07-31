@@ -32,8 +32,8 @@ export interface TripPoint {
   pointDistrict: string;
   pointName: string;
   pointType: 'Loading' | 'Unloading';
-  pointLat: string;
-  pointLon: string;
+  pointLat: number;
+  pointLon: number;
 }
 
 export interface Truck {

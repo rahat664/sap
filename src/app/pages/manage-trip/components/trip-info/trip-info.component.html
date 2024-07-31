@@ -1,0 +1,107 @@
+<div class="flex flex-col max-h-[70vh]  min-h-[70vh]  overflow-y-auto space-y-2
+">
+  <div class="px-16 flex justify-between items-center py-4">
+    <div class="flex flex-col space-y-1">
+      <h1 class="text-body_title text-not-black font-semibold">
+        {{ tripDetails?.customerName }}
+      </h1>
+      <span class="text-body text-web-text-secondary">{{ tripDetails?.tripId }}</span>
+    </div>
+    <button class="bg-primary px-6 py-2 font-semibold rounded-lg text-white">
+      <span>Start trip</span>
+    </button>
+  </div>
+  <div class="mx-16 pb-4 border-b-4 border-disabled">
+    <div class="grid grid-cols-4 place-items-center text-xs font-semibold py-4 bg-input rounded-t-lg">
+      <span>Created</span>
+      <span>Booked</span>
+      <span>Running</span>
+      <span>Completed</span>
+    </div>
+    <div class="border border-input border-t-0 grid grid-cols-4 place-items-center py-6  rounded-b-lg">
+      <div class="flex flex-col space-y-2 w-full items-center justify-center"
+           *ngFor="let timeline of tripTimeline; index as i">
+        <img class="notPreview {{timeline.truckInThisPoint ? '': 'invisible'}}" src="assets/svg/truckImg.svg"
+             alt="truckImg">
+        <div class="relative w-full flex items-center justify-center">
+          <div
+            class="w-[0.5rem] h-[0.5rem] rounded-full relative ring ring-[#1DBF73] z-20 {{timeline.active ? 'bg-green': 'bg-white'}}"></div>
+          <div
+            class="border  border-green {{timeline.active ? 'border-solid': 'border-dashed'}} {{i == 0 ? 'w-1/4 left-1/4' : 'w-1/2 right-1/2'}} absolute "></div>
+          <div *ngIf="i < 3"
+               class="border {{tripTimeline[i+1]?.active ? 'border-solid mr-0': 'border-dashed mr-0.5'}} border-green w-1/2 absolute right-0 "></div>
+        </div>
+        <div
+          class="text-center text-xs text-secondary flex flex-col space-y-2 {{timeline.dateTimeAvailable ? '': 'invisible'}}">
+          <span>{{ timeline.dateTime | date : 'hh mm a' }}</span>
+          <span>{{ timeline.dateTime | date: 'dd MMM yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-1 mx-16 py-4 items-start">
+    <div class="flex flex-col w-1/2 space-y-3">
+      <div class="flex flex-col space-y-1">
+        <div class="flex space-x-3 items-center">
+          <img class="w-6 h-6" src="assets/svg/loading.svg">
+          <h1 class="text-body_title text-not-black font-semibold">Loading Point</h1>
+        </div>
+        <h1 class="text-body  text-wrap text-web-text-secondary">{{ tripDetails.tripPoints[0].pointName }}</h1>
+      </div>
+      <div class="flex flex-col  space-y-1">
+        <div class="flex space-x-3 items-center">
+          <img class="w-6 h-6" src="assets/svg/locinfo.svg">
+          <h1 class="text-body_title text-not-black font-semibold">Unloading Point</h1>
+        </div>
+        <h1 class="text-body text-wrap text-web-text-secondary">{{
+            tripDetails.tripPoints[tripDetails.tripPoints.length - 1].pointName
+          }}</h1>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <div class="flex space-x-3 items-center">
+          <img class="w-6 h-6" src="assets/svg/truckinfo.svg">
+          <h1 class="text-body_title text-not-black font-semibold">Truck</h1>
+        </div>
+        <h1 class="text-body  text-wrap text-web-text-secondary">{{ tripDetails.vehicleCategory.name }}
+          | {{ tripDetails.truckSize }}ft, {{ tripDetails.truckCapacityInTon }} ton</h1>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <div class="flex space-x-3 items-center">
+          <img class="w-6 h-6" src="assets/svg/goodsinfo.svg">
+          <h1 class="text-body_title text-not-black font-semibold">Goods</h1>
+        </div>
+        <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.good.name }}</h1>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <div class="flex space-x-3 items-center">
+          <img class="h-6 w-6" src="assets/svg/cr.svg">
+          <h1 class="text-body_title text-not-black font-semibold">Customer Rate</h1>
+        </div>
+        <h1
+          class="text-body w-1/2 text-wrap text-web-text-secondary">{{
+            Number(tripDetails.customerRate) | number
+          }} ৳</h1>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <div class="flex space-x-3 items-center">
+          <img class="h-6 w-6" src="assets/svg/cgm.svg">
+          <h1 class="text-body_title text-not-black font-semibold">CGM</h1>
+        </div>
+        <h1 class="text-body text-wrap text-web-text-secondary">{{ userName }} <span
+          *ngIf="userPhone">| {{ userPhone }}</span></h1>
+      </div>
+
+      <div>
+      </div>
+    </div>
+    <div class="flex flex-col items-end w-1/2 flex-1 space-y-3">
+      <div class="flex flex-col space-y-1">
+        <div class="flex space-x-3 items-center">
+          <img src="assets/svg/additional.svg">
+          <h1 class="text-body_title text-not-black font-semibold">Additional Instruction</h1>
+        </div>
+        <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.note }}</h1>
+      </div>
+    </div>
+  </div>
+</div>

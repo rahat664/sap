@@ -132,15 +132,15 @@ export class CreateTripPageComponent implements OnInit {
         {
           pointDistrict: this.tripForm.get('loadingPointDistrict').value,
           pointName: this.tripForm.get('loadingPointName').value,
-          pointLat: this.tripForm.get('loadingPointLatitude').value,
-          pointLon: this.tripForm.get('loadingPointLongitude').value,
+          pointLat: Number(this.tripForm.get('loadingPointLatitude').value),
+          pointLon: Number(this.tripForm.get('loadingPointLongitude').value),
           pointType: 'Loading',
         },
         {
           pointDistrict: this.tripForm.get('unloadingPointDistrict').value,
           pointName: this.tripForm.get('unloadingPointName').value,
-          pointLat: this.tripForm.get('unloadingPointLatitude').value,
-          pointLon: this.tripForm.get('unloadingPointLongitude').value,
+          pointLat: Number(this.tripForm.get('unloadingPointLatitude').value),
+          pointLon: Number(this.tripForm.get('unloadingPointLongitude').value),
           pointType: 'Unloading',
         },
       ];
@@ -162,7 +162,6 @@ export class CreateTripPageComponent implements OnInit {
       localStorage.removeItem('selectedTemplate');
       this.router.navigate(['/trip-create/overview']);
     } else {
-      console.log('Form is invalid');
     }
   }
 
@@ -313,7 +312,6 @@ export class CreateTripPageComponent implements OnInit {
 
   onTimeChange($event: any) {
     this.time = $event;
-    console.log(this.time);
   }
 
   onSelectTimeAndDate() {
@@ -326,7 +324,6 @@ export class CreateTripPageComponent implements OnInit {
     const selectedDate = this.selectedDate;
     selectedDate.setHours(timeIn24HourFormat, hour);
     selectedDate.setMinutes(minute);
-    console.log(selectedDate);
     this.tripForm
       .get('tripStartDatetime')
       .setValue(
@@ -367,8 +364,8 @@ export class CreateTripPageComponent implements OnInit {
       this.tripForm.get('loadingPointLongitude').setValue(option.longitude);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
-        const lat = res.result.geometry.location.lat;
-        const lng = res.result.geometry.location.lng;
+        const lat = res.location.lat;
+        const lng = res.location.lng;
         this.tripForm.get('loadingPointLatitude').setValue(lat);
         this.tripForm.get('loadingPointLongitude').setValue(lng);
       });
