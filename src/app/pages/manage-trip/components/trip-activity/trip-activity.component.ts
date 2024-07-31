@@ -60,4 +60,8 @@ export class TripActivityComponent {
       selectedEvent.urls = selectedEvent.urls.slice(0, 4);
     }
   }
+
+  onClickLeftButton() {}
+
+  onClickRightButton() {}
 }
