@@ -194,49 +194,54 @@
         </div>
         <div class="grid lg:grid-cols-3 gap-4 w-full relative">
           <div class="flex flex-col space-y-2 w-full">
-            <label for="numOfVehicle" class="form-label text-body">No. of vehicle</label>
+            <label for="numOfVehicle" class="form-label text-body">Number of vehicle</label>
             <mat-form-field appearance="outline" id="numOfVehicle">
-              <input type="number" formControlName="numOfTrucks" matInput placeholder="Enter No. of vehicle">
+              <input type="number" formControlName="numOfTrucks" matInput placeholder="Enter Number of vehicle">
             </mat-form-field>
             <div class="w-full flex space-x-2 items-center">
-              <span>Sug:</span>
+              <span>Suggestion:</span>
               <button type="button" (click)="onClickNoOfTruckSuggestion(suggestion)"
-                      class="w-12 h-6 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                      class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
                       [ngClass]="{'bg-green text-white': suggestion.selected}"
                       *ngFor="let suggestion of numberOfTrucksSuggestions">
-                <span>{{ suggestion.value }}</span>
+                <a (click)="onClickNoOfTruckSuggestion(suggestion)"
+                   class="cursor-pointer w-full h-full">{{ suggestion.value }}</a>
               </button>
             </div>
           </div>
           <div class="flex flex-col space-y-2 w-full">
-            <label for="size" class="form-label text-body">Size</label>
+            <label for="size" class="form-label text-body">Truck Size (Feet)</label>
             <mat-form-field appearance="outline" id="size">
               <input type="number" step="0.1" matInput formControlName="truckSize" placeholder="Enter size">
             </mat-form-field>
             <div class="w-full flex space-x-2 items-center">
-              <span>Sug:</span>
+              <span>Suggestion:</span>
               <button type="button" (click)="onClickTruckSizeSuggestions(suggestion)"
-                      class="w-12 h-6 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                      class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
                       [ngClass]="{'bg-green text-white': suggestion.selected}"
                       *ngFor="let suggestion of truckSizeSuggestions">
-                <span>{{ suggestion.value }}</span>
+                <a (click)="onClickTruckSizeSuggestions(suggestion)"
+                   class="cursor-pointer w-full h-full">{{ suggestion.value }}</a>
               </button>
             </div>
           </div>
           <div class="flex flex-col space-y-2 w-full">
-            <label for="capacity" class="form-label text-body">Capacity</label>
+            <label for="capacity" class="form-label text-body">Truck Capacity (Ton)</label>
             <mat-form-field appearance="outline" id="capacity">
               <input type="number" step="0.1" formControlName="truckCapacityInTon" matInput
                      placeholder="Enter Capacity">
             </mat-form-field>
             <div class="w-full flex space-x-2 items-center">
-              <span>Sug:</span>
-              <button type="button" (click)="onClickTruckCapacitySuggestions(suggestion)"
-                      class="w-12 h-6 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
-                      [ngClass]="{'bg-green text-white': suggestion.selected}"
-                      *ngFor="let suggestion of truckCapacitySuggestions">
-                <span>{{ suggestion.value }}</span>
-              </button>
+              <span>Suggestion:</span>
+              <ng-container *ngFor="let suggestion of truckCapacitySuggestions">
+                <button type="button" (click)="onClickTruckCapacitySuggestions(suggestion)"
+                        class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                        [ngClass]="{'bg-green text-white': suggestion.selected}"
+                >
+                  <a (click)="onClickTruckCapacitySuggestions(suggestion)"
+                     class="cursor-pointer h-full w-full">{{ suggestion.value }}</a>
+                </button>
+              </ng-container>
             </div>
           </div>
         </div>

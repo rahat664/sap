@@ -75,4 +75,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
   clearSelectedTemplate() {
     localStorage.removeItem('selectedTemplate');
   }
+
+  isAdmin() {
+    return (
+      localStorage.getItem('role') === 'ROLE_ADMIN' ||
+      localStorage.getItem('role') === 'ROLE_KAM'
+    );
+  }
 }

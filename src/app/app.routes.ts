@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './pages/auth/guards/auth.guard';
 import { isAlreadyLoggedInGuard } from './pages/auth/guards/is-already-logged-in.guard';
+import { roleGuard } from './pages/auth/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -87,7 +88,7 @@ export const routes: Routes = [
     title: 'Profile',
     loadChildren: () =>
       import('./pages/profiles/profile.routes').then(m => m.profileRoutes),
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
   },
   {
     path: '',

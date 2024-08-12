@@ -1,6 +1,6 @@
 // src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ApiResponse } from '../models/response/api-response';
 import { LoginRequest } from '../models/request/login-request';
@@ -11,14 +11,15 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient, private router: Router) {
-  }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   login(payload: LoginRequest): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(environment.userUrl + '/auth/login', payload)
-      .pipe(
-        catchError(this.handleError),
-      );
+    return this.http
+      .post<ApiResponse>(environment.userUrl + '/auth/login', payload)
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -34,13 +35,18 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('name');
-    localStorage.removeItem('image');
+    localStorage.clear();
     this.router.navigate(['/auth/login']);
   }
 
   isLoggedIn() {
     return localStorage.getItem('accessToken') !== null;
+  }
+
+  isAdmin() {
+    return (
+      localStorage.getItem('role') === 'ROLE_ADMIN' ||
+      localStorage.getItem('role') === 'ROLE_KAM'
+    );
   }
 }

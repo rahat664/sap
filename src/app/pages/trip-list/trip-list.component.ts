@@ -339,4 +339,11 @@ export class TripListComponent implements OnInit {
     this.loading = true;
     this.getTripList();
   }
+
+  isAdmin() {
+    return (
+      localStorage.getItem('role') === 'ROLE_ADMIN' ||
+      localStorage.getItem('role') === 'ROLE_KAM'
+    );
+  }
 }

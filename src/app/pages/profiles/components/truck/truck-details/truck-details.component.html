@@ -34,7 +34,7 @@
             <div
               class="flex flex-col space-y-1"
               [ngClass]="{ 'col-span-2': inEditMode }">
-              <span class="text-not-black font-semibold">Registration No.</span>
+              <span class="text-not-black font-semibold">Registration Number</span>
               <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
                   getFullRegistrationName()
                 }}</span>
@@ -64,13 +64,13 @@
                   formControlName="registration_serial"
                   class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
                 <input
-                  placeholder="No."
+                  placeholder="Number"
                   formControlName="registration_num"
                   class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
               </div>
             </div>
             <div *ngIf="!inEditMode" class="flex flex-col space-y-1">
-              <span class="text-not-black font-semibold">No. of trips</span>
+              <span class="text-not-black font-semibold">Number of trips</span>
               <span class="text-web-text-secondary">{{
                   singleTruck.noOfTrips
                 }}</span>

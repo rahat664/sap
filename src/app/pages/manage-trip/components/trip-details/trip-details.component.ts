@@ -257,4 +257,11 @@ export class TripDetailsComponent {
       },
     });
   }
+
+  isAdmin() {
+    return (
+      localStorage.getItem('role') === 'ROLE_ADMIN' ||
+      localStorage.getItem('role') === 'ROLE_KAM'
+    );
+  }
 }

@@ -38,13 +38,13 @@
       <h1 class="text-body text-secondary ">Trip timeline</h1>
       <div class="flex space-x-3">
         <button (click)="onClickAssignButton()"
-                *ngIf="tripDetails.status == 'Booked' && getAssignButtonName( tripDetails) != ''"
+                *ngIf="tripDetails.status == 'Booked' && getAssignButtonName( tripDetails) != '' && isAdmin()"
                 class="bg-white px-6 py-2 font-semibold text-primary rounded-lg border border-primary">
           <span>{{ getAssignButtonName(tripDetails) }}</span>
         </button>
         <button
           (click)="onClickButton()"
-          *ngIf="tripDetails?.status != 'Completed' && tripDetails?.status != 'Cancelled'"
+          *ngIf="tripDetails?.status != 'Completed' && tripDetails?.status != 'Cancelled' && (tripDetails?.status != 'Unassigned' && !isAdmin())"
           class="bg-primary px-6 py-2 font-semibold rounded-lg text-white">
         <span>{{
             getButtonName(tripDetails?.status)

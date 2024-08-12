@@ -291,7 +291,7 @@ export class CreateTripPageComponent implements OnInit {
       truckCapacityInTon: ['', Validators.required],
       goodsId: [''],
       goodsName: ['', Validators.required],
-      customerRate: [null, Validators.required],
+      customerRate: [null],
       note: [''],
       loadingPointDistrict: [''],
       loadingPointName: ['', Validators.required],
@@ -392,14 +392,12 @@ export class CreateTripPageComponent implements OnInit {
     if (option.district) {
       this.tripForm.get('unloadingPointDistrict').setValue('');
       this.tripForm.get('unloadingPointDistrict').setValue(option.district);
-      this.tripForm.get('unloadingPointDistrict').disable();
     } else {
       for (let i = 0; i < this.district.length; i++) {
         if (option.addressText.includes(this.district[i].name)) {
           this.tripForm
             .get('unloadingPointDistrict')
             .setValue(this.district[i].name);
-          this.tripForm.get('unloadingPointDistrict').disable();
           break;
         } else {
           this.tripForm.get('unloadingPointDistrict').enable();

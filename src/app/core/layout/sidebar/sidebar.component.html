@@ -57,20 +57,6 @@
           <li>
             <a
               (click)="clearSelectedTemplate()"
-              routerLink="/trip-list"
-              routerLinkActive="active"
-              class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
-              <img loading="lazy" *ngIf="isActive('/trip-list')" class="notPreview"
-                   src="assets/svg/trip-list-select.svg" alt="" />
-              <img loading="lazy" *ngIf="isActive('/trip-list') == false" class="notPreview"
-                   src="assets/svg/trip-list-deselect.svg"
-                   alt="" />
-              <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Trip List</span>
-            </a>
-          </li>
-          <li>
-            <a
-              (click)="clearSelectedTemplate()"
               routerLink="/manage-trip"
               routerLinkActive="active"
               class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
@@ -81,6 +67,20 @@
                    src="assets/svg/trip-management-deselect.svg"
                    alt="" />
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Manage Trip</span>
+            </a>
+          </li>
+          <li>
+            <a
+              (click)="clearSelectedTemplate()"
+              routerLink="/trip-list"
+              routerLinkActive="active"
+              class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
+              <img loading="lazy" *ngIf="isActive('/trip-list')" class="notPreview"
+                   src="assets/svg/trip-list-select.svg" alt="" />
+              <img loading="lazy" *ngIf="isActive('/trip-list') == false" class="notPreview"
+                   src="assets/svg/trip-list-deselect.svg"
+                   alt="" />
+              <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Trip List</span>
             </a>
           </li>
           <li>
@@ -102,7 +102,7 @@
               <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
             </a>
           </li>
-          <li>
+          <li *ngIf="isAdmin()">
             <button
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: false }"

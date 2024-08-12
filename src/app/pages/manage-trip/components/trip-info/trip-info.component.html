@@ -7,12 +7,21 @@
       </h1>
       <span class="text-body text-web-text-secondary">{{ tripDetails?.tripId }}</span>
     </div>
-    <button (click)="onClickButton()" *ngIf="tripDetails?.status != 'Completed' && tripDetails?.status != 'Cancelled'"
-            class="bg-primary px-6 py-2 font-semibold rounded-lg text-white">
-      <span>
-        {{ getButtonName(tripDetails?.status) }}
-      </span>
-    </button>
+    <div class="flex space-x-3">
+      <button (click)="onClickAssignButton()"
+              *ngIf="tripDetails.status == 'Booked' && getAssignButtonName( tripDetails) != '' && isAdmin()"
+              class="bg-white px-6 py-2 font-semibold text-primary rounded-lg border border-primary">
+        <span>{{ getAssignButtonName(tripDetails) }}</span>
+      </button>
+      <button
+        (click)="onClickButton()"
+        *ngIf="tripDetails?.status != 'Completed' && tripDetails?.status != 'Cancelled' && (tripDetails?.status != 'Unassigned' && !isAdmin())"
+        class="bg-primary px-6 py-2 font-semibold rounded-lg text-white">
+        <span>{{
+            getButtonName(tripDetails?.status)
+          }}</span>
+      </button>
+    </div>
   </div>
   <div class="mx-16 pb-4 border-b-4 border-disabled">
     <div class="grid grid-cols-4 place-items-center text-xs font-semibold py-4 bg-input rounded-t-lg">

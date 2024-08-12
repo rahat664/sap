@@ -85,4 +85,27 @@ export class TripInfoComponent {
       });
     }
   }
+
+  getAssignButtonName(tripDetails: TripData) {
+    return '';
+  }
+
+  onClickAssignButton() {
+    if (this.tripDetails.truck && this.tripDetails.driverCode) {
+      return '';
+    } else if (this.tripDetails.truck && !this.tripDetails.driverCode) {
+      return 'Assign Driver';
+    } else if (!this.tripDetails.truck && this.tripDetails.driverCode) {
+      return 'Assign Truck';
+    } else {
+      return 'Assign Truck & Driver';
+    }
+  }
+
+  isAdmin() {
+    return (
+      localStorage.getItem('role') === 'ROLE_ADMIN' ||
+      localStorage.getItem('role') === 'ROLE_KAM'
+    );
+  }
 }
