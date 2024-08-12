@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { login, loginFailure, loginSuccess, logout } from './auth.action';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 import { AuthService } from '../services/auth.service';
+import { UserService } from '../../profiles/services/user.service';
 
 @Injectable()
 export class AuthEffects {
@@ -40,8 +41,17 @@ export class AuthEffects {
           localStorage.setItem('image', response.data.image || '');
           localStorage.setItem('role', response.data.roles[0]);
           localStorage.setItem('userPhoneNumber', response.data.phone);
-          this.toaster.showSuccess('Login Successful', '');
-          this.router.navigate(['/trip-list']); // Change to your desired route
+          // Change to your desired route
+          this.user.getUserPermissions().subscribe((permissions: any) => {
+            if (permissions.status == 'OK') {
+              localStorage.setItem(
+                'permissions',
+                JSON.stringify(permissions.data)
+              );
+              this.toaster.showSuccess('Login Successful', '');
+              this.router.navigate(['/trip-list']);
+            }
+          });
         })
       ),
     { dispatch: false }
@@ -63,6 +73,7 @@ export class AuthEffects {
     private actions$: Actions,
     private authService: AuthService,
     private router: Router,
-    private toaster: HandleToastrService
+    private toaster: HandleToastrService,
+    private user: UserService
   ) {}
 }

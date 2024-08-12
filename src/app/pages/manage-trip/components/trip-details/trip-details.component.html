@@ -3,25 +3,54 @@
     <h1 class="text-h2 font-semibold text-not-black">{{ tripDetails?.tripId }}</h1>
     <div class="flex space-x-4">
       <button (click)="onCLickMinimize()">
-        <img class="notPreview" src="assets/svg/minimize.svg" alt="minimize">
+        <img loading="lazy" class="notPreview" src="assets/svg/minimize.svg" alt="minimize">
       </button>
-      <button *ngIf="!expanded" (click)="onClickExpand()">
-        <img class="notPreview" src="assets/svg/unfold.svg" alt="unfold">
+      <button *ngIf="!expanded || minimized" (click)="onClickExpand()">
+        <img loading="lazy" class="notPreview" src="assets/svg/unfold.svg" alt="unfold">
       </button>
       <button *ngIf="expanded" (click)="onClickFold()">
-        <img class="notPreview" src="assets/svg/fold.svg" alt="unfold">
+        <img loading="lazy" class="notPreview" src="assets/svg/fold.svg" alt="unfold">
       </button>
-      <button>
-        <img class="notPreview" src="assets/svg/eclipse.svg" alt="eclipse">
+      <button [matMenuTriggerFor]="menu" *ngIf="tripDetails.status != 'Completed'">
+        <img loading="lazy" class="notPreview" src="assets/svg/eclipse.svg" alt="ellipsis">
       </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <div class="flex space-x-2 items-center">
+            <img
+              class="notPreview"
+              src="./assets/svg/edit.svg"
+              alt="" />
+            <span>Edit</span>
+          </div>
+        </button>
+        <button mat-menu-item (click)="onClickTripCancel()">
+          <div class="flex space-x-2 items-center">
+            <i class="fas fa-times text-red"></i>
+            <span class="text-red">Cancel</span>
+          </div>
+        </button>
+      </mat-menu>
     </div>
   </div>
   <div *ngIf="!minimized && !expanded" class="border-t border-line">
     <div class="flex justify-between items-center px-6 py-4">
       <h1 class="text-body text-secondary ">Trip timeline</h1>
-      <button class="bg-primary px-6 py-2 font-semibold rounded-lg text-white">
-        <span>Start trip</span>
-      </button>
+      <div class="flex space-x-3">
+        <button (click)="onClickAssignButton()"
+                *ngIf="tripDetails.status == 'Booked' && getAssignButtonName( tripDetails) != ''"
+                class="bg-white px-6 py-2 font-semibold text-primary rounded-lg border border-primary">
+          <span>{{ getAssignButtonName(tripDetails) }}</span>
+        </button>
+        <button
+          (click)="onClickButton()"
+          *ngIf="tripDetails?.status != 'Completed' && tripDetails?.status != 'Cancelled'"
+          class="bg-primary px-6 py-2 font-semibold rounded-lg text-white">
+        <span>{{
+            getButtonName(tripDetails?.status)
+          }}</span>
+        </button>
+      </div>
     </div>
     <div class="px-6">
       <div class="grid grid-cols-4 place-items-center text-xs font-semibold py-4 bg-input rounded-t-lg">
@@ -33,7 +62,8 @@
       <div class="border border-input border-t-0 grid grid-cols-4 place-items-center py-6 mb-4 rounded-b-lg">
         <div class="flex flex-col space-y-2 w-full items-center justify-center"
              *ngFor="let timeline of tripTimeline; index as i">
-          <img class="notPreview {{timeline.truckInThisPoint ? '': 'invisible'}}" src="assets/svg/truckImg.svg"
+          <img loading="lazy" class="notPreview {{timeline.truckInThisPoint ? '': 'invisible'}}"
+               src="assets/svg/truckImg.svg"
                alt="truckImg">
           <div class="relative w-full flex items-center justify-center">
             <div

@@ -5,6 +5,8 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 import { Router } from '@angular/router';
 import { TripCreate } from '../../models/trip-create.model';
 import { TripTemplate } from '../../models/trip-template.model';
+import { MatDialog } from '@angular/material/dialog';
+import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 
 @Component({
   selector: 'app-trip-create-overview',
@@ -24,7 +26,8 @@ export class TripCreateOverviewComponent {
   constructor(
     private service: TripService,
     private handleToaster: HandleToastrService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -50,10 +53,32 @@ export class TripCreateOverviewComponent {
       (res: any) => {
         if (res.status === 'OK') {
           localStorage.removeItem('tripData');
-          this.handleToaster.showSuccess('Trip created successfully');
           localStorage.removeItem('templateName');
           localStorage.removeItem('selectedCustomer');
-          this.router.navigate(['/trip-list']);
+          const dialogRef = this.dialog
+            .open(SuccessModalComponent, {
+              width: '22rem',
+              data: {
+                title: 'Trip created',
+                text: `Your trip has been created successfully.
+              ${
+                res.data.length > 1
+                  ? 'Your trip numbers are ' +
+                    res.data[0] +
+                    ' - ' +
+                    res.data[res.data.length - 1]?.split('-')[1]
+                  : 'Your trip number is ' + res.data
+              }
+              `,
+                buttonText: 'Okay',
+              },
+            })
+            .afterClosed()
+            .subscribe(() => {
+              this.router.navigate(['/trip-list']);
+            });
+        } else {
+          this.handleToaster.showError(res.message);
         }
       },
       (error: any) => {

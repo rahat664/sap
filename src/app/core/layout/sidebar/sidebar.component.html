@@ -31,8 +31,10 @@
               routerLink="/dashboard"
               routerLinkActive="active"
               class="cursor-pointer text-base text-[#777777] font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
-              <img *ngIf="isActive('/dashboard')" class="notPreview" src="assets/svg/dashboard-select.svg" alt="" />
-              <img *ngIf="isActive('/dashboard') == false" class="notPreview" src="assets/svg/dashboard-deselect.svg"
+              <img loading="lazy" *ngIf="isActive('/dashboard')" class="notPreview"
+                   src="assets/svg/dashboard-select.svg" alt="" />
+              <img loading="lazy" *ngIf="isActive('/dashboard') == false" class="notPreview"
+                   src="assets/svg/dashboard-deselect.svg"
                    alt="" />
               <span class="ml-3 font-semibold">Dashboard</span>
             </a>
@@ -44,8 +46,9 @@
               (click)="clearSelectedTemplate()"
               [routerLinkActiveOptions]="{ exact: true}"
               class="cursor-pointer text-base text-[#777777]  rounded-lg flex items-center p-2 hover:bg-gray-100 group">
-              <img *ngIf="isActive('/trip-create')" class="notPreview" src="assets/svg/trip-create-select.svg" alt="" />
-              <img *ngIf="isActive('/trip-create') == false" class="notPreview"
+              <img loading="lazy" *ngIf="isActive('/trip-create')" class="notPreview"
+                   src="assets/svg/trip-create-select.svg" alt="" />
+              <img loading="lazy" *ngIf="isActive('/trip-create') == false" class="notPreview"
                    src="assets/svg/trip-create-deselect.svg"
                    alt="" />
               <span class="ml-3 font-semibold">Create Trip</span>
@@ -57,8 +60,10 @@
               routerLink="/trip-list"
               routerLinkActive="active"
               class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
-              <img *ngIf="isActive('/trip-list')" class="notPreview" src="assets/svg/trip-list-select.svg" alt="" />
-              <img *ngIf="isActive('/trip-list') == false" class="notPreview" src="assets/svg/trip-list-deselect.svg"
+              <img loading="lazy" *ngIf="isActive('/trip-list')" class="notPreview"
+                   src="assets/svg/trip-list-select.svg" alt="" />
+              <img loading="lazy" *ngIf="isActive('/trip-list') == false" class="notPreview"
+                   src="assets/svg/trip-list-deselect.svg"
                    alt="" />
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Trip List</span>
             </a>
@@ -69,9 +74,10 @@
               routerLink="/manage-trip"
               routerLinkActive="active"
               class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
-              <img *ngIf="isActive('/manage-trip')" class="notPreview" src="assets/svg/trip-management-select.svg"
+              <img loading="lazy" *ngIf="isActive('/manage-trip')" class="notPreview"
+                   src="assets/svg/trip-management-select.svg"
                    alt="" />
-              <img *ngIf="isActive('/manage-trip') == false" class="notPreview"
+              <img loading="lazy" *ngIf="isActive('/manage-trip') == false" class="notPreview"
                    src="assets/svg/trip-management-deselect.svg"
                    alt="" />
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Manage Trip</span>
@@ -104,8 +110,10 @@
               type="button"
               class="flex items-center w-full p-2 text-base {{isActive('/profile') ? 'text-primary' : 'text-[#777777]'}} transition duration-75 rounded-lg group hover:bg-active dark:text-white dark:hover:bg-gray-700"
               aria-controls="dropdown-example">
-              <img *ngIf="isActive('/profile')" class="notPreview" src="assets/svg/user-select.svg" alt="" />
-              <img *ngIf="isActive('/profile') == false" class="notPreview" src="assets/svg/user-deselect.svg" alt="" />
+              <img loading="lazy" *ngIf="isActive('/profile')" class="notPreview" src="assets/svg/user-select.svg"
+                   alt="" />
+              <img loading="lazy" *ngIf="isActive('/profile') == false" class="notPreview"
+                   src="assets/svg/user-deselect.svg" alt="" />
               <span
                 class="flex-1 ms-3 text-left font-semibold rtl:text-right whitespace-nowrap"
               >Profiles</span
@@ -161,7 +169,7 @@
   <div class="fixed bottom-0 mr-0">
     <div class="p-4 flex items-center justify-center w-72 bg-[#FAFEFF]">
       <div class="flex flex-col items-center  space-y-3">
-        <img class="w-2/3" src="assets/svg/ecoflit.svg" alt="ecoflit">
+        <img loading="lazy" class="w-2/3" src="assets/svg/ecoflit.svg" alt="ecoflit">
         <span class="text-[.75rem] text-secondary">© SNZ Technologies Limited {{ currentYear }}</span>
       </div>
     </div>

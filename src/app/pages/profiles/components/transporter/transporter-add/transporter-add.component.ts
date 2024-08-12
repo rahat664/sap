@@ -83,7 +83,7 @@ export class TransporterAddComponent implements OnInit {
       this.transporterModel.name = this.transporterForm.get('name').value;
       this.transporterModel.phone = this.transporterForm.get('phone').value;
       this.transporterModel.note = this.transporterForm.get('note').value;
-      this.transporterModel.role = 'Transporter';
+      this.transporterModel.role = 'ROLE_TRANSPORTER';
       this.transporterModel.truckStand =
         this.transporterForm.get('truckStand').value;
       this.transporterModel.paymentMethod = this.transporterForm.get(

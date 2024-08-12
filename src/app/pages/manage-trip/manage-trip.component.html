@@ -9,7 +9,7 @@
           <i *ngIf="!sidebarClosed" class="fas fa-caret-left text-not-black text-2xl"></i>
         </button>
       </div>
-      <div class="flex justify-between gap-3 items-center">
+      <div *ngIf="!filterOpen" class="flex justify-between gap-3 items-center">
         <div class="relative w-full">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -21,17 +21,23 @@
             name="email"
             id="topbar-search"
             class="border-none text-input-hint w-full bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
-            placeholder="Search  name, mobile, email" />
+            placeholder="Search by tripId, customerCode" />
         </div>
-        <div class="p-2 rounded-lg bg-white flex items-center justify-center">
-          <img class="notPreview" src="assets/svg/filter.svg" alt="filter">
-        </div>
+        <button (click)="filterOpen = true" class="p-2 rounded-lg bg-white flex items-center justify-center">
+          <div class="relative">
+            <img loading="lazy" class="notPreview" src="assets/svg/filter.svg" alt="filter">
+            <span *ngIf="filterLength > 0"
+                  class="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red text-white text-xs font-semibold rounded-full h-4 w-4 flex items-center justify-center">
+              {{ filterLength }}
+            </span>
+          </div>
+        </button>
       </div>
     </div>
     <div
-      *ngIf="!loading"
+      *ngIf="!loading && !filterOpen"
       appGiveMaxHeight (inBottomEnd)="onScrollEnd()"
-      class="flex flex-col px-4 py-1 space-y-2 h-[calc(100vh-11.7rem)] overflow-y-auto">
+      class="flex flex-col px-4 py-1 space-y-2 h-[calc(100vh-11.7rem)] overflow-y-auto min-w-96">
       <app-trip-card
         (click)="onclickTripCard(trip.tripId)"
         [isActivated]="trip.tripId === activatedId"
@@ -50,13 +56,70 @@
     <div
       class="flex flex-col items-center justify-center h-[calc(100vh-11.7rem)] min-w-96"
       *ngIf="loading"
-
     >
-      <div class="flex justify-center animate-spin">
-        <div class="ease-linear rounded-full border-8 border-t-8 border-gray-200 h-12 w-12 "
-        ></div>
-      </div>
+      <!--       make a spinner component-->
+      <i class="fas fa-spinner fa-spin text-primary text-4xl"></i>
       <span class="text-center w-full text-secondary">Loading...</span>
+    </div>
+    <div *ngIf="filterOpen" class="p-4 bg-white rounded-lg mx-4 h-[calc(100vh-12rem)] min-w-96
+">
+      <div class="flex items-center justify-between pb-2">
+        <div class="text-h2 font-semibold text-not-black">
+          Filters <span class="text-h2 font-semibold text-not-black" *ngIf="filterLength > 0">({{ filterLength }}
+          ) | <a (click)="onClickClearAll()"
+                 class="text-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
+        </div>
+        <button *ngIf="filterLength > 0" (click)="onClickClearAll()"
+                class="mb-1/2 h-[1.75rem] w-[1.75rem] text-white bg-disabled flex items-center justify-center rounded-full">
+          <i class="fas fa-times text-not-black"></i>
+        </button>
+      </div>
+      <div class="flex flex-col space-y-3">
+        <div class="flex-col space-y-1 flex w-full">
+          <label class="text-body text-secondary">Date</label>
+          <mat-form-field appearance="outline">
+            <mat-date-range-input [rangePicker]="picker">
+              <input (selectionchange)="onChangeStartDate($event)" matStartDate placeholder="Start date">
+              <input (selectionchange)="onChangeEndDate($event)" matEndDate placeholder="End date">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-col space-y-1 w-full">
+          <label class="text-body text-secondary">Company</label>
+
+          <mat-form-field appearance="outline" class="example-full-width w-full">
+            <input
+              id="customerName"
+              type="text"
+              matInput
+              (keyup)="onKeyUpCustomerSearch($event)"
+              placeholder="Select customer"
+              [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete">
+              @for (option of companySuggestions; track option) {
+                <mat-option (click)="onClickCustomerSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-col space-y-1 w-full">
+          <label>Truck type</label>
+          <mat-form-field appearance="outline">
+            <mat-select (selectionChange)="onChangeTruckType($event)" multiple placeholder="Choose Truck Type">
+              @for (vehicle of vehicleTypeList; track vehicle) {
+                <mat-option [value]="vehicle.id">{{ vehicle.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <button (click)="onClickApply()"
+                class="px-6 py-2 bg-primary text-white font-semibold text-body self-end rounded-lg">
+          <span>Apply</span>
+        </button>
+      </div>
     </div>
   </div>
   <div class="w-full h-[calc(100vh-4.5rem)] relative">
@@ -64,7 +127,8 @@
     <app-map-buttons [statusButtons]="statusButtons" (buttonClickEmitter)="onClickButton($event)"
                      class="absolute top-0 right-1/2 transform translate-x-1/2">
     </app-map-buttons>
-    <app-trip-details *ngIf="singleTripDetails" [tripDetails]="singleTripDetails"
+    <app-trip-details (foldUnfoldChange)="onClickFold($event)" *ngIf="singleTripDetails"
+                      [tripDetails]="singleTripDetails"
                       class="absolute bottom-0 w-full slide-top"></app-trip-details>
   </div>
 </div>

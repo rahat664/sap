@@ -36,7 +36,7 @@ export const mapStyles: google.maps.MapTypeStyle[] = [
     elementType: 'labels',
     stylers: [
       {
-        visibility: 'on',
+        visibility: 'off',
       },
     ],
   },
@@ -80,7 +80,7 @@ export const mapStyles: google.maps.MapTypeStyle[] = [
     featureType: 'poi.business',
     stylers: [
       {
-        visibility: 'on',
+        visibility: 'off',
       },
     ],
   },
@@ -152,7 +152,7 @@ export const mapStyles: google.maps.MapTypeStyle[] = [
     elementType: 'labels',
     stylers: [
       {
-        visibility: 'on',
+        visibility: 'off',
       },
     ],
   },

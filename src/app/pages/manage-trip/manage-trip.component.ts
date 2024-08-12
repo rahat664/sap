@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TripCardComponent } from '../../shared/modules/trip-card/trip-card.component';
 import { GMapComponent } from '../../shared/modules/g-map/g-map.component';
 import { TripService } from '../trip-list/services/trip.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Trip, Truck } from '../auth/models/response/trip';
 import { MapButtonsComponent } from './components/map-buttons/map-buttons.component';
 import { statusButtons } from '../trip-list/models/status-buttons';
@@ -12,6 +12,22 @@ import { ToggleResponsiveService } from '../../shared/services/toggle-responsive
 import { TripDetailsComponent } from './components/trip-details/trip-details.component';
 import { finalize } from 'rxjs/operators';
 import { TripData } from './model/trip.details.model';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import {
+  MatDatepickerModule,
+  MatDatepickerToggle,
+  MatDateRangeInput,
+  MatDateRangePicker,
+} from '@angular/material/datepicker';
+import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatInput } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CustomerService } from '../profiles/services/customer.service';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-manage-trip',
@@ -24,7 +40,20 @@ import { TripData } from './model/trip.details.model';
     GiveMaxHeightDirective,
     GetElementHeightDirective,
     TripDetailsComponent,
+    MatFormField,
+    MatDateRangeInput,
+    MatDatepickerToggle,
+    MatDateRangePicker,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatAutocomplete,
+    MatAutocompleteTrigger,
+    MatInput,
+    MatOption,
+    ReactiveFormsModule,
+    MatSelect,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
   styleUrls: ['./manage-trip.component.scss'],
 })
@@ -41,14 +70,35 @@ export class ManageTripComponent implements OnInit {
   tripId: string;
   searchValue: string = '';
   singleTripDetails: TripData;
+  activatedId: string;
+  sidebarClosed: boolean;
+  filterOpen: boolean = false;
+  filterLength: number = 0;
+  companySuggestions: any;
+  customerCode: any = '';
+  vehicleTypeList: any[];
+  truckType: string = '';
+  startDate: string;
+  endDate: string;
 
   constructor(
     private tripService: TripService,
-    private toggleMobileViewService: ToggleResponsiveService
+    private toggleMobileViewService: ToggleResponsiveService,
+    private customer: CustomerService,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit() {
     this.getTripList();
+    this.getVehicleTypeList();
+    this.activatedId = null;
+    localStorage.removeItem('tripId');
+    this.tripService.reloadManageTripPage.subscribe(() => {
+      this.status = '';
+      this.getTripList();
+      this.activatedId = localStorage.getItem('tripId');
+      this.getTripDetails(this.activatedId);
+    });
   }
 
   private getTripList() {
@@ -57,12 +107,12 @@ export class ManageTripComponent implements OnInit {
       .getTrips(
         this.page,
         this.size,
-        '',
-        '',
-        '',
+        this.customerCode,
+        this.startDate,
+        this.endDate,
         this.status,
-        '',
-        this.searchValue
+        this.searchValue,
+        this.truckType
       )
       .pipe(finalize(() => (this.loading = false)))
       .subscribe(
@@ -78,8 +128,13 @@ export class ManageTripComponent implements OnInit {
 
   onKeyUpSearch(event: KeyboardEvent) {
     this.searchValue = (event.target as HTMLInputElement).value;
-    this.page = 0;
-    this.getTripList();
+    if (this.searchValue.length > 2) {
+      this.page = 0;
+      this.getTripList();
+    } else if (this.searchValue.length === 0) {
+      this.page = 0;
+      this.getTripList();
+    }
   }
 
   getTruckRegistrationNumber(truck: Truck) {
@@ -90,10 +145,10 @@ export class ManageTripComponent implements OnInit {
     }
   }
 
-  activatedId: string;
-  sidebarClosed: boolean;
-
   onclickTripCard(tripId: string) {
+    if (localStorage.getItem('expanded')) {
+      localStorage.setItem('expanded', 'false');
+    }
     this.activatedId = tripId;
     this.getTripDetails(tripId);
   }
@@ -137,6 +192,7 @@ export class ManageTripComponent implements OnInit {
   }
 
   private getTripDetails(tripId: string) {
+    localStorage.setItem('tripId', tripId);
     this.tripService.getTripDetailsByTripId(tripId).subscribe(
       (trip: any) => {
         this.singleTripDetails = trip.data;
@@ -157,5 +213,66 @@ export class ManageTripComponent implements OnInit {
         console.error('Error fetching trip details:', error);
       }
     );
+  }
+
+  onClickFold($event: boolean) {
+    this.sidebarClosed = $event;
+  }
+
+  onKeyUpCustomerSearch($event: KeyboardEvent) {
+    this.companySuggestions = [];
+    const target = $event.target as HTMLInputElement;
+    if (target.value) {
+      this.customer
+        .searchCustomer(0, 1000, target.value, null)
+        .subscribe((company: any) => {
+          this.companySuggestions = company.data.content;
+        });
+    } else {
+      this.companySuggestions = [];
+    }
+  }
+
+  onClickCustomerSearchSuggestion(option: any) {
+    this.customerCode = option.customerCode;
+    this.filterLength += 1;
+  }
+
+  private getVehicleTypeList() {
+    this.tripService.getVehicleTypeList().subscribe((res: any) => {
+      this.vehicleTypeList = res.data;
+    });
+  }
+
+  onChangeStartDate($event: Event) {
+    this.startDate = ($event.target as HTMLInputElement).value;
+    this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
+  }
+
+  onChangeEndDate($event: Event) {
+    this.endDate = ($event.target as HTMLInputElement).value;
+    this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
+    this.filterLength += 1;
+  }
+
+  onChangeTruckType($event: any) {
+    this.truckType = $event.value;
+    this.filterLength += 1;
+  }
+
+  onClickApply() {
+    this.filterOpen = false;
+    this.getTripList();
+  }
+
+  onClickClearAll() {
+    this.filterLength = 0;
+    this.startDate = '';
+    this.endDate = '';
+    this.truckType = '';
+    this.customerCode = '';
+    this.filterOpen = false;
+    this.page = 0;
+    this.getTripList();
   }
 }

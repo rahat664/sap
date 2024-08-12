@@ -24,10 +24,12 @@ export class TripService {
   tripTemplateUrl = `${environment.backendUrl}/api/trip_templates`;
   tripPointUrl = `${environment.backendUrl}/api/tripPointEvents`;
   vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
+  districtUrl = `${environment.backendUrl}/api/districts`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
   locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
   cachedTruckSize: BehaviorSubject<any[]> = new BehaviorSubject([]);
   cachedTruckCapacity: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  reloadManageTripPage: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(private http: HttpClient) {}
 
@@ -39,7 +41,7 @@ export class TripService {
     endDate?: string,
     status?: string,
     tripId?: string,
-    searchBy?: string
+    truckType?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -59,6 +61,9 @@ export class TripService {
     }
     if (tripId) {
       params = params.set('search', tripId);
+    }
+    if (truckType) {
+      params = params.set('truckType', truckType);
     }
 
     return this.http.get(`${this.url}`, { params });
@@ -150,5 +155,13 @@ export class TripService {
 
   getAllTripEvent(tripId: string, pointType: string) {
     return this.http.get(`${this.tripPointUrl}/${tripId}/${pointType}`);
+  }
+
+  updateTrip(body: any, tripId: string) {
+    return this.http.put(`${this.url}/${tripId}`, body);
+  }
+
+  getDistricts() {
+    return this.http.get(`${this.districtUrl}`);
   }
 }

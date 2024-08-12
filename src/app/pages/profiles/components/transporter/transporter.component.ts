@@ -42,14 +42,12 @@ export class TransporterComponent implements OnInit {
   isOpen: boolean;
   districtFilter = 0;
   truckFilter = 0;
-  districtInputPlaceholder: string;
-  districtOpened: boolean;
   transporterList: UserModel[] = [];
   loading: boolean;
   searchValue: string;
   page: number = 0;
   totalPages: number;
-  size: number = 30;
+  size: number = 20;
 
   constructor(private service: UserService) {}
 
@@ -153,5 +151,11 @@ export class TransporterComponent implements OnInit {
         }
       }
     }, 1);
+  }
+
+  ngOnDestroy() {
+    this.transporterList = [];
+    this.page = 0;
+    this.size = 20;
   }
 }

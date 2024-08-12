@@ -17,17 +17,6 @@ declare const google: any;
   styleUrls: ['./g-map.component.scss'],
 })
 export class GMapComponent implements OnInit, OnChanges {
-  private static readonly TRAFFIC_COLORS = {
-    HEAVY: '#FF0000',
-    MODERATE: '#FFA500',
-    LIGHT: '#11484F',
-  };
-
-  private static readonly DURATION_THRESHOLDS = {
-    HEAVY_TRAFFIC: 1800000, // in milliseconds
-    MODERATE_TRAFFIC: 900000, // in milliseconds
-  };
-
   @Input() lat: number;
   @Input() lng: number;
   @Input() starting: google.maps.LatLngLiteral;
@@ -90,7 +79,6 @@ export class GMapComponent implements OnInit, OnChanges {
         travelMode: google.maps.TravelMode.DRIVING,
         drivingOptions: {
           departureTime: new Date(),
-          trafficModel: google.maps.TrafficModel.OPTIMISTIC,
         },
       };
 
@@ -117,9 +105,6 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   private setupMapComponents(): void {
-    this.trafficLayer = new google.maps.TrafficLayer();
-    this.trafficLayer.setMap(this.map);
-
     this.directionsService = new google.maps.DirectionsService();
     this.directionsRenderer = new google.maps.DirectionsRenderer({
       suppressMarkers: true,
@@ -174,15 +159,6 @@ export class GMapComponent implements OnInit, OnChanges {
       zIndex: 1,
     });
     this.polylinePaths.push(polyline);
-  }
-
-  private getTrafficColor(duration: number | undefined): string {
-    if (!duration) return GMapComponent.TRAFFIC_COLORS.LIGHT;
-    if (duration > GMapComponent.DURATION_THRESHOLDS.HEAVY_TRAFFIC)
-      return GMapComponent.TRAFFIC_COLORS.HEAVY;
-    if (duration > GMapComponent.DURATION_THRESHOLDS.MODERATE_TRAFFIC)
-      return GMapComponent.TRAFFIC_COLORS.MODERATE;
-    return GMapComponent.TRAFFIC_COLORS.LIGHT;
   }
 
   private clearPolylines(): void {

@@ -6,6 +6,7 @@ export interface TruckInnerModel {
   registrationCategory: string;
   registrationSerial: string;
   registrationNum: string;
+  fullRegistrationNumber: string;
   driverCode: string | null;
   driverName: string | null;
   driverPhone: string | null;

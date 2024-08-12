@@ -36,7 +36,6 @@ import {
   MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
-import { districts } from '../../../profiles/components/transporter/models/districts';
 import { Router } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MyErrorStateMatcher } from '../template-create/template-create.component';
@@ -83,7 +82,7 @@ export class CreateTripPageComponent implements OnInit {
   goodsOptionsArray: CustomInputSelectModel[] = [];
   matcher = new MyErrorStateMatcher();
   tripForm: FormGroup;
-  district: any = districts;
+  district: any;
   @Input() template: any;
   @Input() customerName: string;
   @Input() templateEnabled: boolean = false;
@@ -180,6 +179,7 @@ export class CreateTripPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getDistricts();
     this.getVehicleTypeList();
     this.getGoodsOptions();
     this.getCachedData();
@@ -293,9 +293,9 @@ export class CreateTripPageComponent implements OnInit {
       goodsName: ['', Validators.required],
       customerRate: [null, Validators.required],
       note: [''],
-      loadingPointDistrict: ['', Validators.required],
+      loadingPointDistrict: [''],
       loadingPointName: ['', Validators.required],
-      unloadingPointDistrict: ['', Validators.required],
+      unloadingPointDistrict: [''],
       unloadingPointName: ['', Validators.required],
       loadingPointLatitude: ['', Validators.required],
       loadingPointLongitude: ['', Validators.required],
@@ -356,7 +356,17 @@ export class CreateTripPageComponent implements OnInit {
       this.tripForm.get('loadingPointDistrict').setValue(option.district);
       this.tripForm.get('loadingPointDistrict').disable();
     } else {
-      this.tripForm.get('loadingPointDistrict').enable();
+      for (let i = 0; i < this.district.length; i++) {
+        if (option.addressText.includes(this.district[i].name)) {
+          this.tripForm
+            .get('loadingPointDistrict')
+            .setValue(this.district[i].name);
+          this.tripForm.get('loadingPointDistrict').disable();
+          break;
+        } else {
+          this.tripForm.get('loadingPointDistrict').enable();
+        }
+      }
     }
 
     if (option.latitude > 0 && option.longitude > 0) {
@@ -364,8 +374,8 @@ export class CreateTripPageComponent implements OnInit {
       this.tripForm.get('loadingPointLongitude').setValue(option.longitude);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
-        const lat = res.location.lat;
-        const lng = res.location.lng;
+        const lat = res.location.latitude;
+        const lng = res.location.longitude;
         this.tripForm.get('loadingPointLatitude').setValue(lat);
         this.tripForm.get('loadingPointLongitude').setValue(lng);
       });
@@ -384,7 +394,17 @@ export class CreateTripPageComponent implements OnInit {
       this.tripForm.get('unloadingPointDistrict').setValue(option.district);
       this.tripForm.get('unloadingPointDistrict').disable();
     } else {
-      this.tripForm.get('unloadingPointDistrict').enable();
+      for (let i = 0; i < this.district.length; i++) {
+        if (option.addressText.includes(this.district[i].name)) {
+          this.tripForm
+            .get('unloadingPointDistrict')
+            .setValue(this.district[i].name);
+          this.tripForm.get('unloadingPointDistrict').disable();
+          break;
+        } else {
+          this.tripForm.get('unloadingPointDistrict').enable();
+        }
+      }
     }
     if (option.latitude > 0 && option.longitude > 0) {
       this.tripForm.get('unloadingPointLatitude').setValue(option.latitude);
@@ -393,10 +413,10 @@ export class CreateTripPageComponent implements OnInit {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         this.tripForm
           .get('unloadingPointLatitude')
-          .setValue(res?.result?.geometry?.location?.lat);
+          .setValue(res?.location?.latitude);
         this.tripForm
           .get('unloadingPointLongitude')
-          .setValue(res?.result?.geometry?.location?.lng);
+          .setValue(res?.location?.longitude);
       });
     }
     this.unloadingSuggestions = [];
@@ -424,7 +444,7 @@ export class CreateTripPageComponent implements OnInit {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.loadingDistrictSuggestions = districts.filter((district: any) =>
-        district.nameEn.toLowerCase().includes(target.value.toLowerCase())
+        district.name.toLowerCase().includes(target.value.toLowerCase())
       );
     } else {
       this.loadingDistrictSuggestions = [];
@@ -432,21 +452,26 @@ export class CreateTripPageComponent implements OnInit {
   }
 
   onSelectLoadingDistrict(option: any) {
-    this.tripForm.get('loadingPointDistrict').setValue(option.nameEn);
-    this.tripForm
-      .get('loadingPointLatitude')
-      .setValue(
-        this.tripForm.get('loadingPointLatitude').value
-          ? this.tripForm.get('loadingPointLatitude').value
-          : option.lat
-      );
-    this.tripForm
-      .get('loadingPointLongitude')
-      .setValue(
-        this.tripForm.get('loadingPointLongitude').value
-          ? this.tripForm.get('loadingPointLongitude').value
-          : option.lon
-      );
+    this.tripForm.get('loadingPointDistrict').setValue(option.name);
+    if (
+      this.tripForm.get('loadingPointLatitude').value === '' ||
+      this.tripForm.get('loadingPointLongitude').value === ''
+    ) {
+      this.tripForm
+        .get('loadingPointLatitude')
+        .setValue(
+          this.tripForm.get('loadingPointLatitude').value
+            ? this.tripForm.get('loadingPointLatitude').value
+            : option.lat
+        );
+      this.tripForm
+        .get('loadingPointLongitude')
+        .setValue(
+          this.tripForm.get('loadingPointLongitude').value
+            ? this.tripForm.get('loadingPointLongitude').value
+            : option.lon
+        );
+    }
     this.loadingDistrictSuggestions = [];
   }
 
@@ -455,7 +480,7 @@ export class CreateTripPageComponent implements OnInit {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.unloadingDistrictSuggestions = districts.filter((district: any) =>
-        district.nameEn.toLowerCase().includes(target.value.toLowerCase())
+        district.name.toLowerCase().includes(target.value.toLowerCase())
       );
     } else {
       this.unloadingDistrictSuggestions = [];
@@ -463,21 +488,26 @@ export class CreateTripPageComponent implements OnInit {
   }
 
   onSelectUnloadingDistrict(option: any) {
-    this.tripForm.get('unloadingPointDistrict').setValue(option.nameEn);
-    this.tripForm
-      .get('unloadingPointLatitude')
-      .setValue(
-        this.tripForm.get('unloadingPointLatitude').value
-          ? this.tripForm.get('unloadingPointLatitude').value
-          : option.lat
-      );
-    this.tripForm
-      .get('unloadingPointLongitude')
-      .setValue(
-        this.tripForm.get('unloadingPointLongitude').value
-          ? this.tripForm.get('unloadingPointLongitude').value
-          : option.lon
-      );
+    this.tripForm.get('unloadingPointDistrict').setValue(option.name);
+    if (
+      this.tripForm.get('unloadingPointLatitude').value === '' ||
+      this.tripForm.get('unloadingPointLongitude').value === ''
+    ) {
+      this.tripForm
+        .get('unloadingPointLatitude')
+        .setValue(
+          this.tripForm.get('unloadingPointLatitude').value
+            ? this.tripForm.get('unloadingPointLatitude').value
+            : option.lat
+        );
+      this.tripForm
+        .get('unloadingPointLongitude')
+        .setValue(
+          this.tripForm.get('unloadingPointLongitude').value
+            ? this.tripForm.get('unloadingPointLongitude').value
+            : option.lon
+        );
+    }
     this.unloadingDistrictSuggestions = [];
   }
 
@@ -591,5 +621,11 @@ export class CreateTripPageComponent implements OnInit {
         JSON.stringify(truckCapacitySuggestions)
       );
     }
+  }
+
+  private getDistricts() {
+    this.service.getDistricts().subscribe((res: any) => {
+      this.district = res.data;
+    });
   }
 }

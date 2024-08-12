@@ -77,7 +77,7 @@ export class UserCreateComponent implements OnInit {
       this.userModel.name = this.userForm.get('name').value;
       this.userModel.mobile = this.userForm.get('phone').value;
       this.userModel.email = this.userForm.get('email').value;
-      this.userModel.role = this.userForm.get('role').value;
+      this.userModel.role = 'ROLE_USER';
       this.userModel.department = this.userForm.get('role').value;
       this.userModel.designation = this.userForm.get('designation').value;
       this.service.addUser(this.userModel).subscribe((res: any) => {

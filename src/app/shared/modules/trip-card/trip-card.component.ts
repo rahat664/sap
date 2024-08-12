@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-trip-card',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, DatePipe],
   templateUrl: './trip-card.component.html',
   styleUrl: './trip-card.component.scss',
 })

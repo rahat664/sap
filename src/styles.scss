@@ -105,6 +105,18 @@ img {
   color: red; /* Change the icon color */
 }
 
+.mat-mdc-select {
+  padding: 0 !important;
+  background-color: #F5FBFC !important;
+  border: none !important;
+}
+
+.mat-mdc-select:focus {
+  border: none !important;
+  outline: none !important;
+  --tw-ring-color: #F5FBFC !important;
+}
+
 mat-select::ng-deep .mat-select-arrow {
   display: none; /* Hide the default arrow */
 }
@@ -133,4 +145,17 @@ input::-webkit-outer-spin-button {
   background-color: #11484F !important;
 }
 
+.mat-mdc-dialog-container {
+  border-radius: .750rem !important;
+  overflow: hidden !important;
+}
 
+.mat-mdc-dialog-content > :last-child {
+  margin-bottom: 10px !important;
+}
+
+.mat-mdc-dialog-container .mat-mdc-dialog-title {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #242424 !important;
+}
