@@ -1,3 +1,12 @@
-<div id="map" class="rounded-lg overflow-hidden">
-
-</div>
+<google-map
+  height="100%"
+  width="100%"
+  [center]="center"
+  [zoom]="zoom"
+  [options]="options"
+>
+  <map-marker *ngIf="initialMarker.position" [options]="initialMarker"></map-marker>
+  <map-marker *ngIf="startMarker.position" [options]="startMarker"></map-marker>
+  <map-marker *ngIf="endMarker.position" [options]="endMarker"></map-marker>
+  <map-polyline *ngFor="let polyline of polylines" [options]="polyline"></map-polyline>
+</google-map>

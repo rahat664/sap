@@ -197,8 +197,8 @@ export class ManageTripComponent implements OnInit {
       (trip: any) => {
         this.singleTripDetails = trip.data;
         this.startingPosition = {
-          lng: this.singleTripDetails.tripPoints[0].pointLon,
-          lat: this.singleTripDetails.tripPoints[0].pointLat,
+          lng: this.singleTripDetails?.tripPoints[0]?.pointLon,
+          lat: this.singleTripDetails?.tripPoints[0]?.pointLat,
         };
         this.destinationPosition = {
           lng: this.singleTripDetails.tripPoints[
