@@ -29,7 +29,7 @@ export class GMapComponent implements OnInit, OnChanges {
 
   // Map and directions options
   center: google.maps.LatLngLiteral;
-  zoom = 12;
+  zoom = 16;
   options: google.maps.MapOptions = {
     styles: mapStyles,
     zoomControl: false,
@@ -58,7 +58,8 @@ export class GMapComponent implements OnInit, OnChanges {
     const currentLocation = localStorage.getItem('currentLocation');
     if (currentLocation) {
       const location = JSON.parse(currentLocation);
-      this.center = { lat: location.lat, lng: location.lng };
+      console.log('Current Location: ', location);
+      this.center = location;
       // set up initial marker
       this.initialMarker = {
         position: this.center,
@@ -70,6 +71,7 @@ export class GMapComponent implements OnInit, OnChanges {
       };
     } else {
       this.geoLocationService.getCurrentPosition().then(position => {
+        console.log('Current Position: ', position);
         this.center = { lat: position.latitude, lng: position.longitude };
         // set up initial marker
         this.initialMarker = {
@@ -95,6 +97,8 @@ export class GMapComponent implements OnInit, OnChanges {
     const end = this.destination;
 
     if (start && end) {
+      this.clearPolylines();
+      this.center = start;
       this.initialMarker = {};
       const request: google.maps.DirectionsRequest = {
         origin: start,

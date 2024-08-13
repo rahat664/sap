@@ -84,21 +84,7 @@ export class AppComponent implements OnInit {
 
   private loadGoogleMapsScript() {
     this.geoLocation.loadGoogleMapsScript().then(() => {
-      this.geoLocation.getCurrentPosition().then(coords => {
-        this.map = new google.maps.Map(document.getElementById('map'), {
-          center: { lat: coords.latitude, lng: coords.longitude },
-          zoom: 16,
-          zoomControl: false,
-          mapTypeControl: false,
-          streetViewControl: false,
-          fullscreenControl: false,
-          rotateControl: false,
-          scaleControl: false,
-          zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM,
-          },
-        });
-      });
+      this.geoLocation.getCurrentPosition().then(coords => {});
     });
   }
 

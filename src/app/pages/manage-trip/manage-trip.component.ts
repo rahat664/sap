@@ -172,6 +172,8 @@ export class ManageTripComponent implements OnInit {
   private updateTripList(trip: any) {
     if (this.page === 0) {
       this.tripList = trip.data.responses;
+      this.activatedId = this.tripList[0]?.tripId;
+      this.getTripDetails(this.activatedId);
     } else {
       this.tripList.push(...trip.data.responses);
     }
@@ -193,26 +195,28 @@ export class ManageTripComponent implements OnInit {
 
   private getTripDetails(tripId: string) {
     localStorage.setItem('tripId', tripId);
-    this.tripService.getTripDetailsByTripId(tripId).subscribe(
-      (trip: any) => {
-        this.singleTripDetails = trip.data;
-        this.startingPosition = {
-          lng: this.singleTripDetails?.tripPoints[0]?.pointLon,
-          lat: this.singleTripDetails?.tripPoints[0]?.pointLat,
-        };
-        this.destinationPosition = {
-          lng: this.singleTripDetails?.tripPoints[
-            this.singleTripDetails.tripPoints.length - 1
-          ]?.pointLon,
-          lat: this.singleTripDetails?.tripPoints[
-            this.singleTripDetails.tripPoints.length - 1
-          ]?.pointLat,
-        };
-      },
-      error => {
-        console.error('Error fetching trip details:', error);
-      }
-    );
+    if (tripId) {
+      this.tripService.getTripDetailsByTripId(tripId).subscribe(
+        (trip: any) => {
+          this.singleTripDetails = trip.data;
+          this.startingPosition = {
+            lng: this.singleTripDetails?.tripPoints[0]?.pointLon,
+            lat: this.singleTripDetails?.tripPoints[0]?.pointLat,
+          };
+          this.destinationPosition = {
+            lng: this.singleTripDetails?.tripPoints[
+              this.singleTripDetails.tripPoints.length - 1
+            ]?.pointLon,
+            lat: this.singleTripDetails?.tripPoints[
+              this.singleTripDetails.tripPoints.length - 1
+            ]?.pointLat,
+          };
+        },
+        error => {
+          console.error('Error fetching trip details:', error);
+        }
+      );
+    }
   }
 
   onClickFold($event: boolean) {
