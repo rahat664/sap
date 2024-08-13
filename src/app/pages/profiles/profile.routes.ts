@@ -76,4 +76,20 @@ export const profileRoutes: Routes = [
         './components/driver/driver-details/driver-details.component'
       ).then(c => c.DriverDetailsComponent),
   },
+  {
+    path: 'tracker',
+    title: 'Tracker',
+    loadComponent: () =>
+      import('./components/tracker/tracker.component').then(
+        c => c.TrackerComponent
+      ),
+  },
+  {
+    path: 'tracker/add',
+    title: 'Add Tracker',
+    loadComponent: () =>
+      import('./components/tracker/add-tracker/add-tracker.component').then(
+        c => c.AddTrackerComponent
+      ),
+  },
 ];

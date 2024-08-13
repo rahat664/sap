@@ -39,6 +39,7 @@ import { ConfirmCancelComponent } from '../confirm-cancel/confirm-cancel.compone
 })
 export class TripDetailsComponent {
   readonly dialog = inject(MatDialog);
+  buttonAvailable: boolean;
 
   constructor(
     private mobileToggleService: ToggleResponsiveService,
@@ -112,6 +113,11 @@ export class TripDetailsComponent {
 
   ngOnChanges(simpleChanges: any) {
     if (simpleChanges.tripDetails) {
+      if (simpleChanges.tripDetails?.currentValue?.status === 'Unassigned') {
+        this.buttonAvailable = this.isAdmin();
+      } else {
+        this.buttonAvailable = true;
+      }
       this.trip.reloadManageTripPage.subscribe(value => {
         if (value) {
           this.expanded = localStorage.getItem('expanded') === 'true';
@@ -163,8 +169,10 @@ export class TripDetailsComponent {
       case 'Unassigned':
         return 'Book Trip';
       case 'Booked':
+        this.buttonAvailable = true;
         return 'Start Trip';
       case 'Running':
+        this.buttonAvailable = true;
         return 'Complete Trip';
       default:
         return 'Book Trip';
@@ -187,7 +195,7 @@ export class TripDetailsComponent {
           width: '21.375rem',
           data: {
             title: 'Start Trip?',
-            text: `Do you want to mark the trip ${this.tripDetails.tripId} as booked?`,
+            text: `Do you want to start this trip?`,
             buttonText: 'Yes',
             trip: this.tripDetails,
           },

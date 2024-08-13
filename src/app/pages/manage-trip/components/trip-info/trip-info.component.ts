@@ -23,19 +23,28 @@ export class TripInfoComponent {
   @Input() tripTimeline: any;
   @Input() tripDetails: TripData;
   protected readonly Number = Number;
+  buttonAvailable: boolean;
 
   ngOnInit() {
     this.userName = localStorage.getItem('name');
     this.userPhone = localStorage.getItem('userPhoneNumber');
+    if (this.tripDetails.status === 'Unassigned') {
+      this.buttonAvailable = this.isAdmin();
+    } else {
+      this.buttonAvailable = true;
+    }
   }
 
   getButtonName(status: string | undefined) {
     switch (status) {
       case 'Unassigned':
+        this.buttonAvailable = this.isAdmin();
         return 'Book Trip';
       case 'Booked':
+        this.buttonAvailable = true;
         return 'Start Trip';
       case 'Running':
+        this.buttonAvailable = true;
         return 'Complete Trip';
       default:
         return 'Book Trip';
@@ -58,7 +67,7 @@ export class TripInfoComponent {
           width: '21.375rem',
           data: {
             title: 'Start Trip?',
-            text: `Do you want to mark the trip ${this.tripDetails.tripId} as completed?`,
+            text: `Do you want to start this trip?`,
             buttonText: 'Yes',
             trip: this.tripDetails,
           },

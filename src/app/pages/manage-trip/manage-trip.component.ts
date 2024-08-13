@@ -201,12 +201,12 @@ export class ManageTripComponent implements OnInit {
           lat: this.singleTripDetails?.tripPoints[0]?.pointLat,
         };
         this.destinationPosition = {
-          lng: this.singleTripDetails.tripPoints[
+          lng: this.singleTripDetails?.tripPoints[
             this.singleTripDetails.tripPoints.length - 1
-          ].pointLon,
-          lat: this.singleTripDetails.tripPoints[
+          ]?.pointLon,
+          lat: this.singleTripDetails?.tripPoints[
             this.singleTripDetails.tripPoints.length - 1
-          ].pointLat,
+          ]?.pointLat,
         };
       },
       error => {

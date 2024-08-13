@@ -45,8 +45,8 @@ export class GeolocationService {
 
       const script = document.createElement('script');
       script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.API_KEY}`;
-      script.async = true;
       script.defer = true;
+      script.async = true;
       script.type = 'text/javascript';
       script.onload = () => {
         this.scriptLoaded = true;

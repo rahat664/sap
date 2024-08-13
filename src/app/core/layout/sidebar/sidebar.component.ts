@@ -73,6 +73,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   clearSelectedTemplate() {
+    localStorage.removeItem('customerCode');
     localStorage.removeItem('selectedTemplate');
   }
 

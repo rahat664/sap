@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
@@ -21,6 +21,7 @@ import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/d
 import { debounceTime } from 'rxjs';
 import { CheckListPopupComponent } from '../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checklist.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-truck',
@@ -48,6 +49,7 @@ import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checkli
   styleUrl: './truck.component.scss',
 })
 export class TruckComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   height = '';
   truckList: TruckInnerModel[] = [];
   manufactureOpened: boolean;
