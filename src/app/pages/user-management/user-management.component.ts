@@ -18,11 +18,15 @@ import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directi
 import { debounceTime } from 'rxjs';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
   imports: [
+    MatButtonModule,
+    MatMenuModule,
     CustomInputComponent,
     NgForOf,
     NgIf,

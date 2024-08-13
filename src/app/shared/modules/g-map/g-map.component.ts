@@ -1,53 +1,89 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { GeolocationService } from '../../services/location/geolocation.service';
 import { mapStyles } from '../../models/map-options';
-
-declare const google: any;
-
+import {
+  GoogleMap,
+  GoogleMapsModule,
+  MapDirectionsService,
+} from '@angular/google-maps';
+import { NgForOf, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-g-map',
   standalone: true,
+  imports: [GoogleMapsModule, GoogleMap, NgIf, NgForOf],
   templateUrl: './g-map.component.html',
   styleUrls: ['./g-map.component.scss'],
 })
 export class GMapComponent implements OnInit, OnChanges {
-  private static readonly TRAFFIC_COLORS = {
-    HEAVY: '#FF0000',
-    MODERATE: '#FFA500',
-    LIGHT: '#11484F',
-  };
-
-  private static readonly DURATION_THRESHOLDS = {
-    HEAVY_TRAFFIC: 1800000, // in milliseconds
-    MODERATE_TRAFFIC: 900000, // in milliseconds
-  };
-
   @Input() lat: number;
   @Input() lng: number;
   @Input() starting: google.maps.LatLngLiteral;
   @Input() destination: google.maps.LatLngLiteral;
-  map: google.maps.Map;
-  directionsService: google.maps.DirectionsService;
-  directionsRenderer: google.maps.DirectionsRenderer;
-  trafficLayer: google.maps.TrafficLayer;
-  polylinePaths: google.maps.Polyline[] = [];
-  startMarker: google.maps.Marker = new google.maps.Marker();
-  endMarker: google.maps.Marker = new google.maps.Marker();
-  initialMarker: google.maps.Marker = new google.maps.Marker();
 
-  constructor(private geoLocationService: GeolocationService) {
-    this.geoLocationService.getCurrentPosition().then(coords => {
-      this.lat = coords.latitude;
-      this.lng = coords.longitude;
-      this.initMap({ lat: this.lat, lng: this.lng });
-    }).catch(error => {
-      console.error('Error getting current position', error);
-      ``;
-    });
-  }
+  // Map and directions options
+  center: google.maps.LatLngLiteral;
+  zoom = 16;
+  options: google.maps.MapOptions = {
+    styles: mapStyles,
+    zoomControl: false,
+    streetViewControl: false,
+    mapTypeControl: false,
+    fullscreenControl: true,
+    disableDefaultUI: true,
+  };
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer({
+    suppressMarkers: true,
+  });
+
+  // Markers and Polyline data
+  initialMarker: google.maps.MarkerOptions = {};
+  startMarker: google.maps.MarkerOptions = {};
+  endMarker: google.maps.MarkerOptions = {};
+  polylines: google.maps.PolylineOptions[] = [];
+
+  constructor(
+    private geoLocationService: GeolocationService,
+    private mapDirectionsService: MapDirectionsService
+  ) {}
 
   ngOnInit(): void {
+    const currentLocation = localStorage.getItem('currentLocation');
+    if (currentLocation) {
+      const location = JSON.parse(currentLocation);
+      console.log('Current Location: ', location);
+      this.center = location;
+      // set up initial marker
+      this.initialMarker = {
+        position: this.center,
+        icon: {
+          url: '/assets/images/focus.png',
+          scaledSize: new google.maps.Size(30, 30),
+        },
+        title: 'Current Location',
+      };
+    } else {
+      this.geoLocationService.getCurrentPosition().then(position => {
+        console.log('Current Position: ', position);
+        this.center = { lat: position.latitude, lng: position.longitude };
+        // set up initial marker
+        this.initialMarker = {
+          position: this.center,
+          icon: {
+            url: '/assets/images/focus.png',
+            scaledSize: new google.maps.Size(30, 30),
+          },
+          title: 'Current Location',
+        };
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -56,40 +92,24 @@ export class GMapComponent implements OnInit, OnChanges {
     }
   }
 
-  private initMap(latLng: { lng: number; lat: number }) {
-    this.map = new google.maps.Map(document.getElementById('map'), {
-      center: latLng,
-      zoom: 16,
-      zoomControl: false,
-      streetViewControl: false,
-      mapTypeControl: false,
-      fullscreenControl: true,
-      keyboardShortcuts: false,
-      disableDefaultUI: true,
-    });
-    // implement map styles
-    this.map.setOptions({ styles: mapStyles });
-    this.setupMapComponents();
-    this.updateRoute(latLng);
-  }
-
-  private updateRoute(latlng?: { lat: number; lng: number }) {
+  private updateRoute() {
     const start = this.starting;
     const end = this.destination;
 
     if (start && end) {
-      this.initialMarker.setMap(null);
-      const request = {
+      this.clearPolylines();
+      this.center = start;
+      this.initialMarker = {};
+      const request: google.maps.DirectionsRequest = {
         origin: start,
         destination: end,
         travelMode: google.maps.TravelMode.DRIVING,
         drivingOptions: {
           departureTime: new Date(),
-          trafficModel: google.maps.TrafficModel.OPTIMISTIC,
         },
       };
 
-      this.directionsService?.route(request, (result, status) => {
+      this.directionsService.route(request, (result, status) => {
         if (status === 'OK') {
           this.directionsRenderer.setDirections(result);
           this.updatePolylineWithTraffic(result);
@@ -99,81 +119,47 @@ export class GMapComponent implements OnInit, OnChanges {
       });
     } else {
       this.clearPolylines();
-      this.startMarker.setMap(null);
-      this.endMarker.setMap(null);
-      this.initialMarker.setPosition(latlng);
-      this.initialMarker.setMap(this.map);
+      this.startMarker = {};
+      this.endMarker = {};
     }
   }
 
-  private setupMapComponents(): void {
-    this.trafficLayer = new google.maps.TrafficLayer();
-    this.trafficLayer.setMap(this.map);
-
-    this.directionsService = new google.maps.DirectionsService();
-    this.directionsRenderer = new google.maps.DirectionsRenderer({
-      suppressMarkers: true,
-      polylineOptions: {
-        strokeOpacity: 0.7,
-        strokeWeight: 5,
-      },
-    });
-    this.directionsRenderer.setMap(this.map);
-  }
-
-  private updatePolylineWithTraffic(directionsResult: google.maps.DirectionsResult): void {
+  private updatePolylineWithTraffic(
+    directionsResult: google.maps.DirectionsResult
+  ): void {
     const route = directionsResult.routes[0];
-    this.clearPolylines();
-    route.legs.forEach(leg => {
-      leg.steps.forEach((step: any) => {
-        const steps = step as google.maps.DirectionsStep;
-        this.drawTrafficPolyline(steps);
-      });
-    });
-    this.startMarker?.setPosition(route.legs[0].start_location);
-    this.endMarker.setPosition(route.legs[route.legs?.length - 1].end_location);
-    this.startMarker.setIcon({
-      url: '/assets/svg/start.svg',
-      scaledSize: new google.maps.Size(30, 30),
-      labelOrigin: new google.maps.Point(15, 40),
-    });
-    this.endMarker.setIcon({
-      url: '/assets/svg/end.svg',
-      scaledSize: new google.maps.Size(30, 30),
-      labelOrigin: new google.maps.Point(15, -8),
-    });
-    this.startMarker.setAnimation(google.maps.Animation.DROP);
-    this.endMarker.setAnimation(google.maps.Animation.DROP);
-    this.startMarker.setTitle(route.legs[0].start_address);
-    this.endMarker.setTitle(route.legs[route.legs?.length - 1].end_address);
-    this.startMarker.setMap(this.map);
-    this.endMarker.setMap(this.map);
-  }
 
+    // Set markers for the start and end points
+    this.startMarker = {
+      position: route.legs[0].start_location.toJSON(),
+      icon: {
+        url: '/assets/svg/start.svg',
+        scaledSize: new google.maps.Size(30, 30),
+      },
+      title: route.legs[0].start_address,
+    };
 
-  private drawTrafficPolyline(step: google.maps.DirectionsStep): void {
-    const path = step.path;
-    const strokeColor = this.getTrafficColor(step.duration?.value);
-    const polyline = new google.maps.Polyline({
-      path: path,
-      strokeColor: strokeColor,
-      strokeOpacity: 1,
-      strokeWeight: 6,
-      map: this.map,
-      zIndex: 1,
-    });
-    this.polylinePaths.push(polyline);
-  }
+    this.endMarker = {
+      position: route.legs[route.legs.length - 1].end_location.toJSON(),
+      icon: {
+        url: '/assets/svg/end.svg',
+        scaledSize: new google.maps.Size(30, 30),
+      },
+      title: route.legs[route.legs.length - 1].end_address,
+    };
 
-  private getTrafficColor(duration: number | undefined): string {
-    if (!duration) return GMapComponent.TRAFFIC_COLORS.LIGHT;
-    if (duration > GMapComponent.DURATION_THRESHOLDS.HEAVY_TRAFFIC) return GMapComponent.TRAFFIC_COLORS.HEAVY;
-    if (duration > GMapComponent.DURATION_THRESHOLDS.MODERATE_TRAFFIC) return GMapComponent.TRAFFIC_COLORS.MODERATE;
-    return GMapComponent.TRAFFIC_COLORS.LIGHT;
+    // Draw polyline with traffic data
+    this.polylines = route.legs.flatMap(leg =>
+      leg.steps.map(step => ({
+        path: step.path.map(latlng => latlng.toJSON()),
+        strokeColor: '#11484F',
+        strokeOpacity: 1,
+        strokeWeight: 4,
+      }))
+    );
   }
 
   private clearPolylines(): void {
-    this.polylinePaths.forEach(polyline => polyline.setMap(null));
-    this.polylinePaths = [];
+    this.polylines = [];
   }
 }

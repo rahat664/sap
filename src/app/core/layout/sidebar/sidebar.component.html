@@ -1,10 +1,11 @@
-<aside
+<div
+  #sideBar
   id="sidebar"
-  [ngClass]="{ hidden: !willShow }"
-  class="fixed z-20 h-full top-0 left-0 pt-16 lg:flex flex-shrink-0 flex-col w-64 transition-width duration-75"
+  *ngIf="!willShow"
+  class="fixed z-20 h-full top-0 left-0 pt-16 lg:flex flex-shrink-0 flex-col w-72 transition-width duration-75"
   aria-label="Sidebar">
   <div
-    class="relative flex-1 flex flex-col min-h-full border-r border-gray-200 bg-white pt-0">
+    class="relative flex-1 flex flex-col min-h-full border-r border-gray-200 bg-white pt-0 pb-20">
     <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
       <div class="flex-1 px-3 bg-white divide-y space-y-1">
         <ul class="space-y-2 pb-2">
@@ -29,49 +30,98 @@
             <a
               routerLink="/dashboard"
               routerLinkActive="active"
-              class="cursor-pointer text-base text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
-              <img class="notPreview" src="assets/svg/dashboard.svg" alt="" />
-              <span class="ml-3">Dashboard</span>
+              class="cursor-pointer text-base text-[#777777] font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
+              <img loading="lazy" *ngIf="isActive('/dashboard')" class="notPreview"
+                   src="assets/svg/dashboard-select.svg" alt="" />
+              <img loading="lazy" *ngIf="isActive('/dashboard') == false" class="notPreview"
+                   src="assets/svg/dashboard-deselect.svg"
+                   alt="" />
+              <span class="ml-3 font-semibold">Dashboard</span>
             </a>
           </li>
           <li>
             <a
+              routerLink="/trip-create/customerselection"
+              routerLinkActive="active"
+              (click)="clearSelectedTemplate()"
+              [routerLinkActiveOptions]="{ exact: true}"
+              class="cursor-pointer text-base text-[#777777]  rounded-lg flex items-center p-2 hover:bg-gray-100 group">
+              <img loading="lazy" *ngIf="isActive('/trip-create')" class="notPreview"
+                   src="assets/svg/trip-create-select.svg" alt="" />
+              <img loading="lazy" *ngIf="isActive('/trip-create') == false" class="notPreview"
+                   src="assets/svg/trip-create-deselect.svg"
+                   alt="" />
+              <span class="ml-3 font-semibold">Create Trip</span>
+            </a>
+          </li>
+          <li>
+            <a
+              (click)="clearSelectedTemplate()"
+              routerLink="/manage-trip"
+              routerLinkActive="active"
+              class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
+              <img loading="lazy" *ngIf="isActive('/manage-trip')" class="notPreview"
+                   src="assets/svg/trip-management-select.svg"
+                   alt="" />
+              <img loading="lazy" *ngIf="isActive('/manage-trip') == false" class="notPreview"
+                   src="assets/svg/trip-management-deselect.svg"
+                   alt="" />
+              <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Manage Trip</span>
+            </a>
+          </li>
+          <li>
+            <a
+              (click)="clearSelectedTemplate()"
               routerLink="/trip-list"
               routerLinkActive="active"
-              class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
-              <img class="notPreview" src="assets/svg/trip-list.svg" alt="" />
-              <span class="ml-3 flex-1 whitespace-nowrap">Trip List</span>
+              class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
+              <img loading="lazy" *ngIf="isActive('/trip-list')" class="notPreview"
+                   src="assets/svg/trip-list-select.svg" alt="" />
+              <img loading="lazy" *ngIf="isActive('/trip-list') == false" class="notPreview"
+                   src="assets/svg/trip-list-deselect.svg"
+                   alt="" />
+              <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Trip List</span>
             </a>
           </li>
           <li>
             <a
+              (click)="clearSelectedTemplate()"
               routerLink="/user-management"
               routerLinkActive="active"
-              class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
+              class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
               <img
+                *ngIf="isActive('/user-management')"
                 class="notPreview"
-                src="assets/svg/user-management.svg"
+                src="assets/svg/user-management-select.svg"
                 alt="" />
-              <span class="ml-3 flex-1 whitespace-nowrap">User Management</span>
+              <img
+                *ngIf="isActive('/user-management') == false"
+                class="notPreview"
+                src="assets/svg/user-management-deselect.svg"
+                alt="" />
+              <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
             </a>
           </li>
-          <li>
+          <li *ngIf="isAdmin()">
             <button
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: false }"
               (click)="onClickProfile()"
               type="button"
-              class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              class="flex items-center w-full p-2 text-base {{isActive('/profile') ? 'text-primary' : 'text-[#777777]'}} transition duration-75 rounded-lg group hover:bg-active dark:text-white dark:hover:bg-gray-700"
               aria-controls="dropdown-example">
-              <img class="notPreview" src="assets/svg/profile.svg" alt="" />
+              <img loading="lazy" *ngIf="isActive('/profile')" class="notPreview" src="assets/svg/user-select.svg"
+                   alt="" />
+              <img loading="lazy" *ngIf="isActive('/profile') == false" class="notPreview"
+                   src="assets/svg/user-deselect.svg" alt="" />
               <span
-                class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
-                >Profiles</span
+                class="flex-1 ms-3 text-left font-semibold rtl:text-right whitespace-nowrap"
+              >Profiles</span
               >
               <i *ngIf="dropdownOpen" class="fas fa-caret-up text-gray-500"></i>
               <i
                 *ngIf="!dropdownOpen"
-                class="fas fa-caret-down text-gray-500"></i>
+                class="fas fa-caret-down {{isActive('/profile') ? 'text-primary' : 'text-[#777777]'}} "></i>
             </button>
             <ul
               appGetOutsideModalClick
@@ -82,32 +132,40 @@
                 <a
                   routerLink="/profile/customer"
                   routerLinkActive="active"
-                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                  >Customer</a
+                  class="flex items-center w-full p-2 text-[#777777] font-semibold transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                >Customer</a
                 >
               </li>
               <li>
                 <a
                   routerLink="/profile/transporter"
                   routerLinkActive="active"
-                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                  >Transporter</a
+                  class="flex items-center w-full p-2 text-[#777777] font-semibold transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                >Transporter</a
                 >
               </li>
               <li>
                 <a
                   routerLink="/profile/truck"
                   routerLinkActive="active"
-                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                  >Truck</a
+                  class="flex items-center w-full p-2 text-[#777777] font-semibold transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                >Truck</a
                 >
               </li>
               <li>
                 <a
                   routerLink="/profile/driver"
                   routerLinkActive="active"
-                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                  >Driver</a
+                  class="flex items-center w-full p-2 text-[#777777] font-semibold transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                >Driver</a
+                >
+              </li>
+              <li>
+                <a
+                  routerLink="/profile/tracker"
+                  routerLinkActive="active"
+                  class="flex items-center w-full p-2 text-[#777777] font-semibold transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                >Tracker</a
                 >
               </li>
             </ul>
@@ -116,8 +174,17 @@
       </div>
     </div>
   </div>
-</aside>
+  <div class="fixed bottom-0 mr-0">
+    <div class="p-4 flex items-center justify-center w-72 bg-[#FAFEFF]">
+      <div class="flex flex-col items-center  space-y-3">
+        <img loading="lazy" class="w-2/3" src="assets/svg/ecoflit.svg" alt="ecoflit">
+        <span class="text-[.75rem] text-secondary">© SNZ Technologies Limited {{ currentYear }}</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div
   class="bg-gray-900 opacity-50 hidden fixed inset-0 z-10"
-  id="sidebarBackdrop"></div>
+  id="sidebarBackdrop">
+</div>

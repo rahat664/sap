@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './pages/auth/guards/auth.guard';
 import { isAlreadyLoggedInGuard } from './pages/auth/guards/is-already-logged-in.guard';
+import { roleGuard } from './pages/auth/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -31,13 +32,47 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'trip-list/trip-create',
+    path: 'trip-create/customerselection',
     title: 'Trip Create',
     loadComponent: () =>
       import('./pages/trip-list/components/new-trip/new-trip.component').then(
-        c => c.NewTripComponent,
+        c => c.NewTripComponent
       ),
     canActivate: [authGuard],
+  },
+  {
+    path: 'manage-trip',
+    title: 'Manage Trip',
+    loadComponent: () =>
+      import('./pages/manage-trip/manage-trip.component').then(
+        c => c.ManageTripComponent
+      ),
+    canActivate: [authGuard],
+  },
+  // create trip with query params not id with scenerio
+  {
+    path: 'trip-create/create',
+    title: 'Trip Create',
+    loadComponent: () =>
+      import(
+        './pages/trip-list/components/create-trip-page/create-trip-page.component'
+      ).then(c => c.CreateTripPageComponent),
+  },
+  {
+    path: 'trip-create/overview',
+    title: 'Trip Create',
+    loadComponent: () =>
+      import(
+        './pages/trip-list/components/trip-create-overview/trip-create-overview.component'
+      ).then(c => c.TripCreateOverviewComponent),
+  },
+  {
+    path: 'trip-create/create-trip-template',
+    title: 'Trip Create',
+    loadComponent: () =>
+      import(
+        './pages/trip-list/components/template-create/template-create.component'
+      ).then(c => c.TemplateCreateComponent),
   },
   {
     path: 'user-management',
@@ -53,7 +88,7 @@ export const routes: Routes = [
     title: 'Profile',
     loadChildren: () =>
       import('./pages/profiles/profile.routes').then(m => m.profileRoutes),
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
   },
   {
     path: '',

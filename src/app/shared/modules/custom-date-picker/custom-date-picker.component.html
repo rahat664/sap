@@ -9,7 +9,7 @@
       [value]="selectedDate | date: 'yyyy-MM-dd'"
     />
     <span class="absolute right-3 cursor-pointer" (click)="toggleCalendar()">
-      <img class="notPreview" src="assets/svg/calender.svg" alt="calender">
+      <img loading="lazy" class="notPreview" src="assets/svg/calender.svg" alt="calender">
     </span>
   </div>
   <div *ngIf="isCalendarVisible"

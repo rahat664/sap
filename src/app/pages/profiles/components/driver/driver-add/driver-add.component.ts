@@ -144,7 +144,8 @@ export class DriverAddComponent implements OnInit {
         if (
           key != 'driverName' &&
           key != 'driverPhone' &&
-          key != 'drivingLicenseExpiryDate'
+          key != 'drivingLicenseExpiryDate' &&
+          key != 'role'
         ) {
           if (value) {
             formData.append(key, value);

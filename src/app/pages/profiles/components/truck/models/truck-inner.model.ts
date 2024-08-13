@@ -6,6 +6,7 @@ export interface TruckInnerModel {
   registrationCategory: string;
   registrationSerial: string;
   registrationNum: string;
+  fullRegistrationNumber: string;
   driverCode: string | null;
   driverName: string | null;
   driverPhone: string | null;
@@ -25,4 +26,10 @@ export interface TruckInnerModel {
   preHireCheckList: string | null;
   noOfTrips: number;
   tracker: string | null;
+  preSignedRegPaperFile: string | null;
+  preSignedTaxFile: string | null;
+  preSignedCaseFile: string | null;
+  preSignedRoutePermitFile: string | null;
+  preSignedFitnessFile: string | null;
+  preSignedOtherFile: string | null;
 }

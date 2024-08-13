@@ -60,8 +60,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     initFlowbite();
-    this.addMapScript();
     this.handleRouter();
+    this.loadGoogleMapsScript();
+    this.geoLocation.getCurrentPosition();
+    this.setCurrentLocationInStorage();
   }
 
   isLoginPage() {
@@ -72,22 +74,31 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private addMapScript() {
-    this.geoLocation.loadGoogleMapsApi().then(() => {
-      this.geoLocation.getCurrentPosition().then(coords => {
-        this.map = new google.maps.Map(document.getElementById('map'), {
-          center: { lat: coords.latitude, lng: coords.longitude },
-          zoom: 8,
-        });
-      });
-    });
-  }
-
   private handleRouter() {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.shared.closeInputSelect.next(false);
       });
+  }
+
+  private loadGoogleMapsScript() {
+    this.geoLocation.loadGoogleMapsScript().then(() => {
+      this.geoLocation.getCurrentPosition().then(coords => {});
+    });
+  }
+
+  private setCurrentLocationInStorage() {
+    if (localStorage.getItem('currentLocation') === null) {
+      this.geoLocation.getCurrentPosition().then(coords => {
+        localStorage.setItem(
+          'currentLocation',
+          JSON.stringify({
+            lat: coords.latitude,
+            lng: coords.longitude,
+          })
+        );
+      });
+    }
   }
 }

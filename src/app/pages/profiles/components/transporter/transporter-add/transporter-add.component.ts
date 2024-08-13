@@ -83,7 +83,7 @@ export class TransporterAddComponent implements OnInit {
       this.transporterModel.name = this.transporterForm.get('name').value;
       this.transporterModel.phone = this.transporterForm.get('phone').value;
       this.transporterModel.note = this.transporterForm.get('note').value;
-      this.transporterModel.role = 'Transporter';
+      this.transporterModel.role = 'ROLE_TRANSPORTER';
       this.transporterModel.truckStand =
         this.transporterForm.get('truckStand').value;
       this.transporterModel.paymentMethod = this.transporterForm.get(
@@ -91,14 +91,14 @@ export class TransporterAddComponent implements OnInit {
       ).value;
       switch (this.paymentInputPlaceholder) {
         case 'Bkash':
-          this.transporterModel.acc_holder_name =
+          this.transporterModel.accHolderName =
             this.transporterForm.get('bkashName').value;
-          this.transporterModel.bank_acc_no =
+          this.transporterModel.bankAccNo =
             this.transporterForm.get('bkashNumber').value;
-          this.transporterModel.acc_type =
+          this.transporterModel.accType =
             this.transporterForm.get('bkashType').value;
-          this.transporterModel.bank_name = 'Bkash';
-          this.transporterModel.branch_name = null;
+          this.transporterModel.bankName = 'Bkash';
+          this.transporterModel.branchName = null;
           this.transporterForm.patchValue({
             bankBranch: null,
             bankAccountName: null,
@@ -106,14 +106,14 @@ export class TransporterAddComponent implements OnInit {
           });
           break;
         case 'Bank':
-          this.transporterModel.acc_holder_name =
+          this.transporterModel.accHolderName =
             this.transporterForm.get('bankAccountName').value;
-          this.transporterModel.bank_acc_no =
+          this.transporterModel.bankAccNo =
             this.transporterForm.get('bankAccountNumber').value;
-          this.transporterModel.acc_type = null;
-          this.transporterModel.bank_name =
+          this.transporterModel.accType = null;
+          this.transporterModel.bankName =
             this.transporterForm.get('bankName').value;
-          this.transporterModel.branch_name =
+          this.transporterModel.branchName =
             this.transporterForm.get('bankBranch').value;
           this.transporterForm.patchValue({
             bkashName: null,
@@ -122,11 +122,11 @@ export class TransporterAddComponent implements OnInit {
           });
           break;
         default:
-          this.transporterModel.acc_holder_name = null;
-          this.transporterModel.bank_acc_no = null;
-          this.transporterModel.acc_type = null;
-          this.transporterModel.bank_name = 'Cash';
-          this.transporterModel.branch_name = null;
+          this.transporterModel.accHolderName = null;
+          this.transporterModel.bankAccNo = null;
+          this.transporterModel.accType = null;
+          this.transporterModel.bankName = 'Cash';
+          this.transporterModel.branchName = null;
           this.transporterForm.patchValue({
             bankBranch: null,
             bankAccountName: null,

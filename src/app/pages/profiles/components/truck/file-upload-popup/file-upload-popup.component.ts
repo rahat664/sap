@@ -10,7 +10,7 @@ import {
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 
 @Component({
@@ -41,7 +41,8 @@ export class FileUploadPopupComponent implements OnChanges {
 
   constructor(
     private sharedDriverEditService: DriverEditSharedService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private datePipe: DatePipe
   ) {
     this.fileArray = [];
   }
@@ -82,7 +83,7 @@ export class FileUploadPopupComponent implements OnChanges {
       this.fileInput.emit(this.fileArray);
     }
     this.fileArray[i].fileOpened = false;
-    const registrationTypesSet = new Set(
+    const registrationTypesSet: Set<any> = new Set(
       this.fileArray.map(file => file.registrationType)
     );
 
@@ -161,9 +162,10 @@ export class FileUploadPopupComponent implements OnChanges {
   }
 
   onDateChange($event: Event, i: number) {
-    this.fileArray[i].registrationExpireDate = (
-      $event.target as HTMLInputElement
-    ).value;
+    this.fileArray[i].registrationExpireDate = this.datePipe.transform(
+      ($event.target as HTMLInputElement).value,
+      'yyyy-MM-ddThh:mm:ss'
+    );
     if (!this.callFromModal) {
       this.fileInput.emit(this.fileArray);
     }

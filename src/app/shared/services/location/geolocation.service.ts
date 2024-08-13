@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { HttpBackend, HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpBackend, HttpClient, HttpParams } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GeolocationService {
+  private scriptLoaded = false;
   private apiLoaded = false;
   private httpClient: HttpClient;
+  googleMapUrl = `https://places.googleapis.com/v1/places`;
+  setSidebarClosed: BehaviorSubject<any> = new BehaviorSubject<any>(false);
 
   constructor(private httpBackend: HttpBackend) {
     this.httpClient = new HttpClient(this.httpBackend);
@@ -17,46 +20,41 @@ export class GeolocationService {
   getCurrentPosition(): Promise<GeolocationCoordinates> {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {});
+        navigator.geolocation.getCurrentPosition(position => {
+          resolve(position.coords);
+        });
       } else {
         reject(new Error('Geolocation is not supported by this browser.'));
       }
     });
   }
 
-  searchLocation(input: string): Observable<Object> {
-    const url = `${environment.placesApiUrl}`;
-    const params = {
-      input: input,
-      includedRegionCodes: ['bd'],
-    };
-    const headers = {
-      'Content-Type': 'application/json',
-      'X-Goog-Api-Key': environment.API_KEY,
-    };
-
-    return this.httpClient.post(url, params, { headers });
+  getLatLong(placeId: string) {
+    const params = new HttpParams()
+      .set('key', environment.API_KEY)
+      .set('fields', 'location');
+    return this.httpClient.get(`${this.googleMapUrl}/${placeId}`, { params });
   }
 
-  getPlaceDetails(placeId: string): Observable<Object> {
-    const url = `${environment.placesApiUrl}/details/json?place_id=${placeId}&key=${environment.API_KEY}&fields=geometry`;
-    return this.httpClient.get(url);
-  }
-
-  loadGoogleMapsApi(): Promise<void> {
+  loadGoogleMapsScript(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.apiLoaded) {
+      if (this.scriptLoaded) {
         resolve();
         return;
       }
+
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.API_KEY}&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.API_KEY}`;
+      script.defer = true;
       script.async = true;
+      script.type = 'text/javascript';
       script.onload = () => {
-        this.apiLoaded = true;
+        this.scriptLoaded = true;
         resolve();
       };
-      script.onerror = reject;
+      script.onerror = () => {
+        reject('Failed to load Google Maps API script');
+      };
       document.body.appendChild(script);
     });
   }

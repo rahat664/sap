@@ -1,0 +1,85 @@
+<div>
+  <div class="px-4 py-2 flex justify-between items-center bg-white border-b border-input">
+    <h1 class="text-h1 font-semibold">Trip Overview</h1>
+    <button
+      class="bg-primary text-white rounded-lg px-16 py-3"
+      (click)="onCreateTrip()">Create Trip
+    </button>
+  </div>
+  <div class="bg-white h-[calc(100vh-8.1rem)] overflow-y-auto w-full flex justify-center overflow-hidden">
+    <div class="w-[50vw] py-12  flex flex-col space-y-8 ">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-h3 font-semibold text-not-black">{{ customerName }}</h1>
+          <span
+            class="text-body text-web-text-secondary">{{ tripData.tripStartDatetime | date : "dd MMM yyyy, hh:mm a" }}</span>
+        </div>
+        <button class="h-12 w-12 hover:bg-input rounded-lg">
+          <i class="fas fa-pen"></i>
+        </button>
+      </div>
+      <div class="flex flex-1 items-start">
+        <div class="flex flex-col w-1/2 space-y-3">
+          <div class="flex flex-col space-y-1">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="w-6 h-6" src="assets/svg/loading.svg">
+              <h1 class="text-body_title text-not-black font-semibold">Loading Point</h1>
+            </div>
+            <h1 class="text-body  text-wrap text-web-text-secondary">{{ loadingPointName }}</h1>
+          </div>
+          <div class="flex flex-col  space-y-1">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="w-6 h-6" src="assets/svg/locinfo.svg">
+              <h1 class="text-body_title text-not-black font-semibold">Unloading Point</h1>
+            </div>
+            <h1 class="text-body text-wrap text-web-text-secondary">{{ unloadPointName }}</h1>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="w-6 h-6" src="assets/svg/truckinfo.svg">
+              <h1 class="text-body_title text-not-black font-semibold">Truck</h1>
+            </div>
+            <h1 class="text-body  text-wrap text-web-text-secondary">{{ getTruckName(tripData.categoryId) }}
+              | {{ tripData.truckSize }}ft, {{ tripData.truckCapacityInTon }} ton</h1>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="w-6 h-6" src="assets/svg/goodsinfo.svg">
+              <h1 class="text-body_title text-not-black font-semibold">Goods</h1>
+            </div>
+            <h1 class="text-body text-wrap text-web-text-secondary">{{ tripData.goodsName }}</h1>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="h-6 w-6" src="assets/svg/cr.svg">
+              <h1 class="text-body_title text-not-black font-semibold">Customer Rate</h1>
+            </div>
+            <h1
+              class="text-body w-1/2 text-wrap text-web-text-secondary">{{
+                Number(tripData.customerRate) | number
+              }} ৳</h1>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="h-6 w-6" src="assets/svg/cgm.svg">
+              <h1 class="text-body_title text-not-black font-semibold">CGM</h1>
+            </div>
+            <h1 class="text-body text-wrap text-web-text-secondary">{{ userName }} | {{ userPhone }}</h1>
+          </div>
+
+          <div>
+          </div>
+        </div>
+        <div class="flex flex-col items-end w-1/2 flex-1 space-y-3">
+          <div class="flex flex-col space-y-1">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" src="assets/svg/additional.svg">
+              <h1 class="text-body_title text-not-black font-semibold">Additional Instruction</h1>
+            </div>
+            <h1 class="text-body text-wrap text-web-text-secondary">{{ tripData.note }}</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,6 +11,7 @@ export class UserService {
   url = environment.userUrl + '/api/users';
   rolesUrl = environment.userUrl + '/api/roles';
   departmentsUrl = environment.userUrl + '/api/departments';
+  permissionsUrl = environment.userUrl + '/api/permissions';
 
   constructor(private http: HttpClient) {}
 
@@ -136,5 +137,19 @@ export class UserService {
       `${this.url}/${id}/documents?documentUrl=${deletedDriverFiles}`,
       deletedDriverFiles
     );
+  }
+
+  getHelpers(page: number, size: number, search?: string): Observable<any> {
+    let apiUrl = `${this.url}/helpers?page=${page}&size=${size}`;
+
+    if (search) {
+      apiUrl += `&search=${encodeURIComponent(search)}`;
+    }
+
+    return this.http.get(apiUrl);
+  }
+
+  getUserPermissions() {
+    return this.http.get(`${this.permissionsUrl}`);
   }
 }

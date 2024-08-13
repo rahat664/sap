@@ -73,8 +73,6 @@
     appGiveMaxHeight
     [totalPage]="totalPages"
     (inBottomEnd)="onBottom($event)"
-    appCheckTheHeightCrossMaxHeightOrNot
-    (maxHeightCrossed)="onMaxHeightCross($event)"
     [anotherItemsHeight]="height"
     class="bg-white w-full relative rounded-lg overflow-auto">
     <table class="table-auto w-full text-[0.875rem]">
@@ -104,57 +102,39 @@
           <td>{{ user.status }}</td>
           <td class="whitespace-nowrap">{{ user.createdOn ? (user.createdOn | date : 'dd MMM, yyyy') : '' }}</td>
           <td>
-            <div class="relative w-full">
+            <button *ngIf="user.status != 'Removed'" mat-button [matMenuTriggerFor]="menu"><i
+              class="fas fa-ellipsis-v"></i></button>
+            <mat-menu #menu="matMenu">
               <button
-                *ngIf="user.status != 'Removed'"
-                (click)="actionOpen(user.id)"
-                class="cursor-pointer w-full">
-                <i class="fas fa-ellipsis-v"></i>
+                (click)="changeStatus(user.id, user.name, 'Inactive')" mat-menu-item *ngIf="user.status === 'Active'">
+                <div class="flex space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/user-inactive.svg"
+                    alt="" />
+                  <span>Inactive</span>
+                </div>
               </button>
-              <div
-                *ngIf="selectedId == user.id && actionOpened"
-                class="absolute bg-white shadow-md rounded-lg z-50 py-2 w-32 right-0 top-full origin-top-right">
-                <ul class="text-[0.875rem]">
-                  <li
-                    *ngIf="user.status === 'Active'"
-                    class="py-2 px-4 hover:bg-input cursor-pointer">
-                    <a
-                      (click)="changeStatus(user.id, user.name, 'Inactive')"
-                      class="w-full flex space-x-3 items-center">
-                      <img
-                        class="notPreview"
-                        src="./assets/svg/user-inactive.svg"
-                        alt="" />
-                      <span>Inactive</span>
-                    </a>
-                  </li>
-                  <li
-                    *ngIf="user.status === 'Inactive'"
-                    class="py-2 px-4 hover:bg-input">
-                    <a
-                      (click)="changeStatus(user.id, user.name, 'Active')"
-                      class="w-full flex space-x-3 items-center cursor-pointer">
-                      <img
-                        class="notPreview"
-                        src="./assets/svg/user-active.svg"
-                        alt="" />
-                      <span>Active</span>
-                    </a>
-                  </li>
-                  <li class="py-2 px-4 hover:bg-input">
-                    <a
-                      (click)="changeStatus(user.id, user.name, 'Removed')"
-                      class="w-full flex space-x-3 items-center cursor-pointer">
-                      <img
-                        class="notPreview"
-                        src="./assets/svg/user-remove.svg"
-                        alt="" />
-                      <span class="text-red">Remove</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+              <button (click)="changeStatus(user.id, user.name, 'Active')" mat-menu-item
+                      *ngIf="user.status === 'Inactive'">
+                <div class="flex space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/user-active.svg"
+                    alt="" />
+                  <span>Active</span>
+                </div>
+              </button>
+              <button (click)="changeStatus(user.id, user.name, 'Removed')" mat-menu-item>
+                <div class="flex space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/user-remove.svg"
+                    alt="" />
+                  <span class="text-red">Remove</span>
+                </div>
+              </button>
+            </mat-menu>
           </td>
         </tr>
       </ng-container>
@@ -162,7 +142,10 @@
         <tr *ngIf="Users?.length === 0">
           <td class="h-full" colspan="9">
             <div class="flex items-center justify-center">
-              <p class="text-center">No data found</p>
+              <div class="w-full flex flex-col space-y-3 justify-center items-center">
+                <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+                <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+              </div>
             </div>
           </td>
         </tr>

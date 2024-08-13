@@ -34,8 +34,6 @@
     (inBottomEnd)="onBottom($event)"
     [totalPage]="totalPages"
     [anotherItemsHeight]="height"
-    appCheckTheHeightCrossMaxHeightOrNot
-    (maxHeightCrossed)="onMaxHeightCross($event)"
     class="bg-white w-full rounded-lg overflow-auto relative">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
@@ -43,7 +41,7 @@
         <th class="text-left">Driver Name</th>
         <th class="text-left">Mobile Number</th>
         <th class="text-left whitespace-nowrap">Created On</th>
-        <th class="text-center">No. of trip</th>
+        <th class="text-center">Number of trip</th>
         <th class="text-center">Driving License</th>
         <th class="text-center">National ID</th>
         <th class="text-left">Status</th>
@@ -130,12 +128,17 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="driverList?.length === 0">
-          <td class="text-center" colspan="6">No data found</td>
+          <td class="text-center" colspan="7">
+            <div class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+            </div>
+          </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="6">
+          <td class="h-full" colspan="7">
             <app-loading></app-loading>
           </td>
         </tr>

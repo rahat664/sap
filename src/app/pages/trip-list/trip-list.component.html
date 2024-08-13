@@ -6,14 +6,6 @@
     <div
       class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
       <h1 class="text-h1 font-semibold">Trip List</h1>
-      <div class="flex space-x-4 items-center">
-        <!--        <button-->
-        <!--          routerLink="/trip-list/trip-create"-->
-        <!--          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">-->
-        <!--          <i class="fas fa-plus-circle"></i>-->
-        <!--          <span class="hidden lg:block">Create New Trip</span>-->
-        <!--        </button>-->
-      </div>
     </div>
     <!--  filter section-->
     <div class="w-full bg-white rounded-lg">
@@ -49,7 +41,7 @@
                           inputPlaceholder="Select Date"
                           [options]="dateOptionArray"
                           (selectedId)="onSelectDate($event)"></app-custom-input>
-        <div class="relative w-1/3">
+        <div class="relative w-1/3" *ngIf="isAdmin()">
           <input
             (keyup)="onKeyUpSearch($event)"
             [(ngModel)]="searchName"
@@ -76,11 +68,11 @@
             </ul>
           </div>
         </div>
-        <div class="relative w-1/4">
+        <div class="relative w-1/4" *ngIf="isAdmin()">
           <input
             (keyup)="onKeyUpTripSearch($event)"
             [(ngModel)]="tripId"
-            placeholder="Enter Trip No."
+            placeholder="Enter Trip Number"
             class="w-full px-4 py-4 rounded-lg outline-none ring-none border-none bg-input" />
           <div
             appGetOutsideModalClick
@@ -107,8 +99,20 @@
     </div>
     <!--  summary section-->
     <div class="flex space-x-3 w-full">
-      <div
-        class="bg-white rounded-lg text-[0.875rem] p-4 whitespace-nowrap w-[1/3]">
+      <div *ngIf="!isAdmin()"
+           class="bg-white rounded-lg flex justify-center items-center text-[0.875rem] px-4 py-8 whitespace-nowrap w-96">
+        <div class="flex flex-col space-y-2 text-center">
+          <h1 class="font-bold text-[2.5rem]">
+            {{ summary.crs }} ৳
+          </h1>
+          <div class="flex items-center space-x-3 text-web-text-secondary text-body_title font-semibold">
+            <img src="assets/svg/trip-fare.svg" class="notPreview" alt="">
+            <span>Total trip fare for {{ summary.trips }} {{ summary.trips > 1 ? 'trips' : 'trip' }}</span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isAdmin()"
+           class="bg-white rounded-lg text-[0.875rem] p-4 whitespace-nowrap w-96">
         <h1 class="font-semibold">Summary ({{ summary.trips ? summary.trips : 0 }} trips)</h1>
         <div
           class="flex justify-between space-x-16 items-center py-3 border-b border-gray-300">
@@ -176,25 +180,24 @@
     appGiveMaxHeight
     [totalPage]="totalPages"
     (inBottomEnd)="onBottom($event)"
-    appCheckTheHeightCrossMaxHeightOrNot
-    (maxHeightCrossed)="onMaxHeightCross($event)"
     [anotherItemsHeight]="height"
     class="bg-white w-full relative rounded-lg overflow-auto">
     <table class="table-auto w-full text-[0.875rem]">
       <thead>
       <tr class="whitespace-nowrap bg-white">
-        <th class="text-left">Trip No.</th>
+        <th class="text-left">Trip Number</th>
         <th class="text-left whitespace-nowrap">Trip Date</th>
-        <th class="text-left">Company</th>
+        <th class="text-left" *ngIf="isAdmin()">Company</th>
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
         <th class="text-left">Status</th>
-        <th class="text-left">CR(৳)</th>
-        <th class="text-left">TR(৳)</th>
-        <th class="text-left">GP(৳)</th>
+        <th class="text-left" *ngIf="!isAdmin()">Trip Fare</th>
+        <th class="text-left" *ngIf="isAdmin()">CR(৳)</th>
+        <th class="text-left" *ngIf="isAdmin()">TR(৳)</th>
+        <th class="text-left" *ngIf="isAdmin()">GP(৳)</th>
       </tr>
       <tr>
-        <th class="border" colspan="9"></th>
+        <th class="border" [colSpan]="isAdmin() ? 9: 6"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -206,7 +209,7 @@
           <td class="whitespace-nowrap">
             {{ trip.tripStartDatetime | date: 'dd MMM yyyy' }}
           </td>
-          <td>{{ trip.customerName }}</td>
+          <td *ngIf="isAdmin()">{{ trip.customerName }}</td>
           <td>
             {{ trip.tripPoints[0]?.pointName }},
             {{ trip.tripPoints[0]?.pointDistrict }}
@@ -217,18 +220,23 @@
           </td>
           <td>{{ trip.status }}</td>
           <td>{{ (trip.customerRate ? trip.customerRate : 0) | number }}</td>
-          <td>{{ (trip.transporterRate ? trip.transporterRate : 0) | number }}</td>
-          <td>{{ getCountOfGp(trip) == 'N/A' ? 'N/A' : (getCountOfGp(trip) | number) }}</td>
+          <td *ngIf="isAdmin()">{{ (trip.transporterRate ? trip.transporterRate : 0) | number }}</td>
+          <td *ngIf="isAdmin()">{{ getCountOfGp(trip) == 'N/A' ? 'N/A' : (getCountOfGp(trip) | number) }}</td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" colspan="9">No data found</td>
+          <td class="text-center" [colSpan]="isAdmin() ? 9: 6">
+            <div class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+            </div>
+          </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="9">
+          <td class="h-full" [colSpan]="isAdmin() ? 9: 6">
             <app-loading></app-loading>
           </td>
         </tr>

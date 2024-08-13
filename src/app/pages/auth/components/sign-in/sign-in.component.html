@@ -3,7 +3,7 @@
     class="hidden lg:block w-full col-span-2 bg-loginBg bg-center bg-cover bg-no-repeat h-full">
     <div
       class="w-full h-full flex items-center justify-center object-center object-cover">
-      <img src="assets/logo/login-logo.png" alt="loginLogo" />
+      <img loading="lazy" src="assets/logo/login-logo.png" alt="loginLogo" />
     </div>
   </div>
   <div class="h-screen">
@@ -19,11 +19,12 @@
             type="email"
             class="bg-input rounded-lg border-none px-4 py-4"
             placeholder="User Email"
+            name="email"
             id="email" />
           <!--        error-message-->
-          <div
-            *ngIf="email?.invalid && email?.touched"
-            class="text-red text-xs">
+          <div id="emailError"
+               *ngIf="email?.invalid && email?.touched"
+               class="text-red text-xs">
             {{ getEmailError() }}
           </div>
         </div>
@@ -37,6 +38,7 @@
               type="password"
               class="border-none bg-input rounded-lg outline-none px-4 py-4 w-full"
               placeholder="Password"
+              name="password  "
               id="password" />
             <i
               id="icon"
@@ -45,6 +47,7 @@
           </div>
           <!--        error-message-->
           <div
+            id="passwordError"
             *ngIf="password?.invalid && (password?.dirty || password?.touched)"
             class="text-red text-xs">
             <span>{{ getPasswordError() }}</span>
@@ -57,7 +60,7 @@
     </div>
     <div class="text-center p-2 w-full self-end">
       <span class="text-sm text-secondary"
-        >All Rights Reserved to Shamolima Ltd.</span
+      >All Rights Reserved to Shamolima Ltd.</span
       >
     </div>
   </div>

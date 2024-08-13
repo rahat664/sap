@@ -7,6 +7,22 @@ import { CustomerService } from '../../../profiles/services/customer.service';
 import { GetOutsideModalClickDirective } from '../../../../shared/directive/get-outside-modal-click.directive';
 import { TripService } from '../../services/trip.service';
 import { CreateTripPageComponent } from '../create-trip-page/create-trip-page.component';
+import { Router, RouterLink } from '@angular/router';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatCard } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import {
+  MatMenu,
+  MatMenuItem,
+  MatMenuModule,
+  MatMenuTrigger,
+} from '@angular/material/menu';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+  MatOption,
+} from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-new-trip',
@@ -19,6 +35,18 @@ import { CreateTripPageComponent } from '../create-trip-page/create-trip-page.co
     CommonModule,
     GetOutsideModalClickDirective,
     CreateTripPageComponent,
+    RouterLink,
+    MatFormField,
+    MatInput,
+    MatCard,
+    MatButton,
+    MatMenuTrigger,
+    MatMenuModule,
+    MatMenu,
+    MatMenuItem,
+    MatAutocomplete,
+    MatOption,
+    MatAutocompleteTrigger,
   ],
   templateUrl: './new-trip.component.html',
   styleUrl: './new-trip.component.scss',
@@ -30,16 +58,26 @@ export class NewTripComponent implements OnInit {
   createButtonEnabled: boolean;
   templates: any;
   selectedTemplate: any;
-  customerSelectMenuOpened: boolean = true;
+  customerSelectMenuOpened: boolean = false;
   isTemplateEnabled: boolean;
+  dontClearLocalStorage: boolean;
 
   constructor(
     private customer: CustomerService,
-    private service: TripService
+    private service: TripService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.manageStore();
+    const selectedCustomer = localStorage.getItem('selectedCustomer');
+    if (selectedCustomer) {
+      this.customerName = JSON.parse(selectedCustomer).name;
+      this.getTripTemplate(JSON.parse(selectedCustomer).customerCode);
+      this.createButtonEnabled = true;
+    } else {
+      this.createButtonEnabled = false;
+    }
   }
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {
@@ -64,12 +102,15 @@ export class NewTripComponent implements OnInit {
     this.companySuggestions = [];
     this.isCustomerMenuOpened = false;
     this.getTripTemplate(result.customerCode);
+    localStorage.setItem('selectedCustomer', JSON.stringify(result));
   }
 
   onCreateTrip() {
     this.customerSelectMenuOpened = false;
     this.isTemplateEnabled = false;
     this.selectedTemplate = null;
+    this.router.navigate(['/trip-create/create']);
+    this.dontClearLocalStorage = true;
   }
 
   getTripTemplate(userId) {
@@ -79,13 +120,17 @@ export class NewTripComponent implements OnInit {
   }
 
   getTripRoute(templatePoints: any) {
-    return templatePoints[0].point_name + ' to ' + templatePoints[1].point_name;
+    return templatePoints[0].pointName + ' to ' + templatePoints[1].pointName;
   }
 
   setTemplate(tripTemplate: any) {
     this.customerSelectMenuOpened = false;
     this.selectedTemplate = tripTemplate;
     this.isTemplateEnabled = true;
+    localStorage.setItem('selectedTemplate', JSON.stringify(tripTemplate));
+    localStorage.setItem('isFromTemplate', 'true');
+    this.router.navigate(['/trip-create/create']);
+    this.dontClearLocalStorage = true;
   }
 
   private manageStore() {
@@ -133,27 +178,57 @@ export class NewTripComponent implements OnInit {
         selected: false,
       },
     ];
-
-    const fetchedTruckSize = JSON.parse(
-      localStorage.getItem('cachedTruckSize')
-    );
-    if (fetchedTruckSize) {
-      this.service.cachedTruckSize.next(fetchedTruckSize);
+    const cachedNoOfTrucks = [
+      {
+        value: 1,
+        selected: false,
+      },
+      {
+        value: 2,
+        selected: false,
+      },
+      {
+        value: 5,
+        selected: false,
+      },
+      {
+        value: 10,
+        selected: false,
+      },
+      {
+        value: 50,
+        selected: false,
+      },
+    ];
+    if (localStorage.getItem('noOfTrucks')) {
+      return;
     } else {
-      localStorage.setItem('cachedTruckSize', JSON.stringify(cachedTruckSize));
-      this.service.cachedTruckSize.next(cachedTruckSize);
+      localStorage.setItem('noOfTrucks', JSON.stringify(cachedNoOfTrucks));
     }
-    const fetchedTruckCapacity = JSON.parse(
-      localStorage.getItem('cachedTruckCapacity')
-    );
-    if (fetchedTruckCapacity) {
-      this.service.cachedTruckCapacity.next(fetchedTruckCapacity);
+    if (localStorage.getItem('truckSize')) {
+      return;
     } else {
-      this.service.cachedTruckCapacity.next(cachedTruckSize);
+      localStorage.setItem('truckSize', JSON.stringify(cachedTruckSize));
+    }
+    if (localStorage.getItem('truckCapacity')) {
+      return;
+    } else {
       localStorage.setItem(
-        'cachedTruckCapacity',
+        'truckCapacity',
         JSON.stringify(cachedTruckCapacity)
       );
     }
+  }
+
+  ngOnDestroy(): void {
+    if (!this.dontClearLocalStorage) {
+      localStorage.removeItem('selectedCustomer');
+      localStorage.removeItem('selectedTemplate');
+      localStorage.removeItem('isFromTemplate');
+    }
+  }
+
+  onClickAddTemplate() {
+    this.dontClearLocalStorage = true;
   }
 }

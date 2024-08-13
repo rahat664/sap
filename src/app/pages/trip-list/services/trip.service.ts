@@ -22,10 +22,14 @@ import { ApiResponse } from '../../auth/models/response/api-response';
 export class TripService {
   url = `${environment.backendUrl}/api/trips`;
   tripTemplateUrl = `${environment.backendUrl}/api/trip_templates`;
+  tripPointUrl = `${environment.backendUrl}/api/tripPointEvents`;
   vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
+  districtUrl = `${environment.backendUrl}/api/districts`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
+  locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
   cachedTruckSize: BehaviorSubject<any[]> = new BehaviorSubject([]);
   cachedTruckCapacity: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  reloadManageTripPage: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(private http: HttpClient) {}
 
@@ -36,7 +40,8 @@ export class TripService {
     startDate?: string,
     endDate?: string,
     status?: string,
-    tripId?: string
+    tripId?: string,
+    truckType?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -57,8 +62,15 @@ export class TripService {
     if (tripId) {
       params = params.set('search', tripId);
     }
+    if (truckType) {
+      params = params.set('truckType', truckType);
+    }
 
     return this.http.get(`${this.url}`, { params });
+  }
+
+  getTripDetailsByTripId(tripId: string): Observable<any> {
+    return this.http.get(`${this.url}/${tripId}`);
   }
 
   getTripSuggestions(search: string): Observable<any> {
@@ -112,5 +124,44 @@ export class TripService {
 
   getGoodsOptions() {
     return this.http.get(`${this.goodsOptionsUrl}`);
+  }
+
+  getLocationSuggestions(
+    address: string,
+    companyId: string,
+    includeOnlyGoogleMap?: boolean
+  ) {
+    const params = new HttpParams()
+      .set('address', address)
+      .set('companyId', companyId)
+      .set('includeOnlyGoogleMap', includeOnlyGoogleMap ? 'true' : 'false');
+    return this.http.get(this.locationSuggestionsUrl, { params });
+  }
+
+  getTruckName(truck_id: any) {
+    this.getVehicleTypeList().subscribe((res: any) => {
+      const truck = res.data.find(truck => truck.id === truck_id);
+      return truck ? truck.name : '';
+    });
+  }
+
+  createTrip(tripData: any) {
+    return this.http.post(this.url, tripData);
+  }
+
+  postTripTemplate(templateData) {
+    return this.http.post(this.tripTemplateUrl, templateData);
+  }
+
+  getAllTripEvent(tripId: string, pointType: string) {
+    return this.http.get(`${this.tripPointUrl}/${tripId}/${pointType}`);
+  }
+
+  updateTrip(body: any, tripId: string) {
+    return this.http.put(`${this.url}/${tripId}`, body);
+  }
+
+  getDistricts() {
+    return this.http.get(`${this.districtUrl}`);
   }
 }

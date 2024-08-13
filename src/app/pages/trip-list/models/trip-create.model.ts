@@ -1,21 +1,22 @@
-export interface Point {
-  point_district: string;
-  point_name: string;
-  point_lat: string;
-  point_lon: string;
-  point_type: string;
+export class Point {
+  pointDistrict: string;
+  pointName: string;
+  pointLat: number;
+  pointLon: number;
+  pointType: string;
 }
 
-export interface TripCreate {
-  customer_code: string;
-  trip_start_datetime: string;
-  category_id: string;
-  num_of_trucks: string;
-  truck_size: string;
-  truck_capacity_in_ton: string;
-  goods_id: string;
+export class TripCreate {
+  customerCode: string;
+  tripStartDatetime: string;
+  categoryId: string;
+  numOfTrucks: string;
+  truckSize: string;
+  truckCapacityInTon: string;
+  goodsId: string;
+  goodsName: string;
   customerRate: number;
-  truck_id: string;
+  truckId: string;
   note: string;
   points: Point[];
 }

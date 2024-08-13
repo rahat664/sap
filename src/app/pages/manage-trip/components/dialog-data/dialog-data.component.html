@@ -1,0 +1,184 @@
+<div class="sticky top-0 flex items-start justify-between bg-white z-50">
+  <h1 class="text-h3  font-semibold text-not-black px-6 py-4">{{ getButtonName() }}</h1>
+  <button class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
+          (click)="closeDialog()">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+<form [formGroup]="tripUpdateForm" class="flex flex-col space-y-3 px-6 py-4">
+  <div class="border-b border-input pb-6" *ngIf="data?.trip?.status == 'Unassigned' ">
+    <div class="flex justify-between items-center">
+      <h1 class="text-h2 font-semibold text-not-black">Transporter Info<sup>*</sup></h1>
+      <a class="text-link text-sm cursor-pointer" (click)="getTransporterList()">Select from list</a>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col space-y-1 col-span-2 w-full">
+        <label for="transporterName" class="text-body text-secondary">Name</label>
+        <mat-form-field appearance="outline" class="example-full-width w-full">
+          <input
+            id="transporterName"
+            type="text"
+            matInput
+            formControlName="transporterName"
+            (keyup)="onKeyUpTransporterSearch($event)"
+            placeholder="Transporter Name"
+            [matAutocomplete]="transporter">
+          <mat-autocomplete #transporter="matAutocomplete">
+            @for (option of transporterSuggestion; track option) {
+              <mat-option (click)="onClickTransporterSearchSuggestion(option)" [value]="option.name">
+                <div class="flex flex-col space-y-1">
+                  <span class="text-body_title text-not-black font-semibold">{{ option.name }}</span>
+                  <span class="text-secondary text-body_title">{{ option.phone }}</span>
+                </div>
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <label for="transporterMobile" class="text-body text-secondary">Mobile Number</label>
+        <mat-form-field id="transporterMobile" appearance="outline">
+          <input formControlName="transporterPhone"
+                 [disabled]="true" [readonly]="true" type="number" step="0.1" matInput
+                 placeholder="Transporter Mobile Number"
+          >
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col space-y-1 w-full">
+        <label for="customerRate" class="form-label text-body text-secondary">Transporter Rate (TR)</label>
+        <!--Add a bdt icon at the end of the input-->
+        <div class="relative bg-input rounded-lg border-none">
+          <mat-form-field class="w-full" appearance="outline" id="customerRate">
+            <input formControlName="transporterRate" type="number" class="w-full" matInput
+                   placeholder="Transporter Rate">
+          </mat-form-field>
+          <img
+            id="icon"
+            class="notPreview absolute right-4 top-4 cursor-pointer"
+            src="assets/svg/bdt.svg"
+            alt="bdt"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="border-b border-input pb-6" *ngIf="data?.trip?.truck?.id == null">
+    <div class="flex justify-between items-center">
+      <h1 class="text-h2 font-semibold text-not-black">Truck Info</h1>
+      <a class="text-link text-sm cursor-pointer" (click)="getTruckList()">Select from list</a>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col space-y-1 col-span-2 w-full">
+        <label for="truck" class="text-body text-secondary">Registration Number</label>
+        <div id="truck" class="grid grid-cols-9 gap-4">
+          <mat-form-field class="col-span-3" appearance="outline">
+            <mat-select formControlName="registrationZone"
+                        placeholder="Zone">
+              @for (truck of registrationZoneList; track truck) {
+                <mat-option [value]="truck.value">{{ truck.value }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="col-span-2" appearance="outline">
+            <mat-select [disabled]="true"
+                        placeholder="Type"
+                        formControlName="registrationCategory"
+            >
+              @for (category of registrationCategoryList; track category) {
+                <mat-option [value]="category.value">{{ category.showname }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="col-span-2" appearance="outline" id="capacity">
+            <input formControlName="registrationSerialNumber" [disabled]="true" [readonly]="true" type="number"
+                   step="0.1" matInput
+                   placeholder="Serial">
+          </mat-form-field>
+          <mat-form-field class="col-span-2" appearance="outline">
+            <input formControlName="registrationNumber" [disabled]="true" [readonly]="true" type="number" step="0.1"
+                   matInput
+                   placeholder="Number">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="border-b border-input pb-6" *ngIf="data?.trip?.driverCode == null || data?.trip?.driverCode == ''">
+    <div class="flex justify-between items-center">
+      <h1 class="text-h2 font-semibold text-not-black">Driver Info</h1>
+      <a class="text-link text-sm cursor-pointer" (click)="getDriverList()">Select from list</a>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col space-y-1 w-full">
+        <label for="driverName" class="text-body text-secondary">Name</label>
+        <mat-form-field appearance="outline" class="example-full-width w-full">
+          <input
+            id="driverName"
+            type="text"
+            formControlName="driverName"
+            matInput
+            (keyup)="onKeyUpDriverSearch($event)"
+            placeholder="Driver Name"
+            [matAutocomplete]="driver">
+          <mat-autocomplete #driver="matAutocomplete">
+            @for (option of driverSuggestion; track option) {
+              <mat-option (click)="onClickDriverSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <label for="driverMobile" class="text-body text-secondary">Mobile Number</label>
+        <mat-form-field disabled id="driverMobile" appearance="outline">
+          <input formControlName="driverPhone"
+                 [disabled]="true" [readonly]="true" type="number" step="0.1" matInput
+                 placeholder="Driver Mobile Number"
+          >
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="pb-6" *ngIf="!data?.buttonName.includes('Assign')">
+    <div class="flex justify-between items-center">
+      <h1 class="text-h2 font-semibold text-not-black">Helper Info</h1>
+      <a class="text-link text-sm cursor-pointer" (click)="getHelperList()">Select from list</a>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col space-y-1 w-full">
+        <label for="helperName" class="text-body text-secondary">Name</label>
+        <mat-form-field appearance="outline" class="example-full-width w-full">
+          <input
+            id="helperName"
+            type="text"
+            matInput
+            formControlName="helperName"
+            (keyup)="onKeyUpHelperSearch($event)"
+            placeholder="Helper Name"
+            [matAutocomplete]="helper">
+          <mat-autocomplete #helper="matAutocomplete">
+            @for (option of helperSuggestion; track option) {
+              <mat-option (click)="onClickHelperSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <label for="helperMobile" class="text-body text-secondary">Mobile Number</label>
+        <mat-form-field disabled id="helperMobile" appearance="outline">
+          <input [readonly]="true" formControlName="helperPhone"
+                 [disabled]="true" type="number" step="0.1" matInput placeholder="Helper Mobile Number"
+          >
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="flex w-full justify-end">
+    <button (click)="onChangeTripStatus(data.buttonName)" type="button"
+            class="px-8 py-2 text-white font-semibold bg-primary rounded-lg">{{ data.buttonName }}
+    </button>
+  </div>
+
+</form>
+

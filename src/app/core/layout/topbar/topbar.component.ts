@@ -7,6 +7,7 @@ import { ImagePipe } from '../../../shared/pipes/image.pipe';
 import { RouterLink } from '@angular/router';
 import { GetOutsideModalClickDirective } from '../../../shared/directive/get-outside-modal-click.directive';
 import { DriverEditSharedService } from '../../../pages/profiles/services/driver-edit-shared.service';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-topbar',
@@ -17,6 +18,7 @@ import { DriverEditSharedService } from '../../../pages/profiles/services/driver
     ImagePipe,
     RouterLink,
     GetOutsideModalClickDirective,
+    MatTooltip,
   ],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss',
@@ -39,6 +41,9 @@ export class TopbarComponent implements OnInit {
   ngOnInit(): void {
     this.name = localStorage.getItem('name');
     this.image = localStorage.getItem('image');
+    this.toggleMobileViewService.isSidebarOpen.subscribe(value => {
+      this.isSideBarOpen = value;
+    });
   }
 
   toggleMobileSideBar() {

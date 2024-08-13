@@ -65,8 +65,6 @@
   </div>
   <div
     appGiveMaxHeight
-    appCheckTheHeightCrossMaxHeightOrNot
-    (maxHeightCrossed)="onMaxHeightCross($event)"
     (inBottomEnd)="onBottom($event)"
     [anotherItemsHeight]="height"
     [totalPage]="totalPages"
@@ -91,8 +89,8 @@
           <td class="whitespace-nowrap">
             <div class="flex items-center space-x-4">
               <div
-                class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
-                  <span class="text-white font-bold capitalize">{{
+                class="w-8 h-8 rounded-full bg-another flex items-center justify-center">
+                  <span class="text-white font-semibold capitalize">{{
                       transporter.name[0]
                     }}</span>
               </div>
@@ -118,12 +116,17 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="transporterList?.length === 0">
-          <td class="text-center" colspan="4">No data found</td>
+          <td class="text-center" colspan="5">
+            <div class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+            </div>
+          </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="4">
+          <td class="h-full" colspan="5">
             <app-loading></app-loading>
           </td>
         </tr>
