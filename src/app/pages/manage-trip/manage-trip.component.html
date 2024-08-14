@@ -69,7 +69,7 @@
           ) | <a (click)="onClickClearAll()"
                  class="text-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
         </div>
-        <button *ngIf="filterLength > 0" (click)="onClickClearAll()"
+        <button (click)="onClickClearAll()"
                 class="mb-1/2 h-[1.75rem] w-[1.75rem] text-white bg-disabled flex items-center justify-center rounded-full">
           <i class="fas fa-times text-not-black"></i>
         </button>

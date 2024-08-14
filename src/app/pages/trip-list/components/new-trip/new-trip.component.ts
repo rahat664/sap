@@ -70,14 +70,33 @@ export class NewTripComponent implements OnInit {
 
   ngOnInit(): void {
     this.manageStore();
-    const selectedCustomer = localStorage.getItem('selectedCustomer');
-    if (selectedCustomer) {
-      this.customerName = JSON.parse(selectedCustomer).name;
-      this.getTripTemplate(JSON.parse(selectedCustomer).customerCode);
-      this.createButtonEnabled = true;
+    if (this.isAdmin()) {
+      const selectedCustomer = localStorage.getItem('selectedCustomer');
+      if (selectedCustomer) {
+        this.customerName = JSON.parse(selectedCustomer).name;
+        this.getTripTemplate(JSON.parse(selectedCustomer).customerCode);
+        this.createButtonEnabled = true;
+      } else {
+        this.createButtonEnabled = false;
+      }
     } else {
-      this.createButtonEnabled = false;
+      this.customer.getCustomer(0, 20).subscribe((res: any) => {
+        this.customerName = res.data.content[0].name;
+        this.getTripTemplate(res.data.content[0].customerCode);
+        localStorage.setItem(
+          'selectedCustomer',
+          JSON.stringify(res.data.content[0])
+        );
+        this.createButtonEnabled = true;
+      });
     }
+  }
+
+  isAdmin() {
+    return (
+      localStorage.getItem('role') === 'ROLE_ADMIN' ||
+      localStorage.getItem('role') === 'ROLE_KAM'
+    );
   }
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {

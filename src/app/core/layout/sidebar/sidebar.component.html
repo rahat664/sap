@@ -83,7 +83,7 @@
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Trip List</span>
             </a>
           </li>
-          <li>
+          <li *ngIf="isAdmin()">
             <a
               (click)="clearSelectedTemplate()"
               routerLink="/user-management"

@@ -1,0 +1,437 @@
+<div>
+  <div class="mx-4 py-2 flex justify-between items-center sticky top-16">
+    <h1 class="text-h1 font-semibold">Update Trip</h1>
+    <button
+      class="bg-primary text-white rounded-lg px-16 py-3"
+      (click)="onUpdateTrip()">Update
+    </button>
+  </div>
+  <div class="px-4 h-[calc(100vh-9rem)] overflow-y-auto
+">
+    <form [formGroup]="tripUpdateForm" class="rounded-lg bg-white w-full">
+      <div class="mx-8 flex flex-col space-y-3 py-8  border-b-2 border-input">
+        <div class="flex items-center space-x-3">
+          <img loading="lazy" class="notPreview" src="assets/svg/locinfo.svg" alt="candt">
+          <span class="text-h2 font-semibold">Location info</span>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-4 w-full ">
+          <div class="flex flex-col space-y-1 w-full">
+            <label for="loadingPoint" class="form-label text-body">Loading Point</label>
+            <mat-form-field appearance="outline" class="example-full-width">
+              <input
+                id="loadingPoint"
+                type="text"
+                matInput
+                placeholder="Address"
+                formControlName="loadingPointName"
+                (keyup)="onKeyUpLoadingPoint($event)"
+                [matAutocomplete]="auto">
+              <mat-autocomplete #auto="matAutocomplete">
+                @for (option of loadingSuggestions; track option) {
+                  <mat-option *ngIf="option.locationPointName !== null || option.doesBelongToGoogleMapApi === false"
+                              (click)="onClickLoadingSuggestion(option)" [value]="option.locationPointName">
+                    <div class="w-full flex flex-col space-y-2 p-2">
+                      <div class="flex space-x-2 w-full">
+                        <img loading="lazy" src="assets/svg/star.svg" alt="star">
+                        <span class="text-body_title text-not-black">{{ option.locationPointName }}</span>
+                      </div>
+                      <span class="text-body_title text-web-text-secondary">{{ option.addressText }}</span>
+                    </div>
+                  </mat-option>
+                  <mat-option *ngIf="option.locationPointName === null && option.doesBelongToGoogleMapApi === true"
+                              (click)="onClickLoadingSuggestion(option)" [value]="option.addressText">
+                    <div class="p-2 w-full text-body_title text-not-black">{{ option.addressText }}</div>
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-1 w-full">
+            <label for="loadingDistrict" class="form-label text-body">Loading District</label>
+            <mat-form-field appearance="outline" class="example-full-width">
+              <input
+                id="loadingDistrict"
+                type="text"
+                matInput
+                placeholder="District Name"
+                formControlName="loadingPointDistrict"
+                (keyup)="onKeyUpLoadingDistrict($event)"
+                [matAutocomplete]="loadingDistrictAuto">
+              <mat-autocomplete #loadingDistrictAuto="matAutocomplete">
+                @for (option of loadingDistrictSuggestions; track option) {
+                  <mat-option (click)="onSelectLoadingDistrict(option)" [value]="option.name">
+                    <div class="p-2 w-full text-body_title text-not-black">{{ option.name }}</div>
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-1 w-full">
+            <label for="unLoadingPoint" class="form-label text-body">Unloading Point</label>
+            <mat-form-field appearance="outline" class="example-full-width">
+              <input
+                id="unLoadingPoint"
+                type="text"
+                matInput
+                placeholder="Address"
+                formControlName="unloadingPointName"
+                (keyup)="onKeyUpUnloadingPoint($event)"
+                [matAutocomplete]="autoUnload">
+              <mat-autocomplete #autoUnload="matAutocomplete">
+                @for (option of unloadingSuggestions; track option) {
+                  <mat-option *ngIf="option.locationPointName !== null || option.doesBelongToGoogleMapApi === false"
+                              (click)="onClickUnloadingSuggestion(option)" [value]="option.locationPointName">
+                    <div class="w-full flex flex-col space-y-2 p-2">
+                      <div class="flex space-x-2 w-full">
+                        <img loading="lazy" src="assets/svg/star.svg" alt="star">
+                        <span class="text-body_title text-not-black">{{ option.locationPointName }}</span>
+                      </div>
+                      <span class="text-body_title text-web-text-secondary">{{ option.addressText }}</span>
+                    </div>
+                  </mat-option>
+                  <mat-option *ngIf="option.locationPointName === null && option.doesBelongToGoogleMapApi === true"
+                              (click)="onClickUnloadingSuggestion(option)" [value]="option.addressText">
+                    <div class="p-2 w-full text-body_title text-not-black">{{ option.addressText }}</div>
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-1 w-full">
+            <label for="unLoadingDistrict" class="form-label text-body">Unloading District</label>
+
+            <mat-form-field appearance="outline" class="example-full-width">
+              <input
+                id="unloadingDistrict"
+                type="text"
+                matInput
+                placeholder="District Name"
+                formControlName="unloadingPointDistrict"
+                (keyup)="onKeyUpUnloadingDistrict($event)"
+                [matAutocomplete]="unloadingDistrictAuto">
+              <mat-autocomplete #unloadingDistrictAuto="matAutocomplete">
+                @for (option of unloadingDistrictSuggestions; track option) {
+                  <mat-option (click)="onSelectUnloadingDistrict(option)" [value]="option.name">
+                    <div class="p-2 w-full text-body_title text-not-black">{{ option.name }}</div>
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input ">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <img loading="lazy" class="notPreview" src="assets/svg/vehicleinfo.svg" alt="candt">
+            <span class="text-h2 font-semibold">Vehicle info</span>
+          </div>
+          <div
+            *ngIf="scrollable"
+            class="flex space-x-1 items-center">
+            <button
+              type="button"
+              data-direction="left"
+              (click)="onClickLeftButton()"
+              [disabled]="!rightButtonClicked"
+              class="{{
+              rightButtonClicked
+                ? 'text-white bg-primary'
+                : 'text-disabled bg-input-hint'
+            }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
+              <i class="fal fa-angle-left text-xl"></i>
+            </button>
+            <button
+              type="button"
+              data-direction="right"
+              (click)="onClickRightButton()"
+              [disabled]="rightButtonClicked"
+              class="{{
+              rightButtonClicked
+                ? 'text-disabled bg-input-hint'
+                : 'text-white bg-primary'
+            }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
+              <i class="fal fa-angle-right text-xl"></i>
+            </button>
+          </div>
+        </div>
+        <div class="overflow-hidden border border-link relative py-1 px-1 w-full rounded-lg bg-white">
+          <div
+            appScrollByButton
+            (isVisible)="scrollable = $event"
+            [rightButtonClicked]="rightButtonClicked"
+            [leftButtonClicked]="leftButtonClicked"
+            class="h-full w-full overflow-hidden">
+            <div class="flex relative space-x-2 items-center h-full">
+              <ng-container *ngFor="let item of vehicleTypeList">
+                <button
+                  type="button"
+                  class="rounded-lg px-4  py-2 {{ item.selected ? 'bg-green text-white' : 'bg-input' }}"
+                  (click)="onVehicleTypeClick(item)"
+                >
+                  <div class="w-[5rem] h-[3rem] flex items-center justify-center">
+                    <img loading="lazy" class="w-full notPreview" [src]="item.imageUrl" [alt]="item.name">
+                  </div>
+                  <span class="whitespace-nowrap text-body_title">{{ item.name }}</span>
+                </button>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-4 w-full relative">
+          <div class="flex flex-col space-y-2 w-full">
+            <label for="numOfVehicle" class="form-label text-body">Number of vehicle</label>
+            <mat-form-field appearance="outline" id="numOfVehicle">
+              <input type="number" formControlName="numOfTrucks" matInput placeholder="Enter Number of vehicle">
+            </mat-form-field>
+            <div class="w-full h-full flex space-x-2 items-center">
+              <span>Suggestions:</span>
+              <button type="button"
+                      (click)="onClickNoOfTruckSuggestion(suggestion)"
+                      class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                      [ngClass]="{'bg-green text-white': suggestion.selected}"
+                      *ngFor="let suggestion of numberOfTrucksSuggestions">
+                {{ suggestion.value }}
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-col space-y-2 w-full">
+            <label for="size" class="form-label text-body">Truck Size (Feet)</label>
+            <mat-form-field appearance="outline" id="size">
+              <input type="number" step="0.1" matInput formControlName="truckSize" placeholder="Enter size">
+            </mat-form-field>
+            <div class="w-full flex space-x-2 items-center">
+              <span>Suggestions:</span>
+              <button type="button" (click)="onClickTruckSizeSuggestions(suggestion)"
+                      class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                      [ngClass]="{'bg-green text-white': suggestion.selected}"
+                      *ngFor="let suggestion of truckSizeSuggestions">
+                {{ suggestion.value }}
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-col space-y-2 w-full">
+            <label for="capacity" class="form-label text-body">Truck Capacity (Ton)</label>
+            <mat-form-field appearance="outline" id="capacity">
+              <input type="number" step="0.1" formControlName="truckCapacityInTon" matInput
+                     placeholder="Enter Capacity">
+            </mat-form-field>
+            <div class="w-full flex space-x-2 items-center">
+              <span>Suggestions:</span>
+              <button type="button" (click)="onClickTruckCapacitySuggestions(suggestion)"
+                      class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                      [ngClass]="{'bg-green text-white': suggestion.selected}"
+                      *ngFor="let suggestion of truckCapacitySuggestions">
+                {{ suggestion.value }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input ">
+        <div class="grid lg:grid-cols-2 gap-4 w-full">
+          <div class="flex flex-col space-y-3">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="notPreview" src="assets/svg/goodsinfo.svg" alt="candt">
+              <h1 class="text-h2 font-semibold">Goods Info</h1>
+            </div>
+            <div class="flex flex-col space-y-1 w-full">
+              <label for="goods" class="form-label text-body">Goods Type</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="goods"
+                  type="text"
+                  matInput
+                  formControlName="goodsName"
+                  placeholder="Enter Goods Type"
+                  (keyup)="onKeyUpGoods($event)"
+                  [matAutocomplete]="goods">
+                <mat-autocomplete #goods="matAutocomplete">
+                  @for (option of loadingGoodsSuggestions; track option) {
+                    <mat-option (click)="onClickGoodsSuggestion(option)" [value]="option.value">
+                      <div class="p-2 w-full text-body_title text-not-black">{{ option.value }}</div>
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="flex flex-col space-y-3">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="notPreview" src="assets/svg/cr.svg" alt="candt">
+              <h1 class="text-h2 font-semibold">Customer Rate (CR)</h1>
+            </div>
+            <div class="flex flex-col space-y-1 w-full">
+              <label for="customerRate" class="form-label text-body">Customer rate</label>
+              <!--Add a bdt icon at the end of the input-->
+              <div class="relative bg-input rounded-lg border-none">
+                <mat-form-field class="w-full" appearance="outline" id="customerRate">
+                  <input type="number" formControlName="customerRate" class="w-full" matInput
+                         placeholder="Enter Customer Rate">
+                </mat-form-field>
+                <img
+                  id="icon"
+                  class="notPreview absolute right-4 top-4 cursor-pointer"
+                  src="assets/svg/bdt.svg"
+                  alt="bdt"
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input">
+        <div class="flex space-x-3 items-center">
+          <img loading="lazy" class="notPreview" src="assets/svg/additional.svg" alt="candt">
+          <h1 class="text-h2 font-semibold">Additional info</h1>
+        </div>
+        <textarea formControlName="note" class="w-full h-28 border border-none bg-input rounded-lg p-4"
+                  placeholder="Enter additional info"></textarea>
+      </div>
+
+      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="flex justify-between items-center col-span-2 w-1/2">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="notPreview" src="assets/svg/transporter-info.svg" alt="candt">
+              <h1 class="text-h2 font-semibold">Transporter info</h1>
+            </div>
+
+            <a class="text-link text-sm cursor-pointer" (click)="getTransporterList()">Select from list</a>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col space-y-1 col-span-2 w-full">
+              <label for="transporterName" class="text-body text-secondary">Name</label>
+              <mat-form-field appearance="outline" class="example-full-width w-full">
+                <input
+                  id="transporterName"
+                  type="text"
+                  matInput
+                  formControlName="transporterName"
+                  (keyup)="onKeyUpTransporterSearch($event)"
+                  placeholder="Transporter Name"
+                  [matAutocomplete]="transporter">
+                <mat-autocomplete #transporter="matAutocomplete">
+                  @for (option of transporterSuggestion; track option) {
+                    <mat-option (click)="onClickTransporterSearchSuggestion(option)" [value]="option.name">
+                      <div class="flex flex-col space-y-1">
+                        <span class="text-body_title text-not-black font-semibold">{{ option.name }}</span>
+                        <span class="text-secondary text-body_title">{{ option.phone }}</span>
+                      </div>
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="transporterMobile" class="text-body text-secondary">Mobile Number</label>
+              <mat-form-field id="transporterMobile" appearance="outline">
+                <input readonly formControlName="transporterPhone"
+                       [disabled]="true" [readonly]="true" type="number" step="0.1" matInput
+                       placeholder="Transporter Mobile Number"
+                >
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1 w-full">
+              <label for="transporterRate" class="form-label text-body text-secondary">Transporter Rate (TR)</label>
+              <!--Add a bdt icon at the end of the input-->
+              <div class="relative bg-input rounded-lg border-none">
+                <mat-form-field class="w-full" appearance="outline" id="transporterRate">
+                  <input formControlName="transporterRate" type="number" class="w-full" matInput
+                         placeholder="Transporter Rate">
+                </mat-form-field>
+                <img
+                  class="notPreview absolute right-4 top-4 cursor-pointer"
+                  src="assets/svg/bdt.svg"
+                  alt="bdt"
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="flex justify-between items-center col-span-2 md:w-1/2">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="notPreview" src="assets/svg/truck.svg" alt="candt">
+              <h1 class="text-h2 font-semibold">Truck info</h1>
+            </div>
+
+            <a class="text-link text-sm cursor-pointer" (click)="getTruckList()">Select from list</a>
+          </div>
+
+          <div class="flex flex-col space-y-1 w-full">
+            <label for="truck" class="text-body text-secondary">Registration Number</label>
+            <div id="truck" class="grid grid-cols-9 gap-4">
+              <mat-form-field class="col-span-3" appearance="outline">
+                <input readonly formControlName="registrationZone"
+                       [disabled]="true" [readonly]="true" matInput
+                       placeholder="Zone"
+                >
+              </mat-form-field>
+              <mat-form-field class="col-span-2" appearance="outline">
+                <input readonly formControlName="registrationCategory"
+                       [disabled]="true" [readonly]="true" matInput
+                       placeholder="Category"
+                >
+              </mat-form-field>
+              <mat-form-field class="col-span-2" appearance="outline">
+                <input formControlName="registrationSerialNumber" [disabled]="true" [readonly]="true" type="number"
+                       step="0.1" matInput
+                       placeholder="Serial">
+              </mat-form-field>
+              <mat-form-field class="col-span-2" appearance="outline">
+                <input formControlName="registrationNumber" [disabled]="true" [readonly]="true" type="number" step="0.1"
+                       matInput
+                       placeholder="Number">
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="flex justify-between col-span-2 md:w-1/2 items-center">
+            <div class="flex space-x-3 items-center">
+              <img loading="lazy" class="notPreview" src="assets/svg/driver-info.svg" alt="candt">
+              <h1 class="text-h2 font-semibold">Driver info</h1>
+            </div>
+            <a class="text-link text-sm cursor-pointer" (click)="getDriverList()">Select from list</a>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col space-y-1 w-full">
+              <label for="driverName" class="text-body text-secondary">Name</label>
+              <mat-form-field appearance="outline" class="example-full-width w-full">
+                <input
+                  id="driverName"
+                  type="text"
+                  formControlName="driverName"
+                  matInput
+                  (keyup)="onKeyUpDriverSearch($event)"
+                  placeholder="Driver Name"
+                  [matAutocomplete]="driver">
+                <mat-autocomplete #driver="matAutocomplete">
+                  @for (option of driverSuggestion; track option) {
+                    <mat-option (click)="onClickDriverSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="driverMobile" class="text-body text-secondary">Mobile Number</label>
+              <mat-form-field disabled id="driverMobile" appearance="outline">
+                <input formControlName="driverPhone"
+                       [disabled]="true" [readonly]="true" type="number" step="0.1" matInput
+                       placeholder="Driver Mobile Number"
+                >
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

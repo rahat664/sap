@@ -159,3 +159,7 @@ input::-webkit-outer-spin-button {
   font-weight: 600 !important;
   color: #242424 !important;
 }
+
+.mat-mdc-form-field-subscript-wrapper, .mat-mdc-form-field-bottom-align::before {
+  display: none !important;
+}

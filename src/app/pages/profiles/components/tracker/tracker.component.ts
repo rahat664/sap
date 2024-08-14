@@ -57,7 +57,7 @@ export class TrackerComponent {
   readonly dialog = inject(MatDialog);
 
   loading: boolean;
-  trackerList: VehicleTracker[];
+  trackerList: VehicleTracker[] = [];
   totalPages: number;
   height: string;
   page: number = 0;
@@ -97,9 +97,8 @@ export class TrackerComponent {
 
   private getTrackers() {
     this.loading = true;
-    this.service
-      .getTrackers(this.page, this.size, this.searchValue)
-      .subscribe((res: any) => {
+    this.service.getTrackers(this.page, this.size, this.searchValue).subscribe(
+      (res: any) => {
         if (this.page === 0) {
           this.trackerList = res.data.content;
         } else {
@@ -107,7 +106,11 @@ export class TrackerComponent {
         }
         this.loading = false;
         this.totalPages = res.data.totalPages;
-      });
+      },
+      err => {
+        this.loading = false;
+      }
+    );
   }
 
   onClickUpdate(tracker: number | undefined, popup: TemplateRef<any>) {
@@ -154,10 +157,12 @@ export class TrackerComponent {
             this.toast.showSuccess('Tracker updated successfully');
           } else {
             this.toast.showError('Failed to update tracker');
+            this.loading = false;
           }
         },
         err => {
           this.toast.showError('Failed to update tracker');
+          this.loading = false;
         }
       );
     }

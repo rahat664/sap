@@ -626,4 +626,11 @@ export class CreateTripPageComponent implements OnInit {
       this.district = res.data;
     });
   }
+
+  isAdmin() {
+    return (
+      localStorage.getItem('role') === 'ROLE_ADMIN' ||
+      localStorage.getItem('role') === 'ROLE_KAM'
+    );
+  }
 }

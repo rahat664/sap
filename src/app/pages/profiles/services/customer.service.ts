@@ -24,7 +24,7 @@ export class CustomerService {
       .map(key => `${key}=${encodeURIComponent(params[key])}`)
       .join('&');
 
-    return this.http.get(`${this.url}/customers?${queryString}`);
+    return this.http.get(`${this.url}?${queryString}`);
   }
 
   addCustomer(body: any) {
