@@ -15,6 +15,7 @@ import { ConfirmUpdateComponent } from '../confirm-update/confirm-update.compone
 import { TripService } from '../../../trip-list/services/trip.service';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { ConfirmCancelComponent } from '../confirm-cancel/confirm-cancel.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trip-details',
@@ -43,7 +44,8 @@ export class TripDetailsComponent {
 
   constructor(
     private mobileToggleService: ToggleResponsiveService,
-    private trip: TripService
+    private trip: TripService,
+    private router: Router
   ) {}
 
   tripTimeline: any[] = [
@@ -169,10 +171,8 @@ export class TripDetailsComponent {
       case 'Unassigned':
         return 'Book Trip';
       case 'Booked':
-        this.buttonAvailable = true;
         return 'Start Trip';
       case 'Running':
-        this.buttonAvailable = true;
         return 'Complete Trip';
       default:
         return 'Book Trip';
@@ -271,5 +271,10 @@ export class TripDetailsComponent {
       localStorage.getItem('role') === 'ROLE_ADMIN' ||
       localStorage.getItem('role') === 'ROLE_KAM'
     );
+  }
+
+  onClickTripUpdate(tripDetails: TripData) {
+    localStorage.setItem('updateTripDetails', JSON.stringify(tripDetails));
+    this.router.navigate(['/update-trip']);
   }
 }

@@ -35,56 +35,60 @@ export class ConfirmUpdateComponent {
   ngOnInit() {}
 
   confirmUpdate() {
-    const body = {};
-    if (this.data.trip.status == 'Booked') {
-      body['tripStartedAt'] = this.datePipe.transform(
-        new Date(),
-        'yyyy-MM-dd hh:mm:ss'
-      );
-    } else {
-      body['status'] = 'Completed';
-    }
-    this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
-      (res: any) => {
-        console.log(res);
-        this.dialogRef.close('updated');
-        if (res.status == 'OK') {
-          this.dialog
-            .open(SuccessModalComponent, {
+    if (this.data.buttonText != 'Update') {
+      const body = {};
+      if (this.data.trip.status == 'Booked') {
+        body['tripStartedAt'] = this.datePipe.transform(
+          new Date(),
+          'yyyy-MM-dd hh:mm:ss'
+        );
+      } else {
+        body['status'] = 'Completed';
+      }
+      this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
+        (res: any) => {
+          console.log(res);
+          this.dialogRef.close('updated');
+          if (res.status == 'OK') {
+            this.dialog
+              .open(SuccessModalComponent, {
+                width: '21.375rem',
+                data: {
+                  title: 'Success',
+                  text: `Trip ${res.data.tripId} ${res.data.status == 'Booked' ? 'started' : 'completed'} successfully`,
+                  buttonText: 'Okay',
+                },
+              })
+              .afterClosed()
+              .subscribe(() => {
+                this.trip.reloadManageTripPage.next(true);
+              });
+          } else if (res.status == 'Bad Request') {
+            this.dialogRef.close('error');
+            this.dialog.open(ErrorModalComponent, {
               width: '21.375rem',
               data: {
-                title: 'Success',
-                text: `Trip ${res.data.tripId} ${res.data.status == 'Booked' ? 'started' : 'completed'} successfully`,
+                title: 'Error',
+                text: res.message,
                 buttonText: 'Okay',
               },
-            })
-            .afterClosed()
-            .subscribe(() => {
-              this.trip.reloadManageTripPage.next(true);
             });
-        } else if (res.status == 'Bad Request') {
+          }
+        },
+        err => {
           this.dialogRef.close('error');
           this.dialog.open(ErrorModalComponent, {
             width: '21.375rem',
             data: {
               title: 'Error',
-              text: res.message,
+              text: err.error.message,
               buttonText: 'Okay',
             },
           });
         }
-      },
-      err => {
-        this.dialogRef.close('error');
-        this.dialog.open(ErrorModalComponent, {
-          width: '21.375rem',
-          data: {
-            title: 'Error',
-            text: err.error.message,
-            buttonText: 'Okay',
-          },
-        });
-      }
-    );
+      );
+    } else {
+      this.dialogRef.close('updated');
+    }
   }
 }

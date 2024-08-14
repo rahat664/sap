@@ -33,7 +33,7 @@ export const routes: Routes = [
   },
   {
     path: 'trip-create/customerselection',
-    title: 'Trip Create',
+    title: 'Create Trip',
     loadComponent: () =>
       import('./pages/trip-list/components/new-trip/new-trip.component').then(
         c => c.NewTripComponent
@@ -52,7 +52,7 @@ export const routes: Routes = [
   // create trip with query params not id with scenerio
   {
     path: 'trip-create/create',
-    title: 'Trip Create',
+    title: 'Create Trip',
     loadComponent: () =>
       import(
         './pages/trip-list/components/create-trip-page/create-trip-page.component'
@@ -60,15 +60,23 @@ export const routes: Routes = [
   },
   {
     path: 'trip-create/overview',
-    title: 'Trip Create',
+    title: 'Create Trip',
     loadComponent: () =>
       import(
         './pages/trip-list/components/trip-create-overview/trip-create-overview.component'
       ).then(c => c.TripCreateOverviewComponent),
   },
   {
+    path: 'update-trip',
+    title: 'Update Trip',
+    loadComponent: () =>
+      import(
+        './pages/trip-list/components/trip-update/trip-update.component'
+      ).then(c => c.TripUpdateComponent),
+  },
+  {
     path: 'trip-create/create-trip-template',
-    title: 'Trip Create',
+    title: 'Create Trip',
     loadComponent: () =>
       import(
         './pages/trip-list/components/template-create/template-create.component'

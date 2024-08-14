@@ -211,12 +211,10 @@
           </td>
           <td *ngIf="isAdmin()">{{ trip.customerName }}</td>
           <td>
-            {{ trip.tripPoints[0]?.pointName }},
-            {{ trip.tripPoints[0]?.pointDistrict }}
+            {{ trip.tripPoints[0]?.pointName }}
           </td>
           <td>
-            {{ trip.tripPoints[1]?.pointName }},
-            {{ trip.tripPoints[1]?.pointDistrict }}
+            {{ trip.tripPoints[1]?.pointName }}
           </td>
           <td>{{ trip.status }}</td>
           <td>{{ (trip.customerRate ? trip.customerRate : 0) | number }}</td>

@@ -15,7 +15,7 @@
         <img loading="lazy" class="notPreview" src="assets/svg/eclipse.svg" alt="ellipsis">
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>
+        <button mat-menu-item (click)="onClickTripUpdate(tripDetails)">
           <div class="flex space-x-2 items-center">
             <img
               class="notPreview"
@@ -44,7 +44,7 @@
         </button>
         <button
           (click)="onClickButton()"
-          *ngIf="tripDetails?.status != 'Completed' && tripDetails?.status != 'Cancelled' && buttonAvailable"
+          *ngIf="tripDetails?.status != 'Completed' && tripDetails?.status != 'Cancelled' && isAdmin()"
           class="bg-primary px-6 py-2 font-semibold rounded-lg text-white">
         <span>{{
             getButtonName(tripDetails?.status)
