@@ -37,6 +37,7 @@ export class GetElementHeightDirective implements OnInit, OnDestroy {
 
   private emitHeight(): void {
     this.height.emit(this.el.nativeElement.offsetHeight + 'px');
+    console.log('Height emitted: ', this.el.nativeElement.offsetHeight + 'px');
   }
 
   private observeDOMChanges(): void {

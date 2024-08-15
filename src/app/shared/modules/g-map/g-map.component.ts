@@ -4,6 +4,7 @@ import {
   OnChanges,
   OnInit,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { GeolocationService } from '../../services/location/geolocation.service';
 import { mapStyles } from '../../models/map-options';
@@ -13,6 +14,7 @@ import {
   MapDirectionsService,
 } from '@angular/google-maps';
 import { NgForOf, NgIf } from '@angular/common';
+import { TripService } from '../../../pages/trip-list/services/trip.service';
 
 @Component({
   selector: 'app-g-map',
@@ -29,7 +31,7 @@ export class GMapComponent implements OnInit, OnChanges {
 
   // Map and directions options
   center: google.maps.LatLngLiteral;
-  zoom = 16;
+  zoom = 12;
   options: google.maps.MapOptions = {
     styles: mapStyles,
     zoomControl: false,
@@ -48,13 +50,18 @@ export class GMapComponent implements OnInit, OnChanges {
   startMarker: google.maps.MarkerOptions = {};
   endMarker: google.maps.MarkerOptions = {};
   polylines: google.maps.PolylineOptions[] = [];
+  bottomHeight: string = '0px';
 
   constructor(
     private geoLocationService: GeolocationService,
-    private mapDirectionsService: MapDirectionsService
+    private mapDirectionsService: MapDirectionsService,
+    private trip: TripService
   ) {}
 
   ngOnInit(): void {
+    this.trip.bottomHeight.subscribe(height => {
+      this.bottomHeight = height;
+    });
     const currentLocation = localStorage.getItem('currentLocation');
     if (currentLocation) {
       const location = JSON.parse(currentLocation);
@@ -86,6 +93,8 @@ export class GMapComponent implements OnInit, OnChanges {
     }
   }
 
+  @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['starting'] || changes['destination']) {
       this.updateRoute();
@@ -98,7 +107,6 @@ export class GMapComponent implements OnInit, OnChanges {
 
     if (start && end) {
       this.clearPolylines();
-      this.center = start;
       this.initialMarker = {};
       const request: google.maps.DirectionsRequest = {
         origin: start,
@@ -112,6 +120,10 @@ export class GMapComponent implements OnInit, OnChanges {
       this.directionsService.route(request, (result, status) => {
         if (status === 'OK') {
           this.directionsRenderer.setDirections(result);
+          const bound = new google.maps.LatLngBounds();
+          bound.extend(start);
+          bound.extend(end);
+          this.map.googleMap.fitBounds(bound);
           this.updatePolylineWithTraffic(result);
         } else {
           console.error('Directions request failed due to ', status);
@@ -161,5 +173,11 @@ export class GMapComponent implements OnInit, OnChanges {
 
   private clearPolylines(): void {
     this.polylines = [];
+  }
+
+  calculatedHeight() {
+    // viewportheight - 64px (header) - 64px (footer) - 64px (padding)
+    console.log(window.innerHeight);
+    return window.innerHeight - Number(this.bottomHeight.split('px')[0]) + 'px';
   }
 }
