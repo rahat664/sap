@@ -57,10 +57,10 @@ export class TripCreateOverviewComponent {
           localStorage.removeItem('selectedCustomer');
           const dialogRef = this.dialog
             .open(SuccessModalComponent, {
-              width: '22rem',
+              width: '21.375rem',
               data: {
                 title: 'Trip created',
-                text: `Your trip has been created successfully.
+                text: `Your ${res.data.length > 1 ? 'trips have' : 'trip has'} been created successfully.
               ${
                 res.data.length > 1
                   ? 'Your trip numbers are ' +

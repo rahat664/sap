@@ -96,19 +96,35 @@ export class TripInfoComponent {
   }
 
   getAssignButtonName(tripDetails: TripData) {
-    return '';
-  }
-
-  onClickAssignButton() {
-    if (this.tripDetails.truck && this.tripDetails.driverCode) {
+    if (tripDetails.truck && tripDetails.driverCode) {
       return '';
-    } else if (this.tripDetails.truck && !this.tripDetails.driverCode) {
+    } else if (tripDetails.truck && !tripDetails.driverCode) {
       return 'Assign Driver';
-    } else if (!this.tripDetails.truck && this.tripDetails.driverCode) {
+    } else if (!tripDetails.truck && tripDetails.driverCode) {
       return 'Assign Truck';
     } else {
       return 'Assign Truck & Driver';
     }
+  }
+
+  onClickAssignButton() {
+    let buttonName = '';
+    if (this.tripDetails.truck && this.tripDetails.driverCode) {
+      buttonName = '';
+    } else if (this.tripDetails.truck && !this.tripDetails.driverCode) {
+      buttonName = 'Assign Driver';
+    } else if (!this.tripDetails.truck && this.tripDetails.driverCode) {
+      buttonName = 'Assign Truck';
+    } else {
+      buttonName = 'Assign Truck & Driver';
+    }
+    const dialogRef = this.dialog.open(DialogDataComponent, {
+      width: '47.25rem',
+      data: {
+        buttonName: buttonName,
+        trip: this.tripDetails,
+      },
+    });
   }
 
   isAdmin() {

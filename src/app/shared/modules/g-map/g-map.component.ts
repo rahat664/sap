@@ -177,7 +177,12 @@ export class GMapComponent implements OnInit, OnChanges {
 
   calculatedHeight() {
     // viewportheight - 64px (header) - 64px (footer) - 64px (padding)
-    console.log(window.innerHeight);
-    return window.innerHeight - Number(this.bottomHeight.split('px')[0]) + 'px';
+    if (this.bottomHeight === '0px') {
+      return '100%';
+    } else {
+      return (
+        window.innerHeight - Number(this.bottomHeight.split('px')[0]) + 'px'
+      );
+    }
   }
 }

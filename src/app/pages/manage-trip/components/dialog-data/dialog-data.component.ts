@@ -276,7 +276,7 @@ export class DialogDataComponent {
                   width: '21.375rem',
                   data: {
                     title: 'Success',
-                    text: `Trip ${res.data.tripId} booked successfully`,
+                    text: this.getBookedText(res.data),
                     buttonText: 'Okay',
                   },
                 })
@@ -345,7 +345,7 @@ export class DialogDataComponent {
                   width: '21.375rem',
                   data: {
                     title: 'Success',
-                    text: `Trip ${res.data.tripId} started successfully`,
+                    text: `Trip trip has started. Your trip no is ${res.data.tripId}`,
                     buttonText: 'Okay',
                   },
                 })
@@ -403,7 +403,7 @@ export class DialogDataComponent {
                 width: '21.375rem',
                 data: {
                   title: 'Success',
-                  text: `Truck and driver assigned to trip ${res.data.tripId}`,
+                  text: this.getAssignedText(res.data),
                   buttonText: 'Okay',
                 },
               })
@@ -529,5 +529,97 @@ export class DialogDataComponent {
     } else {
       return 'Complete Trip';
     }
+  }
+
+  private getBookedText(res: any) {
+    let text = '';
+    if (
+      res.transporterCode &&
+      !res.driverCode &&
+      !res.helperCode &&
+      !res.truck?.id
+    ) {
+      text += `Transporter: ${res.transporterName}`;
+    } else if (res.driverCode && !res.helperCode && !res.truck?.id) {
+      text += `Driver: ${res.driverName}`;
+    } else if (res.helperCode && !res.driverCode && !res.truck?.id) {
+      text += `Helper: ${res.helperName}`;
+    } else if (res.truck?.id && !res.driverCode && !res.helperCode) {
+      text += `Truck: ${res.truck?.fullRegistrationNumber}`;
+    } else if (
+      res.transporterCode &&
+      res.truck?.id &&
+      !res.driverCode &&
+      !res.helperCode
+    ) {
+      text += `Transporter: ${res.transporterName}, Driver: ${res.truck?.fullRegistrationNumber}`;
+    } else if (
+      res.transporterCode &&
+      res.driverCode &&
+      !res.helperCode &&
+      !res.truck?.id
+    ) {
+      text += `Transporter: ${res.transporterName}, Driver: ${res.driverName}`;
+    } else if (
+      res.transporterCode &&
+      res.helperCode &&
+      !res.driverCode &&
+      !res.truck?.id
+    ) {
+      text += `Transporter: ${res.transporterName}, Helper: ${res.helperName}`;
+    } else if (
+      res.transporterCode &&
+      res.truck?.id &&
+      res.driverCode &&
+      !res.helperCode
+    ) {
+      text += `Transporter: ${res.transporterName}, Truck: ${res.truck?.fullRegistrationNumber},, Driver: ${res.driverName}`;
+    } else if (
+      res.transporterCode &&
+      res.truck?.id &&
+      res.helperCode &&
+      !res.driverCode
+    ) {
+      text += `Transporter: ${res.transporterName}, Truck: ${res.truck?.fullRegistrationNumber}, Helper: ${res.helperName}`;
+    } else if (
+      res.transporterCode &&
+      res.driverCode &&
+      res.helperCode &&
+      !res.truck?.id
+    ) {
+      text += `Transporter: ${res.transporterName}, Driver: ${res.driverName}, Helper: ${res.helperName}`;
+    } else if (
+      res.transporterCode &&
+      res.truck?.id &&
+      res.driverCode &&
+      res.helperCode
+    ) {
+      text += `Transporter: ${res.transporterName}, Truck: ${res.truck?.fullRegistrationNumber}, Driver: ${res.driverName}, Helper: ${res.helperName}`;
+    } else {
+      text += `Transporter: ${res.transporterName}, Truck: ${res.truck?.fullRegistrationNumber}, Driver: ${res.driverName}, Helper: ${res.helperName}`;
+    }
+    return text + ' have been assigned to trip ' + res.tripId;
+  }
+
+  private getAssignedText(res) {
+    let text = '';
+    if (res.driverCode && res.truck?.id && res.helperCode) {
+      text += ` Truck: ${res.truck?.fullRegistrationNumber}, Driver: ${res.driverName}, Helper: ${res.helperName} have been assigned to trip ${res.tripId}`;
+    } else if (res.driverCode && res.truck?.id && !res.helperCode) {
+      text += ` Truck: ${res.truck?.fullRegistrationNumber}, Driver: ${res.driverName} have been assigned to trip ${res.tripId}`;
+    } else if (res.driverCode && res.helperCode && !res.truck?.id) {
+      text += ` Driver: ${res.driverName}, Helper: ${res.helperName} have been assigned to trip ${res.tripId}`;
+    } else if (res.truck?.id && res.helperCode && !res.driverCode) {
+      text += ` Truck: ${res.truck?.fullRegistrationNumber}, Helper: ${res.helperName} have been assigned to trip ${res.tripId}`;
+    } else if (res.truck?.id && !res.driverCode && !res.helperCode) {
+      text += ` Truck: ${res.truck?.fullRegistrationNumber} have been assigned to trip ${res.tripId}`;
+    } else if (res.driverCode && !res.truck?.id && !res.helperCode) {
+      text += ` Driver: ${res.driverName} have been assigned to trip ${res.tripId}`;
+    } else if (res.helperCode && !res.truck?.id && !res.driverCode) {
+      text += ` Helper: ${res.helperName} have been assigned to trip ${res.tripId}`;
+    } else {
+      text += ` Truck: ${res.truck?.fullRegistrationNumber}, Driver: ${res.driverName}, Helper: ${res.helperName} have been assigned to trip ${res.tripId}`;
+    }
+    return text;
   }
 }
