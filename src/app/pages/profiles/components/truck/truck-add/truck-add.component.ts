@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { fileUpload } from '../models/file-upload';
+import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 
 @Component({
   selector: 'app-truck-add',
@@ -35,6 +36,7 @@ import { fileUpload } from '../models/file-upload';
     ReactiveFormsModule,
     PreHireChecklistComponent,
     CreatePopupComponent,
+    CheckListPopupComponent,
   ],
   templateUrl: './truck-add.component.html',
   styleUrl: './truck-add.component.scss',
@@ -51,7 +53,7 @@ export class TruckAddComponent implements OnInit {
   registrationTypePlaceholder: string;
   truckAddForm: FormGroup;
   singleChecklist: any = {};
-  prehireCheckListOpened: boolean;
+  prehireCheckListOpened: boolean = false;
   isExpiryAvailable: boolean;
   registrationErrorMessage = '';
   registrationCategoryErrorMessage = '';

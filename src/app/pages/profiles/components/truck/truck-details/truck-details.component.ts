@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
-import { manufacturerList } from '../models/manufacturer-list';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
@@ -42,9 +41,6 @@ import { ConfirmModalComponent } from '../../../../../shared/modules/confirm-mod
 })
 export class TruckDetailsComponent implements OnInit {
   inEditMode = false;
-  manufacturerList: CustomInputSelectModel[] = manufacturerList;
-  manufactureOpened: boolean;
-  manufacturerPlaceholder: string;
   registrationTypePlaceholder: string;
   registrationOpenedType: boolean;
   registrationListType: CustomInputSelectModel[] = registrationCategoryList;
@@ -54,23 +50,10 @@ export class TruckDetailsComponent implements OnInit {
   singleTruck: TruckInnerModel;
   documents: any[] = [];
   truckAddForm: FormGroup;
-  isExpiryAvailable: boolean;
   isConfirmModalOpen: boolean;
   closedDocument: any[] = [];
 
   constructor(private shared: DriverEditSharedService) {}
-
-  onClickManufacturer($event: boolean) {
-    this.manufactureOpened = $event;
-  }
-
-  onSelectManuFacturer($event: number) {
-    this.manufacturerPlaceholder = this.manufacturerList.find(
-      x => x.id === $event
-    ).value;
-    this.manufacturerList.forEach(x => (x.selected = x.id === $event));
-    this.manufactureOpened = false;
-  }
 
   onSelectRegistrationype($event: number) {
     this.registrationTypePlaceholder = this.registrationListType.find(
