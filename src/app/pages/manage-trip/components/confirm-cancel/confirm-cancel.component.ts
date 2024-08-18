@@ -43,7 +43,7 @@ export class ConfirmCancelComponent {
             width: '21.375rem',
             data: {
               title: 'Success',
-              text: `Trip ${res.data.tripId} cancelled successfully`,
+              text: `Your trip has been cancelled`,
               buttonText: 'Okay',
             },
           })

@@ -97,7 +97,7 @@
             </div>
             <button
               [disabled]="everyThingDisabled"
-              (click)="prehireCheckListOpened = true"
+              (click)="prehireCheckListOpened = true;"
               class="{{everyThingDisabled ? 'text-input-hint' : 'text-link'}}"
             >{{ countPassCheckList ? 'Browse List' : 'Add List' }}
             </button
@@ -146,8 +146,8 @@
     </div>
   </form>
 </div>
-<app-create-popup
-  (isModalClosed)="prehireCheckListOpened = $event"
+<app-check-list-popup
+  (isModalClosed)="prehireCheckListOpened = !$event"
   [isOpen]="prehireCheckListOpened"
   (close)="prehireCheckListOpened = false">
   <app-pre-hire-checklist
@@ -155,4 +155,4 @@
     (preHireCheckListObject)="
       onClickPrehiredChecklist($event)
     "></app-pre-hire-checklist>
-</app-create-popup>
+</app-check-list-popup>

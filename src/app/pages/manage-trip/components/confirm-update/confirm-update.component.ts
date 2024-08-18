@@ -55,7 +55,7 @@ export class ConfirmUpdateComponent {
                 width: '21.375rem',
                 data: {
                   title: 'Success',
-                  text: `Trip ${res.data.tripId} ${res.data.status == 'Booked' ? 'started' : 'completed'} successfully`,
+                  text: `Your Trip has ${res.data.status == 'Booked' ? 'started' : 'completed'}. Your trip no is ${res.data.tripId}`,
                   buttonText: 'Okay',
                 },
               })

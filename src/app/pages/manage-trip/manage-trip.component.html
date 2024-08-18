@@ -127,7 +127,8 @@
     <app-map-buttons [statusButtons]="statusButtons" (buttonClickEmitter)="onClickButton($event)"
                      class="absolute top-0 right-1/2 transform translate-x-1/2">
     </app-map-buttons>
-    <app-trip-details (foldUnfoldChange)="onClickFold($event)" *ngIf="singleTripDetails"
+    <app-trip-details appGetElementHeight (height)="onChangeHeight($event)" (foldUnfoldChange)="onClickFold($event)"
+                      *ngIf="singleTripDetails"
                       [tripDetails]="singleTripDetails"
                       class="absolute bottom-0 w-full slide-top"></app-trip-details>
   </div>

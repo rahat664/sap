@@ -5,6 +5,11 @@ export const statusButtons = [
     isActive: true,
   },
   {
+    name: 'Unassigned',
+    count: 0,
+    isActive: false,
+  },
+  {
     name: 'Booked',
     count: 0,
     isActive: false,
@@ -16,11 +21,6 @@ export const statusButtons = [
   },
   {
     name: 'Completed',
-    count: 0,
-    isActive: false,
-  },
-  {
-    name: 'Unassigned',
     count: 0,
     isActive: false,
   },

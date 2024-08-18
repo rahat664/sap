@@ -279,4 +279,8 @@ export class ManageTripComponent implements OnInit {
     this.page = 0;
     this.getTripList();
   }
+
+  onChangeHeight($event: any) {
+    this.tripService.bottomHeight.next($event);
+  }
 }
