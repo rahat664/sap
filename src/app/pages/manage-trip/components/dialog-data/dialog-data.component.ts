@@ -283,6 +283,7 @@ export class DialogDataComponent {
                 .afterClosed()
                 .subscribe(() => {
                   this.trip.reloadManageTripPage.next(true);
+                  localStorage.setItem('updatedTripStatus', res.data.status);
                 });
             } else if (res.status == 'BAD REQUEST') {
               this.dialog.open(ErrorModalComponent, {
@@ -352,6 +353,7 @@ export class DialogDataComponent {
                 .afterClosed()
                 .subscribe(() => {
                   this.trip.reloadManageTripPage.next(true);
+                  localStorage.setItem('updatedTripStatus', res.data.status);
                 });
             } else if (res.status == 'BAD REQUEST') {
               this.dialog.open(ErrorModalComponent, {
@@ -410,6 +412,7 @@ export class DialogDataComponent {
               .afterClosed()
               .subscribe(() => {
                 this.trip.reloadManageTripPage.next(true);
+                localStorage.setItem('updatedTripStatus', res.data.status);
               });
           } else if (res.status == 'BAD REQUEST') {
             this.dialog.open(ErrorModalComponent, {

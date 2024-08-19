@@ -8,11 +8,7 @@ import {
 } from '@angular/core';
 import { GeolocationService } from '../../services/location/geolocation.service';
 import { mapStyles } from '../../models/map-options';
-import {
-  GoogleMap,
-  GoogleMapsModule,
-  MapDirectionsService,
-} from '@angular/google-maps';
+import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
 import { NgForOf, NgIf } from '@angular/common';
 import { TripService } from '../../../pages/trip-list/services/trip.service';
 
@@ -28,8 +24,10 @@ export class GMapComponent implements OnInit, OnChanges {
   @Input() lng: number;
   @Input() starting: google.maps.LatLngLiteral;
   @Input() destination: google.maps.LatLngLiteral;
+  @Input() truckLocationPosition: google.maps.LatLngLiteral;
 
-  // Map and directions options
+  @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
+
   center: google.maps.LatLngLiteral;
   zoom = 12;
   options: google.maps.MapOptions = {
@@ -45,8 +43,8 @@ export class GMapComponent implements OnInit, OnChanges {
     suppressMarkers: true,
   });
 
-  // Markers and Polyline data
   initialMarker: google.maps.MarkerOptions = {};
+  truckLocationMarker: google.maps.Marker = null; // Change to google.maps.Marker
   startMarker: google.maps.MarkerOptions = {};
   endMarker: google.maps.MarkerOptions = {};
   polylines: google.maps.PolylineOptions[] = [];
@@ -54,7 +52,6 @@ export class GMapComponent implements OnInit, OnChanges {
 
   constructor(
     private geoLocationService: GeolocationService,
-    private mapDirectionsService: MapDirectionsService,
     private trip: TripService
   ) {}
 
@@ -62,12 +59,11 @@ export class GMapComponent implements OnInit, OnChanges {
     this.trip.bottomHeight.subscribe(height => {
       this.bottomHeight = height;
     });
+
     const currentLocation = localStorage.getItem('currentLocation');
     if (currentLocation) {
       const location = JSON.parse(currentLocation);
-      console.log('Current Location: ', location);
       this.center = location;
-      // set up initial marker
       this.initialMarker = {
         position: this.center,
         icon: {
@@ -78,9 +74,7 @@ export class GMapComponent implements OnInit, OnChanges {
       };
     } else {
       this.geoLocationService.getCurrentPosition().then(position => {
-        console.log('Current Position: ', position);
         this.center = { lat: position.latitude, lng: position.longitude };
-        // set up initial marker
         this.initialMarker = {
           position: this.center,
           icon: {
@@ -93,11 +87,12 @@ export class GMapComponent implements OnInit, OnChanges {
     }
   }
 
-  @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['starting'] || changes['destination']) {
       this.updateRoute();
+    }
+    if (changes['truckLocationPosition']) {
+      this.updateTruckLocation();
     }
   }
 
@@ -105,7 +100,14 @@ export class GMapComponent implements OnInit, OnChanges {
     const start = this.starting;
     const end = this.destination;
 
-    if (start && end) {
+    if (
+      start &&
+      start.lng > 0 &&
+      start.lat > 0 &&
+      end &&
+      end.lng > 0 &&
+      end.lat > 0
+    ) {
       this.clearPolylines();
       this.initialMarker = {};
       const request: google.maps.DirectionsRequest = {
@@ -130,10 +132,43 @@ export class GMapComponent implements OnInit, OnChanges {
         }
       });
     } else {
-      this.clearPolylines();
-      this.startMarker = {};
-      this.endMarker = {};
+      this.resetMarkers();
     }
+  }
+
+  private updateTruckLocation() {
+    if (this.truckLocationPosition) {
+      if (this.truckLocationMarker) {
+        // Update existing marker position
+        this.truckLocationMarker.setPosition(this.truckLocationPosition);
+      } else {
+        // Create and add marker to the map
+        this.truckLocationMarker = new google.maps.Marker({
+          position: this.truckLocationPosition,
+          icon: {
+            url: '/assets/svg/trucking.svg',
+            scaledSize: new google.maps.Size(30, 30),
+          },
+          title: 'Truck Location',
+          map: this.map.googleMap, // Add marker to the map
+        });
+      }
+    }
+  }
+
+  private resetMarkers() {
+    this.startMarker = {};
+    this.endMarker = {};
+    this.initialMarker = {
+      position: this.center,
+      icon: {
+        url: '/assets/images/focus.png',
+        scaledSize: new google.maps.Size(30, 30),
+      },
+      title: 'Current Location',
+    };
+    this.directionsRenderer.setMap(null);
+    this.clearPolylines();
   }
 
   private updatePolylineWithTraffic(
@@ -141,7 +176,6 @@ export class GMapComponent implements OnInit, OnChanges {
   ): void {
     const route = directionsResult.routes[0];
 
-    // Set markers for the start and end points
     this.startMarker = {
       position: route.legs[0].start_location.toJSON(),
       icon: {
@@ -160,7 +194,6 @@ export class GMapComponent implements OnInit, OnChanges {
       title: route.legs[route.legs.length - 1].end_address,
     };
 
-    // Draw polyline with traffic data
     this.polylines = route.legs.flatMap(leg =>
       leg.steps.map(step => ({
         path: step.path.map(latlng => latlng.toJSON()),
@@ -176,7 +209,6 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   calculatedHeight() {
-    // viewportheight - 64px (header) - 64px (footer) - 64px (padding)
     if (this.bottomHeight === '0px') {
       return '100%';
     } else {

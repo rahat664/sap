@@ -27,6 +27,7 @@ export class TripService {
   districtUrl = `${environment.backendUrl}/api/districts`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
   locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
+  trackByRegistationUrl = `${environment.locationUrl}/api/locations/filter`;
   cachedTruckSize: BehaviorSubject<any[]> = new BehaviorSubject([]);
   cachedTruckCapacity: BehaviorSubject<any[]> = new BehaviorSubject([]);
   reloadManageTripPage: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -164,5 +165,11 @@ export class TripService {
 
   getDistricts() {
     return this.http.get(`${this.districtUrl}`);
+  }
+
+  getTrackerDetails(registrationNumber: string) {
+    return this.http.get(
+      `${this.trackByRegistationUrl}?registrationNum=${registrationNumber}`
+    );
   }
 }

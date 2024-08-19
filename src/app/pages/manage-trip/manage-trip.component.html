@@ -39,7 +39,7 @@
       appGiveMaxHeight (inBottomEnd)="onScrollEnd()"
       class="flex flex-col px-4 py-1 space-y-2 h-[calc(100vh-11.7rem)] overflow-y-auto min-w-96">
       <app-trip-card
-        (click)="onclickTripCard(trip.tripId)"
+        (click)="onclickTripCard(trip.tripId, getTruckRegistrationNumber(trip.truck))"
         [isActivated]="trip.tripId === activatedId"
         *ngFor="let trip of tripList"
         [tripNumber]="trip.tripId"
@@ -123,8 +123,10 @@
     </div>
   </div>
   <div class="w-full h-[calc(100vh-4.5rem)] relative">
-    <app-g-map [starting]="startingPosition" [destination]="destinationPosition"></app-g-map>
-    <app-map-buttons [statusButtons]="statusButtons" (buttonClickEmitter)="onClickButton($event)"
+    <app-g-map [truckLocationPosition]="truckLocationPosition" [starting]="startingPosition"
+               [destination]="destinationPosition"></app-g-map>
+    <app-map-buttons [triggeredButtonName]="triggerFromParentName" [triggerFromParent]="isTriggerFromParent"
+                     [statusButtons]="statusButtons" (buttonClickEmitter)="onClickButton($event)"
                      class="absolute top-0 right-1/2 transform translate-x-1/2">
     </app-map-buttons>
     <app-trip-details appGetElementHeight (height)="onChangeHeight($event)" (foldUnfoldChange)="onClickFold($event)"

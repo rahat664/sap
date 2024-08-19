@@ -55,13 +55,14 @@ export class ConfirmUpdateComponent {
                 width: '21.375rem',
                 data: {
                   title: 'Success',
-                  text: `Your Trip has ${res.data.status == 'Booked' ? 'started' : 'completed'}. Your trip no is ${res.data.tripId}`,
+                  text: `Your Trip has ${this.data.trip.status == 'Booked' ? 'started' : 'completed'}. Your trip no is ${res.data.tripId}`,
                   buttonText: 'Okay',
                 },
               })
               .afterClosed()
               .subscribe(() => {
                 this.trip.reloadManageTripPage.next(true);
+                localStorage.setItem('updatedTripStatus', res.data.status);
               });
           } else if (res.status == 'Bad Request') {
             this.dialogRef.close('error');
