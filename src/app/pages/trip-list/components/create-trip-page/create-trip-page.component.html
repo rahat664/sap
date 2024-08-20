@@ -61,9 +61,9 @@
         <div class="grid lg:grid-cols-2 gap-4 w-full ">
           <div class="flex flex-col space-y-1 w-full">
             <label for="loadingPoint" class="form-label text-body">Loading Point</label>
-            <mat-form-field appearance="outline" class="example-full-width">
+            <mat-form-field appearance="outline" class="example-full-width "
+                            [ngClass]="{'error': tripForm.get('loadingPointName').invalid && tripForm.get('loadingPointName').touched}">
               <input
-                [errorStateMatcher]="matcher"
                 id="loadingPoint"
                 type="text"
                 matInput
@@ -90,10 +90,16 @@
                 }
               </mat-autocomplete>
             </mat-form-field>
+            <mat-error *ngIf="tripForm.get('loadingPointName').invalid && tripForm.get('loadingPointName').touched">
+              Please select a valid loading point
+            </mat-error
+            >
           </div>
           <div class="flex flex-col space-y-1 w-full">
             <label for="loadingDistrict" class="form-label text-body">Loading District</label>
-            <mat-form-field appearance="outline" class="example-full-width">
+            <mat-form-field appearance="outline" class="example-full-width"
+                            [ngClass]="{'error': tripForm.get('loadingPointDistrict').invalid && tripForm.get('loadingPointDistrict').touched}"
+            >
               <input
                 id="loadingDistrict"
                 type="text"
@@ -110,10 +116,16 @@
                 }
               </mat-autocomplete>
             </mat-form-field>
+            <mat-error
+              *ngIf="tripForm.get('loadingPointDistrict').invalid && tripForm.get('loadingPointDistrict').touched">
+              Please select a valid loading district
+            </mat-error>
           </div>
           <div class="flex flex-col space-y-1 w-full">
             <label for="unLoadingPoint" class="form-label text-body">Unloading Point</label>
-            <mat-form-field appearance="outline" class="example-full-width">
+            <mat-form-field appearance="outline" class="example-full-width"
+                            [ngClass]="{'error': tripForm.get('unloadingPointName').invalid && tripForm.get('unloadingPointName').touched}"
+            >
               <input
                 id="unLoadingPoint"
                 type="text"
@@ -141,11 +153,15 @@
                 }
               </mat-autocomplete>
             </mat-form-field>
+            <mat-error *ngIf="tripForm.get('unloadingPointName').invalid && tripForm.get('unloadingPointName').touched">
+              Please select a valid unloading point
+            </mat-error>
           </div>
           <div class="flex flex-col space-y-1 w-full">
             <label for="unLoadingDistrict" class="form-label text-body">Unloading District</label>
-
-            <mat-form-field appearance="outline" class="example-full-width">
+            <mat-form-field appearance="outline" class="example-full-width"
+                            [ngClass]="{'error': tripForm.get('unloadingPointDistrict').invalid && tripForm.get('unloadingPointDistrict').touched}"
+            >
               <input
                 id="unloadingDistrict"
                 type="text"
@@ -162,10 +178,15 @@
                 }
               </mat-autocomplete>
             </mat-form-field>
+            <mat-error
+              *ngIf="tripForm.get('unloadingPointDistrict').invalid && tripForm.get('unloadingPointDistrict').touched">
+              Please select a valid unloading district
+            </mat-error>
           </div>
         </div>
       </div>
-      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input ">
+      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input"
+      >
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
             <img loading="lazy" class="notPreview" src="assets/svg/vehicleinfo.svg" alt="candt">
@@ -200,7 +221,11 @@
             </button>
           </div>
         </div>
-        <div class="overflow-hidden border border-link relative py-1 px-1 w-full rounded-lg bg-white">
+        <div class="overflow-hidden border border-link relative py-1 px-1 w-full rounded-lg bg-white"
+             [ngClass]="{
+        'border-red': tripForm.get('categoryId').invalid && tripForm.get('categoryId').touched,
+        }"
+        >
           <div
             appScrollByButton
             (isVisible)="scrollable = $event"
@@ -226,9 +251,13 @@
         <div class="grid lg:grid-cols-3 gap-4 w-full relative">
           <div class="flex flex-col space-y-2 w-full">
             <label for="numOfVehicle" class="form-label text-body">Number of vehicle</label>
-            <mat-form-field appearance="outline" id="numOfVehicle">
+            <mat-form-field appearance="outline" id="numOfVehicle"
+                            [ngClass]="{'error': tripForm.get('numOfTrucks').invalid && tripForm.get('numOfTrucks').touched}">
               <input type="number" formControlName="numOfTrucks" matInput placeholder="Enter Number of vehicle">
             </mat-form-field>
+            <mat-error *ngIf="tripForm.get('numOfTrucks').invalid && tripForm.get('numOfTrucks').touched">
+              Please select a valid number of vehicle
+            </mat-error>
             <div class="w-full h-full flex space-x-2 items-center">
               <span>Suggestions:</span>
               <button type="button"
@@ -242,9 +271,13 @@
           </div>
           <div class="flex flex-col space-y-2 w-full">
             <label for="size" class="form-label text-body">Truck Size (Feet)</label>
-            <mat-form-field appearance="outline" id="size">
+            <mat-form-field appearance="outline" id="size"
+                            [ngClass]="{'error': tripForm.get('truckSize').invalid && tripForm.get('truckSize').touched}">
               <input type="number" step="0.1" matInput formControlName="truckSize" placeholder="Enter size">
             </mat-form-field>
+            <mat-error *ngIf="tripForm.get('truckSize').invalid && tripForm.get('truckSize').touched">
+              Please select a valid truck size
+            </mat-error>
             <div class="w-full flex space-x-2 items-center">
               <span>Suggestions:</span>
               <button type="button" (click)="onClickTruckSizeSuggestions(suggestion)"
@@ -257,10 +290,15 @@
           </div>
           <div class="flex flex-col space-y-2 w-full">
             <label for="capacity" class="form-label text-body">Truck Capacity (Ton)</label>
-            <mat-form-field appearance="outline" id="capacity">
+            <mat-form-field appearance="outline" id="capacity"
+                            [ngClass]="{'error': tripForm.get('truckCapacityInTon').invalid && tripForm.get('truckCapacityInTon').touched}">
               <input type="number" step="0.1" formControlName="truckCapacityInTon" matInput
                      placeholder="Enter Capacity">
             </mat-form-field>
+            <mat-error *ngIf="tripForm.get('truckCapacityInTon').invalid && tripForm.get('truckCapacityInTon').touched">
+              Please select a valid truck capacity
+            </mat-error>
+
             <div class="w-full flex space-x-2 items-center">
               <span>Suggestions:</span>
               <button type="button" (click)="onClickTruckCapacitySuggestions(suggestion)"
@@ -282,7 +320,9 @@
             </div>
             <div class="flex flex-col space-y-1 w-full">
               <label for="goods" class="form-label text-body">Goods Type</label>
-              <mat-form-field appearance="outline" class="example-full-width">
+              <mat-form-field appearance="outline" class="example-full-width"
+                              [ngClass]="{'error': tripForm.get('goodsName').invalid && tripForm.get('goodsName').touched}"
+              >
                 <input
                   id="goods"
                   type="text"
@@ -299,6 +339,9 @@
                   }
                 </mat-autocomplete>
               </mat-form-field>
+              <mat-error *ngIf="tripForm.get('goodsName').invalid && tripForm.get('goodsName').touched">
+                Please select a valid goods type
+              </mat-error>
             </div>
           </div>
           <div class="flex flex-col space-y-3">
@@ -311,7 +354,8 @@
                      class="form-label text-body">{{ isAdmin() ? 'Customer Rate' : 'Expected Rate' }}</label>
               <!--Add a bdt icon at the end of the input-->
               <div class="relative bg-input rounded-lg border-none">
-                <mat-form-field class="w-full" appearance="outline" id="customerRate">
+                <mat-form-field class="w-full" appearance="outline" id="customerRate"
+                                [ngClass]="{'error': tripForm.get('customerRate').invalid && tripForm.get('customerRate').touched}">
                   <input type="number" formControlName="customerRate" class="w-full" matInput
                          placeholder="Enter {{isAdmin() ? 'Customer Rate' : 'Expected Rate'}}">
                 </mat-form-field>
@@ -322,6 +366,9 @@
                   alt="bdt"
                 >
               </div>
+              <mat-error *ngIf="tripForm.get('customerRate').invalid && tripForm.get('customerRate').touched">
+                Please select a valid rate
+              </mat-error>
             </div>
           </div>
         </div>
@@ -343,10 +390,15 @@
         <div class="grid lg:grid-cols-2 gap-4 w-full">
           <div class="flex flex-col space-y-1">
             <label class="form-label text-body" for="templateName">Template Name</label>
-            <mat-form-field appearance="outline" id="templateName">
+            <mat-form-field appearance="outline" id="templateName"
+                            [ngClass]="{'error': tripForm.get('tripTemplateName').invalid && tripForm.get('tripTemplateName').touched}"
+            >
               <input formControlName="tripTemplateName"
                      matInput placeholder="Enter Template Name">
             </mat-form-field>
+            <mat-error *ngIf="tripForm.get('tripTemplateName').invalid && tripForm.get('tripTemplateName').touched">
+              Please enter a valid template name
+            </mat-error>
           </div>
         </div>
       </div>

@@ -87,7 +87,7 @@ img {
 
 .mat-mdc-text-field-wrapper {
   width: 100%;
-  border-radius: 8px !important;
+  border-radius: 0.5rem !important;
   background-color: #F5FBFC !important;
   height: 3.5rem !important;
 }
@@ -162,4 +162,10 @@ input::-webkit-outer-spin-button {
 
 .mat-mdc-form-field-subscript-wrapper, .mat-mdc-form-field-bottom-align::before {
   display: none !important;
+}
+
+.mat-mdc-form-field-error {
+  color: #F0614E !important;
+  font-size: 0.75rem !important;
+
 }

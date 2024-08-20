@@ -41,6 +41,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MyErrorStateMatcher } from '../template-create/template-create.component';
 import { TripCreate } from '../../models/trip-create.model';
 import { TripTemplateResponse } from '../../models/trip-template-response.model';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -108,7 +109,8 @@ export class CreateTripPageComponent implements OnInit {
     private fb: FormBuilder,
     private datePipe: DatePipe,
     private locationService: GeolocationService,
-    private router: Router
+    private router: Router,
+    private toaster: HandleToastrService
   ) {}
 
   onCreateTrip() {
@@ -161,6 +163,8 @@ export class CreateTripPageComponent implements OnInit {
       localStorage.removeItem('selectedTemplate');
       this.router.navigate(['/trip-create/overview']);
     } else {
+      this.tripForm.markAllAsTouched();
+      this.toaster.showError('Please fill all the required fields');
     }
   }
 
@@ -183,7 +187,7 @@ export class CreateTripPageComponent implements OnInit {
     this.getVehicleTypeList();
     this.getGoodsOptions();
     this.getCachedData();
-    this.intializeForm();
+    this.initializeForm();
     const isFromTemplate = JSON.parse(localStorage.getItem('isFromTemplate'));
     this.isFromTemplate = isFromTemplate;
     if (isFromTemplate) {
@@ -279,9 +283,15 @@ export class CreateTripPageComponent implements OnInit {
 
   toggleSaveAsTemplateInputField($any: any) {
     this.saveTemplateInputEnabled = $any.checked;
+    if ($any.checked) {
+      this.tripForm.get('tripTemplateName').setValidators(Validators.required);
+    } else {
+      this.tripForm.get('tripTemplateName').clearValidators();
+    }
+    this.tripForm.get('tripTemplateName').updateValueAndValidity();
   }
 
-  private intializeForm() {
+  private initializeForm() {
     this.tripForm = this.fb.group({
       customerCode: ['', Validators.required],
       tripStartDatetime: ['', Validators.required],
@@ -293,9 +303,9 @@ export class CreateTripPageComponent implements OnInit {
       goodsName: ['', Validators.required],
       customerRate: [null],
       note: [''],
-      loadingPointDistrict: [''],
+      loadingPointDistrict: ['', Validators.required],
       loadingPointName: ['', Validators.required],
-      unloadingPointDistrict: [''],
+      unloadingPointDistrict: ['', Validators.required],
       unloadingPointName: ['', Validators.required],
       loadingPointLatitude: ['', Validators.required],
       loadingPointLongitude: ['', Validators.required],
@@ -315,7 +325,7 @@ export class CreateTripPageComponent implements OnInit {
   }
 
   onSelectTimeAndDate() {
-    // convert time to 24 hour format
+    // convert time to 24-hour format
     const time = this.time.split(' ')[0];
     const hour = parseInt(time.split(':')[0]);
     const minute = parseInt(time.split(':')[1]);
@@ -354,14 +364,12 @@ export class CreateTripPageComponent implements OnInit {
       : this.tripForm.get('loadingPointName').setValue(option.addressText);
     if (option.district) {
       this.tripForm.get('loadingPointDistrict').setValue(option.district);
-      this.tripForm.get('loadingPointDistrict').disable();
     } else {
       for (let i = 0; i < this.district.length; i++) {
         if (option.addressText.includes(this.district[i].name)) {
           this.tripForm
             .get('loadingPointDistrict')
             .setValue(this.district[i].name);
-          this.tripForm.get('loadingPointDistrict').disable();
           break;
         } else {
           this.tripForm.get('loadingPointDistrict').enable();
