@@ -25,7 +25,7 @@ import {
   MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
 import { MatInput } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomerService } from '../profiles/services/customer.service';
 import { MatSelect } from '@angular/material/select';
 
@@ -52,6 +52,7 @@ import { MatSelect } from '@angular/material/select';
     MatOption,
     ReactiveFormsModule,
     MatSelect,
+    FormsModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
@@ -94,14 +95,22 @@ export class ManageTripComponent implements OnInit {
   ngOnInit() {
     this.triggerFromParentName = 'All';
     this.isTriggerFromParent = false;
+    if (localStorage.getItem('fromTripListTripId')) {
+      this.tripId = localStorage.getItem('fromTripListTripId');
+      this.getTripDetails(this.tripId);
+      this.searchValue = this.tripId;
+      this.getTruckTrackers(
+        localStorage.getItem('fromTripListTruckRegistrationNumber')
+      );
+      localStorage.removeItem('fromTripListTripId');
+      localStorage.removeItem('fromTripListTruckRegistrationNumber');
+    }
     this.getTripList();
     this.getVehicleTypeList();
     this.activatedId = null;
     localStorage.removeItem('tripId');
     this.tripService.reloadManageTripPage.subscribe(() => {
       this.getTripList();
-      this.activatedId = localStorage.getItem('tripId');
-      this.getTripDetails(this.activatedId);
     });
   }
 

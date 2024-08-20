@@ -16,6 +16,7 @@
             <i class="far fa-search text-gray-500"></i>
           </div>
           <input
+            [(ngModel)]="searchValue"
             (keyup)="onKeyUpSearch($event)"
             type="text"
             name="email"

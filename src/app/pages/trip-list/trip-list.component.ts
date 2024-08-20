@@ -22,7 +22,7 @@ import { CustomerService } from '../profiles/services/customer.service';
 import { GetOutsideModalClickDirective } from '../../shared/directive/get-outside-modal-click.directive';
 import { Trip } from '../auth/models/response/trip';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
 
 @Component({
@@ -94,7 +94,8 @@ export class TripListComponent implements OnInit {
     private service: TripService,
     private datePipe: DatePipe,
     private customer: CustomerService,
-    private shared: DriverEditSharedService
+    private shared: DriverEditSharedService,
+    private router: Router
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -205,7 +206,7 @@ export class TripListComponent implements OnInit {
     this.dateOpened = false;
     this.isDateOpened = false;
     this.page = 0;
-    this.page = 50;
+    this.size = 50;
     this.getTripList();
   }
 
@@ -345,5 +346,10 @@ export class TripListComponent implements OnInit {
       localStorage.getItem('role') === 'ROLE_ADMIN' ||
       localStorage.getItem('role') === 'ROLE_KAM'
     );
+  }
+
+  onClickTripNumber(tripId: string) {
+    localStorage.setItem('fromTripListTripId', tripId);
+    this.router.navigateByUrl('/manage-trip');
   }
 }
