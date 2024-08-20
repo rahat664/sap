@@ -75,6 +75,9 @@ export class NewTripComponent implements OnInit {
     if (localStorage.getItem('isFromTemplate')) {
       localStorage.removeItem('isFromTemplate');
     }
+    if (localStorage.getItem('selectedCustomer')) {
+      localStorage.removeItem('selectedCustomer');
+    }
     this.manageStore();
     if (this.isAdmin()) {
       const selectedCustomer = localStorage.getItem('selectedCustomer');

@@ -44,7 +44,7 @@
       <table class="table-auto w-full text-[0.875rem]">
         <thead>
         <tr>
-          <th class="text-left">Name</th>
+          <th class="text-left whitespace-nowrap">Name</th>
           <th class="text-left">Route</th>
           <th class="text-left">Goods</th>
           <th class="text-left">Customer</th>
@@ -55,22 +55,38 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let tripTemplate of templates">
-          <td>
-            <a (click)="setTemplate(tripTemplate)" class="w-full text-link cursor-pointer">{{ tripTemplate.name }}</a>
-          </td>
-          <td>{{ getTripRoute(tripTemplate.points) }}</td>
-          <td>{{ tripTemplate.good.name }}</td>
-          <td>{{ customerName }}</td>
-          <td>
-            <div class="relative w-full text-right">
-              <button
-                class="cursor-pointer w-full">
-                <i class="fas fa-ellipsis-v"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
+        <ng-container *ngIf="templates.length > 0">
+          <tr *ngFor="let tripTemplate of templates">
+            <td class="whitespace-nowrap">
+              <div class="flex w-full space-x-3 items-center">
+                <img src="assets/svg/templates.svg" class="notPreview" loading="lazy" alt="">
+                <a (click)="setTemplate(tripTemplate)"
+                   class="w-full text-link cursor-pointer">{{ tripTemplate.name }}</a>
+              </div>
+            </td>
+            <td>{{ getTripRoute(tripTemplate.points) }}</td>
+            <td>{{ tripTemplate.good.name }}</td>
+            <td>{{ customerName }}</td>
+            <td>
+              <div class="relative w-full text-right">
+                <button
+                  class="cursor-pointer w-full">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="templates.length === 0">
+          <tr>
+            <td class="text-center" colspan="5">
+              <div class="w-full flex flex-col space-y-3 justify-center items-center">
+                <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+                <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
         </tbody>
       </table>
     </div>
