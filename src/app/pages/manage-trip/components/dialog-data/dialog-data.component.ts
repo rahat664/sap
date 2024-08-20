@@ -600,13 +600,7 @@ export class DialogDataComponent {
   }
 
   getButtonName() {
-    if (this.data.buttonName === 'Book Trip') {
-      return 'Book Trip';
-    } else if (this.data.buttonName === 'Start Trip') {
-      return 'Start Trip';
-    } else {
-      return 'Complete Trip';
-    }
+    return this.data.buttonName;
   }
 
   private getBookedText(res: any) {
