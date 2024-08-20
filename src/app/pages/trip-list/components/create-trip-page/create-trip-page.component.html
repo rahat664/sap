@@ -347,17 +347,17 @@
           <div class="flex flex-col space-y-3">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="notPreview" src="assets/svg/cr.svg" alt="candt">
-              <h1 class="text-h2 font-semibold">{{ isAdmin() ? 'Customer Rate (CR)' : 'Expected Rate' }}</h1>
+              <h1 class="text-h2 font-semibold">{{ isAdmin() ? 'Customer Rate (CR)' : 'Trip Rate' }}</h1>
             </div>
             <div class="flex flex-col space-y-1 w-full">
               <label for="customerRate"
-                     class="form-label text-body">{{ isAdmin() ? 'Customer Rate' : 'Expected Rate' }}</label>
+                     class="form-label text-body">{{ isAdmin() ? 'Customer Rate' : 'Trip Rate' }}</label>
               <!--Add a bdt icon at the end of the input-->
               <div class="relative bg-input rounded-lg border-none">
                 <mat-form-field class="w-full" appearance="outline" id="customerRate"
                                 [ngClass]="{'error': tripForm.get('customerRate').invalid && tripForm.get('customerRate').touched}">
                   <input type="number" formControlName="customerRate" class="w-full" matInput
-                         placeholder="Enter {{isAdmin() ? 'Customer Rate' : 'Expected Rate'}}">
+                         placeholder="Enter {{isAdmin() ? 'Customer Rate' : 'Trip Rate'}}">
                 </mat-form-field>
                 <img
                   id="icon"

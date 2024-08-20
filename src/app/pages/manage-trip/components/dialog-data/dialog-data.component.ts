@@ -429,8 +429,19 @@ export class DialogDataComponent {
         this.tripUpdateForm.get('driverCode').clearValidators();
         this.tripUpdateForm.get('driverName').clearValidators();
         this.tripUpdateForm.get('driverPhone').clearValidators();
-      } else {
+      } else if (buttonName === 'Assign Driver') {
         this.tripUpdateForm.get('truckId').clearValidators();
+        this.tripUpdateForm
+          .get('driverCode')
+          .setValidators(Validators.required);
+        this.tripUpdateForm
+          .get('driverName')
+          .setValidators(Validators.required);
+        this.tripUpdateForm
+          .get('driverPhone')
+          .setValidators(Validators.required);
+      } else {
+        this.tripUpdateForm.get('truckId').setValidators(Validators.required);
         this.tripUpdateForm
           .get('driverCode')
           .setValidators(Validators.required);

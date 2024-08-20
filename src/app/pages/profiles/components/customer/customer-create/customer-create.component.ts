@@ -78,10 +78,13 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.customerForm.get('code').valueChanges.subscribe(value => {
+      const valueWithoutSpace = value?.toString().replace(/\s/g, '');
       //only allow 4 characters
-      if (value.length > 0) {
+      if (valueWithoutSpace.length > 0 && valueWithoutSpace.length <= 4) {
         if (value?.length > 4) {
-          this.customerForm.get('code').setValue(value?.substring(0, 4));
+          this.customerForm
+            .get('code')
+            .setValue(valueWithoutSpace?.substring(0, 4));
         }
         if (value?.length == 4) {
           this.checkCustomerCodeIsAlreadyExistOrNot(value);
@@ -92,9 +95,13 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       }
     });
     this.subs = this.customerForm.get('name').valueChanges.subscribe(value => {
-      if (value?.length > 0 && this.customerForm.get('code').invalid) {
+      const valueWithoutSpace = value?.toString().replace(/\s/g, '');
+      if (
+        value?.length > 0 &&
+        this.customerForm.get('code').invalid &&
+        valueWithoutSpace?.length <= 4
+      ) {
         let fourDigitName = '';
-        const valueWithoutSpace = value?.toString().replace(/\s/g, '');
         if (valueWithoutSpace?.length >= 4) {
           fourDigitName = valueWithoutSpace
             ?.toString()
@@ -104,7 +111,6 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
           this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
         }
       } else {
-        this.customerForm.get('code').setValue(' ');
       }
     });
     this.customerForm.get('phone').valueChanges.subscribe(value => {
@@ -184,6 +190,8 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       return 'Customer code required';
     } else if (this.customerForm?.get('code').hasError('minlength')) {
       return 'Invalid customer code';
+    } else if (this.customerForm?.get('code').hasError('invalidCustomerCode')) {
+      return this.customerForm?.get('code').getError('message');
     } else {
       return '';
     }
@@ -192,8 +200,11 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   private checkCustomerCodeIsAlreadyExistOrNot(fourDigitName: string) {
     this.service.customerCodeValidation(fourDigitName).subscribe((res: any) => {
       if (res.data.validation == 'Failed') {
-        this.customerForm.get('code').setValue(res.data.Suggestion);
-        this.customerModel.customerCode = res.data.Suggestion;
+        this.customerForm.get('code').setErrors({
+          invalidCustomerCode: true,
+          message: `Code already exists. Use  '${res.data.Suggestion}' instead`,
+        });
+        this.customerForm.get('code').markAsTouched();
       } else {
         this.customerModel.customerCode = fourDigitName;
       }

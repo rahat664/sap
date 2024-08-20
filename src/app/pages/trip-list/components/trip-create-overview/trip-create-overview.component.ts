@@ -127,4 +127,11 @@ export class TripCreateOverviewComponent {
     localStorage.setItem('isFromBackEdit', 'true');
     localStorage.setItem('tripData', JSON.stringify(this.tripData));
   }
+
+  isAdmin() {
+    return (
+      localStorage.getItem('role') === 'ROLE_ADMIN' ||
+      localStorage.getItem('role') === 'ROLE_KAM'
+    );
+  }
 }

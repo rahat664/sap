@@ -110,6 +110,7 @@ export class ManageTripComponent implements OnInit {
     this.activatedId = null;
     localStorage.removeItem('tripId');
     this.tripService.reloadManageTripPage.subscribe(() => {
+      this.searchValue = '';
       this.getTripList();
     });
   }

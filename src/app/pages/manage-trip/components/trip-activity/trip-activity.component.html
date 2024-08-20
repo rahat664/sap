@@ -54,7 +54,7 @@
             </div>
             <div class="flex flex-col space-y-3">
               <h1>Time</h1>
-              <span>{{ selectedEvent?.localDateTime | date : 'dd-MMM-yyyy, hh:mm a' }}</span>
+              <span>{{ selectedEvent?.localDateTime | date : 'dd MMM yyyy, hh:mm a' }}</span>
             </div>
             <div class="flex flex-col space-y-3">
               <h1>Note</h1>
@@ -126,11 +126,11 @@
             </div>
             <div class="flex flex-col space-y-3">
               <h1>Time</h1>
-              <span>{{ selectedEvent?.localDateTime | date : 'dd-MMM-yyyy, hh:mm a' }}</span>
+              <span>{{ selectedUnloadingEvent?.localDateTime | date : 'dd MMM yyyy, hh:mm a' }}</span>
             </div>
             <div class="flex flex-col space-y-3">
               <h1>Note</h1>
-              <span>{{ selectedEvent?.note }}</span>
+              <span>{{ selectedUnloadingEvent?.note }}</span>
             </div>
           </div>
           <div
