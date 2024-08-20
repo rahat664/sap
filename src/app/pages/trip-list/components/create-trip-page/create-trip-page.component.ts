@@ -38,7 +38,6 @@ import {
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
 import { Router } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
-import { MyErrorStateMatcher } from '../template-create/template-create.component';
 import { TripCreate } from '../../models/trip-create.model';
 import { TripTemplateResponse } from '../../models/trip-template-response.model';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
@@ -81,7 +80,6 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 })
 export class CreateTripPageComponent implements OnInit {
   goodsOptionsArray: CustomInputSelectModel[] = [];
-  matcher = new MyErrorStateMatcher();
   tripForm: FormGroup;
   district: any;
   @Input() template: any;
