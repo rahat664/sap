@@ -157,7 +157,13 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   private resetMarkers() {
-    this.startMarker = {};
+    this.center = {
+      lat: 23.8041,
+      lng: 90.4125,
+    };
+    const bounds = new google.maps.LatLngBounds();
+    bounds.extend(this.center);
+    this.map.googleMap.fitBounds(bounds);
     this.endMarker = {};
     this.initialMarker = {
       position: this.center,
@@ -166,6 +172,7 @@ export class GMapComponent implements OnInit, OnChanges {
         scaledSize: new google.maps.Size(30, 30),
       },
       title: 'Current Location',
+      clickable: true,
     };
     this.directionsRenderer.setMap(null);
     this.clearPolylines();

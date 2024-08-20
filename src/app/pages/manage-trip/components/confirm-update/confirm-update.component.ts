@@ -62,7 +62,6 @@ export class ConfirmUpdateComponent {
               .afterClosed()
               .subscribe(() => {
                 this.trip.reloadManageTripPage.next(true);
-                localStorage.setItem('updatedTripStatus', res.data.status);
               });
           } else if (res.status == 'Bad Request') {
             this.dialogRef.close('error');

@@ -99,9 +99,6 @@ export class ManageTripComponent implements OnInit {
     this.activatedId = null;
     localStorage.removeItem('tripId');
     this.tripService.reloadManageTripPage.subscribe(() => {
-      this.status = localStorage.getItem('updatedTripStatus');
-      this.isTriggerFromParent = true;
-      this.triggerFromParentName = this.status;
       this.getTripList();
       this.activatedId = localStorage.getItem('tripId');
       this.getTripDetails(this.activatedId);
@@ -180,11 +177,8 @@ export class ManageTripComponent implements OnInit {
   private updateTripList(trip: any) {
     if (this.page === 0) {
       this.tripList = trip.data.responses;
-      const tripIdAvailable = localStorage.getItem('tripId');
-      if (tripIdAvailable) {
-      } else {
-        this.getTripDetails(this.tripList[0].tripId);
-      }
+      this.getTripDetails(this.tripList[0].tripId);
+      this.activatedId = this.tripList[0].tripId;
     } else {
       this.tripList.push(...trip.data.responses);
     }

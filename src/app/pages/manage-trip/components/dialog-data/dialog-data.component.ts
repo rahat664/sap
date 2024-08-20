@@ -118,16 +118,19 @@ export class DialogDataComponent {
   }
 
   onClickTransporterSearchSuggestion(option: any) {
+    this.tripUpdateForm.get('transporterCode').setValue(option.userId);
     this.tripUpdateForm.get('transporterName').setValue(option.name);
     this.tripUpdateForm.get('transporterPhone').setValue(option.phone);
   }
 
   onClickDriverSearchSuggestion(option: any) {
+    this.tripUpdateForm.get('driverCode').setValue(option.userId);
     this.tripUpdateForm.get('driverName').setValue(option.name);
     this.tripUpdateForm.get('driverPhone').setValue(option.phone);
   }
 
   onClickHelperSearchSuggestion(option: any) {
+    this.tripUpdateForm.get('helperCode').setValue(option.userId);
     this.tripUpdateForm.get('helperName').setValue(option.name);
     this.tripUpdateForm.get('helperPhone').setValue(option.phone);
   }
@@ -283,7 +286,6 @@ export class DialogDataComponent {
                 .afterClosed()
                 .subscribe(() => {
                   this.trip.reloadManageTripPage.next(true);
-                  localStorage.setItem('updatedTripStatus', res.data.status);
                 });
             } else if (res.status == 'BAD REQUEST') {
               this.dialog.open(ErrorModalComponent, {
@@ -353,7 +355,6 @@ export class DialogDataComponent {
                 .afterClosed()
                 .subscribe(() => {
                   this.trip.reloadManageTripPage.next(true);
-                  localStorage.setItem('updatedTripStatus', res.data.status);
                 });
             } else if (res.status == 'BAD REQUEST') {
               this.dialog.open(ErrorModalComponent, {
@@ -412,7 +413,6 @@ export class DialogDataComponent {
               .afterClosed()
               .subscribe(() => {
                 this.trip.reloadManageTripPage.next(true);
-                localStorage.setItem('updatedTripStatus', res.data.status);
               });
           } else if (res.status == 'BAD REQUEST') {
             this.dialog.open(ErrorModalComponent, {
