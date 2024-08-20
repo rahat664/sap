@@ -20,36 +20,46 @@
       </div>
       <div class="flex flex-1 items-start">
         <div class="flex flex-col w-1/2 space-y-3">
-          <div class="flex flex-col space-y-1">
+          <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="w-6 h-6" src="assets/svg/loading.svg">
+              <img loading="lazy" class="w-6 h-6" src="assets/svg/loading.svg" alt="">
               <h1 class="text-body_title text-not-black font-semibold">Loading Point</h1>
             </div>
             <h1 class="text-body  text-wrap text-web-text-secondary">{{ loadingPointName }}</h1>
           </div>
-          <div class="flex flex-col  space-y-1">
+          <div class="flex flex-col  space-y-2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="w-6 h-6" src="assets/svg/locinfo.svg">
+              <img loading="lazy" class="w-6 h-6" src="assets/svg/locinfo.svg" alt="">
               <h1 class="text-body_title text-not-black font-semibold">Unloading Point</h1>
             </div>
             <h1 class="text-body text-wrap text-web-text-secondary">{{ unloadPointName }}</h1>
           </div>
-          <div class="flex flex-col space-y-1">
+          <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="w-6 h-6" src="assets/svg/truckinfo.svg">
+              <img loading="lazy" class="w-6 h-6" src="assets/svg/truckinfo.svg" alt="">
               <h1 class="text-body_title text-not-black font-semibold">Truck</h1>
             </div>
             <h1 class="text-body  text-wrap text-web-text-secondary">{{ getTruckName(tripData.categoryId) }}
               | {{ tripData.truckSize }}ft, {{ tripData.truckCapacityInTon }} ton</h1>
           </div>
-          <div class="flex flex-col space-y-1">
+          <div class="flex flex-col space-y-2">
+            <div class="flex space-x-3 items-center">
+              <div class="w-6 h-6 bg-another text-white font-bold flex items-center justify-center rounded-full">#</div>
+              <h1 class="text-body_title text-not-black font-semibold">Number of Truck</h1>
+            </div>
+            <h1 class="text-body  text-wrap text-web-text-secondary">
+              {{ tripData.numOfTrucks }}
+            </h1>
+          </div>
+
+          <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="w-6 h-6" src="assets/svg/goodsinfo.svg">
               <h1 class="text-body_title text-not-black font-semibold">Goods</h1>
             </div>
             <h1 class="text-body text-wrap text-web-text-secondary">{{ tripData.goodsName }}</h1>
           </div>
-          <div class="flex flex-col space-y-1">
+          <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="h-6 w-6" src="assets/svg/cr.svg">
               <h1 class="text-body_title text-not-black font-semibold">Customer Rate</h1>
@@ -59,7 +69,7 @@
                 Number(tripData.customerRate) | number
               }} ৳</h1>
           </div>
-          <div class="flex flex-col space-y-1">
+          <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="h-6 w-6" src="assets/svg/cgm.svg">
               <h1 class="text-body_title text-not-black font-semibold">CGM</h1>
@@ -71,9 +81,9 @@
           </div>
         </div>
         <div class="flex flex-col items-end w-1/2 flex-1 space-y-3">
-          <div class="flex flex-col space-y-1">
+          <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" src="assets/svg/additional.svg">
+              <img class="h-6 w-6 notPreview" loading="lazy" src="assets/svg/additional.svg">
               <h1 class="text-body_title text-not-black font-semibold">Additional Instruction</h1>
             </div>
             <h1 class="text-body text-wrap text-web-text-secondary">{{ tripData.note }}</h1>
