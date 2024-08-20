@@ -1,5 +1,5 @@
 <div>
-  <div class="mx-4 py-2 flex justify-between items-center">
+  <div class="mx-4 py-2 flex justify-between items-center sticky top-16 z-50 bg-app-bg">
     <h1 class="text-h1 font-semibold">New Trip</h1>
     <button
       class="bg-primary text-white rounded-lg px-16 py-3"
@@ -309,9 +309,13 @@
           <h1 class="text-h2 font-semibold">Template name</h1>
         </div>
         <div class="flex flex-col space-y-2 w-full">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline"
+                          [ngClass]="{'error': templateForm.get('name').invalid && templateForm.get('name').touched}">
             <input formControlName="name" matInput placeholder="Set template name">
           </mat-form-field>
+          <mat-error *ngIf="templateForm.get('name').invalid && templateForm.get('name').touched">
+            Please enter a name
+          </mat-error>
         </div>
       </div>
     </form>

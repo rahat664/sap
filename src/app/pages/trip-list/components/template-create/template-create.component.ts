@@ -18,7 +18,11 @@ import { MatButton } from '@angular/material/button';
 import { MatCalendar, MatDatepickerToggle } from '@angular/material/datepicker';
 import { MatCard } from '@angular/material/card';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import {
+  MatError,
+  MatFormField,
+  MatSuffix,
+} from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatMenu } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
@@ -67,6 +71,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     ReactiveFormsModule,
     ScrollByButtonDirective,
     TimePickerComponent,
+    MatError,
   ],
   templateUrl: './template-create.component.html',
   styleUrl: './template-create.component.scss',
@@ -131,6 +136,7 @@ export class TemplateCreateComponent {
 
   onCreateTemplate() {
     if (this.templateForm.invalid) {
+      this.templateForm.markAllAsTouched();
       this.handleToaster.showError('Please fill in all required fields');
       return;
     } else {

@@ -14,7 +14,7 @@
           <span
             class="text-body text-web-text-secondary">{{ tripData.tripStartDatetime | date : "dd MMM yyyy, hh:mm a" }}</span>
         </div>
-        <button class="h-12 w-12 hover:bg-input rounded-lg">
+        <button (click)="onclickEdit()" class="h-12 w-12 hover:bg-input rounded-lg">
           <i class="fas fa-pen"></i>
         </button>
       </div>

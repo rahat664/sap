@@ -189,10 +189,15 @@ export class CreateTripPageComponent implements OnInit {
     this.getCachedData();
     this.initializeForm();
     const isFromTemplate = JSON.parse(localStorage.getItem('isFromTemplate'));
+    const isFromBackEdit = JSON.parse(localStorage.getItem('isFromBackEdit'));
     this.isFromTemplate = isFromTemplate;
     if (isFromTemplate) {
       this.setTheValuesFromTemplate();
     }
+    if (isFromBackEdit) {
+      this.setBackEditValues();
+    }
+
     this.returnToInputDate = new Date();
     this.selectedCustomer = JSON.parse(
       localStorage.getItem('selectedCustomer')
@@ -640,5 +645,45 @@ export class CreateTripPageComponent implements OnInit {
       localStorage.getItem('role') === 'ROLE_ADMIN' ||
       localStorage.getItem('role') === 'ROLE_KAM'
     );
+  }
+
+  private setBackEditValues() {
+    const tripData = JSON.parse(localStorage.getItem('tripData'));
+    this.tripForm.get('customerCode').setValue(tripData.customerCode);
+    this.tripForm.get('tripStartDatetime').setValue(tripData.tripStartDatetime);
+    this.tripForm.get('categoryId').setValue(tripData.categoryId);
+    this.tripForm.get('numOfTrucks').setValue(tripData.numOfTrucks);
+    this.tripForm.get('truckSize').setValue(tripData.truckSize);
+    this.tripForm
+      .get('truckCapacityInTon')
+      .setValue(tripData.truckCapacityInTon);
+    this.tripForm.get('goodsId').setValue(tripData.goodsId);
+    this.tripForm.get('goodsName').setValue(tripData.goodsName);
+    this.tripForm.get('customerRate').setValue(tripData.customerRate);
+    this.tripForm.get('note').setValue(tripData.note);
+    this.tripForm
+      .get('loadingPointDistrict')
+      .setValue(tripData.points[0].pointDistrict);
+    this.tripForm
+      .get('loadingPointName')
+      .setValue(tripData.points[0].pointName);
+    this.tripForm
+      .get('loadingPointLatitude')
+      .setValue(tripData.points[0].pointLat);
+    this.tripForm
+      .get('loadingPointLongitude')
+      .setValue(tripData.points[0].pointLon);
+    this.tripForm
+      .get('unloadingPointDistrict')
+      .setValue(tripData.points[1].pointDistrict);
+    this.tripForm
+      .get('unloadingPointName')
+      .setValue(tripData.points[1].pointName);
+    this.tripForm
+      .get('unloadingPointLatitude')
+      .setValue(tripData.points[1].pointLat);
+    this.tripForm
+      .get('unloadingPointLongitude')
+      .setValue(tripData.points[1].pointLon);
   }
 }

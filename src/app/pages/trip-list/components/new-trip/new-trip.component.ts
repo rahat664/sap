@@ -69,6 +69,12 @@ export class NewTripComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (localStorage.getItem('isFromBackEdit')) {
+      localStorage.removeItem('isFromBackEdit');
+    }
+    if (localStorage.getItem('isFromTemplate')) {
+      localStorage.removeItem('isFromTemplate');
+    }
     this.manageStore();
     if (this.isAdmin()) {
       const selectedCustomer = localStorage.getItem('selectedCustomer');
