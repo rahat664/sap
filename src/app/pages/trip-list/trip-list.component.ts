@@ -206,7 +206,7 @@ export class TripListComponent implements OnInit {
     this.dateOpened = false;
     this.isDateOpened = false;
     this.page = 0;
-    this.size = 50;
+    this.size = 30;
     this.getTripList();
   }
 

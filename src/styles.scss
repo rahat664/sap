@@ -45,18 +45,18 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555; /* Set the color of the scrollbar thumb on hover */
 }
+//
+//input::placeholder {
+//  font-size: 0.75rem;
+//  @apply text-input-hint
+//    /* Set the font size of the placeholder text */
+//  ;
+//}
 
-input::placeholder {
-  font-size: 0.75rem;
-  @apply text-input-hint
-    /* Set the font size of the placeholder text */
-  ;
-}
-
-textarea::placeholder {
-  font-size: 0.75rem;
-  @apply text-input-hint;
-}
+//textarea::placeholder {
+//  font-size: 0.75rem;
+//  @apply text-input-hint;
+//}
 
 /* custom style ng-select */
 .ng-select .ng-select-container .ng-value-container .ng-placeholder {
@@ -81,8 +81,22 @@ img {
   font-family: "Font Awesome 5 Pro", serif !important;
 }
 
+.mat-mdc-select-placeholder {
+  color: #A5B8BB !important;
+  font-weight: 400 !important;
+}
+
 .mat-mdc-form-field {
+  font-size: 1rem !important;
   height: 3.5rem !important;
+  font-weight: 500 !important;
+  -webkit-font-smoothing: none !important;
+  color: #242424 !important;
+}
+
+.mat-mdc-form-field > input::placeholder {
+  color: #A5B8BB !important;
+  font-weight: 400 !important;
 }
 
 .mat-mdc-text-field-wrapper {
@@ -93,7 +107,7 @@ img {
 }
 
 .mat-mdc-text-field-wrapper:focus-within {
-  border: 1px solid #2563EB !important;
+  border: 1px solid #A5B8BB !important;
 }
 
 .mdc-notched-outline {
@@ -109,8 +123,14 @@ img {
   padding: 0 !important;
   background-color: #F5FBFC !important;
   border: none !important;
+  color: #242424 !important;
+  font-weight: 500 !important;
 }
 
+.mdc-text-field__input::placeholder {
+  color: #A5B8BB !important;
+  font-weight: 400 !important;
+}
 .mat-mdc-select:focus {
   border: none !important;
   outline: none !important;
@@ -123,8 +143,8 @@ mat-select::ng-deep .mat-select-arrow {
 
 .mat-mdc-select-arrow {
   content: url('./assets/svg/arrow-down.svg');
-  width: 100% !important;
-  height: 100% !important;
+  width: 75% !important;
+  height: 75% !important;
 }
 
 input::-webkit-inner-spin-button,
@@ -169,3 +189,14 @@ input::-webkit-outer-spin-button {
   font-size: 0.75rem !important;
 
 }
+
+.mat-mdc-autocomplete-panel {
+  color: #242424;
+  background-color: #F5FBFC !important;
+  box-shadow: none !important;
+  border: 1px solid #A5B8BB;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+}
+
+
