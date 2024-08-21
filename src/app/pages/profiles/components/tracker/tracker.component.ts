@@ -167,4 +167,11 @@ export class TrackerComponent {
       );
     }
   }
+
+  onClickClear() {
+    this.searchValue = '';
+    this.page = 0;
+    this.trackerList = [];
+    this.getTrackers();
+  }
 }

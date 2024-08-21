@@ -5,7 +5,7 @@ import { GetClickEventDirective } from '../../../../shared/directive/get-click-e
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
 import { TruckModel } from './models/truck.model';
 import { TruckService } from './services/truck.service';
@@ -44,6 +44,7 @@ import { MatDialog } from '@angular/material/dialog';
     CheckListPopupComponent,
     PreHireChecklistComponent,
     DatePipe,
+    FormsModule,
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss',
@@ -260,5 +261,12 @@ export class TruckComponent implements OnInit {
 
   onClickAddTruck() {
     this.shared.closeInputSelect.next(false);
+  }
+
+  onClickClear() {
+    this.searchValue = '';
+    this.truckList = [];
+    this.page = 0;
+    this.getTruckList();
   }
 }

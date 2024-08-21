@@ -158,4 +158,11 @@ export class TransporterComponent implements OnInit {
     this.page = 0;
     this.size = 20;
   }
+
+  onClickClear() {
+    this.searchValue = '';
+    this.page = 0;
+    this.transporterList = [];
+    this.getTransporterList();
+  }
 }

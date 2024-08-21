@@ -470,4 +470,10 @@ export class UserManagementComponent implements OnInit {
       });
     }
   }
+
+  onClickClear() {
+    this.searchValue = '';
+    this.Users = [];
+    this.getUserList();
+  }
 }

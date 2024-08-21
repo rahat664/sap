@@ -109,9 +109,11 @@ export class ManageTripComponent implements OnInit {
     this.getVehicleTypeList();
     this.activatedId = null;
     localStorage.removeItem('tripId');
-    this.tripService.reloadManageTripPage.subscribe(() => {
-      this.searchValue = '';
-      this.getTripList();
+    this.tripService.reloadManageTripPage.subscribe(value => {
+      if (value) {
+        this.searchValue = '';
+        this.getTripList();
+      }
     });
   }
 
@@ -313,5 +315,12 @@ export class ManageTripComponent implements OnInit {
         }
       );
     }
+  }
+
+  onClickClear() {
+    this.searchValue = '';
+    this.page = 0;
+    this.size = 20;
+    this.getTripList();
   }
 }
