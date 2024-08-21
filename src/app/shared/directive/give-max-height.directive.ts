@@ -54,7 +54,9 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
       target.offsetHeight + target.scrollTop >=
       target.scrollHeight - (this.totalPage + 30)
     ) {
-      this.inBottomEnd.emit(true);
+        this.inBottomEnd.emit(true);
+    } else {
+      this.inBottomEnd.emit(false);
     }
   }
 
