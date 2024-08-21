@@ -67,7 +67,7 @@ export class TripCreateOverviewComponent {
                 res.data.length > 1
                   ? 'Your trip numbers are ' +
                     res.data[0] +
-                    ' - ' +
+                    '-' +
                     res.data[res.data.length - 1]?.split('-')[1]
                   : 'Your trip number is ' + res.data
               }

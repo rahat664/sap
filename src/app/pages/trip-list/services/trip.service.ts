@@ -98,24 +98,6 @@ export class TripService {
     return throwError(() => new Error(message));
   }
 
-  getTripStatusCounts(): Observable<any> {
-    return this.http.get<ApiResponse>(this.url + '/tripStatusCounts').pipe(
-      map(response => {
-        return response.data;
-      }),
-      catchError(this.handleError)
-    );
-  }
-
-  getSummary(): Observable<any> {
-    return this.http.get<ApiResponse>(this.url + '/summary').pipe(
-      map(response => {
-        return response.data;
-      }),
-      catchError(this.handleError)
-    );
-  }
-
   getTripTemplate(userId) {
     return this.http.get(`${this.tripTemplateUrl}?customerCode=${userId}`);
   }
@@ -171,5 +153,13 @@ export class TripService {
     return this.http.get(
       `${this.trackByRegistationUrl}?registrationNum=${registrationNumber}`
     );
+  }
+
+  deleteTemplate(templateId: string) {
+    return this.http.delete(`${this.tripTemplateUrl}/${templateId}`);
+  }
+
+  updateTemplate(templateId: string, templateData: any) {
+    return this.http.put(`${this.tripTemplateUrl}/${templateId}`, templateData);
   }
 }

@@ -75,12 +75,30 @@
             <td>{{ tripTemplate.good.name }}</td>
             <td>{{ customerName }}</td>
             <td>
-              <div class="relative w-full text-right">
+              <button mat-button [matMenuTriggerFor]="menu"><i
+                class="fas fa-ellipsis-v"></i></button>
+              <mat-menu #menu="matMenu">
                 <button
-                  class="cursor-pointer w-full">
-                  <i class="fas fa-ellipsis-v"></i>
+                  (click)="changeStatus(tripTemplate,'edit')" mat-menu-item>
+                  <div class="flex space-x-2 items-center">
+                    <img
+                      class="notPreview"
+                      src="./assets/svg/edit.svg"
+                      alt="" />
+                    <span>Edit</span>
+                  </div>
                 </button>
-              </div>
+                <button (click)="changeStatus(tripTemplate, 'delete')" mat-menu-item
+                >
+                  <div class="flex space-x-2 items-center">
+                    <img
+                      class="notPreview"
+                      src="./assets/svg/delete.svg"
+                      alt="" />
+                    <span>Delete</span>
+                  </div>
+                </button>
+              </mat-menu>
             </td>
           </tr>
         </ng-container>

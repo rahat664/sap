@@ -29,7 +29,12 @@ export class PreHireChecklistComponent implements OnInit {
   }
 
   ngOnChanges() {
-    this.getPreHireChecklistByTruckId(this.singleTruckId);
+    const singleTruck = localStorage.getItem('truck');
+    if (singleTruck && !this.saveButtonEnabled) {
+      this.getPreHireChecklistByTruckId(JSON.parse(singleTruck).id);
+    } else {
+      this.getPreHireChecklist();
+    }
   }
 
   private getPreHireChecklist() {
@@ -55,12 +60,18 @@ export class PreHireChecklistComponent implements OnInit {
           // items by category
           this.preHireCheckList.forEach(category => {
             if (category.categoryName === item.category) {
-              category.items.push({
-                id: item.id,
-                name: item.name,
-                status: item.status,
-                category: item.category,
-              });
+              // check if item already exists
+              const itemExists = category.items.find(x => x.id === item.id);
+              if (!itemExists) {
+                category.items.push({
+                  id: item.id,
+                  name: item.name,
+                  status: item.status,
+                  category: item.category,
+                });
+              } else {
+                itemExists.status = item.status;
+              }
             }
           });
         }
@@ -107,12 +118,18 @@ export class PreHireChecklistComponent implements OnInit {
           // items by category
           this.preHireCheckList.forEach(category => {
             if (category.categoryName === item.category) {
-              category.items.push({
-                id: item.id,
-                name: item.name,
-                status: item.status,
-                category: item.category,
-              });
+              // check if item already exists
+              const itemExists = category.items.find(x => x.id === item.id);
+              if (!itemExists) {
+                category.items.push({
+                  id: item.id,
+                  name: item.name,
+                  status: item.status,
+                  category: item.category,
+                });
+              } else {
+                itemExists.status = item.status;
+              }
             }
           });
         }

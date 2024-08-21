@@ -83,6 +83,14 @@ export const routes: Routes = [
       ).then(c => c.TemplateCreateComponent),
   },
   {
+    path: 'update-trip-template',
+    title: 'Update Trip',
+    loadComponent: () =>
+      import(
+        './pages/trip-list/components/template-update/template-update.component'
+      ).then(c => c.TemplateUpdateComponent),
+  },
+  {
     path: 'user-management',
     title: 'User Management',
     loadComponent: () =>

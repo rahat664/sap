@@ -1,6 +1,6 @@
 <div>
   <div class="mx-4 py-2 flex justify-between items-center sticky top-16 z-50 bg-app-bg">
-    <h1 class="text-h1 font-semibold">New Trip</h1>
+    <h1 class="text-h1 font-semibold">New Template</h1>
     <button
       class="bg-primary text-white rounded-lg px-16 py-3"
       (click)="onCreateTemplate()">Create Template
@@ -73,8 +73,8 @@
                 [matAutocomplete]="loadingDistrictAuto">
               <mat-autocomplete #loadingDistrictAuto="matAutocomplete">
                 @for (option of loadingDistrictSuggestions; track option) {
-                  <mat-option (click)="onSelectLoadingDistrict(option)" [value]="option.nameEn">
-                    <div class="p-2 w-full text-body_title text-not-black">{{ option.nameEn }}</div>
+                  <mat-option (click)="onSelectLoadingDistrict(option)" [value]="option.name">
+                    <div class="p-2 w-full text-body_title text-not-black">{{ option.name }}</div>
                   </mat-option>
                 }
               </mat-autocomplete>
@@ -125,8 +125,8 @@
                 [matAutocomplete]="unloadingDistrictAuto">
               <mat-autocomplete #unloadingDistrictAuto="matAutocomplete">
                 @for (option of unloadingDistrictSuggestions; track option) {
-                  <mat-option (click)="onSelectUnloadingDistrict(option)" [value]="option.nameEn">
-                    <div class="p-2 w-full text-body_title text-not-black">{{ option.nameEn }}</div>
+                  <mat-option (click)="onSelectUnloadingDistrict(option)" [value]="option.name">
+                    <div class="p-2 w-full text-body_title text-not-black">{{ option.name }}</div>
                   </mat-option>
                 }
               </mat-autocomplete>
