@@ -43,7 +43,10 @@ export class ConfirmUpdateComponent {
           'yyyy-MM-dd hh:mm:ss'
         );
       } else {
-        body['status'] = 'Completed';
+        body['tripEndedAt'] = this.datePipe.transform(
+          new Date(),
+          'yyyy-MM-dd hh:mm:ss'
+        );
       }
       this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
         (res: any) => {
