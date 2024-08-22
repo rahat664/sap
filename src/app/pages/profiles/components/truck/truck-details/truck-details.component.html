@@ -160,7 +160,7 @@
 </app-create-popup>
 <app-check-list-popup
   [isOpen]="prehireCheckListOpened"
-  (isModalClosed)="prehireCheckListOpened = $event"
+  (isModalClosed)="prehireCheckListOpened = !$event"
 >
   <app-pre-hire-checklist></app-pre-hire-checklist>
 </app-check-list-popup>

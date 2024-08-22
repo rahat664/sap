@@ -7,7 +7,6 @@ import {
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { MyErrorStateMatcher } from '../template-create/template-create.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { TripCreate } from '../../models/trip-create.model';
 import { TripService } from '../../services/trip.service';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
@@ -59,17 +58,9 @@ export class TripUpdateComponent {
   vehicleTypeList: any;
   truckCapacitySuggestions: any[];
   truckSizeSuggestions: any[];
-  saveTemplateInputEnabled: boolean;
-  private readonly _currentYear = new Date().getFullYear();
-  // give mindate validation min date is current date
-  readonly minDate = new Date();
-  private time: any;
   loadingSuggestions: any;
   unloadingSuggestions: any;
   loadingGoodsSuggestions: any;
-  returnToInputDate: any;
-  isDisabled: boolean;
-  tripDataModel: TripCreate = new TripCreate();
   numberOfTrucksSuggestions: any;
   isFromTemplate: boolean = false;
   driverSuggestion: any;
@@ -229,9 +220,9 @@ export class TripUpdateComponent {
   private getVehicleTypeList() {
     this.service.getVehicleTypeList().subscribe((res: any) => {
       this.vehicleTypeList = res.data;
-      if (JSON.parse(localStorage.getItem('isFromTemplate'))) {
+      if (JSON.parse(localStorage.getItem('updateTripDetails'))) {
         const selectedTemplate = JSON.parse(
-          localStorage.getItem('selectedTemplate')
+          localStorage.getItem('updateTripDetails')
         );
         this.vehicleTypeList.forEach((element: any) => {
           if (element.id == selectedTemplate.vehicleCategory.id) {

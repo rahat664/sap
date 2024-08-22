@@ -65,7 +65,7 @@
           id="truckStand"
           formControlName="truckStand" />
         <div
-          *ngIf="transporterForm.get('truckStand').touched"
+          *ngIf="transporterForm.get('truckStand').touched && transporterForm.get('truckStand').invalid"
           class="text-red text-xs">
           <span>Truck stand is required</span>
         </div>
@@ -82,7 +82,7 @@
           (clickedElement)="onClickPayment($event)"
           (selectedId)="onSelectPayment($event)"></app-custom-input>
         <div
-          *ngIf="transporterForm.get('preferredPaymentMethod').touched"
+          *ngIf="transporterForm.get('preferredPaymentMethod').touched && transporterForm.get('preferredPaymentMethod').invalid"
           class="text-red text-xs">
           <span>Preferred payment method is required</span>
         </div>

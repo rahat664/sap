@@ -7,36 +7,31 @@ import { DriverEditSharedService } from '../../../pages/profiles/services/driver
 @Component({
   selector: 'app-check-list-popup',
   standalone: true,
-  imports: [
-    GetOutsideModalClickDirective,
-    NgIf,
-  ],
+  imports: [GetOutsideModalClickDirective, NgIf],
   templateUrl: './check-list-popup.component.html',
   styleUrl: './check-list-popup.component.scss',
 })
 export class CheckListPopupComponent {
   @Input() isOpen = false;
   @Output() isModalClosed: EventEmitter<boolean> = new EventEmitter<boolean>(
-    false,
+    false
   );
   private subs: Subscription;
 
-  constructor(private sharedDriverEditService: DriverEditSharedService) {
-  }
+  constructor(private sharedDriverEditService: DriverEditSharedService) {}
 
   closeModal() {
     this.isOpen = false;
     this.isModalClosed.emit(true);
   }
 
-  ngOnChanges() {
-  }
+  ngOnChanges() {}
 
   ngOnInit(): void {
     this.subs = this.sharedDriverEditService.isUploadPopupOpen.subscribe(
       (res: any) => {
         this.isOpen = res;
-      },
+      }
     );
   }
 
@@ -46,7 +41,8 @@ export class CheckListPopupComponent {
 
   onClick($event: boolean) {
     if ($event) {
-      this.closeModal();
+      this.isModalClosed.emit(true);
+      this.isOpen = false;
     }
   }
 }
