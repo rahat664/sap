@@ -15,6 +15,7 @@ import { driverFileType } from '../customer/model/driver-file-type';
 import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { debounceTime } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-driver',
@@ -33,6 +34,7 @@ import { debounceTime } from 'rxjs';
     LoadingComponent,
     CheckTheHeightCrossMaxHeightOrNotDirective,
     DatePipe,
+    FormsModule,
   ],
   templateUrl: './driver.component.html',
   styleUrl: './driver.component.scss',
@@ -166,6 +168,13 @@ export class DriverComponent implements OnInit {
     } else {
       this.searchValue = null;
     }
+    this.page = 0;
+    this.driverList = [];
+    this.getDriverList();
+  }
+
+  onClickClear() {
+    this.searchValue = '';
     this.page = 0;
     this.driverList = [];
     this.getDriverList();

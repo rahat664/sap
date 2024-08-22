@@ -27,6 +27,7 @@ export class TripService {
   districtUrl = `${environment.backendUrl}/api/districts`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
   locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
+  trackByRegistationUrl = `${environment.locationUrl}/api/locations/filter`;
   cachedTruckSize: BehaviorSubject<any[]> = new BehaviorSubject([]);
   cachedTruckCapacity: BehaviorSubject<any[]> = new BehaviorSubject([]);
   reloadManageTripPage: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -97,24 +98,6 @@ export class TripService {
     return throwError(() => new Error(message));
   }
 
-  getTripStatusCounts(): Observable<any> {
-    return this.http.get<ApiResponse>(this.url + '/tripStatusCounts').pipe(
-      map(response => {
-        return response.data;
-      }),
-      catchError(this.handleError)
-    );
-  }
-
-  getSummary(): Observable<any> {
-    return this.http.get<ApiResponse>(this.url + '/summary').pipe(
-      map(response => {
-        return response.data;
-      }),
-      catchError(this.handleError)
-    );
-  }
-
   getTripTemplate(userId) {
     return this.http.get(`${this.tripTemplateUrl}?customerCode=${userId}`);
   }
@@ -164,5 +147,19 @@ export class TripService {
 
   getDistricts() {
     return this.http.get(`${this.districtUrl}`);
+  }
+
+  getTrackerDetails(registrationNumber: string) {
+    return this.http.get(
+      `${this.trackByRegistationUrl}?registrationNum=${registrationNumber}`
+    );
+  }
+
+  deleteTemplate(templateId: string) {
+    return this.http.delete(`${this.tripTemplateUrl}/${templateId}`);
+  }
+
+  updateTemplate(templateId: string, templateData: any) {
+    return this.http.put(`${this.tripTemplateUrl}/${templateId}`, templateData);
   }
 }

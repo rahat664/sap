@@ -15,3 +15,9 @@ tbody > tr:not(:last-child) > td {
 tbody > tr > td:not(:last-child) {
   @apply border-r-2 border-white;
 }
+
+thead {
+  display: table-caption;
+  padding: 0 1rem;
+}
+

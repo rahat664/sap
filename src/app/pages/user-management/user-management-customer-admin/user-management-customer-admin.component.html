@@ -1,0 +1,179 @@
+<div class="p-4 flex flex-col space-y-3">
+  <div
+    appGetElementHeight
+    (height)="height = $event"
+    class="flex flex-col space-y-3">
+    <div
+      class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      <h1 class="text-h1 font-semibold">Admin</h1>
+      <div class="flex space-x-4 items-center">
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="far fa-search text-gray-500"></i>
+          </div>
+          <button (click)="onClickClear()" *ngIf="searchValue"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <i class="far fa-times text-gray-500 text-xs"></i>
+          </button>
+          <input
+
+            (keyup)="onKeyUpSearch($event)"
+            type="text"
+            name="email"
+            id="topbar-search"
+            class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
+            placeholder="Search  name, mobile, email" />
+        </div>
+        <button
+          (click)="onClickAddUser()"
+          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+          <i class="fas fa-plus-circle"></i>
+          <span class="hidden lg:block">Add New User</span>
+        </button>
+      </div>
+    </div>
+    <!--  filter section-->
+    <div class="w-full bg-white rounded-lg">
+      <button
+        (click)="onClickFilterOpened()"
+        class="flex px-2 py-1 space-x-3 items-center w-full"
+        [ngClass]="{ 'border-b-2 border-[#0CD5F0]': filterOpened }">
+        <i class="fas fa-caret-down text-input-hint text-xl"></i>
+        <span class="text-not-black text-[0.875rem]"
+        >Filter
+          <span *ngIf="getFilterLength() > 0"
+          >({{ statusFilter + roleFilter }})</span
+          >
+          <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3"
+          >|</span
+          >
+          <a
+            (click)="onClearFilter()"
+            *ngIf="getFilterLength() > 0"
+            class="text-red"
+          >Clear all</a
+          >
+        </span>
+      </button>
+      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
+        <app-custom-input
+          appGetClickEvent
+          [inputSearch]="statusInputPlaceholder"
+          (clickedElement)="onClickStatus($event)"
+          [options]="statusOptionsArray"
+          inputPlaceholder="Select Status"
+          (selectedId)="onSelectStatus($event)"></app-custom-input>
+        <app-custom-input
+          [inputSearch]="roleInputPlaceholder"
+          [options]="roleOptionsArray"
+          inputPlaceholder="Select Type"
+          appGetClickEvent
+          (clickedElement)="onClickRole($event)"
+          (selectedId)="onSelectRole($event)"></app-custom-input>
+      </div>
+    </div>
+  </div>
+  <div
+    appGiveMaxHeight
+    [totalPage]="totalPages"
+    (inBottomEnd)="onBottom($event)"
+    [anotherItemsHeight]="height"
+    class="bg-white w-full relative rounded-lg overflow-auto">
+    <table class="table-auto w-full text-[0.875rem]">
+      <thead>
+      <tr class="whitespace-nowrap bg-white">
+        <th class="text-left">Name</th>
+        <th class="text-left">Mobile</th>
+        <th class="text-left">Email</th>
+        <th class="text-left">Type</th>
+        <th class="text-left">Designation</th>
+        <th class="text-left">Status</th>
+        <th class="text-left whitespace-nowrap">Created On</th>
+        <th style="width: 5% !important"></th>
+      </tr>
+      <tr>
+        <th class="border" colspan="8"></th>
+      </tr>
+      </thead>
+      <tbody class="text-web-text-secondary">
+      <ng-container *ngIf="!loading">
+        <tr *ngFor="let user of Users">
+          <td class="whitespace-nowrap">{{ user.name }}</td>
+          <td>{{ user.phone }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ getUserType(user.roles) }}</td>
+          <td>{{ user.designation }}</td>
+          <td>{{ user.status }}</td>
+          <td class="whitespace-nowrap">{{ user.createdOn ? (user.createdOn | date : 'dd MMM, yyyy') : '' }}</td>
+          <td>
+            <button *ngIf="user.status != 'Removed'" mat-button [matMenuTriggerFor]="menu"><i
+              class="fas fa-ellipsis-v"></i></button>
+            <mat-menu #menu="matMenu">
+              <button
+                (click)="changeStatus(user.id, user.name, 'Inactive')" mat-menu-item *ngIf="user.status === 'Active'">
+                <div class="flex space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/user-inactive.svg"
+                    alt="" />
+                  <span>Inactive</span>
+                </div>
+              </button>
+              <button (click)="changeStatus(user.id, user.name, 'Active')" mat-menu-item
+                      *ngIf="user.status === 'Inactive'">
+                <div class="flex space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/user-active.svg"
+                    alt="" />
+                  <span>Active</span>
+                </div>
+              </button>
+              <button (click)="changeStatus(user.id, user.name, 'Removed')" mat-menu-item>
+                <div class="flex space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/user-remove.svg"
+                    alt="" />
+                  <span class="text-red">Remove</span>
+                </div>
+              </button>
+            </mat-menu>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <tr *ngIf="Users?.length === 0">
+          <td class="h-full" colspan="9">
+            <div class="flex items-center justify-center">
+              <div class="w-full flex flex-col space-y-3 justify-center items-center">
+                <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+                <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" colspan="9">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+<app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
+  <app-user-customer-admin-create
+    *ngIf="isOpen"
+    (formCreated)="onCreateUser($event)"></app-user-customer-admin-create>
+</app-create-popup>
+<app-confirm-modal
+  (isModalClosed)="confirmOpened = !$event"
+  [isOpen]="confirmOpened"
+  [buttonText]="buttonText"
+  [userName]="userName"
+  (performChangeStatus)="performChangeStatus()"></app-confirm-modal>

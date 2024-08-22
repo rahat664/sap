@@ -9,6 +9,7 @@ import { CustomerService } from '../../services/customer.service';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-customer',
@@ -22,6 +23,7 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
     CustomInputComponent,
     GetClickEventDirective,
     LoadingComponent,
+    FormsModule,
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss',
@@ -37,6 +39,7 @@ export class CustomerComponent implements OnInit {
   size: number = 30;
   page: number = 0;
   totalPages: number;
+  searchValue: any;
 
   constructor(private service: CustomerService) {}
 
@@ -70,6 +73,7 @@ export class CustomerComponent implements OnInit {
   }
 
   onKeyUpSearch($event: any) {
+    this.searchValue = $event.target.value;
     this.loading = true;
     const target = $event.target.value;
     if (target?.length > 0) {
@@ -120,5 +124,10 @@ export class CustomerComponent implements OnInit {
           this.totalPages = res.data.totalPages;
         });
     }
+  }
+
+  onClickClear() {
+    this.searchValue = '';
+    this.getCustomer();
   }
 }

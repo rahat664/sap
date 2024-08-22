@@ -8,7 +8,7 @@ export class UserModel {
   'userShortCode': string;
   'enabled': boolean;
   'role': string;
-  'roles': string;
+  'roles': string[];
   'note': string;
   'noOfTrips': number;
   'bankName': string;

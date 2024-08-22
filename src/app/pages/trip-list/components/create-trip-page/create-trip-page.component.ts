@@ -38,9 +38,9 @@ import {
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
 import { Router } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
-import { MyErrorStateMatcher } from '../template-create/template-create.component';
 import { TripCreate } from '../../models/trip-create.model';
 import { TripTemplateResponse } from '../../models/trip-template-response.model';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -80,7 +80,6 @@ import { TripTemplateResponse } from '../../models/trip-template-response.model'
 })
 export class CreateTripPageComponent implements OnInit {
   goodsOptionsArray: CustomInputSelectModel[] = [];
-  matcher = new MyErrorStateMatcher();
   tripForm: FormGroup;
   district: any;
   @Input() template: any;
@@ -108,7 +107,8 @@ export class CreateTripPageComponent implements OnInit {
     private fb: FormBuilder,
     private datePipe: DatePipe,
     private locationService: GeolocationService,
-    private router: Router
+    private router: Router,
+    private toaster: HandleToastrService
   ) {}
 
   onCreateTrip() {
@@ -161,6 +161,8 @@ export class CreateTripPageComponent implements OnInit {
       localStorage.removeItem('selectedTemplate');
       this.router.navigate(['/trip-create/overview']);
     } else {
+      this.tripForm.markAllAsTouched();
+      this.toaster.showError('Please fill all the required fields');
     }
   }
 
@@ -183,12 +185,17 @@ export class CreateTripPageComponent implements OnInit {
     this.getVehicleTypeList();
     this.getGoodsOptions();
     this.getCachedData();
-    this.intializeForm();
+    this.initializeForm();
     const isFromTemplate = JSON.parse(localStorage.getItem('isFromTemplate'));
+    const isFromBackEdit = JSON.parse(localStorage.getItem('isFromBackEdit'));
     this.isFromTemplate = isFromTemplate;
     if (isFromTemplate) {
       this.setTheValuesFromTemplate();
     }
+    if (isFromBackEdit) {
+      this.setBackEditValues();
+    }
+
     this.returnToInputDate = new Date();
     this.selectedCustomer = JSON.parse(
       localStorage.getItem('selectedCustomer')
@@ -279,9 +286,15 @@ export class CreateTripPageComponent implements OnInit {
 
   toggleSaveAsTemplateInputField($any: any) {
     this.saveTemplateInputEnabled = $any.checked;
+    if ($any.checked) {
+      this.tripForm.get('tripTemplateName').setValidators(Validators.required);
+    } else {
+      this.tripForm.get('tripTemplateName').clearValidators();
+    }
+    this.tripForm.get('tripTemplateName').updateValueAndValidity();
   }
 
-  private intializeForm() {
+  private initializeForm() {
     this.tripForm = this.fb.group({
       customerCode: ['', Validators.required],
       tripStartDatetime: ['', Validators.required],
@@ -293,9 +306,9 @@ export class CreateTripPageComponent implements OnInit {
       goodsName: ['', Validators.required],
       customerRate: [null],
       note: [''],
-      loadingPointDistrict: [''],
+      loadingPointDistrict: ['', Validators.required],
       loadingPointName: ['', Validators.required],
-      unloadingPointDistrict: [''],
+      unloadingPointDistrict: ['', Validators.required],
       unloadingPointName: ['', Validators.required],
       loadingPointLatitude: ['', Validators.required],
       loadingPointLongitude: ['', Validators.required],
@@ -315,7 +328,7 @@ export class CreateTripPageComponent implements OnInit {
   }
 
   onSelectTimeAndDate() {
-    // convert time to 24 hour format
+    // convert time to 24-hour format
     const time = this.time.split(' ')[0];
     const hour = parseInt(time.split(':')[0]);
     const minute = parseInt(time.split(':')[1]);
@@ -354,14 +367,12 @@ export class CreateTripPageComponent implements OnInit {
       : this.tripForm.get('loadingPointName').setValue(option.addressText);
     if (option.district) {
       this.tripForm.get('loadingPointDistrict').setValue(option.district);
-      this.tripForm.get('loadingPointDistrict').disable();
     } else {
       for (let i = 0; i < this.district.length; i++) {
         if (option.addressText.includes(this.district[i].name)) {
           this.tripForm
             .get('loadingPointDistrict')
             .setValue(this.district[i].name);
-          this.tripForm.get('loadingPointDistrict').disable();
           break;
         } else {
           this.tripForm.get('loadingPointDistrict').enable();
@@ -628,9 +639,47 @@ export class CreateTripPageComponent implements OnInit {
   }
 
   isAdmin() {
-    return (
-      localStorage.getItem('role') === 'ROLE_ADMIN' ||
-      localStorage.getItem('role') === 'ROLE_KAM'
-    );
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
+
+  private setBackEditValues() {
+    const tripData = JSON.parse(localStorage.getItem('tripData'));
+    this.tripForm.get('customerCode').setValue(tripData.customerCode);
+    this.tripForm.get('tripStartDatetime').setValue(tripData.tripStartDatetime);
+    this.tripForm.get('categoryId').setValue(tripData.categoryId);
+    this.tripForm.get('numOfTrucks').setValue(tripData.numOfTrucks);
+    this.tripForm.get('truckSize').setValue(tripData.truckSize);
+    this.tripForm
+      .get('truckCapacityInTon')
+      .setValue(tripData.truckCapacityInTon);
+    this.tripForm.get('goodsId').setValue(tripData.goodsId);
+    this.tripForm.get('goodsName').setValue(tripData.goodsName);
+    this.tripForm.get('customerRate').setValue(tripData.customerRate);
+    this.tripForm.get('note').setValue(tripData.note);
+    this.tripForm
+      .get('loadingPointDistrict')
+      .setValue(tripData.points[0].pointDistrict);
+    this.tripForm
+      .get('loadingPointName')
+      .setValue(tripData.points[0].pointName);
+    this.tripForm
+      .get('loadingPointLatitude')
+      .setValue(tripData.points[0].pointLat);
+    this.tripForm
+      .get('loadingPointLongitude')
+      .setValue(tripData.points[0].pointLon);
+    this.tripForm
+      .get('unloadingPointDistrict')
+      .setValue(tripData.points[1].pointDistrict);
+    this.tripForm
+      .get('unloadingPointName')
+      .setValue(tripData.points[1].pointName);
+    this.tripForm
+      .get('unloadingPointLatitude')
+      .setValue(tripData.points[1].pointLat);
+    this.tripForm
+      .get('unloadingPointLongitude')
+      .setValue(tripData.points[1].pointLon);
   }
 }

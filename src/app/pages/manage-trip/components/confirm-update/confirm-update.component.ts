@@ -43,7 +43,10 @@ export class ConfirmUpdateComponent {
           'yyyy-MM-dd hh:mm:ss'
         );
       } else {
-        body['status'] = 'Completed';
+        body['tripEndedAt'] = this.datePipe.transform(
+          new Date(),
+          'yyyy-MM-dd hh:mm:ss'
+        );
       }
       this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
         (res: any) => {
@@ -55,7 +58,7 @@ export class ConfirmUpdateComponent {
                 width: '21.375rem',
                 data: {
                   title: 'Success',
-                  text: `Your Trip has ${res.data.status == 'Booked' ? 'started' : 'completed'}. Your trip no is ${res.data.tripId}`,
+                  text: `Your Trip has ${this.data.trip.status == 'Booked' ? 'started' : 'completed'}. Your trip no is ${res.data.tripId}`,
                   buttonText: 'Okay',
                 },
               })

@@ -25,7 +25,7 @@ import {
   MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
 import { MatInput } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomerService } from '../profiles/services/customer.service';
 import { MatSelect } from '@angular/material/select';
 
@@ -52,6 +52,7 @@ import { MatSelect } from '@angular/material/select';
     MatOption,
     ReactiveFormsModule,
     MatSelect,
+    FormsModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
@@ -80,6 +81,9 @@ export class ManageTripComponent implements OnInit {
   truckType: string = '';
   startDate: string;
   endDate: string;
+  isTriggerFromParent: boolean;
+  triggerFromParentName: string;
+  truckLocationPosition: { lng: number; lat: number };
 
   constructor(
     private tripService: TripService,
@@ -89,15 +93,27 @@ export class ManageTripComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.triggerFromParentName = 'All';
+    this.isTriggerFromParent = false;
+    if (localStorage.getItem('fromTripListTripId')) {
+      this.tripId = localStorage.getItem('fromTripListTripId');
+      this.getTripDetails(this.tripId);
+      this.searchValue = this.tripId;
+      this.getTruckTrackers(
+        localStorage.getItem('fromTripListTruckRegistrationNumber')
+      );
+      localStorage.removeItem('fromTripListTripId');
+      localStorage.removeItem('fromTripListTruckRegistrationNumber');
+    }
     this.getTripList();
     this.getVehicleTypeList();
     this.activatedId = null;
     localStorage.removeItem('tripId');
-    this.tripService.reloadManageTripPage.subscribe(() => {
-      this.status = '';
-      this.getTripList();
-      this.activatedId = localStorage.getItem('tripId');
-      this.getTripDetails(this.activatedId);
+    this.tripService.reloadManageTripPage.subscribe(value => {
+      if (value) {
+        this.searchValue = '';
+        this.getTripList();
+      }
     });
   }
 
@@ -139,18 +155,19 @@ export class ManageTripComponent implements OnInit {
 
   getTruckRegistrationNumber(truck: Truck) {
     if (truck) {
-      return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial} ${truck.registrationNum}`;
+      return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial}-${truck.registrationNum}`;
     } else {
       return 'Not Assigned';
     }
   }
 
-  onclickTripCard(tripId: string) {
+  onclickTripCard(tripId: string, truckRegistrationNumber: string | string) {
     if (localStorage.getItem('expanded')) {
       localStorage.setItem('expanded', 'false');
     }
     this.activatedId = tripId;
     this.getTripDetails(tripId);
+    this.getTruckTrackers(truckRegistrationNumber);
   }
 
   private retriveStatusButtons(statusCount: any) {
@@ -172,8 +189,8 @@ export class ManageTripComponent implements OnInit {
   private updateTripList(trip: any) {
     if (this.page === 0) {
       this.tripList = trip.data.responses;
-      this.activatedId = this.tripList[0]?.tripId;
-      this.getTripDetails(this.activatedId);
+      this.getTripDetails(this.tripList[0].tripId);
+      this.activatedId = this.tripList[0].tripId;
     } else {
       this.tripList.push(...trip.data.responses);
     }
@@ -282,5 +299,28 @@ export class ManageTripComponent implements OnInit {
 
   onChangeHeight($event: any) {
     this.tripService.bottomHeight.next($event);
+  }
+
+  private getTruckTrackers(truckRegistrationNumber: string) {
+    if (truckRegistrationNumber) {
+      this.tripService.getTrackerDetails(truckRegistrationNumber).subscribe(
+        (res: any) => {
+          this.truckLocationPosition = {
+            lng: res.data?.longitude,
+            lat: res.data?.latitude,
+          };
+        },
+        error => {
+          console.error('Error fetching truck trackers:', error);
+        }
+      );
+    }
+  }
+
+  onClickClear() {
+    this.searchValue = '';
+    this.page = 0;
+    this.size = 20;
+    this.getTripList();
   }
 }

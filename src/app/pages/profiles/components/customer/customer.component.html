@@ -12,7 +12,12 @@
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <i class="far fa-search text-gray-500"></i>
           </div>
+          <button (click)="onClickClear()" *ngIf="searchValue"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <i class="far fa-times text-gray-500 text-xs"></i>
+          </button>
           <input
+            [(ngModel)]="searchValue"
             (keyup)="onKeyUpSearch($event)"
             type="text"
             name="search"
@@ -83,9 +88,7 @@
             class="whitespace-nowrap">{{ customer.creationDate ? (customer.creationDate | date: 'dd MMM, yyyy') : '' }}
           </td>
           <td>
-            <ng-container *ngFor="let user of customer?.user">
-              <span>{{ user?.name }}</span>
-            </ng-container>
+            <span>{{ customer?.contactPerson }}</span>
           </td>
           <td>{{ customer.phone }}</td>
           <td>{{ customer.email }}</td>

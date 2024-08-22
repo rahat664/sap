@@ -78,9 +78,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   isAdmin() {
-    return (
-      localStorage.getItem('role') === 'ROLE_ADMIN' ||
-      localStorage.getItem('role') === 'ROLE_KAM'
-    );
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
+
+  isCustomerAdmin() {
+    return localStorage.getItem('role').includes('ROLE_CUSTOMER_ADMIN');
   }
 }

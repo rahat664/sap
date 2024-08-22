@@ -64,6 +64,11 @@
           type="text"
           id="truckStand"
           formControlName="truckStand" />
+        <div
+          *ngIf="transporterForm.get('truckStand').touched && transporterForm.get('truckStand').invalid"
+          class="text-red text-xs">
+          <span>Truck stand is required</span>
+        </div>
         <!--        error-message-->
       </div>
       <div class="flex flex-col lg:col-span-2 w-full">
@@ -76,6 +81,11 @@
           appGetClickEvent
           (clickedElement)="onClickPayment($event)"
           (selectedId)="onSelectPayment($event)"></app-custom-input>
+        <div
+          *ngIf="transporterForm.get('preferredPaymentMethod').touched && transporterForm.get('preferredPaymentMethod').invalid"
+          class="text-red text-xs">
+          <span>Preferred payment method is required</span>
+        </div>
       </div>
       <ng-container *ngIf="paymentInputPlaceholder === 'Bkash'">
         <div class="flex flex-col">

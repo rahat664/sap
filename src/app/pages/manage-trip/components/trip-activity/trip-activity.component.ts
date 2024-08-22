@@ -118,9 +118,10 @@ export class TripActivityComponent {
         }
       } else {
         this.imageToShow = [];
-        this.imageToShow.push([selectedEvent.urls]);
+        this.imageToShow.push(selectedEvent.urls);
       }
     }
+    console.log(this.imageToShow);
   }
 
   private addUnloadingPaginationWhenImageAreMoreThanThree(
@@ -139,8 +140,9 @@ export class TripActivityComponent {
         }
       } else {
         this.unloadImageToShow = [];
-        this.unloadImageToShow.push([selectedEvent.urls]);
+        this.unloadImageToShow.push(selectedEvent.urls);
       }
+      console.log(this.unloadImageToShow);
     }
   }
 }

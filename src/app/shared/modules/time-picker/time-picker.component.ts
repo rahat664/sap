@@ -200,7 +200,7 @@ export class TimePickerComponent {
   checkCanSwithToAm() {
     return !(
       this.currentHour > 12 &&
-      this.selectedDate.getDate() !== this.currentDate.getDate()
+      this.selectedDate.getDate() !== new Date().getDate()
     );
   }
 

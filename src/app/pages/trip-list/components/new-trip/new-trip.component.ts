@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CustomDatePickerComponent } from '../../../../shared/modules/custom-date-picker/custom-date-picker.component';
 import { GMapComponent } from '../../../../shared/modules/g-map/g-map.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -23,6 +23,9 @@ import {
   MatAutocompleteTrigger,
   MatOption,
 } from '@angular/material/autocomplete';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-new-trip',
@@ -52,6 +55,7 @@ import {
   styleUrl: './new-trip.component.scss',
 })
 export class NewTripComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   companySuggestions: any;
   isCustomerMenuOpened: boolean;
   customerName: string;
@@ -65,10 +69,17 @@ export class NewTripComponent implements OnInit {
   constructor(
     private customer: CustomerService,
     private service: TripService,
-    private router: Router
+    private router: Router,
+    private toastr: HandleToastrService
   ) {}
 
   ngOnInit(): void {
+    if (localStorage.getItem('backFromTemplateEditOrUpdate')) {
+      localStorage.removeItem('backFromTemplateEditOrUpdate');
+      this.dontClearLocalStorage = true;
+    } else {
+      this.dontClearLocalStorage = false;
+    }
     this.manageStore();
     if (this.isAdmin()) {
       const selectedCustomer = localStorage.getItem('selectedCustomer');
@@ -93,10 +104,8 @@ export class NewTripComponent implements OnInit {
   }
 
   isAdmin() {
-    return (
-      localStorage.getItem('role') === 'ROLE_ADMIN' ||
-      localStorage.getItem('role') === 'ROLE_KAM'
-    );
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
   }
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {
@@ -139,7 +148,11 @@ export class NewTripComponent implements OnInit {
   }
 
   getTripRoute(templatePoints: any) {
-    return templatePoints[0].pointName + ' to ' + templatePoints[1].pointName;
+    if (templatePoints[0].pointName && templatePoints[1].pointName) {
+      return templatePoints[0].pointName + ' to ' + templatePoints[1].pointName;
+    } else {
+      return '';
+    }
   }
 
   setTemplate(tripTemplate: any) {
@@ -249,5 +262,46 @@ export class NewTripComponent implements OnInit {
 
   onClickAddTemplate() {
     this.dontClearLocalStorage = true;
+  }
+
+  changeStatus(template, edit: string) {
+    if (edit === 'edit') {
+      this.dontClearLocalStorage = true;
+      localStorage.setItem('templateEdit', JSON.stringify(template));
+      this.router.navigateByUrl('update-trip-template');
+    } else {
+      this.dontClearLocalStorage = true;
+      this.dialog
+        .open(ConfirmDeleteComponent, {
+          width: '21.375rem',
+          data: {
+            title: 'Delete Template',
+            text: `Are you sure you want to delete template ${template.name} ?`,
+            buttonText: 'Delete',
+            template: template,
+          },
+        })
+        .afterClosed()
+        .subscribe(res => {
+          if (res === 'deleted') {
+            this.service.deleteTemplate(template.id).subscribe(
+              (res: any) => {
+                if (res.status === 'OK') {
+                  this.toastr.showSuccess('Template deleted successfully');
+                  this.getTripTemplate(
+                    JSON.parse(localStorage.getItem('selectedCustomer'))
+                      .customerCode
+                  );
+                } else {
+                  this.toastr.showError('Error deleting template');
+                }
+              },
+              (error: any) => {
+                this.toastr.showError('Error deleting template');
+              }
+            );
+          }
+        });
+    }
   }
 }

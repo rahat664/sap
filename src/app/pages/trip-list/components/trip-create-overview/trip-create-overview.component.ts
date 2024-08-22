@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { TripService } from '../../services/trip.service';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
@@ -55,6 +55,8 @@ export class TripCreateOverviewComponent {
           localStorage.removeItem('tripData');
           localStorage.removeItem('templateName');
           localStorage.removeItem('selectedCustomer');
+          localStorage.removeItem('isFromBackEdit');
+          localStorage.removeItem('isFromTemplate');
           const dialogRef = this.dialog
             .open(SuccessModalComponent, {
               width: '21.375rem',
@@ -65,7 +67,7 @@ export class TripCreateOverviewComponent {
                 res.data.length > 1
                   ? 'Your trip numbers are ' +
                     res.data[0] +
-                    ' - ' +
+                    '-' +
                     res.data[res.data.length - 1]?.split('-')[1]
                   : 'Your trip number is ' + res.data
               }
@@ -111,4 +113,23 @@ export class TripCreateOverviewComponent {
   protected readonly Number = Number;
   userName: string;
   userPhone: string;
+  protected readonly onclick = onclick;
+
+  onclickEdit() {
+    localStorage.setItem('isFromBackEdit', 'true');
+    localStorage.setItem('tripData', JSON.stringify(this.tripData));
+    this.router.navigate(['/trip-create/create']);
+  }
+
+  // back button functionality handle
+  @HostListener('window: popstate', ['$event'])
+  onPopState(event: any) {
+    localStorage.setItem('isFromBackEdit', 'true');
+    localStorage.setItem('tripData', JSON.stringify(this.tripData));
+  }
+
+  isAdmin() {
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
 }

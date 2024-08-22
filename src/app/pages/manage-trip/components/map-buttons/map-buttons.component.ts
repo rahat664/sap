@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 export class MapButtonsComponent {
   @Input() statusButtons!: any[];
   @Output() buttonClickEmitter: EventEmitter<any> = new EventEmitter();
+  @Input() triggerFromParent: boolean = false;
+  @Input() triggeredButtonName: string = '';
 
   getButtonColor(button: any) {
     switch (button.name) {
@@ -28,6 +30,20 @@ export class MapButtonsComponent {
         return 'bg-cancel';
       default:
         return 'bg-another';
+    }
+  }
+
+  ngOnChanges(simpleChanges: any) {
+    if (
+      simpleChanges.triggerFromParent?.currentValue === true &&
+      this.triggeredButtonName
+    ) {
+      this.statusButtons.forEach(statusButton => {
+        statusButton.isActive = false;
+      });
+      this.statusButtons.find(
+        statusButton => statusButton.name === this.triggeredButtonName
+      ).isActive = true;
     }
   }
 

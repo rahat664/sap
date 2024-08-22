@@ -51,7 +51,7 @@ export class CustomInputComponent implements OnInit {
   years: number[] = Array.from(
     { length: new Date().getFullYear() - 1980 + 1 },
     (_, i) => 1980 + i
-  );
+  ).reverse();
   selectedFromMonth: string; // Default selected month
   selectedFromDay: string; // Default selected day
   selectedFromYear: string; // Default selected year

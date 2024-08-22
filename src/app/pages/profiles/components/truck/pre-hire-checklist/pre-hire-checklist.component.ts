@@ -28,21 +28,64 @@ export class PreHireChecklistComponent implements OnInit {
     }
   }
 
-  ngOnChanges() {
-    this.getPreHireChecklistByTruckId(this.singleTruckId);
+  ngOnChanges(simpleChanges: any) {
+    const singleTruck = localStorage.getItem('truck');
+    if (simpleChanges.singleTruckId && !this.saveButtonEnabled) {
+      this.getPreHireChecklistByTruckId(JSON.parse(singleTruck).id);
+    } else {
+      this.getPreHireChecklist();
+    }
   }
 
   private getPreHireChecklist() {
+    this.preHireCheckList = [];
     this.service.getPreHireChecklist().subscribe((res: any) => {
-      this.preHireCheckList = res.data;
+      res.data.forEach(item => {
+        // categories by category
+        if (
+          !this.preHireCheckList.find(x => x.categoryName === item.category)
+        ) {
+          this.preHireCheckList.push({
+            categoryName: item.category,
+            items: [
+              {
+                id: item.id,
+                name: item.name,
+                status: item.status,
+                category: item.category,
+              },
+            ],
+          });
+        } else {
+          // items by category
+          this.preHireCheckList.forEach(category => {
+            if (category.categoryName === item.category) {
+              // check if item already exists
+              const itemExists = category.items.find(x => x.id === item.id);
+              if (!itemExists) {
+                category.items.push({
+                  id: item.id,
+                  name: item.name,
+                  status: item.status,
+                  category: item.category,
+                });
+              } else {
+                itemExists.status = item.status;
+              }
+            }
+          });
+        }
+      });
     });
   }
 
   onChange($event: any, id: number) {
-    this.preHireCheckList.forEach(item => {
-      if (item.id === id) {
-        this.object[item.id] = $event.target.value;
-      }
+    this.preHireCheckList.forEach(items => {
+      items.items.forEach(item => {
+        if (item.id === id) {
+          this.object[item.id] = $event.target.value;
+        }
+      });
     });
   }
 
@@ -53,8 +96,57 @@ export class PreHireChecklistComponent implements OnInit {
   }
 
   getPreHireChecklistByTruckId(truckId: number) {
+    this.preHireCheckList = [];
     this.service.getPreHireChecklist(truckId).subscribe((res: any) => {
-      this.preHireCheckList = res.data;
+      res.data.forEach(item => {
+        // categories by category
+        if (
+          !this.preHireCheckList.find(x => x.categoryName === item.category)
+        ) {
+          this.preHireCheckList.push({
+            categoryName: item.category,
+            items: [
+              {
+                id: item.id,
+                name: item.name,
+                status: item.status,
+                category: item.category,
+              },
+            ],
+          });
+        } else {
+          // items by category
+          this.preHireCheckList.forEach(category => {
+            if (category.categoryName === item.category) {
+              // check if item already exists
+              const itemExists = category.items.find(x => x.id === item.id);
+              if (!itemExists) {
+                category.items.push({
+                  id: item.id,
+                  name: item.name,
+                  status: item.status,
+                  category: item.category,
+                });
+              } else {
+                itemExists.status = item.status;
+              }
+            }
+          });
+        }
+      });
     });
+  }
+
+  getChecklistPosition(i: number, j: number) {
+    if (i == 0) {
+      return `${j + 1}`;
+    } else {
+      this.preHireCheckList.forEach((category, index) => {
+        if (index < i) {
+          j += category.items.length;
+        }
+      });
+      return `${j + 1}`;
+    }
   }
 }

@@ -39,7 +39,7 @@ export class AuthEffects {
           localStorage.setItem('email', response.data.email);
           localStorage.setItem('name', response.data.name);
           localStorage.setItem('image', response.data.image || '');
-          localStorage.setItem('role', response.data.roles[0]);
+          localStorage.setItem('role', JSON.stringify(response.data.roles));
           localStorage.setItem('userPhoneNumber', response.data.phone);
           // Change to your desired route
           this.user.getUserPermissions().subscribe((permissions: any) => {

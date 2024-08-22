@@ -204,7 +204,10 @@
       <ng-container *ngIf="!loading">
         <tr *ngFor="let trip of tripList; index as i">
           <td class="whitespace-nowrap">
-            <span class="text-blue">{{ trip.tripId }}</span>
+            <a class="text-blue cursor-pointer"
+               (click)="onClickTripNumber(trip.tripId)">
+              {{ trip.tripId }}
+            </a>
           </td>
           <td class="whitespace-nowrap">
             {{ trip.tripStartDatetime | date: 'dd MMM yyyy' }}

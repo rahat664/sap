@@ -4,7 +4,7 @@ import {
   MatAutocompleteTrigger,
   MatOption,
 } from '@angular/material/autocomplete';
-import { MatFormField } from '@angular/material/form-field';
+import { MatError, MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import {
   FormBuilder,
@@ -34,6 +34,7 @@ import { TripService } from '../../../trip-list/services/trip.service';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { DatePipe, NgIf } from '@angular/common';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-dialog-data',
@@ -52,6 +53,7 @@ import { ErrorModalComponent } from '../../../../shared/modules/error-modal/erro
     MatDialogClose,
     MatSelect,
     NgIf,
+    MatError,
   ],
   templateUrl: './dialog-data.component.html',
   styleUrl: './dialog-data.component.scss',
@@ -67,7 +69,8 @@ export class DialogDataComponent {
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private trip: TripService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private toaster: HandleToastrService
   ) {
     this.tripUpdateForm = this.fb.group({
       transporterCode: ['', Validators.required],
@@ -118,16 +121,19 @@ export class DialogDataComponent {
   }
 
   onClickTransporterSearchSuggestion(option: any) {
+    this.tripUpdateForm.get('transporterCode').setValue(option.userId);
     this.tripUpdateForm.get('transporterName').setValue(option.name);
     this.tripUpdateForm.get('transporterPhone').setValue(option.phone);
   }
 
   onClickDriverSearchSuggestion(option: any) {
+    this.tripUpdateForm.get('driverCode').setValue(option.userId);
     this.tripUpdateForm.get('driverName').setValue(option.name);
     this.tripUpdateForm.get('driverPhone').setValue(option.phone);
   }
 
   onClickHelperSearchSuggestion(option: any) {
+    this.tripUpdateForm.get('helperCode').setValue(option.userId);
     this.tripUpdateForm.get('helperName').setValue(option.name);
     this.tripUpdateForm.get('helperPhone').setValue(option.phone);
   }
@@ -315,6 +321,9 @@ export class DialogDataComponent {
             });
           }
         );
+      } else {
+        this.tripUpdateForm.markAllAsTouched();
+        this.toaster.showError('Please fill all the required fields');
       }
     } else if (buttonName === 'Start Trip') {
       if (
@@ -324,6 +333,161 @@ export class DialogDataComponent {
         this.tripUpdateForm.get('truckId').valid
       ) {
         const body: any = {};
+        this.tripUpdateForm.get('transporterCode').clearValidators();
+        this.tripUpdateForm.get('transporterName').clearValidators();
+        this.tripUpdateForm.get('transporterPhone').clearValidators();
+
+        this.tripUpdateForm.get('truckId').setValidators(Validators.required);
+        this.tripUpdateForm
+          .get('driverCode')
+          .setValidators(Validators.required);
+        this.tripUpdateForm
+          .get('driverName')
+          .setValidators(Validators.required);
+        this.tripUpdateForm
+          .get('driverPhone')
+          .setValidators(Validators.required);
+        this.tripUpdateForm.get('transporterCode').updateValueAndValidity();
+        this.tripUpdateForm.get('transporterName').updateValueAndValidity();
+        this.tripUpdateForm.get('transporterPhone').updateValueAndValidity();
+        this.tripUpdateForm.get('truckId').updateValueAndValidity();
+        this.tripUpdateForm.get('driverCode').updateValueAndValidity();
+        this.tripUpdateForm.get('driverName').updateValueAndValidity();
+        this.tripUpdateForm.get('driverPhone').updateValueAndValidity();
+        if (this.tripUpdateForm.valid) {
+          body.driverCode = this.tripUpdateForm.get('driverCode').value;
+          body.driverName = this.tripUpdateForm.get('driverName').value;
+          body.driverPhone = this.tripUpdateForm.get('driverPhone').value;
+          body.helperCode = this.tripUpdateForm.get('helperCode').value;
+          body.helperName = this.tripUpdateForm.get('helperName').value;
+          body.helperPhone = this.tripUpdateForm.get('helperPhone').value;
+          body.truckId = this.tripUpdateForm.get('truckId').value;
+          // body.status = 'Running';
+          body.tripStartedAt = this.datePipe.transform(
+            new Date(),
+            'yyyy-MM-dd hh:mm:ss'
+          );
+          this.trip.updateTrip(body, this.data.trip?.tripId).subscribe(
+            (res: any) => {
+              if (res.status == 'OK') {
+                this.dialogRef.close('updated');
+                this.dialog
+                  .open(SuccessModalComponent, {
+                    width: '21.375rem',
+                    data: {
+                      title: 'Success',
+                      text: `Trip trip has started. Your trip no is ${res.data.tripId}`,
+                      buttonText: 'Okay',
+                    },
+                  })
+                  .afterClosed()
+                  .subscribe(() => {
+                    this.trip.reloadManageTripPage.next(true);
+                  });
+              } else if (res.status == 'BAD REQUEST') {
+                this.dialog.open(ErrorModalComponent, {
+                  width: '21.375rem',
+                  data: {
+                    title: 'Error',
+                    text: res.message,
+                    buttonText: 'Okay',
+                  },
+                });
+              } else {
+                this.dialog.open(ErrorModalComponent, {
+                  width: '21.375rem',
+                  data: {
+                    title: 'Error',
+                    text: 'Something went wrong',
+                    buttonText: 'Okay',
+                  },
+                });
+              }
+            },
+            error => {
+              this.dialog.open(ErrorModalComponent, {
+                width: '21.375rem',
+                data: {
+                  title: 'Error',
+                  text: error.error.message,
+                  buttonText: 'Okay',
+                },
+              });
+            }
+          );
+        } else {
+          this.tripUpdateForm.markAllAsTouched();
+          this.toaster.showError('Please fill all the required fields');
+        }
+      }
+    } else if (buttonName.includes('Assign')) {
+      this.tripUpdateForm.get('transporterCode').clearValidators();
+      this.tripUpdateForm.get('transporterName').clearValidators();
+      this.tripUpdateForm.get('transporterPhone').clearValidators();
+      if (buttonName === 'Assign Truck') {
+        this.tripUpdateForm.get('truckId').setValidators(Validators.required);
+        this.tripUpdateForm.get('driverCode').clearValidators();
+        this.tripUpdateForm.get('driverName').clearValidators();
+        this.tripUpdateForm.get('driverPhone').clearValidators();
+      } else if (buttonName === 'Assign Driver') {
+        this.tripUpdateForm.get('truckId').clearValidators();
+        this.tripUpdateForm
+          .get('driverCode')
+          .setValidators(Validators.required);
+        this.tripUpdateForm
+          .get('driverName')
+          .setValidators(Validators.required);
+        this.tripUpdateForm
+          .get('driverPhone')
+          .setValidators(Validators.required);
+      } else {
+        this.tripUpdateForm.get('truckId').setValidators(Validators.required);
+        this.tripUpdateForm
+          .get('driverCode')
+          .setValidators(Validators.required);
+        this.tripUpdateForm
+          .get('driverName')
+          .setValidators(Validators.required);
+        this.tripUpdateForm
+          .get('driverPhone')
+          .setValidators(Validators.required);
+        this.tripUpdateForm.get('transporterCode').updateValueAndValidity();
+        this.tripUpdateForm.get('transporterName').updateValueAndValidity();
+        this.tripUpdateForm.get('transporterPhone').updateValueAndValidity();
+        this.tripUpdateForm.get('truckId').updateValueAndValidity();
+        this.tripUpdateForm.get('driverCode').updateValueAndValidity();
+        this.tripUpdateForm.get('driverName').updateValueAndValidity();
+        this.tripUpdateForm.get('driverPhone').updateValueAndValidity();
+        if (
+          this.tripUpdateForm.get('truckId').valid ||
+          this.tripUpdateForm.get('driverCode').valid
+        ) {
+          this.tripUpdateForm.get('truckId').clearValidators();
+          this.tripUpdateForm.get('driverCode').clearValidators();
+          this.tripUpdateForm.get('driverName').clearValidators();
+          this.tripUpdateForm.get('driverPhone').clearValidators();
+        } else {
+          this.tripUpdateForm.get('truckId').setValidators(Validators.required);
+          this.tripUpdateForm
+            .get('driverCode')
+            .setValidators(Validators.required);
+          this.tripUpdateForm
+            .get('driverName')
+            .setValidators(Validators.required);
+          this.tripUpdateForm
+            .get('driverPhone')
+            .setValidators(Validators.required);
+        }
+      }
+      this.tripUpdateForm.get('transporterCode').updateValueAndValidity();
+      this.tripUpdateForm.get('transporterName').updateValueAndValidity();
+      this.tripUpdateForm.get('transporterPhone').updateValueAndValidity();
+      this.tripUpdateForm.get('truckId').updateValueAndValidity();
+      this.tripUpdateForm.get('driverCode').updateValueAndValidity();
+      this.tripUpdateForm.get('driverName').updateValueAndValidity();
+      this.tripUpdateForm.get('driverPhone').updateValueAndValidity();
+      if (this.tripUpdateForm.valid) {
+        const body: any = {};
         body.driverCode = this.tripUpdateForm.get('driverCode').value;
         body.driverName = this.tripUpdateForm.get('driverName').value;
         body.driverPhone = this.tripUpdateForm.get('driverPhone').value;
@@ -331,12 +495,7 @@ export class DialogDataComponent {
         body.helperName = this.tripUpdateForm.get('helperName').value;
         body.helperPhone = this.tripUpdateForm.get('helperPhone').value;
         body.truckId = this.tripUpdateForm.get('truckId').value;
-        // body.status = 'Running';
-        body.tripStartedAt = this.datePipe.transform(
-          new Date(),
-          'yyyy-MM-dd hh:mm:ss'
-        );
-        this.trip.updateTrip(body, this.data.trip?.tripId).subscribe(
+        this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
           (res: any) => {
             if (res.status == 'OK') {
               this.dialogRef.close('updated');
@@ -345,7 +504,7 @@ export class DialogDataComponent {
                   width: '21.375rem',
                   data: {
                     title: 'Success',
-                    text: `Trip trip has started. Your trip no is ${res.data.tripId}`,
+                    text: this.getAssignedText(res.data),
                     buttonText: 'Okay',
                   },
                 })
@@ -384,64 +543,10 @@ export class DialogDataComponent {
             });
           }
         );
+      } else {
+        this.tripUpdateForm.markAllAsTouched();
+        this.toaster.showError('Please fill all the required fields');
       }
-    } else if (buttonName.includes('Assign')) {
-      const body: any = {};
-      body.driverCode = this.tripUpdateForm.get('driverCode').value;
-      body.driverName = this.tripUpdateForm.get('driverName').value;
-      body.driverPhone = this.tripUpdateForm.get('driverPhone').value;
-      body.helperCode = this.tripUpdateForm.get('helperCode').value;
-      body.helperName = this.tripUpdateForm.get('helperName').value;
-      body.helperPhone = this.tripUpdateForm.get('helperPhone').value;
-      body.truckId = this.tripUpdateForm.get('truckId').value;
-      this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
-        (res: any) => {
-          if (res.status == 'OK') {
-            this.dialogRef.close('updated');
-            this.dialog
-              .open(SuccessModalComponent, {
-                width: '21.375rem',
-                data: {
-                  title: 'Success',
-                  text: this.getAssignedText(res.data),
-                  buttonText: 'Okay',
-                },
-              })
-              .afterClosed()
-              .subscribe(() => {
-                this.trip.reloadManageTripPage.next(true);
-              });
-          } else if (res.status == 'BAD REQUEST') {
-            this.dialog.open(ErrorModalComponent, {
-              width: '21.375rem',
-              data: {
-                title: 'Error',
-                text: res.message,
-                buttonText: 'Okay',
-              },
-            });
-          } else {
-            this.dialog.open(ErrorModalComponent, {
-              width: '21.375rem',
-              data: {
-                title: 'Error',
-                text: 'Something went wrong',
-                buttonText: 'Okay',
-              },
-            });
-          }
-        },
-        error => {
-          this.dialog.open(ErrorModalComponent, {
-            width: '21.375rem',
-            data: {
-              title: 'Error',
-              text: error.error.message,
-              buttonText: 'Okay',
-            },
-          });
-        }
-      );
     }
   }
 
@@ -522,13 +627,7 @@ export class DialogDataComponent {
   }
 
   getButtonName() {
-    if (this.data.buttonName === 'Book Trip') {
-      return 'Book Trip';
-    } else if (this.data.buttonName === 'Start Trip') {
-      return 'Start Trip';
-    } else {
-      return 'Complete Trip';
-    }
+    return this.data.buttonName;
   }
 
   private getBookedText(res: any) {
