@@ -26,6 +26,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 
 @Component({
   selector: 'app-new-trip',
@@ -50,6 +51,7 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
     MatAutocomplete,
     MatOption,
     MatAutocompleteTrigger,
+    GiveMaxHeightDirective,
   ],
   templateUrl: './new-trip.component.html',
   styleUrl: './new-trip.component.scss',
@@ -65,6 +67,8 @@ export class NewTripComponent implements OnInit {
   customerSelectMenuOpened: boolean = false;
   isTemplateEnabled: boolean;
   dontClearLocalStorage: boolean;
+  totalPages: number;
+  height: string;
 
   constructor(
     private customer: CustomerService,
@@ -303,5 +307,9 @@ export class NewTripComponent implements OnInit {
           }
         });
     }
+  }
+
+  onBottom($event: boolean) {
+    
   }
 }

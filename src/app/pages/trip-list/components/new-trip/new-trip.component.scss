@@ -3,12 +3,12 @@ thead {
 }
 
 .custom-borders {
-  @apply h-[0.1rem] p-0 bg-input-hint;
+  @apply h-[2px] p-0 bg-[#A1D5DE];
+}
+tbody > tr {
+  @apply border-b border-[#E8F1F3] last:border-b-0;
 }
 
-tbody > tr {
-  @apply border-b border-input-hint last:border-b-0;
-}
 
 th,
 td {

@@ -33,27 +33,13 @@
         </button>
       </div>
     </div>
-    <!--    <div class=" w-full bg-white rounded-lg">-->
-    <!--      <button (click)="onClickFilterOpened()" class="flex  px-2 py-1 space-x-3 items-center w-full "-->
-    <!--              [ngClass]="{'border-b-2 border-[#0CD5F0]': filterOpened}">-->
-    <!--        <i class="fas fa-caret-down text-input-hint text-xl"></i>-->
-    <!--        <span class="text-not-black text-[0.875rem]">Filter-->
-    <!--        <span *ngIf="getFilterLength() > 0">({{ statusFilter + roleFilter }})</span>-->
-    <!--        <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3">|</span>-->
-    <!--        <a (click)="onClearFilter()" *ngIf="getFilterLength() > 0" class="text-red">Clear all</a>-->
-    <!--      </span>-->
-    <!--      </button>-->
-    <!--      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">-->
-
-    <!--      </div>-->
-    <!--    </div>-->
   </div>
   <div
     appGiveMaxHeight
     [anotherItemsHeight]="height"
     (inBottomEnd)="onScrollEnd($event)"
     class="bg-white relative w-full rounded-lg overflow-auto">
-    <table class="table-auto w-full text-[0.875rem]">
+    <table class="table-auto w-full rounded-lg text-[0.875rem]">
       <thead>
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left">Company name</th>

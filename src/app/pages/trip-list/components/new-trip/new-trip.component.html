@@ -47,7 +47,11 @@
               class="border border-primary text-primary font-semibold rounded-lg px-4 py-2">Add Template
       </button>
     </div>
-    <div>
+    <div appGiveMaxHeight
+         (inBottomEnd)="onBottom($event)"
+         [totalPage]="totalPages"
+         [anotherItemsHeight]="height"
+         class="bg-white w-full rounded-lg overflow-auto relative">
       <table class="table-auto w-full text-[0.875rem]">
         <thead>
         <tr>
