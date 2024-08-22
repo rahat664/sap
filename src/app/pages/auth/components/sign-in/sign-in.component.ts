@@ -15,11 +15,13 @@ import { AuthState } from '../../ngrx/auth.reducer';
 import { Store } from '@ngrx/store';
 import { selectAuthError, selectAuthLoading } from '../../ngrx/auth.selectors';
 import { login } from '../../ngrx/auth.action';
+import { MatError, MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, MatFormField, MatInput, MatError],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.scss',
 })

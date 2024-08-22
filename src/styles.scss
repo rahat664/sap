@@ -191,12 +191,35 @@ input::-webkit-outer-spin-button {
 }
 
 .mat-mdc-autocomplete-panel {
-  color: #242424;
+  color: #242424 !important;
   background-color: #F5FBFC !important;
   box-shadow: none !important;
   border: 1px solid #A5B8BB;
   border-radius: 0.5rem !important;
   font-size: 0.875rem !important;
+  padding: 0 !important;
 }
+.mat-mdc-select-panel{
+  color: #242424 !important;
+  background-color: #F5FBFC !important;
+  box-shadow: none !important;
+  border: 1px solid #A5B8BB;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+  padding: 0 !important;
+}
+
+.error {
+  outline: 1px solid #F7CAD0;
+  border-radius: 0.5rem;
+}
+
+::ng-deep .error .mat-mdc-text-field-wrapper {
+  width: 100%;
+  border-radius: 0.5rem !important;
+  background-color: #FFFAFB !important;
+  height: 3.5rem !important;
+}
+
 
 

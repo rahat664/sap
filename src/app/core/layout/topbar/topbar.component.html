@@ -20,17 +20,6 @@
             class="notPreview"
             alt="Shamolima Logo" />
         </a>
-        <!--        <form class="hidden lg:block ml-4 w-[36rem]">-->
-        <!--          <label for="topbar-search" class="sr-only">Search</label>-->
-        <!--          <div class="relative">-->
-        <!--            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">-->
-        <!--              <i class="far fa-search text-gray-500"></i>-->
-        <!--            </div>-->
-        <!--            <input type="text" name="email" id="topbar-search"-->
-        <!--                   class="border-none bg-input  text-web-text-secondary sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full pl-10 p-2.5"-->
-        <!--                   placeholder="Search" (keyup)="onSearch($event)">-->
-        <!--          </div>-->
-        <!--        </form>-->
         <ul>
           <li *ngFor="let result of searchSuggestions">
             <a>{{ result.name }}</a>
@@ -53,7 +42,7 @@
           <img loading="lazy" class="notPreview" src="assets/svg/logout.svg" alt="logout">
         </button>
 
-        <button class="flex items-center" (click)="isProfileOpened = !isProfileOpened">
+        <button class="flex items-center" [matMenuTriggerFor]="menu" (click)="isProfileOpened = !isProfileOpened">
           <div
             id="dropdownDefaultButton"
             class="hidden lg:flex space-x-2 items-center font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600"
@@ -74,22 +63,19 @@
               class="fas fa-caret-up ml-2 text-not-black"></i>
           </div>
         </button>
+        <mat-menu #menu="matMenu" class="w-full">
+          <button
+            (click)="onClickLogOut()" mat-menu-item>
+            <div class="flex space-x-2 items-center">
+              <img
+                class="notPreview"
+                src="./assets/svg/user-inactive.svg"
+                alt="" />
+              <span>Logout</span>
+            </div>
+          </button>
+        </mat-menu>
       </div>
     </div>
-  </div>
-  <div
-    appGetOutsideModalClick
-    (clickOutside)="isProfileOpened = !$event"
-    *ngIf="isProfileOpened"
-    id="dropdown"
-    class="z-10 absolute top-full right-0 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-    <ul
-      class="py text-sm text-gray-700 dark:text-gray-200"
-      aria-labelledby="dropdownDefaultButton">
-      <li
-        class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-        <a (click)="onClickLogOut()">Sign Out</a>
-      </li>
-    </ul>
   </div>
 </nav>

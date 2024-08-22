@@ -1,130 +1,98 @@
-<div
-  class="relative"
-  appGetOutsideModalClick
-  (clickOutside)="itemsOpened = !$event">
-  <input
-    readonly
-    id="customInputSelect"
-    type="text"
-    placeholder="{{ inputPlaceholder }}"
-    [(ngModel)]="inputSearch"
-    class="appearance-none cursor-pointer block w-full px-4 py-4 rounded-lg outline-none ring-none  border-none bg-{{
-      backgroundColor
-    }}" />
-  <div
-    class="absolute inset-y-0 right-2 flex items-center pr-2 pointer-events-none">
-    <i class="fas fa-angle-down {{inputSearch ? 'text-not-black': 'text-input-hint'}}"></i>
-  </div>
-  <div
-    *ngIf="itemsOpened"
-    [ngClass]="{ 'border-r-0 rounded-r-none': customOpened }"
-    class="absolute z-50 w-full rounded-lg shadow-lg bg-input border border-gray-300">
-    <div class="py-1 relative max-h-48 overflow-y-scroll">
-      <ng-container *ngIf="options?.length > 0">
-        <button
-          type="button"
-          [ngClass]="{ 'bg-active': option.selected }"
-          *ngFor="let option of options"
-          (click)="onClickOption(option.id)"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-active text-left w-full cursor-pointer">
-          {{ option.showname ? option.showname : option.value }}
-        </button>
-      </ng-container>
-      <ng-container *ngIf="options?.length <= 0">
+<div>
+  <mat-form-field class="w-full" appearance="outline">
+    <mat-select  #select (selectionChange)="onClickOption($event, select)"   [placeholder]="inputPlaceholder">
+      @for (option of options; track option) {
+        <mat-option  [value]="option.id">{{ option.showname ? option.showname : option.value }}</mat-option>
         <div
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
-          No data found
-        </div>
-      </ng-container>
-    </div>
-    <div
-      *ngIf="customOpened"
-      class="absolute top-0 left-full w-[30rem] bg-white p-4 rounded-r-lg border-l-none border border-gray-300 text-[0.875rem]">
-      <div>
-        <div class="flex justify-between items-center">
-          <h1>Custom Date Range</h1>
-          <a (click)="onClickApply()" class="cursor-pointer text-link">Apply</a>
-        </div>
-        <div class="flex flex-col space-y-3">
-          <div class="flex flex-col space-y-1">
-            <label class="font-semibold" for="fromDate">From</label>
-            <div id="fromDate" class="grid grid-cols-3 gap-4">
-              <ng-select
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="Month"
-                [ngModel]="selectedFromMonthInString"
-                (ngModelChange)="onFromMonthChange($event)">
-                <ng-option *ngFor="let month of months" [value]="month">{{
-                    month
-                  }}
-                </ng-option>
-              </ng-select>
-              <ng-select
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="Day"
-                [ngModel]="selectedFromDay"
-                (ngModelChange)="onFromDayChange($event)">
-                <ng-option *ngFor="let day of days" [value]="day">{{
-                    day
-                  }}
-                </ng-option>
-              </ng-select>
-              <ng-select
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="Year"
-                [ngModel]="selectedFromYear"
-                (ngModelChange)="onFromYearChange($event)">
-                <ng-option *ngFor="let year of years" [value]="year">{{
-                    year
-                  }}
-                </ng-option>
-              </ng-select>
+          *ngIf="customOpened"
+          class="absolute top-0 h-full left-full w-[30rem] bg-input p-4 rounded-lg border border-input-hint text-[0.875rem]">
+          <div>
+            <div class="flex justify-between items-center">
+              <h1>Custom Date Range</h1>
+              <a (click)="onClickApply(select)" class="cursor-pointer text-link">Apply</a>
             </div>
-          </div>
+            <div class="flex flex-col space-y-3">
+              <div class="flex flex-col space-y-1">
+                <label class="font-semibold" for="fromDate">From</label>
+                <div id="fromDate" class="grid grid-cols-3 gap-4">
+                  <ng-select
+                    [searchable]="false"
+                    [clearable]="false"
+                    placeholder="Month"
+                    [ngModel]="selectedFromMonthInString"
+                    (ngModelChange)="onFromMonthChange($event)">
+                    <ng-option *ngFor="let month of months" [value]="month">{{
+                        month
+                      }}
+                    </ng-option>
+                  </ng-select>
+                  <ng-select
+                    [searchable]="false"
+                    [clearable]="false"
+                    placeholder="Day"
+                    [ngModel]="selectedFromDay"
+                    (ngModelChange)="onFromDayChange($event)">
+                    <ng-option *ngFor="let day of days" [value]="day">{{
+                        day
+                      }}
+                    </ng-option>
+                  </ng-select>
+                  <ng-select
+                    [searchable]="false"
+                    [clearable]="false"
+                    placeholder="Year"
+                    [ngModel]="selectedFromYear"
+                    (ngModelChange)="onFromYearChange($event)">
+                    <ng-option *ngFor="let year of years" [value]="year">{{
+                        year
+                      }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
 
-          <div class="flex flex-col space-y-1">
-            <label class="font-semibold" for="toDate">To</label>
-            <div id="toDate" class="grid grid-cols-3 gap-4">
-              <ng-select
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="Month"
-                [ngModel]="selectedToMonthInString"
-                (ngModelChange)="onToMonthChange($event)">
-                <ng-option *ngFor="let month of months" [value]="month">{{
-                    month
-                  }}
-                </ng-option>
-              </ng-select>
-              <ng-select
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="Day"
-                [ngModel]="selectedToDay"
-                (ngModelChange)="onToDayChange($event)">
-                <ng-option *ngFor="let day of days" [value]="day">{{
-                    day
-                  }}
-                </ng-option>
-              </ng-select>
-              <ng-select
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="Year"
-                [ngModel]="selectedToYear"
-                (ngModelChange)="onToYearChange($event)">
-                <ng-option *ngFor="let year of years" [value]="year">{{
-                    year
-                  }}
-                </ng-option>
-              </ng-select>
+              <div class="flex flex-col space-y-1">
+                <label class="font-semibold" for="toDate">To</label>
+                <div id="toDate" class="grid grid-cols-3 gap-4">
+                  <ng-select
+                    [searchable]="false"
+                    [clearable]="false"
+                    placeholder="Month"
+                    [ngModel]="selectedToMonthInString"
+                    (ngModelChange)="onToMonthChange($event)">
+                    <ng-option *ngFor="let month of months" [value]="month">{{
+                        month
+                      }}
+                    </ng-option>
+                  </ng-select>
+                  <ng-select
+                    [searchable]="false"
+                    [clearable]="false"
+                    placeholder="Day"
+                    [ngModel]="selectedToDay"
+                    (ngModelChange)="onToDayChange($event)">
+                    <ng-option *ngFor="let day of days" [value]="day">{{
+                        day
+                      }}
+                    </ng-option>
+                  </ng-select>
+                  <ng-select
+                    [searchable]="false"
+                    [clearable]="false"
+                    placeholder="Year"
+                    [ngModel]="selectedToYear"
+                    (ngModelChange)="onToYearChange($event)">
+                    <ng-option *ngFor="let year of years" [value]="year">{{
+                        year
+                      }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
+      }
+    </mat-select>
+  </mat-form-field>
 </div>

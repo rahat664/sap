@@ -13,45 +13,43 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full">
         <div class="mb-3 flex flex-col text-secondary w-full">
           <label for="email" class="form-label">User Email</label>
-          <input
-            [autocomplete]="false"
-            formControlName="email"
-            type="email"
-            class="bg-input rounded-lg border-none px-4 py-4"
-            placeholder="User Email"
-            name="email"
-            id="email" />
+          <mat-form-field appearance="outline" id="email"
+                          [class.error]="loginForm.get('email').invalid && loginForm.get('email').touched"
+          >
+            <input  formControlName="email"  type="email"
+                    matInput
+                   placeholder="User Email">
+          </mat-form-field>
           <!--        error-message-->
-          <div id="emailError"
+          <mat-error id="emailError"
                *ngIf="email?.invalid && email?.touched"
-               class="text-red text-xs">
+               >
             {{ getEmailError() }}
-          </div>
+          </mat-error>
         </div>
         <div class="mb-3 flex flex-col text-secondary w-full">
           <label for="password" class="form-label">Password</label>
           <!--          password field with eye icon-->
           <div class="relative bg-input rounded-lg border-none">
-            <input
-              [autocomplete]="false"
-              formControlName="password"
-              type="password"
-              class="border-none bg-input rounded-lg outline-none px-4 py-4 w-full"
-              placeholder="Password"
-              name="password  "
-              id="password" />
+            <mat-form-field class="w-full" appearance="outline" id="password"
+                            [class.error]="loginForm.get('password').invalid && loginForm.get('password').touched"
+            >
+              <input  formControlName="password"  type="password"
+                      matInput
+                      placeholder="Password">
+            </mat-form-field>
             <i
               id="icon"
               class="fas fa-eye-slash absolute right-4 top-4 cursor-pointer"
               (click)="togglePassword()"></i>
           </div>
           <!--        error-message-->
-          <div
+          <mat-error
             id="passwordError"
             *ngIf="password?.invalid && (password?.dirty || password?.touched)"
-            class="text-red text-xs">
+          >
             <span>{{ getPasswordError() }}</span>
-          </div>
+          </mat-error>
         </div>
         <button [disabled]="" class="btn bg-primary text-white rounded-lg px-4 py-4 w-full">
           Login
