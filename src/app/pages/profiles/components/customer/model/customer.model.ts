@@ -12,4 +12,5 @@ export class CustomerModel {
   customerCode: string;
   user: any[];
   creationDate: any;
+  contactPerson: string;
 }

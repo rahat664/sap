@@ -88,9 +88,7 @@
             class="whitespace-nowrap">{{ customer.creationDate ? (customer.creationDate | date: 'dd MMM, yyyy') : '' }}
           </td>
           <td>
-            <ng-container *ngFor="let user of customer?.user">
-              <span>{{ user?.name }}</span>
-            </ng-container>
+            <span>{{ customer?.contactPerson }}</span>
           </td>
           <td>{{ customer.phone }}</td>
           <td>{{ customer.email }}</td>
