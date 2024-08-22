@@ -28,9 +28,9 @@ export class PreHireChecklistComponent implements OnInit {
     }
   }
 
-  ngOnChanges() {
+  ngOnChanges(simpleChanges: any) {
     const singleTruck = localStorage.getItem('truck');
-    if (singleTruck && !this.saveButtonEnabled) {
+    if (simpleChanges.singleTruckId && !this.saveButtonEnabled) {
       this.getPreHireChecklistByTruckId(JSON.parse(singleTruck).id);
     } else {
       this.getPreHireChecklist();

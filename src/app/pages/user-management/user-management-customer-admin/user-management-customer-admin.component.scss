@@ -1,0 +1,18 @@
+thead {
+  @apply sticky top-0;
+  background-color: white !important;
+  z-index: 30;
+}
+
+.border {
+  @apply h-[0.125rem] p-0 bg-[#A1D5DE];
+}
+
+tbody > tr {
+  @apply border-b border-[#A1D5DE] last:border-b-0;
+}
+
+th,
+td {
+  @apply p-4;
+}

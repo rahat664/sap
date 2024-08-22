@@ -69,4 +69,33 @@ export class CustomerService {
 
     return throwError(() => new Error(message));
   }
+
+  addCustomerUnderCompany(customerCode, body: any) {
+    return this.http.post(`${this.url}/${customerCode}/users`, body, {});
+  }
+
+  getCustomerUnderCompany(
+    customerCode: any,
+    page: any,
+    size: any,
+    status?: string,
+    filter?: string,
+    serach?: string
+  ) {
+    let apiUrl = `${this.url}/${customerCode}/users?page=${page}&size=${size}`;
+
+    if (status) {
+      apiUrl += `&status=${status}`;
+    }
+
+    if (filter) {
+      apiUrl += `&filter=${filter}`;
+    }
+
+    if (serach) {
+      apiUrl += `&search=${serach}`;
+    }
+
+    return this.http.get(apiUrl);
+  }
 }

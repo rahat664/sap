@@ -128,9 +128,7 @@ export class TripInfoComponent {
   }
 
   isAdmin() {
-    return (
-      localStorage.getItem('role') === 'ROLE_ADMIN' ||
-      localStorage.getItem('role') === 'ROLE_KAM'
-    );
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
   }
 }

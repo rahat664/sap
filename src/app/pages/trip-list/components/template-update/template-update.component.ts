@@ -85,14 +85,16 @@ export class TemplateUpdateComponent {
       this.templateId = JSON.parse(localStorage.getItem('templateEdit')).id;
       const template = JSON.parse(localStorage.getItem('templateEdit'));
       this.templateUpdateForm.get('name').setValue(template.name);
-      this.templateUpdateForm.get('categoryId').setValue(template.categoryId);
+      this.templateUpdateForm
+        .get('categoryId')
+        .setValue(template.vehicleCategory?.id);
       this.templateUpdateForm.get('numOfTrucks').setValue(template.numOfTrucks);
       this.templateUpdateForm.get('truckSize').setValue(template.truckSize);
       this.templateUpdateForm
         .get('truckCapacityInTon')
         .setValue(template.truckCapacityInTon);
-      this.templateUpdateForm.get('goodsId').setValue(template.goodsId);
-      this.templateUpdateForm.get('goodsName').setValue(template.goodsName);
+      this.templateUpdateForm.get('goodsId').setValue(template.good?.id);
+      this.templateUpdateForm.get('goodsName').setValue(template.good?.name);
       this.templateUpdateForm
         .get('customerRate')
         .setValue(template.customerRate);
@@ -476,6 +478,16 @@ export class TemplateUpdateComponent {
   private getVehicleTypeList() {
     this.service.getVehicleTypeList().subscribe((res: any) => {
       this.vehicleTypeList = res.data;
+      if (JSON.parse(localStorage.getItem('templateEdit'))) {
+        const selectedTemplate = JSON.parse(
+          localStorage.getItem('templateEdit')
+        );
+        this.vehicleTypeList.forEach((element: any) => {
+          if (element.id == selectedTemplate.vehicleCategory.id) {
+            element.selected = true;
+          }
+        });
+      }
     });
   }
 

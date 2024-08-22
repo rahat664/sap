@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './pages/auth/guards/auth.guard';
 import { isAlreadyLoggedInGuard } from './pages/auth/guards/is-already-logged-in.guard';
 import { roleGuard } from './pages/auth/guards/role.guard';
+import { customerGuard } from './pages/auth/guards/customer.guard';
 
 export const routes: Routes = [
   {
@@ -97,7 +98,16 @@ export const routes: Routes = [
       import('./pages/user-management/user-management.component').then(
         c => c.UserManagementComponent
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
+  },
+  {
+    path: 'user-management-customer',
+    title: 'User Management',
+    loadComponent: () =>
+      import(
+        './pages/user-management/user-management-customer-admin/user-management-customer-admin.component'
+      ).then(c => c.UserManagementCustomerAdminComponent),
+    canActivate: [authGuard, customerGuard],
   },
   {
     path: 'profile',

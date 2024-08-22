@@ -254,9 +254,11 @@ export class TruckComponent implements OnInit {
     this.getTruckList();
   }
 
-  onClickCheckList(truck: number) {
+  onClickCheckList(truck) {
     this.isCheckListOpened = true;
-    this.singleTruckId = truck;
+    this.singleTruckId = truck.id;
+    localStorage.removeItem('truck');
+    localStorage.setItem('truck', JSON.stringify(truck));
   }
 
   onClickAddTruck() {
