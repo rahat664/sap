@@ -121,8 +121,6 @@ export class UserManagementCustomerAdminComponent {
     this.getUserList();
   }
 
-  // TODO: 'Have to fix the issue with the status filter'
-
   onSelectStatus($event: number) {
     this.statusOpened = false;
     this.statusFilter = 1;
