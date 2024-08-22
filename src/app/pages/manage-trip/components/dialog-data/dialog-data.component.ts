@@ -451,6 +451,33 @@ export class DialogDataComponent {
         this.tripUpdateForm
           .get('driverPhone')
           .setValidators(Validators.required);
+        this.tripUpdateForm.get('transporterCode').updateValueAndValidity();
+        this.tripUpdateForm.get('transporterName').updateValueAndValidity();
+        this.tripUpdateForm.get('transporterPhone').updateValueAndValidity();
+        this.tripUpdateForm.get('truckId').updateValueAndValidity();
+        this.tripUpdateForm.get('driverCode').updateValueAndValidity();
+        this.tripUpdateForm.get('driverName').updateValueAndValidity();
+        this.tripUpdateForm.get('driverPhone').updateValueAndValidity();
+        if (
+          this.tripUpdateForm.get('truckId').valid ||
+          this.tripUpdateForm.get('driverCode').valid
+        ) {
+          this.tripUpdateForm.get('truckId').clearValidators();
+          this.tripUpdateForm.get('driverCode').clearValidators();
+          this.tripUpdateForm.get('driverName').clearValidators();
+          this.tripUpdateForm.get('driverPhone').clearValidators();
+        } else {
+          this.tripUpdateForm.get('truckId').setValidators(Validators.required);
+          this.tripUpdateForm
+            .get('driverCode')
+            .setValidators(Validators.required);
+          this.tripUpdateForm
+            .get('driverName')
+            .setValidators(Validators.required);
+          this.tripUpdateForm
+            .get('driverPhone')
+            .setValidators(Validators.required);
+        }
       }
       this.tripUpdateForm.get('transporterCode').updateValueAndValidity();
       this.tripUpdateForm.get('transporterName').updateValueAndValidity();
