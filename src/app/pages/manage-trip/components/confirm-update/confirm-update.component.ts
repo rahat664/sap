@@ -50,7 +50,6 @@ export class ConfirmUpdateComponent {
       }
       this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
         (res: any) => {
-          console.log(res);
           this.dialogRef.close('updated');
           if (res.status == 'OK') {
             this.dialog

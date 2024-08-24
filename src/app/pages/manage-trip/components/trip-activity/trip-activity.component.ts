@@ -114,14 +114,12 @@ export class TripActivityComponent {
         const dividedImages = Math.ceil(totalImages / 3);
         for (let i = 0; i < dividedImages; i++) {
           this.imageToShow.push(selectedEvent.urls.slice(i * 3, i * 3 + 3));
-          console.log(this.imageToShow);
         }
       } else {
         this.imageToShow = [];
         this.imageToShow.push(selectedEvent.urls);
       }
     }
-    console.log(this.imageToShow);
   }
 
   private addUnloadingPaginationWhenImageAreMoreThanThree(
@@ -142,7 +140,6 @@ export class TripActivityComponent {
         this.unloadImageToShow = [];
         this.unloadImageToShow.push(selectedEvent.urls);
       }
-      console.log(this.unloadImageToShow);
     }
   }
 }

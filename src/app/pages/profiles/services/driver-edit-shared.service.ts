@@ -227,7 +227,6 @@ export class DriverEditSharedService {
 
   onTruckUpdate() {
     if (this.truckUpdateForm.valid) {
-      console.log(this.deletedTruckFiles.length);
       if (this.deletedTruckFiles.length) {
         this.deleteTruckFile(this.deletedTruckFiles);
       } else {

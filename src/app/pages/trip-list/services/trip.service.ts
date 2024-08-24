@@ -32,7 +32,7 @@ export class TripService {
   cachedTruckCapacity: BehaviorSubject<any[]> = new BehaviorSubject([]);
   reloadManageTripPage: BehaviorSubject<boolean> = new BehaviorSubject(false);
   bottomHeight: BehaviorSubject<string> = new BehaviorSubject('0px');
-
+  anotherStatusCalled: BehaviorSubject<boolean> = new BehaviorSubject(false);
   constructor(private http: HttpClient) {}
 
   getTrips(

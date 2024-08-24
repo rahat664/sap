@@ -136,7 +136,6 @@ export class ManageTripComponent implements OnInit {
           this.updateTripList(trip);
         },
         error => {
-          console.error('Error fetching trips:', error);
           this.loading = false;
         }
       );
@@ -230,7 +229,6 @@ export class ManageTripComponent implements OnInit {
           };
         },
         error => {
-          console.error('Error fetching trip details:', error);
         }
       );
     }
@@ -311,7 +309,6 @@ export class ManageTripComponent implements OnInit {
           };
         },
         error => {
-          console.error('Error fetching truck trackers:', error);
         }
       );
     }

@@ -230,7 +230,6 @@ export class CustomInputComponent implements OnInit {
   }
 
   onClickOption($event, select: MatSelect) {
-    console.log($event.value)
     this.selection = $event.value
     this.selectedId.emit($event.value);
     if ($event.value === 99) {

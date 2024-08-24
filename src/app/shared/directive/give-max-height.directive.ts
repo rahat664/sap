@@ -6,8 +6,9 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output, SimpleChanges,
 } from '@angular/core';
+import { TripService } from '../../pages/trip-list/services/trip.service';
 
 @Directive({
   standalone: true,
@@ -17,14 +18,15 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
   @Input() anotherItemsHeight = '0px';
   @Input() totalPage: number = 0;
   @Output() elementHeight: EventEmitter<string> = new EventEmitter<string>();
+  @Input() anotherStatusCalled : boolean = false;
   @Output() inBottomEnd: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
-
   private topBarHeight = '110px';
   private mutationObserver: MutationObserver;
+  private debounceTimer: any;
 
-  constructor(private el: ElementRef) {
+  constructor(private el: ElementRef, private trip: TripService) {
     this.mutationObserver = new MutationObserver(() => {
       this.setMaxHeight();
     });
@@ -38,8 +40,17 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
     this.observeDOMChanges();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.anotherStatusCalled) {
+      this.inBottomEnd.emit(false);
+    }
+  }
+
   ngOnDestroy(): void {
     this.mutationObserver.disconnect();
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+    }
   }
 
   @HostListener('window:resize')
@@ -49,15 +60,13 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
 
   @HostListener('scroll', ['$event'])
   onScroll(event: any): void {
-    const target = event.target;
-    if (
-      target.offsetHeight + target.scrollTop >=
-      target.scrollHeight - (this.totalPage + 30)
-    ) {
-        this.inBottomEnd.emit(true);
-    } else {
-      this.inBottomEnd.emit(false);
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
     }
+
+    this.debounceTimer = setTimeout(() => {
+      this.checkScrollPosition(event);
+    }, 100); // Adjust the delay as needed
   }
 
   @HostListener('window:popstate', ['$event'])
@@ -79,5 +88,12 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
     const maxHeight = `calc(100vh - ${this.anotherItemsHeight} - ${this.topBarHeight})`;
     this.el.nativeElement.style.maxHeight = maxHeight;
     this.elementHeight.emit(maxHeight);
+  }
+
+  private checkScrollPosition(event: any): void {
+    this.anotherStatusCalled = false;
+    const target = event.target;
+    const isAtBottom = target.offsetHeight + target.scrollTop >= target.scrollHeight - this.totalPage;
+      this.inBottomEnd.emit(isAtBottom);
   }
 }

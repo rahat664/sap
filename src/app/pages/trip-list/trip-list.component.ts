@@ -96,6 +96,7 @@ export class TripListComponent implements OnInit {
   tripIdSuggestions: any[] = [];
   tripFilter: number = 0;
   size: number = 0;
+  anotherStatusCalled: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -117,7 +118,11 @@ export class TripListComponent implements OnInit {
     this.page = 0;
     this.size = 30;
     this.statusButtons.forEach(x => (x.isActive = x.name === 'All'));
+    this.service.anotherStatusCalled.next(true)
     this.getTripList();
+    this.service.anotherStatusCalled.subscribe((value)=> {
+      this.anotherStatusCalled = value
+    })
     this.generateDateOptionsArray();
   }
 
@@ -155,6 +160,7 @@ export class TripListComponent implements OnInit {
       this.page = 0;
       this.size = 30;
       this.loading = true;
+      this.service.anotherStatusCalled.next(true)
       this.getTripList();
     }
   }
@@ -202,6 +208,7 @@ export class TripListComponent implements OnInit {
       this.searchValue = '';
       this.page = 0;
       this.size = 30;
+      this.service.anotherStatusCalled.next(true)
       this.getTripList();
       this.searchFilter = 0;
     }
@@ -215,6 +222,7 @@ export class TripListComponent implements OnInit {
     this.isDateOpened = false;
     this.page = 0;
     this.size = 30;
+    this.service.anotherStatusCalled.next(true)
     this.getTripList();
   }
 
@@ -230,6 +238,7 @@ export class TripListComponent implements OnInit {
     this.tripSuggestions = [];
     this.isSearchedMenuOpened = false;
     this.size = 30;
+    this.service.anotherStatusCalled.next(true)
     this.getTripList();
   }
 
@@ -257,6 +266,7 @@ export class TripListComponent implements OnInit {
         item.value = 'Custom'
       }
     })
+    this.service.anotherStatusCalled.next(true)
     this.getTripList();
   }
 
@@ -266,6 +276,7 @@ export class TripListComponent implements OnInit {
     this.size = 30;
     this.status = tripStatus !== 'All' ? tripStatus : '';
     this.statusButtons.forEach(x => (x.isActive = x.name === tripStatus));
+    this.service.anotherStatusCalled.next(true)
     this.getTripList();
   }
 
@@ -294,11 +305,17 @@ export class TripListComponent implements OnInit {
   }
 
   onBottom($event: boolean) {
+    if (!$event) {
+      this.service.anotherStatusCalled.next(false)
+    }
     if ($event && this.page < this.totalPages - 1) {
-      this.page++;
-      this.size = 30;
-      this.loading = false;
-      this.getTripList();
+      if (this.anotherStatusCalled) {
+      } else {
+        this.page++;
+        this.size = 30;
+        this.loading = false;
+        this.getTripList();
+      }
     }
   }
 
@@ -340,6 +357,7 @@ export class TripListComponent implements OnInit {
       this.page = 0;
       this.size = 30;
       this.tripFilter = 0;
+      this.service.anotherStatusCalled.next(true)
       this.getTripList();
     }
   }
@@ -351,6 +369,7 @@ export class TripListComponent implements OnInit {
     this.tripIdSuggestions = [];
     this.isTripSearchedMenuOpened = false;
     this.loading = true;
+    this.service.anotherStatusCalled.next(true)
     this.getTripList();
   }
 

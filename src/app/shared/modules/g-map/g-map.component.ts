@@ -128,7 +128,6 @@ export class GMapComponent implements OnInit, OnChanges {
           this.map.googleMap.fitBounds(bound);
           this.updatePolylineWithTraffic(result);
         } else {
-          console.error('Directions request failed due to ', status);
         }
       });
     } else {
