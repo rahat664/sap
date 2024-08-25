@@ -9,7 +9,6 @@ import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/c
 import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
 import { driverFileType } from '../../customer/model/driver-file-type';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
-import { ConfirmModalComponent } from '../../../../../shared/modules/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-driver-details',
@@ -25,7 +24,6 @@ import { ConfirmModalComponent } from '../../../../../shared/modules/confirm-mod
     CreatePopupComponent,
     FileUploadPopupComponent,
     DatePipe,
-    ConfirmModalComponent,
   ],
   templateUrl: './driver-details.component.html',
   styleUrl: './driver-details.component.scss',

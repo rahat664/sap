@@ -15,6 +15,7 @@ import { roles } from '../models/role-file';
 import { ValidationService } from '../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 import { AlphabetOnlyDirective } from '../../../shared/directive/alphabet-only.directive';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-create',
@@ -43,6 +44,7 @@ export class UserCreateComponent implements OnInit {
   userModel: UserModel = new UserModel();
 
   constructor(
+    public dialogRef: MatDialogRef<UserCreateComponent>,
     private service: UserService,
     private validation: ValidationService,
     private fb: FormBuilder,
@@ -81,8 +83,8 @@ export class UserCreateComponent implements OnInit {
       this.userModel.department = this.userForm.get('role').value;
       this.userModel.designation = this.userForm.get('designation').value;
       this.service.addUser(this.userModel).subscribe((res: any) => {
-        this.formCreated.emit(true);
         if (res.status === 'OK') {
+          this.dialogRef.close(true);
           this.userForm.reset();
           this.toastr.showSuccess('User created successfully');
         } else {
@@ -147,5 +149,10 @@ export class UserCreateComponent implements OnInit {
 
   getPhoneErrorMessageWithTouch() {
     return this.validation.getErrorMessageWithTouch(this.userForm);
+  }
+
+  closeModal() {
+    this.dialogRef.close(false);
+    this.userForm.reset();
   }
 }

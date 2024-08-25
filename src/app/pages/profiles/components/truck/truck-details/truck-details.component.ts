@@ -15,7 +15,6 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
 import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checklist.component';
 import { fileUpload } from '../models/file-upload';
-import { ConfirmModalComponent } from '../../../../../shared/modules/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-truck-details',
@@ -34,7 +33,6 @@ import { ConfirmModalComponent } from '../../../../../shared/modules/confirm-mod
     ImageGalleryComponent,
     CheckListPopupComponent,
     PreHireChecklistComponent,
-    ConfirmModalComponent,
   ],
   templateUrl: './truck-details.component.html',
   styleUrl: './truck-details.component.scss',

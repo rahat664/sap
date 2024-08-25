@@ -5,8 +5,9 @@ thead {
 }
 
 .border {
-  @apply h-[2px] p-0 bg-[#A1D5DE];
+  @apply h-[1px] p-0 bg-[#A1D5DE];
 }
+
 tbody > tr {
   @apply border-b border-[#E8F1F3] last:border-b-0;
 }

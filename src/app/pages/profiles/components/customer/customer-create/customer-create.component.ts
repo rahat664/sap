@@ -18,6 +18,7 @@ import { CustomerService } from '../../../services/customer.service';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-customer-create',
@@ -38,7 +39,8 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private service: CustomerService,
     private toastr: HandleToastrService,
-    private validation: ValidationService
+    private validation: ValidationService,
+    public dialogRef: MatDialogRef<CustomerCreateComponent>
   ) {
     this.customerForm = this.fb.group({
       name: [
@@ -151,10 +153,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
         if (res.status == 'OK') {
           this.toastr.showSuccess('Customer created successfully');
           this.customerForm.reset();
-          this.formCreated.emit(true);
+          this.dialogRef.close(true);
         } else {
           this.toastr.showError(res.error.message);
-          this.formCreated.emit(true);
         }
       },
       (error: any) => {
@@ -259,5 +260,10 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     } else {
       return '';
     }
+  }
+
+  onClickClose() {
+    this.customerForm.reset();
+    this.dialogRef.close(false);
   }
 }

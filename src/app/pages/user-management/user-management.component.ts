@@ -1,6 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
-import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
@@ -13,13 +19,14 @@ import { roles } from './models/role-file';
 import { CreatePopupComponent } from '../../shared/modal/create-popup/create-popup.component';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 import { ValidationService } from '../../shared/services/validation/validation.service';
-import { ConfirmModalComponent } from '../../shared/modules/confirm-modal/confirm-modal.component';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { debounceTime } from 'rxjs';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmUpdateComponent } from '../manage-trip/components/confirm-update/confirm-update.component';
 
 @Component({
   selector: 'app-user-management',
@@ -28,17 +35,14 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule,
     MatMenuModule,
     CustomInputComponent,
-    NgForOf,
-    NgIf,
+    CommonModule,
     ReactiveFormsModule,
-    NgClass,
     GetClickEventDirective,
     GiveMaxHeightDirective,
     GetElementHeightDirective,
     CreatePopupComponent,
     UserCreateComponent,
     LoadingComponent,
-    ConfirmModalComponent,
     CheckTheHeightCrossMaxHeightOrNotDirective,
     DatePipe,
   ],
@@ -46,6 +50,7 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './user-management.component.scss',
 })
 export class UserManagementComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   filterOpened: boolean = true;
   statusFilter = 0;
   roleFilter = 0;
@@ -173,8 +178,15 @@ export class UserManagementComponent implements OnInit {
   }
 
   onClickAddUser() {
-    this.isOpen = true;
-    this.shared.closeInputSelect.next(false);
+    const dialogRef = this.dialog
+      .open(UserCreateComponent, {})
+      .afterClosed()
+      .subscribe(result => {
+        if (result) {
+          this.Users = [];
+          this.getUserList();
+        }
+      });
   }
 
   private getUserList() {
@@ -296,15 +308,21 @@ export class UserManagementComponent implements OnInit {
     this.status = status;
     this.buttonText = status;
     this.actionOpened = false;
-    if (status == 'Inactive') {
-      this.confirmOpened = true;
-    }
-    if (status == 'Active') {
-      this.confirmOpened = true;
-    }
-    if (status == 'Removed') {
-      this.confirmOpened = true;
-    }
+    this.dialog
+      .open(ConfirmUpdateComponent, {
+        width: '21.375rem',
+        data: {
+          title: 'Change Status',
+          text: `Are you sure you want to ${status} ${name}?`,
+          buttonText: status,
+        },
+      })
+      .afterClosed()
+      .subscribe((result: any) => {
+        if (result === 'updated') {
+          this.performChangeStatus();
+        }
+      });
   }
 
   onCreateUser($event: boolean) {
@@ -356,15 +374,6 @@ export class UserManagementComponent implements OnInit {
         this.toastr.showError(err);
       },
     });
-  }
-
-  onMaxHeightCross($event: boolean) {
-    // setTimeout(() => {
-    //   if (!$event && this.totalPages > 1 && this.page != 1) {
-    //     this.page = 1;
-    //     this.scrolledData();
-    //   }
-    // }, 1);
   }
 
   onKeyUpSearch($event: KeyboardEvent) {

@@ -16,6 +16,7 @@ import { ValidationService } from '../../../../../shared/services/validation/val
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-transporter-add',
@@ -44,7 +45,8 @@ export class TransporterAddComponent implements OnInit {
     private validation: ValidationService,
     private toastr: HandleToastrService,
     private fb: FormBuilder,
-    private shared: DriverEditSharedService
+    private shared: DriverEditSharedService,
+    private dialogRefs: MatDialogRef<TransporterAddComponent>
   ) {
     this.transporterForm = this.fb.group({
       name: [
@@ -141,11 +143,10 @@ export class TransporterAddComponent implements OnInit {
         (res: any) => {
           if (res.status == 'OK') {
             this.toastr.showSuccess('Transporter created successfully');
-            this.formCreated.emit(true);
             this.transporterForm.reset();
+            this.dialogRefs.close(true);
           } else {
             this.toastr.showError(res.message);
-            this.formCreated.emit(false);
           }
         },
         error => {
@@ -221,5 +222,9 @@ export class TransporterAddComponent implements OnInit {
 
   getPhoneErrorMessageWithTouch() {
     return this.validation.getErrorMessageWithTouch(this.transporterForm);
+  }
+
+  onClickClose() {
+    this.dialogRefs.close(false);
   }
 }

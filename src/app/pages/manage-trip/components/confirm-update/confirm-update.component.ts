@@ -29,15 +29,20 @@ export class ConfirmUpdateComponent {
   ) {}
 
   closeDialog() {
-    this.dialogRef.close('');
+    this.dialogRef.close(false);
   }
 
   ngOnInit() {}
 
   confirmUpdate() {
-    if (this.data.buttonText != 'Update') {
+    if (
+      this.data.buttonText != 'Update' &&
+      this.data.buttonText != 'Inactive' &&
+      this.data.buttonText != 'Active' &&
+      this.data.buttonText != 'Removed'
+    ) {
       const body = {};
-      if (this.data.trip.status == 'Booked') {
+      if (this.data?.trip?.status == 'Booked') {
         body['tripStartedAt'] = this.datePipe.transform(
           new Date(),
           'yyyy-MM-dd hh:mm:ss'
@@ -89,6 +94,13 @@ export class ConfirmUpdateComponent {
           });
         }
       );
+    }
+    if (
+      this.data.buttonText == 'Inactive' ||
+      this.data.buttonText == 'Active' ||
+      this.data.buttonText == 'Removed'
+    ) {
+      this.dialogRef.close('updated');
     } else {
       this.dialogRef.close('updated');
     }

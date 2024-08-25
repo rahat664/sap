@@ -1,5 +1,4 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { ConfirmModalComponent } from '../../../shared/modules/confirm-modal/confirm-modal.component';
 import { CreatePopupComponent } from '../../../shared/modal/create-popup/create-popup.component';
 import { CustomInputComponent } from '../../../shared/modules/custom-input/custom-input.component';
 import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
@@ -23,7 +22,6 @@ import { UserCustomerAdminCreateComponent } from '../user-customer-admin-create/
   selector: 'app-user-management-customer-admin',
   standalone: true,
   imports: [
-    ConfirmModalComponent,
     CreatePopupComponent,
     CustomInputComponent,
     DatePipe,

@@ -150,13 +150,4 @@
     [fileTypeOptions]="newDriverFileType"
     [callFromModal]="true"></app-file-upload-popup>
 </app-create-popup>
-<app-confirm-modal
-  [isOpen]="isConfirmModalOpen"
-  buttonText="Remove"
-  [fromDoc]="true"
-  [fileName]="fileName"
-  (isModalClosed)="isConfirmModalOpen = !$event"
-  (performChangeStatus)="performRemove($event)"
 
->
-</app-confirm-modal>
