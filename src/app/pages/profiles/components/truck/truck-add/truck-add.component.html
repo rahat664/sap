@@ -104,30 +104,6 @@
             >
           </div>
         </div>
-        <!--        <div class="p-4 flex flex-col space-y-3">-->
-        <!--          <div class="flex space-x-3 items-center text-not-black">-->
-        <!--            <img loading="lazy"src="assets/svg/trucker.svg" alt="" />-->
-        <!--            <span class="text-not-black font-semibold">Tracker info</span>-->
-        <!--          </div>-->
-        <!--          <div class="grid grid-cols-2 gap-3">-->
-        <!--            <div class="flex flex-col space-y-1">-->
-        <!--              <span class="text-not-black font-semibold">Manufacturer</span>-->
-        <!--              <app-custom-input-->
-        <!--                appGetClickEvent-->
-        <!--                (clickedElement)="onClickManufacturer($event)"-->
-        <!--                [options]="manufacturerList"-->
-        <!--                inputPlaceholder="Select Manufacturer"-->
-        <!--                (selectedId)="onSelectManuFacturer($event)"-->
-        <!--                [inputSearch]="manufacturerPlaceholder"></app-custom-input>-->
-        <!--            </div>-->
-        <!--            <div class="flex flex-col space-y-1">-->
-        <!--              <span class="text-not-black font-semibold">Tracker Id</span>-->
-        <!--              <input-->
-        <!--                placeholder="Tracker Id"-->
-        <!--                class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </div>-->
       </div>
       <div class="w-full p-4 flex flex-col space-y-3">
         <div class="flex justify-between items-center h-8">
@@ -136,23 +112,13 @@
             <span>Documents</span>
           </div>
         </div>
-        <app-file-upload-popup
+        <app-file-upload
           [isUploadDisabled]="everyThingDisabled"
           (fileInput)="onAddFile($event)"
           [fileTypeOptions]="fileUpload"
           padding="0"
-          [isUploadIconEnabled]="false"></app-file-upload-popup>
+          [isUploadIconEnabled]="false"></app-file-upload>
       </div>
     </div>
   </form>
 </div>
-<app-check-list-popup
-  (isModalClosed)="prehireCheckListOpened = !$event"
-  [isOpen]="prehireCheckListOpened"
-  (close)="prehireCheckListOpened = false">
-  <app-pre-hire-checklist
-    [saveButtonEnabled]="true"
-    (preHireCheckListObject)="
-      onClickPrehiredChecklist($event)
-    "></app-pre-hire-checklist>
-</app-check-list-popup>

@@ -15,6 +15,7 @@ import { UserService } from '../../../services/user.service';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
+import { FileUploadComponent } from '../../truck/file-upload/file-upload.component';
 
 @Component({
   selector: 'app-driver-add',
@@ -26,6 +27,7 @@ import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-
     ReactiveFormsModule,
     FormsModule,
     AlphabetOnlyDirective,
+    FileUploadComponent,
   ],
   templateUrl: './driver-add.component.html',
   styleUrl: './driver-add.component.scss',

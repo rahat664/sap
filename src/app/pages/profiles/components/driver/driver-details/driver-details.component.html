@@ -65,10 +65,6 @@
                 class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
             </div>
           </div>
-          <!--          <div *ngIf="!inEditMode" class="flex flex-col space-y-1">-->
-          <!--            <span class="text-not-black font-semibold">Number of trips</span>-->
-          <!--            <span class="text-web-text-secondary">24</span>-->
-          <!--          </div>-->
         </div>
       </div>
     </div>
@@ -141,13 +137,4 @@
     </div>
   </div>
 </div>
-<app-create-popup
-  [isOpen]="isUploadPopupOpen"
-  (isModalClosed)="isUploadPopupOpen = !$event; isNewOpen = !$event">
-  <app-file-upload-popup
-    [isNewOpen]="isNewOpen"
-    (fileInput)="onChangeFile($event)"
-    [fileTypeOptions]="newDriverFileType"
-    [callFromModal]="true"></app-file-upload-popup>
-</app-create-popup>
 

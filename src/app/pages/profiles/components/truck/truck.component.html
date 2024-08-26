@@ -183,16 +183,5 @@
     </table>
   </div>
 </div>
-<app-create-popup
-  (isModalClosed)="isOpen = !$event; isNewOpen = !$event"
-  [isOpen]="isOpen">
-  <app-file-upload-popup
-    [singleTruck]="singleTruck"
-    [callFromModal]="true"
-    [isNewOpen]="isNewOpen"
-    [fileTypeOptions]="newDriverFileType"
-    [isFromTruck]="true"></app-file-upload-popup>
-</app-create-popup>
-<app-check-list-popup (isModalClosed)="isCheckListOpened= !$event" [isOpen]="isCheckListOpened">
-  <app-pre-hire-checklist [singleTruckId]="singleTruckId"></app-pre-hire-checklist>
-</app-check-list-popup>
+
+

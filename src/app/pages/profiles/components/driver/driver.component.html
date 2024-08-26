@@ -152,13 +152,3 @@
     </table>
   </div>
 </div>
-<app-create-popup
-  (isModalClosed)="isOpen = !$event; isNewOpen = !$event"
-  [isOpen]="isOpen">
-  <app-file-upload-popup
-    [singleDriver]="singleDriver"
-    [callFromModal]="true"
-    [isNewOpen]="isNewOpen"
-    [fileTypeOptions]="newDriverFileType"
-    [isFromDriver]="true"></app-file-upload-popup>
-</app-create-popup>

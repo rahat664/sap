@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import {
@@ -16,7 +16,7 @@ import { ValidationService } from '../../../../../shared/services/validation/val
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-transporter-add',
@@ -27,9 +27,11 @@ import { MatDialogRef } from '@angular/material/dialog';
     ReactiveFormsModule,
     NgIf,
     AlphabetOnlyDirective,
+    MatDialogModule
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransporterAddComponent implements OnInit {
   transporterForm: FormGroup;
@@ -39,6 +41,7 @@ export class TransporterAddComponent implements OnInit {
   paymentInputPlaceholder: string;
   @Output() formCreated = new EventEmitter<boolean>();
   bkashPaymentTypePlaceholder: string;
+  readonly dialogRef = inject(MatDialogRef<TransporterAddComponent>)
 
   constructor(
     private service: UserService,
@@ -46,7 +49,6 @@ export class TransporterAddComponent implements OnInit {
     private toastr: HandleToastrService,
     private fb: FormBuilder,
     private shared: DriverEditSharedService,
-    private dialogRefs: MatDialogRef<TransporterAddComponent>
   ) {
     this.transporterForm = this.fb.group({
       name: [
@@ -144,7 +146,7 @@ export class TransporterAddComponent implements OnInit {
           if (res.status == 'OK') {
             this.toastr.showSuccess('Transporter created successfully');
             this.transporterForm.reset();
-            this.dialogRefs.close(true);
+            this.dialogRef.close(true);
           } else {
             this.toastr.showError(res.message);
           }
@@ -225,6 +227,6 @@ export class TransporterAddComponent implements OnInit {
   }
 
   onClickClose() {
-    this.dialogRefs.close(false);
+    this.dialogRef.close(false);
   }
 }

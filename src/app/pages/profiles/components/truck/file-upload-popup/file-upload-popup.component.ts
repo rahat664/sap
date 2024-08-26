@@ -1,7 +1,8 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
+  EventEmitter, Inject, inject,
   Input,
   OnChanges,
   Output,
@@ -12,15 +13,25 @@ import { CustomInputSelectModel } from '../../../../../shared/modules/custom-inp
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatCalendar, MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-file-upload-popup',
   standalone: true,
-  imports: [CustomInputComponent, GetClickEventDirective, CommonModule],
+  imports: [CustomInputComponent, GetClickEventDirective, CommonModule, MatCalendar, MatFormField, MatDatepickerToggle, MatDatepicker, MatDatepickerInput, MatInput, MatOption, MatSelect, ReactiveFormsModule],
   templateUrl: './file-upload-popup.component.html',
   styleUrl: './file-upload-popup.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileUploadPopupComponent implements OnChanges {
+
+  readonly dialogRef = inject(MatDialogRef<FileUploadPopupComponent>)
   file: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
   @Input() fileTypeOptions: CustomInputSelectModel[] | null = [];
@@ -42,7 +53,8 @@ export class FileUploadPopupComponent implements OnChanges {
   constructor(
     private sharedDriverEditService: DriverEditSharedService,
     private cdr: ChangeDetectorRef,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.fileArray = [];
   }
@@ -75,7 +87,7 @@ export class FileUploadPopupComponent implements OnChanges {
   }
 
   onSelectFileType($event: number, i: number) {
-    this.fileInputPlaceholder = this.fileTypeOptions.find(
+    this.fileInputPlaceholder = this.data.filetype.find(
       option => option.id === $event
     ).value;
     this.fileArray[i].registrationType = this.fileInputPlaceholder;
@@ -88,7 +100,7 @@ export class FileUploadPopupComponent implements OnChanges {
     );
 
     // Filter the fileTypeOptions based on the registrationTypesSet
-    this.newFileType = this.fileTypeOptions.filter(
+    this.newFileType = this.data.filetype.filter(
       filetype => !registrationTypesSet.has(filetype.value)
     );
 
@@ -98,7 +110,7 @@ export class FileUploadPopupComponent implements OnChanges {
 
   onClickFileType($event: boolean, i: number) {
     this.fileArray[i].fileOpened = $event;
-    this.fileArray[i].registrationOptions = this.fileTypeOptions;
+    this.fileArray[i].registrationOptions = this.data.filetype;
     // Create a set of registration types from fileArray for quick lookup
   }
 
@@ -176,5 +188,9 @@ export class FileUploadPopupComponent implements OnChanges {
     if (!this.callFromModal) {
       this.fileInput.emit(this.fileArray);
     }
+  }
+
+  onClose() {
+    this.dialogRef.close();
   }
 }

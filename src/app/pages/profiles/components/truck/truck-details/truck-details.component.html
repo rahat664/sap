@@ -149,19 +149,3 @@
     </div>
   </form>
 </div>
-<app-create-popup
-  [isOpen]="isUploadPopupOpen"
-  (isModalClosed)="isUploadPopupOpen = !$event">
-  <app-file-upload-popup
-    (fileInput)="onAddFile($event)"
-    [callFromModal]="true"
-    [fileTypeOptions]="newTruckFileTypeOptions"
-  ></app-file-upload-popup>
-</app-create-popup>
-<app-check-list-popup
-  [isOpen]="prehireCheckListOpened"
-  (isModalClosed)="prehireCheckListOpened = !$event"
->
-  <app-pre-hire-checklist></app-pre-hire-checklist>
-</app-check-list-popup>
-

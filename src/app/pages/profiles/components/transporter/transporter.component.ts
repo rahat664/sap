@@ -42,8 +42,6 @@ export class TransporterComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   height = '';
   isOpen: boolean;
-  districtFilter = 0;
-  truckFilter = 0;
   transporterList: UserModel[] = [];
   loading: boolean;
   searchValue: string;
@@ -54,8 +52,9 @@ export class TransporterComponent implements OnInit {
   constructor(private service: UserService) {}
 
   onClickAddTransporter() {
-    this.dialog
-      .open(TransporterAddComponent, {})
+    const dialogRef = this.dialog
+      .open(TransporterAddComponent, {
+      })
       .afterClosed()
       .subscribe(res => {
         if (res) {

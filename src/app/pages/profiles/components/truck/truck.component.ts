@@ -115,28 +115,6 @@ export class TruckComponent implements OnInit {
     return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial}-${truck.registrationNum}`;
   }
 
-  onClickManufacturer($event: boolean) {
-    this.manufactureOpened = $event;
-  }
-
-  onSelectManuFacturer($event: number) {
-    this.manufacturerPlaceholder = this.manufacturerList.find(
-      (manufacturer: CustomInputSelectModel) => manufacturer.id === $event
-    ).value;
-  }
-
-  onClickAddTracker(id: number) {
-    if (id === this.selectedTruckId) {
-      this.trackerAddOpened = !this.trackerAddOpened;
-    } else {
-      this.trackerAddOpened = true;
-    }
-    this.selectedTruckId = id;
-  }
-
-  onClickAddTruckerSave() {
-    this.trackerAddOpened = false;
-  }
 
   onClickTruckDetails(truck: TruckInnerModel) {
     localStorage.removeItem('truck');
@@ -145,7 +123,6 @@ export class TruckComponent implements OnInit {
   }
 
   onClickUpdate(fit: string, truck: TruckInnerModel) {
-    this.isNewOpen = true;
     this.singleTruck = truck;
     this.isOpen = true;
     if (fit == 'fit') {
@@ -170,6 +147,15 @@ export class TruckComponent implements OnInit {
     if (fit == 'other') {
       this.newDriverFileType = [{ id: 6, value: 'Other', selected: false }];
     }
+
+
+    this.dialog.open(FileUploadPopupComponent, {
+      width: '30%',
+      data: {
+        filetype: this.newDriverFileType,
+        fromPopup: true
+      },
+    })
   }
 
   private makeSureUploadCompletedOrNot() {
@@ -211,35 +197,7 @@ export class TruckComponent implements OnInit {
     }
   }
 
-  onMaxHeightCross($event: boolean) {
-    // setTimeout(() => {
-    //   if (!$event && this.totalPages > 1 && this.page != 1) {
-    //     this.page = 1;
-    //     if (this.searchValue) {
-    //       this.service
-    //         .getTruckList(this.page, this.searchValue)
-    //         .pipe(debounceTime(500))
-    //         .subscribe((res: any) => {
-    //           res.data.responses.forEach((truck: TruckModel) => {
-    //             truck.truck.preHireCheckList = String(
-    //               truck.preHireChecklistList
-    //             );
-    //             truck.truck.noOfTrips = truck.noOfTrips;
-    //             this.truckList.push(truck.truck);
-    //           });
-    //         });
-    //     } else {
-    //       this.service.getTruckList(this.page).subscribe((res: any) => {
-    //         res.data.responses.forEach((truck: TruckModel) => {
-    //           truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-    //           truck.truck.noOfTrips = truck.noOfTrips;
-    //           this.truckList.push(truck.truck);
-    //         });
-    //       });
-    //     }
-    //   }
-    // }, 1);
-  }
+
 
   onKeyUpSearch($event: KeyboardEvent) {
     this.loading = true;

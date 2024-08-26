@@ -22,6 +22,7 @@ import { ValidationService } from '../../../../../shared/services/validation/val
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { fileUpload } from '../models/file-upload';
 import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
+import { FileUploadComponent } from '../file-upload/file-upload.component';
 
 @Component({
   selector: 'app-truck-add',
@@ -37,6 +38,7 @@ import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-
     PreHireChecklistComponent,
     CreatePopupComponent,
     CheckListPopupComponent,
+    FileUploadComponent,
   ],
   templateUrl: './truck-add.component.html',
   styleUrl: './truck-add.component.scss',
