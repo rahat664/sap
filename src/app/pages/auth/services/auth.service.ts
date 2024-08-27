@@ -1,6 +1,6 @@
 // src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ApiResponse } from '../models/response/api-response';
 import { LoginRequest } from '../models/request/login-request';
@@ -18,21 +18,21 @@ export class AuthService {
   ) {}
 
   login(payload: LoginRequest): Observable<ApiResponse> {
-    return this.http
-      .post<ApiResponse>(environment.userUrl + '/auth/login', payload)
-      .pipe(catchError(this.handleError));
+    return this.http.post<ApiResponse>(
+      environment.userUrl + '/auth/login',
+      payload
+    );
   }
 
   loginUsingPhone(payload: LoginPhoneRequest): Observable<any> {
-    return this.http
-      .post<any>(environment.userUrl + '/auth/login', payload)
-      .pipe(catchError(this.handleError));
+    return this.http.post<any>(environment.userUrl + '/auth/login', payload);
   }
 
   verifyOtp(payload: any): Observable<any> {
-    return this.http
-      .post<any>(environment.userUrl + '/auth/verify-otp', payload)
-      .pipe(catchError(this.handleError));
+    return this.http.post<any>(
+      environment.userUrl + '/auth/verify-otp',
+      payload
+    );
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -9,7 +9,7 @@
   <div class="h-screen">
     <div
       class="flex flex-col h-[calc(100vh-2.5rem)] space-y-6 justify-center px-12 items-center lg:items-start">
-      <h1 class="text-h1 font-semibold">User login</h1>
+      <h1 *ngIf="!otpScreen" class="text-h1 font-semibold">User login</h1>
       <div *ngIf="otpScreen" class="flex flex-col space-y-3">
         <h1 class="text-h1 font-semibold">OTP verification</h1>
         <p class="text-h2 text-secondary ">Please enter the OTP sent to your mobile number- </p>
@@ -57,9 +57,10 @@
             {{ getPhoneNumberError() }}
           </div>
         </div>
-        <div class="w-full flex items-center justify-center mb-3">
-          <div class="flex space-x-3" *ngIf="otpScreen">
+        <div class="w-full flex items-center justify-center mb-3" *ngIf="otpScreen">
+          <div class="flex space-x-3">
             <input
+              id="otp1" appInputAutoFocus idName="{{idName}}"
               [autocomplete]="false"
               formControlName="otp1"
               type="email"
@@ -69,6 +70,9 @@
               name="phoneNumber"
             />
             <input
+              id="otp2"
+              appInputAutoFocus idName="{{idName}}"
+              #otp2
               [autocomplete]="false"
               formControlName="otp2"
               type="email"
@@ -78,6 +82,9 @@
               name="phoneNumber"
             />
             <input
+              id="otp3"
+              appInputAutoFocus idName="{{idName}}"
+              #otp3
               [autocomplete]="false"
               formControlName="otp3"
               type="email"
@@ -87,6 +94,9 @@
               name="phoneNumber"
             />
             <input
+              id="otp4"
+              appInputAutoFocus idName="{{idName}}"
+              #otp4
               [autocomplete]="false"
               formControlName="otp4"
               type="email"
@@ -124,19 +134,20 @@
             <span>{{ getPasswordError() }}</span>
           </div>
         </div>
-        <button *ngIf="usingEmail " class="btn bg-primary font-semibold text-white rounded-lg px-4 py-4 w-full">
-          Login
-        </button>
-        <button type="button" (click)="onOtpLogin()" *ngIf="otpScreen"
+        <button [disabled]="$loading" *ngIf="usingEmail"
                 class="btn bg-primary font-semibold text-white rounded-lg px-4 py-4 w-full">
-          Login
+          <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i> Login
         </button>
-        <button *ngIf="!usingEmail && !otpScreen"
+        <button [disabled]="$loading" type="button" (click)="onOtpLogin()" *ngIf="otpScreen"
                 class="btn bg-primary font-semibold text-white rounded-lg px-4 py-4 w-full">
-          Send OTP
+          <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i> Login
+        </button>
+        <button [disabled]="$loading" *ngIf="!usingEmail && !otpScreen"
+                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-4 w-full">
+          <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i> Send OTP
         </button>
         <!--        or using phone number-->
-        <div class="flex items-center justify-center space-x-2 py-4">
+        <div *ngIf="!otpScreen" class="flex items-center justify-center space-x-2 py-4">
           <span class="text-not-black font-semibold text-[1.25rem]">or</span>
         </div>
         <button type="button" *ngIf="usingEmail" (click)="onClickUseMobileNumber()"
@@ -147,6 +158,18 @@
                 class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-4 w-full">
           Use email
         </button>
+        <div class="w-full flex items-center justify-center py-4" *ngIf="otpScreen">
+          <div class="flex space-x-4">
+            <!--            timing-->
+            <span
+              class="text-body_title font-semibold text-{{timeDisabled ? 'input-hint': 'primary'}}">{{ time | date : 'mm:ss' }}</span>
+            <button (click)="onClickResend()"
+                    [disabled]="!timeDisabled"
+                    class="text-{{timeDisabled ? 'primary': 'input-hint'}} font-semibold text-body_title cursor-pointer">
+              Resend
+            </button>
+          </div>
+        </div>
       </form>
     </div>
     <div class="text-center p-2 w-full self-end">

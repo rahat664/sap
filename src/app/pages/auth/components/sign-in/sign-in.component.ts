@@ -1,68 +1,88 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { LoginRequest } from '../../models/request/login-request';
+import { interval, Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { select, Store } from '@ngrx/store';
 import { AuthState } from '../../ngrx/auth.reducer';
-import { Store } from '@ngrx/store';
-import { selectAuthError, selectAuthLoading } from '../../ngrx/auth.selectors';
 import { login, loginUsingPhoneNumber } from '../../ngrx/auth.action';
 import {
   LoginPhoneRequest,
   LoginRequestUsingPhonePayload,
 } from '../../models/request/login-phone-request';
+import { InputAutoFocusDirective } from '../../../../shared/directive/input-auto-focus.directive';
+import { CommonModule } from '@angular/common';
+import { LoginRequest } from '../../models/request/login-request';
+import { selectAuthError, selectAuthLoading } from '../../ngrx/auth.selectors';
 
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, InputAutoFocusDirective],
   templateUrl: './sign-in.component.html',
-  styleUrl: './sign-in.component.scss',
+  styleUrls: ['./sign-in.component.scss'],
 })
-export class SignInComponent implements OnInit {
+export class SignInComponent implements OnInit, OnDestroy {
   title = 'Login';
   loginForm: FormGroup;
   loginRequestPayload: LoginRequest;
-  loading$ = this.store.select(selectAuthLoading);
-  error$ = this.store.select(selectAuthError);
   usingEmail: boolean = true;
 
   loginUsingPhonePayload: LoginPhoneRequest;
   loginPhoneRequestPayload: LoginRequestUsingPhonePayload;
   otpScreen: boolean;
+  idName: string = 'otp1';
+  time: Date = new Date(0, 0, 0, 0, 2, 0); // 2 minutes
+  private countdownSubscription: Subscription | undefined;
+  timeDisabled: boolean;
+  error: string | null = null; // Add error property
+  $loading: boolean;
 
   constructor(
     private titleService: Title,
     private auth: AuthService,
-    private router: Router,
     private toaster: HandleToastrService,
     private store: Store<{ auth: AuthState }>,
     private fb: FormBuilder
   ) {
-    this.loginRequestPayload = {
-      email: '',
-      password: '',
-    };
-    this.loginUsingPhonePayload = {
-      phoneNumber: '',
-    };
-    this.loginPhoneRequestPayload = {
-      phoneNumber: '',
-      otpCode: '',
-    };
+    this.loginRequestPayload = { email: '', password: '' };
+    this.loginUsingPhonePayload = { phoneNumber: '' };
+    this.loginPhoneRequestPayload = { phoneNumber: '', otpCode: '' };
   }
 
   ngOnInit(): void {
     this.titleService.setTitle('Login');
     this.createFormControls();
+    this.store.pipe(select(selectAuthError)).subscribe(error => {
+      console.log(error);
+      if (error) {
+        this.toaster.showError(error.error?.message, '');
+        this.loginRequestPayload = {
+          email: '',
+          password: '',
+        };
+        this.loginPhoneRequestPayload = {
+          phoneNumber: '',
+          otpCode: '',
+        };
+        // Show error using Toastr service
+      }
+    });
+    this.store.pipe(select(selectAuthLoading)).subscribe(loading => {
+      this.$loading = loading;
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.countdownSubscription) {
+      this.countdownSubscription.unsubscribe();
+    }
   }
 
   createFormControls() {
@@ -96,31 +116,76 @@ export class SignInComponent implements OnInit {
         this.loginRequestPayload.password = this.password.value;
         this.store.dispatch(login({ payload: this.loginRequestPayload }));
       } else {
+        this.$loading = true;
         this.loginUsingPhonePayload.phoneNumber = this.phoneNumber.value;
         this.auth.loginUsingPhone(this.loginUsingPhonePayload).subscribe(
-          (response: any) => {
+          response => {
+            this.$loading = false;
             if (response.status === 'OK') {
               this.otpScreen = true;
-              this.loginForm.get('otp1').setValidators([Validators.required]);
-              this.loginForm.get('otp2').setValidators([Validators.required]);
-              this.loginForm.get('otp3').setValidators([Validators.required]);
-              this.loginForm.get('otp4').setValidators([Validators.required]);
-              this.loginForm.get('otp1').updateValueAndValidity();
-              this.loginForm.get('otp2').updateValueAndValidity();
-              this.loginForm.get('otp3').updateValueAndValidity();
-              this.loginForm.get('otp4').updateValueAndValidity();
-              this.otpScreen = true;
+              this.setupOtpValidators();
+              this.startCountdown();
             } else {
               this.toaster.showError(response.message, '');
             }
           },
           error => {
+            this.$loading = false;
             this.toaster.showError(error.error.message, '');
           }
         );
       }
     } else {
+      this.$loading = false;
       this.loginForm.markAllAsTouched();
+    }
+  }
+
+  private setupOtpValidators() {
+    this.loginForm.get('otp1').setValidators([Validators.required]);
+    this.loginForm.get('otp2').setValidators([Validators.required]);
+    this.loginForm.get('otp3').setValidators([Validators.required]);
+    this.loginForm.get('otp4').setValidators([Validators.required]);
+    this.loginForm.get('otp1').updateValueAndValidity();
+    this.loginForm.get('otp2').updateValueAndValidity();
+    this.loginForm.get('otp3').updateValueAndValidity();
+    this.loginForm.get('otp4').updateValueAndValidity();
+    this.idName = 'otp1';
+    this.monitorOtpFields();
+  }
+
+  private monitorOtpFields() {
+    this.loginForm.get('otp1').valueChanges.subscribe(value => {
+      if (value?.length === 1) this.idName = 'otp2';
+    });
+    this.loginForm.get('otp2').valueChanges.subscribe(value => {
+      if (value?.length === 1) this.idName = 'otp3';
+    });
+    this.loginForm.get('otp3').valueChanges.subscribe(value => {
+      if (value?.length === 1) this.idName = 'otp4';
+    });
+  }
+
+  private startCountdown() {
+    const source = interval(1000); // Emit every second
+    this.countdownSubscription = source.subscribe(() => {
+      if (this.time.getMinutes() === 0 && this.time.getSeconds() === 0) {
+        this.countdownSubscription?.unsubscribe();
+        this.timeDisabled = true;
+      } else {
+        this.decreaseTime();
+      }
+    });
+  }
+
+  private decreaseTime() {
+    const seconds = this.time.getSeconds();
+    const minutes = this.time.getMinutes();
+
+    if (seconds > 0) {
+      this.time = new Date(0, 0, 0, 0, minutes, seconds - 1);
+    } else if (minutes > 0) {
+      this.time = new Date(0, 0, 0, 0, minutes - 1, 59);
     }
   }
 
@@ -169,72 +234,46 @@ export class SignInComponent implements OnInit {
     this.loginForm.get('password').setValue('');
     this.loginForm.get('password').clearValidators();
     this.loginForm.get('password').updateValueAndValidity();
-    this.loginForm.get('phoneNumber').setValidators([Validators.required]);
-    this.loginForm.get('phoneNumber').valueChanges.subscribe(value => {
-      // user cannot give string value
-      if (isNaN(Number(value))) {
-        this.loginForm
-          ?.get('phoneNumber')
-          .setValue(value?.substring(0, value?.length - 1));
-      }
-      if (value?.substring(0, 1) != '0' && value?.substring(0, 1)) {
-        // return error to the parent
-        return this.loginForm
-          ?.get('phoneNumber')
-          .setErrors({ invalidNumber: true });
-      }
-      if (value?.substring(1, 2) != '1' && value?.substring(1, 2)) {
-        // return error to the parent
-        return this.loginForm
-          ?.get('phoneNumber')
-          .setErrors({ invalidNumber: true });
-      }
-
-      if (value?.substring(2, 3) < '3' && value?.substring(2, 3)) {
-        // return error to the parent
-        return this.loginForm
-          ?.get('phoneNumber')
-          .setErrors({ invalidNumber: true });
-      }
-
-      // prevent the change if the value is not a number
-      // take only numbers
-      const onlyNumbers = value?.replace(/[^\d]/g, '');
-      // if the length is greater than 11 prevent the change
-      if (onlyNumbers?.length > 11) {
-        this.loginForm
-          ?.get('phoneNumber')
-          .setValue(onlyNumbers.substring(0, 11));
-      }
-      // if the length is less than 11 give error
-      if (onlyNumbers?.length < 11) {
-        return this.loginForm
-          ?.get('phoneNumber')
-          .setErrors({ minLength: true });
-      }
-    });
     this.usingEmail = false;
+    this.loginForm.get('phoneNumber').setValidators([Validators.required]);
+    this.loginForm.get('phoneNumber').updateValueAndValidity();
+    this.loginForm.get('otp1').clearValidators();
+    this.loginForm.get('otp2').clearValidators();
+    this.loginForm.get('otp3').clearValidators();
+    this.loginForm.get('otp4').clearValidators();
+    this.loginForm.get('otp1').updateValueAndValidity();
+    this.loginForm.get('otp2').updateValueAndValidity();
+    this.loginForm.get('otp3').updateValueAndValidity();
+    this.loginForm.get('otp4').updateValueAndValidity();
   }
 
   onClickUseEmail() {
     this.loginForm.get('phoneNumber').clearValidators();
     this.loginForm.get('phoneNumber').updateValueAndValidity();
     this.loginForm.get('phoneNumber').setValue('');
+    this.loginForm.get('otp1').clearValidators();
+    this.loginForm.get('otp2').clearValidators();
+    this.loginForm.get('otp3').clearValidators();
+    this.loginForm.get('otp4').clearValidators();
+    this.loginForm.get('otp1').updateValueAndValidity();
+    this.loginForm.get('otp2').updateValueAndValidity();
+    this.loginForm.get('otp3').updateValueAndValidity();
+    this.loginForm.get('otp4').updateValueAndValidity();
+    this.usingEmail = true;
     this.loginForm
       .get('email')
       .setValidators([Validators.required, Validators.email]);
     this.loginForm.get('email').updateValueAndValidity();
-    this.loginForm.get('password').setValidators([Validators.required]);
+    this.loginForm
+      .get('password')
+      .setValidators([Validators.required, Validators.minLength(3)]);
     this.loginForm.get('password').updateValueAndValidity();
-    this.usingEmail = true;
   }
 
   getPhoneNumberError() {
     if (this.phoneNumber.hasError('required')) {
-      return 'Phone number required';
-    } else if (this.phoneNumber.hasError('minlength')) {
-      return 'Invalid phone number';
-    } else if (this.phoneNumber.hasError('invalidNumber')) {
+      return 'Phone number is required';
+    } else if (this.phoneNumber.hasError('pattern')) {
       return 'Invalid phone number';
     } else {
       return '';
@@ -246,6 +285,24 @@ export class SignInComponent implements OnInit {
     this.loginPhoneRequestPayload.otpCode = `${this.loginForm.get('otp1').value}${this.loginForm.get('otp2').value}${this.loginForm.get('otp3').value}${this.loginForm.get('otp4').value}`;
     this.store.dispatch(
       loginUsingPhoneNumber({ payload: this.loginPhoneRequestPayload })
+    );
+  }
+
+  onClickResend() {
+    this.auth.loginUsingPhone(this.loginUsingPhonePayload).subscribe(
+      response => {
+        if (response.status === 'OK') {
+          this.toaster.showSuccess('OTP sent successfully', '');
+          // Reset the timer
+          this.time = new Date(0, 0, 0, 0, 2, 0);
+          this.startCountdown();
+        } else {
+          this.toaster.showError(response.message, '');
+        }
+      },
+      error => {
+        this.toaster.showError(error.error.message, '');
+      }
     );
   }
 }
