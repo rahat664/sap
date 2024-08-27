@@ -10,8 +10,18 @@
     <div
       class="flex flex-col h-[calc(100vh-2.5rem)] space-y-6 justify-center px-12 items-center lg:items-start">
       <h1 class="text-h1 font-semibold">User login</h1>
+      <div *ngIf="otpScreen" class="flex flex-col space-y-3">
+        <h1 class="text-h1 font-semibold">OTP verification</h1>
+        <p class="text-h2 text-secondary ">Please enter the OTP sent to your mobile number- </p>
+        <div class="flex space-x-3 items-center">
+          <p class="text-h2  text-not-black font-semibold ">{{ phoneNumber.value }}</p>
+          <button (click)="otpScreen = false" type="button">
+            <img alt="" src="assets/svg/edit.svg" class="notPreview">
+          </button>
+        </div>
+      </div>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full">
-        <div class="mb-3 flex flex-col text-secondary w-full">
+        <div *ngIf="usingEmail" class="mb-3 flex flex-col text-secondary w-full">
           <label for="email" class="form-label">User Email</label>
           <input
             [autocomplete]="false"
@@ -28,7 +38,68 @@
             {{ getEmailError() }}
           </div>
         </div>
-        <div class="mb-3 flex flex-col text-secondary w-full">
+        <div *ngIf="!usingEmail && !otpScreen" class="mb-3 flex flex-col text-secondary w-full">
+          <label for="phoneNumber" class="form-label">Mobile Number</label>
+          <input
+            [autocomplete]="false"
+            formControlName="phoneNumber"
+            type="email"
+            class="bg-input rounded-lg border-none px-4 py-4"
+            placeholder="Enter your mobile number"
+            [minlength]="11"
+            [maxLength]="11"
+            name="phoneNumber"
+            id="phoneNumber" />
+          <!--        error-message-->
+          <div id="phoneError"
+               *ngIf="phoneNumber?.invalid && (phoneNumber?.dirty || phoneNumber?.touched)"
+               class="text-red text-xs">
+            {{ getPhoneNumberError() }}
+          </div>
+        </div>
+        <div class="w-full flex items-center justify-center mb-3">
+          <div class="flex space-x-3" *ngIf="otpScreen">
+            <input
+              [autocomplete]="false"
+              formControlName="otp1"
+              type="email"
+              class="bg-input rounded-lg border-none w-[5.375rem] py-4 customInput"
+              [minlength]="1"
+              [maxLength]="1"
+              name="phoneNumber"
+            />
+            <input
+              [autocomplete]="false"
+              formControlName="otp2"
+              type="email"
+              class="bg-input rounded-lg border-none w-[5.375rem] py-4 customInput"
+              [minlength]="1"
+              [maxLength]="1"
+              name="phoneNumber"
+            />
+            <input
+              [autocomplete]="false"
+              formControlName="otp3"
+              type="email"
+              class="bg-input rounded-lg border-none w-[5.375rem] py-4 customInput"
+              [minlength]="1"
+              [maxLength]="1"
+              name="phoneNumber"
+            />
+            <input
+              [autocomplete]="false"
+              formControlName="otp4"
+              type="email"
+              class="bg-input rounded-lg border-none h-[5.370rem] w-[5.375rem] customInput"
+              [minlength]="1"
+              [maxLength]="1"
+              name="phoneNumber"
+            />
+
+
+          </div>
+        </div>
+        <div *ngIf="usingEmail" class="mb-3 flex flex-col text-secondary w-full">
           <label for="password" class="form-label">Password</label>
           <!--          password field with eye icon-->
           <div class="relative bg-input rounded-lg border-none">
@@ -48,13 +119,33 @@
           <!--        error-message-->
           <div
             id="passwordError"
-            *ngIf="password?.invalid && (password?.dirty || password?.touched)"
+            *ngIf="password?.invalid &&  password?.touched"
             class="text-red text-xs">
             <span>{{ getPasswordError() }}</span>
           </div>
         </div>
-        <button [disabled]="" class="btn bg-primary text-white rounded-lg px-4 py-4 w-full">
+        <button *ngIf="usingEmail " class="btn bg-primary font-semibold text-white rounded-lg px-4 py-4 w-full">
           Login
+        </button>
+        <button type="button" (click)="onOtpLogin()" *ngIf="otpScreen"
+                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-4 w-full">
+          Login
+        </button>
+        <button *ngIf="!usingEmail && !otpScreen"
+                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-4 w-full">
+          Send OTP
+        </button>
+        <!--        or using phone number-->
+        <div class="flex items-center justify-center space-x-2 py-4">
+          <span class="text-not-black font-semibold text-[1.25rem]">or</span>
+        </div>
+        <button type="button" *ngIf="usingEmail" (click)="onClickUseMobileNumber()"
+                class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-4 w-full">
+          Use mobile number
+        </button>
+        <button type="button" (click)="onClickUseEmail()" *ngIf="!usingEmail && !otpScreen"
+                class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-4 w-full">
+          Use email
         </button>
       </form>
     </div>

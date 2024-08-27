@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -61,6 +61,10 @@ export class ValidationService {
       return customerForm?.get('phone').setErrors({ invalidNumber: true });
     }
     if (value?.substring(1, 2) != '1' && value?.substring(1, 2)) {
+      // return error to the parent
+      return customerForm?.get('phone').setErrors({ invalidNumber: true });
+    }
+    if (value?.substring(2, 3) < '3' && value?.substring(2, 3)) {
       // return error to the parent
       return customerForm?.get('phone').setErrors({ invalidNumber: true });
     }

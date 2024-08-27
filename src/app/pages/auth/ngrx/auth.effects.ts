@@ -4,7 +4,13 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { login, loginFailure, loginSuccess, logout } from './auth.action';
+import {
+  login,
+  loginFailure,
+  loginSuccess,
+  loginUsingPhoneNumber,
+  logout,
+} from './auth.action';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../../profiles/services/user.service';
@@ -16,6 +22,25 @@ export class AuthEffects {
       ofType(login),
       mergeMap(action =>
         this.authService.login(action.payload).pipe(
+          map(response => {
+            // @ts-ignore
+            if (response.status === 'OK') {
+              return loginSuccess({ response });
+            } else {
+              return loginFailure({ error: response.message });
+            }
+          }),
+          catchError(error => of(loginFailure({ error })))
+        )
+      )
+    )
+  );
+
+  loginUsingPhoneNumber$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loginUsingPhoneNumber),
+      mergeMap(action =>
+        this.authService.verifyOtp(action.payload).pipe(
           map(response => {
             // @ts-ignore
             if (response.status === 'OK') {

@@ -6,6 +6,7 @@ import { ApiResponse } from '../models/response/api-response';
 import { LoginRequest } from '../models/request/login-request';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
+import { LoginPhoneRequest } from '../models/request/login-phone-request';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,18 @@ export class AuthService {
   login(payload: LoginRequest): Observable<ApiResponse> {
     return this.http
       .post<ApiResponse>(environment.userUrl + '/auth/login', payload)
+      .pipe(catchError(this.handleError));
+  }
+
+  loginUsingPhone(payload: LoginPhoneRequest): Observable<any> {
+    return this.http
+      .post<any>(environment.userUrl + '/auth/login', payload)
+      .pipe(catchError(this.handleError));
+  }
+
+  verifyOtp(payload: any): Observable<any> {
+    return this.http
+      .post<any>(environment.userUrl + '/auth/verify-otp', payload)
       .pipe(catchError(this.handleError));
   }
 

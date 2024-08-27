@@ -189,6 +189,7 @@ export class ManageTripComponent implements OnInit {
   private updateTripList(trip: any) {
     if (this.page === 0) {
       this.tripList = trip.data.responses;
+      this.getTruckTrackers(this.tripList[0].truck?.fullRegistrationNumber);
       this.getTripDetails(this.tripList[0].tripId);
       this.activatedId = this.tripList[0].tripId;
     } else {
