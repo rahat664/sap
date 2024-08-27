@@ -69,7 +69,6 @@
           </div>
           <mat-form-field appearance="outline" class="w-full">
             <mat-select
-              formControlName="vendorId"
               (selectionChange)="onSelectFileType($event.value, i)" placeholder="Select Type">
               @for (vendor of data.filetype; track vendor) {
                 <mat-option [value]="vendor.id">{{ vendor.value }}</mat-option>
@@ -92,7 +91,7 @@
               placeholder="Expire date "
               class="border-none bg-white w-full flex-1 rounded-md p-4" />
             <mat-form-field class="example-full-width" appearance="outline">
-              <input matInput  [matDatepicker]="picker" />
+              <input matInput [matDatepicker]="picker" />
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
@@ -106,7 +105,7 @@
     </ng-container>
   </div>
   <button
-    *ngIf="fileArray?.length > 0 && data.fromPopup"
+    *ngIf="fileArray?.length > 0"
     (click)="onSubmit()"
     class="self-end bg-primary text-white rounded-lg px-4 py-2">
     Upload

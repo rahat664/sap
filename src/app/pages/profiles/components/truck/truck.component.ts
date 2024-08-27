@@ -115,7 +115,6 @@ export class TruckComponent implements OnInit {
     return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial}-${truck.registrationNum}`;
   }
 
-
   onClickTruckDetails(truck: TruckInnerModel) {
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
@@ -148,14 +147,15 @@ export class TruckComponent implements OnInit {
       this.newDriverFileType = [{ id: 6, value: 'Other', selected: false }];
     }
 
-
     this.dialog.open(FileUploadPopupComponent, {
       width: '30%',
       data: {
         filetype: this.newDriverFileType,
-        fromPopup: true
+        fromPopup: true,
+        from: 'truck',
+        value: truck,
       },
-    })
+    });
   }
 
   private makeSureUploadCompletedOrNot() {
@@ -196,8 +196,6 @@ export class TruckComponent implements OnInit {
       }
     }
   }
-
-
 
   onKeyUpSearch($event: KeyboardEvent) {
     this.loading = true;

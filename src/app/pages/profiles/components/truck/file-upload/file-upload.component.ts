@@ -1,13 +1,24 @@
-import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, Output, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
-import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
-import { MatOption } from '@angular/material/core';
+import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -29,8 +40,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatSelect,
     ReactiveFormsModule,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './file-upload.component.html',
-  styleUrl: './file-upload.component.scss'
+  styleUrl: './file-upload.component.scss',
 })
 export class FileUploadComponent {
   file: File | null = null;

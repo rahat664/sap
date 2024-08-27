@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter, Inject, inject,
+  EventEmitter,
+  Inject,
+  inject,
   Input,
   OnChanges,
   Output,
@@ -14,24 +16,42 @@ import { GetClickEventDirective } from '../../../../../shared/directive/get-clic
 import { CommonModule, DatePipe } from '@angular/common';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatCalendar, MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
+import {
+  MatCalendar,
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-file-upload-popup',
   standalone: true,
-  imports: [CustomInputComponent, GetClickEventDirective, CommonModule, MatCalendar, MatFormField, MatDatepickerToggle, MatDatepicker, MatDatepickerInput, MatInput, MatOption, MatSelect, ReactiveFormsModule],
+  imports: [
+    CustomInputComponent,
+    GetClickEventDirective,
+    CommonModule,
+    MatCalendar,
+    MatFormField,
+    MatDatepickerToggle,
+    MatDatepicker,
+    MatDatepickerInput,
+    MatInput,
+    MatOption,
+    MatSelect,
+    ReactiveFormsModule,
+    FormsModule,
+  ],
   templateUrl: './file-upload-popup.component.html',
   styleUrl: './file-upload-popup.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileUploadPopupComponent implements OnChanges {
-
-  readonly dialogRef = inject(MatDialogRef<FileUploadPopupComponent>)
+  readonly dialogRef = inject(MatDialogRef<FileUploadPopupComponent>);
   file: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
   @Input() fileTypeOptions: CustomInputSelectModel[] | null = [];
@@ -54,7 +74,7 @@ export class FileUploadPopupComponent implements OnChanges {
     private sharedDriverEditService: DriverEditSharedService,
     private cdr: ChangeDetectorRef,
     private datePipe: DatePipe,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.fileArray = [];
   }
@@ -88,7 +108,7 @@ export class FileUploadPopupComponent implements OnChanges {
 
   onSelectFileType($event: number, i: number) {
     this.fileInputPlaceholder = this.data.filetype.find(
-      option => option.id === $event
+      (option: { id: number }) => option.id === $event
     ).value;
     this.fileArray[i].registrationType = this.fileInputPlaceholder;
     if (!this.callFromModal) {
@@ -101,17 +121,11 @@ export class FileUploadPopupComponent implements OnChanges {
 
     // Filter the fileTypeOptions based on the registrationTypesSet
     this.newFileType = this.data.filetype.filter(
-      filetype => !registrationTypesSet.has(filetype.value)
+      (filetype: { value: any }) => !registrationTypesSet.has(filetype.value)
     );
 
     // Assign the filtered options to each file's registrationOptions
     this.fileArray[i].registrationOptions = this.newFileType;
-  }
-
-  onClickFileType($event: boolean, i: number) {
-    this.fileArray[i].fileOpened = $event;
-    this.fileArray[i].registrationOptions = this.data.filetype;
-    // Create a set of registration types from fileArray for quick lookup
   }
 
   @Output() modalClosed: EventEmitter<any> = new EventEmitter<any>();
@@ -120,9 +134,9 @@ export class FileUploadPopupComponent implements OnChanges {
   onSubmit() {
     this.sharedDriverEditService.isUploadPopupOpen.next(false);
     this.fileInput.emit(this.fileArray);
-    if (this.isFromDriver) {
-      this.sharedDriverEditService.getDocument(this.singleDriver);
-      this.sharedDriverEditService.bindDriverValueWithForm(this.singleDriver);
+    if (this.data?.from == 'driver') {
+      this.sharedDriverEditService.getDocument(this.data?.value);
+      this.sharedDriverEditService.bindDriverValueWithForm(this.data?.value);
       this.sharedDriverEditService.onChangeFile(this.fileArray);
       this.fileArray = [];
       this.sharedDriverEditService.onDriverUpdate(
@@ -130,9 +144,9 @@ export class FileUploadPopupComponent implements OnChanges {
         this.singleDriver.phone
       );
       this.modalClosed.emit(false);
-    } else if (this.isFromTruck) {
-      this.sharedDriverEditService.getTruckDocument(this.singleTruck);
-      this.sharedDriverEditService.bindTruckValueWithForm(this.singleTruck);
+    } else if (this.data?.from == 'truck') {
+      this.sharedDriverEditService.getTruckDocument(this.data?.value);
+      this.sharedDriverEditService.bindTruckValueWithForm(this.data?.value);
       this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
       this.fileArray = [];
       this.sharedDriverEditService.onTruckUpdate();
@@ -154,10 +168,7 @@ export class FileUploadPopupComponent implements OnChanges {
         fileOpened: false,
         registrationOptions: this.newFileType,
       });
-      this.sharedDriverEditService.closeInputSelect.next(false);
-      if (!this.callFromModal) {
-        this.fileInput.emit(this.fileArray);
-      }
+      this.fileInput.emit(this.fileArray);
     };
   }
 

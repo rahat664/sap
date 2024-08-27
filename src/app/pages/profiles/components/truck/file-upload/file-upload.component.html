@@ -65,7 +65,6 @@
           </div>
           <mat-form-field appearance="outline" class="w-full">
             <mat-select
-              formControlName="vendorId"
               (selectionChange)="onSelectFileType($event.value, i)" placeholder="Select Type">
               @for (vendor of fileTypeOptions; track vendor) {
                 <mat-option [value]="vendor.id">{{ vendor.value }}</mat-option>
@@ -82,13 +81,8 @@
             ">
             <!--             Date picker cannot take previous date-->
 
-            <input
-              type="date"
-              (change)="onDateChange($event, i)"
-              placeholder="Expire date "
-              class="border-none bg-white w-full flex-1 rounded-md p-4" />
             <mat-form-field class="example-full-width" appearance="outline">
-              <input matInput  [matDatepicker]="picker" />
+              <input matInput [matDatepicker]="picker" />
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
