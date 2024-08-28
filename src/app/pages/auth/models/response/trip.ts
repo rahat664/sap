@@ -42,4 +42,5 @@ export interface Truck {
   registrationCategory: string;
   registrationSerial: string;
   registrationNum: string;
+  fullRegistrationNumber: string;
 }

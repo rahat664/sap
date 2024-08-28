@@ -24,9 +24,6 @@ import { Trip } from '../auth/models/response/trip';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { Router, RouterLink } from '@angular/router';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
-import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-trip-list',
@@ -50,11 +47,6 @@ import { MatInput } from '@angular/material/input';
     CheckTheHeightCrossMaxHeightOrNotDirective,
     RouterLink,
     DecimalPipe,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
-    MatFormField,
-    MatInput,
-    MatOption,
   ],
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.scss'],
@@ -118,11 +110,10 @@ export class TripListComponent implements OnInit {
     this.page = 0;
     this.size = 30;
     this.statusButtons.forEach(x => (x.isActive = x.name === 'All'));
-    this.service.anotherStatusCalled.next(true)
     this.getTripList();
-    this.service.anotherStatusCalled.subscribe((value)=> {
-      this.anotherStatusCalled = value
-    })
+    this.service.anotherStatusCalled.subscribe(value => {
+      this.anotherStatusCalled = value;
+    });
     this.generateDateOptionsArray();
   }
 
@@ -160,7 +151,7 @@ export class TripListComponent implements OnInit {
       this.page = 0;
       this.size = 30;
       this.loading = true;
-      this.service.anotherStatusCalled.next(true)
+      this.service.anotherStatusCalled.next(true);
       this.getTripList();
     }
   }
@@ -208,7 +199,7 @@ export class TripListComponent implements OnInit {
       this.searchValue = '';
       this.page = 0;
       this.size = 30;
-      this.service.anotherStatusCalled.next(true)
+      this.service.anotherStatusCalled.next(true);
       this.getTripList();
       this.searchFilter = 0;
     }
@@ -222,7 +213,7 @@ export class TripListComponent implements OnInit {
     this.isDateOpened = false;
     this.page = 0;
     this.size = 30;
-    this.service.anotherStatusCalled.next(true)
+    this.service.anotherStatusCalled.next(true);
     this.getTripList();
   }
 
@@ -238,7 +229,7 @@ export class TripListComponent implements OnInit {
     this.tripSuggestions = [];
     this.isSearchedMenuOpened = false;
     this.size = 30;
-    this.service.anotherStatusCalled.next(true)
+    this.service.anotherStatusCalled.next(true);
     this.getTripList();
   }
 
@@ -261,12 +252,7 @@ export class TripListComponent implements OnInit {
     this.tripSuggestions = [];
     this.filterForm.reset();
     this.loading = true;
-    this.dateOptionArray.forEach((item: any) => {
-      if (item.id === 99 ) {
-        item.value = 'Custom'
-      }
-    })
-    this.service.anotherStatusCalled.next(true)
+    this.service.anotherStatusCalled.next(true);
     this.getTripList();
   }
 
@@ -276,7 +262,7 @@ export class TripListComponent implements OnInit {
     this.size = 30;
     this.status = tripStatus !== 'All' ? tripStatus : '';
     this.statusButtons.forEach(x => (x.isActive = x.name === tripStatus));
-    this.service.anotherStatusCalled.next(true)
+    this.service.anotherStatusCalled.next(true);
     this.getTripList();
   }
 
@@ -306,7 +292,7 @@ export class TripListComponent implements OnInit {
 
   onBottom($event: boolean) {
     if (!$event) {
-      this.service.anotherStatusCalled.next(false)
+      this.service.anotherStatusCalled.next(false);
     }
     if ($event && this.page < this.totalPages - 1) {
       if (this.anotherStatusCalled) {
@@ -357,7 +343,7 @@ export class TripListComponent implements OnInit {
       this.page = 0;
       this.size = 30;
       this.tripFilter = 0;
-      this.service.anotherStatusCalled.next(true)
+      this.service.anotherStatusCalled.next(true);
       this.getTripList();
     }
   }
@@ -369,7 +355,7 @@ export class TripListComponent implements OnInit {
     this.tripIdSuggestions = [];
     this.isTripSearchedMenuOpened = false;
     this.loading = true;
-    this.service.anotherStatusCalled.next(true)
+    this.service.anotherStatusCalled.next(true);
     this.getTripList();
   }
 

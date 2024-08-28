@@ -136,7 +136,7 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   private updateTruckLocation() {
-    if (this.truckLocationPosition) {
+    if (this.truckLocationPosition?.lat && this.truckLocationPosition?.lng) {
       if (this.truckLocationMarker) {
         // Update existing marker position
         this.truckLocationMarker.setPosition(this.truckLocationPosition);
@@ -145,12 +145,18 @@ export class GMapComponent implements OnInit, OnChanges {
         this.truckLocationMarker = new google.maps.Marker({
           position: this.truckLocationPosition,
           icon: {
-            url: '/assets/svg/trucking.svg',
+            url: '/assets/svg/truck-map.svg',
             scaledSize: new google.maps.Size(30, 30),
           },
           title: 'Truck Location',
           map: this.map.googleMap, // Add marker to the map
         });
+      }
+    } else {
+      if (this.truckLocationMarker) {
+        // Remove marker from the map
+        this.truckLocationMarker.setMap(null);
+        this.truckLocationMarker = null;
       }
     }
   }

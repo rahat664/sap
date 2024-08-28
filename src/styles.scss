@@ -45,6 +45,7 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555; /* Set the color of the scrollbar thumb on hover */
 }
+
 //
 //input::placeholder {
 //  font-size: 0.75rem;
@@ -131,6 +132,7 @@ img {
   color: #A5B8BB !important;
   font-weight: 400 !important;
 }
+
 .mat-mdc-select:focus {
   border: none !important;
   outline: none !important;
@@ -201,7 +203,7 @@ input::-webkit-outer-spin-button {
 }
 .mat-mdc-select-panel{
   color: #242424 !important;
-  background-color: #F5FBFC !important;
+  background-color: #E5EAEB !important;
   box-shadow: none !important;
   border: 1px solid #A5B8BB;
   border-radius: 0.5rem !important;
@@ -221,5 +223,9 @@ input::-webkit-outer-spin-button {
   height: 3.5rem !important;
 }
 
+
+input {
+  outline: 1px solid #E5EAEB;
+}
 
 
