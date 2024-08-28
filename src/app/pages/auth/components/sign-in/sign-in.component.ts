@@ -306,7 +306,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     );
   }
 
-  // backspace event handler on window
+  // backspace event handler on a window
   @HostListener('window:keydown', ['$event']) handleKeyDown(
     event: KeyboardEvent
   ) {
