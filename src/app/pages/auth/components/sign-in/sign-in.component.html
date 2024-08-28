@@ -1,6 +1,6 @@
-<div class="grid lg:grid-cols-3 h-screen">
+<div class="grid lg:grid-cols-3 2xl:grid-cols-4 h-screen">
   <div
-    class="hidden lg:block w-full col-span-2 bg-loginBg bg-center bg-cover bg-no-repeat h-full">
+    class="hidden lg:block w-full lg:col-span-2 2xl:col-span-3 bg-loginBg bg-center bg-cover bg-no-repeat h-full">
     <div
       class="w-full h-full flex items-center justify-center object-center object-cover">
       <img loading="lazy" src="assets/logo/login-logo.png" alt="loginLogo" />
@@ -57,7 +57,7 @@
             {{ getPhoneNumberError() }}
           </div>
         </div>
-        <div class="w-full flex items-center justify-center mb-4" *ngIf="otpScreen">
+        <div class="w-full flex items-center justify-center mb-6" *ngIf="otpScreen">
           <div class="flex space-x-3 ">
             <input
               id="otp1" appInputAutoFocus idName="{{idName}}"
