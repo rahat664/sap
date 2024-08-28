@@ -84,6 +84,7 @@ export class ManageTripComponent implements OnInit {
   isTriggerFromParent: boolean;
   triggerFromParentName: string;
   truckLocationPosition: { lng: number; lat: number };
+  anotherStatusCalled: boolean;
 
   constructor(
     private tripService: TripService,
@@ -105,6 +106,11 @@ export class ManageTripComponent implements OnInit {
       localStorage.removeItem('fromTripListTripId');
       localStorage.removeItem('fromTripListTruckRegistrationNumber');
     }
+
+    this.tripService.anotherStatusCalled.subscribe(value => {
+      this.anotherStatusCalled = value;
+    });
+
     this.getTripList();
     this.getVehicleTypeList();
     this.activatedId = null;
@@ -112,6 +118,7 @@ export class ManageTripComponent implements OnInit {
     this.tripService.reloadManageTripPage.subscribe(value => {
       if (value) {
         this.searchValue = '';
+        this.tripService.anotherStatusCalled.next(true);
         this.getTripList();
       }
     });
@@ -145,9 +152,11 @@ export class ManageTripComponent implements OnInit {
     this.searchValue = (event.target as HTMLInputElement).value;
     if (this.searchValue.length > 2) {
       this.page = 0;
+      this.tripService.anotherStatusCalled.next(true);
       this.getTripList();
     } else if (this.searchValue.length === 0) {
       this.page = 0;
+      this.tripService.anotherStatusCalled.next(true);
       this.getTripList();
     }
   }
@@ -182,6 +191,7 @@ export class ManageTripComponent implements OnInit {
   private tripStatusFilter(name: string) {
     this.page = 0;
     this.status = name === 'All' ? '' : name;
+    this.tripService.anotherStatusCalled.next(true);
     this.getTripList();
   }
 
@@ -198,10 +208,18 @@ export class ManageTripComponent implements OnInit {
     this.retriveStatusButtons(trip.data.statusCount);
   }
 
-  onScrollEnd() {
-    if (this.page < this.totalPages - 1) {
-      this.page++;
-      this.getTripList();
+  onScrollEnd($event: boolean) {
+    if (!$event) {
+      this.tripService.anotherStatusCalled.next(false);
+    }
+    if ($event && this.page < this.totalPages - 1) {
+      if (this.anotherStatusCalled) {
+      } else {
+        this.page++;
+        this.size = 30;
+        this.loading = false;
+        this.getTripList();
+      }
     }
   }
 
@@ -229,8 +247,7 @@ export class ManageTripComponent implements OnInit {
             ]?.pointLat,
           };
         },
-        error => {
-        }
+        error => {}
       );
     }
   }
@@ -282,6 +299,7 @@ export class ManageTripComponent implements OnInit {
 
   onClickApply() {
     this.filterOpen = false;
+    this.tripService.anotherStatusCalled.next(true);
     this.getTripList();
   }
 
@@ -293,6 +311,7 @@ export class ManageTripComponent implements OnInit {
     this.customerCode = '';
     this.filterOpen = false;
     this.page = 0;
+    this.tripService.anotherStatusCalled.next(true);
     this.getTripList();
   }
 
@@ -309,8 +328,7 @@ export class ManageTripComponent implements OnInit {
             lat: res.data?.latitude,
           };
         },
-        error => {
-        }
+        error => {}
       );
     }
   }
@@ -318,7 +336,8 @@ export class ManageTripComponent implements OnInit {
   onClickClear() {
     this.searchValue = '';
     this.page = 0;
-    this.size = 20;
+    this.size = 30;
+    this.tripService.anotherStatusCalled.next(true);
     this.getTripList();
   }
 }

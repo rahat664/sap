@@ -19,11 +19,19 @@ import { ValidationService } from '../../../../../shared/services/validation/val
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-customer-create',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, AlphabetOnlyDirective],
+  imports: [
+    ReactiveFormsModule,
+    NgIf,
+    AlphabetOnlyDirective,
+    MatFormField,
+    MatInput,
+  ],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss',
 })

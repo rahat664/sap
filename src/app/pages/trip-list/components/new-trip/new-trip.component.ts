@@ -69,6 +69,7 @@ export class NewTripComponent implements OnInit {
   dontClearLocalStorage: boolean;
   totalPages: number;
   height: string;
+  templateCustomer: any;
 
   constructor(
     private customer: CustomerService,
@@ -88,6 +89,7 @@ export class NewTripComponent implements OnInit {
     if (this.isAdmin()) {
       const selectedCustomer = localStorage.getItem('selectedCustomer');
       if (selectedCustomer) {
+        this.templateCustomer = JSON.parse(selectedCustomer);
         this.customerName = JSON.parse(selectedCustomer).name;
         this.getTripTemplate(JSON.parse(selectedCustomer).customerCode);
         this.createButtonEnabled = true;
@@ -309,7 +311,5 @@ export class NewTripComponent implements OnInit {
     }
   }
 
-  onBottom($event: boolean) {
-    
-  }
+  onBottom($event: boolean) {}
 }

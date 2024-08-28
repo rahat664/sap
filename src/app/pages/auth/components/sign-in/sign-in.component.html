@@ -15,22 +15,23 @@
         <p class="text-h2 text-secondary ">Please enter the OTP sent to your mobile number- </p>
         <div class="flex space-x-3 items-center">
           <p class="text-h2  text-not-black font-semibold ">{{ phoneNumber.value }}</p>
-          <button (click)="otpScreen = false" type="button">
+          <button (click)="onClickEdit()" type="button">
             <img alt="" src="assets/svg/edit.svg" class="notPreview">
           </button>
         </div>
       </div>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full">
-        <div *ngIf="usingEmail" class="mb-3 flex flex-col text-secondary w-full">
+        <div *ngIf="usingEmail" class="mb-3 flex flex-col space-y-2 text-secondary w-full">
           <label for="email" class="form-label">User Email</label>
-          <input
-            [autocomplete]="false"
-            formControlName="email"
-            type="email"
-            class="bg-input rounded-lg border-none px-4 py-4"
-            placeholder="User Email"
-            name="email"
-            id="email" />
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              id="email"
+              type="text"
+              matInput
+              formControlName="email"
+              placeholder="User email">
+
+          </mat-form-field>
           <!--        error-message-->
           <div id="emailError"
                *ngIf="email?.invalid && email?.touched"
@@ -38,18 +39,19 @@
             {{ getEmailError() }}
           </div>
         </div>
-        <div *ngIf="!usingEmail && !otpScreen" class="mb-3 flex flex-col text-secondary w-full">
+        <div *ngIf="!usingEmail && !otpScreen" class="mb-3 flex flex-col space-y-2 text-secondary w-full">
           <label for="phoneNumber" class="form-label">Mobile Number</label>
-          <input
-            [autocomplete]="false"
-            formControlName="phoneNumber"
-            type="email"
-            class="bg-input rounded-lg border-none px-4 py-4"
-            placeholder="Enter your mobile number"
-            [minlength]="11"
-            [maxLength]="11"
-            name="phoneNumber"
-            id="phoneNumber" />
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              id="phoneNumber"
+              type="text"
+              matInput
+              [minLength]="11"
+              [maxLength]="11"
+              formControlName="phoneNumber"
+              placeholder="Enter your mobile number">
+
+          </mat-form-field>
           <!--        error-message-->
           <div id="phoneError"
                *ngIf="phoneNumber?.invalid && (phoneNumber?.dirty || phoneNumber?.touched)"
@@ -113,17 +115,18 @@
           <label for="password" class="form-label">Password</label>
           <!--          password field with eye icon-->
           <div class="relative bg-input rounded-lg border-none">
-            <input
-              [autocomplete]="false"
-              formControlName="password"
-              type="password"
-              class="border-none bg-input rounded-lg outline-none px-4 py-4 w-full"
-              placeholder="Password"
-              name="password  "
-              id="password" />
+            <mat-form-field appearance="outline" class="example-full-width w-full ">
+              <input
+                id="password"
+                type="password"
+                matInput
+                formControlName="password"
+                placeholder="password">
+
+            </mat-form-field>
             <i
               id="icon"
-              class="fas fa-eye-slash absolute right-4 top-4 cursor-pointer"
+              class="fas fa-eye-slash absolute right-4 top-1/3 cursor-pointer"
               (click)="togglePassword()"></i>
           </div>
           <!--        error-message-->

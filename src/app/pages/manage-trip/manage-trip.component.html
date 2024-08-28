@@ -41,7 +41,7 @@
     </div>
     <div
       *ngIf="!loading && !filterOpen"
-      appGiveMaxHeight (inBottomEnd)="onScrollEnd()"
+      appGiveMaxHeight (inBottomEnd)="onScrollEnd($event)"
       class="flex flex-col px-4 py-1 space-y-2 h-[calc(100vh-11.7rem)] overflow-y-auto min-w-96">
       <app-trip-card
         (click)="onclickTripCard(trip.tripId, getTruckRegistrationNumber(trip.truck))"

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
@@ -16,6 +16,8 @@ import { ValidationService } from '../../../shared/services/validation/validatio
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 import { AlphabetOnlyDirective } from '../../../shared/directive/alphabet-only.directive';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-user-create',
@@ -26,6 +28,9 @@ import { MatDialogRef } from '@angular/material/dialog';
     CustomInputComponent,
     GetClickEventDirective,
     AlphabetOnlyDirective,
+    MatFormField,
+    MatInput,
+    NgClass,
   ],
   templateUrl: './user-create.component.html',
   styleUrl: './user-create.component.scss',

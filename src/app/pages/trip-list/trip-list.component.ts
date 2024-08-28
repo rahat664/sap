@@ -24,6 +24,13 @@ import { Trip } from '../auth/models/response/trip';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { Router, RouterLink } from '@angular/router';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+  MatOption,
+} from '@angular/material/autocomplete';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-trip-list',
@@ -47,6 +54,11 @@ import { DriverEditSharedService } from '../profiles/services/driver-edit-shared
     CheckTheHeightCrossMaxHeightOrNotDirective,
     RouterLink,
     DecimalPipe,
+    MatAutocompleteTrigger,
+    MatAutocomplete,
+    MatOption,
+    MatFormField,
+    MatInput,
   ],
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.scss'],

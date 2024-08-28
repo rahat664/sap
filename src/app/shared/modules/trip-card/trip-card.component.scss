@@ -1,0 +1,33 @@
+
+.step {
+  display: flex;
+  align-items: center;
+  position: relative;
+  @apply space-x-6
+  /* Space between steps */
+}
+
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 4px; /* Adjust based on circle size and spacing */
+  top: 53%;
+  height: 170%;
+  width: 1px; /* Width of the dashed line */
+  border-left: 1px dashed #E5EAEB; /* Dashed border style */
+  z-index: 0; /* Ensure the line is behind the circles */
+}
+
+.circle {
+  width: 9px; /* Diameter of the circle */
+  height: 9px; /* Diameter of the circle */
+  border-radius: 50%;
+  background-color: #E5EAEB; /* Color of the circle */
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+
+p {
+  margin: 0;
+}

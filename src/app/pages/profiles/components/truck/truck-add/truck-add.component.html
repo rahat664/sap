@@ -97,7 +97,7 @@
             </div>
             <button
               [disabled]="everyThingDisabled"
-              (click)="prehireCheckListOpened = true;"
+              (click)="onClickAddList()"
               class="{{everyThingDisabled ? 'text-input-hint' : 'text-link'}}"
             >{{ countPassCheckList ? 'Browse List' : 'Add List' }}
             </button

@@ -15,7 +15,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
-import { select } from '@ngrx/store';
 
 @Component({
   selector: 'app-custom-input',
@@ -75,6 +74,7 @@ export class CustomInputComponent implements OnInit {
   selectedFromMonthInString: string;
   selectedToMonthInString: string;
   private selection: any;
+  selectedValue: number | undefined;
 
   constructor(private shared: DriverEditSharedService) {}
 
@@ -218,6 +218,13 @@ export class CustomInputComponent implements OnInit {
   @Input() errorMessage: string;
 
   ngOnInit(): void {
+    setTimeout(() => {
+      if (this.inputSearch) {
+        this.selectedValue = this.options.find(
+          option => option.value === this.inputSearch
+        )?.id;
+      }
+    }, 1000);
     if (this.options?.length == 1) {
       this.inputPlaceholder = this.options[0].value;
       this.selectedId.emit(this.options[0].id);
@@ -230,41 +237,47 @@ export class CustomInputComponent implements OnInit {
   }
 
   onClickOption($event, select: MatSelect) {
-    this.selection = $event.value
+    this.selection = $event.value;
     this.selectedId.emit($event.value);
     if ($event.value === 99) {
-      setTimeout(() => {select.open()},0)
+      setTimeout(() => {
+        select.open();
+      }, 0);
       this.itemsOpened = true;
       this.customOpened = true;
     } else {
       this.customOpened = false;
       this.itemsOpened = false;
-      this.selectedToMonth = null
-      this.selectedToDay = null
-      this.selectedToDate = null
-      this.selectedFromDate = null
-      this.selectedFromMonth = null
-      this.selectedFromDay = null
-      this.selectedToYear = null
-      this.selectedFromYear = null
+      this.selectedToMonth = null;
+      this.selectedToDay = null;
+      this.selectedToDate = null;
+      this.selectedFromDate = null;
+      this.selectedFromMonth = null;
+      this.selectedFromDay = null;
+      this.selectedToYear = null;
+      this.selectedFromYear = null;
       this.options.forEach(option => {
         if (option.id == 99) {
-          option.value = 'Custom'
+          option.value = 'Custom';
         }
-      })
+      });
     }
   }
 
   onClickApply(select: MatSelect) {
-    if (this.selectedFromMonth && this.selectedFromYear && this.selectedFromDay) {
-      this.options.forEach((option) => {
+    if (
+      this.selectedFromMonth &&
+      this.selectedFromYear &&
+      this.selectedFromDay
+    ) {
+      this.options.forEach(option => {
         if (option.id === this.selection) {
-          option.value = `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`
+          option.value = `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`;
           setTimeout(() => {
-            select.close()
-          },0)
+            select.close();
+          }, 0);
         }
-      })
+      });
       this.selectedFromDate.emit(this.combineFromIntoSingleDate());
       this.selectedToDate.emit(this.combineToIntoSingleDate());
       this.selectedFromDateToToDate.emit(
@@ -280,6 +293,13 @@ export class CustomInputComponent implements OnInit {
     if (this.options?.length == 1) {
       this.inputPlaceholder = this.options[0].value;
       this.selectedId.emit(this.options[0].id);
+    }
+    if (this.inputSearch) {
+      this.selectedValue = this.options.find(
+        option => option.value === this.inputSearch
+      )?.id;
+    } else {
+      this.selectedValue = undefined;
     }
   }
 }

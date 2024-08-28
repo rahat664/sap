@@ -1,8 +1,9 @@
 <div>
   <mat-form-field class="w-full" appearance="outline">
-    <mat-select  #select (selectionChange)="onClickOption($event, select)"   [placeholder]="inputPlaceholder">
+    <mat-select #select (selectionChange)="onClickOption($event, select)" [(value)]="selectedValue"
+                [placeholder]="inputPlaceholder">
       @for (option of options; track option) {
-        <mat-option  [value]="option.id">{{ option.showname ? option.showname : option.value }}</mat-option>
+        <mat-option [value]="option.id">{{ option.showname ? option.showname : option.value }}</mat-option>
         <div
           *ngIf="customOpened"
           class="absolute top-0 h-full left-full w-[30rem] bg-input p-4 rounded-lg border border-input-hint text-[0.875rem]">

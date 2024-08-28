@@ -39,28 +39,30 @@ export class UserService {
     return this.http.get(`${this.rolesUrl}`);
   }
 
-  getUsers(
-    page: number,
-    size?: number,
-    status?: string,
-    search?: string,
-    department?: string
-  ): Observable<any> {
+  getUsers(page: {
+    search: string;
+    size: number;
+    page: number;
+    department: string;
+    status: string;
+  }): Observable<any> {
     const params: any = { page };
 
-    if (size) {
-      params.size = size;
+    if (page.search) {
+      params.search = page.search;
     }
-    if (status) {
-      params.status = status;
+    if (page.size) {
+      params.size = page.size;
     }
-    if (search) {
-      params.search = search;
+    if (page.department) {
+      params.department = page.department;
     }
-    if (department) {
-      params.department = department;
+    if (page.status) {
+      params.status = page.status;
     }
-
+    if (page.page) {
+      params.page = page.page;
+    }
     const queryString = Object.keys(params)
       .map(key => `${key}=${encodeURIComponent(params[key])}`)
       .join('&');

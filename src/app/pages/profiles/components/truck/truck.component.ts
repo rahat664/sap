@@ -215,6 +215,9 @@ export class TruckComponent implements OnInit {
     this.singleTruckId = truck.id;
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
+    this.dialog.open(PreHireChecklistComponent, {
+      width: '30%',
+    });
   }
 
   onClickAddTruck() {

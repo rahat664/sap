@@ -93,7 +93,15 @@ img {
   font-weight: 500 !important;
   -webkit-font-smoothing: none !important;
   color: #242424 !important;
+  outline: 1px solid #E5EAEB !important;
+  background: #F5FBFC !important;
+  border-radius: 0.5rem !important;
 }
+
+.mat-mdc-form-field > input {
+  outline: none !important;
+}
+
 
 .mat-mdc-form-field > input::placeholder {
   color: #A5B8BB !important;
@@ -157,7 +165,7 @@ input::-webkit-outer-spin-button {
 
 .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input {
   caret-color: #111827 !important;
-  --tw-ring-color: none !important;
+  --tw-ring-color: #E5EAEB !important;
   --tw-ring-offset-color: none !important;
   --tw-ring-shadow: none !important;
 }
@@ -201,7 +209,8 @@ input::-webkit-outer-spin-button {
   font-size: 0.875rem !important;
   padding: 0 !important;
 }
-.mat-mdc-select-panel{
+
+.mat-mdc-select-panel {
   color: #242424 !important;
   background-color: #E5EAEB !important;
   box-shadow: none !important;
@@ -224,8 +233,12 @@ input::-webkit-outer-spin-button {
 }
 
 
-input {
-  outline: 1px solid #E5EAEB;
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+
+  -webkit-box-shadow: 0 0 0 30px #F5FBFC inset !important;
 }
 
 

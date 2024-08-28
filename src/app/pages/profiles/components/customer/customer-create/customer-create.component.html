@@ -16,18 +16,19 @@
     <form
       [formGroup]="customerForm"
       class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-[0.875rem] text-web-text-secondary">
-      <div class="flex flex-col w-full lg:col-span-2">
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
         <label for="name">Customer Name</label>
-        <input
-          appAlphabetOnly
-          [minlength]="2"
-          [maxlength]="50"
-          (focusout)="onfocusOut($event)"
-          placeholder="Enter Customer Name"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="name"
-          formControlName="name" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="name"
+            [minLength]="2"
+            [maxLength]="50"
+            type="text"
+            (focusout)="onfocusOut($event)"
+            matInput
+            formControlName="email"
+            placeholder="Enter Customer Name">
+        </mat-form-field>
         <!--        error-message-->
         <div
           *ngIf="
@@ -39,14 +40,17 @@
       </div>
       <div class="flex flex-col w-full">
         <label for="code">Customer Code</label>
-        <input
-          [minlength]="4"
-          [maxlength]="4"
-          placeholder="Enter Customer Code"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="code"
-          formControlName="code" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            [minLength]="4"
+            [maxLength]="4"
+            id="code"
+            type="text"
+            matInput
+            formControlName="code"
+            placeholder="Enter customer code">
+
+        </mat-form-field>
         <!--        error-message-->
         <div
           *ngIf="
@@ -57,16 +61,15 @@
         </div>
       </div>
       <div class="flex flex-col w-full">
-        <label for="contact">Contact Person</label>
-        <input
-          appAlphabetOnly
-          [minlength]="2"
-          [maxlength]="50"
-          placeholder="Enter Contact Person"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="contact"
-          formControlName="contactPerson" />
+        <label for="contactPerson">Contact Person</label>
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="contactPerson"
+            type="text"
+            matInput
+            formControlName="contactPerson"
+            placeholder="Enter Contact Person">
+        </mat-form-field>
         <!--        error-message-->
         <div
           *ngIf="
@@ -79,12 +82,16 @@
       </div>
       <div class="flex flex-col w-full">
         <label for="phone">Mobile</label>
-        <input
-          placeholder="Enter Mobile Number"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="phone"
-          formControlName="phone" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            [minLength]="11"
+            [maxLength]="11"
+            type="text"
+            matInput
+            id="phone"
+            formControlName="phone"
+            placeholder="Enter Mobile">
+        </mat-form-field>
         <!--        error-message-->
         <div
           *ngIf="
@@ -100,12 +107,14 @@
       </div>
       <div class="flex flex-col w-full">
         <label for="email">Email (Optional)</label>
-        <input
-          placeholder="Enter Email"
-          class="bg-input rounded-lg border-none p-4"
-          type="email"
-          id="email"
-          formControlName="email" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="email"
+            type="text"
+            matInput
+            formControlName="email"
+            placeholder="Enter email">
+        </mat-form-field>
         <!--        error-message-->
         <div *ngIf="customerForm.get('email').touched" class="text-red text-xs">
           <span>{{ getEmailErrorMessage() }}</span>

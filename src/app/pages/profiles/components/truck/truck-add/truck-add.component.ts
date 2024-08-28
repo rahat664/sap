@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { NgClass, NgIf } from '@angular/common';
@@ -23,6 +23,7 @@ import { HandleToastrService } from '../../../../../shared/services/handle-toast
 import { fileUpload } from '../models/file-upload';
 import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-truck-add',
@@ -44,6 +45,7 @@ import { FileUploadComponent } from '../file-upload/file-upload.component';
   styleUrl: './truck-add.component.scss',
 })
 export class TruckAddComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   manufacturerList = manufacturerList;
   manufactureOpened: boolean;
   manufacturerPlaceholder: string;
@@ -108,16 +110,6 @@ export class TruckAddComponent implements OnInit {
     });
   }
 
-  onSelectManuFacturer($event: number) {
-    this.manufacturerPlaceholder = this.manufacturerList.find(
-      option => option.id === $event
-    ).value;
-    this.manufacturerList.forEach(option => {
-      option.selected = option.id === $event;
-    });
-    this.manufactureOpened = false;
-  }
-
   onClickRegistrationZone($event: boolean) {
     this.registrationZoneOpened = $event;
   }
@@ -155,10 +147,6 @@ export class TruckAddComponent implements OnInit {
     this.truckAddForm.patchValue({
       registration_category: this.registrationInput,
     });
-  }
-
-  onClickManufacturer($event: boolean) {
-    this.manufactureOpened = $event;
   }
 
   ngOnInit(): void {
@@ -358,5 +346,29 @@ export class TruckAddComponent implements OnInit {
         }
       },
     });
+  }
+
+  onClickAddList() {
+    localStorage.removeItem('truck');
+    this.dialog
+      .open(PreHireChecklistComponent, {
+        width: '30%',
+        data: {
+          save: true,
+        },
+      })
+      .afterClosed()
+      .subscribe(res => {
+        this.countPassCheckList = 0;
+        this.singleChecklist = res;
+        this.truckAddForm.patchValue({
+          checklist: res,
+        });
+        for (const key in res) {
+          if (res[key] === 'PASS') {
+            this.countPassCheckList += 1;
+          }
+        }
+      });
   }
 }
