@@ -6,9 +6,9 @@
       <img loading="lazy" src="assets/logo/login-logo.png" alt="loginLogo" />
     </div>
   </div>
-  <div class="h-screen">
+  <div class="h-screen  w-full">
     <div
-      class="flex flex-col h-[calc(100vh-2.5rem)] space-y-6 justify-center px-12 items-center lg:items-start">
+      class="flex flex-col h-[calc(100vh-2.5rem)] w-full space-y-6 justify-center px-12 items-center lg:items-start">
       <h1 *ngIf="!otpScreen" class="text-h1 font-semibold">User login</h1>
       <div *ngIf="otpScreen" class="flex flex-col space-y-3">
         <h1 class="text-h1 font-semibold">OTP verification</h1>
@@ -57,8 +57,8 @@
             {{ getPhoneNumberError() }}
           </div>
         </div>
-        <div class="w-full flex items-center justify-center mb-3" *ngIf="otpScreen">
-          <div class="flex space-x-3">
+        <div class="w-full flex items-center justify-center mb-4" *ngIf="otpScreen">
+          <div class="flex space-x-3 ">
             <input
               id="otp1" appInputAutoFocus idName="{{idName}}"
               [autocomplete]="false"
@@ -172,6 +172,7 @@
         </div>
       </form>
     </div>
+
     <div class="text-center p-2 w-full self-end">
       <span class="text-sm text-secondary"
       >All Rights Reserved to Shamolima Ltd.</span

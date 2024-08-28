@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -304,5 +304,35 @@ export class SignInComponent implements OnInit, OnDestroy {
         this.toaster.showError(error.error.message, '');
       }
     );
+  }
+
+  // backspace event handler on window
+  @HostListener('window:keydown', ['$event']) handleKeyDown(
+    event: KeyboardEvent
+  ) {
+    if (event.key === 'Backspace') {
+      if (this.idName === 'otp4') {
+        if (this.loginForm.get('otp4').value === '') {
+          this.idName = 'otp3';
+          this.loginForm.get('otp3').setValue('');
+        } else {
+          this.loginForm.get('otp4').setValue('');
+        }
+      } else if (this.idName === 'otp3') {
+        if (this.loginForm.get('otp3').value === '') {
+          this.idName = 'otp2';
+          this.loginForm.get('otp2').setValue('');
+        } else {
+          this.loginForm.get('otp3').setValue('');
+        }
+      } else if (this.idName === 'otp2') {
+        if (this.loginForm.get('otp2').value === '') {
+          this.idName = 'otp1';
+          this.loginForm.get('otp1').setValue('');
+        } else {
+          this.loginForm.get('otp2').setValue('');
+        }
+      }
+    }
   }
 }
