@@ -85,6 +85,9 @@ export class ManageTripComponent implements OnInit {
   triggerFromParentName: string;
   truckLocationPosition: { lng: number; lat: number };
   anotherStatusCalled: boolean;
+  previousFilterLength: number = 0;
+  customerName: any;
+  height: any;
 
   constructor(
     private tripService: TripService,
@@ -156,7 +159,6 @@ export class ManageTripComponent implements OnInit {
       this.getTripList();
     } else if (this.searchValue.length === 0) {
       this.page = 0;
-      this.tripService.anotherStatusCalled.next(true);
       this.getTripList();
     }
   }
@@ -272,7 +274,9 @@ export class ManageTripComponent implements OnInit {
 
   onClickCustomerSearchSuggestion(option: any) {
     this.customerCode = option.customerCode;
+    this.customerName = option.name;
     this.filterLength += 1;
+    this.previousFilterLength += 1;
   }
 
   private getVehicleTypeList() {
@@ -286,15 +290,22 @@ export class ManageTripComponent implements OnInit {
     this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
   }
 
-  onChangeEndDate($event: Event) {
-    this.endDate = ($event.target as HTMLInputElement).value;
-    this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
-    this.filterLength += 1;
+  onChangeEndDate($event: any) {
+    if ($event.target.value) {
+      this.endDate = ($event.target as HTMLInputElement).value;
+      this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
+      this.filterLength += 1;
+      this.previousFilterLength += 1;
+    } else {
+      this.endDate = '';
+      this.filterLength -= 1;
+      this.previousFilterLength -= 1;
+    }
   }
 
   onChangeTruckType($event: any) {
     this.truckType = $event.value;
-    this.filterLength += 1;
+    this.filterLength = this.previousFilterLength + this.truckType?.length;
   }
 
   onClickApply() {
@@ -339,5 +350,13 @@ export class ManageTripComponent implements OnInit {
     this.size = 30;
     this.tripService.anotherStatusCalled.next(true);
     this.getTripList();
+  }
+
+  customizedHeight(height: any) {
+    let heightValue = 0;
+    if (height) {
+      heightValue = height.split('px')[0];
+    }
+    return heightValue - 32 + 'px';
   }
 }

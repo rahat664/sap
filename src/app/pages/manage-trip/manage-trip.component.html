@@ -1,6 +1,6 @@
 <div class="flex">
   <div class="flex flex-col  min-w=[25rem] max-w-[25rem]">
-    <div class="p-4 flex flex-col space-y-3">
+    <div class="p-4 flex flex-col space-y-3" appGetElementHeight (height)="height = $event">
       <div class="flex justify-between items-center">
         <span class="text-h2 font-semibold">Trip List</span>
         <button (click)="onclickSideBarClose()"
@@ -26,7 +26,7 @@
             name="email"
             id="topbar-search"
             class="border-none text-input-hint w-full bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
-            placeholder="Search by tripId, customerCode" />
+            placeholder="Search by Trip ID, Customer Code" />
         </div>
         <button (click)="filterOpen = true" class="p-2 rounded-lg bg-white flex items-center justify-center">
           <div class="relative">
@@ -42,7 +42,9 @@
     <div
       *ngIf="!loading && !filterOpen"
       appGiveMaxHeight (inBottomEnd)="onScrollEnd($event)"
-      class="flex flex-col px-4 py-1 space-y-2 h-[calc(100vh-11.7rem)] overflow-y-auto min-w-96">
+      [totalPage]="totalPages"
+      [anotherItemsHeight]="customizedHeight(height)"
+      class="flex flex-col px-4 py-1 space-y-2 overflow-y-auto min-w-96">
       <app-trip-card
         (click)="onclickTripCard(trip.tripId, getTruckRegistrationNumber(trip.truck))"
         [isActivated]="trip.tripId === activatedId"
@@ -76,7 +78,7 @@
         </div>
         <button (click)="onClickClearAll()"
                 class="mb-1/2 h-[1.75rem] w-[1.75rem] text-white bg-disabled flex items-center justify-center rounded-full">
-          <i class="fas fa-times text-not-black"></i>
+          <i class="fal fa-times text-not-black"></i>
         </button>
       </div>
       <div class="flex flex-col space-y-3">
@@ -84,8 +86,10 @@
           <label class="text-body text-secondary">Date</label>
           <mat-form-field appearance="outline">
             <mat-date-range-input [rangePicker]="picker">
-              <input (selectionchange)="onChangeStartDate($event)" matStartDate placeholder="Start date">
-              <input (selectionchange)="onChangeEndDate($event)" matEndDate placeholder="End date">
+              <input [(ngModel)]="startDate" (selectionchange)="onChangeStartDate($event)" matStartDate
+                     placeholder="Start date">
+              <input [(ngModel)]="endDate" (selectionchange)="onChangeEndDate($event)" matEndDate
+                     placeholder="End date">
             </mat-date-range-input>
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-date-range-picker #picker></mat-date-range-picker>
@@ -97,6 +101,7 @@
           <mat-form-field appearance="outline" class="example-full-width w-full">
             <input
               id="customerName"
+              [(ngModel)]="customerName"
               type="text"
               matInput
               (keyup)="onKeyUpCustomerSearch($event)"
@@ -113,7 +118,8 @@
         <div class="flex flex-col space-y-1 w-full">
           <label>Truck type</label>
           <mat-form-field appearance="outline">
-            <mat-select (selectionChange)="onChangeTruckType($event)" multiple placeholder="Choose Truck Type">
+            <mat-select [(ngModel)]="truckType" (selectionChange)="onChangeTruckType($event)" multiple
+                        placeholder="Choose Truck Type">
               @for (vehicle of vehicleTypeList; track vehicle) {
                 <mat-option [value]="vehicle.id">{{ vehicle.name }}</mat-option>
               }
