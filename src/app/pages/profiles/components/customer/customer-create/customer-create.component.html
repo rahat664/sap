@@ -1,7 +1,7 @@
 <div class="grid lg:grid-cols-3 w-full h-full">
   <button (click)="onClickClose()"
           class="absolute top-1 right-1  h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center">
-    <i class="fas fa-times"></i
+    <i class="fal fa-times"></i
     >
 
   </button>
@@ -26,7 +26,7 @@
             type="text"
             (input)="onNameKeyPress($event)"
             matInput
-            formControlName="email"
+            formControlName="name"
             placeholder="Enter Customer Name">
         </mat-form-field>
         <!--        error-message-->
@@ -124,7 +124,7 @@
         <label for="address">Address (Optional)</label>
         <textarea
           placeholder="Enter Address"
-          class="bg-input rounded-lg border-none p-4"
+          class="bg-input rounded-lg  p-4 border border-disabled"
           id="address"
           formControlName="address"></textarea>
       </div>
@@ -132,7 +132,7 @@
         <label for="note">Note (Optional)</label>
         <textarea
           placeholder="Enter Note"
-          class="bg-input rounded-lg border-none p-4"
+          class="bg-input rounded-lg  p-4 border border-disabled"
           id="note"
           formControlName="note"></textarea>
       </div>

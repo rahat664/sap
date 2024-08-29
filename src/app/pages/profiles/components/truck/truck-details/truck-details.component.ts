@@ -17,6 +17,8 @@ import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checkl
 import { fileUpload } from '../models/file-upload';
 import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-truck-details',
@@ -35,6 +37,8 @@ import { MatDialog } from '@angular/material/dialog';
     ImageGalleryComponent,
     CheckListPopupComponent,
     PreHireChecklistComponent,
+    MatFormField,
+    MatInput,
   ],
   templateUrl: './truck-details.component.html',
   styleUrl: './truck-details.component.scss',

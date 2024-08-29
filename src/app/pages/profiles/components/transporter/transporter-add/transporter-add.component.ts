@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  inject,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import {
@@ -17,6 +24,8 @@ import { HandleToastrService } from '../../../../../shared/services/handle-toast
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-transporter-add',
@@ -27,11 +36,13 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
     ReactiveFormsModule,
     NgIf,
     AlphabetOnlyDirective,
-    MatDialogModule
+    MatDialogModule,
+    MatFormField,
+    MatInput,
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransporterAddComponent implements OnInit {
   transporterForm: FormGroup;
@@ -41,14 +52,14 @@ export class TransporterAddComponent implements OnInit {
   paymentInputPlaceholder: string;
   @Output() formCreated = new EventEmitter<boolean>();
   bkashPaymentTypePlaceholder: string;
-  readonly dialogRef = inject(MatDialogRef<TransporterAddComponent>)
+  readonly dialogRef = inject(MatDialogRef<TransporterAddComponent>);
 
   constructor(
     private service: UserService,
     private validation: ValidationService,
     private toastr: HandleToastrService,
     private fb: FormBuilder,
-    private shared: DriverEditSharedService,
+    private shared: DriverEditSharedService
   ) {
     this.transporterForm = this.fb.group({
       name: [

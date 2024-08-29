@@ -4,13 +4,15 @@ import { GetClickEventDirective } from '../../../../../shared/directive/get-clic
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { UserModel } from '../../../../user-management/models/user.model';
-import { FormGroup, FormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
 import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
 import { driverFileType } from '../../customer/model/driver-file-type';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-driver-details',
@@ -26,6 +28,9 @@ import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confi
     CreatePopupComponent,
     FileUploadPopupComponent,
     DatePipe,
+    MatFormField,
+    MatInput,
+    ReactiveFormsModule,
   ],
   templateUrl: './driver-details.component.html',
   styleUrl: './driver-details.component.scss',

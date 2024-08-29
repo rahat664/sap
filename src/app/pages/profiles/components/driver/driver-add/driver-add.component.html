@@ -19,14 +19,19 @@
           </div>
           <div class="grid gap-3">
             <div class="flex flex-col space-y-1">
-              <span class="text-not-black font-semibold">Name</span>
+              <label for="driverName" class="text-not-black font-semibold">Name</label>
               <div>
-                <input
-                  appAlphabetOnly
-                  formControlName="driverName"
-                  placeholder="Enter driver name"
-                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
-
+                <mat-form-field appearance="outline" class="example-full-width w-full">
+                  <input
+                    appAlphabetOnly
+                    id="driverName"
+                    [minLength]="2"
+                    [maxLength]="50"
+                    type="text"
+                    matInput
+                    formControlName="driverName"
+                    placeholder="Enter driver Name">
+                </mat-form-field>
                 <span
                   *ngIf="driverAddForm.get('driverName').touched"
                   class="text-red text-xs"
@@ -37,10 +42,16 @@
             <div class="flex flex-col space-y-1">
               <span class="text-not-black font-semibold">Mobile</span>
               <div>
-                <input
-                  formControlName="driverPhone"
-                  placeholder="Enter mobile Number"
-                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+                <mat-form-field appearance="outline" class="example-full-width w-full">
+                  <input
+                    id="name"
+                    [minLength]="11"
+                    [maxLength]="11"
+                    type="text"
+                    matInput
+                    formControlName="driverPhone"
+                    placeholder="Enter mobile number">
+                </mat-form-field>
                 <div
                   *ngIf="
                     driverAddForm.get('driverPhone').dirty &&

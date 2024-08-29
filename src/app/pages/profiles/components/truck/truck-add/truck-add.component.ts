@@ -24,6 +24,8 @@ import { fileUpload } from '../models/file-upload';
 import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-truck-add',
@@ -40,6 +42,8 @@ import { MatDialog } from '@angular/material/dialog';
     CreatePopupComponent,
     CheckListPopupComponent,
     FileUploadComponent,
+    MatFormField,
+    MatInput,
   ],
   templateUrl: './truck-add.component.html',
   styleUrl: './truck-add.component.scss',

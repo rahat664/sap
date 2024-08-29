@@ -56,12 +56,16 @@
                     }}</span>
                 </div>
                 <div class="flex flex-col w-full">
-                  <input
-                    placeholder="Serial"
-                    maxlength="2"
-                    minlength="2"
-                    formControlName="registration_serial"
-                    class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+                  <mat-form-field appearance="outline" class="example-full-width ">
+                    <input
+                      id="registration_serial"
+                      [minLength]="2"
+                      [maxLength]="2"
+                      type="text"
+                      matInput
+                      formControlName="registration_serial"
+                      placeholder="Serial">
+                  </mat-form-field>
                   <span
                     *ngIf="truckAddForm.get('registration_serial').touched && registrationSerialErrorMessage"
                     class="text-red text-xs"
@@ -69,12 +73,16 @@
                   >
                 </div>
                 <div class="flex flex-col w-full">
-                  <input
-                    minlength="4"
-                    maxlength="4"
-                    placeholder="Number"
-                    formControlName="registration_num"
-                    class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+                  <mat-form-field appearance="outline" class="example-full-width ">
+                    <input
+                      id="registration_num"
+                      [minLength]="2"
+                      [maxLength]="2"
+                      type="text"
+                      matInput
+                      formControlName="registration_num"
+                      placeholder="Number">
+                  </mat-form-field>
                   <span
                     *ngIf="truckAddForm.get('registration_num').touched && registrationNumErrorMessage"
                     class="text-red text-xs"

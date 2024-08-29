@@ -59,14 +59,26 @@
                   [inputSearch]="
                     registrationTypePlaceholder
                   "></app-custom-input>
-                <input
-                  placeholder="Serial"
-                  formControlName="registration_serial"
-                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
-                <input
-                  placeholder="Number"
-                  formControlName="registration_num"
-                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+                <mat-form-field appearance="outline" class="example-full-width ">
+                  <input
+                    id="registration_serial"
+                    [minLength]="2"
+                    [maxLength]="2"
+                    type="text"
+                    matInput
+                    formControlName="registration_serial"
+                    placeholder="Serial">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="example-full-width ">
+                  <input
+                    id="registration_num"
+                    [minLength]="4"
+                    [maxLength]="4"
+                    type="text"
+                    matInput
+                    formControlName="registration_num"
+                    placeholder="Number">
+                </mat-form-field>
               </div>
             </div>
             <div *ngIf="!inEditMode" class="flex flex-col space-y-1">

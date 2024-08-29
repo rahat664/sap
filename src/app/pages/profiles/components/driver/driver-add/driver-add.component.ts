@@ -16,6 +16,8 @@ import { ValidationService } from '../../../../../shared/services/validation/val
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 import { FileUploadComponent } from '../../truck/file-upload/file-upload.component';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-driver-add',
@@ -28,6 +30,8 @@ import { FileUploadComponent } from '../../truck/file-upload/file-upload.compone
     FormsModule,
     AlphabetOnlyDirective,
     FileUploadComponent,
+    MatFormField,
+    MatInput,
   ],
   templateUrl: './driver-add.component.html',
   styleUrl: './driver-add.component.scss',

@@ -36,15 +36,21 @@
           <div
             class="flex flex-col space-y-1"
             [ngClass]="{ 'col-span-2': inEditMode }">
-            <span class="text-not-black font-semibold">Name</span>
+            <label for="driverName" class="text-web-text-secondary font-semibold">Name</label>
             <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
                 singleDriver.name
               }}</span>
             <div *ngIf="inEditMode">
-              <input
-                placeholder="Enter driver name"
-                [(ngModel)]="driverName"
-                class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+              <mat-form-field appearance="outline" class="example-full-width w-full">
+                <input
+                  id="driverName"
+                  [minLength]="2"
+                  [maxLength]="50"
+                  type="text"
+                  matInput
+                  formControlName="driverName"
+                  placeholder="Enter driver name">
+              </mat-form-field>
             </div>
           </div>
           <div *ngIf="!inEditMode" class="flex flex-col space-y-1">
@@ -54,15 +60,21 @@
           <div
             class="flex flex-col space-y-1"
             [ngClass]="{ 'col-span-2': inEditMode }">
-            <span class="text-not-black font-semibold">Mobile</span>
+            <label for="driverPhone" class="text-web-text-secondary font-semibold">Mobile</label>
             <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
                 singleDriver.phone
               }}</span>
             <div *ngIf="inEditMode">
-              <input
-                placeholder="Enter mobile Number"
-                [(ngModel)]="driverPhone"
-                class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+              <mat-form-field appearance="outline" class="example-full-width w-full">
+                <input
+                  id="driverPhone"
+                  [minLength]="11"
+                  [maxLength]="11"
+                  type="text"
+                  matInput
+                  formControlName="driverPhone"
+                  placeholder="Enter mobile number">
+              </mat-form-field>
             </div>
           </div>
         </div>
