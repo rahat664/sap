@@ -1,17 +1,17 @@
-<div class="flex w-full h-full">
+<div class="grid lg:grid-cols-3 w-full h-full">
   <button (click)="onClickClose()"
-          class="absolute top-1 right-1 text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center">
+          class="absolute top-1 right-1  h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center">
     <i class="fas fa-times"></i
     >
 
   </button>
   <div
-    class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
+    class="p-8 lg:flex hidden items-center justify-center bg-input rounded-l-lg">
     <div>
       <img loading="lazy" class="notPreview" src="../../../../../../assets/images/customer-create.png" alt="" />
     </div>
   </div>
-  <div class="p-8 max-h-[90vh] overflow-auto overflow-x-hidden">
+  <div class="p-8 w-full overflow-auto overflow-x-hidden lg:col-span-2">
     <h3 class="text-not-black font-semibold text-xl mb-4">Add New Customer</h3>
     <form
       [formGroup]="customerForm"
@@ -24,7 +24,7 @@
             [minLength]="2"
             [maxLength]="50"
             type="text"
-            (focusout)="onfocusOut($event)"
+            (input)="onNameKeyPress($event)"
             matInput
             formControlName="email"
             placeholder="Enter Customer Name">
@@ -38,7 +38,7 @@
           {{ getCustomerNameErrorMessage() }}
         </div>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="code">Customer Code</label>
         <mat-form-field appearance="outline" class="example-full-width ">
           <input
@@ -60,7 +60,7 @@
           {{ getCustomerCodeError() }}
         </div>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="contactPerson">Contact Person</label>
         <mat-form-field appearance="outline" class="example-full-width ">
           <input
@@ -80,7 +80,7 @@
           {{ getContactPersonErrorMessage() }}
         </div>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="phone">Mobile</label>
         <mat-form-field appearance="outline" class="example-full-width ">
           <input
@@ -105,7 +105,7 @@
           <span>{{ getPhoneErrorMessageWithTouch() }}</span>
         </div>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="email">Email (Optional)</label>
         <mat-form-field appearance="outline" class="example-full-width ">
           <input
@@ -120,7 +120,7 @@
           <span>{{ getEmailErrorMessage() }}</span>
         </div>
       </div>
-      <div class="flex flex-col w-full lg:col-span-2">
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
         <label for="address">Address (Optional)</label>
         <textarea
           placeholder="Enter Address"
@@ -128,7 +128,7 @@
           id="address"
           formControlName="address"></textarea>
       </div>
-      <div class="flex flex-col w-full col-span-2">
+      <div class="flex flex-col space-y-2 w-full col-span-2">
         <label for="note">Note (Optional)</label>
         <textarea
           placeholder="Enter Note"
@@ -139,7 +139,7 @@
       <div class="lg:col-span-2 pb-4">
         <button
           (click)="onSave()"
-          class="float-end py-2 px-12 flex justify-center items-center rounded-lg bg-primary text-white">
+          class="float-end py-[0.875rem] px-[5.125rem] flex justify-center items-center rounded-lg bg-primary text-white">
           <span>Save</span>
         </button>
       </div>

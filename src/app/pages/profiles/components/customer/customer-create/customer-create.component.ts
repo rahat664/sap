@@ -104,25 +104,6 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
         this.customerModel.customerCode = '';
       }
     });
-    this.subs = this.customerForm.get('name').valueChanges.subscribe(value => {
-      const valueWithoutSpace = value?.toString().replace(/\s/g, '');
-      if (
-        value?.length > 0 &&
-        this.customerForm.get('code').invalid &&
-        valueWithoutSpace?.length <= 4
-      ) {
-        let fourDigitName = '';
-        if (valueWithoutSpace?.length >= 4) {
-          fourDigitName = valueWithoutSpace
-            ?.toString()
-            .substring(0, 4)
-            .toUpperCase();
-          this.customerForm.get('code').setValue(fourDigitName);
-          this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
-        }
-      } else {
-      }
-    });
     this.customerForm.get('phone').valueChanges.subscribe(value => {
       this.validation.mobileNumberValidation(value, this.customerForm);
     });
@@ -220,32 +201,6 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     });
   }
 
-  onfocusOut($event: FocusEvent) {
-    if (
-      $event &&
-      this.customerForm.get('name').value?.length > 0 &&
-      this.customerForm.get('code').invalid
-    ) {
-      let fourDigitName = '';
-      const valueWithoutSpace = this.customerForm
-        .get('name')
-        .value?.toString()
-        .toUpperCase()
-        .replace(/\s/g, '');
-      if (valueWithoutSpace?.length < 4) {
-        // fill the missing characters with random numbers
-        const randomNumbers = Math.floor(Math.random() * 10000).toString();
-        fourDigitName =
-          valueWithoutSpace +
-          randomNumbers
-            .substring(0, 4 - valueWithoutSpace?.length)
-            .toUpperCase();
-        this.customerForm.get('code').setValue(fourDigitName);
-        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
-      }
-    }
-  }
-
   getContactPersonErrorMessage() {
     if (this.customerForm?.get('contactPerson').hasError('required')) {
       return 'Contact person required';
@@ -273,5 +228,34 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   onClickClose() {
     this.customerForm.reset();
     this.dialogRef.close(false);
+  }
+
+  onNameKeyPress($event: Event) {
+    const value = $event.target['value'];
+    const valueWithoutSpace = value?.toString().replace(/\s/g, '');
+    if (value?.length > 0) {
+      let fourDigitName = '';
+      if (valueWithoutSpace?.length > 0 && valueWithoutSpace?.length <= 4) {
+        fourDigitName = valueWithoutSpace
+          ?.toString()
+          .substring(0, 4)
+          .toUpperCase();
+        this.customerForm.get('code').setValue(fourDigitName);
+        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
+      }
+      if (valueWithoutSpace?.length < 4) {
+        // fill the missing characters with random numbers
+        const randomNumbers = Math.floor(Math.random() * 10000).toString();
+        fourDigitName =
+          valueWithoutSpace +
+          randomNumbers
+            .substring(0, 4 - valueWithoutSpace?.length)
+            .toUpperCase();
+        this.customerForm.get('code').setValue(fourDigitName.toUpperCase());
+        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
+      }
+    } else {
+      this.customerForm.get('code').setValue('');
+    }
   }
 }

@@ -75,7 +75,7 @@
           <span>Documents</span>
         </div>
         <app-upload-button
-          (click)="isUploadPopupOpen = true; isNewOpen = true"
+          (click)="onCLickUpload()"
           *ngIf="inEditMode"
           icon="upload"
           [file]="true"

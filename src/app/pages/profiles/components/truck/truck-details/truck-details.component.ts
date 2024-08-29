@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
@@ -15,6 +15,8 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
 import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checklist.component';
 import { fileUpload } from '../models/file-upload';
+import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-truck-details',
@@ -38,6 +40,7 @@ import { fileUpload } from '../models/file-upload';
   styleUrl: './truck-details.component.scss',
 })
 export class TruckDetailsComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   inEditMode = false;
   registrationTypePlaceholder: string;
   registrationOpenedType: boolean;
@@ -145,6 +148,20 @@ export class TruckDetailsComponent implements OnInit {
     this.isConfirmModalOpen = true;
     this.closedDocument = document;
     this.fileName = document.name;
+    this.dialog
+      .open(ConfirmDeleteComponent, {
+        width: '21.875rem',
+        data: {
+          title: 'Delete Document',
+          text: `Are you sure you want to delete this document ${this.fileName}?`,
+        },
+      })
+      .afterClosed()
+      .subscribe(res => {
+        if (res === 'deleted') {
+          this.performRemove(res);
+        }
+      });
   }
 
   private truckFileTypeModify(documents: any[]) {
@@ -170,5 +187,33 @@ export class TruckDetailsComponent implements OnInit {
     this.documents = [];
     this.documents = JSON.parse(localStorage.getItem('previousDocument'));
     localStorage.removeItem('previousDocument');
+  }
+
+  onCLickUpload() {
+    // filter newDriverFileType to remove the documents that are already uploaded
+    // shalow copy of the driverFileType
+    this.truckFileTypeModify(this.documents);
+    this.dialog
+      .open(FileUploadPopupComponent, {
+        width: '40%',
+        data: {
+          filetype: this.newTruckFileTypeOptions,
+          isFromDriver: true,
+          value: this.singleTruck,
+        },
+      })
+      .afterClosed()
+      .subscribe(res => {
+        if (res != 'close') {
+          this.onAddFile(res);
+          this.documents = this.shared.truckDocuments;
+        }
+      });
+  }
+
+  onClickPrehireCheckList() {
+    this.dialog.open(PreHireChecklistComponent, {
+      width: '40%',
+    });
   }
 }

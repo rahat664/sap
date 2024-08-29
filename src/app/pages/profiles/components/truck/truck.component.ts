@@ -147,21 +147,26 @@ export class TruckComponent implements OnInit {
       this.newDriverFileType = [{ id: 6, value: 'Other', selected: false }];
     }
 
-    this.dialog.open(FileUploadPopupComponent, {
-      width: '30%',
-      data: {
-        filetype: this.newDriverFileType,
-        fromPopup: true,
-        from: 'truck',
-        value: truck,
-      },
-    });
+    this.dialog
+      .open(FileUploadPopupComponent, {
+        width: '40%',
+        data: {
+          filetype: this.newDriverFileType,
+          fromPopup: true,
+          from: 'truck',
+          value: truck,
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res) {
+        }
+      });
   }
 
   private makeSureUploadCompletedOrNot() {
     this.shared.completeTruckUpload.subscribe((res: boolean) => {
       if (res) {
-        this.isNewOpen = false;
         this.isOpen = false;
         this.truckList = [];
         this.getTruckList();
@@ -216,7 +221,7 @@ export class TruckComponent implements OnInit {
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
     this.dialog.open(PreHireChecklistComponent, {
-      width: '30%',
+      width: '40%',
     });
   }
 

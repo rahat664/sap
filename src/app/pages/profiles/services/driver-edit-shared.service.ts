@@ -75,10 +75,6 @@ export class DriverEditSharedService {
       registration_category: singleTruck.registrationCategory,
       registration_serial: singleTruck.registrationSerial,
       registration_num: singleTruck.registrationNum,
-      fitnessCertExpDate: singleTruck.fitnessCertExpDate,
-      routePermitExpDate: singleTruck.routePermitExpDate,
-      caseExpDate: singleTruck.caseExpDate,
-      taxExpDate: singleTruck.taxExpDate,
     });
   }
 
@@ -89,7 +85,6 @@ export class DriverEditSharedService {
       driverName: singleDriver.name,
       driverPhone: singleDriver.phone,
       driverId: singleDriver.userId,
-      drivingLicenseExpiryDate: singleDriver.drivingLicenseExpiryDate,
     });
   }
 

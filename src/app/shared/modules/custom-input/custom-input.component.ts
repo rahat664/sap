@@ -292,7 +292,7 @@ export class CustomInputComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
     if (this.options?.length == 1) {
       this.inputPlaceholder = this.options[0].value;
-      this.selectedId.emit(this.options[0].id);
+      this.selectedValue = this.options[0].id;
     }
     if (this.inputSearch) {
       this.selectedValue = this.options.find(

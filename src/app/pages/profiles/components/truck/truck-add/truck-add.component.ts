@@ -352,7 +352,7 @@ export class TruckAddComponent implements OnInit {
     localStorage.removeItem('truck');
     this.dialog
       .open(PreHireChecklistComponent, {
-        width: '30%',
+        width: '40%',
         data: {
           save: true,
         },

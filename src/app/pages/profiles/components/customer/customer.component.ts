@@ -60,7 +60,9 @@ export class CustomerComponent implements OnInit {
 
   onClickAddCustomer() {
     this.dialog
-      .open(CustomerCreateComponent, {})
+      .open(CustomerCreateComponent, {
+        width: '50%',
+      })
       .afterClosed()
       .subscribe(value => {
         if (value) {

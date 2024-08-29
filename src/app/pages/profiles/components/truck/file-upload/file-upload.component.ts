@@ -11,9 +11,10 @@ import { GetClickEventDirective } from '../../../../../shared/directive/get-clic
 import {
   MatDatepicker,
   MatDatepickerInput,
+  MatDatepickerModule,
   MatDatepickerToggle,
 } from '@angular/material/datepicker';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
@@ -39,6 +40,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatOption,
     MatSelect,
     ReactiveFormsModule,
+    MatDatepickerModule,
+    MatSuffix,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './file-upload.component.html',

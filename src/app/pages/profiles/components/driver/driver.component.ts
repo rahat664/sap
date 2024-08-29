@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { FileUploadPopupComponent } from '../truck/file-upload-popup/file-upload-popup.component';
@@ -16,6 +16,7 @@ import { DriverEditSharedService } from '../../services/driver-edit-shared.servi
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { debounceTime } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-driver',
@@ -40,6 +41,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './driver.component.scss',
 })
 export class DriverComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   isOpen: boolean;
   driverList: UserModel[] = [];
   height: string;
@@ -110,6 +112,14 @@ export class DriverComponent implements OnInit {
       }
     });
     this.newDriverFileType = DFT;
+    this.dialog.open(FileUploadPopupComponent, {
+      width: '40%',
+      data: {
+        from: 'driver',
+        filetype: this.newDriverFileType,
+        value: driver,
+      },
+    });
   }
 
   onClickNidUpload(driver: UserModel) {
@@ -127,6 +137,14 @@ export class DriverComponent implements OnInit {
       }
     });
     this.newDriverFileType = DFT;
+    this.dialog.open(FileUploadPopupComponent, {
+      width: '40%',
+      data: {
+        from: 'driver',
+        filetype: this.newDriverFileType,
+        value: driver,
+      },
+    });
   }
 
   private makeSureUploadCompletedOrNot() {

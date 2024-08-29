@@ -164,6 +164,7 @@ export class DriverAddComponent implements OnInit {
         (res: any) => {
           // Handle response
           if (res.status == 'OK') {
+            localStorage.removeItem('driver');
             this.toastr.showSuccess(res.message);
             this.router.navigate(['/profile/driver']);
           } else {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
@@ -9,6 +9,8 @@ import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/c
 import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
 import { driverFileType } from '../../customer/model/driver-file-type';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
 
 @Component({
   selector: 'app-driver-details',
@@ -29,6 +31,7 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
   styleUrl: './driver-details.component.scss',
 })
 export class DriverDetailsComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   inEditMode = false;
   singleDriver: UserModel;
   documents: any[] = [];
@@ -75,8 +78,21 @@ export class DriverDetailsComponent implements OnInit {
 
   onClickCloseButton(document: any) {
     this.fileName = document.name;
-    this.isConfirmModalOpen = true;
     this.closedDocument = document;
+    this.dialog
+      .open(ConfirmDeleteComponent, {
+        width: '21.875rem',
+        data: {
+          title: 'Delete Document',
+          text: 'Are you sure you want to delete this document?',
+        },
+      })
+      .afterClosed()
+      .subscribe(res => {
+        if (res === 'deleted') {
+          this.performRemove(res);
+        }
+      });
   }
 
   onChangeFile($event: any) {
@@ -110,5 +126,27 @@ export class DriverDetailsComponent implements OnInit {
   onEditClick() {
     this.inEditMode = true;
     this.driverEditSharedService.closeInputSelect.next(false);
+  }
+
+  onCLickUpload() {
+    // filter newDriverFileType to remove the documents that are already uploaded
+    // shalow copy of the driverFileType
+    this.driverFileTypeModify(this.documents);
+    this.dialog
+      .open(FileUploadPopupComponent, {
+        width: '40%',
+        data: {
+          filetype: this.newDriverFileType,
+          isFromDriver: true,
+          value: this.singleDriver,
+        },
+      })
+      .afterClosed()
+      .subscribe(res => {
+        if (res != 'close') {
+          this.onChangeFile(res);
+          this.documents = this.driverEditSharedService.documents;
+        }
+      });
   }
 }
