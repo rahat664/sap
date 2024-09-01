@@ -1,7 +1,7 @@
 <div class="flex flex-col space-y-3">
   <div class="flex flex-col space-y-3">
     <div class="flex mx-4 justify-between py-3 items-center">
-      <h1 class="text-h1 font-semibold">New Trip</h1>
+      <h1 class="text-h1 leading-h1 font-semibold">New Trip</h1>
       <button
         type="button"
         routerLink="/trip-create/create"
@@ -77,7 +77,7 @@
             </td>
             <td>{{ getTripRoute(tripTemplate.points) }}</td>
             <td>{{ tripTemplate.good.name }}</td>
-            <td>{{ templateCustomer.name }}</td>
+            <td>{{ templateCustomer }}</td>
             <td>
               <button mat-button [matMenuTriggerFor]="menu"><i
                 class="fas fa-ellipsis-v"></i></button>
@@ -111,7 +111,7 @@
             <td class="text-center" colspan="5">
               <div class="w-full flex flex-col space-y-3 justify-center items-center">
                 <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-                <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+                <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
               </div>
             </td>
           </tr>

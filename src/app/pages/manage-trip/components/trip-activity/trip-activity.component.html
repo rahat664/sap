@@ -2,8 +2,9 @@
   <div class="mx-16 flex flex-col space-y-3">
     <div class="flex-col flex space-y-3">
       <div class="grid grid-cols-2 px-16 pt-4">
-        <h1 class="text-h2 text-not-black font-semibold px-8">Manage Loading</h1>
-        <h1 class="text-body_title text-not-black font-semibold px-8">{{ selectedEventNameLoading }}</h1>
+        <h1 class="text-h2 leading-h2 text-not-black font-semibold px-8">Manage Loading</h1>
+        <h1
+          class="text-body_title leading-body_title text-not-black font-semibold px-8">{{ selectedEventNameLoading }}</h1>
       </div>
       <div class="px-16 grid grid-cols-2 w-full border-b border-line">
         <div class="flex flex-col w-full space-y-4 px-8 mb-6 border-r border-line">
@@ -12,7 +13,7 @@
                   class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
             <img loading="lazy" class="notPreview" *ngIf="event.urls" src="assets/svg/available.svg" alt="">
             <img loading="lazy" class="notPreview" *ngIf="!event.urls" src="assets/svg/not-available.svg" alt="">
-            <span class="text-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
+            <span class="text-body_title leading-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
           </button>
         </div>
         <div class="px-8 w-full">
@@ -20,7 +21,8 @@
                class="w-full h-full flex items-center justify-center">
             <div class="flex flex-col space-y-3">
               <img loading="lazy" src="assets/svg/no-data.svg" alt="">
-              <h1 class="text-body_title text-secondary text-center font-semibold">No Data Available</h1>
+              <h1 class="text-body_title leading-body_title text-secondary text-center font-semibold">No Data
+                Available</h1>
             </div>
           </div>
           <div class="flex flex-col space-y-3 w-full" *ngIf="imageToShow.length > 0 && loadingEventsLoaded">
@@ -74,8 +76,9 @@
     </div>
     <div class="flex-col flex space-y-3">
       <div class="grid grid-cols-2 px-16 pt-4">
-        <h1 class="text-h2 text-not-black font-semibold px-8">Manage Unloading</h1>
-        <h1 class="text-body_title text-not-black font-semibold px-8">{{ selectedEventNameUnloading }}</h1>
+        <h1 class="text-h2 leading-h2 text-not-black font-semibold px-8">Manage Unloading</h1>
+        <h1
+          class="text-body_title leading-body_title text-not-black font-semibold px-8">{{ selectedEventNameUnloading }}</h1>
       </div>
       <div class="px-16 grid grid-cols-2 w-full border-b border-line">
         <div class="flex flex-col w-full space-y-4 px-8 mb-6 border-r border-line">
@@ -84,7 +87,7 @@
                   class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
             <img loading="lazy" class="notPreview" *ngIf="event.urls" src="assets/svg/available.svg" alt="">
             <img loading="lazy" class="notPreview" *ngIf="!event.urls" src="assets/svg/not-available.svg" alt="">
-            <span class="text-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
+            <span class="text-body_title leading-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
           </button>
         </div>
         <div class="px-8 w-full">
@@ -92,7 +95,8 @@
                class="w-full h-full flex items-center justify-center">
             <div class="flex flex-col space-y-3">
               <img loading="lazy" src="assets/svg/no-data.svg" alt="">
-              <h1 class="text-body_title text-secondary text-center font-semibold">No Data Available</h1>
+              <h1 class="text-body_title leading-body_title text-secondary text-center font-semibold">No Data
+                Available</h1>
             </div>
           </div>
           <div class="flex flex-col space-y-3" *ngIf="unloadImageToShow.length > 0 && unloadingEventsLoaded">

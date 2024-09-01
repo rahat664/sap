@@ -2,7 +2,7 @@
   <div class="flex flex-col  min-w=[25rem] max-w-[25rem]">
     <div class="p-4 flex flex-col space-y-3" appGetElementHeight (height)="height = $event">
       <div class="flex justify-between items-center">
-        <span class="text-h2 font-semibold">Trip List</span>
+        <span class="text-h2 leading-h2 font-semibold">Trip List</span>
         <button (click)="onclickSideBarClose()"
                 class="h-[1.75rem] w-[1.75rem] text-white bg-[#D8E8ED] flex items-center justify-center rounded-lg">
           <i *ngIf="sidebarClosed" class="fas fa-caret-right text-not-black text-2xl"></i>
@@ -13,10 +13,10 @@
         <div class="relative w-full">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i class="far fa-search text-gray-500"></i>
+            <img src="assets/svg/search.svg" class="notPreview" alt="search">
           </div>
           <button type="button" (click)="onClickClear()" *ngIf="searchValue"
-                  class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  class="absolute inset-y-0 right-0 pr-4 flex items-center">
             <i class="far fa-times text-gray-500 text-xs"></i>
           </button>
           <input
@@ -24,11 +24,10 @@
             (keyup)="onKeyUpSearch($event)"
             type="text"
             name="email"
-            id="topbar-search"
-            class="border-none text-input-hint w-full bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
+            class="border-none text-not-black font-semibold text-h2 leading-h2 placeholder-input-hint w-full bg-white  rounded-lg focus:ring-blue focus:border-blue block pl-10 py-[.875rem]"
             placeholder="Search by Trip ID, Customer Code" />
         </div>
-        <button (click)="filterOpen = true" class="p-2 rounded-lg bg-white flex items-center justify-center">
+        <button (click)="filterOpen = true" class="p-3 rounded-lg bg-white flex items-center justify-center">
           <div class="relative">
             <img loading="lazy" class="notPreview" src="assets/svg/filter.svg" alt="filter">
             <span *ngIf="filterLength > 0"
@@ -71,10 +70,11 @@
     <div *ngIf="filterOpen" class="p-4 bg-white rounded-lg mx-4 h-[calc(100vh-12rem)] min-w-96
 ">
       <div class="flex items-center justify-between pb-2">
-        <div class="text-h2 font-semibold text-not-black">
-          Filters <span class="text-h2 font-semibold text-not-black" *ngIf="filterLength > 0">({{ filterLength }}
+        <div class="text-h2 leading-h2 font-semibold text-not-black">
+          Filters <span class="text-h2 leading-h2 font-semibold text-not-black"
+                        *ngIf="filterLength > 0">({{ filterLength }}
           ) | <a (click)="onClickClearAll()"
-                 class="text-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
+                 class="text-h2 leading-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
         </div>
         <button (click)="onClickClearAll()"
                 class="mb-1/2 h-[1.75rem] w-[1.75rem] text-white bg-disabled flex items-center justify-center rounded-full">
@@ -86,9 +86,11 @@
           <label class="text-body text-secondary">Date</label>
           <mat-form-field appearance="outline">
             <mat-date-range-input [rangePicker]="picker">
-              <input [(ngModel)]="startDate" (selectionchange)="onChangeStartDate($event)" matStartDate
+              <input (focus)="picker.open()" [(ngModel)]="startDate" (selectionchange)="onChangeStartDate($event)"
+                     matStartDate
                      placeholder="Start date">
-              <input [(ngModel)]="endDate" (selectionchange)="onChangeEndDate($event)" matEndDate
+              <input (focus)="picker.open()" [(ngModel)]="endDate" (selectionchange)="onChangeEndDate($event)"
+                     matEndDate
                      placeholder="End date">
             </mat-date-range-input>
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -116,7 +118,7 @@
           </mat-form-field>
         </div>
         <div class="flex flex-col space-y-1 w-full">
-          <label>Truck type</label>
+          <label class="text-body text-secondary">Truck type</label>
           <mat-form-field appearance="outline">
             <mat-select [(ngModel)]="truckType" (selectionChange)="onChangeTruckType($event)" multiple
                         placeholder="Choose Truck Type">

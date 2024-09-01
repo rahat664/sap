@@ -112,7 +112,7 @@ img {
   width: 100%;
   border-radius: 0.5rem !important;
   background-color: #F5FBFC !important;
-  height: 3.5rem !important;
+
 }
 
 .mat-mdc-text-field-wrapper:focus-within {
@@ -243,10 +243,18 @@ input:-webkit-autofill:active {
 
 textarea::placeholder {
   font-size: 0.875rem !important;
-  color: #6b7280 !important;
+  color: #A5B8BB !important;
 }
 
 textarea:focus {
   --tw-ring-color: #E5EAEB !important;
 }
 
+.mat-date-range-input-wrapper input::placeholder {
+  font-size: 0.875rem !important;
+  color: #A5B8BB !important;
+}
+
+.mat-date-range-input-separator {
+  color: #A5B8BB !important;
+}

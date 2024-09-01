@@ -89,7 +89,6 @@ export class NewTripComponent implements OnInit {
     if (this.isAdmin()) {
       const selectedCustomer = localStorage.getItem('selectedCustomer');
       if (selectedCustomer) {
-        this.templateCustomer = JSON.parse(selectedCustomer);
         this.customerName = JSON.parse(selectedCustomer).name;
         this.getTripTemplate(JSON.parse(selectedCustomer).customerCode);
         this.createButtonEnabled = true;
@@ -135,8 +134,9 @@ export class NewTripComponent implements OnInit {
     this.customerName = result.name;
     this.companySuggestions = [];
     this.isCustomerMenuOpened = false;
-    this.getTripTemplate(result.customerCode);
     localStorage.setItem('selectedCustomer', JSON.stringify(result));
+    this.getTripTemplate(result.customerCode);
+    this.templateCustomer = result.name;
   }
 
   onCreateTrip() {

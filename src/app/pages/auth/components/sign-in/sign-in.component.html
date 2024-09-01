@@ -9,12 +9,12 @@
   <div class="h-screen  w-full">
     <div
       class="flex flex-col h-[calc(100vh-2.5rem)] w-full space-y-6 justify-center px-12 items-center lg:items-start">
-      <h1 *ngIf="!otpScreen" class="text-h1 font-semibold">User login</h1>
+      <h1 *ngIf="!otpScreen" class="text-h1 leading-h1 font-semibold">User login</h1>
       <div *ngIf="otpScreen" class="flex flex-col space-y-3">
-        <h1 class="text-h1 font-semibold">OTP verification</h1>
-        <p class="text-h2 text-secondary ">Please enter the OTP sent to your mobile number- </p>
+        <h1 class="text-h1 leading-h1 font-semibold">OTP verification</h1>
+        <p class="text-h2 leading-h2 text-secondary ">Please enter the OTP sent to your mobile number- </p>
         <div class="flex space-x-3 items-center">
-          <p class="text-h2  text-not-black font-semibold ">{{ phoneNumber.value }}</p>
+          <p class="text-h2 leading-h2  text-not-black font-semibold ">{{ phoneNumber.value }}</p>
           <button (click)="onClickEdit()" type="button">
             <img alt="" src="assets/svg/edit.svg" class="notPreview">
           </button>
@@ -165,10 +165,10 @@
           <div class="flex space-x-4">
             <!--            timing-->
             <span
-              class="text-body_title font-semibold text-{{timeDisabled ? 'input-hint': 'primary'}}">{{ time | date : 'mm:ss' }}</span>
+              class="text-body_title leading-body_title font-semibold text-{{timeDisabled ? 'input-hint': 'primary'}}">{{ time | date : 'mm:ss' }}</span>
             <button (click)="onClickResend()"
                     [disabled]="!timeDisabled"
-                    class="text-{{timeDisabled ? 'primary': 'input-hint'}} font-semibold text-body_title cursor-pointer">
+                    class="text-{{timeDisabled ? 'primary': 'input-hint'}} font-semibold text-body_title leading-body_title cursor-pointer">
               Resend
             </button>
           </div>

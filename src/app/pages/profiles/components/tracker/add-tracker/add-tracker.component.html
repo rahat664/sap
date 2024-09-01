@@ -1,6 +1,6 @@
 <div class="m-2 bg-white">
   <div class="p-4 border-b-2 border-input flex justify-between items-center">
-    <h1 class="text-h1 font-semibold">Add Tracker</h1>
+    <h1 class="text-h1 leading-h1 font-semibold">Add Tracker</h1>
     <div>
       <button
         (click)="onTrackerSave()"
@@ -14,7 +14,7 @@
       <div class="w-full  border-r border-line p-4">
         <div class="flex space-x-3 items-center">
           <img src="assets/svg/vendor.svg" alt="" class="notPreview">
-          <span class="text-h2 font-semibold">Vendor Info</span>
+          <span class="text-h2 leading-h2 font-semibold">Vendor Info</span>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div class="flex flex-col space-y-1 col-span-2 py-4">
@@ -74,7 +74,7 @@
         <div>
           <div class="flex space-x-3 items-center">
             <img src="assets/svg/truckinfo.svg" alt="" class="notPreview">
-            <span class="text-h2 font-semibold">Assign Truck (optional)</span>
+            <span class="text-h2 leading-h2 font-semibold">Assign Truck (optional)</span>
           </div>
           <div class="flex flex-col space-y-1">
             <label class="text-not-black font-semibold">Truck Registration Number</label>
@@ -92,7 +92,7 @@
                   <mat-option (click)="onClickTruckSearchSuggestion(option)" [value]="option.fullRegistrationNumber">
                     <div class="flex flex-col space-y-1">
                         <span
-                          class="text-body_title text-not-black font-semibold">{{ option.fullRegistrationNumber }}</span>
+                          class="text-body_title leading-body_title text-not-black font-semibold">{{ option.fullRegistrationNumber }}</span>
                     </div>
                   </mat-option>
                 }

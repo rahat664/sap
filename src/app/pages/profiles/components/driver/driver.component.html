@@ -5,12 +5,12 @@
     class="flex flex-col space-y-3">
     <div
       class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
-      <h1 class="text-h1 font-semibold">Driver</h1>
+      <h1 class="text-h1 leading-h1 font-semibold">Driver</h1>
       <div class="flex space-x-4 items-center">
         <div class="relative">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i class="far fa-search text-gray-500"></i>
+            <img src="assets/svg/search.svg" class="notPreview" alt="search">
           </div>
           <button (click)="onClickClear()" *ngIf="searchValue"
                   class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -21,7 +21,7 @@
             (keyup)="onKeyUpSearch($event)"
             type="text"
             name="email"
-            id="topbar-search"
+
             class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
             placeholder="Search name, mobile" />
         </div>
@@ -136,7 +136,7 @@
           <td class="text-center" colspan="7">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
               <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-              <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+              <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
             </div>
           </td>
         </tr>
