@@ -31,11 +31,8 @@
               routerLink="/dashboard"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
-              <img loading="lazy" *ngIf="isActive('/dashboard')" class="notPreview"
-                   src="assets/svg/dashboard-select.svg" alt="" />
-              <img loading="lazy" *ngIf="isActive('/dashboard') == false" class="notPreview"
-                   src="assets/svg/dashboard-deselect.svg"
-                   alt="" />
+              <img loading="lazy" class="notPreview"
+                   src="assets/svg/dashboard-{{isActive('/dashboard') ? 'select': 'deselect'}}.svg" alt="" />
               <span class="ml-3 font-semibold">Dashboard</span>
             </a>
           </li>
@@ -46,11 +43,8 @@
               (click)="clearSelectedTemplate()"
               [routerLinkActiveOptions]="{ exact: true}"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
-              <img loading="lazy" *ngIf="isActive('/trip-create')" class="notPreview"
-                   src="assets/svg/trip-create-select.svg" alt="" />
-              <img loading="lazy" *ngIf="isActive('/trip-create') == false" class="notPreview"
-                   src="assets/svg/trip-create-deselect.svg"
-                   alt="" />
+              <img loading="lazy" class="notPreview"
+                   src="assets/svg/trip-create-{{isActive('/trip-create') ? 'select': 'deselect'}}.svg" alt="" />
               <span class="ml-3 font-semibold">Create Trip</span>
             </a>
           </li>
@@ -60,11 +54,8 @@
               routerLink="/manage-trip"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
-              <img loading="lazy" *ngIf="isActive('/manage-trip')" class="notPreview"
-                   src="assets/svg/trip-management-select.svg"
-                   alt="" />
-              <img loading="lazy" *ngIf="isActive('/manage-trip') == false" class="notPreview"
-                   src="assets/svg/trip-management-deselect.svg"
+              <img loading="lazy" class="notPreview"
+                   src="assets/svg/trip-management-{{isActive('/manage-trip') ? 'select': 'deselect'}}.svg"
                    alt="" />
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Manage Trip</span>
             </a>
@@ -75,11 +66,8 @@
               routerLink="/trip-list"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
-              <img loading="lazy" *ngIf="isActive('/trip-list')" class="notPreview"
-                   src="assets/svg/trip-list-select.svg" alt="" />
-              <img loading="lazy" *ngIf="isActive('/trip-list') == false" class="notPreview"
-                   src="assets/svg/trip-list-deselect.svg"
-                   alt="" />
+              <img class="notPreview"
+                   src="assets/svg/trip-list-{{isActive('/trip-list') ? 'select': 'deselect'}}.svg" alt="" />
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Trip List</span>
             </a>
           </li>
@@ -90,14 +78,9 @@
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img
-                *ngIf="isActive('/user-management')"
+                loading="lazy"
                 class="notPreview"
-                src="assets/svg/user-management-select.svg"
-                alt="" />
-              <img
-                *ngIf="isActive('/user-management') == false"
-                class="notPreview"
-                src="assets/svg/user-management-deselect.svg"
+                src="assets/svg/user-management-{{isActive('/user-management') ? 'select': 'deselect'}}.svg"
                 alt="" />
               <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
             </a>
@@ -109,14 +92,9 @@
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img
-                *ngIf="isActive('/user-management-customer')"
+                loading="lazy"
                 class="notPreview"
-                src="assets/svg/user-management-select.svg"
-                alt="" />
-              <img
-                *ngIf="isActive('/user-management-customer') == false"
-                class="notPreview"
-                src="assets/svg/user-management-deselect.svg"
+                src="assets/svg/user-management-{{isActive('/user-management-customer') ? 'select': 'deselect'}}.svg"
                 alt="" />
               <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
             </a>
@@ -129,10 +107,9 @@
               type="button"
               class="cursor-pointer text-base {{isActive('/profile') ? 'text-primary' : 'text-secondary'}} w-full leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
               aria-controls="dropdown-example">
-              <img loading="lazy" *ngIf="isActive('/profile')" class="notPreview" src="assets/svg/user-select.svg"
+              <img loading="lazy" class="notPreview"
+                   src="assets/svg/user-{{isActive('/profile') ? 'select': 'deselect'}}.svg"
                    alt="" />
-              <img loading="lazy" *ngIf="isActive('/profile') == false" class="notPreview"
-                   src="assets/svg/user-deselect.svg" alt="" />
               <span
                 class="flex-1 ms-3 text-left font-semibold rtl:text-right whitespace-nowrap"
               >Profiles</span
