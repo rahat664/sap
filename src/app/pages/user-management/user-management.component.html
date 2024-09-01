@@ -41,7 +41,7 @@
         [ngClass]="{ 'border-b border-[#A1D5DE]': filterOpened }">
         <i *ngIf="!filterOpened" class="fas fa-caret-down text-input-hint text-xl"></i>
         <i *ngIf="filterOpened" class="fas fa-caret-up text-input-hint text-xl"></i>
-        <span class="text-not-black text-[0.875rem]"
+        <span class="text-not-black text-body_title leading-body_title"
         >Filter
           <span *ngIf="getFilterLength() > 0"
           >({{ statusFilter + roleFilter }})</span
@@ -81,7 +81,7 @@
     (inBottomEnd)="onBottom($event)"
     [anotherItemsHeight]="height"
     class="bg-white w-full relative rounded-lg overflow-auto">
-    <table class="table-auto w-full text-[0.875rem]">
+    <table class="table-auto w-full text-body_title leading-body_title">
       <thead>
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left">Name</th>

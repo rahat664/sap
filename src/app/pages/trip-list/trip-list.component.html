@@ -1,21 +1,21 @@
-<div class="p-4 flex flex-col space-y-3">
+<div class="p-2 flex flex-col space-y-3">
   <div
     appGetElementHeight
     (height)="height = $event"
     class="flex flex-col space-y-3">
     <div
-      class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      class="flex flex-col py-[1.375rem] space-y-3 lg:space-y-0 lg:flex-row justify-between">
       <h1 class="text-h1 leading-h1 font-semibold">Trip List</h1>
     </div>
     <!--  filter section-->
     <div class="w-full bg-white rounded-lg">
       <button
         (click)="onClickFilterOpened()"
-        class="flex px-2 py-1 space-x-3 items-center w-full"
+        class="flex px-2 py-1 space-x-4 items-center w-full"
         [ngClass]="{ 'border-b border-[#A1D5DE]': filterOpened }">
         <i *ngIf="!filterOpened" class="fas fa-caret-down text-input-hint text-xl"></i>
         <i *ngIf="filterOpened" class="fas fa-caret-up text-input-hint text-xl"></i>
-        <span class="text-not-black text-[0.875rem]"
+        <span class="text-not-black text-h2_medium font-semibold"
         >Filter
           <span *ngIf="getFilterLength() > 0"
           >({{ getFilterLength() }})</span
@@ -26,86 +26,100 @@
           <a
             (click)="onClearFilter()"
             *ngIf="getFilterLength() > 0"
-            class="text-red"
+            class="text-red text-h2_medium font-semibold"
           >Clear all</a
           >
         </span>
       </button>
-      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
-        <app-custom-input class="w-1/4"
-                          appGetClickEvent
-                          (clickedElement)="dateOpened = $event"
-                          [inputSearch]="inputPlaceholder"
-                          (selectedFromDate)="onSelectedFromDate($event)"
-                          (selectedToDate)="onSelectedToDate($event)"
-                          (selectedFromDateToToDate)="inputPlaceholder = $event"
-                          inputPlaceholder="Select Date"
-                          [options]="dateOptionArray"
-                          (selectedId)="onSelectDate($event)"></app-custom-input>
-        <mat-form-field appearance="outline" class="example-full-width w-1/3">
-          <input
-            id="customerName"
-            type="text"
-            matInput
-            (keyup)="onKeyUpSearch($event)"
-            [(ngModel)]="searchName"
-            placeholder="Enter Company Name"
-            [matAutocomplete]="auto">
-          <mat-autocomplete #auto="matAutocomplete">
-            @for (option of tripSuggestions; track option) {
-              <mat-option (click)="onClickSearchSuggestion(option)" [value]="option.name">{{ option.name }}
-              </mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="example-full-width w-1/3">
-          <input
-            type="text"
-            matInput
-            (keyup)="onKeyUpTripSearch($event)"
-            [(ngModel)]="tripId"
-            placeholder="Enter Trip Number"
-            [matAutocomplete]="trip">
-          <mat-autocomplete #trip="matAutocomplete">
-            @for (option of tripIdSuggestions; track option) {
-              <mat-option (click)="onClickTripSearchSuggestion(option)" [value]="option.tripId">{{ option.tripId }}
-              </mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
+      <div *ngIf="filterOpened" class="pt-3 pb-4 px-2 flex items-center space-x-4">
+        <div class="flex flex-col space-y-1 w-1/4">
+          <label class="text-body  text-web-text-secondary px-2">Date</label>
+          <app-custom-input class=""
+                            appGetClickEvent
+                            (clickedElement)="dateOpened = $event"
+                            [inputSearch]="inputPlaceholder"
+                            (selectedFromDate)="onSelectedFromDate($event)"
+                            (selectedToDate)="onSelectedToDate($event)"
+                            (selectedFromDateToToDate)="inputPlaceholder = $event"
+                            inputPlaceholder="Select Date"
+                            [options]="dateOptionArray"
+                            (selectedId)="onSelectDate($event)"></app-custom-input>
+        </div>
+        <div class="flex flex-col space-y-1 w-1/3">
+          <label class="text-body  text-web-text-secondary px-2">Company name</label>
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              id="customerName"
+              type="text"
+              matInput
+              (keyup)="onKeyUpSearch($event)"
+              [(ngModel)]="searchName"
+              placeholder="Enter Company Name"
+              [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete">
+              @for (option of tripSuggestions; track option) {
+                <mat-option (click)="onClickSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-col space-y-1 w-1/3">
+          <label class="text-body  text-web-text-secondary px-2">Trip ID</label>
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              type="text"
+              matInput
+              (keyup)="onKeyUpTripSearch($event)"
+              [(ngModel)]="tripId"
+              placeholder="Enter Trip Number"
+              [matAutocomplete]="trip">
+            <mat-autocomplete #trip="matAutocomplete">
+              @for (option of tripIdSuggestions; track option) {
+                <mat-option (click)="onClickTripSearchSuggestion(option)" [value]="option.tripId">{{ option.tripId }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
       </div>
     </div>
     <!--  summary section-->
     <div class="flex space-x-3 w-full">
       <div *ngIf="!isAdmin()"
-           class="bg-white rounded-lg flex justify-center items-center text-[0.875rem] px-4 py-8 whitespace-nowrap w-96">
+           class="bg-white rounded-lg flex justify-center items-center text-body_title leading-body_title px-4 py-8 whitespace-nowrap w-96">
         <div class="flex flex-col space-y-2 text-center">
           <h1 class="font-bold text-[2.5rem]">
             {{ summary.crs }} ৳
           </h1>
           <div
-            class="flex items-center space-x-3 text-web-text-secondary text-body_title leading-body_title font-semibold">
+            class="flex items-center space-x-3 text-web-text-secondary text-body_title leading-body_title leading-body_title font-semibold">
             <img src="assets/svg/trip-fare.svg" class="notPreview" alt="">
             <span>Total trip fare for {{ summary.trips }} {{ summary.trips > 1 ? 'trips' : 'trip' }}</span>
           </div>
         </div>
       </div>
       <div *ngIf="isAdmin()"
-           class="bg-white rounded-lg text-[0.875rem] p-4 whitespace-nowrap w-96">
-        <h1 class="font-semibold">Summary ({{ summary.trips ? summary.trips : 0 }} trips)</h1>
+           class="bg-white rounded-lg text-body_title leading-body_title pt-4 px-3 whitespace-nowrap w-96">
+        <h1 class="font-semibold px-3 "><span class="text-not-black text-body_title">
+          Summary
+        </span>
+          <span
+            class="text-body_medium text-body_title font-medium text-web-text-secondary">({{ summary.trips ? summary.trips : 0 }}
+            trips)</span></h1>
         <div
-          class="flex justify-between space-x-16 items-center py-3 border-b border-gray-300">
+          class="flex justify-between space-x-16 items-center text-web-text-secondary py-4 px-3 border-b border-[#F0F0F0]">
           <span>Customer Rate (CR)</span>
-          <span>{{ (summary.crs ? summary.crs : 0) | number }}</span>
+          <span>{{ (summary.crs ? summary.crs : 0) | number }}৳</span>
         </div>
         <div
-          class="flex justify-between items-center py-3 border-b border-gray-300">
+          class="flex justify-between items-center py-4 px-3 text-web-text-secondary border-b border-[#F0F0F0]">
           <span>Transporter Rate (TR)</span>
-          <span>{{ (summary.trs ? summary.trs : 0) | number }}</span>
+          <span>{{ (summary.trs ? summary.trs : 0) | number }}৳</span>
         </div>
-        <div class="flex justify-between items-center py-3">
+        <div class="flex justify-between items-center text-web-text-secondary py-4 px-3">
           <span>Gross Profit (GP)</span>
-          <span>{{ (summary.gps ? summary.gps : 0) |number }}</span>
+          <span>{{ (summary.gps ? summary.gps : 0) |number }}৳</span>
         </div>
       </div>
       <div class="overflow-hidden relative p-4 w-full rounded-lg bg-white">
@@ -126,9 +140,13 @@
             </ng-container>
           </div>
         </div>
+        <p class="absolute left-4 top-4"><span class="text-body_title font-semibold text-not-black">Total </span><span
+          class="text-web-text-secondary text-body_title">
+          ({{ statusButtons[0].count ? statusButtons[0].count : '0' }})
+        </span></p>
         <div
           *ngIf="scrollable"
-          class="absolute top-2 right-2 flex space-x-1 items-center">
+          class="absolute top-4 right-4 flex space-x-1 items-center">
           <button
             data-direction="left"
             (click)="onClickLeftButton()"
@@ -161,9 +179,9 @@
     (inBottomEnd)="onBottom($event)"
     [anotherItemsHeight]="height"
     class="bg-white w-full relative rounded-lg  overflow-auto">
-    <table class="table-auto w-full text-[0.875rem] rounded-lg  ">
-      <thead>
-      <tr class="whitespace-nowrap bg-white">
+    <table class="table-auto w-full text-body_title leading-body_title rounded-sm">
+      <thead class="bg-white">
+      <tr class="whitespace-nowrap bg-white  text-not-black">
         <th class="text-left">Trip Number</th>
         <th class="text-left whitespace-nowrap">Trip Date</th>
         <th class="text-left" *ngIf="isAdmin()">Company</th>

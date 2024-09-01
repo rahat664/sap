@@ -1,3 +1,12 @@
 .error {
   @apply text-red outline outline-red;
 }
+
+// if have class customOpened
+::ng-deep .mat-mdc-select-panel {
+  border: 0 !important;
+}
+
+::ng-deep .ng-placeholder {
+  color: #A5B8BB !important;
+}

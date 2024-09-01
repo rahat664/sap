@@ -1,4 +1,4 @@
-thead {
+::ng-deep thead {
   @apply sticky top-0;
 }
 
@@ -13,5 +13,5 @@ tbody > tr {
 
 th,
 td {
-  @apply p-4;
+  @apply p-4 ;
 }
