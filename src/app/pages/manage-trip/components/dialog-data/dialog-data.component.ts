@@ -145,6 +145,7 @@ export class DialogDataComponent {
   protected readonly registrationZoneList = registrationZoneList;
   protected readonly registrationCategoryList = registrationCategoryList;
   tripUpdateForm: FormGroup;
+  loading: boolean = false;
 
   getTransporterList() {
     const dialogRef = this.dialog
@@ -257,6 +258,7 @@ export class DialogDataComponent {
   }
 
   onChangeTripStatus(buttonName: any) {
+    this.loading = true;
     if (buttonName === 'Book Trip') {
       if (
         this.tripUpdateForm.get('transporterName').valid &&
@@ -275,6 +277,7 @@ export class DialogDataComponent {
         body.truckId = this.tripUpdateForm.get('truckId').value;
         this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
           (res: any) => {
+            this.loading = false;
             this.dialogRef.close('updated');
             if (res.status == 'OK') {
               this.dialog
@@ -383,6 +386,7 @@ export class DialogDataComponent {
           );
           this.trip.updateTrip(body, this.data.trip?.tripId).subscribe(
             (res: any) => {
+              this.loading = false;
               if (res.status == 'OK') {
                 this.dialogRef.close('updated');
                 this.dialog
@@ -511,6 +515,7 @@ export class DialogDataComponent {
         body.truckId = this.tripUpdateForm.get('truckId').value;
         this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
           (res: any) => {
+            this.loading = false;
             if (res.status == 'OK') {
               this.dialogRef.close('updated');
               this.dialog

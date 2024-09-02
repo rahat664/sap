@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { CustomDatePickerComponent } from '../../../../shared/modules/custom-date-picker/custom-date-picker.component';
 import { ButtonChipsComponent } from '../../modules/button-chips/button-chips.component';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -681,5 +681,11 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm
       .get('unloadingPointLongitude')
       .setValue(tripData.points[1].pointLon);
+  }
+
+  // on click browser back button
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event: any) {
+    localStorage.setItem('backFromTemplateEditOrUpdate', 'true');
   }
 }

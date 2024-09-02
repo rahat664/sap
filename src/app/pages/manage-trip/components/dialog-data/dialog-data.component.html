@@ -208,7 +208,8 @@
   </div>
   <div class="flex w-full justify-end">
     <button (click)="onChangeTripStatus(data.buttonName)" type="button"
-            class="px-8 py-2 text-white font-semibold bg-primary rounded-lg">{{ data.buttonName }}
+            class="px-8 py-2 text-white font-semibold bg-primary rounded-lg"><i *ngIf="loading"
+                                                                                class="fas fa-spinner fa-spin"></i> {{ data.buttonName }}
     </button>
   </div>
 
