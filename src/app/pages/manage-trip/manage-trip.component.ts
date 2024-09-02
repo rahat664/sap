@@ -303,7 +303,7 @@ export class ManageTripComponent implements OnInit {
     if ($event.target.value) {
       this.endDate = ($event.target as HTMLInputElement).value;
       this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
-      if (this.dateSelected) {
+      if (!this.dateSelected) {
         this.filterLength += 1;
         this.previousFilterLength += 1;
       }
