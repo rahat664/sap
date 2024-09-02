@@ -3,7 +3,7 @@
 }
 
 .border {
-  @apply h-[1px] p-0 bg-[#A1D5DE];
+  @apply h-[1px] p-0 bg-[#A1D5DE] sticky top-0;
 }
 
 tbody > tr {

@@ -326,6 +326,20 @@ export class DialogDataComponent {
         this.toaster.showError('Please fill all the required fields');
       }
     } else if (buttonName === 'Start Trip') {
+      if (this.data?.trip?.truck?.id) {
+        this.tripUpdateForm.get('truckId').setValue(this.data.trip.truck.id);
+      }
+      if (this.data?.trip?.driver?.userId) {
+        this.tripUpdateForm
+          .get('driverCode')
+          .setValue(this.data.trip.driver.userId);
+        this.tripUpdateForm
+          .get('driverName')
+          .setValue(this.data.trip.driver.name);
+        this.tripUpdateForm
+          .get('driverPhone')
+          .setValue(this.data.trip.driver.phone);
+      }
       if (
         this.tripUpdateForm.get('driverName').valid &&
         this.tripUpdateForm.get('driverPhone').valid &&
