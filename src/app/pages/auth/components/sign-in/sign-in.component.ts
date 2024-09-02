@@ -312,11 +312,24 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   onClickResend() {
+    this.loginForm.get('otp1').setValue('');
+    this.loginForm.get('otp2').setValue('');
+    this.loginForm.get('otp3').setValue('');
+    this.loginForm.get('otp4').setValue('');
+    this.loginForm.get('otp1').clearValidators();
+    this.loginForm.get('otp2').clearValidators();
+    this.loginForm.get('otp3').clearValidators();
+    this.loginForm.get('otp4').clearValidators();
+    this.loginForm.get('otp1').updateValueAndValidity();
+    this.loginForm.get('otp2').updateValueAndValidity();
+    this.loginForm.get('otp3').updateValueAndValidity();
+    this.loginForm.get('otp4').updateValueAndValidity();
+    this.$loading = false;
     this.auth.loginUsingPhone(this.loginUsingPhonePayload).subscribe(
       response => {
         if (response.status === 'OK') {
           this.toaster.showSuccess('OTP sent successfully', '');
-          // Reset the timer
+          this.countdownSubscription?.unsubscribe();
           this.time = new Date(0, 0, 0, 0, 2, 0);
           this.startCountdown();
         } else {

@@ -1,27 +1,27 @@
-<div class="grid lg:grid-cols-3 2xl:grid-cols-4 h-screen">
+<div class="flex 2xl:grid-cols-3 h-screen">
   <div
-    class="hidden lg:block w-full lg:col-span-2 2xl:col-span-3 bg-loginBg bg-center bg-cover bg-no-repeat h-full">
+    class="hidden lg:block w-full  bg-loginBg flex-1 bg-center bg-cover bg-no-repeat h-full">
     <div
-      class="w-full h-full flex items-center justify-center object-center object-cover">
+      class="w-full h-full flex items-center justify-center  object-center object-cover">
       <img loading="lazy" src="assets/logo/login-logo.png" alt="loginLogo" />
     </div>
   </div>
-  <div class="h-screen  w-full">
+  <div class="h-screen w-[32rem]">
     <div
-      class="flex flex-col h-[calc(100vh-2.5rem)] w-full space-y-6 justify-center px-12 items-center lg:items-start">
-      <h1 *ngIf="!otpScreen" class="text-h1 leading-h1 font-semibold">User login</h1>
-      <div *ngIf="otpScreen" class="flex flex-col space-y-3">
-        <h1 class="text-h1 leading-h1 font-semibold">OTP verification</h1>
+      class="flex flex-col h-[calc(100vh-2.5rem)] w-full pb-12 justify-center px-12 items-start text-center md:text-left">
+      <h1 *ngIf="!otpScreen" class="text-h1 leading-h1 font-semibold pb-10">User login</h1>
+      <div *ngIf="otpScreen" class="flex flex-col">
+        <h1 class="text-h1 leading-h1 font-semibold pb-12">OTP verification</h1>
         <p class="text-h2 leading-h2 text-secondary ">Please enter the OTP sent to your mobile number- </p>
-        <div class="flex space-x-3 items-center">
+        <div class="flex space-x-[.625rem] items-center">
           <p class="text-h2 leading-h2  text-not-black font-semibold ">{{ phoneNumber.value }}</p>
           <button (click)="onClickEdit()" type="button">
             <img alt="" src="assets/svg/edit.svg" class="notPreview">
           </button>
         </div>
       </div>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full">
-        <div *ngIf="usingEmail" class="mb-3 flex flex-col space-y-2 text-secondary w-full">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-[23.5rem]">
+        <div *ngIf="usingEmail" class="mb-4 flex flex-col space-y-2 text-secondary w-full">
           <label for="email" class="form-label">User Email</label>
           <mat-form-field appearance="outline" class="example-full-width ">
             <input
@@ -39,7 +39,7 @@
             {{ getEmailError() }}
           </div>
         </div>
-        <div *ngIf="!usingEmail && !otpScreen" class="mb-3 flex flex-col space-y-2 text-secondary w-full">
+        <div *ngIf="!usingEmail && !otpScreen" class="mb-4 flex flex-col space-y-2 text-secondary w-full">
           <label for="phoneNumber" class="form-label">Mobile Number</label>
           <mat-form-field appearance="outline" class="example-full-width ">
             <input
@@ -60,13 +60,13 @@
           </div>
         </div>
         <div class="w-full flex items-center justify-center mb-6" *ngIf="otpScreen">
-          <div class="flex space-x-3 ">
+          <div class="flex space-x-3 items-center">
             <input
               id="otp1" appInputAutoFocus idName="{{idName}}"
               [autocomplete]="false"
               formControlName="otp1"
               type="email"
-              class="bg-input rounded-lg border-none w-[5.375rem] py-4 customInput"
+              class="bg-input rounded-lg border-none  h-[5.375rem] w-[5.375rem]  py-4 customInput"
               [minlength]="1"
               [maxLength]="1"
               name="phoneNumber"
@@ -78,7 +78,7 @@
               [autocomplete]="false"
               formControlName="otp2"
               type="email"
-              class="bg-input rounded-lg border-none w-[5.375rem] py-4 customInput"
+              class="bg-input rounded-lg border-none  h-[5.375rem] w-[5.375rem]  py-4 customInput"
               [minlength]="1"
               [maxLength]="1"
               name="phoneNumber"
@@ -90,7 +90,7 @@
               [autocomplete]="false"
               formControlName="otp3"
               type="email"
-              class="bg-input rounded-lg border-none w-[5.375rem] py-4 customInput"
+              class="bg-input rounded-lg border-none  h-[5.375rem] w-[5.375rem]  py-4 customInput"
               [minlength]="1"
               [maxLength]="1"
               name="phoneNumber"
@@ -102,7 +102,7 @@
               [autocomplete]="false"
               formControlName="otp4"
               type="email"
-              class="bg-input rounded-lg border-none h-[5.370rem] w-[5.375rem] customInput"
+              class="bg-input rounded-lg border-none h-[5.375rem] w-[5.375rem] customInput"
               [minlength]="1"
               [maxLength]="1"
               name="phoneNumber"
@@ -111,7 +111,7 @@
 
           </div>
         </div>
-        <div *ngIf="usingEmail" class="mb-3 flex flex-col text-secondary w-full">
+        <div *ngIf="usingEmail" class="mb-6 flex flex-col space-y-2 text-secondary w-full">
           <label for="password" class="form-label">Password</label>
           <!--          password field with eye icon-->
           <div class="relative bg-input rounded-lg border-none">
@@ -138,15 +138,15 @@
           </div>
         </div>
         <button [disabled]="$loading" *ngIf="usingEmail"
-                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-4 w-full">
+                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-[1.125rem] w-full">
           <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i> Login
         </button>
         <button [disabled]="$loading" type="button" (click)="onOtpLogin()" *ngIf="otpScreen"
-                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-4 w-full">
+                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-[1.125rem] w-full">
           <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i> Login
         </button>
         <button [disabled]="$loading" *ngIf="!usingEmail && !otpScreen"
-                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-4 w-full">
+                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-[1.125rem] w-full">
           <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i> Send OTP
         </button>
         <!--        or using phone number-->
@@ -154,11 +154,11 @@
           <span class="text-not-black font-semibold text-[1.25rem]">or</span>
         </div>
         <button type="button" *ngIf="usingEmail" (click)="onClickUseMobileNumber()"
-                class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-4 w-full">
+                class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-[1.125rem] w-full">
           Use mobile number
         </button>
         <button type="button" (click)="onClickUseEmail()" *ngIf="!usingEmail && !otpScreen"
-                class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-4 w-full">
+                class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-[1.125rem] w-full">
           Use email
         </button>
         <div class="w-full flex items-center justify-center py-4" *ngIf="otpScreen">
@@ -166,7 +166,7 @@
             <!--            timing-->
             <span
               class="text-body_title leading-body_title font-semibold text-{{timeDisabled ? 'input-hint': 'primary'}}">{{ time | date : 'mm:ss' }}</span>
-            <button (click)="onClickResend()"
+            <button type="button" (click)="onClickResend()"
                     [disabled]="!timeDisabled"
                     class="text-{{timeDisabled ? 'primary': 'input-hint'}} font-semibold text-body_title leading-body_title cursor-pointer">
               Resend
