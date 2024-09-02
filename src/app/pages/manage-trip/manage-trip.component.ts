@@ -91,6 +91,7 @@ export class ManageTripComponent implements OnInit {
   customerName: any;
   height: any;
   customerSelected: boolean;
+  dateSelected: boolean;
 
   constructor(
     private tripService: TripService,
@@ -100,6 +101,7 @@ export class ManageTripComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.dateSelected = false;
     this.customerSelected = false;
     this.triggerFromParentName = 'All';
     this.isTriggerFromParent = false;
@@ -301,8 +303,11 @@ export class ManageTripComponent implements OnInit {
     if ($event.target.value) {
       this.endDate = ($event.target as HTMLInputElement).value;
       this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
-      this.filterLength += 1;
-      this.previousFilterLength += 1;
+      if (this.dateSelected) {
+        this.filterLength += 1;
+        this.previousFilterLength += 1;
+      }
+      this.dateSelected = true;
     } else {
       this.endDate = '';
       this.filterLength -= 1;
@@ -353,10 +358,12 @@ export class ManageTripComponent implements OnInit {
 
   onClickClear() {
     this.customerSelected = false;
+    this.dateSelected = false;
     this.searchValue = '';
     this.page = 0;
     this.size = 30;
     this.tripService.anotherStatusCalled.next(true);
+    this.filterLength = 0;
     this.getTripList();
   }
 
