@@ -28,6 +28,7 @@ import { MatInput } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomerService } from '../profiles/services/customer.service';
 import { MatSelect } from '@angular/material/select';
+import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 
 @Component({
   selector: 'app-manage-trip',
@@ -53,6 +54,7 @@ import { MatSelect } from '@angular/material/select';
     ReactiveFormsModule,
     MatSelect,
     FormsModule,
+    LoadingComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
@@ -88,6 +90,7 @@ export class ManageTripComponent implements OnInit {
   previousFilterLength: number = 0;
   customerName: any;
   height: any;
+  customerSelected: boolean;
 
   constructor(
     private tripService: TripService,
@@ -97,6 +100,7 @@ export class ManageTripComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.customerSelected = false;
     this.triggerFromParentName = 'All';
     this.isTriggerFromParent = false;
     if (localStorage.getItem('fromTripListTripId')) {
@@ -275,8 +279,11 @@ export class ManageTripComponent implements OnInit {
   onClickCustomerSearchSuggestion(option: any) {
     this.customerCode = option.customerCode;
     this.customerName = option.name;
-    this.filterLength += 1;
-    this.previousFilterLength += 1;
+    if (!this.customerSelected) {
+      this.filterLength += 1;
+      this.previousFilterLength += 1;
+    }
+    this.customerSelected = true;
   }
 
   private getVehicleTypeList() {
@@ -345,6 +352,7 @@ export class ManageTripComponent implements OnInit {
   }
 
   onClickClear() {
+    this.customerSelected = false;
     this.searchValue = '';
     this.page = 0;
     this.size = 30;
@@ -358,5 +366,12 @@ export class ManageTripComponent implements OnInit {
       heightValue = height.split('px')[0];
     }
     return heightValue - 32 + 'px';
+  }
+
+  isAdmin() {
+    return (
+      localStorage.getItem('role').includes('ROLE_KAM') ||
+      localStorage.getItem('role').includes('ROLE_ADMIN')
+    );
   }
 }

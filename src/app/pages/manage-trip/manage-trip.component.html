@@ -1,6 +1,6 @@
-<div class="flex">
-  <div class="flex flex-col  min-w=[25rem] max-w-[25rem]">
-    <div class="p-4 flex flex-col space-y-3" appGetElementHeight (height)="height = $event">
+<div class="flex bg-[#EFF6F8] space-x-4">
+  <div class="flex flex-col  min-w-[25rem] max-w-[25rem]">
+    <div class="py-4 pl-4 flex flex-col space-y-3" appGetElementHeight (height)="height = $event">
       <div class="flex justify-between items-center">
         <span class="text-h2 leading-h2 font-semibold">Trip List</span>
         <button (click)="onclickSideBarClose()"
@@ -24,8 +24,8 @@
             (keyup)="onKeyUpSearch($event)"
             type="text"
             name="email"
-            class="border-none text-not-black font-semibold text-h2 leading-h2 placeholder-input-hint w-full bg-white  rounded-lg focus:ring-blue focus:border-blue block pl-10 py-[.875rem]"
-            placeholder="Search by Trip ID, Customer Code" />
+            class="border-none text-not-black text-h2 leading-h2 placeholder-input-hint w-full bg-white  rounded-lg focus:ring-blue focus:border-blue block pl-10 py-[.875rem]"
+            placeholder="Search by trip ID, customer code" />
         </div>
         <button (click)="filterOpen = true" class="p-3 rounded-lg bg-white flex items-center justify-center">
           <div class="relative">
@@ -67,7 +67,14 @@
       <i class="fas fa-spinner fa-spin text-primary text-4xl"></i>
       <span class="text-center w-full text-secondary">Loading...</span>
     </div>
-    <div *ngIf="filterOpen" class="p-4 filter bg-white rounded-lg mx-4 h-[calc(100vh-12rem)] min-w-96
+    <div class="flex items-center justify-center  h-[calc(100vh-11.7rem)] min-w-96"
+         *ngIf="!loading && tripList.length <=0 && !filterOpen">
+      <div class="w-full flex flex-col space-y-3 justify-center items-center">
+        <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+        <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+      </div>
+    </div>
+    <div *ngIf="filterOpen" class="p-4 filter bg-white rounded-lg mx-4 h-[calc(100vh-12rem)] min-w-[24rem] max-w-[24rem]
 ">
       <div class="flex items-center justify-between pb-2">
         <div class="text-h2 leading-h2 font-semibold text-not-black">
@@ -81,61 +88,63 @@
           <i class="fal fa-times text-not-black"></i>
         </button>
       </div>
-      <div class="flex flex-col space-y-3">
-        <div class="flex-col space-y-1 flex w-full">
-          <label class="text-body text-secondary">Date</label>
-          <mat-form-field appearance="outline">
-            <mat-date-range-input [rangePicker]="picker">
-              <input (focus)="picker.open()" [(ngModel)]="startDate" (selectionchange)="onChangeStartDate($event)"
-                     matStartDate
-                     placeholder="Start date">
-              <input (focus)="picker.open()" [(ngModel)]="endDate" (selectionchange)="onChangeEndDate($event)"
-                     matEndDate
-                     placeholder="End date">
-            </mat-date-range-input>
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
-          </mat-form-field>
-        </div>
-        <div class="flex flex-col space-y-1 w-full">
-          <label class="text-body text-secondary">Customer</label>
+      <div class="flex flex-col space-y-6">
+        <div class="flex flex-col space-y-3">
+          <div class="flex-col space-y-1 flex w-full">
+            <label class="text-base text-secondary">Date</label>
+            <mat-form-field appearance="outline">
+              <mat-date-range-input [rangePicker]="picker">
+                <input (focus)="picker.open()" [(ngModel)]="startDate" (selectionchange)="onChangeStartDate($event)"
+                       matStartDate
+                       placeholder="Start date">
+                <input (focus)="picker.open()" [(ngModel)]="endDate" (selectionchange)="onChangeEndDate($event)"
+                       matEndDate
+                       placeholder="End date">
+              </mat-date-range-input>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-1 w-full" *ngIf="isAdmin()">
+            <label class="text-base text-secondary">Customer</label>
 
-          <mat-form-field appearance="outline" class="example-full-width w-full">
-            <input
-              id="customerName"
-              [(ngModel)]="customerName"
-              type="text"
-              matInput
-              (keyup)="onKeyUpCustomerSearch($event)"
-              placeholder="Select customer"
-              [matAutocomplete]="auto">
-            <mat-autocomplete #auto="matAutocomplete">
-              @for (option of companySuggestions; track option) {
-                <mat-option (click)="onClickCustomerSearchSuggestion(option)" [value]="option.name">{{ option.name }}
-                </mat-option>
-              }
-            </mat-autocomplete>
-          </mat-form-field>
-        </div>
-        <div class="flex flex-col space-y-1 w-full">
-          <label class="text-body text-secondary">Truck type</label>
-          <mat-form-field appearance="outline">
-            <mat-select [(ngModel)]="truckType" (selectionChange)="onChangeTruckType($event)" multiple
-                        placeholder="Choose Truck Type">
-              @for (vehicle of vehicleTypeList; track vehicle) {
-                <mat-option [value]="vehicle.id">{{ vehicle.name }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
+            <mat-form-field appearance="outline" class="example-full-width w-full">
+              <input
+                id="customerName"
+                [(ngModel)]="customerName"
+                type="text"
+                matInput
+                (keyup)="onKeyUpCustomerSearch($event)"
+                placeholder="Select customer"
+                [matAutocomplete]="auto">
+              <mat-autocomplete #auto="matAutocomplete">
+                @for (option of companySuggestions; track option) {
+                  <mat-option (click)="onClickCustomerSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-1 w-full">
+            <label class="text-base text-secondary">Truck type</label>
+            <mat-form-field appearance="outline">
+              <mat-select [(ngModel)]="truckType" (selectionChange)="onChangeTruckType($event)" multiple
+                          placeholder="Choose Truck Type">
+                @for (vehicle of vehicleTypeList; track vehicle) {
+                  <mat-option [value]="vehicle.id">{{ vehicle.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
         </div>
         <button (click)="onClickApply()"
-                class="px-6 py-2 bg-primary text-white font-semibold text-body self-end rounded-lg">
+                class="px-[2.875rem] py-[.625rem]  bg-primary text-white font-semibold text-body self-end rounded-lg">
           <span>Apply</span>
         </button>
       </div>
     </div>
   </div>
-  <div class="w-full h-[calc(100vh-4.5rem)] relative">
+  <div class="w-full h-[calc(100vh-4.5rem)] flex-1 relative">
     <app-g-map [truckLocationPosition]="truckLocationPosition" [starting]="startingPosition"
                [destination]="destinationPosition"></app-g-map>
     <app-map-buttons [triggeredButtonName]="triggerFromParentName" [triggerFromParent]="isTriggerFromParent"

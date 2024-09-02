@@ -331,6 +331,7 @@ export class SignInComponent implements OnInit, OnDestroy {
           this.toaster.showSuccess('OTP sent successfully', '');
           this.countdownSubscription?.unsubscribe();
           this.time = new Date(0, 0, 0, 0, 2, 0);
+          this.timeDisabled = false;
           this.startCountdown();
         } else {
           this.toaster.showError(response.message, '');

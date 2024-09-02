@@ -10,9 +10,9 @@
     <div
       class="flex flex-col h-[calc(100vh-2.5rem)] w-full pb-12 justify-center px-12 items-start text-center md:text-left">
       <h1 *ngIf="!otpScreen" class="text-h1 leading-h1 font-semibold pb-10">User login</h1>
-      <div *ngIf="otpScreen" class="flex flex-col">
-        <h1 class="text-h1 leading-h1 font-semibold pb-12">OTP verification</h1>
-        <p class="text-h2 leading-h2 text-secondary ">Please enter the OTP sent to your mobile number- </p>
+      <div *ngIf="otpScreen" class="flex flex-col pb-12">
+        <h1 class="text-h1 leading-h1 font-semibold pb-4">OTP verification</h1>
+        <p class="text-h2 leading-h2 text-secondary py-3">Please enter the OTP sent to your mobile number- </p>
         <div class="flex space-x-[.625rem] items-center">
           <p class="text-h2 leading-h2  text-not-black font-semibold ">{{ phoneNumber.value }}</p>
           <button (click)="onClickEdit()" type="button">

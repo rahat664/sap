@@ -250,9 +250,15 @@ textarea:focus {
   --tw-ring-color: #E5EAEB !important;
 }
 
+.mat-date-range-input-wrapper input {
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+}
+
 .mat-date-range-input-wrapper input::placeholder {
-  font-size: 0.875rem !important;
+  font-size: 1rem !important;
   color: #A5B8BB !important;
+  font-weight: 400 !important;
 }
 
 .mat-date-range-input-separator {
