@@ -166,9 +166,4 @@
     </table>
   </div>
 </div>
-<app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
-  <app-user-customer-admin-create
-    *ngIf="isOpen"
-    (formCreated)="onCreateUser($event)"></app-user-customer-admin-create>
-</app-create-popup>
 
