@@ -77,7 +77,7 @@
         </div>
         <h1 class="text-body  text-wrap text-web-text-secondary">{{ tripDetails.vehicleCategory.name }}
           | {{ tripDetails.truckSize }}ft, {{ tripDetails.truckCapacityInTon }} ton
-          <span *ngIf="tripDetails.truck?.id">, {{ tripDetails.truck.fullRegistrationNumber }}</span></h1>
+          <span *ngIf="tripDetails.truck?.id">| {{ tripDetails.truck.fullRegistrationNumber }}</span></h1>
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
@@ -113,7 +113,7 @@
         </div>
         <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.transporterName }} <span
         >| {{ tripDetails.transporterPhone }}</span> <span
-          *ngIf="tripDetails.transporterRate && isAdmin()">| {{ tripDetails.transporterRate }}</span></h1>
+          *ngIf="tripDetails.transporterRate && isAdmin()">| {{ tripDetails.transporterRate }}৳</span></h1>
       </div>
 
       <div class="flex flex-col space-y-2" *ngIf="tripDetails.driverCode && isAdmin()">

@@ -108,16 +108,18 @@ export class TripActivityComponent {
   private addPaginationWhenImageAreMoreThanThree(selectedEvent: EventData) {
     this.imageToShow = [];
     // initially load four of the images and then load the rest of the images
-    if (selectedEvent.urls) {
-      if (selectedEvent.urls.length > 3) {
-        const totalImages = selectedEvent.urls.length;
+    if (selectedEvent.tripDocuments) {
+      if (selectedEvent.tripDocuments.length > 3) {
+        const totalImages = selectedEvent.tripDocuments.length;
         const dividedImages = Math.ceil(totalImages / 3);
         for (let i = 0; i < dividedImages; i++) {
-          this.imageToShow.push(selectedEvent.urls.slice(i * 3, i * 3 + 3));
+          this.imageToShow.push(
+            selectedEvent.tripDocuments.slice(i * 3, i * 3 + 3)
+          );
         }
       } else {
         this.imageToShow = [];
-        this.imageToShow.push(selectedEvent.urls);
+        this.imageToShow.push(selectedEvent.tripDocuments);
       }
     }
   }
@@ -127,18 +129,18 @@ export class TripActivityComponent {
   ) {
     this.unloadImageToShow = [];
     // initially load four of the images and then load the rest of the images
-    if (selectedEvent.urls) {
-      if (selectedEvent.urls.length > 3) {
-        const totalImages = selectedEvent.urls.length;
+    if (selectedEvent.tripDocuments) {
+      if (selectedEvent.tripDocuments.length > 3) {
+        const totalImages = selectedEvent.tripDocuments.length;
         const dividedImages = Math.ceil(totalImages / 3);
         for (let i = 0; i < dividedImages; i++) {
           this.unloadImageToShow.push(
-            selectedEvent.urls.slice(i * 3, i * 3 + 3)
+            selectedEvent.tripDocuments.slice(i * 3, i * 3 + 3)
           );
         }
       } else {
         this.unloadImageToShow = [];
-        this.unloadImageToShow.push(selectedEvent.urls);
+        this.unloadImageToShow.push(selectedEvent.tripDocuments);
       }
     }
   }

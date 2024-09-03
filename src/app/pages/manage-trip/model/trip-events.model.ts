@@ -5,7 +5,7 @@ export interface EventData {
   eventName: string;
   localDateTime: string | null;
   note: string | null;
-  urls: string | null;
+  tripDocuments: tripDocument[];
 }
 
 export interface EventResponse {
@@ -13,4 +13,10 @@ export interface EventResponse {
   statusCode: number;
   message: string;
   data: EventData[];
+}
+
+export interface tripDocument {
+  id: number;
+  url: string;
+  documentStatus: string;
 }

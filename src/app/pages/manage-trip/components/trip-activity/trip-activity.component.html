@@ -11,8 +11,9 @@
           <button (click)="changeTripLoadingEvent(event)" *ngFor="let event of loadingEvents"
                   [ngClass]="{'border border-blue': event.eventName == selectedEventNameLoading}"
                   class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
-            <img loading="lazy" class="notPreview" *ngIf="event.urls" src="assets/svg/available.svg" alt="">
-            <img loading="lazy" class="notPreview" *ngIf="!event.urls" src="assets/svg/not-available.svg" alt="">
+            <img loading="lazy" class="notPreview" *ngIf="event.tripDocuments" src="assets/svg/available.svg" alt="">
+            <img loading="lazy" class="notPreview" *ngIf="!event.tripDocuments" src="assets/svg/not-available.svg"
+                 alt="">
             <span class="text-body_title leading-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
           </button>
         </div>
@@ -48,9 +49,9 @@
               </div>
               <div class="w-full grid grid-cols-3 gap-3">
                 <div class="w-[7.5rem] h-[5.375rem] flex-shrink-0 rounded-lg border border-disabled overflow-hidden"
-                     *ngFor="let url of imageToShow[index]">
+                     *ngFor="let item of imageToShow[index]">
                   <img loading="lazy" class="w-full h-full"
-                       [src]="url ? url : 'assets/images/dummy.jpg'" alt="">
+                       [src]="item.url ? item.url : 'assets/images/dummy.jpg'" alt="">
                 </div>
               </div>
             </div>
@@ -85,8 +86,9 @@
           <button (click)="changeTripUnloadingEvent(event)" *ngFor="let event of unloadEvents"
                   [ngClass]="{'border border-blue': event.eventName == selectedEventNameUnloading}"
                   class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
-            <img loading="lazy" class="notPreview" *ngIf="event.urls" src="assets/svg/available.svg" alt="">
-            <img loading="lazy" class="notPreview" *ngIf="!event.urls" src="assets/svg/not-available.svg" alt="">
+            <img loading="lazy" class="notPreview" *ngIf="event.tripDocuments" src="assets/svg/available.svg" alt="">
+            <img loading="lazy" class="notPreview" *ngIf="!event.tripDocuments" src="assets/svg/not-available.svg"
+                 alt="">
             <span class="text-body_title leading-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
           </button>
         </div>
@@ -122,9 +124,9 @@
               </div>
               <div class="w-full grid grid-cols-3 gap-3">
                 <div class="w-[7.5rem] h-[5.375rem] flex-shrink-0 rounded-lg border border-disabled overflow-hidden"
-                     *ngFor="let url of unloadImageToShow[unloadingIndex]">
+                     *ngFor="let item of unloadImageToShow[unloadingIndex]">
                   <img loading="lazy" class="w-full h-full"
-                       [src]="url ? url : 'assets/images/dummy.jpg'" alt="">
+                       [src]="item.url ? item.url : 'assets/images/dummy.jpg'" alt="">
                 </div>
               </div>
             </div>
