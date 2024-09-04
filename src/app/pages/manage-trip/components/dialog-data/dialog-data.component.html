@@ -166,7 +166,7 @@
       </div>
     </div>
   </div>
-  <div class="pb-6" *ngIf="!data?.buttonName.includes('Assign')">
+  <div class="pb-6">
     <div class="flex justify-between items-center">
       <h1 class="text-h2 leading-h2 font-semibold text-not-black">Helper Info</h1>
       <a class="text-link text-sm cursor-pointer" (click)="getHelperList()">Select from list</a>
@@ -209,7 +209,7 @@
   <div class="flex w-full justify-end">
     <button (click)="onChangeTripStatus(data.buttonName)" type="button"
             class="px-8 py-2 text-white font-semibold bg-primary rounded-lg"><i *ngIf="loading"
-                                                                                class="fas fa-spinner fa-spin"></i> {{ data.buttonName }}
+                                                                                class="fas fa-spinner fa-spin"></i> Save
     </button>
   </div>
 

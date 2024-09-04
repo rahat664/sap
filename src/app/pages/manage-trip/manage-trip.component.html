@@ -40,24 +40,34 @@
     </div>
     <div
       *ngIf="!loading && !filterOpen"
-      appGiveMaxHeight (inBottomEnd)="onScrollEnd($event)"
-      [totalPage]="totalPages"
-      [anotherItemsHeight]="customizedHeight(height)"
-      class="flex flex-col px-4 py-1 space-y-2 overflow-y-auto min-w-96">
-      <app-trip-card
-        (click)="onclickTripCard(trip.tripId, getTruckRegistrationNumber(trip.truck))"
-        [isActivated]="trip.tripId === activatedId"
-        *ngFor="let trip of tripList"
-        [tripNumber]="trip.tripId"
-        [companyName]="trip.customerName"
-        [tripStatus]="trip.status"
-        [tripStartDateTime]="trip.tripStartDatetime"
-        [loadingPoint]="trip.loadingPoint"
-        [unloadingPoint]="trip.unloadingPoint"
-        [truckId]="getTruckRegistrationNumber(trip.truck)"
-        [truckType]="trip.vehicleCategory.name"
-        [goodsName]="trip.good.name"
-      ></app-trip-card>
+      class="flex flex-col  py-1 space-y-4 min-w-96">
+      <div *ngIf="filterLength > 0" class="flex flex-wrap gap-2 text-sm px-4" appGetElementHeight
+           (height)="filterHeight = $event">
+        <ng-container *ngFor="let filter of filterValues">
+          <div class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint">
+            <span>{{ filter }}</span>
+            <a (click)="onClickCloseFilter(filter)" class="cursor-pointer"><i class="far fa-times"></i></a>
+          </div>
+        </ng-container>
+      </div>
+      <div class="flex flex-col space-y-2 overflow-y-auto px-4" appGiveMaxHeight (inBottomEnd)="onScrollEnd($event)"
+           [totalPage]="totalPages"
+           [anotherItemsHeight]="customizedHeight(height, filterHeight)">
+        <app-trip-card
+          (click)="onclickTripCard(trip.tripId, getTruckRegistrationNumber(trip.truck), trip.status)"
+          [isActivated]="trip.tripId === activatedId"
+          *ngFor="let trip of tripList"
+          [tripNumber]="trip.tripId"
+          [companyName]="trip.customerName"
+          [tripStatus]="trip.status"
+          [tripStartDateTime]="trip.tripStartDatetime"
+          [loadingPoint]="trip.loadingPoint"
+          [unloadingPoint]="trip.unloadingPoint"
+          [truckId]="getTruckRegistrationNumber(trip.truck)"
+          [truckType]="trip.vehicleCategory.name"
+          [goodsName]="trip.good.name"
+        ></app-trip-card>
+      </div>
     </div>
     <div
       class="flex flex-col items-center justify-center h-[calc(100vh-11.7rem)] min-w-96"
@@ -84,14 +94,22 @@
                  class="text-h2 leading-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
         </div>
         <button (click)="onClickClearAll()"
-                class="mb-1/2 h-[1.75rem] w-[1.75rem] text-white bg-disabled flex items-center justify-center rounded-full">
+                class="mb-1/2 h-[1.75rem] w-[1.75rem] text-white  flex items-center justify-center rounded-full">
           <i class="fal fa-times text-not-black"></i>
         </button>
       </div>
       <div class="flex flex-col space-y-6">
         <div class="flex flex-col space-y-3">
-          <div class="flex-col space-y-1 flex w-full">
+          <div class="flex-col space-y-2 flex w-full">
             <label class="text-base text-secondary">Date</label>
+            <div class="flex  flex-wrap gap-2">
+              <ng-container *ngFor="let button of buttonName">
+                <button type="button" (click)="onClickFilterButton(button, picker)"
+                        class="px-2 py-1   {{ selectedButton == button ? 'border-none bg-green text-white' : 'border border-input-hint text-secondary'}}  font-semibold text-body self-end rounded-full">
+                  <span>{{ button }}</span>
+                </button>
+              </ng-container>
+            </div>
             <mat-form-field appearance="outline">
               <mat-date-range-input [rangePicker]="picker">
                 <input (focus)="picker.open()" [(ngModel)]="startDate" (selectionchange)="onChangeStartDate($event)"
@@ -137,7 +155,7 @@
             </mat-form-field>
           </div>
         </div>
-        <button (click)="onClickApply()"
+        <button [disabled]="filterLength <= 0" (click)="onClickApply()"
                 class="px-[2.875rem] py-[.625rem]  bg-primary text-white font-semibold text-body self-end rounded-lg">
           <span>Apply</span>
         </button>
@@ -146,7 +164,7 @@
   </div>
   <div class="w-full h-[calc(100vh-4.5rem)] flex-1 relative">
     <app-g-map [truckLocationPosition]="truckLocationPosition" [starting]="startingPosition"
-               [destination]="destinationPosition"></app-g-map>
+               [destination]="destinationPosition" [tripStatus]="tripStatus"></app-g-map>
     <app-map-buttons [triggeredButtonName]="triggerFromParentName" [triggerFromParent]="isTriggerFromParent"
                      [statusButtons]="statusButtons" (buttonClickEmitter)="onClickButton($event)"
                      class="absolute top-0 right-1/2 transform translate-x-1/2">

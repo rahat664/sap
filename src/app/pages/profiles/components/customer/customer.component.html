@@ -71,7 +71,7 @@
           </td>
           <td class="text-center">{{ customer.customerCode }}</td>
           <td
-            class="whitespace-nowrap">{{ customer.creationDate ? (customer.creationDate | date: 'dd MMM, yyyy') : '' }}
+            class="whitespace-nowrap">{{ customer.creationDate ? (customer.creationDate | date: 'd MMM yyyy') : '' }}
           </td>
           <td>
             <span>{{ customer?.contactPerson }}</span>

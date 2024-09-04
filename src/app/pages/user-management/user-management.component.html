@@ -106,7 +106,7 @@
           <td>{{ user.department }}</td>
           <td>{{ user.designation }}</td>
           <td>{{ user.status }}</td>
-          <td class="whitespace-nowrap">{{ user.createdOn ? (user.createdOn | date : 'dd MMM, yyyy') : '' }}</td>
+          <td class="whitespace-nowrap">{{ user.createdOn ? (user.createdOn | date : 'd MMM yyyy') : '' }}</td>
           <td>
             <button *ngIf="user.status != 'Removed'" mat-button [matMenuTriggerFor]="menu"><i
               class="fas fa-ellipsis-v"></i></button>

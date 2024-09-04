@@ -212,7 +212,7 @@ export class CreateTripPageComponent implements OnInit {
       .setValue(
         this.datePipe.transform(
           new Date(new Date().getTime() + 6 * 60 * 60 * 1000),
-          'dd MMM yyyy, hh:mm a'
+          'd MMM yyyy, hh:mm a'
         )
       );
   }
@@ -340,7 +340,7 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm
       .get('tripStartDatetime')
       .setValue(
-        this.datePipe.transform(this.selectedDate, 'dd MMM yyyy, hh:mm a')
+        this.datePipe.transform(this.selectedDate, 'd MMM yyyy, hh:mm a')
       );
   }
 
