@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../../auth/models/response/api-response';
+import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,10 @@ export class UserService {
   departmentsUrl = environment.userUrl + '/api/departments';
   permissionsUrl = environment.userUrl + '/api/permissions';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private toaster: HandleToastrService
+  ) {}
 
   getUser(role?: string, status?: string) {
     if (role) {
@@ -153,5 +157,15 @@ export class UserService {
 
   getUserPermissions() {
     return this.http.get(`${this.permissionsUrl}`);
+  }
+
+  copyToClipboard(createdByPhone: any) {
+    const el = document.createElement('textarea');
+    el.value = createdByPhone;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    this.toaster.showInfo(`${createdByPhone} copied to clipboard`);
   }
 }

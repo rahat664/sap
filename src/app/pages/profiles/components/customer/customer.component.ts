@@ -130,4 +130,9 @@ export class CustomerComponent implements OnInit {
     this.searchValue = '';
     this.getCustomer();
   }
+
+  copyNumber($event: MouseEvent, phone: string) {
+    $event.stopPropagation();
+    this.service.copyToClipboard(phone);
+  }
 }

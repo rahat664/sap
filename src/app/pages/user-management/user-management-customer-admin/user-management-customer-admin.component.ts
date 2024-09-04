@@ -341,4 +341,9 @@ export class UserManagementCustomerAdminComponent {
     const find = roles.find(role => role === 'ROLE_CUSTOMER_ADMIN');
     return find ? 'Admin' : 'User';
   }
+
+  copyNumber($event: MouseEvent, phone: string) {
+    $event.stopPropagation();
+    this.service.copyToClipboard(phone);
+  }
 }

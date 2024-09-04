@@ -102,8 +102,10 @@
           <img loading="lazy" class="notPreview h-6 w-6" src="assets/svg/cgm.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">CGM</h1>
         </div>
-        <h1 class="text-body text-wrap text-web-text-secondary">{{ userName }} <span
-          *ngIf="userPhone">| {{ userPhone }}</span></h1>
+        <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.createdByName }} <span
+          *ngIf="tripDetails.createdByName">| <a class="cursor-pointer"
+                                                 (click)="copyNumber($event, tripDetails.createdByPhone)">{{ tripDetails.createdByPhone }}</a></span>
+        </h1>
       </div>
 
       <div class="flex flex-col space-y-2" *ngIf="tripDetails.transporterCode && isAdmin()">
@@ -112,8 +114,10 @@
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">Transporter</h1>
         </div>
         <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.transporterName }} <span
-        >| {{ tripDetails.transporterPhone }}</span> <span
-          *ngIf="tripDetails.transporterRate && isAdmin()">| {{ tripDetails.transporterRate }}৳</span></h1>
+        >| <a class="cursor-pointer"
+              (click)="copyNumber($event, tripDetails.transporterPhone)">{{ tripDetails.transporterPhone }}</a></span>
+          <span
+            *ngIf="tripDetails.transporterRate && isAdmin()">| {{ tripDetails.transporterRate }}৳</span></h1>
       </div>
 
       <div class="flex flex-col space-y-2" *ngIf="tripDetails.driverCode && isAdmin()">
@@ -122,7 +126,8 @@
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">Driver</h1>
         </div>
         <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.driverName }} <span
-        >| {{ tripDetails.driverPhone }}</span></h1>
+        >| <a class="cursor-pointer"
+              (click)="copyNumber($event, tripDetails.driverPhone)">{{ tripDetails.driverPhone }}</a></span></h1>
       </div>
 
       <div class="flex flex-col space-y-2" *ngIf="tripDetails.helperCode && isAdmin()">
@@ -131,7 +136,8 @@
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">Helper</h1>
         </div>
         <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.helperName }} <span
-        >| {{ tripDetails.helperPhone }}</span></h1>
+        >| <a class="cursor-pointer"
+              (click)="copyNumber($event, tripDetails.helperPhone)">{{ tripDetails.helperPhone }}</a></span></h1>
       </div>
 
 

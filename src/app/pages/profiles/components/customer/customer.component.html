@@ -76,8 +76,8 @@
           <td>
             <span>{{ customer?.contactPerson }}</span>
           </td>
-          <td>{{ customer.phone }}</td>
-          <td>{{ customer.email }}</td>
+          <td><a class="cursor-pointer" (click)="copyNumber($event, customer.phone)">{{ customer.phone }}</a></td>
+          <td><a href="mailto:{{customer.email}}">{{ customer.email }}</a></td>
           <td>{{ customer.address }}</td>
           <!--            <td>-->
           <!--              <i class="fas fa-ellipsis-v"></i>-->

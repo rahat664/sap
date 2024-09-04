@@ -100,8 +100,8 @@
       <ng-container *ngIf="!loading">
         <tr *ngFor="let user of Users">
           <td class="whitespace-nowrap">{{ user.name }}</td>
-          <td>{{ user.phone }}</td>
-          <td>{{ user.email }}</td>
+          <td><a class="cursor-pointer" (click)="copyNumber($event, user.phone)">{{ user.phone }}</a></td>
+          <td><a href="mailto:{{user.email}}">{{ user.email }}</a></td>
           <td>{{ getUserType(user.roles) }}</td>
           <td>{{ user.designation }}</td>
           <td>{{ user.status }}</td>

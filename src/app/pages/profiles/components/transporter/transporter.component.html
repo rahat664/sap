@@ -68,7 +68,7 @@
               <span class="flex-1">{{ transporter.name }}</span>
             </div>
           </td>
-          <td>{{ transporter.phone }}</td>
+          <td><a class="cursor-pointer" (click)="copyNumber($event, transporter.phone)">{{ transporter.phone }}</a></td>
           <td
             class="whitespace-nowrap">{{ transporter.createdOn ? (transporter.createdOn | date : 'dd MMM, yyyy') : '' }}
           </td>
