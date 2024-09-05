@@ -482,11 +482,13 @@ export class ManageTripComponent implements OnInit {
     if (filter === this.customerName) {
       this.customerSelected = false;
       this.customerCode = '';
+      this.previousFilterLength -= 1;
     } else if (filter === this.dateText) {
       this.selectedButton = '';
       this.dateSelected = false;
       this.startDate = '';
       this.endDate = '';
+      this.previousFilterLength -= 1;
     } else {
       const filterId = this.vehicleTypeList.find(
         (element: any) => element.name === filter
