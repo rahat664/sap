@@ -62,6 +62,7 @@ export class CustomerComponent implements OnInit {
     this.dialog
       .open(CustomerCreateComponent, {
         width: '50%',
+        maxHeight: '90vh',
       })
       .afterClosed()
       .subscribe(value => {

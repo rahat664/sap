@@ -106,6 +106,12 @@ export class ManageTripComponent implements OnInit {
   customDateText: string;
   customSelected: boolean;
   tripStatus: string;
+  selectedTruckValues: any[] = [];
+  previousDateText: string;
+  previousCustomerName: any;
+  previousEndDate: string;
+  previousStartDate: string;
+  previousCustomerCode: any;
 
   constructor(
     private tripService: TripService,
@@ -140,6 +146,8 @@ export class ManageTripComponent implements OnInit {
     localStorage.removeItem('tripId');
     this.tripService.reloadManageTripPage.subscribe(value => {
       if (value) {
+        this.page = 0;
+        this.size = 30;
         this.searchValue = '';
         this.tripService.anotherStatusCalled.next(true);
         this.getTripList();
@@ -383,6 +391,7 @@ export class ManageTripComponent implements OnInit {
 
   onClickApply() {
     this.filterValues = [];
+    this.selectedTruckValues = [];
     if (this.customerSelected) {
       this.filterValues.push(this.customerName);
     }
@@ -395,6 +404,7 @@ export class ManageTripComponent implements OnInit {
       for (let i = 0; i < this.truckType.length; i++) {
         this.vehicleTypeList.forEach((element: any) => {
           if (element.id === this.truckType[i]) {
+            this.selectedTruckValues.push(element.name);
             this.filterValues.push(element.name);
           }
         });
@@ -410,10 +420,13 @@ export class ManageTripComponent implements OnInit {
   onClickClearAll() {
     this.dateSelected = false;
     this.customSelected = false;
+    this.customerName = '';
+    this.customerCode = '';
     this.dateText = '';
     this.filterValues = [];
     this.selectedButton = '';
     this.filterHeight = '0px';
+    this.previousFilterLength = 0;
     this.filterLength = 0;
     this.startDate = '';
     this.endDate = '';
@@ -483,6 +496,7 @@ export class ManageTripComponent implements OnInit {
       this.customerSelected = false;
       this.customerCode = '';
       this.previousFilterLength -= 1;
+      this.customerName = '';
     } else if (filter === this.dateText) {
       this.selectedButton = '';
       this.dateSelected = false;
@@ -507,5 +521,13 @@ export class ManageTripComponent implements OnInit {
     this.size = 30;
     this.tripService.anotherStatusCalled.next(true);
     this.getTripList();
+  }
+
+  onClickFilterClose() {
+    this.filterOpen = false;
+  }
+
+  onClickFilterOpen() {
+    this.filterOpen = true;
   }
 }

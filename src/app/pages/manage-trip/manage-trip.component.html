@@ -27,12 +27,12 @@
             class="border-none text-not-black text-h2 leading-h2 placeholder-input-hint w-full bg-white  rounded-lg focus:ring-blue focus:border-blue block pl-10 py-[.875rem]"
             placeholder="Search by trip ID, customer code" />
         </div>
-        <button (click)="filterOpen = true" class="p-3 rounded-lg bg-white flex items-center justify-center">
+        <button (click)="onClickFilterOpen()" class="p-3 rounded-lg bg-white flex items-center justify-center">
           <div class="relative">
             <img loading="lazy" class="notPreview" src="assets/svg/filter.svg" alt="filter">
-            <span *ngIf="filterLength > 0"
+            <span *ngIf="filterValues.length > 0"
                   class="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red text-white text-xs font-semibold rounded-full h-4 w-4 flex items-center justify-center">
-              {{ filterLength }}
+              {{ filterValues.length }}
             </span>
           </div>
         </button>
@@ -93,7 +93,7 @@
           ) | <a (click)="onClickClearAll()"
                  class="text-h2 leading-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
         </div>
-        <button (click)="onClickClearAll()"
+        <button (click)="onClickFilterClose()"
                 class="mb-1/2 h-[1.75rem] w-[1.75rem] text-white  flex items-center justify-center rounded-full">
           <i class="fal fa-times text-not-black"></i>
         </button>

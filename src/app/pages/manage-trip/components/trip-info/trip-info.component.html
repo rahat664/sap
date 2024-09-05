@@ -124,7 +124,7 @@
         >| <a class="cursor-pointer"
               (click)="copyNumber($event, tripDetails.transporterPhone)">{{ tripDetails.transporterPhone }}</a></span>
           <span
-            *ngIf="tripDetails.transporterRate && isAdmin()">| {{ tripDetails.transporterRate }}৳</span></h1>
+            *ngIf="tripDetails.transporterRate && isAdmin()">| {{ tripDetails.transporterRate | number }} ৳</span></h1>
       </div>
 
       <div class="flex flex-col space-y-2" *ngIf="tripDetails.driverCode && isAdmin()">
