@@ -781,4 +781,9 @@ export class TripUpdateComponent {
         .setValue(tripData.truck?.registrationNum);
     }
   }
+
+  isAdmin() {
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
 }
