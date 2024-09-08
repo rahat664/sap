@@ -191,16 +191,6 @@
               <input [disabled]="true" [readonly]="true" type="number" formControlName="numOfTrucks" matInput
                      placeholder="Enter Number of vehicle">
             </mat-form-field>
-            <div class="w-full h-full flex space-x-2 items-center">
-              <span>Suggestions:</span>
-              <button type="button"
-                      (click)="onClickNoOfTruckSuggestion(suggestion)"
-                      class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
-                      [ngClass]="{'bg-green text-white': suggestion.selected}"
-                      *ngFor="let suggestion of numberOfTrucksSuggestions">
-                {{ suggestion.value }}
-              </button>
-            </div>
           </div>
           <div class="flex flex-col space-y-2 w-full">
             <label for="size" class="form-label text-body">Truck Size (Feet)</label>
