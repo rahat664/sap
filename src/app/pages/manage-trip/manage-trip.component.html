@@ -123,7 +123,7 @@
               <mat-date-range-picker #picker></mat-date-range-picker>
             </mat-form-field>
           </div>
-          <div class="flex flex-col space-y-1 w-full" *ngIf="isAdmin()">
+          <div class="flex flex-col space-y-2 w-full" *ngIf="isAdmin()">
             <label class="text-base text-secondary">Customer</label>
 
             <mat-form-field appearance="outline" class="example-full-width w-full">
@@ -134,14 +134,23 @@
                 matInput
                 (keyup)="onKeyUpCustomerSearch($event)"
                 placeholder="Select customer"
-                [matAutocomplete]="auto">
-              <mat-autocomplete #auto="matAutocomplete">
+                [matAutocomplete]="customerSug">
+              <mat-autocomplete #customerSug="matAutocomplete">
                 @for (option of companySuggestions; track option) {
                   <mat-option (click)="onClickCustomerSearchSuggestion(option)" [value]="option.name">{{ option.name }}
                   </mat-option>
                 }
               </mat-autocomplete>
             </mat-form-field>
+            <div class="flex flex-wrap gap-2 text-secondary text-sm" *ngIf="customers.length > 0">
+              <ng-container *ngFor="let customer of customers">
+                <div
+                  class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint whitespace-nowrap">
+                  <span>{{ customer.name }}</span>
+                  <a (click)="onClickCloseCustomer(customer)" class="cursor-pointer"><i class="far fa-times"></i></a>
+                </div>
+              </ng-container>
+            </div>
           </div>
           <div class="flex flex-col space-y-1 w-full">
             <label class="text-base text-secondary">Truck type</label>

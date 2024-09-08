@@ -29,6 +29,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomerService } from '../profiles/services/customer.service';
 import { MatSelect } from '@angular/material/select';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
+import { CustomerModel } from '../profiles/components/customer/model/customer.model';
 
 @Component({
   selector: 'app-manage-trip',
@@ -99,6 +100,7 @@ export class ManageTripComponent implements OnInit {
     'Last 30 Days',
     'Custom',
   ];
+  customers: CustomerModel[] = [];
   selectedButton: any;
   filterHeight: any;
   filterValues: any[] = [];
@@ -107,11 +109,8 @@ export class ManageTripComponent implements OnInit {
   customSelected: boolean;
   tripStatus: string;
   selectedTruckValues: any[] = [];
-  previousDateText: string;
-  previousCustomerName: any;
-  previousEndDate: string;
-  previousStartDate: string;
-  previousCustomerCode: any;
+  customerCodes: string[] = [];
+  customerNames: string[] = [];
 
   constructor(
     private tripService: TripService,
@@ -161,7 +160,7 @@ export class ManageTripComponent implements OnInit {
       .getTrips(
         this.page,
         this.size,
-        this.customerCode,
+        this.customerCodes.toString(),
         this.startDate,
         this.endDate,
         this.status,
@@ -335,25 +334,46 @@ export class ManageTripComponent implements OnInit {
   onKeyUpCustomerSearch($event: KeyboardEvent) {
     this.companySuggestions = [];
     const target = $event.target as HTMLInputElement;
-    if (target.value) {
+    if (target.value.length > 0) {
       this.customer
         .searchCustomer(0, 1000, target.value, null)
         .subscribe((company: any) => {
           this.companySuggestions = company.data.content;
+          if (this.customers.length > 0) {
+            this.companySuggestions = this.companySuggestions.filter(
+              (value: any) =>
+                !this.customers.some(
+                  (customer: any) => customer.id === value.id
+                )
+            );
+          }
         });
     } else {
       this.companySuggestions = [];
     }
   }
 
-  onClickCustomerSearchSuggestion(option: any) {
-    this.customerCode = option.customerCode;
-    this.customerName = option.name;
-    if (!this.customerSelected) {
-      this.filterLength += 1;
-      this.previousFilterLength += 1;
-    }
-    this.customerSelected = true;
+  onClickCustomerSearchSuggestion(option: CustomerModel) {
+    this.customers.push(option);
+    this.customerCodes.push(option.customerCode);
+    this.customerNames.push(option.name);
+    this.customerName = '';
+    this.filterLength += 1;
+    this.previousFilterLength += 1;
+  }
+
+  onClickCloseCustomer(customer: CustomerModel) {
+    this.filterLength -= 1;
+    this.previousFilterLength -= 1;
+    this.customerCodes = this.customerCodes.filter(
+      (value: any) => value !== customer.customerCode
+    );
+    this.customerNames = this.customerNames.filter(
+      (value: any) => value !== customer.name
+    );
+    this.customers = this.customers.filter(
+      (value: any) => value.id !== customer.id
+    );
   }
 
   private getVehicleTypeList() {
@@ -392,8 +412,10 @@ export class ManageTripComponent implements OnInit {
   onClickApply() {
     this.filterValues = [];
     this.selectedTruckValues = [];
-    if (this.customerSelected) {
-      this.filterValues.push(this.customerName);
+    if (this.customerNames.length > 0) {
+      this.customerNames.forEach((element: any) => {
+        this.filterValues.push(element);
+      });
     }
     if (this.dateSelected) {
       this.filterValues.push(
@@ -420,8 +442,9 @@ export class ManageTripComponent implements OnInit {
   onClickClearAll() {
     this.dateSelected = false;
     this.customSelected = false;
-    this.customerName = '';
-    this.customerCode = '';
+    this.customerCodes = [];
+    this.customerNames = [];
+    this.customers = [];
     this.dateText = '';
     this.filterValues = [];
     this.selectedButton = '';
@@ -492,7 +515,16 @@ export class ManageTripComponent implements OnInit {
     this.filterValues = this.filterValues.filter(
       (value: any) => value !== filter
     );
-    if (filter === this.customerName) {
+    if (this.customerNames.includes(filter)) {
+      this.customers = this.customers.filter(
+        (value: any) => value.name !== filter
+      );
+      this.customerCodes = this.customerCodes.filter(
+        (value: any) => value !== this.customerCode
+      );
+      this.customerNames = this.customerNames.filter(
+        (value: any) => value !== filter
+      );
       this.customerSelected = false;
       this.customerCode = '';
       this.previousFilterLength -= 1;
@@ -525,84 +557,87 @@ export class ManageTripComponent implements OnInit {
 
   onClickFilterClose() {
     this.filterOpen = false;
-    this.selectedButton = '';
-    this.dateText = '';
-    this.truckType = [];
-    this.customerName = '';
-    this.endDate = '';
-    this.startDate = '';
-    this.filterLength = 0;
   }
 
   onClickFilterOpen() {
+    this.truckType = [];
+    this.customers = [];
+    this.selectedButton = '';
+    this.startDate = '';
+    this.endDate = '';
+    this.dateText = '';
+    this.customerCodes = [];
+    this.customerNames = [];
+    this.filterLength = 0;
     this.filterOpen = true;
-    let selectedButton = '';
-    this.dateSelected = false;
-    this.customerSelected = false;
-    let customerName = '';
-    let dateText = '';
-    let truckType = [];
-    let startDate = '';
-    let endDate = '';
-    if (this.filterValues) {
+    if (this.filterValues.length > 0) {
       this.filterValues.forEach((element: any) => {
-        let customerSuggestion = '';
-        this.customer
-          .searchCustomer(0, 1000, element, null)
-          .subscribe((res: any) => {
-            customerSuggestion = res.data.content[0].name;
-          });
-        if (element === customerSuggestion) {
-          customerName = element;
+        const selectedVehicle = this.vehicleTypeList.find(
+          (value: any) => value.name === element
+        );
+        if (selectedVehicle) {
+          this.truckType.push(selectedVehicle.id);
         } else if (this.buttonName.includes(element)) {
-          dateText = element;
-          selectedButton = element;
+          this.selectedButton = element;
+          this.dateText = element;
+          this.dateSelected = true;
           if (element === 'Today') {
-            startDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-            endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            this.startDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
           } else if (element === 'Last 7 Days') {
-            startDate = this.datePipe.transform(
+            this.startDate = this.datePipe.transform(
               new Date(new Date().setDate(new Date().getDate() - 6)),
               'yyyy-MM-dd'
             );
-            endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
           } else if (element === 'Last 15 Days') {
-            startDate = this.datePipe.transform(
+            this.startDate = this.datePipe.transform(
               new Date(new Date().setDate(new Date().getDate() - 14)),
               'yyyy-MM-dd'
             );
-            endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
           } else if (element === 'Last 30 Days') {
-            startDate = this.datePipe.transform(
+            this.startDate = this.datePipe.transform(
               new Date(new Date().setDate(new Date().getDate() - 29)),
               'yyyy-MM-dd'
             );
-            endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
           }
         } else if (element.includes('-')) {
-          dateText = element;
-          selectedButton = 'Custom';
-          startDate = this.datePipe.transform(
-            element.split(' - ')[0],
-            'yyyy-MM-dd'
-          );
-          endDate = this.datePipe.transform(
-            element.split(' - ')[1],
-            'yyyy-MM-dd'
-          );
+          this.customSelected = true;
+          this.customDateText = element;
+          this.selectedButton = 'Custom';
+          this.dateSelected = true;
+          const dates = element.split(' - ');
+          this.startDate = dates[0];
+          this.endDate = dates[1];
         } else {
-          truckType.push(
-            this.vehicleTypeList.find((value: any) => value.name === element).id
+          this.customer.searchCustomer(0, 1000, element, null).subscribe(
+            (res: any) => {
+              this.customers.push(res.data.content[0]);
+              this.customerCodes.push(res.data.content[0].customerCode);
+              this.customerNames.push(res.data.content[0].name);
+              this.customerSelected = true;
+            },
+            error => {
+              console.log(error);
+            }
           );
         }
       });
+      this.filterLength = this.filterValues.length;
+    } else {
+      this.truckType = [];
+      this.selectedButton = '';
+      this.dateSelected = false;
+      this.startDate = '';
+      this.endDate = '';
+      this.customerNames = [];
+      this.customerCodes = [];
+      this.customers = [];
+      this.customerSelected = false;
       this.filterLength = 0;
-      this.customerName = customerName;
-      this.dateText = dateText;
-      this.truckType = truckType;
-      this.startDate = startDate;
-      this.endDate = endDate;
-      this.selectedButton = selectedButton;
+      this.previousFilterLength = 0;
     }
   }
 }
