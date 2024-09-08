@@ -525,9 +525,85 @@ export class ManageTripComponent implements OnInit {
 
   onClickFilterClose() {
     this.filterOpen = false;
+    this.selectedButton = '';
+    this.dateText = '';
+    this.truckType = [];
+    this.customerName = '';
+    this.endDate = '';
+    this.startDate = '';
+    this.filterLength = 0;
   }
 
   onClickFilterOpen() {
     this.filterOpen = true;
+    let selectedButton = '';
+    this.dateSelected = false;
+    this.customerSelected = false;
+    let customerName = '';
+    let dateText = '';
+    let truckType = [];
+    let startDate = '';
+    let endDate = '';
+    if (this.filterValues) {
+      this.filterValues.forEach((element: any) => {
+        let customerSuggestion = '';
+        this.customer
+          .searchCustomer(0, 1000, element, null)
+          .subscribe((res: any) => {
+            customerSuggestion = res.data.content[0].name;
+          });
+        if (element === customerSuggestion) {
+          customerName = element;
+        } else if (this.buttonName.includes(element)) {
+          dateText = element;
+          selectedButton = element;
+          if (element === 'Today') {
+            startDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+          } else if (element === 'Last 7 Days') {
+            startDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 6)),
+              'yyyy-MM-dd'
+            );
+            endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+          } else if (element === 'Last 15 Days') {
+            startDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 14)),
+              'yyyy-MM-dd'
+            );
+            endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+          } else if (element === 'Last 30 Days') {
+            startDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 29)),
+              'yyyy-MM-dd'
+            );
+            endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+          }
+        } else if (element.includes('-')) {
+          dateText = element;
+          selectedButton = 'Custom';
+          startDate = this.datePipe.transform(
+            element.split(' - ')[0],
+            'yyyy-MM-dd'
+          );
+          endDate = this.datePipe.transform(
+            element.split(' - ')[1],
+            'yyyy-MM-dd'
+          );
+        } else {
+          truckType.push(
+            this.vehicleTypeList.find((value: any) => value.name === element).id
+          );
+        }
+      });
+      this.filterLength = 0;
+      this.customerName = customerName;
+      this.dateText = dateText;
+      this.truckType = truckType;
+      this.startDate = startDate;
+      this.endDate = endDate;
+      this.selectedButton = selectedButton;
+      this.filterLength = this.filterValues.length;
+    }
   }
 }
