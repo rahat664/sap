@@ -603,7 +603,6 @@ export class ManageTripComponent implements OnInit {
       this.startDate = startDate;
       this.endDate = endDate;
       this.selectedButton = selectedButton;
-      this.filterLength = this.filterValues.length;
     }
   }
 }
