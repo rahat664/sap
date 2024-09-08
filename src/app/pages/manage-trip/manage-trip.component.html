@@ -89,9 +89,8 @@
       <div class="flex items-center justify-between pb-2">
         <div class="text-h2 leading-h2 font-semibold text-not-black">
           Filters <span class="text-h2 leading-h2 font-semibold text-not-black"
-                        *ngIf="filterLength > 0">({{ filterLength }}
-          ) | <a (click)="onClickClearAll()"
-                 class="text-h2 leading-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
+                        *ngIf="filterLength > 0">({{ filterLength }}) | <a (click)="onClickClearAll()"
+                                                                           class="text-h2 leading-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
         </div>
         <button (click)="onClickFilterClose()"
                 class="mb-1/2 h-[1.75rem] w-[1.75rem] text-white  flex items-center justify-center rounded-full">
