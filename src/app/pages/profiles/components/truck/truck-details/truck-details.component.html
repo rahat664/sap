@@ -118,7 +118,7 @@
             buttonText="Upload"></app-upload-button>
         </div>
         <div class="grid grid-cols-4 gap-3" *ngIf="documents.length > 0">
-          <ng-container *ngFor="let document of documents">
+          <ng-container *ngFor="let document of singleTruck.truckDocumentList">
             <div class="w-full flex flex-col space-y-1">
               <div
                 class="p-4 rounded-lg border border-input relative flex items-center justify-center">
@@ -126,7 +126,7 @@
                   <img
                     class="w-full h-full"
                     [src]="
-                      document.showUrl ? document.showUrl : 'assets/images/dummy.jpg'
+                      document.preSignedFileUrl ? document.preSignedFileUrl : 'assets/images/dummy.jpg'
                     "
                     alt="" />
                 </div>
@@ -139,13 +139,13 @@
               </div>
               <div class="flex space-y-1 flex-col">
                 <span class="text-web-text-secondary font-semibold">{{
-                    document.name
+                    getDocumentName(document.documentType)
                   }}</span>
-                <span *ngIf="document.expAvailable" class="text-web-text-secondary"
+                <span *ngIf="document.expiryDate" class="text-web-text-secondary"
                 >Exp:
                   {{
-                    document.expDate
-                      ? (document.expDate | date: 'd MMM yyyy')
+                    document.expiryDate
+                      ? (document.expiryDate | date: 'd MMM yyyy')
                       : 'N/A'
                   }}</span
                 >

@@ -4,9 +4,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { TruckInnerModel } from '../components/truck/models/truck-inner.model';
 import { TruckService } from '../components/truck/services/truck.service';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
+import { TruckModel } from '../components/truck/models/truck.model';
 
 @Injectable({
   providedIn: 'root',
@@ -68,7 +68,7 @@ export class DriverEditSharedService {
     });
   }
 
-  bindTruckValueWithForm(singleTruck: TruckInnerModel) {
+  bindTruckValueWithForm(singleTruck: TruckModel) {
     this.truckUpdateForm.patchValue({
       id: singleTruck.id,
       registration_zone: singleTruck.registrationZone,
@@ -88,7 +88,7 @@ export class DriverEditSharedService {
     });
   }
 
-  getTruckDocument(singleTruck: TruckInnerModel) {
+  getTruckDocument(singleTruck: TruckModel) {
     this.truckDocuments = this.generateDocumentList(singleTruck, [
       {
         key: 'regPaperFile',

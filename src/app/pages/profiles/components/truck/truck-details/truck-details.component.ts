@@ -4,7 +4,6 @@ import { UploadButtonComponent } from '../../../../../shared/modules/upload-butt
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
-import { TruckInnerModel } from '../models/truck-inner.model';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { registrationCategoryList } from '../models/registration-category';
 import { registrationZoneList } from '../models/registration-zone';
@@ -19,6 +18,8 @@ import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confi
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { TruckModel } from '../models/truck.model';
+import { TruckDocumentType } from '../../../../../shared/Enums/registration_type';
 
 @Component({
   selector: 'app-truck-details',
@@ -52,7 +53,7 @@ export class TruckDetailsComponent implements OnInit {
   registrationZoneList: CustomInputSelectModel[] = registrationZoneList;
   registrationZoneOpened: boolean;
   registrationZonePlaceholder: string;
-  singleTruck: TruckInnerModel;
+  singleTruck: TruckModel;
   documents: any[] = [];
   truckAddForm: FormGroup;
   isConfirmModalOpen: boolean;
@@ -219,5 +220,32 @@ export class TruckDetailsComponent implements OnInit {
     this.dialog.open(PreHireChecklistComponent, {
       width: '40%',
     });
+  }
+
+  getDocumentName(documentType: string) {
+    if (
+      documentType ==
+      TruckDocumentType[TruckDocumentType.FITNESS_CERTIFICATE_FILE]
+    ) {
+      return 'Fitness';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.REG_PAPER_FILE]
+    ) {
+      return 'Registration Paper';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.ROUTE_PERMIT_FILE]
+    ) {
+      return 'Route Permit';
+    } else if (documentType == TruckDocumentType[TruckDocumentType.TAX_FILE]) {
+      return 'Tax';
+    } else if (documentType == TruckDocumentType[TruckDocumentType.CASE_FILE]) {
+      return 'Case';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.OTHER_FILE]
+    ) {
+      return 'Other';
+    } else {
+      return 'Other';
+    }
   }
 }

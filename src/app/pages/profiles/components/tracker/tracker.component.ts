@@ -25,7 +25,6 @@ import {
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TruckModel } from '../truck/models/truck.model';
-import { TruckInnerModel } from '../truck/models/truck-inner.model';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
@@ -64,7 +63,7 @@ export class TrackerComponent {
   size: number = 20;
   searchValue: string;
   trackerUpdateForm: FormGroup;
-  truckSuggestion: TruckInnerModel[] = [];
+  truckSuggestion: TruckModel[] = [];
   private selectedTrackerId: number;
 
   constructor(
@@ -127,7 +126,7 @@ export class TrackerComponent {
       this.truckSuggestion = [];
       this.truck.getTruckList(0, 500, value).subscribe((res: any) => {
         res.data.responses.forEach((truck: TruckModel) => {
-          this.truckSuggestion.push(truck.truck);
+          this.truckSuggestion.push(truck);
         });
       });
     } else {
@@ -135,7 +134,7 @@ export class TrackerComponent {
     }
   }
 
-  onClickTruckSearchSuggestion(option: TruckInnerModel) {
+  onClickTruckSearchSuggestion(option: TruckModel) {
     this.trackerUpdateForm
       .get('truckRegNo')
       .setValue(option.fullRegistrationNumber);
