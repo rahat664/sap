@@ -4,7 +4,7 @@ import { CustomInputComponent } from '../../../../shared/modules/custom-input/cu
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { DatePipe, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
 import { TruckModel } from './models/truck.model';
@@ -22,6 +22,8 @@ import { debounceTime } from 'rxjs';
 import { CheckListPopupComponent } from '../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checklist.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatButton } from '@angular/material/button';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-truck',
@@ -45,6 +47,11 @@ import { MatDialog } from '@angular/material/dialog';
     PreHireChecklistComponent,
     DatePipe,
     FormsModule,
+    NgClass,
+    MatButton,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss',
@@ -69,6 +76,7 @@ export class TruckComponent implements OnInit {
   isCheckListOpened: boolean = false;
   singleTruckId: number;
   size: number = 30;
+  firstColumnHeight: any;
 
   constructor(
     private service: TruckService,
@@ -85,7 +93,7 @@ export class TruckComponent implements OnInit {
     this.page = 0;
     this.loading = true;
     if (this.searchValue) {
-      //subscribe with debounce time
+      //subscribe with debounced time
       this.service
         .getTruckList(this.page, this.size, this.searchValue)
         .pipe(debounceTime(500))
@@ -234,5 +242,16 @@ export class TruckComponent implements OnInit {
     this.truckList = [];
     this.page = 0;
     this.getTruckList();
+  }
+
+  checkExpiryDate(fitnessCertExpDate: string) {
+    if (fitnessCertExpDate) {
+      const today = new Date();
+      const expiryDate = new Date(fitnessCertExpDate);
+      if (today > expiryDate) {
+        return true;
+      }
+    }
+    return false;
   }
 }

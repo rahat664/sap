@@ -11,9 +11,9 @@
       src="assets/svg/{{ icon }}.svg"
       alt="" />
   </ng-container>
-  <span
-    [ngClass]="{ 'text-link': !buttonColor }"
-    class="text-{{ buttonColor }}"
-    >{{ buttonText }}</span
+  <span *ngIf="buttonText"
+        [ngClass]="{ 'text-link': !buttonColor }"
+        class="text-{{ buttonColor }}"
+  >{{ buttonText }}</span
   >
 </button>

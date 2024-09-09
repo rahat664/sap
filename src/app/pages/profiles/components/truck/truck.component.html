@@ -44,26 +44,29 @@
     <table class="table-auto rounded-lg w-full text-body_title leading-body_title">
       <thead>
       <tr class="whitespace-nowrap bg-white">
-        <th class="text-left">Registration number</th>
-        <th class="text-left">Pre-hire checklist</th>
-        <th class="text-left whitespace-nowrap">Created On</th>
-        <th class="text-left">Number of trip</th>
+        <th class="text-left w-[20rem] inline-block sticky left-0 bg-white">Registration number</th>
+        <th class="text-left w-[10rem] inline-block">Pre-hire checklist</th>
+        <th class="text-left w-[10rem] inline-block whitespace-nowrap">Created On</th>
+        <th class="text-left w-[10rem] inline-block">Number of trip</th>
         <th class="text-center w-[10rem] inline-block">Registration</th>
         <th class="text-center w-[10rem] inline-block">Truck fitness</th>
         <th class="text-center w-[10rem] inline-block">Route permit</th>
         <th class="text-center w-[10rem] inline-block">Case</th>
         <th class="text-center w-[10rem] inline-block">Tax</th>
         <th class="text-center w-[10rem] inline-block">Other Document</th>
+        <th class="text-center w-[10rem] inline-block z-20 sticky right-[5rem] bg-white">Status
+        </th>
+        <th class="text-center w-[5rem] inline-block z-20 sticky right-0 bg-white"></th>
       </tr>
       <tr>
-        <th class="border" colspan="10"></th>
+        <th class="border" colspan="12"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
         <tr *ngFor="let truck of truckList">
-          <td class="whitespace-nowrap">
-            <div class="flex items-center space-x-4">
+          <td class="whitespace-nowrap w-[20rem] inline-block sticky left-0 bg-white">
+            <div appGetElementHeight (height)="firstColumnHeight = $event" class="flex items-center space-x-4">
               <div
                 class="w-8 h-8 rounded-full bg-another flex items-center justify-center">
                   <span class="text-white font-bold capitalize">{{
@@ -78,16 +81,29 @@
               >
             </div>
           </td>
-          <td class="text-center">
-            <a (click)="onClickCheckList(truck)"
-               class="text-link cursor-pointer"
-            >{{ truck.preHireCheckList }}/22</a
+          <td class="text-center w-[10rem] inline-block">
+            <div [style.height]="firstColumnHeight" (click)="onClickCheckList(truck)"
+                 class="text-link cursor-pointer flex items-center justify-center"
+            ><span>{{ truck.preHireCheckList }}/22</span>
+            </div
             >
           </td>
-          <td class="whitespace-nowrap">{{ truck.createdOn ? (truck.createdOn | date : 'd MMM yyyy') : '' }}</td>
-          <td class="text-center">{{ truck.noOfTrips }}</td>
+          <td
+
+            class="w-[10rem] inline-block whitespace-nowrap">
+            <div class="flex items-center justify-center" [style.min-height]="firstColumnHeight">
+              <span>{{ truck.createdOn ? (truck.createdOn | date : 'd MMM yyyy') : '' }}</span>
+            </div>
+          </td>
+          <td class="w-[10rem] inline-block text-center">
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center">
+              <span>
+                {{ truck.noOfTrips }}
+              </span>
+            </div>
+          </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
               <i
                 *ngIf="truck.regPaperFile"
                 class="fas fa-check text-green"></i>
@@ -96,67 +112,115 @@
                 *ngIf="!truck.regPaperFile"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              ></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
-              <i
-                *ngIf="truck.fitnessFile"
-                class="fas fa-check text-green"></i>
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <span [ngClass]="{ 'text-red': checkExpiryDate(truck.fitnessCertExpDate) }"
+                    *ngIf="truck.fitnessFile">{{ truck.fitnessCertExpDate | date: 'd MMM yyyy' }}</span>
               <app-upload-button
                 (click)="onClickUpdate('fit', truck)"
                 *ngIf="!truck.fitnessFile"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              ></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
-              <i
-                *ngIf="truck.routePermitFile"
-                class="fas fa-check text-green"></i>
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(truck.routePermitExpDate) }"
+                *ngIf="truck.routePermitFile">{{ truck.routePermitExpDate | date: 'd MMM yyyy' }}</span>
               <app-upload-button
                 (click)="onClickUpdate('route', truck)"
                 *ngIf="!truck.routePermitFile"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              ></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
-              <i *ngIf="truck.caseFile" class="fas fa-check text-green"></i>
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(truck.caseExpDate) }"
+                *ngIf="truck.caseFile">{{ truck.caseExpDate | date: 'd MMM yyyy' }}</span>
               <app-upload-button
                 (click)="onClickUpdate('case', truck)"
                 *ngIf="!truck.caseFile"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              ></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
-              <i *ngIf="truck.taxFile" class="fas fa-check text-green"></i>
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(truck.taxExpDate) }"
+                *ngIf="truck.taxFile"> {{ truck.taxExpDate | date: 'd MMM yyyy' }}</span>
               <app-upload-button
                 (click)="onClickUpdate('tax', truck)"
                 *ngIf="!truck.taxFile"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              ></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
               <i *ngIf="truck.otherFile" class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('other', truck)"
                 *ngIf="!truck.otherFile"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              ></app-upload-button>
             </div>
+          </td>
+          <td
+            class="whitespace-nowrap w-[10rem] inline-flex text-secondary items-center justify-center sticky text-center bg-white right-[5rem]">
+            <div [style.min-height]="firstColumnHeight"
+                 class="flex items-center justify-center">
+              <div class="bg-another bg-opacity-10 z-30 px-2 py-0.5 rounded-full flex items-center">
+                <span>Pending</span>
+              </div>
+            </div>
+          </td>
+          <td class="whitespace-nowrap w-[5rem] inline-block sticky text-center bg-white right-0">
+            <button [style.max-height]="firstColumnHeight" [style.min-height]="firstColumnHeight" mat-button
+                    [matMenuTriggerFor]="menu"><i
+              class="fas fa-ellipsis-v"></i></button>
+            <mat-menu #menu="matMenu">
+              <button
+                mat-menu-item>
+                <div class="flex space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/user-inactive.svg"
+                    alt="" />
+                  <span>Inactive</span>
+                </div>
+              </button>
+              <button mat-menu-item
+              >
+                <div class="flex space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/user-active.svg"
+                    alt="" />
+                  <span>Active</span>
+                </div>
+              </button>
+              <button mat-menu-item>
+                <div class="flex space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/user-remove.svg"
+                    alt="" />
+                  <span class="text-red">Remove</span>
+                </div>
+              </button>
+            </mat-menu>
           </td>
         </tr>
       </ng-container>
