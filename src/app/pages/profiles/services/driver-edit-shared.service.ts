@@ -6,7 +6,11 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { TruckService } from '../components/truck/services/truck.service';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
-import { TruckModel } from '../components/truck/models/truck.model';
+import {
+  TruckDocument,
+  TruckModel,
+} from '../components/truck/models/truck.model';
+import { TruckDocumentType } from '../../../shared/Enums/registration_type';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +25,7 @@ export class DriverEditSharedService {
   completeUpload: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   completeTruckUpload: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   closeInputSelect: BehaviorSubject<any> = new BehaviorSubject<any>(false);
-  truckDocuments: any;
+  truckDocuments: TruckDocument[] = [];
   isConfirmModalOpen: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   deletedDriverFiles: any[] = [];
   deletedTruckFiles: any[] = [];
@@ -343,7 +347,7 @@ export class DriverEditSharedService {
     );
   }
 
-  onClickTruckCloseButton(document: any) {
+  onClickTruckCloseButton(document: TruckDocument) {
     this.handleDocumentClose(
       document,
       this.truckUpdateForm,
@@ -379,7 +383,9 @@ export class DriverEditSharedService {
       'NID Front': 'nidFront',
       'NID Back': 'nidBack',
     };
-    documents = documents.filter((doc: any) => doc.name !== document.name);
+    documents = documents.filter(
+      (doc: any) => doc.name !== this.getDocumentName(document.documentType)
+    );
     if (name === 'driverFilesUrls') {
       this.documents = documents;
       this.deletedDriverFiles.push({
@@ -389,8 +395,8 @@ export class DriverEditSharedService {
     } else {
       this.truckDocuments = documents;
       this.deletedTruckFiles.push({
-        registrationType: document.name,
-        preview: document.url,
+        registrationType: this.getDocumentName(document.documentType),
+        preview: document.fileUrl,
       });
     }
     const formControlName = documentKeyMap[document.name];
@@ -477,5 +483,32 @@ export class DriverEditSharedService {
       Case: 'caseExpDate',
     };
     return expDateControlNameMap[registrationType];
+  }
+
+  private getDocumentName(documentType: string) {
+    if (
+      documentType ==
+      TruckDocumentType[TruckDocumentType.FITNESS_CERTIFICATE_FILE]
+    ) {
+      return 'Fitness';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.REG_PAPER_FILE]
+    ) {
+      return 'Registration Paper';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.ROUTE_PERMIT_FILE]
+    ) {
+      return 'Route Permit';
+    } else if (documentType == TruckDocumentType[TruckDocumentType.TAX_FILE]) {
+      return 'Tax';
+    } else if (documentType == TruckDocumentType[TruckDocumentType.CASE_FILE]) {
+      return 'Case';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.OTHER_FILE]
+    ) {
+      return 'Other';
+    } else {
+      return 'Other';
+    }
   }
 }

@@ -539,7 +539,6 @@ export class ManageTripComponent implements OnInit {
       const filterId = this.vehicleTypeList.find(
         (element: any) => element.name === filter
       ).id;
-      console.log(this.truckType);
       this.truckType = this.truckType.filter(
         (value: any) => value !== filterId
       );
@@ -619,9 +618,7 @@ export class ManageTripComponent implements OnInit {
               this.customerNames.push(res.data.content[0].name);
               this.customerSelected = true;
             },
-            error => {
-              console.log(error);
-            }
+            error => {}
           );
         }
       });

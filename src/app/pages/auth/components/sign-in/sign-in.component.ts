@@ -74,7 +74,6 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.errorSubscription = this.store
       .pipe(select(selectAuthError))
       .subscribe(error => {
-        console.log(error);
         if (error) {
           this.toaster.showError(error.error?.message, '');
           this.loginRequestPayload = {
