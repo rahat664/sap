@@ -4,7 +4,12 @@ import { GetClickEventDirective } from '../../../../../shared/directive/get-clic
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { UserModel } from '../../../../user-management/models/user.model';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
 import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
 import { driverFileType } from '../../customer/model/driver-file-type';
@@ -42,12 +47,20 @@ export class DriverDetailsComponent implements OnInit {
   documents: any[] = [];
   driverName: string;
   driverPhone: string;
-  private driverUpdateForm: FormGroup;
+  protected driverUpdateForm: FormGroup;
   isUploadPopupOpen: boolean;
   newDriverFileType: any;
   closedDocument: any;
 
-  constructor(private driverEditSharedService: DriverEditSharedService) {}
+  constructor(
+    private driverEditSharedService: DriverEditSharedService,
+    private fb: FormBuilder
+  ) {
+    this.driverUpdateForm = this.fb.group({
+      driverName: [{ value: '', disabled: true }],
+      driverPhone: [{ value: '', disabled: true }],
+    });
+  }
 
   ngOnInit(): void {
     localStorage.removeItem('previousDriverDocument');
@@ -70,6 +83,8 @@ export class DriverDetailsComponent implements OnInit {
   }
 
   onDriverUpdate() {
+    this.driverName = this.driverUpdateForm.get('driverName').value;
+    this.driverPhone = this.driverUpdateForm.get('driverPhone').value;
     this.driverEditSharedService.onDriverUpdate(
       this.driverName,
       this.driverPhone
@@ -130,6 +145,10 @@ export class DriverDetailsComponent implements OnInit {
 
   onEditClick() {
     this.inEditMode = true;
+    this.driverUpdateForm.get('driverName').enable();
+    this.driverUpdateForm.get('driverPhone').enable();
+    this.driverUpdateForm.get('driverName').setValue(this.driverName);
+    this.driverUpdateForm.get('driverPhone').setValue(this.driverPhone);
     this.driverEditSharedService.closeInputSelect.next(false);
   }
 
