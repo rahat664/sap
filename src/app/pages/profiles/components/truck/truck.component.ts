@@ -7,14 +7,12 @@ import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-he
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
-import { TruckModel } from './models/truck.model';
+import { TruckDocument, TruckModel } from './models/truck.model';
 import { TruckService } from './services/truck.service';
 import { RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
-import { manufacturerList } from './models/manufacturer-list';
 import { FileUploadPopupComponent } from './file-upload-popup/file-upload-popup.component';
-import { TruckInnerModel } from './models/truck-inner.model';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
@@ -24,6 +22,7 @@ import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checkli
 import { MatDialog } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
 
 @Component({
   selector: 'app-truck',

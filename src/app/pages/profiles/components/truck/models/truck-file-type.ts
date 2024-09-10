@@ -1,0 +1,58 @@
+export const truckFileType = [
+  {
+    id: 1,
+    name: 'Truck images',
+    max: 10,
+    expiryAvailable: false,
+    uploaded: false,
+  },
+  {
+    id: 2,
+    name: 'Registration paper',
+    max: 2,
+    expiryAvailable: false,
+    uploaded: false,
+  },
+  {
+    id: 3,
+    name: 'Fitness certificate',
+    max: 2,
+    expiryAvailable: true,
+    uploaded: false,
+  },
+  {
+    id: 4,
+    name: 'Route permit',
+    max: 2,
+    expiryAvailable: true,
+    uploaded: false,
+  },
+  {
+    id: 5,
+    name: 'Tax paper',
+    max: 2,
+    expiryAvailable: true,
+    uploaded: false,
+  },
+  {
+    id: 6,
+    name: 'Insurance paper',
+    max: 2,
+    expiryAvailable: true,
+    uploaded: false,
+  },
+  {
+    id: 7,
+    name: 'Case paper',
+    max: 2,
+    expiryAvailable: true,
+    uploaded: false,
+  },
+  {
+    id: 8,
+    name: 'Others document',
+    max: 2,
+    expiryAvailable: false,
+    uploaded: false,
+  },
+];

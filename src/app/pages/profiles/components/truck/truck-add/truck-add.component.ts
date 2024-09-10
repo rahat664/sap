@@ -4,7 +4,6 @@ import { GetClickEventDirective } from '../../../../../shared/directive/get-clic
 import { NgClass, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup.component';
-import { manufacturerList } from '../models/manufacturer-list';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { registrationZoneList } from '../models/registration-zone';
 import { registrationCategoryList } from '../models/registration-category';
@@ -24,8 +23,14 @@ import { fileUpload } from '../models/file-upload';
 import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-truck-add',
@@ -44,15 +49,17 @@ import { MatInput } from '@angular/material/input';
     FileUploadComponent,
     MatFormField,
     MatInput,
+    MatDatepicker,
+    MatDatepickerInput,
+    MatDatepickerToggle,
+    MatSuffix,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './truck-add.component.html',
   styleUrl: './truck-add.component.scss',
 })
 export class TruckAddComponent implements OnInit {
   readonly dialog = inject(MatDialog);
-  manufacturerList = manufacturerList;
-  manufactureOpened: boolean;
-  manufacturerPlaceholder: string;
   registrationZoneList: CustomInputSelectModel[] = registrationZoneList;
   registrationZoneOpened: boolean;
   registrationZonePlaceholder: string;
@@ -375,4 +382,6 @@ export class TruckAddComponent implements OnInit {
         }
       });
   }
+
+  onDateChange($event: Event) {}
 }
