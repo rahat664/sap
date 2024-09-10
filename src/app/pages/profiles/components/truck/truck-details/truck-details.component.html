@@ -117,8 +117,8 @@
             [file]="true"
             buttonText="Upload"></app-upload-button>
         </div>
-        <div class="grid grid-cols-4 gap-3" *ngIf="documents.length > 0">
-          <ng-container *ngFor="let document of singleTruck.truckDocumentList">
+        <div class="grid grid-cols-4 gap-3" *ngIf="singleTruck.truckDocumentList.length > 0">
+          <ng-container *ngFor="let document of documents">
             <div class="w-full flex flex-col space-y-1">
               <div
                 class="p-4 rounded-lg border border-input relative flex items-center justify-center">
@@ -153,7 +153,8 @@
             </div>
           </ng-container>
         </div>
-        <div class="w-full flex flex-col space-y-3 justify-center items-center" *ngIf="documents.length <=0">
+        <div class="w-full flex flex-col space-y-3 justify-center items-center"
+             *ngIf="singleTruck.truckDocumentList.length <=0">
           <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
           <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
         </div>

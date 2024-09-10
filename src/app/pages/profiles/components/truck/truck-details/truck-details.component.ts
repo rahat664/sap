@@ -18,7 +18,7 @@ import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confi
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { TruckModel } from '../models/truck.model';
+import { TruckDocument, TruckModel } from '../models/truck.model';
 import { TruckDocumentType } from '../../../../../shared/Enums/registration_type';
 
 @Component({
@@ -54,10 +54,10 @@ export class TruckDetailsComponent implements OnInit {
   registrationZoneOpened: boolean;
   registrationZonePlaceholder: string;
   singleTruck: TruckModel;
-  documents: any[] = [];
+  documents: TruckDocument[] = [];
   truckAddForm: FormGroup;
   isConfirmModalOpen: boolean;
-  closedDocument: any[] = [];
+  closedDocument: TruckDocument = [] as any;
 
   constructor(private shared: DriverEditSharedService) {}
 
@@ -113,7 +113,7 @@ export class TruckDetailsComponent implements OnInit {
     this.truckAddForm.get('registration_num').valueChanges.subscribe(value => {
       this.numberOnly(value);
     });
-    this.documents = this.shared.getTruckDocument(this.singleTruck);
+    this.documents = this.singleTruck.truckDocumentList;
     localStorage.setItem('previousDocument', JSON.stringify(this.documents));
     this.truckFileTypeModify(this.documents);
   }
@@ -145,14 +145,13 @@ export class TruckDetailsComponent implements OnInit {
   protected readonly Date = Date;
   protected readonly truckFileType = fileUpload;
   isUploadPopupOpen: boolean;
-  prehireCheckListOpened: boolean = false;
   newTruckFileTypeOptions: CustomInputSelectModel[];
   fileName: string;
 
-  onClickClose(document: any) {
+  onClickClose(document: TruckDocument) {
     this.isConfirmModalOpen = true;
     this.closedDocument = document;
-    this.fileName = document.name;
+    this.fileName = this.getDocumentName(document.documentType);
     this.dialog
       .open(ConfirmDeleteComponent, {
         width: '21.875rem',
@@ -175,7 +174,7 @@ export class TruckDetailsComponent implements OnInit {
     );
     documents.forEach(document => {
       this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
-        item => item.value !== document.name
+        item => item.value !== this.getDocumentName(document.documentType)
       );
     });
   }
@@ -183,7 +182,10 @@ export class TruckDetailsComponent implements OnInit {
   performRemove($event: any) {
     this.isConfirmModalOpen = false;
     this.shared.onClickTruckCloseButton(this.closedDocument);
-    this.documents = this.shared.truckDocuments;
+    // remove closedDocument from documents
+    this.documents = this.documents.filter(
+      document => document !== this.closedDocument
+    );
     this.truckFileTypeModify(this.documents);
   }
 

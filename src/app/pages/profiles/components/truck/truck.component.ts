@@ -168,13 +168,13 @@ export class TruckComponent implements OnInit {
           .getTruckList(this.page, this.size, this.searchValue)
           .pipe(debounceTime(500))
           .subscribe((res: any) => {
-            this.truckList = res.data.responses;
+            this.truckList.push(...res.data.responses);
           });
       } else {
         this.service
           .getTruckList(this.page, this.size)
           .subscribe((res: any) => {
-            this.truckList = res.data.responses;
+            this.truckList.push(...res.data.responses);
           });
       }
     }
@@ -216,7 +216,6 @@ export class TruckComponent implements OnInit {
 
   checkThatFileIsExistOrNot(fileName: any, truckDocumentList: TruckDocument[]) {
     let isExist = false;
-    console.log(this.truckEnum[fileName]);
     truckDocumentList.forEach(doc => {
       if (doc.documentType == this.truckEnum[fileName]) {
         isExist = true;

@@ -1,4 +1,4 @@
-export interface TruckDocument {
+export class TruckDocument {
   id: number;
   fileUrl: string;
   preSignedFileUrl: string;
