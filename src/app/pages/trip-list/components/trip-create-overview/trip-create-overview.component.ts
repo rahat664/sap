@@ -7,6 +7,7 @@ import { TripCreate } from '../../models/trip-create.model';
 import { TripTemplate } from '../../models/trip-template.model';
 import { MatDialog } from '@angular/material/dialog';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
+import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
 
 @Component({
   selector: 'app-trip-create-overview',
@@ -52,17 +53,7 @@ export class TripCreateOverviewComponent {
     this.service.createTrip(this.tripData).subscribe(
       (res: any) => {
         if (res.status === 'OK') {
-          localStorage.removeItem('tripData');
-          localStorage.removeItem('templateName');
-          localStorage.removeItem('selectedCustomer');
-          localStorage.removeItem('isFromBackEdit');
-          localStorage.removeItem('isFromTemplate');
-          const dialogRef = this.dialog
-            .open(SuccessModalComponent, {
-              width: '21.375rem',
-              data: {
-                title: 'Trip created',
-                text: `Your ${res.data.length > 1 ? 'trips have' : 'trip has'} been created successfully.
+          let titleText = `Your ${res.data.length > 1 ? 'trips have' : 'trip has'} been created successfully.
               ${
                 res.data.length > 1
                   ? 'Your trip numbers are ' +
@@ -71,38 +62,112 @@ export class TripCreateOverviewComponent {
                     res.data[res.data.length - 1]?.split('-')[1]
                   : 'Your trip number is ' + res.data
               }
-              `,
-                buttonText: 'Okay',
+              `;
+          if (this.tripTemplateName) {
+            const templateData: TripTemplate = {
+              name: this.tripTemplateName,
+              customerCode: this.tripData.customerCode,
+              categoryId: this.tripData.categoryId,
+              truckSize: this.tripData.truckSize,
+              numOfTrucks: this.tripData.numOfTrucks,
+              truckCapacityInTon: this.tripData.truckCapacityInTon,
+              goodsId: this.tripData.goodsId,
+              goodsName: this.tripData.goodsName,
+              customerRate: this.tripData.customerRate,
+              note: this.tripData.note,
+              points: this.tripData.points,
+            };
+            this.service.postTripTemplate(templateData).subscribe(
+              (res: any) => {
+                if (res.status === 'OK') {
+                  localStorage.removeItem('tripData');
+                  localStorage.removeItem('templateName');
+                  localStorage.removeItem('selectedCustomer');
+                  localStorage.removeItem('isFromBackEdit');
+                  localStorage.removeItem('isFromTemplate');
+                  titleText += `and template name is "${this.tripTemplateName}"`;
+                  const dialogRef = this.dialog
+                    .open(SuccessModalComponent, {
+                      width: '21.375rem',
+                      data: {
+                        title: 'Trip created',
+                        text: titleText,
+                        buttonText: 'Okay',
+                      },
+                    })
+                    .afterClosed()
+                    .subscribe(() => {
+                      this.router.navigate(['/trip-list']);
+                    });
+                } else {
+                  const dialogRef = this.dialog
+                    .open(SuccessModalComponent, {
+                      width: '21.375rem',
+                      data: {
+                        title: 'Trip created',
+                        text: titleText,
+                        buttonText: 'Okay',
+                      },
+                    })
+                    .afterClosed()
+                    .subscribe(() => {
+                      this.router.navigate(['/trip-list']);
+                    });
+                }
               },
-            })
-            .afterClosed()
-            .subscribe(() => {
-              this.router.navigate(['/trip-list']);
-            });
+              error => {
+                const dialogRef = this.dialog
+                  .open(SuccessModalComponent, {
+                    width: '21.375rem',
+                    data: {
+                      title: 'Trip created',
+                      text: titleText,
+                      buttonText: 'Okay',
+                    },
+                  })
+                  .afterClosed()
+                  .subscribe(() => {
+                    this.router.navigate(['/trip-list']);
+                  });
+              }
+            );
+          } else {
+            const dialogRef = this.dialog
+              .open(SuccessModalComponent, {
+                width: '21.375rem',
+                data: {
+                  title: 'Trip created',
+                  text: titleText,
+                  buttonText: 'Okay',
+                },
+              })
+              .afterClosed()
+              .subscribe(() => {
+                this.router.navigate(['/trip-list']);
+              });
+          }
         } else {
-          this.handleToaster.showError(res.message);
+          this.dialog.open(ErrorModalComponent, {
+            width: '21.375rem',
+            data: {
+              title: 'Error',
+              text: res.error.message,
+              buttonText: 'Okay',
+            },
+          });
         }
       },
       (error: any) => {
-        this.handleToaster.showError(error.message);
+        this.dialog.open(ErrorModalComponent, {
+          width: '21.375rem',
+          data: {
+            title: 'Error',
+            text: error.error.message,
+            buttonText: 'Okay',
+          },
+        });
       }
     );
-    if (this.tripTemplateName) {
-      const templateData: TripTemplate = {
-        name: this.tripTemplateName,
-        customerCode: this.tripData.customerCode,
-        categoryId: this.tripData.categoryId,
-        truckSize: this.tripData.truckSize,
-        numOfTrucks: this.tripData.numOfTrucks,
-        truckCapacityInTon: this.tripData.truckCapacityInTon,
-        goodsId: this.tripData.goodsId,
-        goodsName: this.tripData.goodsName,
-        customerRate: this.tripData.customerRate,
-        note: this.tripData.note,
-        points: this.tripData.points,
-      };
-      this.service.postTripTemplate(templateData).subscribe(res => {});
-    }
   }
 
   getTruckName(truck_id: any) {

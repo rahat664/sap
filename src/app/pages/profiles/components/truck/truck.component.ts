@@ -59,16 +59,10 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 export class TruckComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   height = '';
-  truckList: TruckInnerModel[] = [];
-  manufactureOpened: boolean;
-  manufacturerList: CustomInputSelectModel[] = manufacturerList;
-  manufacturerPlaceholder = '';
-  trackerAddOpened = false;
-  selectedTruckId: number;
+  truckList: TruckModel[] = [];
   isOpen = false;
   loading: boolean;
-  isNewOpen: boolean;
-  singleTruck: TruckInnerModel;
+  singleTruck: TruckModel;
   newDriverFileType: CustomInputSelectModel[] = [];
   private page = 0;
   totalPages: number;
@@ -76,6 +70,7 @@ export class TruckComponent implements OnInit {
   isCheckListOpened: boolean = false;
   singleTruckId: number;
   size: number = 30;
+  truckEnum = TruckDocumentType;
   firstColumnHeight: any;
 
   constructor(
@@ -98,38 +93,30 @@ export class TruckComponent implements OnInit {
         .getTruckList(this.page, this.size, this.searchValue)
         .pipe(debounceTime(500))
         .subscribe((res: any) => {
-          res.data.responses.forEach((truck: TruckModel) => {
-            truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-            truck.truck.noOfTrips = truck.noOfTrips;
-            this.truckList.push(truck.truck);
-          });
+          this.truckList = res.data.responses;
           this.totalPages = res.data.totalPages;
           this.loading = false;
         });
     } else {
       this.service.getTruckList(this.page, this.size).subscribe((res: any) => {
-        res.data.responses.forEach((truck: TruckModel) => {
-          truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-          truck.truck.noOfTrips = truck.noOfTrips;
-          this.truckList.push(truck.truck);
-        });
+        this.truckList = res.data.responses;
         this.totalPages = res.data.totalPages;
         this.loading = false;
       });
     }
   }
 
-  getFullRegistrationName(truck: TruckInnerModel) {
+  getFullRegistrationName(truck: TruckModel) {
     return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial}-${truck.registrationNum}`;
   }
 
-  onClickTruckDetails(truck: TruckInnerModel) {
+  onClickTruckDetails(truck: TruckModel) {
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
     this.shared.closeInputSelect.next(false);
   }
 
-  onClickUpdate(fit: string, truck: TruckInnerModel) {
+  onClickUpdate(fit: string, truck: TruckModel) {
     this.singleTruck = truck;
     this.isOpen = true;
     if (fit == 'fit') {
@@ -190,21 +177,13 @@ export class TruckComponent implements OnInit {
           .getTruckList(this.page, this.size, this.searchValue)
           .pipe(debounceTime(500))
           .subscribe((res: any) => {
-            res.data.responses.forEach((truck: TruckModel) => {
-              truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-              truck.truck.noOfTrips = truck.noOfTrips;
-              this.truckList.push(truck.truck);
-            });
+            this.truckList.push(...res.data.responses);
           });
       } else {
         this.service
           .getTruckList(this.page, this.size)
           .subscribe((res: any) => {
-            res.data.responses.forEach((truck: TruckModel) => {
-              truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-              truck.truck.noOfTrips = truck.noOfTrips;
-              this.truckList.push(truck.truck);
-            });
+            this.truckList.push(...res.data.responses);
           });
       }
     }
@@ -242,6 +221,16 @@ export class TruckComponent implements OnInit {
     this.truckList = [];
     this.page = 0;
     this.getTruckList();
+  }
+
+  checkThatFileIsExistOrNot(fileName: any, truckDocumentList: TruckDocument[]) {
+    let isExist = false;
+    truckDocumentList.forEach(doc => {
+      if (doc.documentType == this.truckEnum[fileName]) {
+        isExist = true;
+      }
+    });
+    return isExist;
   }
 
   checkExpiryDate(fitnessCertExpDate: string) {

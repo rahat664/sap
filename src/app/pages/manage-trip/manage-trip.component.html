@@ -27,12 +27,12 @@
             class="border-none text-not-black text-h2 leading-h2 placeholder-input-hint w-full bg-white  rounded-lg focus:ring-blue focus:border-blue block pl-10 py-[.875rem]"
             placeholder="Search by trip ID, customer code" />
         </div>
-        <button (click)="filterOpen = true" class="p-3 rounded-lg bg-white flex items-center justify-center">
+        <button (click)="onClickFilterOpen()" class="p-3 rounded-lg bg-white flex items-center justify-center">
           <div class="relative">
             <img loading="lazy" class="notPreview" src="assets/svg/filter.svg" alt="filter">
-            <span *ngIf="filterLength > 0"
+            <span *ngIf="filterValues.length > 0"
                   class="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red text-white text-xs font-semibold rounded-full h-4 w-4 flex items-center justify-center">
-              {{ filterLength }}
+              {{ filterValues.length }}
             </span>
           </div>
         </button>
@@ -89,11 +89,10 @@
       <div class="flex items-center justify-between pb-2">
         <div class="text-h2 leading-h2 font-semibold text-not-black">
           Filters <span class="text-h2 leading-h2 font-semibold text-not-black"
-                        *ngIf="filterLength > 0">({{ filterLength }}
-          ) | <a (click)="onClickClearAll()"
-                 class="text-h2 leading-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
+                        *ngIf="filterLength > 0">({{ filterLength }}) | <a (click)="onClickClearAll()"
+                                                                           class="text-h2 leading-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
         </div>
-        <button (click)="onClickClearAll()"
+        <button (click)="onClickFilterClose()"
                 class="mb-1/2 h-[1.75rem] w-[1.75rem] text-white  flex items-center justify-center rounded-full">
           <i class="fal fa-times text-not-black"></i>
         </button>
@@ -123,7 +122,7 @@
               <mat-date-range-picker #picker></mat-date-range-picker>
             </mat-form-field>
           </div>
-          <div class="flex flex-col space-y-1 w-full" *ngIf="isAdmin()">
+          <div class="flex flex-col space-y-2 w-full" *ngIf="isAdmin()">
             <label class="text-base text-secondary">Customer</label>
 
             <mat-form-field appearance="outline" class="example-full-width w-full">
@@ -134,14 +133,23 @@
                 matInput
                 (keyup)="onKeyUpCustomerSearch($event)"
                 placeholder="Select customer"
-                [matAutocomplete]="auto">
-              <mat-autocomplete #auto="matAutocomplete">
+                [matAutocomplete]="customerSug">
+              <mat-autocomplete #customerSug="matAutocomplete">
                 @for (option of companySuggestions; track option) {
                   <mat-option (click)="onClickCustomerSearchSuggestion(option)" [value]="option.name">{{ option.name }}
                   </mat-option>
                 }
               </mat-autocomplete>
             </mat-form-field>
+            <div class="flex flex-wrap gap-2 text-secondary text-sm" *ngIf="customers.length > 0">
+              <ng-container *ngFor="let customer of customers">
+                <div
+                  class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint whitespace-nowrap">
+                  <span>{{ customer.name }}</span>
+                  <a (click)="onClickCloseCustomer(customer)" class="cursor-pointer"><i class="far fa-times"></i></a>
+                </div>
+              </ng-container>
+            </div>
           </div>
           <div class="flex flex-col space-y-1 w-full">
             <label class="text-base text-secondary">Truck type</label>
