@@ -362,7 +362,8 @@
               <div class="relative bg-input rounded-lg border-none">
                 <mat-form-field class="w-full" appearance="outline" id="customerRate"
                                 [ngClass]="{'error': tripForm.get('customerRate').invalid && tripForm.get('customerRate').touched}">
-                  <input type="number" formControlName="customerRate" class="w-full" matInput
+                  <input min="0" [max]="Number.MAX_VALUE" type="number" formControlName="customerRate" class="w-full"
+                         matInput
                          placeholder="Enter {{isAdmin() ? 'Customer Rate' : 'Trip Rate'}}">
                 </mat-form-field>
                 <img

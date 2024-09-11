@@ -54,7 +54,7 @@ export class TripCreateOverviewComponent {
       (res: any) => {
         if (res.status === 'OK') {
           let tripOrTrips = res.data.length > 1 ? 'trips' : 'trip';
-          let startText = `Your ${tripOrTrips}'}`;
+          let startText = `Your ${tripOrTrips}`;
           let tripMessage = `been created successfully.
               ${
                 res.data.length > 1

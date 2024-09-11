@@ -7,4 +7,5 @@ export enum TruckDocumentType {
   OTHER_FILE,
   TRUCK_IMAGE,
   REG_PAPER_FILE,
+  INSURANCE_FILE,
 }

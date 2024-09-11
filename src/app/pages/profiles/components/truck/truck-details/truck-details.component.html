@@ -118,7 +118,7 @@
             buttonText="Upload"></app-upload-button>
         </div>
         <div class="grid grid-cols-4 gap-3" *ngIf="singleTruck.truckDocumentList.length > 0">
-          <ng-container *ngFor="let document of documents">
+          <ng-container *ngFor="let document of documents; index as i">
             <div class="w-full flex flex-col space-y-1">
               <div
                 class="p-4 rounded-lg border border-input relative flex items-center justify-center">
