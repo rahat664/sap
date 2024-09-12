@@ -1,10 +1,10 @@
-export const truckFileType = [
+export const truckFileType: TruckFileType[] = [
   {
     id: 1,
     name: 'Truck images',
     max: 10,
     expiryAvailable: false,
-    uploaded: false,
+    uploaded: true,
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ export const truckFileType = [
     name: 'Fitness certificate',
     max: 2,
     expiryAvailable: true,
-    uploaded: false,
+    uploaded: true,
   },
   {
     id: 4,
@@ -32,7 +32,7 @@ export const truckFileType = [
     name: 'Tax paper',
     max: 2,
     expiryAvailable: true,
-    uploaded: false,
+    uploaded: true,
   },
   {
     id: 6,
@@ -46,7 +46,7 @@ export const truckFileType = [
     name: 'Case paper',
     max: 2,
     expiryAvailable: true,
-    uploaded: false,
+    uploaded: true,
   },
   {
     id: 8,
@@ -56,3 +56,11 @@ export const truckFileType = [
     uploaded: false,
   },
 ];
+
+export interface TruckFileType {
+  id: number;
+  name: string;
+  max: number;
+  expiryAvailable: boolean;
+  uploaded: boolean;
+}

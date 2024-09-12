@@ -31,7 +31,7 @@ import {
   MatDatepickerToggle,
 } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { truckFileType } from '../models/truck-file-type';
+import { TruckFileType, truckFileType } from '../models/truck-file-type';
 
 @Component({
   selector: 'app-truck-add',
@@ -387,5 +387,5 @@ export class TruckAddComponent implements OnInit {
 
   onDateChange($event: Event) {}
 
-  protected readonly truckFileType = truckFileType;
+  protected readonly truckFileType: TruckFileType[] = truckFileType;
 }
