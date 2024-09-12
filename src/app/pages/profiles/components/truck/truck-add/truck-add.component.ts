@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup.component';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
@@ -31,6 +31,7 @@ import {
   MatDatepickerToggle,
 } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { truckFileType } from '../models/truck-file-type';
 
 @Component({
   selector: 'app-truck-add',
@@ -53,6 +54,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatDatepickerInput,
     MatDatepickerToggle,
     MatSuffix,
+    NgForOf,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './truck-add.component.html',
@@ -384,4 +386,6 @@ export class TruckAddComponent implements OnInit {
   }
 
   onDateChange($event: Event) {}
+
+  protected readonly truckFileType = truckFileType;
 }
