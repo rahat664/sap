@@ -67,6 +67,7 @@ export class TruckAddComponent implements OnInit {
   preHireCheckList: any;
   private registrationInput: string;
   everyThingDisabled: boolean = true;
+  loading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -153,6 +154,7 @@ export class TruckAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loading = false;
     this.getPrehireChecklist();
     this.truckAddForm
       .get('registration_serial')
@@ -180,6 +182,7 @@ export class TruckAddComponent implements OnInit {
   }
 
   onClickSave() {
+    this.loading = true;
     if (this.truckAddForm.valid) {
       if (this.truckAddForm.get('checklist')?.value === null) {
         this.truckAddForm.patchValue({
@@ -224,6 +227,7 @@ export class TruckAddComponent implements OnInit {
 
       this.service.addTruck(formData).subscribe(
         (res: any) => {
+          this.loading = false;
           // Handle response
           if (res.status == 'OK') {
             this.toastr.showSuccess(res.message);
