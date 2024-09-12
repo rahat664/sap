@@ -76,10 +76,10 @@
             </div>
           </td>
           <td>
-            {{ driver.phone }}
+            <a class="cursor-pointer" (click)="copyNumber($event, driver.phone)">{{ driver.phone }}</a>
           </td>
           <td class="whitespace-nowrap">
-            {{ driver.createdOn ? (driver.createdOn | date: 'dd MMM, yyyy') : '' }}
+            {{ driver.createdOn ? (driver.createdOn | date: 'd MMM yyyy') : '' }}
           </td>
           <td class="text-center">{{ driver.completedTripCountsForDriver }}</td>
           <td class="whitespace-nowrap">

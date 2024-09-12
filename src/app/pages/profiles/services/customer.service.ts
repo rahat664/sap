@@ -8,6 +8,7 @@ import {
   Observable,
   throwError,
 } from 'rxjs';
+import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,10 @@ import {
 export class CustomerService {
   url = environment.userUrl + '/api/customers';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private toaster: HandleToastrService
+  ) {}
 
   getCustomer(page: number, size: number): Observable<any> {
     const params = { page, size };
@@ -97,5 +101,15 @@ export class CustomerService {
     }
 
     return this.http.get(apiUrl);
+  }
+
+  copyToClipboard(phone: string) {
+    const el = document.createElement('textarea');
+    el.value = phone;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    this.toaster.showInfo(`${phone} copied to clipboard`);
   }
 }

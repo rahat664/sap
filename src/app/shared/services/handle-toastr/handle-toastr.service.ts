@@ -1,5 +1,4 @@
 import { Injectable, OnInit } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject } from 'rxjs';
 import { HotToastService } from '@ngneat/hot-toast';
 
@@ -9,12 +8,9 @@ import { HotToastService } from '@ngneat/hot-toast';
 export class HandleToastrService implements OnInit {
   toastrShown: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  constructor(private toast: HotToastService) {}
 
-  constructor(private toast: HotToastService) {
-  }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   showSuccess(message: string, title?: string) {
     this.toast.success(message, {
@@ -53,8 +49,7 @@ export class HandleToastrService implements OnInit {
       duration: 3000,
       position: 'top-right',
       style: {
-        backgroundColor: '#2F96B4',
-        color: 'white',
+        backgroundColor: '#fff',
         padding: '10px',
       },
     });

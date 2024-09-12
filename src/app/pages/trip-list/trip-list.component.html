@@ -207,7 +207,7 @@
             </a>
           </td>
           <td class="whitespace-nowrap">
-            {{ trip.tripStartDatetime | date: 'dd MMM yyyy' }}
+            {{ trip.tripStartDatetime | date: 'd MMM yyyy' }}
           </td>
           <td *ngIf="isAdmin()">{{ trip.customerName }}</td>
           <td>

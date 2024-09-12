@@ -131,4 +131,9 @@ export class TripInfoComponent {
     const role = localStorage.getItem('role');
     return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
   }
+
+  copyNumber($event, createdByPhone: string) {
+    $event.stopPropagation();
+    this.trip.copyToClipboard(createdByPhone);
+  }
 }

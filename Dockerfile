@@ -1,8 +1,9 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
-COPY . .
-RUN npm install --legacy-peer-deps 
+COPY . . 
+RUN rm package-lock.json
+RUN npm install --force
 RUN npm run build:qa
 # Serve Application using Nginx Server
 

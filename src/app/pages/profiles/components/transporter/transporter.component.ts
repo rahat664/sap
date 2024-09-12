@@ -53,8 +53,7 @@ export class TransporterComponent implements OnInit {
 
   onClickAddTransporter() {
     const dialogRef = this.dialog
-      .open(TransporterAddComponent, {
-      })
+      .open(TransporterAddComponent, {})
       .afterClosed()
       .subscribe(res => {
         if (res) {
@@ -136,5 +135,10 @@ export class TransporterComponent implements OnInit {
     this.page = 0;
     this.transporterList = [];
     this.getTransporterList();
+  }
+
+  copyNumber($event: MouseEvent, phone: string) {
+    $event.stopPropagation();
+    this.service.copyToClipboard(phone);
   }
 }

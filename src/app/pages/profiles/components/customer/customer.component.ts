@@ -62,6 +62,7 @@ export class CustomerComponent implements OnInit {
     this.dialog
       .open(CustomerCreateComponent, {
         width: '50%',
+        maxHeight: '90vh',
       })
       .afterClosed()
       .subscribe(value => {
@@ -129,5 +130,10 @@ export class CustomerComponent implements OnInit {
   onClickClear() {
     this.searchValue = '';
     this.getCustomer();
+  }
+
+  copyNumber($event: MouseEvent, phone: string) {
+    $event.stopPropagation();
+    this.service.copyToClipboard(phone);
   }
 }

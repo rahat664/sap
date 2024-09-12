@@ -98,6 +98,7 @@ export class NewTripComponent implements OnInit {
     } else {
       this.customer.getCustomer(0, 20).subscribe((res: any) => {
         this.customerName = res.data.content[0].name;
+        this.templateCustomer = res.data.content[0].name;
         this.getTripTemplate(res.data.content[0].customerCode);
         localStorage.setItem(
           'selectedCustomer',

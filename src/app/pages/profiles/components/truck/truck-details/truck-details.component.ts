@@ -4,7 +4,6 @@ import { UploadButtonComponent } from '../../../../../shared/modules/upload-butt
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
-import { TruckInnerModel } from '../models/truck-inner.model';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { registrationCategoryList } from '../models/registration-category';
 import { registrationZoneList } from '../models/registration-zone';
@@ -19,6 +18,8 @@ import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confi
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { TruckDocument, TruckModel } from '../models/truck.model';
+import { TruckDocumentType } from '../../../../../shared/Enums/registration_type';
 
 @Component({
   selector: 'app-truck-details',
@@ -52,11 +53,11 @@ export class TruckDetailsComponent implements OnInit {
   registrationZoneList: CustomInputSelectModel[] = registrationZoneList;
   registrationZoneOpened: boolean;
   registrationZonePlaceholder: string;
-  singleTruck: TruckInnerModel;
-  documents: any[] = [];
+  singleTruck: TruckModel;
+  documents: TruckDocument[] = [];
   truckAddForm: FormGroup;
   isConfirmModalOpen: boolean;
-  closedDocument: any[] = [];
+  closedDocument: TruckDocument = [] as any;
 
   constructor(private shared: DriverEditSharedService) {}
 
@@ -91,7 +92,7 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   getFullRegistrationName() {
-    return `${this.singleTruck.registrationZone} ${this.singleTruck.registrationCategory} ${this.singleTruck.registrationSerial} ${this.singleTruck.registrationNum}`;
+    return `${this.singleTruck.registrationZone} ${this.singleTruck.registrationCategory} ${this.singleTruck.registrationSerial}-${this.singleTruck.registrationNum}`;
   }
 
   ngOnInit(): void {
@@ -112,7 +113,7 @@ export class TruckDetailsComponent implements OnInit {
     this.truckAddForm.get('registration_num').valueChanges.subscribe(value => {
       this.numberOnly(value);
     });
-    this.documents = this.shared.getTruckDocument(this.singleTruck);
+    this.documents = this.singleTruck.truckDocumentList;
     localStorage.setItem('previousDocument', JSON.stringify(this.documents));
     this.truckFileTypeModify(this.documents);
   }
@@ -122,8 +123,25 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   onAddFile($event: any) {
+    $event.forEach(
+      (element: {
+        preview: any;
+        registrationType: any;
+        registrationExpireDate: any;
+      }) => {
+        this.documents.push({
+          id: 999,
+          fileUrl: element.preview,
+          preSignedFileUrl: element.preview,
+          documentType: element.registrationType,
+          createdAt: new Date().toISOString(),
+          expiryDate: element.registrationExpireDate,
+          createdBy: 'admin',
+        });
+      }
+    );
+    console.log(this.documents);
     this.shared.onChangeTruckFile($event);
-    this.documents = this.shared.truckDocuments;
   }
 
   onClickEdit() {
@@ -144,14 +162,13 @@ export class TruckDetailsComponent implements OnInit {
   protected readonly Date = Date;
   protected readonly truckFileType = fileUpload;
   isUploadPopupOpen: boolean;
-  prehireCheckListOpened: boolean = false;
   newTruckFileTypeOptions: CustomInputSelectModel[];
   fileName: string;
 
-  onClickClose(document: any) {
+  onClickClose(document: TruckDocument) {
     this.isConfirmModalOpen = true;
     this.closedDocument = document;
-    this.fileName = document.name;
+    this.fileName = this.getDocumentName(document.documentType);
     this.dialog
       .open(ConfirmDeleteComponent, {
         width: '21.875rem',
@@ -168,21 +185,60 @@ export class TruckDetailsComponent implements OnInit {
       });
   }
 
-  private truckFileTypeModify(documents: any[]) {
+  private truckFileTypeModify(documents: TruckDocument[]) {
     this.newTruckFileTypeOptions = JSON.parse(
       JSON.stringify(this.truckFileType)
     );
     documents.forEach(document => {
       this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
-        item => item.value !== document.name
+        item => item.value !== this.getDocumentName(document.documentType)
       );
     });
+    // count insurance file
+    const insuranceFile = documents.filter(
+      document =>
+        document.documentType ===
+          TruckDocumentType[TruckDocumentType.INSURANCE_FILE] ||
+        document.documentType === 'Insuranc,e'
+    );
+    if (insuranceFile.length > 1) {
+      this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
+        item => item.value !== 'Insuranc,e'
+      );
+    } else {
+      this.newTruckFileTypeOptions.push({
+        id: 6,
+        value: 'Insurance',
+        selected: false,
+      } as any);
+    }
+    // count truck image
+    const truckImage = documents.filter(
+      document =>
+        document.documentType ===
+          TruckDocumentType[TruckDocumentType.TRUCK_IMAGE] ||
+        document.documentType === 'Truck Im,age'
+    );
+    if (truckImage.length > 9) {
+      this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
+        item => item.value !== 'Truck Im,age'
+      );
+    } else {
+      this.newTruckFileTypeOptions.push({
+        id: 7,
+        value: 'Truck Image',
+        selected: false,
+      } as any);
+    }
   }
 
   performRemove($event: any) {
     this.isConfirmModalOpen = false;
     this.shared.onClickTruckCloseButton(this.closedDocument);
-    this.documents = this.shared.truckDocuments;
+    // remove closedDocument from documents
+    this.documents = this.documents.filter(
+      document => document !== this.closedDocument
+    );
     this.truckFileTypeModify(this.documents);
   }
 
@@ -210,7 +266,6 @@ export class TruckDetailsComponent implements OnInit {
       .subscribe(res => {
         if (res != 'close') {
           this.onAddFile(res);
-          this.documents = this.shared.truckDocuments;
         }
       });
   }
@@ -219,5 +274,40 @@ export class TruckDetailsComponent implements OnInit {
     this.dialog.open(PreHireChecklistComponent, {
       width: '40%',
     });
+  }
+
+  getDocumentName(documentType: string) {
+    if (
+      documentType ==
+      TruckDocumentType[TruckDocumentType.FITNESS_CERTIFICATE_FILE]
+    ) {
+      return 'Fitness';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.REG_PAPER_FILE]
+    ) {
+      return 'Registration Paper';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.ROUTE_PERMIT_FILE]
+    ) {
+      return 'Route Permit';
+    } else if (documentType == TruckDocumentType[TruckDocumentType.TAX_FILE]) {
+      return 'Tax';
+    } else if (documentType == TruckDocumentType[TruckDocumentType.CASE_FILE]) {
+      return 'Case';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.INSURANCE_FILE]
+    ) {
+      return 'Insurance';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.TRUCK_IMAGE]
+    ) {
+      return 'Truck Image';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.OTHER_FILE]
+    ) {
+      return 'Other';
+    } else {
+      return documentType;
+    }
   }
 }

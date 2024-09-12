@@ -1,0 +1,33 @@
+<div class="px-6 py-5 bg-white rounded-lg flex flex-col space-y-[0.875rem]">
+  <div class="flex justify-between items-center">
+    <h2 class="text-h2 leading-h2 font-semibold text-not-black">
+      Status highlight
+    </h2>
+    <mat-form-field appearance="outline" class="w-[12rem]">
+      <mat-select
+        formControlName="vendorId"
+        placeholder="Select Vendor">
+        <mat-option value="all">All time</mat-option>
+        <mat-option value="today">Today</mat-option>
+        <mat-option value="all">Yesterday</mat-option>
+        <mat-option value="all">Last 7 days</mat-option>
+        <mat-option value="all">Last 15 days</mat-option>
+        <mat-option value="all">Last 30 days</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="grid grid-cols-2 gap-3">
+    <app-status-card icon="revenue" title="Total revenue (GP)" [value]="19500000"
+                     text="+5% from last month" backgroundColor="bg-[#1DBF73]"
+                     textColor="text-[#009D54]"></app-status-card>
+    <app-status-card icon="customers" title="Total customer" [value]="650"
+                     text="24 new onboarded this month" backgroundColor="bg-[#FFA711]"
+                     textColor="text-[#CD8304]"></app-status-card>
+    <app-status-card icon="cr-d" title="Total customer rate (GMV)" [value]="1225"
+                     text="98 new added this month" backgroundColor="bg-[#F0614E]"
+                     textColor="text-[#F0614E]"></app-status-card>
+    <app-status-card icon="totaltrip" title="Total trip completed" [value]="25985"
+                     text="524 trip this month" backgroundColor="bg-[#0CD5F0]"
+                     textColor="text-[#049FB4]"></app-status-card>
+  </div>
+</div>

@@ -74,7 +74,6 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.errorSubscription = this.store
       .pipe(select(selectAuthError))
       .subscribe(error => {
-        console.log(error);
         if (error) {
           this.toaster.showError(error.error?.message, '');
           this.loginRequestPayload = {
@@ -179,13 +178,31 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   private monitorOtpFields() {
     this.loginForm.get('otp1').valueChanges.subscribe(value => {
-      if (value?.length === 1) this.idName = 'otp2';
+      // should not take input if the value is not a number
+      if (isNaN(Number(value))) {
+        this.loginForm.get('otp1').setValue('');
+      } else {
+        if (value?.length === 1) this.idName = 'otp2';
+      }
     });
     this.loginForm.get('otp2').valueChanges.subscribe(value => {
-      if (value?.length === 1) this.idName = 'otp3';
+      if (isNaN(Number(value))) {
+        this.loginForm.get('otp2').setValue('');
+      } else {
+        if (value?.length === 1) this.idName = 'otp3';
+      }
     });
     this.loginForm.get('otp3').valueChanges.subscribe(value => {
-      if (value?.length === 1) this.idName = 'otp4';
+      if (isNaN(Number(value))) {
+        this.loginForm.get('otp3').setValue('');
+      } else {
+        if (value?.length === 1) this.idName = 'otp4';
+      }
+    });
+    this.loginForm.get('otp4').valueChanges.subscribe(value => {
+      if (isNaN(Number(value))) {
+        this.loginForm.get('otp4').setValue('');
+      }
     });
   }
 
@@ -387,6 +404,10 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.countdownSubscription?.unsubscribe();
     this.time = new Date(0, 0, 0, 0, 2, 0);
     this.otpScreen = false;
+    this.loginForm.get('otp1').setValue('');
+    this.loginForm.get('otp2').setValue('');
+    this.loginForm.get('otp3').setValue('');
+    this.loginForm.get('otp4').setValue('');
     this.loginForm.get('otp1').clearValidators();
     this.loginForm.get('otp2').clearValidators();
     this.loginForm.get('otp3').clearValidators();

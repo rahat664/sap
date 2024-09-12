@@ -1,30 +1,25 @@
 <nav class="bg-white border-b border-app-bg sticky top-0 z-30 w-full">
   <div class="">
     <div class="flex items-center w-full">
-      <div class="flex items-center justify-center w-[19rem]">
+      <div class="flex items-center justify-between w-[22.5rem] px-4  lg:border-r lg:border-app-bg">
+        <a
+          routerLink="/"
+          (click)="onClickLogo()"
+          class="cursor-pointer text-xl font-bold  h-16 object-center object-cover flex items-center lg:justify-center  py-2">
+          <img
+            src="assets/logo/shamolima.png"
+            class="notPreview cursor-pointer"
+            alt="Shamolima Logo" />
+        </a>
         <button
+          class="cursor-pointer"
           (click)="toggleMobileSideBar()"
           id="toggleSidebarMobile"
           aria-expanded="true"
           aria-controls="sidebar"
-          class="ml-4 text-gray-600 hover:text-gray-900 cursor-pointer p-2 hover:bg-gray-100 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 rounded">
-          <i *ngIf="isSideBarOpen" class="fas fa-bars w-4"></i>
-          <i *ngIf="!isSideBarOpen" class="fas fa-bars w-4"></i>
+        >
+          <img src="assets/svg/bar.svg" class="notPreview cursor-pointer" alt="bar">
         </button>
-        <a
-          routerLink="/"
-          (click)="onClickLogo()"
-          class="cursor-pointer text-xl font-bold w-64 h-16 object-center object-cover flex items-center lg:justify-center lg:border-r lg:border-app-bg py-2">
-          <img
-            src="assets/logo/shamolima.png"
-            class="notPreview"
-            alt="Shamolima Logo" />
-        </a>
-        <ul>
-          <li *ngFor="let result of searchSuggestions">
-            <a>{{ result.name }}</a>
-          </li>
-        </ul>
       </div>
       <div class="flex items-center space-x-3 justify-end w-full mr-2">
         <!-- Search mobile -->
@@ -74,6 +69,11 @@
               <span>Logout</span>
             </div>
           </button>
+          <div class="flex items-center justify-center text-sm px-4 mt-2">
+            <span class="text-not-black">Version:</span>
+            <span *ngIf="environment.userUrl == 'https://user-service-dev.snztech.world'"
+                  class="px-2 py-0.1 rounded-full ml-1 bg-green text-white">5.0.1</span>
+          </div>
         </mat-menu>
       </div>
     </div>
