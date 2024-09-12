@@ -68,7 +68,7 @@ export class ManageTripComponent implements OnInit {
   statusButtons = statusButtons;
   totalPages: number;
   page: number = 0;
-  size: number = 20;
+  size: number = 30;
   status: string = '';
   loading: boolean = true;
   tripId: string;
