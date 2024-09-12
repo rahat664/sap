@@ -58,6 +58,7 @@ export class TruckDetailsComponent implements OnInit {
   truckAddForm: FormGroup;
   isConfirmModalOpen: boolean;
   closedDocument: TruckDocument = [] as any;
+  protected loading: boolean;
 
   constructor(private shared: DriverEditSharedService) {}
 
@@ -116,9 +117,20 @@ export class TruckDetailsComponent implements OnInit {
     this.documents = this.singleTruck.truckDocumentList;
     localStorage.setItem('previousDocument', JSON.stringify(this.documents));
     this.truckFileTypeModify(this.documents);
+
+    this.shared.completeTruckUpload.subscribe(value => {
+      if (value) {
+        this.loading = false;
+        this.inEditMode = false;
+        this.shared.closeInputSelect.next(true);
+      } else {
+        this.loading = false;
+      }
+    });
   }
 
   onClickSave() {
+    this.loading = true;
     this.shared.onTruckUpdate();
   }
 
