@@ -92,7 +92,7 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   getFullRegistrationName() {
-    return `${this.singleTruck.registrationZone} ${this.singleTruck.registrationCategory} ${this.singleTruck.registrationSerial} ${this.singleTruck.registrationNum}`;
+    return `${this.singleTruck.registrationZone} ${this.singleTruck.registrationCategory} ${this.singleTruck.registrationSerial}-${this.singleTruck.registrationNum}`;
   }
 
   ngOnInit(): void {
@@ -302,7 +302,9 @@ export class TruckDetailsComponent implements OnInit {
       documentType == TruckDocumentType[TruckDocumentType.TRUCK_IMAGE]
     ) {
       return 'Truck Image';
-    } else if (documentType == TruckDocumentType[TruckDocumentType.OTHERS]) {
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.OTHER_FILE]
+    ) {
       return 'Other';
     } else {
       return documentType;
