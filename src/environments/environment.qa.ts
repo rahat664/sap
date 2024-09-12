@@ -1,6 +1,8 @@
 export const environment = {
   production: false,
-  userUrl : "http://15.206.149.253:8080",
-  backendUrl :"http://3.110.103.224:8081",
-  locationUrl : "http://3.110.103.224:8082"
+  userUrl: 'http://user-service.qa.snztech.world',
+  backendUrl: 'http://backend-service.qa.snztech.world',
+  locationUrl: 'http://location-service.qa.snztech.world',
+  API_KEY: 'AIzaSyA2o390_V2B8OO77wWQMP-hP22fIdVtw4w',
+  placesApiUrl: 'https://places.googleapis.com/v1/places:autocomplete',
 };

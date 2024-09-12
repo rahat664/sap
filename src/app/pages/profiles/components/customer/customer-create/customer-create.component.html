@@ -1,0 +1,148 @@
+<div class="grid lg:grid-cols-3 w-full h-full">
+  <button (click)="onClickClose()"
+          class="absolute top-1 right-1  h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center">
+    <i class="fal fa-times"></i
+    >
+
+  </button>
+  <div
+    class="p-8 lg:flex hidden items-center justify-center bg-input rounded-l-lg">
+    <div>
+      <img loading="lazy" class="notPreview" src="../../../../../../assets/images/customer-create.png" alt="" />
+    </div>
+  </div>
+  <div class="p-8 w-full overflow-auto overflow-x-hidden lg:col-span-2">
+    <h3 class="text-not-black font-semibold text-xl mb-4">Add New Customer</h3>
+    <form
+      [formGroup]="customerForm"
+      class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
+        <label for="name">Customer Name</label>
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="name"
+            [minLength]="2"
+            [maxLength]="50"
+            type="text"
+            (input)="onNameKeyPress($event)"
+            matInput
+            formControlName="name"
+            placeholder="Enter Customer Name">
+        </mat-form-field>
+        <!--        error-message-->
+        <div
+          *ngIf="
+            customerForm.get('name').invalid && customerForm.get('name').touched
+          "
+          class="text-red text-xs">
+          {{ getCustomerNameErrorMessage() }}
+        </div>
+      </div>
+      <div class="flex flex-col space-y-2 w-full">
+        <label for="code">Customer Code</label>
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            [minLength]="4"
+            [maxLength]="4"
+            id="code"
+            type="text"
+            matInput
+            formControlName="code"
+            placeholder="Enter customer code">
+
+        </mat-form-field>
+        <!--        error-message-->
+        <div
+          *ngIf="
+            customerForm.get('code').invalid && customerForm.get('code').touched
+          "
+          class="text-red text-xs">
+          {{ getCustomerCodeError() }}
+        </div>
+      </div>
+      <div class="flex flex-col space-y-2 w-full">
+        <label for="contactPerson">Contact Person</label>
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="contactPerson"
+            type="text"
+            matInput
+            formControlName="contactPerson"
+            placeholder="Enter Contact Person">
+        </mat-form-field>
+        <!--        error-message-->
+        <div
+          *ngIf="
+            customerForm.get('contactPerson').invalid &&
+            customerForm.get('contactPerson').touched
+          "
+          class="text-red text-xs">
+          {{ getContactPersonErrorMessage() }}
+        </div>
+      </div>
+      <div class="flex flex-col space-y-2 w-full">
+        <label for="phone">Mobile</label>
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            [minLength]="11"
+            [maxLength]="11"
+            type="text"
+            matInput
+            id="phone"
+            formControlName="phone"
+            placeholder="Enter Mobile">
+        </mat-form-field>
+        <!--        error-message-->
+        <div
+          *ngIf="
+            customerForm.get('phone').dirty &&
+            !customerForm.get('phone').touched
+          "
+          class="text-red text-xs">
+          <span>{{ getErrorMessage() }}</span>
+        </div>
+        <div *ngIf="customerForm.get('phone').touched" class="text-red text-xs">
+          <span>{{ getPhoneErrorMessageWithTouch() }}</span>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-2 w-full">
+        <label for="email">Email (Optional)</label>
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="email"
+            type="text"
+            matInput
+            formControlName="email"
+            placeholder="Enter email">
+        </mat-form-field>
+        <!--        error-message-->
+        <div *ngIf="customerForm.get('email').touched" class="text-red text-xs">
+          <span>{{ getEmailErrorMessage() }}</span>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
+        <label for="address">Address (Optional)</label>
+        <textarea
+          placeholder="Enter Address"
+          class="bg-input rounded-lg  p-4 border border-disabled"
+          id="address"
+          formControlName="address"></textarea>
+      </div>
+      <div class="flex flex-col space-y-2 w-full col-span-2">
+        <label for="note">Note (Optional)</label>
+        <textarea
+          placeholder="Enter Note"
+          class="bg-input rounded-lg  p-4 border border-disabled"
+          id="note"
+          formControlName="note"></textarea>
+      </div>
+      <div class="lg:col-span-2 pb-4">
+        <button
+          (click)="onSave()"
+          class="float-end py-[0.875rem] px-[5.125rem] flex justify-center items-center rounded-lg bg-primary text-white">
+          <span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

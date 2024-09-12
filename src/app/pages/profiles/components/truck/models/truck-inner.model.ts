@@ -1,0 +1,35 @@
+export interface TruckInnerModel {
+  createdOn: any;
+  id: number;
+  name: string | null;
+  registrationZone: string;
+  registrationCategory: string;
+  registrationSerial: string;
+  registrationNum: string;
+  fullRegistrationNumber: string;
+  driverCode: string | null;
+  driverName: string | null;
+  driverPhone: string | null;
+  helperCode: string | null;
+  helperName: string | null;
+  helperPhone: string | null;
+  regPaperFile: string | null;
+  fitnessFile: string | null;
+  routePermitFile: string | null;
+  taxFile: string | null;
+  caseFile: string | null;
+  otherFile: string | null;
+  fitnessCertExpDate: string | null;
+  routePermitExpDate: string | null;
+  taxExpDate: string | null;
+  caseExpDate: string | null;
+  preHireCheckList: string | null;
+  noOfTrips: number;
+  tracker: string | null;
+  preSignedRegPaperFile: string | null;
+  preSignedTaxFile: string | null;
+  preSignedCaseFile: string | null;
+  preSignedRoutePermitFile: string | null;
+  preSignedFitnessFile: string | null;
+  preSignedOtherFile: string | null;
+}

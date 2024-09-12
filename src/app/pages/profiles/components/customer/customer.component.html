@@ -1,64 +1,108 @@
 <div class="p-4 flex flex-col space-y-3">
-  <div class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
-    <h1 class="text-4xl font-semibold">Customer</h1>
-    <div class="flex space-x-4 items-center">
-      <div class="relative">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <i class="far fa-search text-gray-500"></i>
+  <div
+    appGetElementHeight
+    (height)="height = $event"
+    class="flex flex-col space-y-3">
+    <div
+      class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      <h1 class="text-h1 leading-h1 font-semibold">Customer</h1>
+      <div class="flex space-x-4 items-center">
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <img src="assets/svg/search.svg" class="notPreview" alt="search">
+          </div>
+          <button (click)="onClickClear()" *ngIf="searchValue"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <i class="far fa-times text-gray-500 text-xs"></i>
+          </button>
+          <input
+            [(ngModel)]="searchValue"
+            (keyup)="onKeyUpSearch($event)"
+            type="text"
+            name="search"
+
+            class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
+            placeholder="Search  name, mobile , email" />
         </div>
-        <input type="text" name="email" id="topbar-search"
-               class="border-none text-input-hint w-[24rem] bg-white  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
-               placeholder="Search  name, mobile, email">
+        <button
+          (click)="onClickAddCustomer()"
+          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+          <i class="fas fa-plus-circle"></i>
+          <span class="hidden lg:block">Add Customer</span>
+        </button>
       </div>
-      <button (click)="onClickAddCustomer()" class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
-        <i class="fas fa-plus-circle"></i>
-        <span class="hidden lg:block">Add Customer</span>
-      </button>
     </div>
   </div>
-  <div class="flex space-x-3 items-center w-full bg-white rounded-lg px-2 py-1">
-    <i class="fas fa-caret-down text-input-hint text-xl"></i>
-    <span class="text-not-black">Filter</span>
-  </div>
-  <div class="bg-white w-full rounded-lg h-96 overflow-auto">
-    <table class="table-auto w-full text-[0.875rem]">
+  <div
+    appGiveMaxHeight
+    [anotherItemsHeight]="height"
+    (inBottomEnd)="onScrollEnd($event)"
+    class="bg-white relative w-full rounded-lg overflow-auto">
+    <table class="table-auto w-full rounded-lg text-body_title">
       <thead>
-        <tr class="whitespace-nowrap bg-white">
-          <th class="text-left">Company name</th>
-          <th class="text-left">Customer code</th>
-          <th class="text-left">Contact person</th>
-          <th class="text-left">Mobile</th>
-          <th class="text-left">Email</th>
-          <th class="text-left">Address</th>
-          <th style="width: 5%"></th>
-        </tr>
-        <tr>
-          <th class="border" colspan="7"></th>
-        </tr>
+      <tr class="whitespace-nowrap bg-white">
+        <th class="text-left">Company name</th>
+        <th class="text-center">Customer code</th>
+        <th class="text-center whitespace-nowrap">Created On</th>
+        <th class="text-left">Contact person</th>
+        <th class="text-left">Mobile</th>
+        <th class="text-left">Email</th>
+        <th class="text-left">Address</th>
+        <!--          <th style="width: 5%"></th>-->
+      </tr>
+      <tr>
+        <th class="border" colspan="7"></th>
+      </tr>
       </thead>
       <tbody class="text-web-text-secondary">
+      <ng-container *ngIf="!loading">
         <tr *ngFor="let customer of customers">
           <td class="whitespace-nowrap">
             <div class="flex items-center space-x-4">
-              <div class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
-                <span class="text-white font-bold capitalize">{{customer.name[0]}}</span>
+              <div
+                class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
+                  <span class="text-white font-bold capitalize">{{
+                      customer.name[0]
+                    }}</span>
               </div>
-              <span class="flex-1">{{customer.name}}</span>
+              <span class="flex-1">{{ customer.name }}</span>
             </div>
           </td>
-          <td class="text-center">{{customer.userId}}</td>
-          <td>John Doe</td>
-          <td>{{customer.phone}}</td>
-          <td>{{customer.email}}</td>
-          <td>Dhaka, Bangladesh</td>
+          <td class="text-center">{{ customer.customerCode }}</td>
+          <td
+            class="whitespace-nowrap">{{ customer.creationDate ? (customer.creationDate | date: 'dd MMM, yyyy') : '' }}
+          </td>
           <td>
-            <i class="fas fa-ellipsis-v"></i>
+            <span>{{ customer?.contactPerson }}</span>
+          </td>
+          <td>{{ customer.phone }}</td>
+          <td>{{ customer.email }}</td>
+          <td>{{ customer.address }}</td>
+          <!--            <td>-->
+          <!--              <i class="fas fa-ellipsis-v"></i>-->
+          <!--            </td>-->
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <tr *ngIf="customers?.length === 0">
+          <td class="text-center" colspan="7">
+            <div class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+            </div>
           </td>
         </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" colspan="7">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
       </tbody>
     </table>
   </div>
 </div>
-<app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
-  <app-customer-create (formCreated)="isOpen = !$event"></app-customer-create>
-</app-create-popup>
+

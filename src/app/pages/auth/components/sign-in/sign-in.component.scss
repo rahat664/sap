@@ -1,0 +1,15 @@
+// input contain a class of customInput
+
+.customInput:focus {
+  border: none !important;
+  --tw-ring-color: #0CD5F0 !important;
+}
+
+.customInput {
+  text-align: center;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  font-weight: 700;
+  font-size: 1.375rem; // 22px;
+  outline: 1px solid #E5EAEB !important;
+}

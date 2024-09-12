@@ -1,0 +1,159 @@
+<div class="flex bg-[#EFF6F8] space-x-4">
+  <div class="flex flex-col  min-w-[25rem] max-w-[25rem]">
+    <div class="py-4 pl-4 flex flex-col space-y-3" appGetElementHeight (height)="height = $event">
+      <div class="flex justify-between items-center">
+        <span class="text-h2 leading-h2 font-semibold">Trip List</span>
+        <button (click)="onclickSideBarClose()"
+                class="h-[1.75rem] w-[1.75rem] text-white bg-[#D8E8ED] flex items-center justify-center rounded-lg">
+          <i *ngIf="sidebarClosed" class="fas fa-caret-right text-not-black text-2xl"></i>
+          <i *ngIf="!sidebarClosed" class="fas fa-caret-left text-not-black text-2xl"></i>
+        </button>
+      </div>
+      <div *ngIf="!filterOpen" class="flex justify-between gap-3 items-center">
+        <div class="relative w-full">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <img src="assets/svg/search.svg" class="notPreview" alt="search">
+          </div>
+          <button type="button" (click)="onClickClear()" *ngIf="searchValue"
+                  class="absolute inset-y-0 right-0 pr-4 flex items-center">
+            <i class="far fa-times text-gray-500 text-xs"></i>
+          </button>
+          <input
+            [(ngModel)]="searchValue"
+            (keyup)="onKeyUpSearch($event)"
+            type="text"
+            name="email"
+            class="border-none text-not-black text-h2 leading-h2 placeholder-input-hint w-full bg-white  rounded-lg focus:ring-blue focus:border-blue block pl-10 py-[.875rem]"
+            placeholder="Search by trip ID, customer code" />
+        </div>
+        <button (click)="filterOpen = true" class="p-3 rounded-lg bg-white flex items-center justify-center">
+          <div class="relative">
+            <img loading="lazy" class="notPreview" src="assets/svg/filter.svg" alt="filter">
+            <span *ngIf="filterLength > 0"
+                  class="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red text-white text-xs font-semibold rounded-full h-4 w-4 flex items-center justify-center">
+              {{ filterLength }}
+            </span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <div
+      *ngIf="!loading && !filterOpen"
+      appGiveMaxHeight (inBottomEnd)="onScrollEnd($event)"
+      [totalPage]="totalPages"
+      [anotherItemsHeight]="customizedHeight(height)"
+      class="flex flex-col px-4 py-1 space-y-2 overflow-y-auto min-w-96">
+      <app-trip-card
+        (click)="onclickTripCard(trip.tripId, getTruckRegistrationNumber(trip.truck))"
+        [isActivated]="trip.tripId === activatedId"
+        *ngFor="let trip of tripList"
+        [tripNumber]="trip.tripId"
+        [companyName]="trip.customerName"
+        [tripStatus]="trip.status"
+        [tripStartDateTime]="trip.tripStartDatetime"
+        [loadingPoint]="trip.loadingPoint"
+        [unloadingPoint]="trip.unloadingPoint"
+        [truckId]="getTruckRegistrationNumber(trip.truck)"
+        [truckType]="trip.vehicleCategory.name"
+        [goodsName]="trip.good.name"
+      ></app-trip-card>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center h-[calc(100vh-11.7rem)] min-w-96"
+      *ngIf="loading"
+    >
+      <!--       make a spinner component-->
+      <i class="fas fa-spinner fa-spin text-primary text-4xl"></i>
+      <span class="text-center w-full text-secondary">Loading...</span>
+    </div>
+    <div class="flex items-center justify-center  h-[calc(100vh-11.7rem)] min-w-96"
+         *ngIf="!loading && tripList.length <=0 && !filterOpen">
+      <div class="w-full flex flex-col space-y-3 justify-center items-center">
+        <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+        <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+      </div>
+    </div>
+    <div *ngIf="filterOpen" class="p-4 filter bg-white rounded-lg mx-4 h-[calc(100vh-12rem)] min-w-[24rem] max-w-[24rem]
+">
+      <div class="flex items-center justify-between pb-2">
+        <div class="text-h2 leading-h2 font-semibold text-not-black">
+          Filters <span class="text-h2 leading-h2 font-semibold text-not-black"
+                        *ngIf="filterLength > 0">({{ filterLength }}
+          ) | <a (click)="onClickClearAll()"
+                 class="text-h2 leading-h2 font-semibold text-red cursor-pointer">Clear all</a></span>
+        </div>
+        <button (click)="onClickClearAll()"
+                class="mb-1/2 h-[1.75rem] w-[1.75rem] text-white bg-disabled flex items-center justify-center rounded-full">
+          <i class="fal fa-times text-not-black"></i>
+        </button>
+      </div>
+      <div class="flex flex-col space-y-6">
+        <div class="flex flex-col space-y-3">
+          <div class="flex-col space-y-1 flex w-full">
+            <label class="text-base text-secondary">Date</label>
+            <mat-form-field appearance="outline">
+              <mat-date-range-input [rangePicker]="picker">
+                <input (focus)="picker.open()" [(ngModel)]="startDate" (selectionchange)="onChangeStartDate($event)"
+                       matStartDate
+                       placeholder="Start date">
+                <input (focus)="picker.open()" [(ngModel)]="endDate" (selectionchange)="onChangeEndDate($event)"
+                       matEndDate
+                       placeholder="End date">
+              </mat-date-range-input>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-1 w-full" *ngIf="isAdmin()">
+            <label class="text-base text-secondary">Customer</label>
+
+            <mat-form-field appearance="outline" class="example-full-width w-full">
+              <input
+                id="customerName"
+                [(ngModel)]="customerName"
+                type="text"
+                matInput
+                (keyup)="onKeyUpCustomerSearch($event)"
+                placeholder="Select customer"
+                [matAutocomplete]="auto">
+              <mat-autocomplete #auto="matAutocomplete">
+                @for (option of companySuggestions; track option) {
+                  <mat-option (click)="onClickCustomerSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-1 w-full">
+            <label class="text-base text-secondary">Truck type</label>
+            <mat-form-field appearance="outline">
+              <mat-select [(ngModel)]="truckType" (selectionChange)="onChangeTruckType($event)" multiple
+                          placeholder="Choose Truck Type">
+                @for (vehicle of vehicleTypeList; track vehicle) {
+                  <mat-option [value]="vehicle.id">{{ vehicle.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <button (click)="onClickApply()"
+                class="px-[2.875rem] py-[.625rem]  bg-primary text-white font-semibold text-body self-end rounded-lg">
+          <span>Apply</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="w-full h-[calc(100vh-4.5rem)] flex-1 relative">
+    <app-g-map [truckLocationPosition]="truckLocationPosition" [starting]="startingPosition"
+               [destination]="destinationPosition"></app-g-map>
+    <app-map-buttons [triggeredButtonName]="triggerFromParentName" [triggerFromParent]="isTriggerFromParent"
+                     [statusButtons]="statusButtons" (buttonClickEmitter)="onClickButton($event)"
+                     class="absolute top-0 right-1/2 transform translate-x-1/2">
+    </app-map-buttons>
+    <app-trip-details appGetElementHeight (height)="onChangeHeight($event)" (foldUnfoldChange)="onClickFold($event)"
+                      *ngIf="singleTripDetails"
+                      [tripDetails]="singleTripDetails"
+                      class="absolute bottom-0 w-full slide-top"></app-trip-details>
+  </div>
+</div>

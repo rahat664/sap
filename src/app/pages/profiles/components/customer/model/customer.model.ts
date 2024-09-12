@@ -7,5 +7,10 @@ export class CustomerModel {
   userShortCode: string;
   enabled: boolean;
   roles: string[];
-  token: string
+  token: string;
+  address: string;
+  customerCode: string;
+  user: any[];
+  creationDate: any;
+  contactPerson: string;
 }

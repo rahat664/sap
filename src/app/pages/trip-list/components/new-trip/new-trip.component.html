@@ -1,0 +1,123 @@
+<div class="flex flex-col space-y-3">
+  <div class="flex flex-col space-y-3">
+    <div class="flex mx-4 justify-between py-3 items-center">
+      <h1 class="text-h1 leading-h1 font-semibold">New Trip</h1>
+      <button
+        type="button"
+        routerLink="/trip-create/create"
+        *ngIf="createButtonEnabled && !isAdmin()" class="bg-primary text-white rounded-lg px-16 py-3 justify-self-end"
+        (click)="onCreateTrip()">Create
+        Trip
+      </button>
+    </div>
+    <div class="bg-white p-4 m-4 rounded-lg flex justify-between items-center" *ngIf="isAdmin()">
+      <div class="flex flex-1 flex-col space-y-2 relative">
+        <label for="customerName" class="form-label">Select Customer</label>
+        <mat-form-field appearance="outline" class="example-full-width w-1/3">
+          <input
+            id="customerName"
+            type="text"
+            matInput
+            (keyup)="onKeyUpCustomerSearch($event)"
+            [(ngModel)]="customerName"
+            placeholder="Select customer"
+            [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete">
+            @for (option of companySuggestions; track option) {
+              <mat-option (click)="onClickCustomerSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <button
+        type="button"
+        routerLink="/trip-create/create"
+        *ngIf="createButtonEnabled" class="bg-primary text-white rounded-lg px-16 py-3 justify-self-end"
+        (click)="onCreateTrip()">Create
+        Trip
+      </button>
+    </div>
+  </div>
+  <div class="bg-white mx-4 rounded-lg" *ngIf="templates">
+    <div class="px-4 py-2 flex justify-between items-center">
+      <h1 class="text-body">Saved Template</h1>
+      <button type="button" routerLink="/trip-create/create-trip-template"
+              (click)="onClickAddTemplate()"
+              class="border border-primary text-primary font-semibold rounded-lg px-4 py-2">Add Template
+      </button>
+    </div>
+    <div appGiveMaxHeight
+         (inBottomEnd)="onBottom($event)"
+         [totalPage]="totalPages"
+         [anotherItemsHeight]="height"
+         class="bg-white w-full rounded-lg overflow-auto relative">
+      <table class="table-auto w-full text-body_title leading-body_title">
+        <thead>
+        <tr>
+          <th class="text-left whitespace-nowrap">Name</th>
+          <th class="text-left">Route</th>
+          <th class="text-left">Goods</th>
+          <th class="text-left">Customer</th>
+          <th class="text-left"></th>
+        </tr>
+        <tr>
+          <th class="custom-borders" colspan="5"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngIf="templates.length > 0">
+          <tr *ngFor="let tripTemplate of templates">
+            <td class="whitespace-nowrap">
+              <div class="flex w-full space-x-3 items-center">
+                <img src="assets/svg/templates.svg" class="notPreview" loading="lazy" alt="">
+                <a (click)="setTemplate(tripTemplate)"
+                   class="w-full text-link cursor-pointer">{{ tripTemplate.name }}</a>
+              </div>
+            </td>
+            <td>{{ getTripRoute(tripTemplate.points) }}</td>
+            <td>{{ tripTemplate.good.name }}</td>
+            <td>{{ templateCustomer }}</td>
+            <td>
+              <button mat-button [matMenuTriggerFor]="menu"><i
+                class="fas fa-ellipsis-v"></i></button>
+              <mat-menu #menu="matMenu">
+                <button
+                  (click)="changeStatus(tripTemplate,'edit')" mat-menu-item>
+                  <div class="flex space-x-2 items-center">
+                    <img
+                      class="notPreview"
+                      src="./assets/svg/edit.svg"
+                      alt="" />
+                    <span>Edit</span>
+                  </div>
+                </button>
+                <button (click)="changeStatus(tripTemplate, 'delete')" mat-menu-item
+                >
+                  <div class="flex space-x-2 items-center">
+                    <img
+                      class="notPreview"
+                      src="./assets/svg/delete.svg"
+                      alt="" />
+                    <span>Delete</span>
+                  </div>
+                </button>
+              </mat-menu>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="templates.length === 0">
+          <tr>
+            <td class="text-center" colspan="5">
+              <div class="w-full flex flex-col space-y-3 justify-center items-center">
+                <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+                <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

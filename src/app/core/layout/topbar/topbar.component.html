@@ -1,77 +1,81 @@
-<nav class="bg-white border-b border-gray-200 sticky top-0 z-30 w-full">
+<nav class="bg-white border-b border-app-bg sticky top-0 z-30 w-full">
   <div class="">
     <div class="flex items-center w-full">
-      <div class="flex items-center justify-center">
-        <button (click)="toggleMobileSideBar()" id="toggleSidebarMobile" aria-expanded="true" aria-controls="sidebar"
-                class="lg:hidden mx-2 text-gray-600 hover:text-gray-900 cursor-pointer p-2 hover:bg-gray-100 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 rounded">
+      <div class="flex items-center justify-center w-[19rem]">
+        <button
+          (click)="toggleMobileSideBar()"
+          id="toggleSidebarMobile"
+          aria-expanded="true"
+          aria-controls="sidebar"
+          class="ml-4 text-gray-600 hover:text-gray-900 cursor-pointer p-2 hover:bg-gray-100 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 rounded">
+          <i *ngIf="isSideBarOpen" class="fas fa-bars w-4"></i>
           <i *ngIf="!isSideBarOpen" class="fas fa-bars w-4"></i>
-          <i *ngIf="isSideBarOpen" class="fas fa-times w-4"></i>
         </button>
-        <a class="text-xl font-bold w-64 h-16 object-center object-cover flex items-center lg:justify-center lg:border-r lg:border-gray-200 py-2">
-          <img src="assets/logo/shamolima.png" class="" alt="Shamolima Logo">
+        <a
+          routerLink="/"
+          (click)="onClickLogo()"
+          class="cursor-pointer text-xl font-bold w-64 h-16 object-center object-cover flex items-center lg:justify-center lg:border-r lg:border-app-bg py-2">
+          <img
+            src="assets/logo/shamolima.png"
+            class="notPreview"
+            alt="Shamolima Logo" />
         </a>
-        <form class="hidden lg:block ml-4 w-[36rem]">
-          <label for="topbar-search" class="sr-only">Search</label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="far fa-search text-gray-500"></i>
-            </div>
-            <input type="text" name="email" id="topbar-search"
-                   class="border-none bg-input  text-web-text-secondary sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full pl-10 p-2.5"
-                   placeholder="Search" (keyup)="onSearch($event)">
-          </div>
-        </form>
         <ul>
           <li *ngFor="let result of searchSuggestions">
-            <a href="#">{{ result.name }}</a>
+            <a>{{ result.name }}</a>
           </li>
         </ul>
       </div>
-      <div class="flex items-center justify-end w-full">
+      <div class="flex items-center space-x-3 justify-end w-full mr-2">
         <!-- Search mobile -->
-        <button (click)="onClickSearchOnMobile()" id="toggleSidebarMobileSearch" type="button"
-                class="lg:hidden text-gray-500 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-lg">
+        <button
+          (click)="onClickSearchOnMobile()"
+          id="toggleSidebarMobileSearch"
+          type="button"
+          class="lg:hidden text-gray-500 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-lg">
           <span class="sr-only">Search</span>
           <!-- Search icon -->
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clip-rule="evenodd"></path>
-          </svg>
+          <i class="fas fa-search"></i>
+        </button>
+        <button matTooltip="Logout" (click)="onClickLogOut()"
+                class="lg:hidden text-gray-500 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-lg">
+          <img loading="lazy" class="notPreview" src="assets/svg/logout.svg" alt="logout">
         </button>
 
-        <button id="dropdownDefaultButton" (click)="isProfileOpened = !isProfileOpened"
-                class="hidden lg:flex space-x-2 items-center font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600"
-                type="button">
-          <div class="w-8 h-8 overflow-hidden rounded-full border border-gray-400 object-center object-cover">
-            <img class="w-full h-full" src="assets/images/1.jpg" alt="profile-img">
+        <button class="flex items-center" [matMenuTriggerFor]="menu" (click)="isProfileOpened = !isProfileOpened">
+          <div
+            id="dropdownDefaultButton"
+            class="hidden lg:flex space-x-2 items-center font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600"
+            type="button">
+            <div
+              class="w-8 h-8 overflow-hidden rounded-full border border-gray-400 object-center object-cover">
+              <img
+                class="w-full h-full notPreview"
+                [src]="image | image"
+                alt="profile-img" />
+            </div>
+            <span class="text-gray-500">{{ name }}</span>
+            <i
+              *ngIf="!isProfileOpened"
+              class="fas fa-caret-down ml-2 text-not-black"></i>
+            <i
+              *ngIf="isProfileOpened"
+              class="fas fa-caret-up ml-2 text-not-black"></i>
           </div>
-          <span class="text-gray-500">Adil Chowdhury</span>
-          <i *ngIf="!isProfileOpened" class="fas fa-caret-down ml-2 text-not-black"></i>
-          <i *ngIf="isProfileOpened" class="fas fa-caret-up ml-2 text-not-black"></i>
         </button>
+        <mat-menu #menu="matMenu" class="w-full">
+          <button
+            (click)="onClickLogOut()" mat-menu-item>
+            <div class="flex space-x-2 items-center">
+              <img
+                class="notPreview"
+                src="./assets/svg/user-inactive.svg"
+                alt="" />
+              <span>Logout</span>
+            </div>
+          </button>
+        </mat-menu>
       </div>
     </div>
   </div>
-  <div *ngIf="isProfileOpened" id="dropdown"
-       class="z-10 absolute top-full right-0  bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-    <ul class="py text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-      <li  class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-        <a (click)="onClickLogOut()"
-        >Sign Out</a>
-      </li>
-    </ul>
-  </div>
-  <div *ngIf="isSearchedMenuOpened"  id="searchDropdown"
-       class="z-10 absolute top-full  left-[17rem] w-[36rem] max-h-64 overflow-y-auto  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
-    <ul class="py text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-      <li *ngFor="let result of searchSuggestions" class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-        <a class="w-full h-full flex justify-between items-center">
-          <span>{{result.customerName}}, {{result.customerPhone}}</span>
-          <span class="px-2 py-0.5 rounded-full bg-green text-white">Trip List</span>
-        </a>
-      </li>
-    </ul>
-  </div>
 </nav>
-

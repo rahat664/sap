@@ -1,0 +1,37 @@
+<div class="w-full flex items-center justify-center p-4">
+  <div class="flex space-x-3 items-center w-80 justify-center">
+    <div class="flex space-x-1 items-center">
+      <mat-form-field [ngClass]="{'errorHour': currentHourError}" class="w-[3.5rem]" appearance="outline">
+        <input (focusout)="onFocusOut()" (change)="onHourChange($event)"
+               (keypress)="onKeyPressHour($event)" matInput
+               [(ngModel)]="currentHourShow">
+      </mat-form-field>
+      <div class="h-[3.5rem] flex items-center justify-center">
+        <img loading="lazy" class="mt-2" src="assets/svg/clone.svg" alt="clone">
+      </div>
+      <mat-form-field [ngClass]="{'errorMinute': currentMinuteError}"
+                      class="w-[3.5rem]" appearance="outline">
+        <input (focusout)="onFocusOutMinute()"
+               (change)="onMinuteChange($event)" (keypress)="onkeyPressMinute($event)"
+               matInput
+               [(ngModel)]="currentMinute">
+      </mat-form-field>
+    </div>
+    <div class="flex space-x-1 text-h2 leading-h2 font-semibold">
+      <button
+        [matTooltipDisabled]="checkCanSwithToAm() === false"
+        matTooltip="Can't switch to AM"
+        matTooltipPosition="above"
+        [disabled]="checkCanSwithToAm()"
+        (click)="toggleTimeState('AM')"
+        [ngClass]="{'text-input-hint' : getTimeStateAmOrPm() === 'PM', 'text-not-black' : getTimeStateAmOrPm() === 'AM'}"
+        class="w-[3.5rem] h-[3.5rem] hover:bg-input rounded-lg" type="button">AM
+      </button>
+      <button
+        (click)="toggleTimeState('PM')"
+        [ngClass]="{'text-input-hint' : getTimeStateAmOrPm() === 'AM', 'text-not-black' : getTimeStateAmOrPm() === 'PM'}"
+        class="w-[3.5rem] h-[3.5rem] hover:bg-input rounded-lg" type="button">PM
+      </button>
+    </div>
+  </div>
+</div>

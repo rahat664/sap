@@ -1,0 +1,110 @@
+<div class="flex w-full h-full">
+  <button (click)="closeModal()"
+          class="absolute top-0 right-0 p-4">
+    <i class="fal fa-times text-primary"></i>
+  </button>
+  <div
+    class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
+    <div>
+      <img loading="lazy" class="notPreview" src="assets/images/customer-create.png" alt="" />
+    </div>
+  </div>
+  <div class="p-8 max-h-[90vh] overflow-y-auto overflow-x-hidden">
+    <h3 class="text-not-black font-semibold text-xl mb-4">Add New User</h3>
+    <form
+      [formGroup]="userForm"
+      (ngSubmit)="onSave()"
+      class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
+        <label for="name">Full Name</label>
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error': userForm.get('name').invalid && userForm.get('name').touched}"
+        >
+          <input
+            appAlphabetOnly
+            id="name"
+            type="text"
+            matInput
+            [minLength]="2"
+            [maxLength]="50"
+            formControlName="name"
+            placeholder="Enter Full Name">
+        </mat-form-field>
+        <div *ngIf="userForm.get('name').touched" class="text-red text-xs">
+          <span>{{ getNameErrorMessage() }}</span>
+        </div>
+        <!--        error-message-->
+      </div>
+      <div class="flex flex-col space-y-2 w-full">
+        <label for="phone">Mobile</label>
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error': userForm.get('phone').invalid && userForm.get('phone').touched}"
+        >
+          <input
+            [minLength]="11"
+            [maxLength]="11"
+            type="text"
+            matInput
+            id="phone"
+            formControlName="phone"
+            placeholder="Enter Mobile">
+        </mat-form-field>
+        <!--        error-message-->
+        <div
+          *ngIf="userForm.get('phone').dirty && !userForm.get('phone').touched"
+          class="text-red text-xs">
+          <span>{{ getPhoneErrorMessage() }}</span>
+        </div>
+        <div *ngIf="userForm.get('phone').touched" class="text-red text-xs">
+          <span>{{ getPhoneErrorMessageWithTouch() }}</span>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-2 w-full">
+        <label for="email">Email</label>
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error': userForm.get('email').invalid && userForm.get('email').touched}"
+        >
+          <input
+            id="email"
+            type="text"
+            matInput
+            formControlName="email"
+            placeholder="Enter email">
+        </mat-form-field>
+        <!--        error-message-->
+        <div *ngIf="userForm.get('email').touched" class="text-red text-xs">
+          <span>{{ getEmailErrorMessage() }}</span>
+        </div>
+      </div>
+      <div class="flex space-y-2 flex-col w-full">
+        <label for="designation">Designation</label>
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            appAlphabetOnly
+            id="designation"
+            type="text"
+            matInput
+            formControlName="designation"
+            placeholder="Enter designation">
+        </mat-form-field>
+        <!--        error-message-->
+      </div>
+      <div class="flex flex-col space-y-2 w-full">
+        <label for="email">Department</label>
+        <app-custom-input
+          [inputSearch]="roleInputPlaceholder"
+          [options]="roles"
+          inputPlaceholder="Select Department"
+          appGetClickEvent
+          (clickedElement)="onClickRole($event)"
+          (selectedId)="onSelectRole($event)"></app-custom-input>
+      </div>
+      <div class="lg:col-span-2 py-4">
+        <button
+          class="float-end py-[0.875rem] px-[5.125rem] flex justify-center items-center text-[1.125rem] rounded-lg bg-primary text-white">
+          <span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

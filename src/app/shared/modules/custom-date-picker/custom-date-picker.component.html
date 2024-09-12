@@ -1,0 +1,50 @@
+<div class="relative bg-input rounded-lg">
+  <div class="relative flex items-center">
+    <input
+      type="text"
+      class="bg-input rounded-lg border-none w-full p-4"
+      placeholder="Select date"
+      readonly
+      (click)="toggleCalendar()"
+      [value]="selectedDate | date: 'yyyy-MM-dd'"
+    />
+    <span class="absolute right-3 cursor-pointer" (click)="toggleCalendar()">
+      <img loading="lazy" class="notPreview" src="assets/svg/calender.svg" alt="calender">
+    </span>
+  </div>
+  <div *ngIf="isCalendarVisible"
+       class="absolute bg-white border border-gray-300 rounded-md shadow-lg mt-1 z-10 w-72">
+    <div class="flex justify-between items-center p-2">
+      <button (click)="previousMonth()" class="p-1 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <span class="flex items-center space-x-2">
+        <span>{{ currentMonth.toLocaleString('default', { month: 'long' }) }}</span>
+        <ng-select [closeOnSelect]="true" [clearable]="false" [(ngModel)]="selectedYear" (change)="changeYear($event)">
+          <ng-option *ngFor="let year of years" [value]="year">{{ year }}</ng-option>
+        </ng-select>
+      </span>
+      <button (click)="nextMonth()" class="p-1 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+    <div class="p-2 grid grid-cols-7 gap-1 text-center">
+      <div *ngFor="let day of daysOfWeek" class="font-semibold">{{ day }}</div>
+      <div
+        *ngFor="let date of calendarDays"
+        [class.bg-blue-500]="isSameDate(date, selectedDate)"
+        [class.text-white]="isSameDate(date, selectedDate)"
+        [class.cursor-pointer]="date && !isDisabled(date)"
+        [class.text-gray-400]="!date || isDisabled(date)"
+        class="w-10 h-10 flex items-center justify-center rounded-full"
+        (click)="selectDate(date)"
+      >
+        {{ date?.getDate() }}
+      </div>
+    </div>
+  </div>
+</div>

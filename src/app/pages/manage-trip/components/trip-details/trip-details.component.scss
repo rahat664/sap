@@ -1,0 +1,27 @@
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: #11484F !important;
+  font-weight: bolder !important;
+  font-size: .875rem !important;
+}
+
+::ng-deep .mat-mdc-tab .mdc-tab__text-label {
+  color: #777777 !important;
+  font-weight: bolder !important;
+  font-size: .875rem !important;
+}
+
+::ng-deep .mat-mdc-tab-labels {
+  border-bottom: 1px solid #D3DBDC !important;
+}
+
+::ng-deep .mat-mdc-tab .mdc-tab-indicator__content--underline {
+  border: 1px solid #11484F !important;
+  width: 50% !important;
+}
+
+::ng-deep .mat-mdc-tab-ripple {
+  visibility: hidden !important;
+}
+
+
+

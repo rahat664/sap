@@ -1,0 +1,26 @@
+<button [ngClass]="{'ring ring-primary': isActivated}"
+        class="bg-white p-4 w-full flex flex-col rounded-2xl space-y-3 max-w-96">
+  <div class="flex justify-between items-start w-full">
+    <div class="flex flex-col space-y-1 items-start">
+      <span class="text-body_title leading-body_title text-not-black font-semibold">{{ tripNumber }}</span>
+      <span class="text-body text-secondary">{{ companyName }}</span>
+    </div>
+    <div class="px-2 py-1 {{getTripColorBasedOnStatus(tripStatus)}} text-white rounded-full text-xs">
+      {{ tripStatus }}
+    </div>
+  </div>
+  <div class="flex flex-col space-y-3 items-start text-xs">
+    <span class="text-secondary">{{ tripStartDateTime | date : 'dd-MMM-yyyy, hh:mm a' }}</span>
+    <div class="flex flex-col space-y-3 text-not-black text-start">
+      <div class="step">
+        <div class="circle"></div>
+        <p>{{ loadingPoint }}</p>
+      </div>
+      <div class="step">
+        <div class="circle"></div>
+        <p>{{ unloadingPoint }}</p>
+      </div>
+    </div>
+    <span class="text-secondary text-start">{{ truckId }} | {{ truckType }} | {{ goodsName }}</span>
+  </div>
+</button>

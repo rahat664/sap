@@ -1,0 +1,156 @@
+<div class="p-4 flex flex-col space-y-3">
+  <div
+    appGetElementHeight
+    (height)="height = $event"
+    class="flex flex-col space-y-3">
+    <div
+      class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      <h1 class="text-h1 leading-h1 font-semibold">Tracker</h1>
+      <div class="flex space-x-4 items-center">
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <img src="assets/svg/search.svg" class="notPreview" alt="search">
+          </div>
+          <button (click)="onClickClear()" *ngIf="searchValue"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <i class="far fa-times text-gray-500 text-xs"></i>
+          </button>
+          <input
+            [(ngModel)]="searchValue"
+            (keyup)="onKeyUpSearch($event)"
+            type="text"
+            name="email"
+
+            class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
+            placeholder="Search name, mobile" />
+        </div>
+        <button
+          routerLink="/profile/tracker/add"
+          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+          <i class="fas fa-plus-circle"></i>
+          <span class="hidden lg:block">Add Tracker</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    appGiveMaxHeight
+    (inBottomEnd)="onBottom($event)"
+    [totalPage]="totalPages"
+    [anotherItemsHeight]="height"
+    class="bg-white w-full rounded-lg overflow-auto relative">
+    <table class="table-auto rounded-lg w-full text-body_title">
+      <thead>
+      <tr class="whitespace-nowrap bg-white">
+        <th class="text-left">Tracker ID</th>
+        <th class="text-left">Vendor Name</th>
+        <th class="text-left whitespace-nowrap">On Boarding Date</th>
+        <th class="text-center">Assigned Truck</th>
+        <th class="text-center">Type</th>
+        <th class="text-left">Status</th>
+        <!--        <th style="width: 5%"></th>-->
+      </tr>
+      <tr>
+        <th class="border" colspan="6"></th>
+      </tr>
+      </thead>
+      <tbody class="text-web-text-secondary">
+      <ng-container *ngIf="!loading">
+        <tr *ngFor="let tracker of trackerList">
+          <td class="whitespace-nowrap">
+            <div class="flex items-center space-x-4">
+              <div>
+                <p class="text-body_title leading-body_title text-secondary font-semibold">{{ tracker?.trackerId }}</p>
+              </div>
+            </div>
+          </td>
+          <td class="whitespace nowrap">
+            <p class="text-body_title leading-body_title text-secondary font-semibold">{{ tracker?.vendor?.name }}</p>
+          </td>
+          <td>
+            <p
+              class="text-body_title leading-body_title text-secondary font-semibold">{{ tracker?.createdAt | date: 'dd MMM, yyyy' }}</p>
+          </td>
+          <td class="text-center">
+            <p *ngIf="tracker.vehicleRegistrationNumber.length > 0"
+               class="text-body_title leading-body_title text-secondary font-semibold">{{
+                tracker.vehicleRegistrationNumber
+              }}</p>
+            <div *ngIf="tracker.vehicleRegistrationNumber.length <= 0" class="flex items-center justify-center h-full">
+              <app-upload-button
+                (click)="onClickUpdate( tracker?.id, popup )"
+                icon="plus"
+                buttonText="Assign Truck"></app-upload-button>
+            </div>
+          </td>
+          <td class="text-center">
+            <p class="text-body_title leading-body_title text-secondary font-semibold">{{ tracker?.trackerType }}</p>
+          </td>
+          <td class="text-left">
+            <p class="text-body_title leading-body_title text-secondary font-semibold">{{ tracker?.status }}</p>
+          </td>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <tr *ngIf="trackerList?.length === 0">
+          <td class="text-center" colspan="6">
+            <div class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" colspan="6">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #popup>
+  <div class="p-4 w-full">
+    <div class="flex flex-col space-y-3">
+      <div class="flex space-x-3 items-center">
+        <img src="assets/svg/truckinfo.svg" alt="" class="notPreview">
+        <span class="text-h2 leading-h2 font-semibold">Truck Info</span>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <label class="text-secondary font-semibold text-body ">Truck Registration Number</label>
+        <mat-form-field appearance="outline" class="example-full-width w-full">
+          <input
+            id="transporterName"
+            type="text"
+            matInput
+            formControlName="truckRegNo"
+            (keyup)="onKeyUpTruckSearch($event)"
+            placeholder="Enter Truck Registration Number"
+            [matAutocomplete]="truck">
+          <mat-autocomplete #truck="matAutocomplete">
+            @for (option of truckSuggestion; track option) {
+              <mat-option (click)="onClickTruckSearchSuggestion(option)" [value]="option.fullRegistrationNumber">
+                <div class="flex flex-col space-y-1">
+                        <span
+                          class="text-body_title leading-body_title text-not-black font-semibold">{{ option.fullRegistrationNumber }}</span>
+                </div>
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="flex justify-end">
+        <button
+          (click)="onClickAssignTruck()"
+          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+          <i class="fas fa-plus-circle"></i>
+          <span class="hidden lg:block">Assign</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+

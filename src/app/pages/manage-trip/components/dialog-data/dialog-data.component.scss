@@ -1,0 +1,19 @@
+.close-button {
+  position: absolute;
+  top: .625rem; // 10px
+  right: .625rem; // 10px
+  cursor: pointer;
+  z-index: 999;
+}
+
+.error {
+  outline: 1px solid #F7CAD0;
+  border-radius: 0.5rem;
+}
+
+::ng-deep .error .mat-mdc-text-field-wrapper {
+  width: 100%;
+  border-radius: 0.5rem !important;
+  background-color: #FFFAFB !important;
+  height: 3.5rem !important;
+}

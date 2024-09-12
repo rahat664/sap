@@ -1,0 +1,61 @@
+<div class="px-8 py-4 min-h-[90vh] overflow-y-auto">
+  <button (click)="onClose()"
+          class="absolute top-1 right-1 w-6 h-6 rounded-full bg-white flex items-center justify-center">
+    <i class="fal fa-times text-primary"></i>
+  </button>
+  <h1 class="text-h1 leading-h1 font-semibold pb-4">Pre Hire Checklist</h1>
+  <div
+    class="max-h-[80vh] overflow-auto w-full border-2 border-not-black overflow-x-hidden">
+    <div class="rounded-lg bg-white table-auto w-full">
+      <div class="bg-not-black text-white sticky top-0">
+        <div class="px-4 py-3 grid grid-cols-7">
+          <span class="col-span-4">Inspection Item</span>
+          <div class="w-full flex justify-center items-center">Pass</div>
+          <span class="w-full flex justify-center items-center">Fail</span>
+          <span class="w-full flex justify-center items-center">N/A</span>
+        </div>
+      </div>
+      <div class="px-4 flex flex-col py-2 space-y-2">
+        <ng-container *ngFor="let items of preHireCheckList; index as i">
+          <h1 class="text-not-black text-body_title leading-body_title font-semibold">{{ items.categoryName }}</h1>
+          <div *ngFor="let item of items.items; index as j"
+               class="text-body_title leading-body_title font-normal grid grid-cols-7 gap-1">
+            <div class="col-span-4 bg-input py-4 px-2"> {{ getChecklistPosition(i, j) }}. {{ item.name }}</div>
+            <div class="w-full bg-input py-4 px-2 h-full flex justify-center items-center">
+              <input
+                (change)="onChange($event, item.id)"
+                [checked]="item.status === 'PASS'"
+                type="radio"
+                name="{{ item.name }}"
+                value="PASS" />
+            </div>
+            <div class="w-full bg-input py-4 px-2 h-full flex justify-center items-center">
+              <input
+                [checked]="item.status === 'FAIL' || item.status == ''"
+                (change)="onChange($event, item.id)"
+                type="radio"
+                name="{{ item.name }}"
+                value="FAIL" />
+            </div>
+            <div class="w-full bg-input py-4 px-2 h-full flex justify-center items-center">
+              <input
+                [checked]="item.status === 'NA'"
+                (change)="onChange($event, item.id)"
+                type="radio"
+                name="{{ item.name }}"
+                value="NA" />
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="flex justify-end pt-4">
+    <button
+      *ngIf="this.data?.save"
+      (click)="onclickSave()"
+      class="px-[44px] py-[10.5px] bg-primary text-white rounded-lg">
+      Save
+    </button>
+  </div>
+</div>
