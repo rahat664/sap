@@ -8,6 +8,9 @@ import { RouterLink } from '@angular/router';
 import { GetOutsideModalClickDirective } from '../../../shared/directive/get-outside-modal-click.directive';
 import { DriverEditSharedService } from '../../../pages/profiles/services/driver-edit-shared.service';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatButton } from '@angular/material/button';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-topbar',
@@ -19,6 +22,10 @@ import { MatTooltip } from '@angular/material/tooltip';
     RouterLink,
     GetOutsideModalClickDirective,
     MatTooltip,
+    MatButton,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
   ],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss',
@@ -81,4 +88,6 @@ export class TopbarComponent implements OnInit {
   onClickLogo() {
     this.shared.closeInputSelect.next(false);
   }
+
+  protected readonly environment = environment;
 }

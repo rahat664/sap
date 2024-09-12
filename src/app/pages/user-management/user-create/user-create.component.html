@@ -1,4 +1,8 @@
 <div class="flex w-full h-full">
+  <button (click)="closeModal()"
+          class="absolute top-0 right-0 p-4">
+    <i class="fal fa-times text-primary"></i>
+  </button>
   <div
     class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
     <div>
@@ -10,33 +14,41 @@
     <form
       [formGroup]="userForm"
       (ngSubmit)="onSave()"
-      class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-[0.875rem] text-web-text-secondary">
-      <div class="flex flex-col w-full lg:col-span-2">
+      class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
         <label for="name">Full Name</label>
-        <input appAlphabetOnly
-               required
-               [minlength]="2"
-               [maxlength]="50"
-               placeholder="Enter Full Name"
-               class="bg-input rounded-lg border-none p-4"
-               type="text"
-               id="name"
-               formControlName="name" />
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error': userForm.get('name').invalid && userForm.get('name').touched}"
+        >
+          <input
+            appAlphabetOnly
+            id="name"
+            type="text"
+            matInput
+            [minLength]="2"
+            [maxLength]="50"
+            formControlName="name"
+            placeholder="Enter Full Name">
+        </mat-form-field>
         <div *ngIf="userForm.get('name').touched" class="text-red text-xs">
           <span>{{ getNameErrorMessage() }}</span>
         </div>
         <!--        error-message-->
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="phone">Mobile</label>
-        <input
-          [minlength]="11"
-          [maxlength]="11"
-          placeholder="Enter Mobile"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="phone"
-          formControlName="phone" />
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error': userForm.get('phone').invalid && userForm.get('phone').touched}"
+        >
+          <input
+            [minLength]="11"
+            [maxLength]="11"
+            type="text"
+            matInput
+            id="phone"
+            formControlName="phone"
+            placeholder="Enter Mobile">
+        </mat-form-field>
         <!--        error-message-->
         <div
           *ngIf="userForm.get('phone').dirty && !userForm.get('phone').touched"
@@ -47,31 +59,37 @@
           <span>{{ getPhoneErrorMessageWithTouch() }}</span>
         </div>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="email">Email</label>
-        <input
-          placeholder="Enter Email"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="email"
-          formControlName="email" />
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error': userForm.get('email').invalid && userForm.get('email').touched}"
+        >
+          <input
+            id="email"
+            type="text"
+            matInput
+            formControlName="email"
+            placeholder="Enter email">
+        </mat-form-field>
         <!--        error-message-->
         <div *ngIf="userForm.get('email').touched" class="text-red text-xs">
           <span>{{ getEmailErrorMessage() }}</span>
         </div>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex space-y-2 flex-col w-full">
         <label for="designation">Designation</label>
-        <input
-          appAlphabetOnly
-          placeholder="Enter Designation"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="designation"
-          formControlName="designation" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            appAlphabetOnly
+            id="designation"
+            type="text"
+            matInput
+            formControlName="designation"
+            placeholder="Enter designation">
+        </mat-form-field>
         <!--        error-message-->
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="email">Department</label>
         <app-custom-input
           [inputSearch]="roleInputPlaceholder"
@@ -81,9 +99,9 @@
           (clickedElement)="onClickRole($event)"
           (selectedId)="onSelectRole($event)"></app-custom-input>
       </div>
-      <div class="lg:col-span-2 pb-4">
+      <div class="lg:col-span-2 py-4">
         <button
-          class="float-end py-2 px-12 flex justify-center items-center rounded-lg bg-primary text-white">
+          class="float-end py-[0.875rem] px-[5.125rem] flex justify-center items-center text-[1.125rem] rounded-lg bg-primary text-white">
           <span>Save</span>
         </button>
       </div>

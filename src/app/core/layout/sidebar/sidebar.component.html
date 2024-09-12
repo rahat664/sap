@@ -2,20 +2,20 @@
   #sideBar
   id="sidebar"
   *ngIf="!willShow"
-  class="fixed z-20 h-full top-0 left-0 pt-16 lg:flex flex-shrink-0 flex-col w-72 transition-width duration-75"
+  class="fixed z-20 h-full top-0 left-0 pt-16 lg:flex flex-shrink-0 flex-col w-[19rem] transition-width duration-75"
   aria-label="Sidebar">
   <div
     class="relative flex-1 flex flex-col min-h-full border-r border-app-bg bg-white pt-0 pb-20">
     <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-      <div class="flex-1 px-3 bg-white divide-y space-y-1">
-        <ul class="space-y-2 pb-2">
+      <div class="flex-1 px-8 bg-white divide-y space-y-1">
+        <ul class="space-y-3 pb-2">
           <li>
             <form action="#" method="GET" class="lg:hidden">
               <label for="mobile-search" class="sr-only">Search</label>
               <div class="relative">
                 <div
                   class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="far fa-search text-gray-500"></i>
+                  <img src="assets/svg/search.svg" class="notPreview" alt="search">
                 </div>
                 <input
                   type="text"
@@ -26,31 +26,25 @@
               </div>
             </form>
           </li>
-          <li>
-            <a
-              routerLink="/dashboard"
-              routerLinkActive="active"
-              class="cursor-pointer text-base text-[#777777] font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
-              <img loading="lazy" *ngIf="isActive('/dashboard')" class="notPreview"
-                   src="assets/svg/dashboard-select.svg" alt="" />
-              <img loading="lazy" *ngIf="isActive('/dashboard') == false" class="notPreview"
-                   src="assets/svg/dashboard-deselect.svg"
-                   alt="" />
-              <span class="ml-3 font-semibold">Dashboard</span>
-            </a>
-          </li>
+          <!--          <li>-->
+          <!--            <a-->
+          <!--              routerLink="/dashboard"-->
+          <!--              routerLinkActive="active"-->
+          <!--              class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">-->
+          <!--              <img loading="lazy" class="notPreview"-->
+          <!--                   src="assets/svg/dashboard-{{isActive('/dashboard') ? 'select': 'deselect'}}.svg" alt="" />-->
+          <!--              <span class="ml-3 font-semibold">Dashboard</span>-->
+          <!--            </a>-->
+          <!--          </li>-->
           <li>
             <a
               routerLink="/trip-create/customerselection"
               routerLinkActive="active"
               (click)="clearSelectedTemplate()"
               [routerLinkActiveOptions]="{ exact: true}"
-              class="cursor-pointer text-base text-[#777777]  rounded-lg flex items-center p-2 hover:bg-gray-100 group">
-              <img loading="lazy" *ngIf="isActive('/trip-create')" class="notPreview"
-                   src="assets/svg/trip-create-select.svg" alt="" />
-              <img loading="lazy" *ngIf="isActive('/trip-create') == false" class="notPreview"
-                   src="assets/svg/trip-create-deselect.svg"
-                   alt="" />
+              class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
+              <img loading="lazy" class="notPreview"
+                   src="assets/svg/trip-create-{{isActive('/trip-create') ? 'select': 'deselect'}}.svg" alt="" />
               <span class="ml-3 font-semibold">Create Trip</span>
             </a>
           </li>
@@ -59,12 +53,9 @@
               (click)="clearSelectedTemplate()"
               routerLink="/manage-trip"
               routerLinkActive="active"
-              class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
-              <img loading="lazy" *ngIf="isActive('/manage-trip')" class="notPreview"
-                   src="assets/svg/trip-management-select.svg"
-                   alt="" />
-              <img loading="lazy" *ngIf="isActive('/manage-trip') == false" class="notPreview"
-                   src="assets/svg/trip-management-deselect.svg"
+              class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
+              <img loading="lazy" class="notPreview"
+                   src="assets/svg/trip-management-{{isActive('/manage-trip') ? 'select': 'deselect'}}.svg"
                    alt="" />
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Manage Trip</span>
             </a>
@@ -74,12 +65,9 @@
               (click)="clearSelectedTemplate()"
               routerLink="/trip-list"
               routerLinkActive="active"
-              class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
-              <img loading="lazy" *ngIf="isActive('/trip-list')" class="notPreview"
-                   src="assets/svg/trip-list-select.svg" alt="" />
-              <img loading="lazy" *ngIf="isActive('/trip-list') == false" class="notPreview"
-                   src="assets/svg/trip-list-deselect.svg"
-                   alt="" />
+              class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
+              <img class="notPreview"
+                   src="assets/svg/trip-list-{{isActive('/trip-list') ? 'select': 'deselect'}}.svg" alt="" />
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Trip List</span>
             </a>
           </li>
@@ -88,16 +76,11 @@
               (click)="clearSelectedTemplate()"
               routerLink="/user-management"
               routerLinkActive="active"
-              class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
+              class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img
-                *ngIf="isActive('/user-management')"
+                loading="lazy"
                 class="notPreview"
-                src="assets/svg/user-management-select.svg"
-                alt="" />
-              <img
-                *ngIf="isActive('/user-management') == false"
-                class="notPreview"
-                src="assets/svg/user-management-deselect.svg"
+                src="assets/svg/user-management-{{isActive('/user-management') ? 'select': 'deselect'}}.svg"
                 alt="" />
               <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
             </a>
@@ -107,16 +90,11 @@
               (click)="clearSelectedTemplate()"
               routerLink="/user-management-customer"
               routerLinkActive="active"
-              class="text-base text-[#777777] font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group">
+              class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img
-                *ngIf="isActive('/user-management-customer')"
+                loading="lazy"
                 class="notPreview"
-                src="assets/svg/user-management-select.svg"
-                alt="" />
-              <img
-                *ngIf="isActive('/user-management-customer') == false"
-                class="notPreview"
-                src="assets/svg/user-management-deselect.svg"
+                src="assets/svg/user-management-{{isActive('/user-management-customer') ? 'select': 'deselect'}}.svg"
                 alt="" />
               <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
             </a>
@@ -127,12 +105,11 @@
               [routerLinkActiveOptions]="{ exact: false }"
               (click)="onClickProfile()"
               type="button"
-              class="flex items-center w-full p-2 text-base {{isActive('/profile') ? 'text-primary' : 'text-[#777777]'}} transition duration-75 rounded-lg group hover:bg-active dark:text-white dark:hover:bg-gray-700"
+              class="cursor-pointer text-base {{isActive('/profile') ? 'text-primary' : 'text-secondary'}} w-full leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
               aria-controls="dropdown-example">
-              <img loading="lazy" *ngIf="isActive('/profile')" class="notPreview" src="assets/svg/user-select.svg"
+              <img loading="lazy" class="notPreview"
+                   src="assets/svg/user-{{isActive('/profile') ? 'select': 'deselect'}}.svg"
                    alt="" />
-              <img loading="lazy" *ngIf="isActive('/profile') == false" class="notPreview"
-                   src="assets/svg/user-deselect.svg" alt="" />
               <span
                 class="flex-1 ms-3 text-left font-semibold rtl:text-right whitespace-nowrap"
               >Profiles</span
@@ -145,13 +122,13 @@
             <ul
               appGetOutsideModalClick
               id="dropdown-example"
-              class="py-2 space-y-2"
+              class="py-2 px-6 space-y-2"
               *ngIf="dropdownOpen">
               <li>
                 <a
                   routerLink="/profile/customer"
                   routerLinkActive="active"
-                  class="flex items-center w-full p-2 text-[#777777] font-semibold transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
                 >Customer</a
                 >
               </li>
@@ -159,7 +136,7 @@
                 <a
                   routerLink="/profile/transporter"
                   routerLinkActive="active"
-                  class="flex items-center w-full p-2 text-[#777777] font-semibold transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
                 >Transporter</a
                 >
               </li>
@@ -167,7 +144,7 @@
                 <a
                   routerLink="/profile/truck"
                   routerLinkActive="active"
-                  class="flex items-center w-full p-2 text-[#777777] font-semibold transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
                 >Truck</a
                 >
               </li>
@@ -175,7 +152,7 @@
                 <a
                   routerLink="/profile/driver"
                   routerLinkActive="active"
-                  class="flex items-center w-full p-2 text-[#777777] font-semibold transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
                 >Driver</a
                 >
               </li>
@@ -183,7 +160,7 @@
                 <a
                   routerLink="/profile/tracker"
                   routerLinkActive="active"
-                  class="flex items-center w-full p-2 text-[#777777] font-semibold transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
                 >Tracker</a
                 >
               </li>
@@ -194,7 +171,7 @@
     </div>
   </div>
   <div class="fixed bottom-0 mr-0 border-app-bg border-r">
-    <div class="p-4 flex items-center justify-center w-72 bg-[#FAFEFF]">
+    <div class="p-4 flex items-center justify-center w-[19rem] bg-[#FAFEFF]">
       <div class="flex flex-col items-center  space-y-3">
         <img loading="lazy" class="w-2/3" src="assets/svg/ecoflit.svg" alt="ecoflit">
         <span class="text-[.75rem] text-secondary">© SNZ Technologies Limited {{ currentYear }}</span>

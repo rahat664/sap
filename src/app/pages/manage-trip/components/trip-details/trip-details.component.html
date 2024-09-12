@@ -1,6 +1,6 @@
 <div class="bg-white w-full rounded-t-lg overflow-hidden">
   <div class="px-6 py-4 flex justify-between w-full items-center">
-    <h1 class="text-h2 font-semibold text-not-black">{{ tripDetails?.tripId }}</h1>
+    <h1 class="text-h2 leading-h2 font-semibold text-not-black">{{ tripDetails?.tripId }}</h1>
     <div class="flex space-x-4">
       <button (click)="onCLickMinimize()">
         <img loading="lazy" class="notPreview" src="assets/svg/minimize.svg" alt="minimize">
@@ -26,7 +26,7 @@
         </button>
         <button mat-menu-item (click)="onClickTripCancel()">
           <div class="flex space-x-2 items-center">
-            <i class="fas fa-times text-red"></i>
+            <i class="fal fa-times text-red"></i>
             <span class="text-red">Cancel</span>
           </div>
         </button>
@@ -55,28 +55,35 @@
     <div class="px-6">
       <div class="grid grid-cols-4 place-items-center text-xs font-semibold py-4 bg-input rounded-t-lg">
         <span>Created</span>
-        <span>Booked</span>
-        <span>Running</span>
-        <span>Completed</span>
+        <span
+          [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 2}">{{ tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 2 ? 'Cancelled' : 'Booked' }}</span>
+        <span [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 3}"
+              [hidden]="tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length < 3">{{ tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 3 ? 'Cancelled' : 'Running' }}</span>
+        <span [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 4}"
+              [hidden]="tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length < 4"> {{ tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 4 ? 'Cancelled' : 'Completed' }}</span>
       </div>
       <div class="border border-input border-t-0 grid grid-cols-4 place-items-center py-6 mb-4 rounded-b-lg">
-        <div class="flex flex-col space-y-2 w-full items-center justify-center"
+        <div class="flex flex-col space-y-3 w-full items-center justify-center"
              *ngFor="let timeline of tripTimeline; index as i">
           <img loading="lazy" class="notPreview {{timeline.truckInThisPoint ? '': 'invisible'}}"
                src="assets/svg/truckImg.svg"
                alt="truckImg">
-          <div class="relative w-full flex items-center justify-center">
+          <div class="relative w-full h-4 flex items-center justify-center">
+            <div [hidden]="tripDetails.status === 'Cancelled' && tripDetails.tripEvents.length < i+2"
+                 class="w-[0.5rem] h-[0.5rem] rounded-full relative ring ring-[#1DBF73] z-20 {{timeline.active ? 'bg-green': 'bg-white'}}"></div>
+            <div class="text-2xl z-20 relative text-red"
+                 *ngIf="timeline.cancelled && tripDetails.status == 'Cancelled' && !timeline.active">
+              <i class="far fa-times"></i>
+            </div>
             <div
-              class="w-[0.5rem] h-[0.5rem] rounded-full relative ring ring-[#1DBF73] z-20 {{timeline.active ? 'bg-green': 'bg-white'}}"></div>
-            <div
-              class="border  border-green {{timeline.active ? 'border-solid': 'border-dashed'}} {{i == 0 ? 'w-1/4 left-1/4' : 'w-1/2 right-1/2'}} absolute "></div>
+              class="{{timeline.className}}  {{i == 0 ? 'w-1/4 left-1/4' : 'w-1/2 right-1/2'}} absolute "></div>
             <div *ngIf="i < 3"
-                 class="border {{tripTimeline[i+1]?.active ? 'border-solid': 'border-dashed'}} border-green w-1/2 absolute right-0 "></div>
+                 class="{{tripTimeline[i+1].className}}  w-1/2 absolute right-0 "></div>
           </div>
           <div
-            class="text-center text-xs text-secondary flex flex-col space-y-2 {{timeline.dateTimeAvailable ? '': 'invisible'}}">
-            <span>{{ timeline.dateTime | date : 'hh mm a' }}</span>
-            <span>{{ timeline.dateTime | date: 'dd MMM yyyy' }}</span>
+            class="text-center text-xs text-secondary flex flex-col space-y-[.125rem] {{timeline.dateTimeAvailable ? '': 'invisible'}}">
+            <span>{{ timeline.dateTime | date : 'h:mm a' }}</span>
+            <span>{{ timeline.dateTime | date: 'd MMM yyyy' }}</span>
           </div>
         </div>
       </div>

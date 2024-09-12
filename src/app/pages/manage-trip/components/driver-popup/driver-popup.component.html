@@ -1,15 +1,15 @@
 <div class="sticky top-0 flex items-start justify-between bg-white z-50">
-  <h1 class="text-h3  font-semibold text-not-black px-6 py-4">Driver</h1>
+  <h1 class="text-h3 leading-h3  font-semibold text-not-black px-6 py-4">Driver</h1>
   <button class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
           (click)="closeDialog()">
-    <i class="fas fa-times"></i>
+    <i class="fal fa-times"></i>
   </button>
 </div>
 <div class="px-6 py-4">
   <div class="relative">
     <div
       class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-      <i class="far fa-search text-gray-500"></i>
+      <img src="assets/svg/search.svg" class="notPreview" alt="search">
     </div>
     <button (click)="onClickClear()" *ngIf="searchValue"
             class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -20,7 +20,7 @@
       (keyup)="onKeyUpSearch($event)"
       type="text"
       name="email"
-      id="topbar-search"
+
       class="border-none text-input-hint w-full  bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
       placeholder="Search  name, mobile, email" />
   </div>

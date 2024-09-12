@@ -1,13 +1,13 @@
 <div class="bg-transparent p-4">
   <div class="flex space-x-3 items-center font-semibold">
     <button (click)="onClickButton(button)" *ngFor="let button of statusButtons"
-            [ngClass]="{'ring ring-blue': button.isActive}"
+            [ngClass]="{'border border-blue': button.isActive}"
             class="flex space-x-2 items-center px-3 py-2 bg-white rounded-lg">
       <div
-        class="rounded-lg px-2 text-h2 py-1 {{getButtonColor(button)}} text-white flex items-center justify-center"><span>
+        class="rounded-lg px-2 text-h2 leading-h2 py-1 {{getButtonColor(button)}} text-white flex items-center justify-center"><span>
           {{ button.count }}
       </span></div>
-      <span class="text-body_title">{{ button.name }}</span>
+      <span class="text-body_title leading-body_title">{{ button.name }}</span>
     </button>
   </div>
 </div>

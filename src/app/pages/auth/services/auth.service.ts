@@ -7,6 +7,8 @@ import { LoginRequest } from '../models/request/login-request';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { LoginPhoneRequest } from '../models/request/login-phone-request';
+import { Store } from '@ngrx/store';
+import { AuthState } from '../ngrx/auth.reducer';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +16,8 @@ import { LoginPhoneRequest } from '../models/request/login-phone-request';
 export class AuthService {
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private store: Store<{ auth: AuthState }>
   ) {}
 
   login(payload: LoginRequest): Observable<ApiResponse> {
@@ -48,8 +51,7 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.clear();
-    this.router.navigate(['/auth/login']);
+    this.store.dispatch({ type: '[Auth] Logout' });
   }
 
   isLoggedIn() {

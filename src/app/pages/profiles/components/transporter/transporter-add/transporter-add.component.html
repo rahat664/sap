@@ -1,4 +1,7 @@
 <div class="flex w-full h-full">
+  <button (click)="onClickClose()" class="absolute top-4 right-4">
+    <i class="fal fa-times text-lg"></i>
+  </button>
   <div
     class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
     <div>
@@ -12,18 +15,20 @@
     <form
       [formGroup]="transporterForm"
       (ngSubmit)="onSave()"
-      class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-[0.875rem] text-web-text-secondary">
-      <div class="flex flex-col w-full lg:col-span-2">
+      class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
         <label for="name">Transporter name</label>
-        <input
-          appAlphabetOnly
-          [minlength]="2"
-          [maxlength]="50"
-          placeholder="Enter Transporter Name"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="name"
-          formControlName="name" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            appAlphabetOnly
+            id="name"
+            [minLength]="2"
+            [maxLength]="50"
+            type="text"
+            matInput
+            formControlName="name"
+            placeholder="Enter Transporter Name">
+        </mat-form-field>
         <div
           *ngIf="transporterForm.get('name').touched"
           class="text-red text-xs">
@@ -31,16 +36,18 @@
         </div>
         <!--        error-message-->
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="phone">Mobile</label>
-        <input
-          [minlength]="11"
-          [maxlength]="11"
-          placeholder="Enter Mobile"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="phone"
-          formControlName="phone" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            [minLength]="11"
+            [maxLength]="11"
+            type="text"
+            matInput
+            id="phone"
+            formControlName="phone"
+            placeholder="Enter Mobile">
+        </mat-form-field>
         <div
           *ngIf="
             transporterForm.get('phone').dirty &&
@@ -56,14 +63,16 @@
         </div>
         <!--        error-message-->
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="truckStand">Truck Stand</label>
-        <input
-          placeholder="Enter Truck Stand"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="truckStand"
-          formControlName="truckStand" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="truckStand"
+            type="text"
+            matInput
+            formControlName="truckStand"
+            placeholder="Enter Truck Stand">
+        </mat-form-field>
         <div
           *ngIf="transporterForm.get('truckStand').touched && transporterForm.get('truckStand').invalid"
           class="text-red text-xs">
@@ -71,7 +80,7 @@
         </div>
         <!--        error-message-->
       </div>
-      <div class="flex flex-col lg:col-span-2 w-full">
+      <div class="flex flex-col space-y-2 lg:col-span-2 w-full">
         <label for="preferredPaymentMethod">Preferred Payment Method</label>
         <app-custom-input
           id="preferredPaymentMethod"
@@ -88,25 +97,33 @@
         </div>
       </div>
       <ng-container *ngIf="paymentInputPlaceholder === 'Bkash'">
-        <div class="flex flex-col">
-          <label for="note">Bkash Account Name</label>
-          <input
-            placeholder="Enter Bkash Account Name"
-            class="bg-input rounded-lg border-none p-4"
-            type="text"
-            id="note"
-            formControlName="bkashName" />
+        <div class="flex flex-col space-y-2">
+          <label for="bkashName">Bkash Account Name</label>
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              id="bkashName"
+              [minLength]="2"
+              [maxLength]="50"
+              type="text"
+              matInput
+              formControlName="bkashName"
+              placeholder="Enter Bkash Account Name">
+          </mat-form-field>
         </div>
-        <div class="flex flex-col">
-          <label for="note">Bkash Number</label>
-          <input
-            placeholder="Enter Bkash number"
-            class="bg-input rounded-lg border-none p-4"
-            type="text"
-            id="note"
-            formControlName="bkashNumber" />
+        <div class="flex flex-col space-y-2">
+          <label for="bkashNumber">Bkash Number</label>
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              id="bkashNumber"
+              [minLength]="11"
+              [maxLength]="11"
+              type="text"
+              matInput
+              formControlName="bkashNumber"
+              placeholder="Enter Bkash Number">
+          </mat-form-field>
         </div>
-        <div class="flex flex-col lg:col-span-2">
+        <div class="flex flex-col space-y-2 lg:col-span-2">
           <label for="accountType">Account Type</label>
           <app-custom-input
             id="accountType"
@@ -119,55 +136,65 @@
         </div>
       </ng-container>
       <ng-container *ngIf="paymentInputPlaceholder === 'Bank'">
-        <div class="flex flex-col">
-          <label for="note">Bank Name</label>
-          <input
-            placeholder="Enter bank name"
-            class="bg-input rounded-lg border-none p-4"
-            type="text"
-            id="note"
-            formControlName="bankName" />
+        <div class="flex flex-col space-y-2">
+          <label for="bankName">Bank Name</label>
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              id="bankName"
+              type="text"
+              matInput
+              formControlName="bankName"
+              placeholder="Enter Bank Name">
+          </mat-form-field>
         </div>
-        <div class="flex flex-col">
-          <label for="note">Bank Branch</label>
-          <input
-            placeholder="Enter bank branch"
-            class="bg-input rounded-lg border-none p-4"
-            type="text"
-            id="note"
-            formControlName="bankBranch" />
+        <div class="flex flex-col space-y-2">
+          <label for="bankBranch">Bank Branch</label>
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              id="bankBranch"
+              type="text"
+              matInput
+              formControlName="bankBranch"
+              placeholder="Enter Bank Branch">
+          </mat-form-field>
         </div>
-        <div class="flex flex-col">
-          <label for="note">Bank Account Name</label>
-          <input
-            placeholder="Enter bank account name"
-            class="bg-input rounded-lg border-none p-4"
-            type="text"
-            id="note"
-            formControlName="bankAccountName" />
+        <div class="flex flex-col space-y-2">
+          <label for="bankAccountName">Bank Account Name</label>
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              id="bankAccountName"
+              type="text"
+              matInput
+              formControlName="bankAccountName"
+              placeholder="Enter Bank Account Name">
+          </mat-form-field>
         </div>
-        <div class="flex flex-col">
-          <label for="note">Bank Account Number</label>
-          <input
-            placeholder="Enter bank account number"
-            class="bg-input rounded-lg border-none p-4"
-            type="text"
-            id="note"
-            formControlName="bankAccountNumber" />
+        <div class="flex flex-col space-y-2">
+          <label for="bankAccountNumber">Bank Account Number</label>
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              id="bankAccountNumber"
+              type="text"
+              matInput
+              formControlName="bankAccountNumber"
+              placeholder="Enter Bank Account Number">
+          </mat-form-field>
         </div>
       </ng-container>
-      <div class="flex flex-col w-full lg:col-span-2">
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
         <label for="note">Note (Optional)</label>
-        <input
-          placeholder="Enter Note."
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="note"
-          formControlName="note" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="note"
+            matInput
+            formControlName="note"
+            placeholder="Enter Note"
+          >
+        </mat-form-field>
       </div>
       <div class="lg:col-span-2 pb-4">
         <button
-          class="float-end py-2 px-12 flex justify-center items-center rounded-lg bg-primary text-white">
+          class="float-end py-[0.875rem] px-[5.125rem] flex justify-center items-center rounded-lg bg-primary text-white">
           <span>Save</span>
         </button>
       </div>

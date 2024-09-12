@@ -1,12 +1,15 @@
 thead {
   @apply sticky top-0;
 }
+
 .border {
-  @apply h-[0.125rem] p-0 bg-[#A1D5DE];
+  @apply h-[1px] p-0 bg-[#A1D5DE];
 }
+
 tbody > tr {
-  @apply border-b border-[#A1D5DE] last:border-b-0;
+  @apply border-b border-[#E8F1F3] last:border-b-0;
 }
+
 
 th,
 td {

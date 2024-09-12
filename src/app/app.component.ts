@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { LayoutComponent } from './core/layout/layout.component';
 import { initFlowbite } from 'flowbite';
@@ -28,6 +28,7 @@ import { DriverEditSharedService } from './pages/profiles/services/driver-edit-s
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
+  private focusListener: () => void;
   title = 'snz-web';
   isOpen: boolean;
   map: google.maps.Map;
@@ -38,7 +39,8 @@ export class AppComponent implements OnInit {
     private imageGalleryService: ImageGalleryService,
     private handleToaster: HandleToastrService,
     private geoLocation: GeolocationService,
-    private shared: DriverEditSharedService
+    private shared: DriverEditSharedService,
+    private renderer: Renderer2
   ) {}
 
   @HostListener('click', ['$event'])
@@ -64,6 +66,7 @@ export class AppComponent implements OnInit {
     this.loadGoogleMapsScript();
     this.geoLocation.getCurrentPosition();
     this.setCurrentLocationInStorage();
+    this.checkInputListener();
   }
 
   isLoginPage() {
@@ -100,5 +103,33 @@ export class AppComponent implements OnInit {
         );
       });
     }
+  }
+
+  ngOnDestroy() {
+    if (this.focusListener) {
+      this.focusListener();
+    }
+  }
+
+  private checkInputListener() {
+    this.focusListener = this.renderer.listen('document', 'click', event => {
+      // if target is a number type turn off scrolling and add min max
+      if (
+        (event.target as HTMLElement).tagName === 'INPUT' &&
+        (event.target as HTMLInputElement).type === 'number'
+      ) {
+        (event.target as HTMLInputElement).onwheel = (e: WheelEvent) => {
+          e.preventDefault();
+        };
+        // add min max to input type number
+        if ((event.target as HTMLInputElement).min === '') {
+          (event.target as HTMLInputElement).min = '0';
+        }
+        if ((event.target as HTMLInputElement).max === '') {
+          (event.target as HTMLInputElement).max =
+            Number.MAX_SAFE_INTEGER.toString();
+        }
+      }
+    });
   }
 }

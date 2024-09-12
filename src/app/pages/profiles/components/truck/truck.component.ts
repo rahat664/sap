@@ -7,14 +7,11 @@ import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-he
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
-import { TruckModel } from './models/truck.model';
 import { TruckService } from './services/truck.service';
 import { RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
-import { manufacturerList } from './models/manufacturer-list';
 import { FileUploadPopupComponent } from './file-upload-popup/file-upload-popup.component';
-import { TruckInnerModel } from './models/truck-inner.model';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
@@ -22,6 +19,8 @@ import { debounceTime } from 'rxjs';
 import { CheckListPopupComponent } from '../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checklist.component';
 import { MatDialog } from '@angular/material/dialog';
+import { TruckDocument, TruckModel } from './models/truck.model';
+import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
 
 @Component({
   selector: 'app-truck',
@@ -52,16 +51,10 @@ import { MatDialog } from '@angular/material/dialog';
 export class TruckComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   height = '';
-  truckList: TruckInnerModel[] = [];
-  manufactureOpened: boolean;
-  manufacturerList: CustomInputSelectModel[] = manufacturerList;
-  manufacturerPlaceholder = '';
-  trackerAddOpened = false;
-  selectedTruckId: number;
+  truckList: TruckModel[] = [];
   isOpen = false;
   loading: boolean;
-  isNewOpen: boolean;
-  singleTruck: TruckInnerModel;
+  singleTruck: TruckModel;
   newDriverFileType: CustomInputSelectModel[] = [];
   private page = 0;
   totalPages: number;
@@ -69,6 +62,7 @@ export class TruckComponent implements OnInit {
   isCheckListOpened: boolean = false;
   singleTruckId: number;
   size: number = 30;
+  truckEnum = TruckDocumentType;
 
   constructor(
     private service: TruckService,
@@ -85,67 +79,35 @@ export class TruckComponent implements OnInit {
     this.page = 0;
     this.loading = true;
     if (this.searchValue) {
-      //subscribe with debounce time
+      //subscribe with debounced time
       this.service
         .getTruckList(this.page, this.size, this.searchValue)
         .pipe(debounceTime(500))
         .subscribe((res: any) => {
-          res.data.responses.forEach((truck: TruckModel) => {
-            truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-            truck.truck.noOfTrips = truck.noOfTrips;
-            this.truckList.push(truck.truck);
-          });
+          this.truckList = res.data.responses;
           this.totalPages = res.data.totalPages;
           this.loading = false;
         });
     } else {
       this.service.getTruckList(this.page, this.size).subscribe((res: any) => {
-        res.data.responses.forEach((truck: TruckModel) => {
-          truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-          truck.truck.noOfTrips = truck.noOfTrips;
-          this.truckList.push(truck.truck);
-        });
+        this.truckList = res.data.responses;
         this.totalPages = res.data.totalPages;
         this.loading = false;
       });
     }
   }
 
-  getFullRegistrationName(truck: TruckInnerModel) {
+  getFullRegistrationName(truck: TruckModel) {
     return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial}-${truck.registrationNum}`;
   }
 
-  onClickManufacturer($event: boolean) {
-    this.manufactureOpened = $event;
-  }
-
-  onSelectManuFacturer($event: number) {
-    this.manufacturerPlaceholder = this.manufacturerList.find(
-      (manufacturer: CustomInputSelectModel) => manufacturer.id === $event
-    ).value;
-  }
-
-  onClickAddTracker(id: number) {
-    if (id === this.selectedTruckId) {
-      this.trackerAddOpened = !this.trackerAddOpened;
-    } else {
-      this.trackerAddOpened = true;
-    }
-    this.selectedTruckId = id;
-  }
-
-  onClickAddTruckerSave() {
-    this.trackerAddOpened = false;
-  }
-
-  onClickTruckDetails(truck: TruckInnerModel) {
+  onClickTruckDetails(truck: TruckModel) {
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
     this.shared.closeInputSelect.next(false);
   }
 
-  onClickUpdate(fit: string, truck: TruckInnerModel) {
-    this.isNewOpen = true;
+  onClickUpdate(fit: string, truck: TruckModel) {
     this.singleTruck = truck;
     this.isOpen = true;
     if (fit == 'fit') {
@@ -170,12 +132,27 @@ export class TruckComponent implements OnInit {
     if (fit == 'other') {
       this.newDriverFileType = [{ id: 6, value: 'Other', selected: false }];
     }
+
+    this.dialog
+      .open(FileUploadPopupComponent, {
+        width: '40%',
+        data: {
+          filetype: this.newDriverFileType,
+          fromPopup: true,
+          from: 'truck',
+          value: truck,
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res) {
+        }
+      });
   }
 
   private makeSureUploadCompletedOrNot() {
     this.shared.completeTruckUpload.subscribe((res: boolean) => {
       if (res) {
-        this.isNewOpen = false;
         this.isOpen = false;
         this.truckList = [];
         this.getTruckList();
@@ -191,54 +168,16 @@ export class TruckComponent implements OnInit {
           .getTruckList(this.page, this.size, this.searchValue)
           .pipe(debounceTime(500))
           .subscribe((res: any) => {
-            res.data.responses.forEach((truck: TruckModel) => {
-              truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-              truck.truck.noOfTrips = truck.noOfTrips;
-              this.truckList.push(truck.truck);
-            });
+            this.truckList.push(...res.data.responses);
           });
       } else {
         this.service
           .getTruckList(this.page, this.size)
           .subscribe((res: any) => {
-            res.data.responses.forEach((truck: TruckModel) => {
-              truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-              truck.truck.noOfTrips = truck.noOfTrips;
-              this.truckList.push(truck.truck);
-            });
+            this.truckList.push(...res.data.responses);
           });
       }
     }
-  }
-
-  onMaxHeightCross($event: boolean) {
-    // setTimeout(() => {
-    //   if (!$event && this.totalPages > 1 && this.page != 1) {
-    //     this.page = 1;
-    //     if (this.searchValue) {
-    //       this.service
-    //         .getTruckList(this.page, this.searchValue)
-    //         .pipe(debounceTime(500))
-    //         .subscribe((res: any) => {
-    //           res.data.responses.forEach((truck: TruckModel) => {
-    //             truck.truck.preHireCheckList = String(
-    //               truck.preHireChecklistList
-    //             );
-    //             truck.truck.noOfTrips = truck.noOfTrips;
-    //             this.truckList.push(truck.truck);
-    //           });
-    //         });
-    //     } else {
-    //       this.service.getTruckList(this.page).subscribe((res: any) => {
-    //         res.data.responses.forEach((truck: TruckModel) => {
-    //           truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-    //           truck.truck.noOfTrips = truck.noOfTrips;
-    //           this.truckList.push(truck.truck);
-    //         });
-    //       });
-    //     }
-    //   }
-    // }, 1);
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
@@ -259,6 +198,9 @@ export class TruckComponent implements OnInit {
     this.singleTruckId = truck.id;
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
+    this.dialog.open(PreHireChecklistComponent, {
+      width: '40%',
+    });
   }
 
   onClickAddTruck() {
@@ -270,5 +212,15 @@ export class TruckComponent implements OnInit {
     this.truckList = [];
     this.page = 0;
     this.getTruckList();
+  }
+
+  checkThatFileIsExistOrNot(fileName: any, truckDocumentList: TruckDocument[]) {
+    let isExist = false;
+    truckDocumentList.forEach(doc => {
+      if (doc.documentType == this.truckEnum[fileName]) {
+        isExist = true;
+      }
+    });
+    return isExist;
   }
 }

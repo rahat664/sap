@@ -145,6 +145,7 @@ export class DialogDataComponent {
   protected readonly registrationZoneList = registrationZoneList;
   protected readonly registrationCategoryList = registrationCategoryList;
   tripUpdateForm: FormGroup;
+  loading: boolean = false;
 
   getTransporterList() {
     const dialogRef = this.dialog
@@ -257,6 +258,7 @@ export class DialogDataComponent {
   }
 
   onChangeTripStatus(buttonName: any) {
+    this.loading = true;
     if (buttonName === 'Book Trip') {
       if (
         this.tripUpdateForm.get('transporterName').valid &&
@@ -275,6 +277,7 @@ export class DialogDataComponent {
         body.truckId = this.tripUpdateForm.get('truckId').value;
         this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
           (res: any) => {
+            this.loading = false;
             this.dialogRef.close('updated');
             if (res.status == 'OK') {
               this.dialog
@@ -326,6 +329,20 @@ export class DialogDataComponent {
         this.toaster.showError('Please fill all the required fields');
       }
     } else if (buttonName === 'Start Trip') {
+      if (this.data?.trip?.truck?.id) {
+        this.tripUpdateForm.get('truckId').setValue(this.data.trip.truck.id);
+      }
+      if (this.data?.trip?.driver?.userId) {
+        this.tripUpdateForm
+          .get('driverCode')
+          .setValue(this.data.trip.driver.userId);
+        this.tripUpdateForm
+          .get('driverName')
+          .setValue(this.data.trip.driver.name);
+        this.tripUpdateForm
+          .get('driverPhone')
+          .setValue(this.data.trip.driver.phone);
+      }
       if (
         this.tripUpdateForm.get('driverName').valid &&
         this.tripUpdateForm.get('driverPhone').valid &&
@@ -369,6 +386,7 @@ export class DialogDataComponent {
           );
           this.trip.updateTrip(body, this.data.trip?.tripId).subscribe(
             (res: any) => {
+              this.loading = false;
               if (res.status == 'OK') {
                 this.dialogRef.close('updated');
                 this.dialog
@@ -497,6 +515,7 @@ export class DialogDataComponent {
         body.truckId = this.tripUpdateForm.get('truckId').value;
         this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
           (res: any) => {
+            this.loading = false;
             if (res.status == 'OK') {
               this.dialogRef.close('updated');
               this.dialog

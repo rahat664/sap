@@ -20,6 +20,7 @@ import { TripService } from '../../../pages/trip-list/services/trip.service';
   styleUrls: ['./g-map.component.scss'],
 })
 export class GMapComponent implements OnInit, OnChanges {
+  @Input() tripStatus: string;
   @Input() lat: number;
   @Input() lng: number;
   @Input() starting: google.maps.LatLngLiteral;
@@ -128,7 +129,6 @@ export class GMapComponent implements OnInit, OnChanges {
           this.map.googleMap.fitBounds(bound);
           this.updatePolylineWithTraffic(result);
         } else {
-          console.error('Directions request failed due to ', status);
         }
       });
     } else {
@@ -137,7 +137,12 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   private updateTruckLocation() {
-    if (this.truckLocationPosition?.lat && this.truckLocationPosition?.lng) {
+    if (
+      this.truckLocationPosition?.lat &&
+      this.truckLocationPosition?.lng &&
+      this.tripStatus != 'Completed' &&
+      this.tripStatus != 'Cancelled'
+    ) {
       if (this.truckLocationMarker) {
         // Update existing marker position
         this.truckLocationMarker.setPosition(this.truckLocationPosition);
@@ -147,7 +152,7 @@ export class GMapComponent implements OnInit, OnChanges {
           position: this.truckLocationPosition,
           icon: {
             url: '/assets/svg/truck-map.svg',
-            scaledSize: new google.maps.Size(30, 30),
+            scaledSize: new google.maps.Size(36, 36),
           },
           title: 'Truck Location',
           map: this.map.googleMap, // Add marker to the map

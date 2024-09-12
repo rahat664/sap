@@ -1,4 +1,8 @@
 <div class="flex flex-col space-y-4 justify-between p-{{ padding }} text-body">
+  <button (click)="onClose()"
+          class="absolute top-1 right-1 w-6 h-6 rounded-full bg-white flex items-center justify-center">
+    <i class="fal fa-times text-primary"></i>
+  </button>
   <div class="flex flex-col space-y-3">
     <div *ngIf="isUploadIconEnabled" class="flex space-x-3 items-center">
       <span
@@ -53,41 +57,48 @@
   </div>
   <div
     class="flex flex-col bg-input px-4 py-2 space-y-2 rounded-lg"
-    *ngIf="fileArray?.length > 0">
+    *ngIf="fileArray.length > 0">
     <ng-container *ngFor="let file of fileArray; index as i">
       <div class="flex py-2 space-x-3 items-center">
-        <div class="w-full flex space-x-3 flex-1 items-center">
+        <div class="w-full flex justify-between gap-3 flex-1 items-center">
           <div class="h-12 w-12 overflow-hidden">
             <img
               class="h-full w-full"
               [src]="file.preview ? file.preview : 'assets/svg/fileupload.svg'"
               alt="" />
           </div>
-          <app-custom-input
-            class="w-full flex-1"
-            backgroundColor="white"
-            inputPlaceholder="Select type"
-            [options]="file.registrationOptions"
-            (selectedId)="onSelectFileType($event, i)"
-            [inputSearch]="file.registrationType"
-            appGetClickEvent
-            (clickedElement)="onClickFileType($event, i)"
-          ></app-custom-input>
-          <div
-            *ngIf="
+          <div class="w-full grid gap-4"
+               [ngClass]="{
+            'grid-cols-2': file.registrationType === 'Case' ||
+              file.registrationType === 'Fitness' ||
+              file.registrationType === 'Route Permit' ||
+              file.registrationType === 'Tax' ||
+              file.registrationType === 'Driving License Front' || file.registrationType === 'Insurance',
+            }"
+          >
+            <app-custom-input
+              backgroundColor="white"
+              inputPlaceholder="Select type"
+              [options]="data?.filetype"
+              (selectedId)="onSelectFileType($event, i)"
+              [inputSearch]="file.registrationType"
+            ></app-custom-input>
+            <div
+              *ngIf="
               file.registrationType === 'Case' ||
               file.registrationType === 'Fitness' ||
               file.registrationType === 'Route Permit' ||
               file.registrationType === 'Tax' ||
-              file.registrationType === 'Driving License Front'
-            ">
-            <!--             Date picker cannot take previous date-->
-
-            <input
-              type="date"
-              (change)="onDateChange($event, i)"
-              placeholder="Expire date "
-              class="border-none bg-white w-full flex-1 rounded-md p-4" />
+              file.registrationType === 'Driving License Front' ||file.registrationType === 'Insurance'"
+            >
+              <!--             Date picker cannot take previous date-->
+              <mat-form-field class="example-full-width flex-1 w-full" appearance="outline">
+                <input matInput [matDatepicker]="picker" placeholder="Expiry Date" (focusin)="picker.open()"
+                       (selectionchange)="onDateChange($event, i)">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
           </div>
         </div>
         <button (click)="onCloseSelectedFile(i)"
@@ -98,7 +109,7 @@
     </ng-container>
   </div>
   <button
-    *ngIf="fileArray?.length > 0 && callFromModal"
+    *ngIf="fileArray?.length > 0"
     (click)="onSubmit()"
     class="self-end bg-primary text-white rounded-lg px-4 py-2">
     Upload

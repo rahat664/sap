@@ -20,11 +20,21 @@ import { InputAutoFocusDirective } from '../../../../shared/directive/input-auto
 import { CommonModule } from '@angular/common';
 import { LoginRequest } from '../../models/request/login-request';
 import { selectAuthError, selectAuthLoading } from '../../ngrx/auth.selectors';
+import { MatAutocomplete } from '@angular/material/autocomplete';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, InputAutoFocusDirective],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    InputAutoFocusDirective,
+    MatAutocomplete,
+    MatFormField,
+    MatInput,
+  ],
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss'],
 })
@@ -36,10 +46,12 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   loginUsingPhonePayload: LoginPhoneRequest;
   loginPhoneRequestPayload: LoginRequestUsingPhonePayload;
-  otpScreen: boolean;
+  otpScreen: boolean = false;
   idName: string = 'otp1';
   time: Date = new Date(0, 0, 0, 0, 2, 0); // 2 minutes
   private countdownSubscription: Subscription | undefined;
+  private errorSubscription: Subscription | undefined;
+  private loadingSubscription: Subscription | undefined;
   timeDisabled: boolean;
   error: string | null = null; // Add error property
   $loading: boolean;
@@ -59,29 +71,39 @@ export class SignInComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.titleService.setTitle('Login');
     this.createFormControls();
-    this.store.pipe(select(selectAuthError)).subscribe(error => {
-      console.log(error);
-      if (error) {
-        this.toaster.showError(error.error?.message, '');
-        this.loginRequestPayload = {
-          email: '',
-          password: '',
-        };
-        this.loginPhoneRequestPayload = {
-          phoneNumber: '',
-          otpCode: '',
-        };
-        // Show error using Toastr service
-      }
-    });
-    this.store.pipe(select(selectAuthLoading)).subscribe(loading => {
-      this.$loading = loading;
-    });
+    this.errorSubscription = this.store
+      .pipe(select(selectAuthError))
+      .subscribe(error => {
+        if (error) {
+          this.toaster.showError(error.error?.message, '');
+          this.loginRequestPayload = {
+            email: '',
+            password: '',
+          };
+          this.loginPhoneRequestPayload = {
+            phoneNumber: '',
+            otpCode: '',
+          };
+        }
+      });
+    this.loadingSubscription = this.store
+      .pipe(select(selectAuthLoading))
+      .subscribe(loading => {
+        this.$loading = loading;
+      });
   }
 
   ngOnDestroy(): void {
     if (this.countdownSubscription) {
       this.countdownSubscription.unsubscribe();
+    }
+    if (this.errorSubscription) {
+      this.errorSubscription.unsubscribe();
+      this.error = null;
+    }
+    if (this.loadingSubscription) {
+      this.loadingSubscription.unsubscribe();
+      this.$loading = false;
     }
   }
 
@@ -156,13 +178,31 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   private monitorOtpFields() {
     this.loginForm.get('otp1').valueChanges.subscribe(value => {
-      if (value?.length === 1) this.idName = 'otp2';
+      // should not take input if the value is not a number
+      if (isNaN(Number(value))) {
+        this.loginForm.get('otp1').setValue('');
+      } else {
+        if (value?.length === 1) this.idName = 'otp2';
+      }
     });
     this.loginForm.get('otp2').valueChanges.subscribe(value => {
-      if (value?.length === 1) this.idName = 'otp3';
+      if (isNaN(Number(value))) {
+        this.loginForm.get('otp2').setValue('');
+      } else {
+        if (value?.length === 1) this.idName = 'otp3';
+      }
     });
     this.loginForm.get('otp3').valueChanges.subscribe(value => {
-      if (value?.length === 1) this.idName = 'otp4';
+      if (isNaN(Number(value))) {
+        this.loginForm.get('otp3').setValue('');
+      } else {
+        if (value?.length === 1) this.idName = 'otp4';
+      }
+    });
+    this.loginForm.get('otp4').valueChanges.subscribe(value => {
+      if (isNaN(Number(value))) {
+        this.loginForm.get('otp4').setValue('');
+      }
     });
   }
 
@@ -289,12 +329,26 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   onClickResend() {
+    this.loginForm.get('otp1').setValue('');
+    this.loginForm.get('otp2').setValue('');
+    this.loginForm.get('otp3').setValue('');
+    this.loginForm.get('otp4').setValue('');
+    this.loginForm.get('otp1').clearValidators();
+    this.loginForm.get('otp2').clearValidators();
+    this.loginForm.get('otp3').clearValidators();
+    this.loginForm.get('otp4').clearValidators();
+    this.loginForm.get('otp1').updateValueAndValidity();
+    this.loginForm.get('otp2').updateValueAndValidity();
+    this.loginForm.get('otp3').updateValueAndValidity();
+    this.loginForm.get('otp4').updateValueAndValidity();
+    this.$loading = false;
     this.auth.loginUsingPhone(this.loginUsingPhonePayload).subscribe(
       response => {
         if (response.status === 'OK') {
           this.toaster.showSuccess('OTP sent successfully', '');
-          // Reset the timer
+          this.countdownSubscription?.unsubscribe();
           this.time = new Date(0, 0, 0, 0, 2, 0);
+          this.timeDisabled = false;
           this.startCountdown();
         } else {
           this.toaster.showError(response.message, '');
@@ -334,5 +388,33 @@ export class SignInComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  onClickEdit() {
+    this.clearOtp();
+  }
+
+  // BACK BUTTON CLICK EVENT HANDLER on browser back button
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event: any) {
+    this.clearOtp();
+  }
+
+  private clearOtp() {
+    this.countdownSubscription?.unsubscribe();
+    this.time = new Date(0, 0, 0, 0, 2, 0);
+    this.otpScreen = false;
+    this.loginForm.get('otp1').setValue('');
+    this.loginForm.get('otp2').setValue('');
+    this.loginForm.get('otp3').setValue('');
+    this.loginForm.get('otp4').setValue('');
+    this.loginForm.get('otp1').clearValidators();
+    this.loginForm.get('otp2').clearValidators();
+    this.loginForm.get('otp3').clearValidators();
+    this.loginForm.get('otp4').clearValidators();
+    this.loginForm.get('otp1').updateValueAndValidity();
+    this.loginForm.get('otp2').updateValueAndValidity();
+    this.loginForm.get('otp3').updateValueAndValidity();
+    this.loginForm.get('otp4').updateValueAndValidity();
   }
 }

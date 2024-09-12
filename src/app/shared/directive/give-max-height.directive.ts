@@ -92,6 +92,10 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
     const maxHeight = `calc(100vh - ${this.anotherItemsHeight} - ${this.topBarHeight})`;
     this.el.nativeElement.style.maxHeight = maxHeight;
     this.elementHeight.emit(maxHeight);
+    // if div contains table, then set border
+    if (this.el.nativeElement.querySelector('table')) {
+      this.el.nativeElement.style.border = '1px solid #A1D5DE';
+    }
   }
 
   private checkScrollPosition(event: any): void {

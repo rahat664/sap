@@ -1,6 +1,6 @@
 <div class="m-2 bg-white">
   <div class="p-4 border-b-2 border-input flex justify-between items-center">
-    <h1 class="text-h1 font-semibold">Driver detail</h1>
+    <h1 class="text-h1 leading-h1 font-semibold">Driver detail</h1>
     <div class="flex space-x-3">
       <button
         type="button"
@@ -30,21 +30,27 @@
       <div class="p-4 flex flex-col space-y-3">
         <div class="flex space-x-3 items-center text-not-black">
           <img loading="lazy" class="notPreview" src="assets/svg/user.svg" alt="" />
-          <span class="text-h2 font-semibold">Driver Info</span>
+          <span class="text-h2 leading-h2 font-semibold">Driver Info</span>
         </div>
-        <div class="grid grid-cols-2 gap-3">
+        <form [formGroup]="driverUpdateForm" class="grid grid-cols-2 gap-3">
           <div
             class="flex flex-col space-y-1"
             [ngClass]="{ 'col-span-2': inEditMode }">
-            <span class="text-not-black font-semibold">Name</span>
+            <label for="driverName" class="text-web-text-secondary font-semibold">Name</label>
             <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
                 singleDriver.name
               }}</span>
             <div *ngIf="inEditMode">
-              <input
-                placeholder="Enter driver name"
-                [(ngModel)]="driverName"
-                class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+              <mat-form-field appearance="outline" class="example-full-width w-full">
+                <input
+                  id="driverName"
+                  [minLength]="2"
+                  [maxLength]="50"
+                  type="text"
+                  matInput
+                  formControlName="driverName"
+                  placeholder="Enter driver name">
+              </mat-form-field>
             </div>
           </div>
           <div *ngIf="!inEditMode" class="flex flex-col space-y-1">
@@ -54,22 +60,24 @@
           <div
             class="flex flex-col space-y-1"
             [ngClass]="{ 'col-span-2': inEditMode }">
-            <span class="text-not-black font-semibold">Mobile</span>
+            <label for="driverPhone" class="text-web-text-secondary font-semibold">Mobile</label>
             <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
                 singleDriver.phone
               }}</span>
             <div *ngIf="inEditMode">
-              <input
-                placeholder="Enter mobile Number"
-                [(ngModel)]="driverPhone"
-                class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+              <mat-form-field appearance="outline" class="example-full-width w-full">
+                <input
+                  id="driverPhone"
+                  [minLength]="11"
+                  [maxLength]="11"
+                  type="text"
+                  matInput
+                  formControlName="driverPhone"
+                  placeholder="Enter mobile number">
+              </mat-form-field>
             </div>
           </div>
-          <!--          <div *ngIf="!inEditMode" class="flex flex-col space-y-1">-->
-          <!--            <span class="text-not-black font-semibold">Number of trips</span>-->
-          <!--            <span class="text-web-text-secondary">24</span>-->
-          <!--          </div>-->
-        </div>
+        </form>
       </div>
     </div>
     <div class="w-full p-4 flex flex-col space-y-3">
@@ -79,7 +87,7 @@
           <span>Documents</span>
         </div>
         <app-upload-button
-          (click)="isUploadPopupOpen = true; isNewOpen = true"
+          (click)="onCLickUpload()"
           *ngIf="inEditMode"
           icon="upload"
           [file]="true"
@@ -103,7 +111,7 @@
                 (click)="onClickCloseButton(document)"
                 *ngIf="inEditMode"
                 class="h-6 w-6 bg-red rounded-full flex justify-center items-center text-white absolute top-2 right-2">
-                <i class="fas fa-times"></i>
+                <i class="fal fa-times"></i>
               </button>
             </div>
             <div class="flex space-y-1 flex-col">
@@ -114,7 +122,7 @@
               >Exp:
                 {{
                   document.expDate
-                    ? (document.expDate | date: 'dd MMM yyyy')
+                    ? (document.expDate | date: 'd MMM yyyy')
                     : 'N/A'
                 }}</span
               >
@@ -124,7 +132,7 @@
       </div>
       <div class="w-full flex flex-col space-y-3 justify-center items-center" *ngIf="documents.length <=0">
         <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-        <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+        <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
       </div>
     </div>
   </div>
@@ -141,22 +149,4 @@
     </div>
   </div>
 </div>
-<app-create-popup
-  [isOpen]="isUploadPopupOpen"
-  (isModalClosed)="isUploadPopupOpen = !$event; isNewOpen = !$event">
-  <app-file-upload-popup
-    [isNewOpen]="isNewOpen"
-    (fileInput)="onChangeFile($event)"
-    [fileTypeOptions]="newDriverFileType"
-    [callFromModal]="true"></app-file-upload-popup>
-</app-create-popup>
-<app-confirm-modal
-  [isOpen]="isConfirmModalOpen"
-  buttonText="Remove"
-  [fromDoc]="true"
-  [fileName]="fileName"
-  (isModalClosed)="isConfirmModalOpen = !$event"
-  (performChangeStatus)="performRemove($event)"
 
->
-</app-confirm-modal>

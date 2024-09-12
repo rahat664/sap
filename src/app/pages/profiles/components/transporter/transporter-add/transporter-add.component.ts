@@ -1,4 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  inject,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import {
@@ -16,6 +23,9 @@ import { ValidationService } from '../../../../../shared/services/validation/val
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-transporter-add',
@@ -26,9 +36,13 @@ import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-
     ReactiveFormsModule,
     NgIf,
     AlphabetOnlyDirective,
+    MatDialogModule,
+    MatFormField,
+    MatInput,
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransporterAddComponent implements OnInit {
   transporterForm: FormGroup;
@@ -38,6 +52,7 @@ export class TransporterAddComponent implements OnInit {
   paymentInputPlaceholder: string;
   @Output() formCreated = new EventEmitter<boolean>();
   bkashPaymentTypePlaceholder: string;
+  readonly dialogRef = inject(MatDialogRef<TransporterAddComponent>);
 
   constructor(
     private service: UserService,
@@ -141,11 +156,10 @@ export class TransporterAddComponent implements OnInit {
         (res: any) => {
           if (res.status == 'OK') {
             this.toastr.showSuccess('Transporter created successfully');
-            this.formCreated.emit(true);
             this.transporterForm.reset();
+            this.dialogRef.close(true);
           } else {
             this.toastr.showError(res.message);
-            this.formCreated.emit(false);
           }
         },
         error => {
@@ -221,5 +235,9 @@ export class TransporterAddComponent implements OnInit {
 
   getPhoneErrorMessageWithTouch() {
     return this.validation.getErrorMessageWithTouch(this.transporterForm);
+  }
+
+  onClickClose() {
+    this.dialogRef.close(false);
   }
 }

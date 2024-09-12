@@ -5,12 +5,12 @@
     class="flex flex-col space-y-3">
     <div
       class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
-      <h1 class="text-h1 font-semibold">Truck</h1>
+      <h1 class="text-h1 leading-h1 font-semibold">Truck</h1>
       <div class="flex space-x-4 items-center">
         <div class="relative">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i class="far fa-search text-gray-500"></i>
+            <img src="assets/svg/search.svg" class="notPreview" alt="search">
           </div>
           <button (click)="onClickClear()" *ngIf="searchValue"
                   class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -21,7 +21,7 @@
             type="text"
             name="email"
             [(ngModel)]="searchValue"
-            id="topbar-search"
+
             class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
             placeholder="Enter truck registration number" />
         </div>
@@ -41,21 +41,19 @@
     [totalPage]="totalPages"
     [anotherItemsHeight]="height"
     class="bg-white w-full rounded-lg overflow-auto relative">
-    <table class="table-auto w-full text-[0.875rem]">
+    <table class="table-auto rounded-lg w-full text-body_title leading-body_title">
       <thead>
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left">Registration number</th>
         <th class="text-left">Pre-hire checklist</th>
         <th class="text-left whitespace-nowrap">Created On</th>
         <th class="text-left">Number of trip</th>
-        <!--          <th class="text-center w-[10rem] inline-block">Tracker</th>-->
         <th class="text-center w-[10rem] inline-block">Registration</th>
         <th class="text-center w-[10rem] inline-block">Truck fitness</th>
         <th class="text-center w-[10rem] inline-block">Route permit</th>
         <th class="text-center w-[10rem] inline-block">Case</th>
         <th class="text-center w-[10rem] inline-block">Tax</th>
         <th class="text-center w-[10rem] inline-block">Other Document</th>
-        <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
         <th class="border" colspan="10"></th>
@@ -86,16 +84,15 @@
             >{{ truck.preHireCheckList }}/22</a
             >
           </td>
-          <td class="whitespace-nowrap">{{ truck.createdOn ? (truck.createdOn | date : 'dd MMM, yyyy') : '' }}</td>
+          <td class="whitespace-nowrap">{{ truck.createdOn ? (truck.createdOn | date : 'd MMM yyyy') : '' }}</td>
           <td class="text-center">{{ truck.noOfTrips }}</td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
-              <i
-                *ngIf="truck.regPaperFile"
-                class="fas fa-check text-green"></i>
+              <i *ngIf="checkThatFileIsExistOrNot(truckEnum.REG_PAPER_FILE, truck.truckDocumentList)"
+                 class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('reg', truck)"
-                *ngIf="!truck.regPaperFile"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.REG_PAPER_FILE, truck.truckDocumentList)"
                 icon="upload"
                 [file]="true"
                 buttonText="Upload"></app-upload-button>
@@ -104,11 +101,11 @@
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
               <i
-                *ngIf="truck.fitnessFile"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList)"
                 class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('fit', truck)"
-                *ngIf="!truck.fitnessFile"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList)"
                 icon="upload"
                 [file]="true"
                 buttonText="Upload"></app-upload-button>
@@ -117,11 +114,11 @@
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
               <i
-                *ngIf="truck.routePermitFile"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList)"
                 class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('route', truck)"
-                *ngIf="!truck.routePermitFile"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList)"
                 icon="upload"
                 [file]="true"
                 buttonText="Upload"></app-upload-button>
@@ -129,10 +126,12 @@
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
-              <i *ngIf="truck.caseFile" class="fas fa-check text-green"></i>
+              <i
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList)"
+                class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('case', truck)"
-                *ngIf="!truck.caseFile"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList)"
                 icon="upload"
                 [file]="true"
                 buttonText="Upload"></app-upload-button>
@@ -140,10 +139,12 @@
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
-              <i *ngIf="truck.taxFile" class="fas fa-check text-green"></i>
+              <i
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList)"
+                class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('tax', truck)"
-                *ngIf="!truck.taxFile"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList)"
                 icon="upload"
                 [file]="true"
                 buttonText="Upload"></app-upload-button>
@@ -151,10 +152,12 @@
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div class="flex items-center justify-center h-full">
-              <i *ngIf="truck.otherFile" class="fas fa-check text-green"></i>
+              <i
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, truck.truckDocumentList)"
+                class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('other', truck)"
-                *ngIf="!truck.otherFile"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, truck.truckDocumentList)"
                 icon="upload"
                 [file]="true"
                 buttonText="Upload"></app-upload-button>
@@ -167,7 +170,7 @@
           <td class="text-center" colspan="10">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
               <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-              <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+              <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
             </div>
           </td>
         </tr>
@@ -183,16 +186,5 @@
     </table>
   </div>
 </div>
-<app-create-popup
-  (isModalClosed)="isOpen = !$event; isNewOpen = !$event"
-  [isOpen]="isOpen">
-  <app-file-upload-popup
-    [singleTruck]="singleTruck"
-    [callFromModal]="true"
-    [isNewOpen]="isNewOpen"
-    [fileTypeOptions]="newDriverFileType"
-    [isFromTruck]="true"></app-file-upload-popup>
-</app-create-popup>
-<app-check-list-popup (isModalClosed)="isCheckListOpened= !$event" [isOpen]="isCheckListOpened">
-  <app-pre-hire-checklist [singleTruckId]="singleTruckId"></app-pre-hire-checklist>
-</app-check-list-popup>
+
+

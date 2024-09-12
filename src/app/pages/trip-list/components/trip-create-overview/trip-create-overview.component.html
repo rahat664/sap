@@ -1,6 +1,6 @@
 <div>
   <div class="px-4 py-2 flex justify-between items-center bg-white border-b border-input">
-    <h1 class="text-h1 font-semibold">Trip Overview</h1>
+    <h1 class="text-h1 leading-h1 font-semibold">Trip Overview</h1>
     <button
       class="bg-primary text-white rounded-lg px-16 py-3"
       (click)="onCreateTrip()">Create Trip
@@ -10,9 +10,9 @@
     <div class="w-[50vw] py-12  flex flex-col space-y-8 ">
       <div class="flex justify-between items-center">
         <div>
-          <h1 class="text-h3 font-semibold text-not-black">{{ customerName }}</h1>
+          <h1 class="text-h3 leading-h3 font-semibold text-not-black">{{ customerName }}</h1>
           <span
-            class="text-body text-web-text-secondary">{{ tripData.tripStartDatetime | date : "dd MMM yyyy, hh:mm a" }}</span>
+            class="text-body text-web-text-secondary">{{ tripData.tripStartDatetime | date : "d MMM yyyy, h:mm a" }}</span>
         </div>
         <button (click)="onclickEdit()" class="h-12 w-12 hover:bg-input rounded-lg">
           <i class="fas fa-pen"></i>
@@ -23,21 +23,21 @@
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="w-6 h-6" src="assets/svg/loading.svg" alt="">
-              <h1 class="text-body_title text-not-black font-semibold">Loading Point</h1>
+              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Loading Point</h1>
             </div>
             <h1 class="text-body  text-wrap text-web-text-secondary">{{ loadingPointName }}</h1>
           </div>
           <div class="flex flex-col  space-y-2">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="w-6 h-6" src="assets/svg/locinfo.svg" alt="">
-              <h1 class="text-body_title text-not-black font-semibold">Unloading Point</h1>
+              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Unloading Point</h1>
             </div>
             <h1 class="text-body text-wrap text-web-text-secondary">{{ unloadPointName }}</h1>
           </div>
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="w-6 h-6" src="assets/svg/truckinfo.svg" alt="">
-              <h1 class="text-body_title text-not-black font-semibold">Truck</h1>
+              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Truck</h1>
             </div>
             <h1 class="text-body  text-wrap text-web-text-secondary">{{ getTruckName(tripData.categoryId) }}
               | {{ tripData.truckSize }}ft, {{ tripData.truckCapacityInTon }} ton</h1>
@@ -45,7 +45,7 @@
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <div class="w-6 h-6 bg-another text-white font-bold flex items-center justify-center rounded-full">#</div>
-              <h1 class="text-body_title text-not-black font-semibold">Number of Truck</h1>
+              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Number of Truck</h1>
             </div>
             <h1 class="text-body  text-wrap text-web-text-secondary">
               {{ tripData.numOfTrucks }}
@@ -55,7 +55,7 @@
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="w-6 h-6" src="assets/svg/goodsinfo.svg">
-              <h1 class="text-body_title text-not-black font-semibold">Goods</h1>
+              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Goods</h1>
             </div>
             <h1 class="text-body text-wrap text-web-text-secondary">{{ tripData.goodsName }}</h1>
           </div>
@@ -63,7 +63,7 @@
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="h-6 w-6" src="assets/svg/cr.svg">
               <h1
-                class="text-body_title text-not-black font-semibold">{{ isAdmin() ? 'Customer Rate' : 'Trip Rate' }}</h1>
+                class="text-body_title leading-body_title text-not-black font-semibold">{{ isAdmin() ? 'Customer Rate' : 'Trip Rate' }}</h1>
             </div>
             <h1
               class="text-body w-1/2 text-wrap text-web-text-secondary">{{
@@ -73,7 +73,7 @@
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="h-6 w-6" src="assets/svg/cgm.svg">
-              <h1 class="text-body_title text-not-black font-semibold">CGM</h1>
+              <h1 class="text-body_title leading-body_title text-not-black font-semibold">CGM</h1>
             </div>
             <h1 class="text-body text-wrap text-web-text-secondary">{{ userName }} | {{ userPhone }}</h1>
           </div>
@@ -85,7 +85,7 @@
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img class="h-6 w-6 notPreview" loading="lazy" src="assets/svg/additional.svg">
-              <h1 class="text-body_title text-not-black font-semibold">Additional Instruction</h1>
+              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Additional Instruction</h1>
             </div>
             <h1 class="text-body text-wrap text-web-text-secondary">{{ tripData.note }}</h1>
           </div>

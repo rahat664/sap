@@ -1,27 +1,36 @@
-<div class="flex w-full h-full">
+<div class="grid lg:grid-cols-3 w-full h-full">
   <div
-    class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
+    class="p-8 lg:flex hidden items-center justify-center bg-input rounded-l-lg">
     <div>
       <img loading="lazy" class="notPreview" src="../../../../../../assets/images/customer-create.png" alt="" />
     </div>
   </div>
-  <div class="p-8 max-h-[90vh] overflow-auto overflow-x-hidden">
-    <h3 class="text-not-black font-semibold text-xl mb-4">Add New Customer</h3>
+  <div class="w-full overflow-x-hidden lg:col-span-2 max-h-[90vh]">
+    <div class="flex items-center justify-between pl-4 py-2 sticky top-0 bg-white z-50">
+      <span class="text-h2 leading-h2 font-semibold">Add Customer</span>
+      <button (click)="onClickClose()"
+              class=" h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center">
+        <i class="fal fa-times"></i
+        >
+
+      </button>
+    </div>
     <form
       [formGroup]="customerForm"
-      class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-[0.875rem] text-web-text-secondary">
-      <div class="flex flex-col w-full lg:col-span-2">
+      class="w-full px-8 flex flex-col h-full space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
         <label for="name">Customer Name</label>
-        <input
-          appAlphabetOnly
-          [minlength]="2"
-          [maxlength]="50"
-          (focusout)="onfocusOut($event)"
-          placeholder="Enter Customer Name"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="name"
-          formControlName="name" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="name"
+            [minLength]="2"
+            [maxLength]="50"
+            type="text"
+            (input)="onNameKeyPress($event)"
+            matInput
+            formControlName="name"
+            placeholder="Enter Customer Name">
+        </mat-form-field>
         <!--        error-message-->
         <div
           *ngIf="
@@ -31,16 +40,19 @@
           {{ getCustomerNameErrorMessage() }}
         </div>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="code">Customer Code</label>
-        <input
-          [minlength]="4"
-          [maxlength]="4"
-          placeholder="Enter Customer Code"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="code"
-          formControlName="code" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            [minLength]="4"
+            [maxLength]="4"
+            id="code"
+            type="text"
+            matInput
+            formControlName="code"
+            placeholder="Enter customer code">
+
+        </mat-form-field>
         <!--        error-message-->
         <div
           *ngIf="
@@ -50,17 +62,16 @@
           {{ getCustomerCodeError() }}
         </div>
       </div>
-      <div class="flex flex-col w-full">
-        <label for="contact">Contact Person</label>
-        <input
-          appAlphabetOnly
-          [minlength]="2"
-          [maxlength]="50"
-          placeholder="Enter Contact Person"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="contact"
-          formControlName="contactPerson" />
+      <div class="flex flex-col space-y-2 w-full">
+        <label for="contactPerson">Contact Person</label>
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="contactPerson"
+            type="text"
+            matInput
+            formControlName="contactPerson"
+            placeholder="Enter Contact Person">
+        </mat-form-field>
         <!--        error-message-->
         <div
           *ngIf="
@@ -71,14 +82,18 @@
           {{ getContactPersonErrorMessage() }}
         </div>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="phone">Mobile</label>
-        <input
-          placeholder="Enter Mobile Number"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="phone"
-          formControlName="phone" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            [minLength]="11"
+            [maxLength]="11"
+            type="text"
+            matInput
+            id="phone"
+            formControlName="phone"
+            placeholder="Enter Mobile">
+        </mat-form-field>
         <!--        error-message-->
         <div
           *ngIf="
@@ -92,39 +107,41 @@
           <span>{{ getPhoneErrorMessageWithTouch() }}</span>
         </div>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-2 w-full">
         <label for="email">Email (Optional)</label>
-        <input
-          placeholder="Enter Email"
-          class="bg-input rounded-lg border-none p-4"
-          type="email"
-          id="email"
-          formControlName="email" />
+        <mat-form-field appearance="outline" class="example-full-width ">
+          <input
+            id="email"
+            type="text"
+            matInput
+            formControlName="email"
+            placeholder="Enter email">
+        </mat-form-field>
         <!--        error-message-->
         <div *ngIf="customerForm.get('email').touched" class="text-red text-xs">
           <span>{{ getEmailErrorMessage() }}</span>
         </div>
       </div>
-      <div class="flex flex-col w-full lg:col-span-2">
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
         <label for="address">Address (Optional)</label>
         <textarea
           placeholder="Enter Address"
-          class="bg-input rounded-lg border-none p-4"
+          class="bg-input rounded-lg  p-4 border border-disabled"
           id="address"
           formControlName="address"></textarea>
       </div>
-      <div class="flex flex-col w-full col-span-2">
+      <div class="flex flex-col space-y-2 w-full col-span-2">
         <label for="note">Note (Optional)</label>
         <textarea
           placeholder="Enter Note"
-          class="bg-input rounded-lg border-none p-4"
+          class="bg-input rounded-lg  p-4 border border-disabled"
           id="note"
           formControlName="note"></textarea>
       </div>
       <div class="lg:col-span-2 pb-4">
         <button
           (click)="onSave()"
-          class="float-end py-2 px-12 flex justify-center items-center rounded-lg bg-primary text-white">
+          class="float-end py-[0.875rem] px-[5.125rem] flex justify-center items-center rounded-lg bg-primary text-white">
           <span>Save</span>
         </button>
       </div>

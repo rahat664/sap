@@ -5,12 +5,12 @@
     class="flex flex-col space-y-3">
     <div
       class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
-      <h1 class="text-h1 font-semibold">Transporter</h1>
+      <h1 class="text-h1 leading-h1 font-semibold">Transporter</h1>
       <div class="flex space-x-4 items-center">
         <div class="relative">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i class="far fa-search text-gray-500"></i>
+            <img src="assets/svg/search.svg" class="notPreview" alt="search">
           </div>
           <button (click)="onClickClear()" *ngIf="searchValue"
                   class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -21,7 +21,7 @@
             (keyup)="onKeyUpSearch($event)"
             type="text"
             name="email"
-            id="topbar-search"
+
             class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
             placeholder="Search  name, mobile" />
         </div>
@@ -33,40 +33,6 @@
         </button>
       </div>
     </div>
-    <!--    <div class=" w-full bg-white rounded-lg">-->
-    <!--      <button (click)="onClickFilterOpened()" class="flex  px-2 py-1 space-x-3 items-center w-full "-->
-    <!--              [ngClass]="{'border-b-2 border-[#0CD5F0]': filterOpened}">-->
-    <!--        <i class="fas fa-caret-down text-input-hint text-xl"></i>-->
-    <!--        <span class="text-not-black text-[0.875rem]">Filter-->
-    <!--        <span *ngIf="getFilterLength() > 0">({{ truckFilter + districtFilter }})</span>-->
-    <!--        <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3">|</span>-->
-    <!--        <a (click)="onClearFilter()" *ngIf="getFilterLength() > 0" class="text-red">Clear all</a>-->
-    <!--      </span>-->
-    <!--      </button>-->
-    <!--      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">-->
-    <!--        <div class="relative w-1/3">-->
-    <!--          <input (keyup)="onKeyUpSearch($event)" [(ngModel)]="searchName" placeholder="Enter Truck Stand"-->
-    <!--                 class="w-full px-4 py-4 rounded-lg outline-none ring-none  border-none bg-input">-->
-    <!--          <div *ngIf="isSearchedMenuOpened" id="searchDropdown"-->
-    <!--               class="z-10 absolute top-full left-0 w-full max-h-64 overflow-y-auto  bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">-->
-    <!--            <ul class="py text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">-->
-    <!--              <li *ngFor="let result of transporterSuggestions"-->
-    <!--                  class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">-->
-    <!--                <a (click)="onClickSearchSuggestion(result)" class="w-full h-full flex justify-between items-center">-->
-    <!--                  <span>{{ result.customerName }}, {{ result.customerPhone }}</span>-->
-    <!--                </a>-->
-    <!--              </li>-->
-    <!--            </ul>-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--        <app-custom-input [inputSearch]="districtInputPlaceholder"-->
-    <!--                          [customOpened]="false"-->
-    <!--                          [options]="districtOptionsArray"-->
-    <!--                          inputPlaceholder="Select District"-->
-    <!--                          appGetClickEvent (clickedElement)="onClickDistrict($event)"-->
-    <!--                          (selectedId)="onSelectDistrict($event)"></app-custom-input>-->
-    <!--      </div>-->
-    <!--    </div>-->
   </div>
   <div
     appGiveMaxHeight
@@ -74,7 +40,7 @@
     [anotherItemsHeight]="height"
     [totalPage]="totalPages"
     class="bg-white relative w-full rounded-lg overflow-auto">
-    <table class="table-auto w-full text-[0.875rem]">
+    <table class="table-auto w-full rounded-lg text-body_title">
       <thead>
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left">Transporter name</th>
@@ -102,9 +68,9 @@
               <span class="flex-1">{{ transporter.name }}</span>
             </div>
           </td>
-          <td>{{ transporter.phone }}</td>
+          <td><a class="cursor-pointer" (click)="copyNumber($event, transporter.phone)">{{ transporter.phone }}</a></td>
           <td
-            class="whitespace-nowrap">{{ transporter.createdOn ? (transporter.createdOn | date : 'dd MMM, yyyy') : '' }}
+            class="whitespace-nowrap">{{ transporter.createdOn ? (transporter.createdOn | date : 'd MMM yyyy') : '' }}
           </td>
           <td>{{ transporter.truckStand }}</td>
           <td>
@@ -124,7 +90,7 @@
           <td class="text-center" colspan="5">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
               <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-              <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+              <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
             </div>
           </td>
         </tr>
@@ -140,7 +106,3 @@
     </table>
   </div>
 </div>
-<app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
-  <app-transporter-add
-    (formCreated)="onClickTransporter($event)"></app-transporter-add>
-</app-create-popup>

@@ -21,7 +21,7 @@ export class TruckPopupComponent {
     public dialogRef: MatDialogRef<TruckPopupComponent>
   ) {}
 
-  truckList: any[] = [];
+  truckList: TruckModel[] = [];
   loading: boolean;
   page = 0;
   size = 20;
@@ -40,11 +40,7 @@ export class TruckPopupComponent {
     this.service
       .getTruckList(this.page, this.size, this.searchValue)
       .subscribe((res: any) => {
-        res.data.responses.forEach((truck: TruckModel) => {
-          truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-          truck.truck.noOfTrips = truck.noOfTrips;
-          this.truckList.push(truck.truck);
-        });
+        this.truckList = res.data.responses;
         this.totalPages = res.data.totalPages;
         this.loading = false;
       });
@@ -56,11 +52,7 @@ export class TruckPopupComponent {
       this.service
         .getTruckList(this.page, this.size, this.searchValue)
         .subscribe((res: any) => {
-          res.data.responses.forEach((truck: TruckModel) => {
-            truck.truck.preHireCheckList = String(truck.preHireChecklistList);
-            truck.truck.noOfTrips = truck.noOfTrips;
-            this.truckList.push(truck.truck);
-          });
+          this.truckList.push(...res.data.responses);
         });
     }
   }

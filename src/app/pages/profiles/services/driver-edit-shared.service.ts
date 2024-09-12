@@ -4,9 +4,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { TruckInnerModel } from '../components/truck/models/truck-inner.model';
 import { TruckService } from '../components/truck/services/truck.service';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
+import {
+  TruckDocument,
+  TruckModel,
+} from '../components/truck/models/truck.model';
+import { TruckDocumentType } from '../../../shared/Enums/registration_type';
 
 @Injectable({
   providedIn: 'root',
@@ -21,8 +25,7 @@ export class DriverEditSharedService {
   completeUpload: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   completeTruckUpload: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   closeInputSelect: BehaviorSubject<any> = new BehaviorSubject<any>(false);
-  truckDocuments: any;
-  isConfirmModalOpen: BehaviorSubject<any> = new BehaviorSubject<any>(false);
+  truckDocuments: TruckDocument[] = [];
   deletedDriverFiles: any[] = [];
   deletedTruckFiles: any[] = [];
 
@@ -65,20 +68,19 @@ export class DriverEditSharedService {
       routePermitFile: [null],
       casePaperFile: [null],
       others: [null],
+      insuranceFiles: [null],
+      truckImages: [null],
+      insuranceExpDate: [null],
     });
   }
 
-  bindTruckValueWithForm(singleTruck: TruckInnerModel) {
+  bindTruckValueWithForm(singleTruck: TruckModel) {
     this.truckUpdateForm.patchValue({
       id: singleTruck.id,
       registration_zone: singleTruck.registrationZone,
       registration_category: singleTruck.registrationCategory,
       registration_serial: singleTruck.registrationSerial,
       registration_num: singleTruck.registrationNum,
-      fitnessCertExpDate: singleTruck.fitnessCertExpDate,
-      routePermitExpDate: singleTruck.routePermitExpDate,
-      caseExpDate: singleTruck.caseExpDate,
-      taxExpDate: singleTruck.taxExpDate,
     });
   }
 
@@ -89,12 +91,23 @@ export class DriverEditSharedService {
       driverName: singleDriver.name,
       driverPhone: singleDriver.phone,
       driverId: singleDriver.userId,
-      drivingLicenseExpiryDate: singleDriver.drivingLicenseExpiryDate,
     });
   }
 
-  getTruckDocument(singleTruck: TruckInnerModel) {
+  getTruckDocument(singleTruck: TruckModel) {
     this.truckDocuments = this.generateDocumentList(singleTruck, [
+      {
+        key: 'truckImages',
+        showKey: 'preSignedTruckImages',
+        name: 'Truck Image',
+        expDateKey: null,
+      },
+      {
+        key: 'insuranceFiles',
+        showKey: 'preSignedInsuranceFiles',
+        name: 'Insurance',
+        expDateKey: 'insuranceExpDate',
+      },
       {
         key: 'regPaperFile',
         showKey: 'preSignedRegPaperFile',
@@ -227,7 +240,6 @@ export class DriverEditSharedService {
 
   onTruckUpdate() {
     if (this.truckUpdateForm.valid) {
-      console.log(this.deletedTruckFiles.length);
       if (this.deletedTruckFiles.length) {
         this.deleteTruckFile(this.deletedTruckFiles);
       } else {
@@ -314,11 +326,21 @@ export class DriverEditSharedService {
         'nidFront',
         'nidBack',
         'other',
+        'truckImages',
+        'insuranceFiles',
       ];
 
       if (key.endsWith('File') || key === 'others' || files.includes(key)) {
-        if (value) {
-          formData.append(key, value);
+        if (key === 'truckImages' || key === 'insuranceFiles') {
+          if (value) {
+            value.forEach((file: any) => {
+              formData.append(key, file);
+            });
+          }
+        } else {
+          if (value) {
+            formData.append(key, value);
+          }
         }
       } else {
         payload[key] = value;
@@ -349,7 +371,7 @@ export class DriverEditSharedService {
     );
   }
 
-  onClickTruckCloseButton(document: any) {
+  onClickTruckCloseButton(document: TruckDocument) {
     this.handleDocumentClose(
       document,
       this.truckUpdateForm,
@@ -385,7 +407,9 @@ export class DriverEditSharedService {
       'NID Front': 'nidFront',
       'NID Back': 'nidBack',
     };
-    documents = documents.filter((doc: any) => doc.name !== document.name);
+    documents = documents.filter(
+      (doc: any) => doc.name !== this.getDocumentName(document.documentType)
+    );
     if (name === 'driverFilesUrls') {
       this.documents = documents;
       this.deletedDriverFiles.push({
@@ -395,8 +419,8 @@ export class DriverEditSharedService {
     } else {
       this.truckDocuments = documents;
       this.deletedTruckFiles.push({
-        registrationType: document.name,
-        preview: document.url,
+        registrationType: this.getDocumentName(document.documentType),
+        preview: document.fileUrl,
       });
     }
     const formControlName = documentKeyMap[document.name];
@@ -424,12 +448,17 @@ export class DriverEditSharedService {
     );
   }
 
+  truckImages = [];
+  insuranceFiles = [];
+
   private handleFileChange(
     files: any[],
     form: FormGroup,
     documents: any[],
     name
   ) {
+    this.truckImages = [];
+    this.insuranceFiles = [];
     if (files?.length) {
       files.forEach(file => {
         if (name === 'driverFilesUrls') {
@@ -446,12 +475,21 @@ export class DriverEditSharedService {
           url: file.preview,
           expDate: file.registrationExpireDate,
         });
+        if (file.registrationType === 'Truck Image') {
+          this.truckImages.push(file.file);
+        } else if (file.registrationType === 'Insurance') {
+          this.insuranceFiles.push(file.file);
+        }
         form.patchValue({
           [this.getFileControlName(file.registrationType, name)]: file.file,
           ...(file.registrationExpireDate && {
             [this.getExpDateControlName(file.registrationType)]:
               file.registrationExpireDate,
           }),
+        });
+        form.patchValue({
+          truckImages: this.truckImages,
+          insuranceFiles: this.insuranceFiles,
         });
       });
       this.isUploadPopupOpen.next(false);
@@ -470,6 +508,8 @@ export class DriverEditSharedService {
       'Route Permit': 'routePermitFile',
       Tax: 'taxFile',
       Case: 'casePaperFile',
+      Insurance: 'insuranceFiles',
+      'Truck Image': 'truckImages',
     };
     return controlNameMap[registrationType];
   }
@@ -481,7 +521,43 @@ export class DriverEditSharedService {
       'Route Permit': 'routePermitExpDate',
       Tax: 'taxExpDate',
       Case: 'caseExpDate',
+      Insurance: 'insuranceExpDate',
     };
     return expDateControlNameMap[registrationType];
+  }
+
+  private getDocumentName(documentType: string) {
+    if (
+      documentType ==
+      TruckDocumentType[TruckDocumentType.FITNESS_CERTIFICATE_FILE]
+    ) {
+      return 'Fitness';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.REG_PAPER_FILE]
+    ) {
+      return 'Registration Paper';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.ROUTE_PERMIT_FILE]
+    ) {
+      return 'Route Permit';
+    } else if (documentType == TruckDocumentType[TruckDocumentType.TAX_FILE]) {
+      return 'Tax';
+    } else if (documentType == TruckDocumentType[TruckDocumentType.CASE_FILE]) {
+      return 'Case';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.INSURANCE_FILE]
+    ) {
+      return 'Insurance';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.TRUCK_IMAGE]
+    ) {
+      return 'Truck Image';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.OTHER_FILE]
+    ) {
+      return 'Other';
+    } else {
+      return 'Other';
+    }
   }
 }

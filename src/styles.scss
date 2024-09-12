@@ -62,14 +62,14 @@ body {
 /* custom style ng-select */
 .ng-select .ng-select-container .ng-value-container .ng-placeholder {
   font-size: 0.875rem !important;
-  color: #6b7280 !important;
+  color: #D9EDF0 !important;
 }
 
 .ng-select .ng-select-container {
   font-size: 0.875rem !important;
-  border: none !important;
+  border: 1px solid #E5EAEB !important;
   border-radius: 0.25rem !important;
-  background-color: #f3f4f6 !important;
+  background-color: #F5FBFC !important;
   color: #111827 !important;
   padding: 0.5rem 0.5rem !important;
 }
@@ -93,7 +93,15 @@ img {
   font-weight: 500 !important;
   -webkit-font-smoothing: none !important;
   color: #242424 !important;
+  outline: 1px solid #E5EAEB !important;
+  background: #F5FBFC !important;
+  border-radius: 0.5rem !important;
 }
+
+.mat-mdc-form-field > input {
+  outline: none !important;
+}
+
 
 .mat-mdc-form-field > input::placeholder {
   color: #A5B8BB !important;
@@ -104,7 +112,7 @@ img {
   width: 100%;
   border-radius: 0.5rem !important;
   background-color: #F5FBFC !important;
-  height: 3.5rem !important;
+
 }
 
 .mat-mdc-text-field-wrapper:focus-within {
@@ -157,7 +165,7 @@ input::-webkit-outer-spin-button {
 
 .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input {
   caret-color: #111827 !important;
-  --tw-ring-color: none !important;
+  --tw-ring-color: #E5EAEB !important;
   --tw-ring-offset-color: none !important;
   --tw-ring-shadow: none !important;
 }
@@ -193,16 +201,66 @@ input::-webkit-outer-spin-button {
 }
 
 .mat-mdc-autocomplete-panel {
-  color: #242424;
-  background-color: #E5EAEB !important;
+  color: #242424 !important;
+  background-color: #F5FBFC !important;
   box-shadow: none !important;
   border: 1px solid #A5B8BB;
   border-radius: 0.5rem !important;
   font-size: 0.875rem !important;
+  padding: 0 !important;
 }
 
-input {
-  outline: 1px solid #E5EAEB;
+.mat-mdc-select-panel {
+  color: #242424 !important;
+  background-color: #F5FBFC !important;
+  box-shadow: none !important;
+  border: 1px solid #A5B8BB;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+  padding: 0 !important;
+}
+
+.error {
+  outline: 1px solid #F7CAD0;
+  border-radius: 0.5rem;
+}
+
+::ng-deep .error .mat-mdc-text-field-wrapper {
+  width: 100%;
+  border-radius: 0.5rem !important;
+  background-color: #FFFAFB !important;
+  height: 3.5rem !important;
 }
 
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+
+  -webkit-box-shadow: 0 0 0 30px #F5FBFC inset !important;
+}
+
+textarea::placeholder {
+  font-size: 0.875rem !important;
+  color: #A5B8BB !important;
+}
+
+textarea:focus {
+  --tw-ring-color: #E5EAEB !important;
+}
+
+.mat-date-range-input-wrapper input {
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+}
+
+.mat-date-range-input-wrapper input::placeholder {
+  font-size: 1rem !important;
+  color: #A5B8BB !important;
+  font-weight: 400 !important;
+}
+
+.mat-date-range-input-separator {
+  color: #A5B8BB !important;
+}

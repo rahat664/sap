@@ -1,14 +1,14 @@
 <div class="sticky top-0 flex items-start justify-between bg-white z-50">
-  <h1 class="text-h3  font-semibold text-not-black px-6 py-4">{{ getButtonName() }}</h1>
+  <h1 class="text-h3 leading-h3  font-semibold text-not-black px-6 py-4">{{ getButtonName() }}</h1>
   <button class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
           (click)="closeDialog()">
-    <i class="fas fa-times"></i>
+    <i class="fal fa-times"></i>
   </button>
 </div>
 <form [formGroup]="tripUpdateForm" class="flex flex-col space-y-3 px-6 py-4">
   <div class="border-b border-input pb-6" *ngIf="data?.trip?.status == 'Unassigned' ">
     <div class="flex justify-between items-center">
-      <h1 class="text-h2 font-semibold text-not-black">Transporter Info<sup>*</sup></h1>
+      <h1 class="text-h2 leading-h2 font-semibold text-not-black">Transporter Info<sup>*</sup></h1>
       <a class="text-link text-sm cursor-pointer" (click)="getTransporterList()">Select from list</a>
     </div>
     <div class="grid grid-cols-2 gap-4">
@@ -29,8 +29,8 @@
             @for (option of transporterSuggestion; track option) {
               <mat-option (click)="onClickTransporterSearchSuggestion(option)" [value]="option.name">
                 <div class="flex flex-col space-y-1">
-                  <span class="text-body_title text-not-black font-semibold">{{ option.name }}</span>
-                  <span class="text-secondary text-body_title">{{ option.phone }}</span>
+                  <span class="text-body_title leading-body_title text-not-black font-semibold">{{ option.name }}</span>
+                  <span class="text-secondary text-body_title leading-body_title">{{ option.phone }}</span>
                 </div>
               </mat-option>
             }
@@ -76,7 +76,7 @@
   </div>
   <div class="border-b border-input pb-6" *ngIf="data?.trip?.truck?.id == null">
     <div class="flex justify-between items-center">
-      <h1 class="text-h2 font-semibold text-not-black">Truck Info</h1>
+      <h1 class="text-h2 leading-h2 font-semibold text-not-black">Truck Info</h1>
       <a class="text-link text-sm cursor-pointer" (click)="getTruckList()">Select from list</a>
     </div>
     <div class="grid grid-cols-2 gap-4">
@@ -122,7 +122,7 @@
   </div>
   <div class="border-b border-input pb-6" *ngIf="data?.trip?.driverCode == null || data?.trip?.driverCode == ''">
     <div class="flex justify-between items-center">
-      <h1 class="text-h2 font-semibold text-not-black">Driver Info</h1>
+      <h1 class="text-h2 leading-h2 font-semibold text-not-black">Driver Info</h1>
       <a class="text-link text-sm cursor-pointer" (click)="getDriverList()">Select from list</a>
     </div>
     <div class="grid grid-cols-2 gap-4">
@@ -166,9 +166,9 @@
       </div>
     </div>
   </div>
-  <div class="pb-6" *ngIf="!data?.buttonName.includes('Assign')">
+  <div class="pb-6">
     <div class="flex justify-between items-center">
-      <h1 class="text-h2 font-semibold text-not-black">Helper Info</h1>
+      <h1 class="text-h2 leading-h2 font-semibold text-not-black">Helper Info</h1>
       <a class="text-link text-sm cursor-pointer" (click)="getHelperList()">Select from list</a>
     </div>
     <div class="grid grid-cols-2 gap-4">
@@ -208,7 +208,8 @@
   </div>
   <div class="flex w-full justify-end">
     <button (click)="onChangeTripStatus(data.buttonName)" type="button"
-            class="px-8 py-2 text-white font-semibold bg-primary rounded-lg">{{ data.buttonName }}
+            class="px-8 py-2 text-white font-semibold bg-primary rounded-lg"><i *ngIf="loading"
+                                                                                class="fas fa-spinner fa-spin"></i> Save
     </button>
   </div>
 

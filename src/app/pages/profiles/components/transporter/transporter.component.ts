@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
 import { CustomerCreateComponent } from '../customer/customer-create/customer-create.component';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
@@ -13,6 +13,7 @@ import { TransporterAddComponent } from './transporter-add/transporter-add.compo
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { debounceTime } from 'rxjs';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-transporter',
@@ -38,10 +39,9 @@ import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/d
   styleUrl: './transporter.component.scss',
 })
 export class TransporterComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   height = '';
   isOpen: boolean;
-  districtFilter = 0;
-  truckFilter = 0;
   transporterList: UserModel[] = [];
   loading: boolean;
   searchValue: string;
@@ -52,16 +52,15 @@ export class TransporterComponent implements OnInit {
   constructor(private service: UserService) {}
 
   onClickAddTransporter() {
-    this.isOpen = true;
-  }
-
-  getFilterLength() {
-    return this.districtFilter + this.truckFilter;
-  }
-
-  onClearFilter() {
-    this.districtFilter = 0;
-    this.truckFilter = 0;
+    const dialogRef = this.dialog
+      .open(TransporterAddComponent, {})
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          this.transporterList = [];
+          this.getTransporterList();
+        }
+      });
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
@@ -131,38 +130,15 @@ export class TransporterComponent implements OnInit {
     this.getTransporterList();
   }
 
-  onMaxHeightCross($event: boolean) {
-    setTimeout(() => {
-      if ($event && this.totalPages > 1 && this.page != 1) {
-        this.page = 1;
-        if (this.searchValue) {
-          this.service
-            .getTransporter(this.page, this.size, this.searchValue)
-            .pipe(debounceTime(500))
-            .subscribe((res: any) => {
-              this.transporterList.push(...res.data.responses);
-            });
-        } else {
-          this.service
-            .getTransporter(this.page, this.size)
-            .subscribe((res: any) => {
-              this.transporterList.push(...res.data.responses);
-            });
-        }
-      }
-    }, 1);
-  }
-
-  ngOnDestroy() {
-    this.transporterList = [];
-    this.page = 0;
-    this.size = 20;
-  }
-
   onClickClear() {
     this.searchValue = '';
     this.page = 0;
     this.transporterList = [];
     this.getTransporterList();
+  }
+
+  copyNumber($event: MouseEvent, phone: string) {
+    $event.stopPropagation();
+    this.service.copyToClipboard(phone);
   }
 }

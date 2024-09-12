@@ -15,6 +15,7 @@ import {
   throwError,
 } from 'rxjs';
 import { ApiResponse } from '../../auth/models/response/api-response';
+import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,10 @@ export class TripService {
   bottomHeight: BehaviorSubject<string> = new BehaviorSubject('0px');
   anotherStatusCalled: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private toaster: HandleToastrService
+  ) {}
 
   getTrips(
     page: number,
@@ -162,5 +166,15 @@ export class TripService {
 
   updateTemplate(templateId: string, templateData: any) {
     return this.http.put(`${this.tripTemplateUrl}/${templateId}`, templateData);
+  }
+
+  copyToClipboard(createdByPhone: string) {
+    const el = document.createElement('textarea');
+    el.value = createdByPhone;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    this.toaster.showInfo(`${createdByPhone} copied to clipboard`);
   }
 }

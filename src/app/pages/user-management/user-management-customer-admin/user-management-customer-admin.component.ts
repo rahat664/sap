@@ -1,5 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { ConfirmModalComponent } from '../../../shared/modules/confirm-modal/confirm-modal.component';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { CreatePopupComponent } from '../../../shared/modal/create-popup/create-popup.component';
 import { CustomInputComponent } from '../../../shared/modules/custom-input/custom-input.component';
 import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
@@ -18,12 +17,12 @@ import { HandleToastrService } from '../../../shared/services/handle-toastr/hand
 import { DriverEditSharedService } from '../../profiles/services/driver-edit-shared.service';
 import { CustomerService } from '../../profiles/services/customer.service';
 import { UserCustomerAdminCreateComponent } from '../user-customer-admin-create/user-customer-admin-create.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-management-customer-admin',
   standalone: true,
   imports: [
-    ConfirmModalComponent,
     CreatePopupComponent,
     CustomInputComponent,
     DatePipe,
@@ -45,6 +44,7 @@ import { UserCustomerAdminCreateComponent } from '../user-customer-admin-create/
   styleUrl: './user-management-customer-admin.component.scss',
 })
 export class UserManagementCustomerAdminComponent {
+  readonly dialog = inject(MatDialog);
   filterOpened: boolean = true;
   statusFilter = 0;
   roleFilter = 0;
@@ -180,8 +180,14 @@ export class UserManagementCustomerAdminComponent {
   }
 
   onClickAddUser() {
-    this.isOpen = true;
-    this.shared.closeInputSelect.next(false);
+    this.dialog
+      .open(UserCustomerAdminCreateComponent, {})
+      .afterClosed()
+      .subscribe({
+        next: (isCreated: boolean) => {
+          this.onCreateUser(isCreated);
+        },
+      });
   }
 
   private getUserList() {
@@ -334,5 +340,10 @@ export class UserManagementCustomerAdminComponent {
   getUserType(roles: string[]) {
     const find = roles.find(role => role === 'ROLE_CUSTOMER_ADMIN');
     return find ? 'Admin' : 'User';
+  }
+
+  copyNumber($event: MouseEvent, phone: string) {
+    $event.stopPropagation();
+    this.service.copyToClipboard(phone);
   }
 }

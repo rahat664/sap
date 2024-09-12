@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CustomerModel } from './model/customer.model';
 import { CommonModule } from '@angular/common';
 import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
@@ -10,6 +10,7 @@ import { CustomInputComponent } from '../../../../shared/modules/custom-input/cu
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-customer',
@@ -40,6 +41,7 @@ export class CustomerComponent implements OnInit {
   page: number = 0;
   totalPages: number;
   searchValue: any;
+  readonly dialog = inject(MatDialog);
 
   constructor(private service: CustomerService) {}
 
@@ -57,19 +59,18 @@ export class CustomerComponent implements OnInit {
   }
 
   onClickAddCustomer() {
-    this.isOpen = true;
-  }
-
-  getFilterLength() {
-    return this.statusFilter + this.roleFilter;
-  }
-
-  onClearFilter() {}
-
-  onCreateCustomer($event: boolean) {
-    this.isOpen = !$event;
-    this.customers = [];
-    this.getCustomer();
+    this.dialog
+      .open(CustomerCreateComponent, {
+        width: '50%',
+        maxHeight: '90vh',
+      })
+      .afterClosed()
+      .subscribe(value => {
+        if (value) {
+          this.customers = [];
+          this.getCustomer();
+        }
+      });
   }
 
   onKeyUpSearch($event: any) {
@@ -129,5 +130,10 @@ export class CustomerComponent implements OnInit {
   onClickClear() {
     this.searchValue = '';
     this.getCustomer();
+  }
+
+  copyNumber($event: MouseEvent, phone: string) {
+    $event.stopPropagation();
+    this.service.copyToClipboard(phone);
   }
 }

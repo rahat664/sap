@@ -1,6 +1,6 @@
 <div class="m-2 bg-white">
   <div class="p-4 border-b-2 border-input flex justify-between items-center">
-    <h1 class="text-h1 font-semibold">Truck detail</h1>
+    <h1 class="text-h1 leading-h1 font-semibold">Truck detail</h1>
     <div class="flex space-x-3">
       <button
         (click)="onClickEdit()"
@@ -11,7 +11,7 @@
       <button
         (click)="onClickSave()"
         *ngIf="inEditMode"
-        class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
+        class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
         <span>Update</span>
       </button>
       <button
@@ -28,7 +28,7 @@
         <div class="border-b-2 border-input p-4 flex flex-col space-y-3">
           <div class="flex space-x-3 items-center text-not-black">
             <img loading="lazy" class="notPreview" src="assets/svg/truckinfo.svg" alt="" />
-            <span class="text-h2 font-semibold">Truck Info</span>
+            <span class="text-h2 leading-h2 font-semibold">Truck Info</span>
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div
@@ -59,14 +59,26 @@
                   [inputSearch]="
                     registrationTypePlaceholder
                   "></app-custom-input>
-                <input
-                  placeholder="Serial"
-                  formControlName="registration_serial"
-                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
-                <input
-                  placeholder="Number"
-                  formControlName="registration_num"
-                  class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+                <mat-form-field appearance="outline" class="example-full-width ">
+                  <input
+                    id="registration_serial"
+                    [minLength]="2"
+                    [maxLength]="2"
+                    type="text"
+                    matInput
+                    formControlName="registration_serial"
+                    placeholder="Serial">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="example-full-width ">
+                  <input
+                    id="registration_num"
+                    [minLength]="4"
+                    [maxLength]="4"
+                    type="text"
+                    matInput
+                    formControlName="registration_num"
+                    placeholder="Number">
+                </mat-form-field>
               </div>
             </div>
             <div *ngIf="!inEditMode" class="flex flex-col space-y-1">
@@ -87,7 +99,7 @@
                 }}/22)</span
               >
             </div>
-            <a (click)="prehireCheckListOpened = true" class="text-link cursor-pointer">Browse
+            <a (click)="onClickPrehireCheckList()" class="text-link cursor-pointer">Browse
               list</a>
           </div>
         </div>
@@ -99,14 +111,14 @@
             <span>Documents</span>
           </div>
           <app-upload-button
-            (click)="isUploadPopupOpen = true"
+            (click)="onCLickUpload()"
             *ngIf="inEditMode"
             icon="upload"
             [file]="true"
             buttonText="Upload"></app-upload-button>
         </div>
-        <div class="grid grid-cols-4 gap-3" *ngIf="documents.length > 0">
-          <ng-container *ngFor="let document of documents">
+        <div class="grid grid-cols-4 gap-3" *ngIf="singleTruck.truckDocumentList.length > 0">
+          <ng-container *ngFor="let document of documents; index as i">
             <div class="w-full flex flex-col space-y-1">
               <div
                 class="p-4 rounded-lg border border-input relative flex items-center justify-center">
@@ -114,7 +126,7 @@
                   <img
                     class="w-full h-full"
                     [src]="
-                      document.showUrl ? document.showUrl : 'assets/images/dummy.jpg'
+                      document.preSignedFileUrl ? document.preSignedFileUrl : 'assets/images/dummy.jpg'
                     "
                     alt="" />
                 </div>
@@ -122,18 +134,18 @@
                   (click)="onClickClose(document)"
                   *ngIf="inEditMode"
                   class="h-6 w-6 bg-red rounded-full flex justify-center items-center text-white absolute top-2 right-2">
-                  <i class="fas fa-times"></i>
+                  <i class="fal fa-times"></i>
                 </button>
               </div>
               <div class="flex space-y-1 flex-col">
                 <span class="text-web-text-secondary font-semibold">{{
-                    document.name
+                    getDocumentName(document.documentType)
                   }}</span>
-                <span *ngIf="document.expAvailable" class="text-web-text-secondary"
+                <span *ngIf="document.expiryDate" class="text-web-text-secondary"
                 >Exp:
                   {{
-                    document.expDate
-                      ? (document.expDate | date: 'dd MMM yyyy')
+                    document.expiryDate
+                      ? (document.expiryDate | date: 'd MMM yyyy')
                       : 'N/A'
                   }}</span
                 >
@@ -141,36 +153,12 @@
             </div>
           </ng-container>
         </div>
-        <div class="w-full flex flex-col space-y-3 justify-center items-center" *ngIf="documents.length <=0">
+        <div class="w-full flex flex-col space-y-3 justify-center items-center"
+             *ngIf="singleTruck.truckDocumentList.length <=0">
           <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-          <p class="text-body_title text-secondary font-semibold">No Data Found</p>
+          <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
         </div>
       </div>
     </div>
   </form>
 </div>
-<app-create-popup
-  [isOpen]="isUploadPopupOpen"
-  (isModalClosed)="isUploadPopupOpen = !$event">
-  <app-file-upload-popup
-    (fileInput)="onAddFile($event)"
-    [callFromModal]="true"
-    [fileTypeOptions]="newTruckFileTypeOptions"
-  ></app-file-upload-popup>
-</app-create-popup>
-<app-check-list-popup
-  [isOpen]="prehireCheckListOpened"
-  (isModalClosed)="prehireCheckListOpened = !$event"
->
-  <app-pre-hire-checklist></app-pre-hire-checklist>
-</app-check-list-popup>
-<app-confirm-modal
-  [isOpen]="isConfirmModalOpen"
-  buttonText="Remove"
-  [fromDoc]="true"
-  [fileName]="fileName"
-  (isModalClosed)="isConfirmModalOpen = !$event"
-  (performChangeStatus)="performRemove($event)"
-
->
-</app-confirm-modal>

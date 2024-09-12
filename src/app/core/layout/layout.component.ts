@@ -26,7 +26,7 @@ export class LayoutComponent {
       } else {
         // skip for tablet and mobile
         if (window.innerWidth > 768) {
-          sideBarMargin.style.marginLeft = '18rem';
+          sideBarMargin.style.marginLeft = '19rem';
           sideBarMargin.classList.add('slide-right');
           sideBarMargin.classList.remove('slide-left');
         }

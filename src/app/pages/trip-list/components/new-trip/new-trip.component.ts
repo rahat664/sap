@@ -26,6 +26,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 
 @Component({
   selector: 'app-new-trip',
@@ -50,6 +51,7 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
     MatAutocomplete,
     MatOption,
     MatAutocompleteTrigger,
+    GiveMaxHeightDirective,
   ],
   templateUrl: './new-trip.component.html',
   styleUrl: './new-trip.component.scss',
@@ -65,6 +67,9 @@ export class NewTripComponent implements OnInit {
   customerSelectMenuOpened: boolean = false;
   isTemplateEnabled: boolean;
   dontClearLocalStorage: boolean;
+  totalPages: number;
+  height: string;
+  templateCustomer: any;
 
   constructor(
     private customer: CustomerService,
@@ -93,6 +98,7 @@ export class NewTripComponent implements OnInit {
     } else {
       this.customer.getCustomer(0, 20).subscribe((res: any) => {
         this.customerName = res.data.content[0].name;
+        this.templateCustomer = res.data.content[0].name;
         this.getTripTemplate(res.data.content[0].customerCode);
         localStorage.setItem(
           'selectedCustomer',
@@ -129,8 +135,9 @@ export class NewTripComponent implements OnInit {
     this.customerName = result.name;
     this.companySuggestions = [];
     this.isCustomerMenuOpened = false;
-    this.getTripTemplate(result.customerCode);
     localStorage.setItem('selectedCustomer', JSON.stringify(result));
+    this.getTripTemplate(result.customerCode);
+    this.templateCustomer = result.name;
   }
 
   onCreateTrip() {
@@ -304,4 +311,6 @@ export class NewTripComponent implements OnInit {
         });
     }
   }
+
+  onBottom($event: boolean) {}
 }

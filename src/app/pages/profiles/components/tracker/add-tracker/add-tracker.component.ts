@@ -23,7 +23,6 @@ import {
 } from '@angular/material/autocomplete';
 import { TruckService } from '../../truck/services/truck.service';
 import { TruckModel } from '../../truck/models/truck.model';
-import { TruckInnerModel } from '../../truck/models/truck-inner.model';
 
 @Component({
   selector: 'app-add-tracker',
@@ -48,7 +47,7 @@ export class AddTrackerComponent {
   trackerAddForm: FormGroup;
   vendorList: VendorModel[] = [];
   trackAddModel: TrackerRequestModel = new TrackerRequestModel();
-  truckSuggestion: TruckInnerModel[] = [];
+  truckSuggestion: TruckModel[] = [];
 
   constructor(
     private service: TrackerService,
@@ -112,7 +111,7 @@ export class AddTrackerComponent {
       this.truckSuggestion = [];
       this.truck.getTruckList(0, 500, value).subscribe((res: any) => {
         res.data.responses.forEach((truck: TruckModel) => {
-          this.truckSuggestion.push(truck.truck);
+          this.truckSuggestion.push(truck);
         });
       });
     } else {
@@ -120,7 +119,7 @@ export class AddTrackerComponent {
     }
   }
 
-  onClickTruckSearchSuggestion(option: TruckInnerModel) {
+  onClickTruckSearchSuggestion(option: TruckModel) {
     this.trackerAddForm
       .get('truckRegNo')
       .setValue(option.fullRegistrationNumber);

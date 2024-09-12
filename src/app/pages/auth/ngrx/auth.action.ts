@@ -25,4 +25,5 @@ export const loginFailure = createAction(
 );
 
 export const logout = createAction('[Auth] Logout');
+props<{ error: any }>();
 // src/app/store/effects/auth.effects.ts

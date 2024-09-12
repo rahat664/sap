@@ -2,11 +2,13 @@ import { Component, Input } from '@angular/core';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { CommonModule } from '@angular/common';
 import { EventData } from '../../model/trip-events.model';
+import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
+import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 
 @Component({
   selector: 'app-trip-activity',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, GiveMaxHeightDirective, GetElementHeightDirective],
   templateUrl: './trip-activity.component.html',
   styleUrl: './trip-activity.component.scss',
 })
@@ -24,8 +26,11 @@ export class TripActivityComponent {
   unloadingIndex: number = 0;
   loadingEventsLoaded: boolean = false;
   unloadingEventsLoaded: boolean = false;
+  loadingHeight: any;
+  unloadingHeight: any;
 
-  constructor(private trip: TripService) {}
+  constructor(private trip: TripService) {
+  }
 
   ngOnInit() {
     this.index = 0;
@@ -64,7 +69,7 @@ export class TripActivityComponent {
       this.selectedEventNameUnloading = this.unloadEvents[0].eventName;
       this.selectedUnloadingEvent = this.unloadEvents[0];
       this.addUnloadingPaginationWhenImageAreMoreThanThree(
-        this.selectedUnloadingEvent
+        this.selectedUnloadingEvent,
       );
     });
   }
@@ -108,41 +113,40 @@ export class TripActivityComponent {
   private addPaginationWhenImageAreMoreThanThree(selectedEvent: EventData) {
     this.imageToShow = [];
     // initially load four of the images and then load the rest of the images
-    if (selectedEvent.urls) {
-      if (selectedEvent.urls.length > 3) {
-        const totalImages = selectedEvent.urls.length;
+    if (selectedEvent.tripDocuments) {
+      if (selectedEvent.tripDocuments.length > 3) {
+        const totalImages = selectedEvent.tripDocuments.length;
         const dividedImages = Math.ceil(totalImages / 3);
         for (let i = 0; i < dividedImages; i++) {
-          this.imageToShow.push(selectedEvent.urls.slice(i * 3, i * 3 + 3));
-          console.log(this.imageToShow);
+          this.imageToShow.push(
+            selectedEvent.tripDocuments.slice(i * 3, i * 3 + 3),
+          );
         }
       } else {
         this.imageToShow = [];
-        this.imageToShow.push(selectedEvent.urls);
+        this.imageToShow.push(selectedEvent.tripDocuments);
       }
     }
-    console.log(this.imageToShow);
   }
 
   private addUnloadingPaginationWhenImageAreMoreThanThree(
-    selectedEvent: EventData
+    selectedEvent: EventData,
   ) {
     this.unloadImageToShow = [];
     // initially load four of the images and then load the rest of the images
-    if (selectedEvent.urls) {
-      if (selectedEvent.urls.length > 3) {
-        const totalImages = selectedEvent.urls.length;
+    if (selectedEvent.tripDocuments) {
+      if (selectedEvent.tripDocuments.length > 3) {
+        const totalImages = selectedEvent.tripDocuments.length;
         const dividedImages = Math.ceil(totalImages / 3);
         for (let i = 0; i < dividedImages; i++) {
           this.unloadImageToShow.push(
-            selectedEvent.urls.slice(i * 3, i * 3 + 3)
+            selectedEvent.tripDocuments.slice(i * 3, i * 3 + 3),
           );
         }
       } else {
         this.unloadImageToShow = [];
-        this.unloadImageToShow.push(selectedEvent.urls);
+        this.unloadImageToShow.push(selectedEvent.tripDocuments);
       }
-      console.log(this.unloadImageToShow);
     }
   }
 }

@@ -12,6 +12,9 @@ import { FormsModule } from '@angular/forms';
 import { DriverEditSharedService } from '../../../pages/profiles/services/driver-edit-shared.service';
 import { GetOutsideModalClickDirective } from '../../directive/get-outside-modal-click.directive';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { MatFormField } from '@angular/material/form-field';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-custom-input',
@@ -21,6 +24,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
     FormsModule,
     GetOutsideModalClickDirective,
     NgSelectModule,
+    MatFormField,
+    MatOption,
+    MatSelect,
   ],
   templateUrl: './custom-input.component.html',
   styleUrl: './custom-input.component.scss',
@@ -67,6 +73,8 @@ export class CustomInputComponent implements OnInit {
   selectedToYear: string = new Date().getFullYear().toString(); // Default selected year
   selectedFromMonthInString: string;
   selectedToMonthInString: string;
+  private selection: any;
+  selectedValue: number | undefined;
 
   constructor(private shared: DriverEditSharedService) {}
 
@@ -210,6 +218,13 @@ export class CustomInputComponent implements OnInit {
   @Input() errorMessage: string;
 
   ngOnInit(): void {
+    setTimeout(() => {
+      if (this.inputSearch) {
+        this.selectedValue = this.options.find(
+          option => option.value === this.inputSearch
+        )?.id;
+      }
+    }, 1000);
     if (this.options?.length == 1) {
       this.inputPlaceholder = this.options[0].value;
       this.selectedId.emit(this.options[0].id);
@@ -221,31 +236,70 @@ export class CustomInputComponent implements OnInit {
     });
   }
 
-  onClickOption(id: number) {
-    this.selectedId.emit(id);
-    if (id === 99) {
+  onClickOption($event, select: MatSelect) {
+    this.selection = $event.value;
+    this.selectedId.emit($event.value);
+    if ($event.value === 99) {
+      setTimeout(() => {
+        select.open();
+      }, 0);
       this.itemsOpened = true;
       this.customOpened = true;
     } else {
+      this.customOpened = false;
       this.itemsOpened = false;
+      this.selectedToMonth = null;
+      this.selectedToDay = null;
+      this.selectedToDate = null;
+      this.selectedFromDate = null;
+      this.selectedFromMonth = null;
+      this.selectedFromDay = null;
+      this.selectedToYear = null;
+      this.selectedFromYear = null;
+      this.options.forEach(option => {
+        if (option.id == 99) {
+          option.value = 'Custom';
+        }
+      });
     }
   }
 
-  onClickApply() {
-    this.selectedFromDate.emit(this.combineFromIntoSingleDate());
-    this.selectedToDate.emit(this.combineToIntoSingleDate());
-    this.selectedFromDateToToDate.emit(
-      `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`
-    );
-    this.shared.closeInputSelect.next(false);
-    this.itemsOpened = false;
-    this.customOpened = false;
+  onClickApply(select: MatSelect) {
+    if (
+      this.selectedFromMonth &&
+      this.selectedFromYear &&
+      this.selectedFromDay
+    ) {
+      this.options.forEach(option => {
+        if (option.id === this.selection) {
+          option.value = `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`;
+          setTimeout(() => {
+            select.close();
+          }, 0);
+        }
+      });
+      this.selectedFromDate.emit(this.combineFromIntoSingleDate());
+      this.selectedToDate.emit(this.combineToIntoSingleDate());
+      this.selectedFromDateToToDate.emit(
+        `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`
+      );
+      this.shared.closeInputSelect.next(false);
+      this.itemsOpened = false;
+      this.customOpened = false;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.options?.length == 1) {
       this.inputPlaceholder = this.options[0].value;
-      this.selectedId.emit(this.options[0].id);
+      this.selectedValue = this.options[0].id;
+    }
+    if (this.inputSearch) {
+      this.selectedValue = this.options.find(
+        option => option.value === this.inputSearch
+      )?.id;
+    } else {
+      this.selectedValue = undefined;
     }
   }
 }

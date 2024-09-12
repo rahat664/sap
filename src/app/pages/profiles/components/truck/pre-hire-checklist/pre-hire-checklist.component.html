@@ -1,5 +1,9 @@
 <div class="px-8 py-4 min-h-[90vh] overflow-y-auto">
-  <h1 class="text-h1 font-semibold pb-4">Pre Hire Checklist</h1>
+  <button (click)="onClose()"
+          class="absolute top-1 right-1 w-6 h-6 rounded-full bg-white flex items-center justify-center">
+    <i class="fal fa-times text-primary"></i>
+  </button>
+  <h1 class="text-h1 leading-h1 font-semibold pb-4">Pre Hire Checklist</h1>
   <div
     class="max-h-[80vh] overflow-auto w-full border-2 border-not-black overflow-x-hidden">
     <div class="rounded-lg bg-white table-auto w-full">
@@ -13,9 +17,9 @@
       </div>
       <div class="px-4 flex flex-col py-2 space-y-2">
         <ng-container *ngFor="let items of preHireCheckList; index as i">
-          <h1 class="text-not-black text-body_title font-semibold">{{ items.categoryName }}</h1>
+          <h1 class="text-not-black text-body_title leading-body_title font-semibold">{{ items.categoryName }}</h1>
           <div *ngFor="let item of items.items; index as j"
-               class="text-body_title font-normal grid grid-cols-7 gap-1">
+               class="text-body_title leading-body_title font-normal grid grid-cols-7 gap-1">
             <div class="col-span-4 bg-input py-4 px-2"> {{ getChecklistPosition(i, j) }}. {{ item.name }}</div>
             <div class="w-full bg-input py-4 px-2 h-full flex justify-center items-center">
               <input
@@ -48,9 +52,9 @@
   </div>
   <div class="flex justify-end pt-4">
     <button
-      *ngIf="saveButtonEnabled"
+      *ngIf="this.data?.save"
       (click)="onclickSave()"
-      class="px-4 py-2 bg-primary text-white rounded-lg">
+      class="px-[44px] py-[10.5px] bg-primary text-white rounded-lg">
       Save
     </button>
   </div>
