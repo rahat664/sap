@@ -343,11 +343,11 @@ export class TripListComponent implements OnInit {
     this.loading = false;
   }
 
-  onKeyUpTripSearch($event: KeyboardEvent) {
+  onKeyUpTripSearch($event: Event) {
     const value = ($event.target as HTMLInputElement).value;
     if (value?.length > 0) {
       this.service
-        .getTrips(0, 100, null, null, null, null, value)
+        .getTrips(0, 100, null, null, null, null, value, null)
         .subscribe((trip: any) => {
           this.tripIdSuggestions = trip.data.responses;
           this.isTripSearchedMenuOpened = true;
