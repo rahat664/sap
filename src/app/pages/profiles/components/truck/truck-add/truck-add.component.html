@@ -121,9 +121,11 @@
                   </div>
                 </div>
 
-                <div>
-                  <div *ngFor="let file of getSpecificFiles(option?.formControlName)">
-                    <span>{{ file }}</span>
+                <div class="flex space-x-6 items-center">
+                  <div>
+                    <ng-container *ngFor="let file of getSpecificFiles(option?.formControlName)">
+                      <img [src]="file.preview" alt="">
+                    </ng-container>
                   </div>
                   <app-upload-button buttonText="Upload" [file]="true"
                                      (click)="triggerFileUpload(option?.formControlName, option.max)"
