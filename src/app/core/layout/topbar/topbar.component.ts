@@ -10,6 +10,7 @@ import { DriverEditSharedService } from '../../../pages/profiles/services/driver
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-topbar',
@@ -87,4 +88,6 @@ export class TopbarComponent implements OnInit {
   onClickLogo() {
     this.shared.closeInputSelect.next(false);
   }
+
+  protected readonly environment = environment;
 }

@@ -162,7 +162,81 @@ export class CreateTripPageComponent implements OnInit {
       this.router.navigate(['/trip-create/overview']);
     } else {
       this.tripForm.markAllAsTouched();
-      this.toaster.showError('Please fill all the required fields');
+      // list out all the invalid fields
+      const invalidFields = Object.keys(this.tripForm.controls).filter(
+        key => this.tripForm.controls[key].invalid
+      );
+      // concat all the invalid fields
+      let message = '';
+      invalidFields.forEach((field, index) => {
+        switch (field) {
+          case 'loadingPointDistrict':
+            field = 'Loading Point District';
+            break;
+          case 'loadingPointName':
+            field = 'Loading Point Name';
+            break;
+          case 'unloadingPointDistrict':
+            field = 'Unloading Point District';
+            break;
+          case 'unloadingPointName':
+            field = 'Unloading Point Name';
+            break;
+          case 'loadingPointLatitude':
+            field = 'Loading Point Latitude';
+            break;
+          case 'loadingPointLongitude':
+            field = 'Loading Point Longitude';
+            break;
+          case 'unloadingPointLatitude':
+            field = 'Unloading Point Latitude';
+            break;
+          case 'unloadingPointLongitude':
+            field = 'Unloading Point Longitude';
+            break;
+          case 'tripTemplateName':
+            field = 'Template Name';
+            break;
+          case 'customerCode':
+            field = 'Customer';
+            break;
+          case 'categoryId':
+            field = 'Vehicle Type';
+            break;
+          case 'numOfTrucks':
+            field = 'Number of Trucks';
+            break;
+          case 'truckSize':
+            field = 'Truck Size';
+            break;
+          case 'truckCapacityInTon':
+            field = 'Truck Capacity';
+            break;
+          case 'goodsId':
+            field = 'Goods';
+            break;
+          case 'goodsName':
+            field = 'Goods Name';
+            break;
+          case 'tripStartDatetime':
+            field = 'Trip Start Date';
+            break;
+          case 'customerRate':
+            field = 'Customer Rate';
+            break;
+          case 'note':
+            field = 'Note';
+            break;
+          default:
+            field = field.charAt(0).toUpperCase() + field.slice(1);
+            break;
+        }
+        message += field;
+        if (index !== invalidFields.length - 1) {
+          message += ', ';
+        }
+      });
+      this.toaster.showError(`Please fill the required fields: ${message}`);
     }
   }
 
@@ -688,4 +762,6 @@ export class CreateTripPageComponent implements OnInit {
   onPopState(event: any) {
     localStorage.setItem('backFromTemplateEditOrUpdate', 'true');
   }
+
+  protected readonly Number = Number;
 }

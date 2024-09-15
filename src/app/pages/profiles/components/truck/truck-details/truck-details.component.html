@@ -12,6 +12,7 @@
         (click)="onClickSave()"
         *ngIf="inEditMode"
         class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
         <span>Update</span>
       </button>
       <button
@@ -118,7 +119,7 @@
             buttonText="Upload"></app-upload-button>
         </div>
         <div class="grid grid-cols-4 gap-3" *ngIf="singleTruck.truckDocumentList.length > 0">
-          <ng-container *ngFor="let document of documents">
+          <ng-container *ngFor="let document of documents; index as i">
             <div class="w-full flex flex-col space-y-1">
               <div
                 class="p-4 rounded-lg border border-input relative flex items-center justify-center">

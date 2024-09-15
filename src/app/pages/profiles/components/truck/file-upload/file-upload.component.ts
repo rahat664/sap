@@ -199,4 +199,8 @@ export class FileUploadComponent {
       this.fileInput.emit(this.fileArray);
     }
   }
+
+  checkError(i: number) {
+    return this.fileArray[i].registrationExpireDate === null;
+  }
 }

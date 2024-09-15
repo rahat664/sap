@@ -53,7 +53,9 @@ export class TripCreateOverviewComponent {
     this.service.createTrip(this.tripData).subscribe(
       (res: any) => {
         if (res.status === 'OK') {
-          let titleText = `Your ${res.data.length > 1 ? 'trips have' : 'trip has'} been created successfully.
+          let tripOrTrips = res.data.length > 1 ? 'trips' : 'trip';
+          let startText = `Your ${tripOrTrips}`;
+          let tripMessage = `been created successfully.
               ${
                 res.data.length > 1
                   ? 'Your trip numbers are ' +
@@ -63,6 +65,7 @@ export class TripCreateOverviewComponent {
                   : 'Your trip number is ' + res.data
               }
               `;
+          let titleText = `${startText} ${tripMessage}`;
           if (this.tripTemplateName) {
             const templateData: TripTemplate = {
               name: this.tripTemplateName,
@@ -85,7 +88,8 @@ export class TripCreateOverviewComponent {
                   localStorage.removeItem('selectedCustomer');
                   localStorage.removeItem('isFromBackEdit');
                   localStorage.removeItem('isFromTemplate');
-                  titleText += `and template name is "${this.tripTemplateName}"`;
+                  startText = `Your ${tripOrTrips}  and template have`;
+                  titleText = `${startText} ${tripMessage} and template name is "${this.tripTemplateName}"`;
                   const dialogRef = this.dialog
                     .open(SuccessModalComponent, {
                       width: '21.375rem',

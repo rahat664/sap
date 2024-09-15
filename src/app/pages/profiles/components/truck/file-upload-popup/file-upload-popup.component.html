@@ -73,7 +73,7 @@
               file.registrationType === 'Fitness' ||
               file.registrationType === 'Route Permit' ||
               file.registrationType === 'Tax' ||
-              file.registrationType === 'Driving License Front',
+              file.registrationType === 'Driving License Front' || file.registrationType === 'Insurance',
             }"
           >
             <app-custom-input
@@ -89,10 +89,10 @@
               file.registrationType === 'Fitness' ||
               file.registrationType === 'Route Permit' ||
               file.registrationType === 'Tax' ||
-              file.registrationType === 'Driving License Front'
-            ">
+              file.registrationType === 'Driving License Front' ||file.registrationType === 'Insurance'"
+            >
               <!--             Date picker cannot take previous date-->
-              <mat-form-field class="example-full-width flex-1" appearance="outline">
+              <mat-form-field class="example-full-width flex-1 w-full" appearance="outline">
                 <input matInput [matDatepicker]="picker" placeholder="Expiry Date" (focusin)="picker.open()"
                        (selectionchange)="onDateChange($event, i)">
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>

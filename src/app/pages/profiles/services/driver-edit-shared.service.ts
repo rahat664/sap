@@ -26,7 +26,6 @@ export class DriverEditSharedService {
   completeTruckUpload: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   closeInputSelect: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   truckDocuments: TruckDocument[] = [];
-  isConfirmModalOpen: BehaviorSubject<any> = new BehaviorSubject<any>(false);
   deletedDriverFiles: any[] = [];
   deletedTruckFiles: any[] = [];
 
@@ -69,6 +68,9 @@ export class DriverEditSharedService {
       routePermitFile: [null],
       casePaperFile: [null],
       others: [null],
+      insuranceFiles: [null],
+      truckImages: [null],
+      insuranceExpDate: [null],
     });
   }
 
@@ -94,6 +96,18 @@ export class DriverEditSharedService {
 
   getTruckDocument(singleTruck: TruckModel) {
     this.truckDocuments = this.generateDocumentList(singleTruck, [
+      {
+        key: 'truckImages',
+        showKey: 'preSignedTruckImages',
+        name: 'Truck Image',
+        expDateKey: null,
+      },
+      {
+        key: 'insuranceFiles',
+        showKey: 'preSignedInsuranceFiles',
+        name: 'Insurance',
+        expDateKey: 'insuranceExpDate',
+      },
       {
         key: 'regPaperFile',
         showKey: 'preSignedRegPaperFile',
@@ -312,11 +326,21 @@ export class DriverEditSharedService {
         'nidFront',
         'nidBack',
         'other',
+        'truckImages',
+        'insuranceFiles',
       ];
 
       if (key.endsWith('File') || key === 'others' || files.includes(key)) {
-        if (value) {
-          formData.append(key, value);
+        if (key === 'truckImages' || key === 'insuranceFiles') {
+          if (value) {
+            value.forEach((file: any) => {
+              formData.append(key, file);
+            });
+          }
+        } else {
+          if (value) {
+            formData.append(key, value);
+          }
         }
       } else {
         payload[key] = value;
@@ -424,12 +448,17 @@ export class DriverEditSharedService {
     );
   }
 
+  truckImages = [];
+  insuranceFiles = [];
+
   private handleFileChange(
     files: any[],
     form: FormGroup,
     documents: any[],
     name
   ) {
+    this.truckImages = [];
+    this.insuranceFiles = [];
     if (files?.length) {
       files.forEach(file => {
         if (name === 'driverFilesUrls') {
@@ -446,12 +475,21 @@ export class DriverEditSharedService {
           url: file.preview,
           expDate: file.registrationExpireDate,
         });
+        if (file.registrationType === 'Truck Image') {
+          this.truckImages.push(file.file);
+        } else if (file.registrationType === 'Insurance') {
+          this.insuranceFiles.push(file.file);
+        }
         form.patchValue({
           [this.getFileControlName(file.registrationType, name)]: file.file,
           ...(file.registrationExpireDate && {
             [this.getExpDateControlName(file.registrationType)]:
               file.registrationExpireDate,
           }),
+        });
+        form.patchValue({
+          truckImages: this.truckImages,
+          insuranceFiles: this.insuranceFiles,
         });
       });
       this.isUploadPopupOpen.next(false);
@@ -470,6 +508,8 @@ export class DriverEditSharedService {
       'Route Permit': 'routePermitFile',
       Tax: 'taxFile',
       Case: 'casePaperFile',
+      Insurance: 'insuranceFiles',
+      'Truck Image': 'truckImages',
     };
     return controlNameMap[registrationType];
   }
@@ -481,6 +521,7 @@ export class DriverEditSharedService {
       'Route Permit': 'routePermitExpDate',
       Tax: 'taxExpDate',
       Case: 'caseExpDate',
+      Insurance: 'insuranceExpDate',
     };
     return expDateControlNameMap[registrationType];
   }
@@ -503,6 +544,14 @@ export class DriverEditSharedService {
       return 'Tax';
     } else if (documentType == TruckDocumentType[TruckDocumentType.CASE_FILE]) {
       return 'Case';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.INSURANCE_FILE]
+    ) {
+      return 'Insurance';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.TRUCK_IMAGE]
+    ) {
+      return 'Truck Image';
     } else if (
       documentType == TruckDocumentType[TruckDocumentType.OTHER_FILE]
     ) {

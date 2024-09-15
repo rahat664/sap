@@ -58,6 +58,7 @@ export class TruckDetailsComponent implements OnInit {
   truckAddForm: FormGroup;
   isConfirmModalOpen: boolean;
   closedDocument: TruckDocument = [] as any;
+  protected loading: boolean;
 
   constructor(private shared: DriverEditSharedService) {}
 
@@ -92,7 +93,7 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   getFullRegistrationName() {
-    return `${this.singleTruck.registrationZone} ${this.singleTruck.registrationCategory} ${this.singleTruck.registrationSerial} ${this.singleTruck.registrationNum}`;
+    return `${this.singleTruck.registrationZone} ${this.singleTruck.registrationCategory} ${this.singleTruck.registrationSerial}-${this.singleTruck.registrationNum}`;
   }
 
   ngOnInit(): void {
@@ -116,15 +117,43 @@ export class TruckDetailsComponent implements OnInit {
     this.documents = this.singleTruck.truckDocumentList;
     localStorage.setItem('previousDocument', JSON.stringify(this.documents));
     this.truckFileTypeModify(this.documents);
+
+    this.shared.completeTruckUpload.subscribe(value => {
+      if (value) {
+        this.loading = false;
+        this.inEditMode = false;
+        this.shared.closeInputSelect.next(true);
+      } else {
+        this.loading = false;
+      }
+    });
   }
 
   onClickSave() {
+    this.loading = true;
     this.shared.onTruckUpdate();
   }
 
   onAddFile($event: any) {
+    $event.forEach(
+      (element: {
+        preview: any;
+        registrationType: any;
+        registrationExpireDate: any;
+      }) => {
+        this.documents.push({
+          id: 999,
+          fileUrl: element.preview,
+          preSignedFileUrl: element.preview,
+          documentType: element.registrationType,
+          createdAt: new Date().toISOString(),
+          expiryDate: element.registrationExpireDate,
+          createdBy: 'admin',
+        });
+      }
+    );
+    console.log(this.documents);
     this.shared.onChangeTruckFile($event);
-    this.documents = this.shared.truckDocuments;
   }
 
   onClickEdit() {
@@ -168,7 +197,7 @@ export class TruckDetailsComponent implements OnInit {
       });
   }
 
-  private truckFileTypeModify(documents: any[]) {
+  private truckFileTypeModify(documents: TruckDocument[]) {
     this.newTruckFileTypeOptions = JSON.parse(
       JSON.stringify(this.truckFileType)
     );
@@ -177,6 +206,42 @@ export class TruckDetailsComponent implements OnInit {
         item => item.value !== this.getDocumentName(document.documentType)
       );
     });
+    // count insurance file
+    const insuranceFile = documents.filter(
+      document =>
+        document.documentType ===
+          TruckDocumentType[TruckDocumentType.INSURANCE_FILE] ||
+        document.documentType === 'Insuranc,e'
+    );
+    if (insuranceFile.length > 1) {
+      this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
+        item => item.value !== 'Insuranc,e'
+      );
+    } else {
+      this.newTruckFileTypeOptions.push({
+        id: 6,
+        value: 'Insurance',
+        selected: false,
+      } as any);
+    }
+    // count truck image
+    const truckImage = documents.filter(
+      document =>
+        document.documentType ===
+          TruckDocumentType[TruckDocumentType.TRUCK_IMAGE] ||
+        document.documentType === 'Truck Im,age'
+    );
+    if (truckImage.length > 9) {
+      this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
+        item => item.value !== 'Truck Im,age'
+      );
+    } else {
+      this.newTruckFileTypeOptions.push({
+        id: 7,
+        value: 'Truck Image',
+        selected: false,
+      } as any);
+    }
   }
 
   performRemove($event: any) {
@@ -213,7 +278,6 @@ export class TruckDetailsComponent implements OnInit {
       .subscribe(res => {
         if (res != 'close') {
           this.onAddFile(res);
-          this.documents = this.shared.truckDocuments;
         }
       });
   }
@@ -243,11 +307,19 @@ export class TruckDetailsComponent implements OnInit {
     } else if (documentType == TruckDocumentType[TruckDocumentType.CASE_FILE]) {
       return 'Case';
     } else if (
+      documentType == TruckDocumentType[TruckDocumentType.INSURANCE_FILE]
+    ) {
+      return 'Insurance';
+    } else if (
+      documentType == TruckDocumentType[TruckDocumentType.TRUCK_IMAGE]
+    ) {
+      return 'Truck Image';
+    } else if (
       documentType == TruckDocumentType[TruckDocumentType.OTHER_FILE]
     ) {
       return 'Other';
     } else {
-      return 'Other';
+      return documentType;
     }
   }
 }

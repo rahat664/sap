@@ -170,11 +170,14 @@ export class TripListComponent implements OnInit {
 
   private setDateRange(dateEnum: DateEnum) {
     let fromDate = new Date();
+    // to date should be yesterday
     let toDate = new Date();
+    toDate.setDate(toDate.getDate() - 1);
     switch (dateEnum) {
       case DateEnum.Today:
         break;
       case DateEnum.LastSevenDays:
+        // shouldn't be count today
         fromDate.setDate(fromDate.getDate() - 7);
         break;
       case DateEnum.LastFifteenDays:

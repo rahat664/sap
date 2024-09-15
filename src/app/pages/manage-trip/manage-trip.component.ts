@@ -68,7 +68,7 @@ export class ManageTripComponent implements OnInit {
   statusButtons = statusButtons;
   totalPages: number;
   page: number = 0;
-  size: number = 20;
+  size: number = 30;
   status: string = '';
   loading: boolean = true;
   tripId: string;
@@ -239,24 +239,36 @@ export class ManageTripComponent implements OnInit {
         this.dateText = event;
       } else if (event === 'Last 7 Days') {
         this.startDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 6)),
+          new Date(new Date().setDate(new Date().getDate() - 7)),
           'yyyy-MM-dd'
         );
-        this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+        // end date should be yesterday
+        this.endDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 1)),
+          'yyyy-MM-dd'
+        );
         this.dateText = event;
       } else if (event === 'Last 15 Days') {
         this.startDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 14)),
+          new Date(new Date().setDate(new Date().getDate() - 15)),
           'yyyy-MM-dd'
         );
-        this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+        // end date should be yesterday
+        this.endDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 1)),
+          'yyyy-MM-dd'
+        );
         this.dateText = event;
       } else if (event === 'Last 30 Days') {
         this.startDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 29)),
+          new Date(new Date().setDate(new Date().getDate() - 30)),
           'yyyy-MM-dd'
         );
-        this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+        // end date should be yesterday
+        this.endDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 1)),
+          'yyyy-MM-dd'
+        );
         this.dateText = event;
       }
     }
@@ -585,22 +597,34 @@ export class ManageTripComponent implements OnInit {
             this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
           } else if (element === 'Last 7 Days') {
             this.startDate = this.datePipe.transform(
-              new Date(new Date().setDate(new Date().getDate() - 6)),
+              new Date(new Date().setDate(new Date().getDate() - 7)),
               'yyyy-MM-dd'
             );
-            this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            // end date should be yesterday
+            this.endDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 1)),
+              'yyyy-MM-dd'
+            );
           } else if (element === 'Last 15 Days') {
             this.startDate = this.datePipe.transform(
-              new Date(new Date().setDate(new Date().getDate() - 14)),
+              new Date(new Date().setDate(new Date().getDate() - 15)),
               'yyyy-MM-dd'
             );
-            this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            // end date should be yesterday
+            this.endDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 1)),
+              'yyyy-MM-dd'
+            );
           } else if (element === 'Last 30 Days') {
             this.startDate = this.datePipe.transform(
-              new Date(new Date().setDate(new Date().getDate() - 29)),
+              new Date(new Date().setDate(new Date().getDate() - 30)),
               'yyyy-MM-dd'
             );
-            this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            // end date should be yesterday
+            this.endDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 1)),
+              'yyyy-MM-dd'
+            );
           }
         } else if (element.includes('-')) {
           this.customSelected = true;
