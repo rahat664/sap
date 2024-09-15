@@ -1,1 +1,0 @@
-for d in ./*/ ; do (npm --prefix "$d" run cypress:run); done
