@@ -221,8 +221,10 @@ input::-webkit-outer-spin-button {
 }
 
 .error {
-  outline: 1px solid #F7CAD0;
-  border-radius: 0.5rem;
+  outline: none !important;
+  --tw-ring-color: none !important;
+  border: 1px solid #F7CAD0 !important;
+  border-radius: 0.5rem !important;
 }
 
 ::ng-deep .error .mat-mdc-text-field-wrapper {

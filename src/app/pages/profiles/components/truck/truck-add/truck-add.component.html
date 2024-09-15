@@ -100,7 +100,7 @@
             <span class="text-not-black text-h3 leading-h3 font-semibold">Document</span>
           </div>
           <div class="flex flex-col space-y-1">
-            <ng-container *ngFor="let option of truckFileType">
+            <ng-container *ngFor="let option of truckFileType; index as i">
               <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
                 <div class="flex space-x-4 items-center">
                   <img src="assets/svg/not-available.svg" class="notPreview" alt="" *ngIf="!option.uploaded">
@@ -108,17 +108,28 @@
                   <div class="flex flex-col space-y-0.5">
                     <span
                       class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
-                    <mat-form-field *ngIf="option.expiryAvailable" class="example-full-width flex-1 custom"
-                                    appearance="outline">
-                      <input matInput [matDatepicker]="picker" placeholder="Expiry Date" (focusin)="picker.open()"
-                             (selectionchange)="onDateChange($event)">
+                    <mat-form-field *ngIf="option?.expiryAvailable" class="example-full-width flex-1 custom"
+                                    appearance="outline"
+                                    [ngClass]="{ 'error' : truckAddForm.get(option.expiryFormControlName).invalid }"
+                    >
+                      <input [formControlName]="option.expiryFormControlName" matInput [matDatepicker]="picker"
+                             placeholder="Expiry Date" (focusin)="picker.open()"
+                             (selectionchange)="onDateChange($event, option.expiryFormControlName)">
                       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                       <mat-datepicker #picker></mat-datepicker>
                     </mat-form-field>
                   </div>
                 </div>
+
                 <div>
-                  <app-upload-button buttonText="Upload" [file]="true" icon="upload"></app-upload-button>
+                  <div *ngFor="let file of getSpecificFiles(option?.formControlName)">
+                    <span>{{ file }}</span>
+                  </div>
+                  <app-upload-button buttonText="Upload" [file]="true"
+                                     (click)="triggerFileUpload(option?.formControlName, option.max)"
+                                     icon="upload"></app-upload-button>
+                  <input [multiple]="option.multiple" type="file" #fileInput
+                         style="display:none;" (change)="onFileSelected($event)" />
                 </div>
               </div>
             </ng-container>

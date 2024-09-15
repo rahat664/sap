@@ -1,7 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup.component';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
@@ -31,7 +37,11 @@ import {
   MatDatepickerToggle,
 } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { TruckFileType, truckFileType } from '../models/truck-file-type';
+import {
+  TruckFilesArray,
+  TruckFileType,
+  truckFileType,
+} from '../models/truck-file-type';
 
 @Component({
   selector: 'app-truck-add',
@@ -61,6 +71,7 @@ import { TruckFileType, truckFileType } from '../models/truck-file-type';
   styleUrl: './truck-add.component.scss',
 })
 export class TruckAddComponent implements OnInit {
+  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   readonly dialog = inject(MatDialog);
   registrationZoneList: CustomInputSelectModel[] = registrationZoneList;
   registrationZoneOpened: boolean;
@@ -71,23 +82,34 @@ export class TruckAddComponent implements OnInit {
   truckAddForm: FormGroup;
   singleChecklist: any = {};
   prehireCheckListOpened: boolean = false;
-  isExpiryAvailable: boolean;
   registrationErrorMessage = '';
   registrationCategoryErrorMessage = '';
   registrationSerialErrorMessage = '';
   registrationNumErrorMessage = '';
   countPassCheckList: number = 0;
   preHireCheckList: any;
-  private registrationInput: string;
+  registrationInput: string;
   everyThingDisabled: boolean = true;
   loading: boolean = false;
+  truckImages: File[];
+  insuranceImages: File[];
+  casePaperImages: File[];
+  regPaperImages: File[];
+  taxImages: File[];
+  fitnessImages: File[];
+  routePermitImages: File[];
+  othersImages: File[];
+  selectedFormControlName: any;
+  maxUploadAble: number;
+  truckFiles: TruckFilesArray = new TruckFilesArray();
 
   constructor(
     private fb: FormBuilder,
     private service: TruckService,
     private toastr: HandleToastrService,
     private router: Router,
-    private validation: ValidationService
+    private validation: ValidationService,
+    private datePipe: DatePipe
   ) {
     this.truckAddForm = this.fb.group({
       registration_zone: [null, Validators.required],
@@ -192,6 +214,14 @@ export class TruckAddComponent implements OnInit {
         this.everyThingDisabled = true;
       }
     });
+    this.truckFiles.truckImages = [];
+    this.truckFiles.insuranceFiles = [];
+    this.truckFiles.casePaperFile = [];
+    this.truckFiles.regPaperFile = [];
+    this.truckFiles.taxFile = [];
+    this.truckFiles.fitnessCertificateFile = [];
+    this.truckFiles.routePermitFile = [];
+    this.truckFiles.otherDocFile = [];
   }
 
   onClickSave() {
@@ -217,18 +247,11 @@ export class TruckAddComponent implements OnInit {
           key === 'truckImages' ||
           key === 'insuranceFiles'
         ) {
-          if (key == 'truckImages' || key == 'insuranceFiles') {
-            // Append multiple files to the FormData
-            if (value) {
-              value.forEach((file: any) => {
-                formData.append(key, file);
-              });
-            }
-          } else {
-            // Append single file to the FormData
-            if (value) {
-              formData.append(key, value);
-            }
+          // Append multiple files to the FormData
+          if (value) {
+            Array.from(value).forEach((file: any) => {
+              formData.append(key, file);
+            });
           }
           // Append file controls directly to the FormData
         } else {
@@ -244,8 +267,6 @@ export class TruckAddComponent implements OnInit {
           // Handle response
           if (res.status == 'OK') {
             this.toastr.showSuccess(res.message);
-            this.TruckFileUrls = [];
-            this.InsuranceFileUrls = [];
             this.router.navigate(['/profile/truck']);
           } else {
             this.toastr.showError(res.message);
@@ -274,100 +295,6 @@ export class TruckAddComponent implements OnInit {
           this.truckAddForm.get('registration_num')
         );
     }
-  }
-
-  private TruckFileUrls: any[] = [];
-  private InsuranceFileUrls: any[] = [];
-
-  onAddFile($event: any) {
-    // remove all validation
-    this.truckAddForm.get('fitnessCertExpDate').clearValidators();
-    this.truckAddForm.get('fitnessCertExpDate').updateValueAndValidity();
-    this.truckAddForm.get('routePermitExpDate').clearValidators();
-    this.truckAddForm.get('routePermitExpDate').updateValueAndValidity();
-    this.truckAddForm.get('taxExpDate').clearValidators();
-    this.truckAddForm.get('taxExpDate').updateValueAndValidity();
-    this.truckAddForm.get('caseExpDate').clearValidators();
-    this.truckAddForm.get('caseExpDate').updateValueAndValidity();
-    this.truckAddForm.get('insuranceExpDate').clearValidators();
-    this.truckAddForm.get('insuranceExpDate').updateValueAndValidity();
-    this.TruckFileUrls = [];
-    this.InsuranceFileUrls = [];
-    $event.forEach((file: any) => {
-      switch (file.registrationType) {
-        case 'Truck Image':
-          this.TruckFileUrls.push(file.file);
-          this.truckAddForm.patchValue({
-            truckImages: this.TruckFileUrls,
-          });
-          break;
-        case 'Registration Paper':
-          this.truckAddForm.patchValue({
-            regPaperFile: file.file,
-          });
-          break;
-        case 'Fitness':
-          this.isExpiryAvailable = true;
-          this.truckAddForm.patchValue({
-            fitnessCertificateFile: file.file,
-            fitnessCertExpDate: file.registrationExpireDate,
-          });
-          this.truckAddForm
-            .get('fitnessCertExpDate')
-            .setValidators([Validators.required]);
-          this.truckAddForm.get('fitnessCertExpDate').updateValueAndValidity();
-          break;
-        case 'Route Permit':
-          this.isExpiryAvailable = true;
-          this.truckAddForm.patchValue({
-            routePermitFile: file.file,
-            routePermitExpDate: file.registrationExpireDate,
-          });
-          this.truckAddForm
-            .get('routePermitExpDate')
-            .setValidators([Validators.required]);
-          this.truckAddForm.get('routePermitExpDate').updateValueAndValidity();
-          break;
-        case 'Tax':
-          this.truckAddForm.patchValue({
-            taxFile: file.file,
-            taxExpDate: file.registrationExpireDate,
-          });
-          this.truckAddForm
-            .get('taxExpDate')
-            .setValidators([Validators.required]);
-          this.truckAddForm.get('taxExpDate').updateValueAndValidity();
-          break;
-        case 'Case':
-          this.truckAddForm.patchValue({
-            casePaperFile: file.file,
-            caseExpDate: file.registrationExpireDate,
-          });
-          this.truckAddForm
-            .get('caseExpDate')
-            .setValidators([Validators.required]);
-          this.truckAddForm.get('caseExpDate').updateValueAndValidity();
-          break;
-        case 'Insurance':
-          this.isExpiryAvailable = true;
-          this.InsuranceFileUrls.push(file.file);
-          this.truckAddForm.patchValue({
-            insuranceFiles: this.InsuranceFileUrls,
-            insuranceExpDate: file.registrationExpireDate,
-          });
-          this.truckAddForm
-            .get('insuranceExpDate')
-            .setValidators([Validators.required]);
-          this.truckAddForm.get('insuranceExpDate').updateValueAndValidity();
-          break;
-        case 'Other':
-          this.isExpiryAvailable = false;
-          this.truckAddForm.patchValue({
-            others: file.file,
-          });
-          break;
-      }
-    });
   }
 
   private numberOnly(value: any) {
@@ -460,7 +387,149 @@ export class TruckAddComponent implements OnInit {
       });
   }
 
-  onDateChange($event: Event) {}
+  onDateChange($event: Event, expiryFormControlName: string) {
+    let date = ($event.target as HTMLInputElement).value;
+    date = this.datePipe.transform(date, 'yyyy-MM-ddThh:mm:ss');
+    this.truckAddForm.patchValue({
+      [expiryFormControlName]: date,
+    });
+  }
 
   protected readonly truckFileType: TruckFileType[] = truckFileType;
+
+  onFileSelected($event: Event) {
+    const input = $event.target as HTMLInputElement;
+    const files = input.files;
+    if (this.truckAddForm.get(this.selectedFormControlName)?.value) {
+      const currentFiles = Array.from(
+        this.truckAddForm.get(this.selectedFormControlName)?.value
+      );
+      if (currentFiles.length + files.length > this.maxUploadAble) {
+        this.toastr.showError(
+          `You can upload maximum of ${this.maxUploadAble} files`
+        );
+        return;
+      } else {
+        this.onAddFile(files);
+      }
+    } else {
+      if (files.length > this.maxUploadAble) {
+        this.toastr.showError(
+          `You can upload maximum of ${this.maxUploadAble} files`
+        );
+        return;
+      } else {
+        this.onAddFile(files);
+      }
+    }
+  }
+
+  triggerFileUpload(formControlName: string, max: number) {
+    this.selectedFormControlName = formControlName;
+    this.maxUploadAble = max;
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.click();
+    }
+  }
+
+  private onAddFile(files: FileList) {
+    this.truckAddForm.patchValue({
+      [this.selectedFormControlName]: files,
+    });
+    switch (this.selectedFormControlName) {
+      case 'truckImages':
+        this.truckImages = Array.from(files);
+        break;
+      case 'insuranceFiles':
+        this.insuranceImages = Array.from(files);
+        if (this.insuranceImages.length > 0) {
+          this.truckAddForm
+            .get('insuranceExpDate')
+            ?.setValidators([Validators.required]);
+          this.truckAddForm.get('insuranceExpDate')?.updateValueAndValidity();
+        }
+        break;
+      case 'regPaperFile':
+        this.regPaperImages = Array.from(files);
+        break;
+      case 'taxFile':
+        this.taxImages = Array.from(files);
+        if (this.taxImages.length > 0) {
+          this.truckAddForm
+            .get('fitnessCertExpDate')
+            ?.setValidators([Validators.required]);
+          this.truckAddForm.get('fitnessCertExpDate')?.updateValueAndValidity();
+        }
+        break;
+      case 'fitnessCertificateFile':
+        this.fitnessImages = Array.from(files);
+        if (this.fitnessImages.length > 0) {
+          this.truckAddForm
+            .get('fitnessCertExpDate')
+            ?.setValidators([Validators.required]);
+          this.truckAddForm.get('fitnessCertExpDate')?.updateValueAndValidity();
+        }
+        break;
+      case 'routePermitFile':
+        this.routePermitImages = Array.from(files);
+        if (this.routePermitImages.length > 0) {
+          this.truckAddForm
+            .get('caseExpDate')
+            ?.setValidators([Validators.required]);
+          this.truckAddForm.get('caseExpDate')?.updateValueAndValidity();
+        }
+        break;
+      case 'casePaperFile':
+        this.casePaperImages = Array.from(files);
+        if (this.casePaperImages.length > 0) {
+          this.truckAddForm.get('others')?.setValidators([Validators.required]);
+          this.truckAddForm.get('others')?.updateValueAndValidity();
+        }
+        break;
+      case 'others':
+        this.othersImages = Array.from(files);
+        break;
+    }
+    this.truckFiles.truckImages = this.truckImages ? this.truckImages : [];
+    this.truckFiles.insuranceFiles = this.insuranceImages
+      ? this.insuranceImages
+      : [];
+    this.truckFiles.casePaperFile = this.casePaperImages
+      ? this.casePaperImages
+      : [];
+    this.truckFiles.regPaperFile = this.regPaperImages
+      ? this.regPaperImages
+      : [];
+    this.truckFiles.taxFile = this.taxImages ? this.taxImages : [];
+    this.truckFiles.fitnessCertificateFile = this.fitnessImages
+      ? this.fitnessImages
+      : [];
+    this.truckFiles.routePermitFile = this.routePermitImages
+      ? this.routePermitImages
+      : [];
+    this.truckFiles.otherDocFile = this.othersImages ? this.othersImages : [];
+  }
+
+  getSpecificFiles(formControlName: string | undefined) {
+    switch (formControlName) {
+      case 'truckImages':
+        return this.truckImages;
+      case 'insuranceFiles':
+        return this.insuranceImages;
+      case 'regPaperFile':
+        return this.regPaperImages;
+      case 'taxFile':
+        return this.taxImages;
+      case 'fitnessCertificateFile':
+        return this.fitnessImages;
+      case 'routePermitFile':
+        return this.routePermitImages;
+      case 'casePaperFile':
+        return this.casePaperImages;
+      case 'others':
+        return this.othersImages;
+      default:
+        return [];
+    }
+  }
 }
