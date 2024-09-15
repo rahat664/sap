@@ -113,7 +113,7 @@ export class AppComponent implements OnInit {
 
   private checkInputListener() {
     this.focusListener = this.renderer.listen('document', 'click', event => {
-      // if target is a number type turn off scrolling and add min max
+      // if the target is a number type turn off scrolling and add min max
       if (
         (event.target as HTMLElement).tagName === 'INPUT' &&
         (event.target as HTMLInputElement).type === 'number'
