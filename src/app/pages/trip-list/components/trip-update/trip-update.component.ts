@@ -109,7 +109,7 @@ export class TripUpdateComponent {
                     .value,
                   pointLon: this.tripUpdateForm.get('loadingPointLongitude')
                     .value,
-                  pointType: 'LOADING',
+                  pointType: 'Loading',
                 },
                 {
                   pointDistrict: this.tripUpdateForm.get(
@@ -121,7 +121,8 @@ export class TripUpdateComponent {
                     .value,
                   pointLon: this.tripUpdateForm.get('unloadingPointLongitude')
                     .value,
-                  pointType: 'UNLOADING',
+
+                  pointType: 'Unloading',
                 },
               ],
               transporterCode: this.tripUpdateForm.get('transporterCode').value,

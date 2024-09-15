@@ -33,9 +33,6 @@ export class CustomerComponent implements OnInit {
   customers: CustomerModel[] = [];
   isOpen = false;
   height: any;
-  filterOpened: boolean;
-  statusFilter = 0;
-  roleFilter = 0;
   loading: boolean;
   size: number = 30;
   page: number = 0;

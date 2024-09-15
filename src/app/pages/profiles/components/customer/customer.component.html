@@ -44,7 +44,7 @@
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left">Company name</th>
         <th class="text-center">Customer code</th>
-        <th class="text-center whitespace-nowrap">Created On</th>
+        <th class="whitespace-nowrap">Created On</th>
         <th class="text-left">Contact person</th>
         <th class="text-left">Mobile</th>
         <th class="text-left">Email</th>
@@ -71,7 +71,7 @@
           </td>
           <td class="text-center">{{ customer.customerCode }}</td>
           <td
-            class="whitespace-nowrap">{{ customer.creationDate ? (customer.creationDate | date: 'd MMM yyyy') : '' }}
+            class="text-center whitespace-nowrap">{{ customer.creationDate ? (customer.creationDate | date: 'd MMM yyyy') : '' }}
           </td>
           <td>
             <span>{{ customer?.contactPerson }}</span>
