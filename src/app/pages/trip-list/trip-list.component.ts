@@ -172,6 +172,7 @@ export class TripListComponent implements OnInit {
     let fromDate = new Date();
     // to date should be yesterday
     let toDate = new Date();
+    console.log(`fromDate: ${fromDate.getDate()}, toDate: ${toDate.getDate()}, dateEnum: ${dateEnum}`);
     switch (dateEnum) {
       case DateEnum.Today:
         fromDate.setDate(fromDate.getDate());
