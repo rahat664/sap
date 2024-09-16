@@ -23,7 +23,7 @@
             name="search"
 
             class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
-            placeholder="Search  name, mobile , email" />
+            placeholder="Search  name, mobile, email" />
         </div>
         <button
           (click)="onClickAddCustomer()"
@@ -44,7 +44,7 @@
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left">Company name</th>
         <th class="text-center">Customer code</th>
-        <th class="text-center whitespace-nowrap">Created On</th>
+        <th class="whitespace-nowrap">Created On</th>
         <th class="text-left">Contact person</th>
         <th class="text-left">Mobile</th>
         <th class="text-left">Email</th>
@@ -71,13 +71,13 @@
           </td>
           <td class="text-center">{{ customer.customerCode }}</td>
           <td
-            class="whitespace-nowrap">{{ customer.creationDate ? (customer.creationDate | date: 'dd MMM, yyyy') : '' }}
+            class="text-center whitespace-nowrap">{{ customer.creationDate ? (customer.creationDate | date: 'd MMM yyyy') : '' }}
           </td>
           <td>
             <span>{{ customer?.contactPerson }}</span>
           </td>
-          <td>{{ customer.phone }}</td>
-          <td>{{ customer.email }}</td>
+          <td><a class="cursor-pointer" (click)="copyNumber($event, customer.phone)">{{ customer.phone }}</a></td>
+          <td><a href="mailto:{{customer.email}}">{{ customer.email }}</a></td>
           <td>{{ customer.address }}</td>
           <!--            <td>-->
           <!--              <i class="fas fa-ellipsis-v"></i>-->

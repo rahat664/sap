@@ -55,6 +55,8 @@ export class TripDetailsComponent {
       dateTimeAvailable: true,
       active: true,
       truckInThisPoint: true,
+      className: 'border border-green border-solid',
+      cancelled: false,
     },
     {
       name: 'Booked',
@@ -62,6 +64,8 @@ export class TripDetailsComponent {
       dateTimeAvailable: false,
       active: false,
       truckInThisPoint: false,
+      className: 'border border-line border-dashed',
+      cancelled: false,
     },
     {
       name: 'Running',
@@ -69,13 +73,17 @@ export class TripDetailsComponent {
       dateTimeAvailable: false,
       active: false,
       truckInThisPoint: false,
+      className: 'border border-line border-dashed',
+      cancelled: false,
     },
     {
       name: 'Completed',
       dateTime: '2021-09-01T00:00:00',
       dateTimeAvailable: false,
       active: false,
+      className: 'border border-line border-dashed',
       truckInThisPoint: false,
+      cancelled: false,
     },
   ];
 
@@ -135,11 +143,24 @@ export class TripDetailsComponent {
   private changeTripTimeline(currentValue: TripData) {
     this.resetTripTimeline();
     currentValue.tripEvents.forEach((event, index) => {
-      this.tripTimeline[index].dateTime = event.createdAt;
-      this.tripTimeline[index].dateTimeAvailable = true;
-      this.tripTimeline[index].active = true;
-      this.tripTimeline[index].truckInThisPoint = true;
-      this.makeOtherTruckInActive(index);
+      if (event.name != 'Cancelled') {
+        this.tripTimeline[index].dateTime = event.createdAt;
+        this.tripTimeline[index].dateTimeAvailable = true;
+        this.tripTimeline[index].active = true;
+        this.tripTimeline[index].truckInThisPoint = true;
+        this.tripTimeline[index].className = 'border border-green border-solid';
+        this.makeOtherTruckInActive(index);
+      } else {
+        this.tripTimeline[index].dateTime = event.createdAt;
+        this.tripTimeline[index].dateTimeAvailable = true;
+        if (index > 0) {
+          this.tripTimeline[index - 1].truckInThisPoint = true;
+          this.makeOtherTruckInActive(index - 1);
+        }
+        this.tripTimeline[index].cancelled = true;
+        this.makeOtherClosePointDisabled(index);
+        this.tripTimeline[index].className = 'border border-red border-dashed';
+      }
     });
   }
 
@@ -148,6 +169,7 @@ export class TripDetailsComponent {
       event.dateTime = new Date();
       event.dateTimeAvailable = false;
       event.active = false;
+      event.className = 'border border-line border-dashed';
     });
   }
 
@@ -274,5 +296,13 @@ export class TripDetailsComponent {
   onClickTripUpdate(tripDetails: TripData) {
     localStorage.setItem('updateTripDetails', JSON.stringify(tripDetails));
     this.router.navigate(['/update-trip']);
+  }
+
+  private makeOtherClosePointDisabled(index: number) {
+    this.tripTimeline.forEach((event, i) => {
+      if (i > index) {
+        event.cancelled = false;
+      }
+    });
   }
 }

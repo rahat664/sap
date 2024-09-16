@@ -70,7 +70,7 @@
             <input
               type="text"
               matInput
-              (keyup)="onKeyUpTripSearch($event)"
+              (input)="onKeyUpTripSearch($event)"
               [(ngModel)]="tripId"
               placeholder="Enter Trip Number"
               [matAutocomplete]="trip">
@@ -207,7 +207,7 @@
             </a>
           </td>
           <td class="whitespace-nowrap">
-            {{ trip.tripStartDatetime | date: 'dd MMM yyyy' }}
+            {{ trip.tripStartDatetime | date: 'd MMM yyyy' }}
           </td>
           <td *ngIf="isAdmin()">{{ trip.customerName }}</td>
           <td>

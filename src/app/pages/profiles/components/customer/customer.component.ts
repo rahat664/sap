@@ -33,9 +33,6 @@ export class CustomerComponent implements OnInit {
   customers: CustomerModel[] = [];
   isOpen = false;
   height: any;
-  filterOpened: boolean;
-  statusFilter = 0;
-  roleFilter = 0;
   loading: boolean;
   size: number = 30;
   page: number = 0;
@@ -62,6 +59,7 @@ export class CustomerComponent implements OnInit {
     this.dialog
       .open(CustomerCreateComponent, {
         width: '50%',
+        maxHeight: '90vh',
       })
       .afterClosed()
       .subscribe(value => {
@@ -129,5 +127,10 @@ export class CustomerComponent implements OnInit {
   onClickClear() {
     this.searchValue = '';
     this.getCustomer();
+  }
+
+  copyNumber($event: MouseEvent, phone: string) {
+    $event.stopPropagation();
+    this.service.copyToClipboard(phone);
   }
 }

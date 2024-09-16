@@ -14,6 +14,7 @@ import { ValidationService } from '../../../shared/services/validation/validatio
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 import { CustomerService } from '../../profiles/services/customer.service';
 import { CustomerAdminModel } from '../models/customer-admin-model';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-customer-admin-create',
@@ -43,6 +44,7 @@ export class UserCustomerAdminCreateComponent {
   userModel: CustomerAdminModel = new CustomerAdminModel();
 
   constructor(
+    public dialogRef: MatDialogRef<UserCustomerAdminCreateComponent>,
     private service: CustomerService,
     private validation: ValidationService,
     private fb: FormBuilder,
@@ -91,6 +93,7 @@ export class UserCustomerAdminCreateComponent {
             this.formCreated.emit(true);
             if (res.status === 'OK') {
               this.userForm.reset();
+              this.dialogRef.close(true);
               this.toastr.showSuccess('User created successfully');
             } else {
               this.toastr.showError(res.message);
@@ -158,5 +161,9 @@ export class UserCustomerAdminCreateComponent {
 
   getPhoneErrorMessageWithTouch() {
     return this.validation.getErrorMessageWithTouch(this.userForm);
+  }
+
+  closeModal() {
+    this.dialogRef.close(false);
   }
 }

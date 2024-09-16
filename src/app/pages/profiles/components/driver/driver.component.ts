@@ -197,4 +197,9 @@ export class DriverComponent implements OnInit {
     this.driverList = [];
     this.getDriverList();
   }
+
+  copyNumber($event: MouseEvent, createdByPhone: any) {
+    $event.stopPropagation();
+    this.user.copyToClipboard(createdByPhone);
+  }
 }

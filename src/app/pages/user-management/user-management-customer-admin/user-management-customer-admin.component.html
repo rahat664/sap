@@ -100,12 +100,12 @@
       <ng-container *ngIf="!loading">
         <tr *ngFor="let user of Users">
           <td class="whitespace-nowrap">{{ user.name }}</td>
-          <td>{{ user.phone }}</td>
-          <td>{{ user.email }}</td>
+          <td><a class="cursor-pointer" (click)="copyNumber($event, user.phone)">{{ user.phone }}</a></td>
+          <td><a href="mailto:{{user.email}}">{{ user.email }}</a></td>
           <td>{{ getUserType(user.roles) }}</td>
           <td>{{ user.designation }}</td>
           <td>{{ user.status }}</td>
-          <td class="whitespace-nowrap">{{ user.createdOn ? (user.createdOn | date : 'dd MMM, yyyy') : '' }}</td>
+          <td class="whitespace-nowrap">{{ user.createdOn ? (user.createdOn | date : 'd MMM yyyy') : '' }}</td>
           <td>
             <button *ngIf="user.status != 'Removed'" mat-button [matMenuTriggerFor]="menu"><i
               class="fas fa-ellipsis-v"></i></button>
@@ -166,9 +166,4 @@
     </table>
   </div>
 </div>
-<app-create-popup (isModalClosed)="isOpen = !$event" [isOpen]="isOpen">
-  <app-user-customer-admin-create
-    *ngIf="isOpen"
-    (formCreated)="onCreateUser($event)"></app-user-customer-admin-create>
-</app-create-popup>
 

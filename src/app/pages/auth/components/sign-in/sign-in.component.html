@@ -165,7 +165,7 @@
           <div class="flex space-x-4">
             <!--            timing-->
             <span
-              class="text-body_title leading-body_title font-semibold text-{{timeDisabled ? 'input-hint': 'primary'}}">{{ time | date : 'mm:ss' }}</span>
+              class="text-body_title leading-body_title font-semibold text-{{timeDisabled ? 'input-hint': 'primary'}}">{{ time | date : 'm:ss' }}</span>
             <button type="button" (click)="onClickResend()"
                     [disabled]="!timeDisabled"
                     class="text-{{timeDisabled ? 'primary': 'input-hint'}} font-semibold text-body_title leading-body_title cursor-pointer">

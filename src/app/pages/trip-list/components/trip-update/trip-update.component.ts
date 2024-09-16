@@ -11,7 +11,7 @@ import { TripService } from '../../services/trip.service';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
 import { Router } from '@angular/router';
-import { MatFormField } from '@angular/material/form-field';
+import { MatError, MatFormField } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
@@ -42,6 +42,7 @@ import { ErrorModalComponent } from '../../../../shared/modules/error-modal/erro
     NgClass,
     NgForOf,
     NgIf,
+    MatError,
   ],
   templateUrl: './trip-update.component.html',
   styleUrl: './trip-update.component.scss',
@@ -108,7 +109,7 @@ export class TripUpdateComponent {
                     .value,
                   pointLon: this.tripUpdateForm.get('loadingPointLongitude')
                     .value,
-                  pointType: 'LOADING',
+                  pointType: 'Loading',
                 },
                 {
                   pointDistrict: this.tripUpdateForm.get(
@@ -120,7 +121,8 @@ export class TripUpdateComponent {
                     .value,
                   pointLon: this.tripUpdateForm.get('unloadingPointLongitude')
                     .value,
-                  pointType: 'UNLOADING',
+
+                  pointType: 'Unloading',
                 },
               ],
               transporterCode: this.tripUpdateForm.get('transporterCode').value,
@@ -244,6 +246,7 @@ export class TripUpdateComponent {
   loadingDistrictSuggestions: any;
   unloadingDistrictSuggestions: any;
   selectedCustomer: any;
+  helperSuggestion: any;
 
   private getGoodsOptions() {
     this.service.getGoodsOptions().subscribe((res: any) => {
@@ -258,13 +261,97 @@ export class TripUpdateComponent {
   }
 
   private getCachedData() {
-    this.truckCapacitySuggestions = JSON.parse(
-      localStorage.getItem('truckCapacity')
-    );
-    this.truckSizeSuggestions = JSON.parse(localStorage.getItem('truckSize'));
-    this.numberOfTrucksSuggestions = JSON.parse(
-      localStorage.getItem('noOfTrucks')
-    );
+    const cachedTruckSize = [
+      {
+        value: 5,
+        selected: false,
+      },
+      {
+        value: 10,
+        selected: false,
+      },
+      {
+        value: 12,
+        selected: false,
+      },
+      {
+        value: 12.5,
+        selected: false,
+      },
+      {
+        value: 13,
+        selected: false,
+      },
+    ];
+    const cachedTruckCapacity = [
+      {
+        value: 5,
+        selected: false,
+      },
+      {
+        value: 10,
+        selected: false,
+      },
+      {
+        value: 12,
+        selected: false,
+      },
+      {
+        value: 12.5,
+        selected: false,
+      },
+      {
+        value: 13,
+        selected: false,
+      },
+    ];
+    const cachedNoOfTrucks = [
+      {
+        value: 1,
+        selected: false,
+      },
+      {
+        value: 2,
+        selected: false,
+      },
+      {
+        value: 5,
+        selected: false,
+      },
+      {
+        value: 10,
+        selected: false,
+      },
+      {
+        value: 50,
+        selected: false,
+      },
+    ];
+    if (localStorage.getItem('noOfTrucks')) {
+      this.numberOfTrucksSuggestions = JSON.parse(
+        localStorage.getItem('noOfTrucks')
+      );
+    } else {
+      this.numberOfTrucksSuggestions = cachedNoOfTrucks;
+      localStorage.setItem('noOfTrucks', JSON.stringify(cachedNoOfTrucks));
+    }
+    if (localStorage.getItem('truckSize')) {
+      this.truckSizeSuggestions = JSON.parse(localStorage.getItem('truckSize'));
+    } else {
+      this.truckSizeSuggestions = cachedTruckSize;
+      localStorage.setItem('truckSize', JSON.stringify(cachedTruckSize));
+    }
+    if (localStorage.getItem('truckCapacity')) {
+      this.truckCapacitySuggestions = JSON.parse(
+        localStorage.getItem('truckCapacity')
+      );
+    } else {
+      this.truckCapacitySuggestions = cachedTruckCapacity;
+      localStorage.setItem(
+        'truckCapacity',
+        JSON.stringify(cachedTruckCapacity)
+      );
+    }
   }
 
   onClickTruckCapacitySuggestions(suggestion: any) {
@@ -638,26 +725,6 @@ export class TripUpdateComponent {
       });
   }
 
-  getHelperList() {
-    const dialogRef = this.dialog
-      .open(HelperPopupComponent, {
-        width: '24.125rem',
-        height: '52.25rem',
-      })
-      .afterClosed()
-      .subscribe((helper: any) => {
-        if (helper) {
-          this.tripUpdateForm.get('helperCode').setValue(helper.userId);
-          this.tripUpdateForm.get('helperName').setValue(helper.name);
-          this.tripUpdateForm.get('helperPhone').setValue(helper.phone);
-        } else {
-          this.tripUpdateForm.get('helperCode').setValue('');
-          this.tripUpdateForm.get('helperName').setValue('');
-          this.tripUpdateForm.get('helperPhone').setValue('');
-        }
-      });
-  }
-
   onKeyUpDriverSearch($event: KeyboardEvent) {
     const value = ($event.target as HTMLInputElement).value;
     if (value.length > 0) {
@@ -780,5 +847,48 @@ export class TripUpdateComponent {
         .get('registrationNumber')
         .setValue(tripData.truck?.registrationNum);
     }
+  }
+
+  isAdmin() {
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
+
+  onKeyUpHelperSearch($event: KeyboardEvent) {
+    const value = ($event.target as HTMLInputElement).value;
+    if (value.length > 0) {
+      this.user.getHelpers(0, 100, value).subscribe((res: any) => {
+        this.helperSuggestion = res.data.responses;
+      });
+    }
+  }
+
+  onClickHelperSearchSuggestion(option: any) {
+    this.tripUpdateForm.get('helperCode').setValue(option.userId);
+    this.tripUpdateForm.get('helperName').setValue(option.name);
+    this.tripUpdateForm.get('helperPhone').setValue(option.phone);
+  }
+
+  getHelperList() {
+    const dialogRef = this.dialog
+      .open(HelperPopupComponent, {
+        width: '24.125rem',
+        height: '52.25rem',
+        position: {
+          right: '12%',
+        },
+      })
+      .afterClosed()
+      .subscribe((helper: any) => {
+        if (helper) {
+          this.tripUpdateForm.get('helperCode').setValue(helper.userId);
+          this.tripUpdateForm.get('helperName').setValue(helper.name);
+          this.tripUpdateForm.get('helperPhone').setValue(helper.phone);
+        } else {
+          this.tripUpdateForm.get('helperCode').setValue('');
+          this.tripUpdateForm.get('helperName').setValue('');
+          this.tripUpdateForm.get('helperPhone').setValue('');
+        }
+      });
   }
 }

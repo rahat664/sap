@@ -269,4 +269,9 @@ export class UserManagementComponent implements OnInit {
   ): void {
     array.forEach(item => (item.selected = item.id === selectedId));
   }
+
+  copyNumber($event: MouseEvent, mobile: string) {
+    $event.stopPropagation();
+    this.service.copyToClipboard(mobile);
+  }
 }

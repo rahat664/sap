@@ -4,8 +4,8 @@ export interface EventData {
   eventType: string;
   eventName: string;
   localDateTime: string | null;
-  note: string | null;
-  urls: string | null;
+  notes: Notes[];
+  tripDocuments: tripDocument[];
 }
 
 export interface EventResponse {
@@ -13,4 +13,17 @@ export interface EventResponse {
   statusCode: number;
   message: string;
   data: EventData[];
+}
+
+export interface tripDocument {
+  id: number;
+  url: string;
+  documentStatus: string;
+}
+
+export interface Notes {
+  id: number;
+  note: string;
+  createdAt: string;
+  updatedAt: string;
 }

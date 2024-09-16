@@ -327,6 +327,7 @@ export class DialogDataComponent {
       } else {
         this.tripUpdateForm.markAllAsTouched();
         this.toaster.showError('Please fill all the required fields');
+        this.loading = false;
       }
     } else if (buttonName === 'Start Trip') {
       if (this.data?.trip?.truck?.id) {
@@ -436,6 +437,7 @@ export class DialogDataComponent {
         } else {
           this.tripUpdateForm.markAllAsTouched();
           this.toaster.showError('Please fill all the required fields');
+          this.loading = false;
         }
       }
     } else if (buttonName.includes('Assign')) {
@@ -565,6 +567,7 @@ export class DialogDataComponent {
       } else {
         this.tripUpdateForm.markAllAsTouched();
         this.toaster.showError('Please fill all the required fields');
+        this.loading = false;
       }
     }
   }
@@ -691,7 +694,7 @@ export class DialogDataComponent {
       res.driverCode &&
       !res.helperCode
     ) {
-      text += `Transporter: ${res.transporterName}, Truck: ${res.truck?.fullRegistrationNumber},, Driver: ${res.driverName}`;
+      text += `Transporter: ${res.transporterName}, Truck: ${res.truck?.fullRegistrationNumber}, Driver: ${res.driverName}`;
     } else if (
       res.transporterCode &&
       res.truck?.id &&

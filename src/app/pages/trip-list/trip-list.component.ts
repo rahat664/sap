@@ -170,18 +170,25 @@ export class TripListComponent implements OnInit {
 
   private setDateRange(dateEnum: DateEnum) {
     let fromDate = new Date();
+    // to date should be yesterday
     let toDate = new Date();
     switch (dateEnum) {
       case DateEnum.Today:
+        fromDate.setDate(fromDate.getDate());
+        toDate.setDate(toDate.getDate());
         break;
       case DateEnum.LastSevenDays:
+        // shouldn't be count today
         fromDate.setDate(fromDate.getDate() - 7);
+        toDate.setDate(toDate.getDate() - 1);
         break;
       case DateEnum.LastFifteenDays:
         fromDate.setDate(fromDate.getDate() - 15);
+        toDate.setDate(toDate.getDate() - 1);
         break;
       case DateEnum.LastThirtyDays:
         fromDate.setDate(fromDate.getDate() - 30);
+        toDate.setDate(toDate.getDate() - 1);
         break;
     }
     this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
@@ -340,11 +347,11 @@ export class TripListComponent implements OnInit {
     this.loading = false;
   }
 
-  onKeyUpTripSearch($event: KeyboardEvent) {
+  onKeyUpTripSearch($event: Event) {
     const value = ($event.target as HTMLInputElement).value;
     if (value?.length > 0) {
       this.service
-        .getTrips(0, 100, null, null, null, null, value)
+        .getTrips(0, 100, null, null, null, null, value, null)
         .subscribe((trip: any) => {
           this.tripIdSuggestions = trip.data.responses;
           this.isTripSearchedMenuOpened = true;

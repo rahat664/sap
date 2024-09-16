@@ -12,7 +12,7 @@
         <div>
           <h1 class="text-h3 leading-h3 font-semibold text-not-black">{{ customerName }}</h1>
           <span
-            class="text-body text-web-text-secondary">{{ tripData.tripStartDatetime | date : "dd MMM yyyy, hh:mm a" }}</span>
+            class="text-body text-web-text-secondary">{{ tripData.tripStartDatetime | date : "d MMM yyyy, h:mm a" }}</span>
         </div>
         <button (click)="onclickEdit()" class="h-12 w-12 hover:bg-input rounded-lg">
           <i class="fas fa-pen"></i>

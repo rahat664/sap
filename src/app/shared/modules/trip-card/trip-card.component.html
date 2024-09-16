@@ -1,4 +1,4 @@
-<button [ngClass]="{'ring ring-primary': isActivated}"
+<button [ngClass]="{'border border-primary': isActivated}"
         class="bg-white p-4 w-full flex flex-col rounded-2xl space-y-3 max-w-96">
   <div class="flex justify-between items-start w-full">
     <div class="flex flex-col space-y-1 items-start">
@@ -10,7 +10,7 @@
     </div>
   </div>
   <div class="flex flex-col space-y-3 items-start text-xs">
-    <span class="text-secondary">{{ tripStartDateTime | date : 'dd-MMM-yyyy, hh:mm a' }}</span>
+    <span class="text-secondary">{{ tripStartDateTime | date : 'd MMM,yyyy, h:mm a' }}</span>
     <div class="flex flex-col space-y-3 text-not-black text-start">
       <div class="step">
         <div class="circle"></div>
