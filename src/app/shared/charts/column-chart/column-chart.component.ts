@@ -81,7 +81,6 @@ export class ColumnChartComponent {
         },
         markers: {
           fillColors: colors,
-          radius: 0,
         },
       },
       stroke: {
