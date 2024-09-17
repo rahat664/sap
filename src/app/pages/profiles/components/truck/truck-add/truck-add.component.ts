@@ -266,6 +266,7 @@ export class TruckAddComponent implements OnInit {
       );
     } else {
       this.truckAddForm.markAllAsTouched();
+      this.loading = false;
       this.registrationErrorMessage = this.validation.getDropdownValidation(
         this.truckAddForm.get('registration_zone')
       );

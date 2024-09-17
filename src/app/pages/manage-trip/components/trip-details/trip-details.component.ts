@@ -158,6 +158,7 @@ export class TripDetailsComponent {
           this.makeOtherTruckInActive(index - 1);
         }
         this.tripTimeline[index].cancelled = true;
+        this.makeOtherClosePointDisabled(index);
         this.tripTimeline[index].className = 'border border-red border-dashed';
       }
     });
@@ -295,5 +296,13 @@ export class TripDetailsComponent {
   onClickTripUpdate(tripDetails: TripData) {
     localStorage.setItem('updateTripDetails', JSON.stringify(tripDetails));
     this.router.navigate(['/update-trip']);
+  }
+
+  private makeOtherClosePointDisabled(index: number) {
+    this.tripTimeline.forEach((event, i) => {
+      if (i > index) {
+        event.cancelled = false;
+      }
+    });
   }
 }

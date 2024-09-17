@@ -1,1 +1,0 @@
-for d in ./*/ ; do (npm --prefix ./"$d" install cypress@latest --legacy-peer-deps); done

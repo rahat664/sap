@@ -98,6 +98,7 @@ export class TripUpdateComponent {
               truckCapacityInTon:
                 this.tripUpdateForm.get('truckCapacityInTon').value,
               goodsId: this.tripUpdateForm.get('goodsId').value,
+              goodsName: this.tripUpdateForm.get('goodsName').value,
               customerRate: this.tripUpdateForm.get('customerRate').value,
               note: this.tripUpdateForm.get('note').value,
               points: [
@@ -109,7 +110,7 @@ export class TripUpdateComponent {
                     .value,
                   pointLon: this.tripUpdateForm.get('loadingPointLongitude')
                     .value,
-                  pointType: 'LOADING',
+                  pointType: 'Loading',
                 },
                 {
                   pointDistrict: this.tripUpdateForm.get(
@@ -121,7 +122,8 @@ export class TripUpdateComponent {
                     .value,
                   pointLon: this.tripUpdateForm.get('unloadingPointLongitude')
                     .value,
-                  pointType: 'UNLOADING',
+
+                  pointType: 'Unloading',
                 },
               ],
               transporterCode: this.tripUpdateForm.get('transporterCode').value,
@@ -616,6 +618,12 @@ export class TripUpdateComponent {
       this.loadingGoodsSuggestions = goodsOptions.filter((option: any) =>
         option.value.toLowerCase().includes(target.value.toLowerCase())
       );
+      if (this.loadingGoodsSuggestions.length === 0) {
+        this.tripUpdateForm.get('goodsId').setValue('');
+        this.tripUpdateForm.get('goodsName').setValue(target.value);
+        this.tripUpdateForm.get('goodsName').updateValueAndValidity();
+        this.tripUpdateForm.get('goodsId').updateValueAndValidity();
+      }
     } else {
       this.loadingGoodsSuggestions = [];
     }
