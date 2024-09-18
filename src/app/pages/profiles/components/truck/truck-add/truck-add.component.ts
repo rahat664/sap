@@ -87,16 +87,16 @@ export class TruckAddComponent implements OnInit {
   registrationInput: string;
   everyThingDisabled: boolean = true;
   loading: boolean = false;
-  truckImages: any[];
-  insuranceImages: any[];
-  casePaperImages: any[];
-  regPaperImages: any[];
-  taxImages: any[];
-  fitnessImages: any[];
-  routePermitImages: any[];
-  othersImages: any[];
-  selectedFormControlName: any;
-  maxUploadAble: number;
+  truckImages: any[] = [];
+  insuranceImages: any[] = [];
+  casePaperImages: any[] = [];
+  regPaperImages: any[] = [];
+  taxImages: any[] = [];
+  fitnessImages: any[] = [];
+  routePermitImages: any[] = [];
+  othersImages: any[] = [];
+  selectedFormControlName: any = '';
+  maxUploadAble: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -426,10 +426,10 @@ export class TruckAddComponent implements OnInit {
     });
     switch (this.selectedFormControlName) {
       case 'truckImages':
-        this.truckImages = this.previewFile(files);
+        this.previewFile(files, this.truckImages);
         break;
       case 'insuranceFiles':
-        this.insuranceImages = this.previewFile(files);
+        this.previewFile(files, this.insuranceImages);
         if (this.insuranceImages.length > 0) {
           this.truckAddForm
             .get('insuranceExpDate')
@@ -438,10 +438,10 @@ export class TruckAddComponent implements OnInit {
         }
         break;
       case 'regPaperFile':
-        this.regPaperImages = this.previewFile(files);
+        this.previewFile(files, this.regPaperImages);
         break;
       case 'taxFile':
-        this.taxImages = this.previewFile(files);
+        this.previewFile(files, this.taxImages);
         if (this.taxImages.length > 0) {
           this.truckAddForm
             .get('fitnessCertExpDate')
@@ -450,7 +450,7 @@ export class TruckAddComponent implements OnInit {
         }
         break;
       case 'fitnessCertificateFile':
-        this.fitnessImages = this.previewFile(files);
+        this.previewFile(files, this.fitnessImages);
         if (this.fitnessImages.length > 0) {
           this.truckAddForm
             .get('fitnessCertExpDate')
@@ -459,7 +459,7 @@ export class TruckAddComponent implements OnInit {
         }
         break;
       case 'routePermitFile':
-        this.routePermitImages = this.previewFile(files);
+        this.previewFile(files, this.routePermitImages);
         if (this.routePermitImages.length > 0) {
           this.truckAddForm
             .get('caseExpDate')
@@ -468,14 +468,14 @@ export class TruckAddComponent implements OnInit {
         }
         break;
       case 'casePaperFile':
-        this.casePaperImages = this.previewFile(files);
+        this.previewFile(files, this.casePaperImages);
         if (this.casePaperImages.length > 0) {
           this.truckAddForm.get('others')?.setValidators([Validators.required]);
           this.truckAddForm.get('others')?.updateValueAndValidity();
         }
         break;
       case 'others':
-        this.othersImages = this.previewFile(files);
+        this.previewFile(files, this.othersImages);
         break;
     }
   }
@@ -483,7 +483,11 @@ export class TruckAddComponent implements OnInit {
   getSpecificFiles(formControlName: string | undefined) {
     switch (formControlName) {
       case 'truckImages':
-        return this.truckImages;
+        if (this.truckImages.length > 3) {
+          return this.truckImages.slice(0, 3);
+        } else {
+          return this.truckImages;
+        }
       case 'insuranceFiles':
         return this.insuranceImages;
       case 'regPaperFile':
@@ -503,18 +507,45 @@ export class TruckAddComponent implements OnInit {
     }
   }
 
-  private previewFile(files: FileList) {
-    const reader = new FileReader();
-    const fileArray = [];
+  private previewFile(files: FileList, targetArray: any[]) {
     Array.from(files).forEach((file: File) => {
+      const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
-        fileArray.push({
-          file: file,
+        targetArray.push({
           preview: reader.result,
+          file: file,
         });
       };
     });
-    return fileArray;
+  }
+
+  onCloseImage(formControlName: string | undefined, file: any) {
+    let files: any[] = [];
+    if (formControlName === 'truckImages') {
+      files = this.truckImages;
+      if (files.length < 5) {
+        this.dialog.closeAll();
+      }
+    } else {
+      files = this.getSpecificFiles(formControlName);
+    }
+    const index = files.indexOf(file);
+    files.splice(index, 1);
+    const formControlFiles = [];
+    files.forEach((file: any) => {
+      formControlFiles.push(file.file);
+    });
+    this.truckAddForm.patchValue({
+      [formControlName]: formControlFiles,
+    });
+  }
+
+  onClickViewMore(truckImagePop: any) {
+    this.dialog.open(truckImagePop, {});
+  }
+
+  onClickClosePopUp(truckImagePop: any) {
+    this.dialog.closeAll();
   }
 }

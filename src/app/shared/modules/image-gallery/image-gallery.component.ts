@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImageGalleryService } from '../../services/image-gallery/image-gallery.service';
 import { Subscription } from 'rxjs';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-image-gallery',
@@ -15,7 +16,10 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
   showGallery = false;
   private subs: Subscription;
 
-  constructor(private imageGalleryService: ImageGalleryService) {}
+  constructor(
+    private imageGalleryService: ImageGalleryService,
+    public dialogRef: MatDialogRef<ImageGalleryComponent>
+  ) {}
 
   ngOnInit(): void {
     this.subs = this.imageGalleryService.currentImage$.subscribe(imageUrl => {
@@ -30,5 +34,10 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+  }
+
+  closeModal() {
+    this.subs.unsubscribe();
+    this.dialogRef.close();
   }
 }

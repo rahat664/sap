@@ -1,13 +1,15 @@
 <div>
-  <div class="p-4 m-2 rounded-lg bg-white flex justify-between items-center sticky top-20">
-    <h1 class="text-h1 leading-h1 font-semibold">Add New Truck</h1>
-    <div>
-      <button
-        (click)="onClickSave()"
-        class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
-        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-        <span>Save</span>
-      </button>
+  <div class="p-2 sticky top-16 bg-app-bg z-30">
+    <div class="p-4  rounded-lg bg-white flex justify-between items-center ">
+      <h1 class="text-h1 leading-h1 font-semibold">Add New Truck</h1>
+      <div>
+        <button
+          (click)="onClickSave()"
+          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+          <span>Save</span>
+        </button>
+      </div>
     </div>
   </div>
   <form [formGroup]="truckAddForm">
@@ -122,14 +124,37 @@
                 </div>
 
                 <div class="flex space-x-6 items-center">
-                  <div>
-                    <ng-container *ngFor="let file of getSpecificFiles(option?.formControlName)">
-                      <img [src]="file.preview" alt="">
-                    </ng-container>
+                  <div class="flex space-x-3">
+                    <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+                         *ngFor="let file of getSpecificFiles(option?.formControlName)">
+                      <img class="h-full w-full" [src]="file.preview" alt="">
+                      <button (click)="onCloseImage(option?.formControlName, file)"
+                              class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+                        <i class="far fa-times"></i>
+                      </button>
+                    </div>
                   </div>
-                  <app-upload-button buttonText="Upload" [file]="true"
-                                     (click)="triggerFileUpload(option?.formControlName, option.max)"
-                                     icon="upload"></app-upload-button>
+                  <div *ngIf="truckImages.length > 3 && option.formControlName == 'truckImages'">
+                    <button (click)="onClickViewMore(truckImagePop)"
+                            class="py-2 px-4 flex text-link items-center bg-opacity-10 bg-blue
+  space-x-1 w-full h-full text-body rounded-md">
+                      <i class="far fa-plus"></i>
+                      <span
+                        class="text-link font-semibold"
+                      >{{ truckImages.length - 3 }}</span
+                      >
+                    </button>
+                  </div>
+                  <app-upload-button
+                    *ngIf="getSpecificFiles(option?.formControlName)?.length === 0 || !getSpecificFiles(option?.formControlName)"
+                    buttonText="Upload"
+                    [file]="true"
+                    (click)="triggerFileUpload(option?.formControlName, option.max)"
+                    icon="upload"></app-upload-button>
+                  <app-upload-button
+                    *ngIf="getSpecificFiles(option?.formControlName)?.length > 0 && getSpecificFiles(option?.formControlName)?.length < option?.max"
+                    (click)="triggerFileUpload(option?.formControlName, option.max)"
+                    icon="plus"></app-upload-button>
                   <input [multiple]="option.multiple" type="file" #fileInput
                          style="display:none;" (change)="onFileSelected($event)" />
                 </div>
@@ -138,6 +163,30 @@
           </div>
         </div>
       </div>
+      <div>
+        <app-pre-hire-checklist></app-pre-hire-checklist>
+      </div>
     </div>
   </form>
 </div>
+
+<ng-template #truckImagePop>
+  <div class="flex justify-between items-center pl-6 pr-2 py-2">
+    <h1 class="text-body_title leading-body_title text-not-black font-semibold">
+      Truck Images
+    </h1>
+    <button (click)="onClickClosePopUp(truckImagePop)" class="h-6 w-6 rounded-full hover:bg-input ">
+      <i class="fal fa-times"></i>
+    </button>
+  </div>
+  <div class="flex space-x-3 px-6 py-4">
+    <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+         *ngFor="let file of truckImages">
+      <img class="h-full w-full" [src]="file.preview" alt="">
+      <button (click)="onCloseImage('truckImages', file)"
+              class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+        <i class="far fa-times"></i>
+      </button>
+    </div>
+  </div>
+</ng-template>
