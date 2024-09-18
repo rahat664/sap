@@ -99,7 +99,7 @@ export class TripDetailsComponent {
       this.minimized = false;
     } else {
       this.expanded = true;
-      this.mobileToggleService.isSidebarOpen.next(true);
+      this.mobileToggleService?.isSidebarOpen.next(true);
       this.foldUnfoldChange.emit(true);
     }
   }

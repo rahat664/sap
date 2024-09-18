@@ -76,7 +76,8 @@
               [matAutocomplete]="trip">
             <mat-autocomplete #trip="matAutocomplete">
               @for (option of tripIdSuggestions; track option) {
-                <mat-option (click)="onClickTripSearchSuggestion(option)" [value]="option.tripId">{{ option.tripId }}
+                <mat-option (click)="onClickTripSearchSuggestion(option)"
+                            [value]="option.tripId">{{ option.tripId ? option.tripId : option }}
                 </mat-option>
               }
             </mat-autocomplete>
@@ -110,16 +111,16 @@
         <div
           class="flex justify-between space-x-16 items-center text-web-text-secondary py-4 px-3 border-b border-[#F0F0F0]">
           <span>Customer Rate (CR)</span>
-          <span>{{ (summary.crs ? summary.crs : 0) | number }}৳</span>
+          <span>{{ (summary.crs ? summary.crs : 0) | number }} ৳</span>
         </div>
         <div
           class="flex justify-between items-center py-4 px-3 text-web-text-secondary border-b border-[#F0F0F0]">
           <span>Transporter Rate (TR)</span>
-          <span>{{ (summary.trs ? summary.trs : 0) | number }}৳</span>
+          <span>{{ (summary.trs ? summary.trs : 0) | number }} ৳</span>
         </div>
         <div class="flex justify-between items-center text-web-text-secondary py-4 px-3">
           <span>Gross Profit (GP)</span>
-          <span>{{ (summary.gps ? summary.gps : 0) |number }}৳</span>
+          <span>{{ (summary.gps ? summary.gps : 0) |number }} ৳</span>
         </div>
       </div>
       <div class="overflow-hidden relative p-4 w-full rounded-lg bg-white">
