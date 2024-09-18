@@ -18,7 +18,7 @@
             <span class="text-body_title leading-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
           </button>
         </div>
-        <div [style.max-height]="loadingHeight" class="px-8 w-full overflow-y-auto">
+        <div class="px-8 w-full overflow-y-auto">
           <div *ngIf="imageToShow.length == 0 && loadingEventsLoaded"
                class="w-full h-full flex items-center justify-center">
             <div class="flex flex-col space-y-3">
@@ -101,7 +101,7 @@
             <span class="text-body_title leading-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
           </button>
         </div>
-        <div [style.max-height]="unloadingHeight" class="px-8 w-full overflow-y-auto">
+        <div class="px-8 w-full overflow-y-auto">
           <div *ngIf="unloadImageToShow.length == 0 && unloadingEventsLoaded"
                class="w-full h-full flex items-center justify-center">
             <div class="flex flex-col space-y-3">

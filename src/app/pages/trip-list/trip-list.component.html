@@ -76,7 +76,8 @@
               [matAutocomplete]="trip">
             <mat-autocomplete #trip="matAutocomplete">
               @for (option of tripIdSuggestions; track option) {
-                <mat-option (click)="onClickTripSearchSuggestion(option)" [value]="option.tripId">{{ option.tripId }}
+                <mat-option (click)="onClickTripSearchSuggestion(option)"
+                            [value]="option.tripId">{{ option.tripId ? option.tripId : option }}
                 </mat-option>
               }
             </mat-autocomplete>
