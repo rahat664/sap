@@ -135,7 +135,7 @@
                     </div>
                   </div>
                   <div *ngIf="truckImages.length > 3 && option.formControlName == 'truckImages'">
-                    <button (click)="onClickViewMore(truckImagePop)"
+                    <button [matMenuTriggerFor]="truckImagePop" (click)="onClickViewMore(truckImagePop)"
                             class="py-2 px-4 flex text-link items-center bg-opacity-10 bg-blue
   space-x-1 w-full h-full text-body rounded-md">
                       <i class="far fa-plus"></i>
@@ -170,7 +170,11 @@
   </form>
 </div>
 
-<ng-template #truckImagePop>
+<!--<ng-template #truckImagePop>-->
+
+<!--</ng-template>-->
+
+<mat-menu #truckImagePop="matMenu" class="truck-menu">
   <div class="flex justify-between items-center pl-6 pr-2 py-2">
     <h1 class="text-body_title leading-body_title text-not-black font-semibold">
       Truck Images
@@ -189,4 +193,4 @@
       </button>
     </div>
   </div>
-</ng-template>
+</mat-menu>

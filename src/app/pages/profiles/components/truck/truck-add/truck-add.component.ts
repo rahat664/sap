@@ -38,6 +38,7 @@ import {
 } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { TruckFileType, truckFileType } from '../models/truck-file-type';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-truck-add',
@@ -61,6 +62,8 @@ import { TruckFileType, truckFileType } from '../models/truck-file-type';
     MatDatepickerToggle,
     MatSuffix,
     NgForOf,
+    MatMenu,
+    MatMenuTrigger,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './truck-add.component.html',
