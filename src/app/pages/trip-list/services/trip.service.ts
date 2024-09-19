@@ -12,6 +12,7 @@ import {
   distinctUntilChanged,
   map,
   Observable,
+  of,
   throwError,
 } from 'rxjs';
 import { ApiResponse } from '../../auth/models/response/api-response';
@@ -48,7 +49,8 @@ export class TripService {
     endDate?: string,
     status?: string,
     tripId?: string,
-    truckType?: string
+    truckType?: string,
+    onlyTripId?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -71,6 +73,9 @@ export class TripService {
     }
     if (truckType) {
       params = params.set('truckType', truckType);
+    }
+    if (onlyTripId) {
+      params = params.set('tripId', onlyTripId);
     }
 
     return this.http.get(`${this.url}`, { params });
@@ -176,5 +181,21 @@ export class TripService {
     document.execCommand('copy');
     document.body.removeChild(el);
     this.toaster.showInfo(`${createdByPhone} copied to clipboard`);
+  }
+
+  // bind suggestive search
+  tripIdSearch(search: string): Observable<any> {
+    if (!search) {
+      return of([]);
+    }
+    const page = 0;
+    const size = 100;
+    return this.http
+      .get(`${this.url}?search=${search}&page=${page}&size=${size}`)
+      .pipe(
+        map((trip: any) => {
+          return trip.data.responses;
+        })
+      );
   }
 }

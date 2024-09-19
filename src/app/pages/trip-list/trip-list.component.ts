@@ -31,6 +31,14 @@ import {
 } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  of,
+  Subject,
+  switchMap,
+  timer,
+} from 'rxjs';
 
 @Component({
   selector: 'app-trip-list',
@@ -101,6 +109,9 @@ export class TripListComponent implements OnInit {
   tripFilter: number = 0;
   size: number = 0;
   anotherStatusCalled: boolean;
+  customerCode: any;
+  truckType: string;
+  searchSubject: Subject<string> = new Subject();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -114,6 +125,9 @@ export class TripListComponent implements OnInit {
       search: [''],
       startDate: [''],
       endDate: [''],
+    });
+    this.searchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+      this.performSearch(searchText);
     });
   }
 
@@ -134,10 +148,12 @@ export class TripListComponent implements OnInit {
       .getTrips(
         this.page,
         this.size,
-        this.searchValue,
+        this.customerCode,
         this.from,
         this.to,
         this.status,
+        this.searchValue,
+        this.truckType,
         this.tripId
       )
       .subscribe(
@@ -172,7 +188,9 @@ export class TripListComponent implements OnInit {
     let fromDate = new Date();
     // to date should be yesterday
     let toDate = new Date();
-    console.log(`fromDate: ${fromDate.getDate()}, toDate: ${toDate.getDate()}, dateEnum: ${dateEnum}`);
+    console.log(
+      `fromDate: ${fromDate.getDate()}, toDate: ${toDate.getDate()}, dateEnum: ${dateEnum}`
+    );
     switch (dateEnum) {
       case DateEnum.Today:
         fromDate.setDate(fromDate.getDate());
@@ -206,23 +224,34 @@ export class TripListComponent implements OnInit {
     ];
   }
 
-  onKeyUpSearch($event: any) {
+  onSearchInputChange($event: any) {
     const value = $event.target.value;
+    this.searchSubject.next(value); // Trigger the Subject when input changes
+  }
+
+  performSearch(value: string) {
     if (value?.length > 0) {
       this.customer.searchCustomer(0, 100, value).subscribe((company: any) => {
         this.tripSuggestions = company.data.content;
+        if (this.tripSuggestions.length === 0) {
+          this.tripSuggestions.push('No customer found');
+        }
         this.isSearchedMenuOpened = true;
-        this.searchFilter = 1;
       });
     } else {
-      this.isSearchedMenuOpened = false;
-      this.searchValue = '';
-      this.page = 0;
-      this.size = 30;
-      this.service.anotherStatusCalled.next(true);
-      this.getTripList();
-      this.searchFilter = 0;
+      this.resetSearch();
     }
+  }
+
+  resetSearch() {
+    this.isSearchedMenuOpened = false;
+    this.searchValue = '';
+    this.page = 0;
+    this.size = 30;
+    this.tripSuggestions = ['No customer found'];
+    this.service.anotherStatusCalled.next(true);
+    this.getTripList();
+    this.searchFilter = 0;
   }
 
   onSelectedToDate($event: string) {
@@ -242,9 +271,10 @@ export class TripListComponent implements OnInit {
   }
 
   onClickSearchSuggestion(result: any) {
+    this.searchFilter = 1;
     this.loading = true;
     this.page = 0;
-    this.searchValue = result.customerCode;
+    this.customerCode = result.customerCode;
     this.searchName = result.name;
     this.tripSuggestions = [];
     this.isSearchedMenuOpened = false;
@@ -349,22 +379,34 @@ export class TripListComponent implements OnInit {
   }
 
   onKeyUpTripSearch($event: Event) {
+    this.tripIdSuggestions = [];
     const value = ($event.target as HTMLInputElement).value;
-    if (value?.length > 0) {
-      this.service
-        .getTrips(0, 100, null, null, null, null, value, null)
+    console.log('value', value);
+    if (value?.length > 0 && value) {
+      of(value)
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged(),
+          switchMap(search => this.service.getTripSuggestions(search))
+        )
         .subscribe((trip: any) => {
-          this.tripIdSuggestions = trip.data.responses;
-          this.isTripSearchedMenuOpened = true;
+          this.tripIdSuggestions = trip.responses;
+          if (this.tripIdSuggestions.length === 0) {
+            this.tripIdSuggestions.push('No trip found');
+          }
         });
     } else {
-      this.isTripSearchedMenuOpened = false;
-      this.tripId = '';
-      this.page = 0;
-      this.size = 30;
-      this.tripFilter = 0;
-      this.service.anotherStatusCalled.next(true);
-      this.getTripList();
+      timer(500).subscribe(() => {
+        this.tripId = '';
+        this.page = 0;
+        this.size = 30;
+        this.tripFilter = 0;
+        this.tripIdSuggestions = [];
+        this.isTripSearchedMenuOpened = false;
+        this.tripIdSuggestions.push('No trip found');
+        this.service.anotherStatusCalled.next(true);
+        this.getTripList();
+      });
     }
   }
 
