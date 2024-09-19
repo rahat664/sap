@@ -31,7 +31,14 @@ import {
 } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  of,
+  Subject,
+  switchMap,
+  timer,
+} from 'rxjs';
 
 @Component({
   selector: 'app-trip-list',
@@ -104,6 +111,7 @@ export class TripListComponent implements OnInit {
   anotherStatusCalled: boolean;
   customerCode: any;
   truckType: string;
+  searchSubject: Subject<string> = new Subject();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -117,6 +125,9 @@ export class TripListComponent implements OnInit {
       search: [''],
       startDate: [''],
       endDate: [''],
+    });
+    this.searchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+      this.performSearch(searchText);
     });
   }
 
@@ -213,8 +224,12 @@ export class TripListComponent implements OnInit {
     ];
   }
 
-  onKeyUpSearch($event: any) {
+  onSearchInputChange($event: any) {
     const value = $event.target.value;
+    this.searchSubject.next(value); // Trigger the Subject when input changes
+  }
+
+  performSearch(value: string) {
     if (value?.length > 0) {
       this.customer.searchCustomer(0, 100, value).subscribe((company: any) => {
         this.tripSuggestions = company.data.content;
@@ -224,18 +239,19 @@ export class TripListComponent implements OnInit {
         this.isSearchedMenuOpened = true;
       });
     } else {
-      setTimeout(() => {
-        this.isSearchedMenuOpened = false;
-        this.searchValue = '';
-        this.page = 0;
-        this.size = 30;
-        this.tripSuggestions = [];
-        this.tripSuggestions.push('No customer found');
-        this.service.anotherStatusCalled.next(true);
-        this.getTripList();
-        this.searchFilter = 0;
-      }, 300);
+      this.resetSearch();
     }
+  }
+
+  resetSearch() {
+    this.isSearchedMenuOpened = false;
+    this.searchValue = '';
+    this.page = 0;
+    this.size = 30;
+    this.tripSuggestions = ['No customer found'];
+    this.service.anotherStatusCalled.next(true);
+    this.getTripList();
+    this.searchFilter = 0;
   }
 
   onSelectedToDate($event: string) {
@@ -380,7 +396,7 @@ export class TripListComponent implements OnInit {
           }
         });
     } else {
-      setTimeout(() => {
+      timer(500).subscribe(() => {
         this.tripId = '';
         this.page = 0;
         this.size = 30;
@@ -390,7 +406,7 @@ export class TripListComponent implements OnInit {
         this.tripIdSuggestions.push('No trip found');
         this.service.anotherStatusCalled.next(true);
         this.getTripList();
-      }, 300);
+      });
     }
   }
 
