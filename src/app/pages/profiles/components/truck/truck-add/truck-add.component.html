@@ -124,26 +124,28 @@
                 </div>
 
                 <div class="flex space-x-6 items-center">
-                  <div class="flex space-x-3">
-                    <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
-                         *ngFor="let file of getSpecificFiles(option?.formControlName)">
-                      <img class="h-full w-full" [src]="file.preview" alt="">
-                      <button (click)="onCloseImage(option?.formControlName, file)"
-                              class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
-                        <i class="far fa-times"></i>
+                  <div class="flex">
+                    <div class="flex space-x-3 relative">
+                      <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+                           *ngFor="let file of getSpecificFiles(option?.formControlName)">
+                        <img class="h-full w-full" [src]="file.preview" alt="">
+                        <button (click)="onCloseImage(option?.formControlName, file)"
+                                class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+                          <i class="far fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div *ngIf="getFileArray(option?.formControlName).length > 3">
+                      <button [matMenuTriggerFor]="truckImagePop"
+                              (click)="viewMoreFormControlName = option?.formControlName"
+                              class="w-[2rem] h-[3.75rem] flex text-link items-center justify-center bg-opacity-10 bg-blue
+                              space-x-1  text-h2_medium font-semibold rounded-md">
+                        <span
+                          class="text-link font-semibold"
+                        >+{{ getFileArray(option?.formControlName).length - 3 }}</span
+                        >
                       </button>
                     </div>
-                  </div>
-                  <div *ngIf="truckImages.length > 3 && option.formControlName == 'truckImages'">
-                    <button [matMenuTriggerFor]="truckImagePop" (click)="onClickViewMore(truckImagePop)"
-                            class="py-2 px-4 flex text-link items-center bg-opacity-10 bg-blue
-  space-x-1 w-full h-full text-body rounded-md">
-                      <i class="far fa-plus"></i>
-                      <span
-                        class="text-link font-semibold"
-                      >{{ truckImages.length - 3 }}</span
-                      >
-                    </button>
                   </div>
                   <app-upload-button
                     *ngIf="getSpecificFiles(option?.formControlName)?.length === 0 || !getSpecificFiles(option?.formControlName)"
@@ -164,7 +166,7 @@
         </div>
       </div>
       <div>
-        <app-pre-hire-checklist></app-pre-hire-checklist>
+        <app-pre-hire-checklist (preHireCheckListObject)="onClickPrehiredChecklist($event)"></app-pre-hire-checklist>
       </div>
     </div>
   </form>
@@ -175,22 +177,26 @@
 <!--</ng-template>-->
 
 <mat-menu #truckImagePop="matMenu" class="truck-menu">
-  <div class="flex justify-between items-center pl-6 pr-2 py-2">
-    <h1 class="text-body_title leading-body_title text-not-black font-semibold">
-      Truck Images
-    </h1>
-    <button (click)="onClickClosePopUp(truckImagePop)" class="h-6 w-6 rounded-full hover:bg-input ">
-      <i class="fal fa-times"></i>
-    </button>
-  </div>
-  <div class="flex space-x-3 px-6 py-4">
-    <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
-         *ngFor="let file of truckImages">
-      <img class="h-full w-full" [src]="file.preview" alt="">
-      <button (click)="onCloseImage('truckImages', file)"
-              class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
-        <i class="far fa-times"></i>
+  <div (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center pl-6 pr-2 py-2">
+      <h1 class="text-body_title leading-body_title text-not-black font-semibold">
+        {{ getTruckImageTitle(viewMoreFormControlName) }}
+      </h1>
+      <button (click)="onClickClosePopUp(truckImagePop)" class="h-6 w-6 rounded-full hover:bg-input ">
+        <i class="fal fa-times"></i>
       </button>
+    </div>
+    <div class="grid grid-cols-6 gap-3 px-6 py-4">
+      <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
+        <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+        >
+          <img (click)="onClickImage(file.preview)" class="h-full w-full" [src]="file.preview" alt="">
+          <button (click)="onCloseImage('truckImages', file)"
+                  class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+            <i class="far fa-times"></i>
+          </button>
+        </div>
+      </ng-container>
     </div>
   </div>
 </mat-menu>

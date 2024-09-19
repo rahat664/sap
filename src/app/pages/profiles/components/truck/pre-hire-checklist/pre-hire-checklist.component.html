@@ -16,8 +16,8 @@
           <h1 class="text-not-black text-body_title leading-body_title font-semibold">{{ items.categoryName }}</h1>
           <div *ngFor="let item of items.items; index as j"
                class="text-body_title leading-body_title font-normal grid grid-cols-7 ">
-            <div class="col-span-4 bg-input py-4 px-2"> {{ getChecklistPosition(i, j) }}. {{ item.name }}</div>
-            <div class="w-full bg-input py-4 px-2 h-full flex justify-center items-center">
+            <div class="col-span-4 bg-[#FAFDFF] py-4 px-2"> {{ getChecklistPosition(i, j) }}. {{ item.name }}</div>
+            <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
               <input
                 (change)="onChange($event, item.id)"
                 [checked]="item.status === 'PASS'"
@@ -25,7 +25,7 @@
                 name="{{ item.name }}"
                 value="PASS" />
             </div>
-            <div class="w-full bg-input py-4 px-2 h-full flex justify-center items-center">
+            <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
               <input
                 [checked]="item.status === 'FAIL' || item.status == ''"
                 (change)="onChange($event, item.id)"
@@ -33,7 +33,7 @@
                 name="{{ item.name }}"
                 value="FAIL" />
             </div>
-            <div class="w-full bg-input py-4 px-2 h-full flex justify-center items-center">
+            <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
               <input
                 [checked]="item.status === 'NA'"
                 (change)="onChange($event, item.id)"

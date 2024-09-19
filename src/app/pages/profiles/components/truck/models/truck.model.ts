@@ -30,6 +30,7 @@ export interface TruckModel {
   otherFile: string | null; // Can be null
   fitnessCertExpDate: string; // Date format as string
   routePermitExpDate: string | null; // Can be null
+  insuranceExpDate: string | null; // Can be null
   taxExpDate: string | null; // Can be null
   caseExpDate: string | null; // Can be null
   createdBy: string;

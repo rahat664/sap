@@ -39,6 +39,8 @@ import {
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { TruckFileType, truckFileType } from '../models/truck-file-type';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
+import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
 
 @Component({
   selector: 'app-truck-add',
@@ -71,6 +73,7 @@ import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 })
 export class TruckAddComponent implements OnInit {
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
+  @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
   readonly dialog = inject(MatDialog);
   registrationZoneList: CustomInputSelectModel[] = registrationZoneList;
   registrationZoneOpened: boolean;
@@ -107,7 +110,8 @@ export class TruckAddComponent implements OnInit {
     private toastr: HandleToastrService,
     private router: Router,
     private validation: ValidationService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private imageGalleryService: ImageGalleryService
   ) {
     this.truckAddForm = this.fb.group({
       registration_zone: [null, Validators.required],
@@ -387,6 +391,7 @@ export class TruckAddComponent implements OnInit {
   }
 
   protected readonly truckFileType: TruckFileType[] = truckFileType;
+  viewMoreFormControlName: string | undefined;
 
   onFileSelected($event: Event) {
     const input = $event.target as HTMLInputElement;
@@ -444,16 +449,10 @@ export class TruckAddComponent implements OnInit {
         this.previewFile(files, this.regPaperImages);
         break;
       case 'taxFile':
-        this.previewFile(files, this.taxImages);
-        if (this.taxImages.length > 0) {
-          this.truckAddForm
-            .get('fitnessCertExpDate')
-            ?.setValidators([Validators.required]);
-          this.truckAddForm.get('fitnessCertExpDate')?.updateValueAndValidity();
-        }
+        this.previewFile(files, this.taxImages, 'taxExpDate');
         break;
       case 'fitnessCertificateFile':
-        this.previewFile(files, this.fitnessImages);
+        this.previewFile(files, this.fitnessImages, 'fitnessCertExpDate');
         if (this.fitnessImages.length > 0) {
           this.truckAddForm
             .get('fitnessCertExpDate')
@@ -462,7 +461,7 @@ export class TruckAddComponent implements OnInit {
         }
         break;
       case 'routePermitFile':
-        this.previewFile(files, this.routePermitImages);
+        this.previewFile(files, this.routePermitImages, 'routePermitExpDate');
         if (this.routePermitImages.length > 0) {
           this.truckAddForm
             .get('caseExpDate')
@@ -471,7 +470,7 @@ export class TruckAddComponent implements OnInit {
         }
         break;
       case 'casePaperFile':
-        this.previewFile(files, this.casePaperImages);
+        this.previewFile(files, this.casePaperImages, 'caseExpDate');
         if (this.casePaperImages.length > 0) {
           this.truckAddForm.get('others')?.setValidators([Validators.required]);
           this.truckAddForm.get('others')?.updateValueAndValidity();
@@ -492,25 +491,57 @@ export class TruckAddComponent implements OnInit {
           return this.truckImages;
         }
       case 'insuranceFiles':
-        return this.insuranceImages;
+        if (this.insuranceImages.length > 3) {
+          return this.insuranceImages.slice(0, 3);
+        } else {
+          return this.insuranceImages;
+        }
       case 'regPaperFile':
-        return this.regPaperImages;
+        if (this.regPaperImages.length > 3) {
+          return this.regPaperImages.slice(0, 3);
+        } else {
+          return this.regPaperImages;
+        }
       case 'taxFile':
-        return this.taxImages;
+        if (this.taxImages.length > 3) {
+          return this.taxImages.slice(0, 3);
+        } else {
+          return this.taxImages;
+        }
       case 'fitnessCertificateFile':
-        return this.fitnessImages;
+        if (this.fitnessImages.length > 3) {
+          return this.fitnessImages.slice(0, 3);
+        } else {
+          return this.fitnessImages;
+        }
       case 'routePermitFile':
-        return this.routePermitImages;
+        if (this.routePermitImages.length > 3) {
+          return this.routePermitImages.slice(0, 3);
+        } else {
+          return this.routePermitImages;
+        }
       case 'casePaperFile':
-        return this.casePaperImages;
+        if (this.casePaperImages.length > 3) {
+          return this.casePaperImages.slice(0, 3);
+        } else {
+          return this.casePaperImages;
+        }
       case 'others':
-        return this.othersImages;
+        if (this.othersImages.length > 3) {
+          return this.othersImages.slice(0, 3);
+        } else {
+          return this.othersImages;
+        }
       default:
         return [];
     }
   }
 
-  private previewFile(files: FileList, targetArray: any[]) {
+  private previewFile(
+    files: FileList,
+    targetArray: any[],
+    expiredControl?: any
+  ) {
     Array.from(files).forEach((file: File) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -521,6 +552,12 @@ export class TruckAddComponent implements OnInit {
         });
       };
     });
+    if (expiredControl) {
+      this.truckAddForm
+        .get(expiredControl)
+        ?.setValidators([Validators.required]);
+      this.truckAddForm.get(expiredControl)?.updateValueAndValidity();
+    }
   }
 
   onCloseImage(formControlName: string | undefined, file: any) {
@@ -548,7 +585,62 @@ export class TruckAddComponent implements OnInit {
     this.dialog.open(truckImagePop, {});
   }
 
-  onClickClosePopUp(truckImagePop: any) {
-    this.dialog.closeAll();
+  onClickClosePopUp(truckImagePop: MatMenu) {
+    this.matMenuTrigger.closeMenu();
+  }
+
+  onClickImage(preview: any) {
+    this.imageGalleryService.setCurrentImage(preview);
+    this.dialog.open(ImageGalleryComponent, {});
+  }
+
+  getFileArray(formControlName: string | undefined) {
+    switch (formControlName) {
+      case 'truckImages':
+        return this.truckImages;
+      case 'insuranceFiles':
+        return this.insuranceImages;
+      case 'regPaperFile':
+        return this.regPaperImages;
+      case 'taxFile':
+        return this.taxImages;
+      case 'fitnessCertificateFile':
+        return this.fitnessImages;
+      case 'routePermitFile':
+        return this.routePermitImages;
+      case 'casePaperFile':
+        return this.casePaperImages;
+      case 'others':
+        return this.othersImages;
+      default:
+        return [];
+    }
+  }
+
+  getTruckImageTitle(menuData: any) {
+    if (menuData) {
+      switch (menuData) {
+        case 'truckImages':
+          return 'Truck Images';
+        case 'insuranceFiles':
+          return 'Insurance Files';
+        case 'regPaperFile':
+          return 'Registration Paper Files';
+        case 'taxFile':
+          return 'Tax Files';
+        case 'fitnessCertificateFile':
+          return 'Fitness Certificate Files';
+        case 'routePermitFile':
+          return 'Route Permit Files';
+        case 'casePaperFile':
+          return 'Case Paper Files';
+        case 'others':
+          return 'Others Files';
+        default:
+          return '';
+      }
+    } else {
+      return '';
+    }
   }
 }

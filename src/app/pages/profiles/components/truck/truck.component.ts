@@ -141,6 +141,10 @@ export class TruckComponent implements OnInit {
       this.newDriverFileType = [{ id: 6, value: 'Other', selected: false }];
     }
 
+    if (fit == 'insurance') {
+      this.newDriverFileType = [{ id: 7, value: 'Insurance', selected: false }];
+    }
+
     this.dialog
       .open(FileUploadPopupComponent, {
         width: '40%',
@@ -208,6 +212,7 @@ export class TruckComponent implements OnInit {
     localStorage.setItem('truck', JSON.stringify(truck));
     this.dialog.open(PreHireChecklistComponent, {
       width: '40%',
+      height: '80%',
     });
   }
 
@@ -224,18 +229,23 @@ export class TruckComponent implements OnInit {
 
   checkThatFileIsExistOrNot(fileName: any, truckDocumentList: TruckDocument[]) {
     let isExist = false;
+    let expDate = '';
     truckDocumentList.forEach(doc => {
       if (doc.documentType == this.truckEnum[fileName]) {
         isExist = true;
+        expDate = doc?.expiryDate;
       }
     });
-    return isExist;
+    return {
+      isExist: isExist,
+      expDate: expDate,
+    };
   }
 
-  checkExpiryDate(fitnessCertExpDate: string) {
-    if (fitnessCertExpDate) {
+  checkExpiryDate(expDate: string) {
+    if (expDate) {
       const today = new Date();
-      const expiryDate = new Date(fitnessCertExpDate);
+      const expiryDate = new Date(expDate);
       if (today > expiryDate) {
         return true;
       }

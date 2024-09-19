@@ -87,6 +87,7 @@ export class PreHireChecklistComponent implements OnInit {
         }
       });
     });
+    this.preHireCheckListObject.emit(this.object);
   }
 
   protected readonly onclick = onclick;
@@ -110,6 +111,7 @@ export class PreHireChecklistComponent implements OnInit {
               },
             ],
           });
+          localStorage.removeItem('truck');
         } else {
           // items by category
           this.preHireCheckList.forEach(category => {

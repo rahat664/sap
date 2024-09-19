@@ -55,3 +55,7 @@
   height: 3.5rem !important;
 }
 
+
+::ng-deep .mat-mdc-menu-panel {
+  max-width: 25rem !important;
+}

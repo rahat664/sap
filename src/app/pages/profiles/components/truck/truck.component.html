@@ -53,13 +53,14 @@
         <th class="text-center w-[10rem] inline-block">Route permit</th>
         <th class="text-center w-[10rem] inline-block">Case</th>
         <th class="text-center w-[10rem] inline-block">Tax</th>
+        <th class="text-center w-[10rem] inline-block">Insurance</th>
         <th class="text-center w-[10rem] inline-block">Other Document</th>
         <th class="text-center w-[10rem] inline-block z-20 sticky right-[5rem] bg-white">Status
         </th>
         <th class="text-center w-[5rem] inline-block z-20 sticky right-0 bg-white"></th>
       </tr>
       <tr>
-        <th class="border" colspan="12"></th>
+        <th class="border" colspan="11"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -105,11 +106,11 @@
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
               <i
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.REG_PAPER_FILE, truck.truckDocumentList)"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.REG_PAPER_FILE, truck.truckDocumentList).isExist"
                 class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('reg', truck)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.REG_PAPER_FILE, truck.truckDocumentList)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.REG_PAPER_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
               ></app-upload-button>
@@ -117,66 +118,89 @@
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
-              <span [ngClass]="{ 'text-red': checkExpiryDate(truck.fitnessCertExpDate) }"
-                    *ngIf="checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList)">{{ truck.fitnessCertExpDate | date: 'd MMM yyyy' }}</span>
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList).expDate) }"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList).isExist"> {{ checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList).expDate | date: 'd MMM yyyy' }}
+              </span>
               <app-upload-button
                 (click)="onClickUpdate('fit', truck)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
-              ></app-upload-button>
+              >
+              </app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
               <span
-                [ngClass]="{ 'text-red': checkExpiryDate(truck.routePermitExpDate) }"
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList)">{{ truck.routePermitExpDate | date: 'd MMM yyyy' }}</span>
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList).expDate) }"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList).isExist"> {{ checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList).expDate | date: 'd MMM yyyy' }}
+              </span>
               <app-upload-button
                 (click)="onClickUpdate('route', truck)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
-              ></app-upload-button>
+              >
+              </app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
               <span
-                [ngClass]="{ 'text-red': checkExpiryDate(truck.caseExpDate) }"
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList)">{{ truck.caseExpDate | date: 'd MMM yyyy' }}</span>
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList).expDate) }"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList).isExist"> {{ checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList).expDate | date: 'd MMM yyyy' }}
+              </span>
               <app-upload-button
                 (click)="onClickUpdate('case', truck)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
-              ></app-upload-button>
+              >
+              </app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
               <span
-                [ngClass]="{ 'text-red': checkExpiryDate(truck.taxExpDate) }"
-
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList)"> {{ truck.taxExpDate | date: 'd MMM yyyy' }}</span>
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList).expDate) }"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList).isExist"> {{ checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList).expDate | date: 'd MMM yyyy' }}
+              </span>
               <app-upload-button
                 (click)="onClickUpdate('tax', truck)"
 
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
-              ></app-upload-button>
+              >
+              </app-upload-button>
+            </div>
+          </td>
+          <td class="whitespace-nowrap w-[10rem] inline-block">
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(truckEnum.INSURANCE_FILE, truck.truckDocumentList).expDate) }"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.INSURANCE_FILE, truck.truckDocumentList).isExist"> {{ checkThatFileIsExistOrNot(truckEnum.INSURANCE_FILE, truck.truckDocumentList).expDate | date: 'd MMM yyyy' }}</span>
+              <app-upload-button
+                (click)="onClickUpdate('insurance', truck)"
+
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.INSURANCE_FILE, truck.truckDocumentList).isExist"
+                icon="upload"
+                [file]="true"
+              >
+              </app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
             <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
               <i
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, truck.truckDocumentList)"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, truck.truckDocumentList).isExist"
                 class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('other', truck)"
 
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, truck.truckDocumentList)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
               ></app-upload-button>
@@ -231,7 +255,7 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="truckList?.length === 0">
-          <td class="text-center" colspan="10">
+          <td class="text-center" colspan="11">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
               <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
               <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
@@ -241,7 +265,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="10">
+          <td class="h-full" colspan="11">
             <app-loading></app-loading>
           </td>
         </tr>

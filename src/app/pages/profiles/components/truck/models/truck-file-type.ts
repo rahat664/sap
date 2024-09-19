@@ -2,7 +2,7 @@ export const truckFileType: TruckFileType[] = [
   {
     id: 1,
     name: 'Truck images',
-    max: 10,
+    max: 50,
     expiryAvailable: false,
     uploaded: false,
     multiple: true,
@@ -11,7 +11,7 @@ export const truckFileType: TruckFileType[] = [
   {
     id: 2,
     name: 'Registration paper',
-    max: 2,
+    max: 50,
     expiryAvailable: false,
     uploaded: false,
     multiple: true,
@@ -20,7 +20,7 @@ export const truckFileType: TruckFileType[] = [
   {
     id: 3,
     name: 'Fitness certificate',
-    max: 2,
+    max: 50,
     expiryAvailable: true,
     uploaded: false,
     multiple: true,
@@ -30,7 +30,7 @@ export const truckFileType: TruckFileType[] = [
   {
     id: 4,
     name: 'Route permit',
-    max: 2,
+    max: 50,
     expiryAvailable: true,
     uploaded: false,
     multiple: true,
@@ -40,7 +40,7 @@ export const truckFileType: TruckFileType[] = [
   {
     id: 5,
     name: 'Tax paper',
-    max: 2,
+    max: 50,
     expiryAvailable: true,
     uploaded: false,
     multiple: true,
@@ -50,7 +50,7 @@ export const truckFileType: TruckFileType[] = [
   {
     id: 6,
     name: 'Insurance paper',
-    max: 2,
+    max: 50,
     expiryAvailable: true,
     uploaded: false,
     multiple: true,
@@ -60,7 +60,7 @@ export const truckFileType: TruckFileType[] = [
   {
     id: 7,
     name: 'Case paper',
-    max: 2,
+    max: 50,
     expiryAvailable: true,
     uploaded: false,
     multiple: true,
@@ -70,11 +70,11 @@ export const truckFileType: TruckFileType[] = [
   {
     id: 8,
     name: 'Others document',
-    max: 2,
+    max: 50,
     expiryAvailable: false,
     uploaded: false,
     multiple: true,
-    formControlName: 'otherDocFile',
+    formControlName: 'others',
   },
 ];
 
