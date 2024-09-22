@@ -1,10 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { registrationCategoryList } from '../models/registration-category';
 import { registrationZoneList } from '../models/registration-zone';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
@@ -13,12 +13,21 @@ import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
 import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checklist.component';
-import { fileUpload } from '../models/file-upload';
-import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TruckDocument, TruckModel } from '../models/truck.model';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { truckFileType } from '../models/truck-file-type';
+import { ActivatedRoute } from '@angular/router';
+import { TruckService } from '../services/truck.service';
+import { PreHireChecklistDetailsComponent } from '../pre-hire-checklist-details/pre-hire-checklist-details.component';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { TruckDocumentType } from '../../../../../shared/Enums/registration_type';
 
 @Component({
@@ -40,35 +49,54 @@ import { TruckDocumentType } from '../../../../../shared/Enums/registration_type
     PreHireChecklistComponent,
     MatFormField,
     MatInput,
+    MatDatepicker,
+    MatMenu,
+    MatMenuTrigger,
+    MatDatepickerToggle,
+    MatDatepickerInput,
+    PreHireChecklistDetailsComponent,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './truck-details.component.html',
   styleUrl: './truck-details.component.scss',
 })
 export class TruckDetailsComponent implements OnInit {
+  @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
   readonly dialog = inject(MatDialog);
-  inEditMode = false;
-  registrationTypePlaceholder: string;
+  registrationTypePlaceholder: string = '';
   registrationOpenedType: boolean;
   registrationListType: CustomInputSelectModel[] = registrationCategoryList;
   registrationZoneList: CustomInputSelectModel[] = registrationZoneList;
   registrationZoneOpened: boolean;
-  registrationZonePlaceholder: string;
-  singleTruck: TruckModel;
+  registrationZonePlaceholder: string = '';
   documents: TruckDocument[] = [];
-  truckAddForm: FormGroup;
-  isConfirmModalOpen: boolean;
-  closedDocument: TruckDocument = [] as any;
+  truckUpdateForm: FormGroup;
   protected loading: boolean;
+  truckDetails: TruckModel;
+  protected preHiredCheckList: any;
+  savedRegistrationPaper: TruckDocument[];
+  savedTaxPaper: TruckDocument[];
+  savedFitnessCertificate: TruckDocument[];
+  savedRoutePermit: TruckDocument[];
+  savedCasePaper: TruckDocument[];
+  savedOthers: TruckDocument[];
+  savedTruckImages: TruckDocument[];
+  savedInsurancePaper: TruckDocument[];
 
-  constructor(private shared: DriverEditSharedService) {}
+  constructor(
+    private shared: DriverEditSharedService,
+    private router: ActivatedRoute,
+    private service: TruckService,
+    private fb: FormBuilder
+  ) {}
 
-  onSelectRegistrationype($event: number) {
+  onSelectRegistrationType($event: number) {
     this.registrationTypePlaceholder = this.registrationListType.find(
       x => x.id === $event
     ).value;
     this.registrationListType.forEach(x => (x.selected = x.id === $event));
     this.registrationOpenedType = false;
-    this.truckAddForm.patchValue({
+    this.truckUpdateForm.patchValue({
       registration_category: this.registrationTypePlaceholder,
     });
   }
@@ -87,46 +115,14 @@ export class TruckDetailsComponent implements OnInit {
     ).value;
     this.registrationZoneList.forEach(x => (x.selected = x.id === $event));
     this.registrationZoneOpened = false;
-    this.truckAddForm.patchValue({
+    this.truckUpdateForm.patchValue({
       registration_zone: this.registrationZonePlaceholder,
     });
   }
 
-  getFullRegistrationName() {
-    return `${this.singleTruck.registrationZone} ${this.singleTruck.registrationCategory} ${this.singleTruck.registrationSerial}-${this.singleTruck.registrationNum}`;
-  }
-
   ngOnInit(): void {
-    localStorage.removeItem('previousDocument');
-    this.shared.isUploadPopupOpen.subscribe(value => {
-      this.isUploadPopupOpen = value;
-    });
-    this.singleTruck = JSON.parse(localStorage.getItem('truck'));
-    this.truckAddForm = this.shared.truckUpdateForm;
-    this.registrationTypePlaceholder = this.singleTruck?.registrationCategory;
-    this.registrationZonePlaceholder = this.singleTruck?.registrationZone;
-    this.truckAddForm
-      .get('registration_serial')
-      .valueChanges.subscribe(value => {
-        this.numberOnly(value);
-      });
-    this.shared.bindTruckValueWithForm(this.singleTruck);
-    this.truckAddForm.get('registration_num').valueChanges.subscribe(value => {
-      this.numberOnly(value);
-    });
-    this.documents = this.singleTruck.truckDocumentList;
-    localStorage.setItem('previousDocument', JSON.stringify(this.documents));
-    this.truckFileTypeModify(this.documents);
-
-    this.shared.completeTruckUpload.subscribe(value => {
-      if (value) {
-        this.loading = false;
-        this.inEditMode = false;
-        this.shared.closeInputSelect.next(true);
-      } else {
-        this.loading = false;
-      }
-    });
+    this.getTruckDetailsByTruckId();
+    this.initiateForm();
   }
 
   onClickSave() {
@@ -134,37 +130,10 @@ export class TruckDetailsComponent implements OnInit {
     this.shared.onTruckUpdate();
   }
 
-  onAddFile($event: any) {
-    $event.forEach(
-      (element: {
-        preview: any;
-        registrationType: any;
-        registrationExpireDate: any;
-      }) => {
-        this.documents.push({
-          id: 999,
-          fileUrl: element.preview,
-          preSignedFileUrl: element.preview,
-          documentType: element.registrationType,
-          createdAt: new Date().toISOString(),
-          expiryDate: element.registrationExpireDate,
-          createdBy: 'admin',
-        });
-      }
-    );
-    console.log(this.documents);
-    this.shared.onChangeTruckFile($event);
-  }
-
-  onClickEdit() {
-    this.inEditMode = true;
-    this.shared.closeInputSelect.next(false);
-  }
-
   private numberOnly(value: any) {
     const reg = /^[0-9]*$/;
     if (!reg.test(value)) {
-      this.truckAddForm.patchValue({
+      this.truckUpdateForm.patchValue({
         registration_serial: value?.replace(/[^0-9]/g, ''),
         registration_num: value?.replace(/[^0-9]/g, ''),
       });
@@ -172,154 +141,217 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   protected readonly Date = Date;
-  protected readonly truckFileType = fileUpload;
-  isUploadPopupOpen: boolean;
-  newTruckFileTypeOptions: CustomInputSelectModel[];
-  fileName: string;
+  protected readonly truckFileType = truckFileType;
+  viewMoreFormControlName: string;
+  registrationNumErrorMessage: boolean;
+  registrationSerialErrorMessage: string;
+  registrationCategoryErrorMessage: string;
+  registrationErrorMessage: string;
+  isInEditMode: boolean;
 
-  onClickClose(document: TruckDocument) {
-    this.isConfirmModalOpen = true;
-    this.closedDocument = document;
-    this.fileName = this.getDocumentName(document.documentType);
-    this.dialog
-      .open(ConfirmDeleteComponent, {
-        width: '21.875rem',
-        data: {
-          title: 'Delete Document',
-          text: `Are you sure you want to delete this document ${this.fileName}?`,
-        },
-      })
-      .afterClosed()
-      .subscribe(res => {
-        if (res === 'deleted') {
-          this.performRemove(res);
-        }
-      });
+  onFileSelected($event: Event) {}
+
+  triggerFileUpload(formControlName: any, max: any) {}
+
+  getSpecificFiles(formControlName: any) {
+    return [];
   }
 
-  private truckFileTypeModify(documents: TruckDocument[]) {
-    this.newTruckFileTypeOptions = JSON.parse(
-      JSON.stringify(this.truckFileType)
-    );
-    documents.forEach(document => {
-      this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
-        item => item.value !== this.getDocumentName(document.documentType)
-      );
-    });
-    // count insurance file
-    const insuranceFile = documents.filter(
-      document =>
-        document.documentType ===
-          TruckDocumentType[TruckDocumentType.INSURANCE_FILE] ||
-        document.documentType === 'Insuranc,e'
-    );
-    if (insuranceFile.length > 1) {
-      this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
-        item => item.value !== 'Insuranc,e'
-      );
-    } else {
-      this.newTruckFileTypeOptions.push({
-        id: 6,
-        value: 'Insurance',
-        selected: false,
-      } as any);
-    }
-    // count truck image
-    const truckImage = documents.filter(
-      document =>
-        document.documentType ===
-          TruckDocumentType[TruckDocumentType.TRUCK_IMAGE] ||
-        document.documentType === 'Truck Im,age'
-    );
-    if (truckImage.length > 9) {
-      this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
-        item => item.value !== 'Truck Im,age'
-      );
-    } else {
-      this.newTruckFileTypeOptions.push({
-        id: 7,
-        value: 'Truck Image',
-        selected: false,
-      } as any);
-    }
+  getFileArray(formControlName: any) {
+    return [];
   }
 
-  performRemove($event: any) {
-    this.isConfirmModalOpen = false;
-    this.shared.onClickTruckCloseButton(this.closedDocument);
-    // remove closedDocument from documents
-    this.documents = this.documents.filter(
-      document => document !== this.closedDocument
-    );
-    this.truckFileTypeModify(this.documents);
-  }
+  onCloseImage(formControlName: any, file: any) {}
 
-  onClickCancel() {
-    this.inEditMode = false;
-    this.documents = [];
-    this.documents = JSON.parse(localStorage.getItem('previousDocument'));
-    localStorage.removeItem('previousDocument');
-  }
+  onDateChange($event: Event, expiryFormControlName: string) {}
 
-  onCLickUpload() {
-    // filter newDriverFileType to remove the documents that are already uploaded
-    // shalow copy of the driverFileType
-    this.truckFileTypeModify(this.documents);
-    this.dialog
-      .open(FileUploadPopupComponent, {
-        width: '40%',
-        data: {
-          filetype: this.newTruckFileTypeOptions,
-          isFromDriver: true,
-          value: this.singleTruck,
-        },
-      })
-      .afterClosed()
-      .subscribe(res => {
-        if (res != 'close') {
-          this.onAddFile(res);
-        }
-      });
-  }
-
-  onClickPrehireCheckList() {
-    this.dialog.open(PreHireChecklistComponent, {
-      width: '40%',
+  onClickImage(preview: any) {
+    this.dialog.open(ImageGalleryComponent, {
+      data: {
+        images: preview,
+      },
     });
   }
 
-  getDocumentName(documentType: string) {
-    if (
-      documentType ==
-      TruckDocumentType[TruckDocumentType.FITNESS_CERTIFICATE_FILE]
-    ) {
-      return 'Fitness';
-    } else if (
-      documentType == TruckDocumentType[TruckDocumentType.REG_PAPER_FILE]
-    ) {
-      return 'Registration Paper';
-    } else if (
-      documentType == TruckDocumentType[TruckDocumentType.ROUTE_PERMIT_FILE]
-    ) {
-      return 'Route Permit';
-    } else if (documentType == TruckDocumentType[TruckDocumentType.TAX_FILE]) {
-      return 'Tax';
-    } else if (documentType == TruckDocumentType[TruckDocumentType.CASE_FILE]) {
-      return 'Case';
-    } else if (
-      documentType == TruckDocumentType[TruckDocumentType.INSURANCE_FILE]
-    ) {
-      return 'Insurance';
-    } else if (
-      documentType == TruckDocumentType[TruckDocumentType.TRUCK_IMAGE]
-    ) {
-      return 'Truck Image';
-    } else if (
-      documentType == TruckDocumentType[TruckDocumentType.OTHER_FILE]
-    ) {
-      return 'Other';
-    } else {
-      return documentType;
+  onClickClosePopUp() {
+    this.matMenuTrigger.closeMenu();
+  }
+
+  getTruckImageTitle(viewMoreFormControlName: string) {
+    switch (viewMoreFormControlName) {
+      case 'regPaperFile':
+        return 'Registration paper';
+      case 'taxFile':
+        return 'Tax paper';
+      case 'fitnessCertificateFile':
+        return 'Fitness certificate';
+      case 'routePermitFile':
+        return 'Route permit';
+      case 'casePaperFile':
+        return 'Case paper';
+      case 'others':
+        return 'Others document';
+      case 'truckImages':
+        return 'Truck images';
+      case 'insuranceFiles':
+        return 'Insurance paper';
+      default:
+        return '';
+    }
+  }
+
+  private getTruckDetailsByTruckId() {
+    let truckId: string;
+    // get truck id from query params
+    this.router.paramMap.subscribe(params => {
+      truckId = params.get('id'); // Assuming the truck ID is part of the route parameters
+      this.service.getTruckById(truckId).subscribe((res: any) => {
+        const truck: TruckModel = res.data;
+        this.truckDetails = truck;
+        this.documents = truck.truckDocumentList;
+        this.updateFormValues(truck);
+      });
+      this.service.getPreHireChecklist(truckId).subscribe((res: any) => {
+        // Do something with the pre-hire checklist
+        this.preHiredCheckList = res.data;
+      });
+    });
+  }
+
+  private updateFormValues(truck: TruckModel) {
+    this.truckUpdateForm.patchValue({
+      registration_zone: truck.registrationZone,
+      registration_category: truck.registrationCategory,
+      registration_serial: truck.registrationSerial,
+      registration_num: truck.registrationNum,
+      fitnessCertExpDate: truck.fitnessCertExpDate,
+      routePermitExpDate: truck.routePermitExpDate,
+      caseExpDate: truck.caseExpDate,
+      taxExpDate: truck.taxExpDate,
+      insuranceExpDate: truck.insuranceExpDate,
+      regPaperFile: truck.regPaperFile,
+      taxFile: truck.taxFile,
+    });
+    this.registrationZonePlaceholder = truck.registrationZone;
+    this.registrationTypePlaceholder = truck.registrationCategory;
+  }
+
+  onClickPrehiredChecklist($event: any) {}
+
+  private initiateForm() {
+    this.truckUpdateForm = this.fb.group({
+      registration_zone: [null],
+      registration_category: [null],
+      registration_serial: [null],
+      registration_num: [null],
+      fitnessCertExpDate: [null],
+      routePermitExpDate: [null],
+      caseExpDate: [null],
+      taxExpDate: [null],
+      regPaperFile: [null],
+      taxFile: [null],
+      fitnessCertificateFile: [null],
+      routePermitFile: [null],
+      casePaperFile: [null],
+      others: [null],
+      checklist: [null],
+      insuranceFiles: [null],
+      truckImages: [null],
+      insuranceExpDate: [null],
+    });
+  }
+
+  onClickEdit() {
+    this.isInEditMode = true;
+  }
+
+  checkThatFileIsAvailableOrNot(name: string) {
+    switch (name) {
+      case 'Registration paper':
+        const regFile = this.truckDetails?.truckDocumentList.filter(
+          x =>
+            x.documentType ===
+            TruckDocumentType[TruckDocumentType.REG_PAPER_FILE]
+        );
+        this.savedRegistrationPaper = regFile?.length > 0 ? regFile : null;
+        return regFile?.length > 0 ? regFile : null;
+      case 'Tax paper':
+        const taxFile = this.truckDetails?.truckDocumentList.filter(
+          x => x.documentType === TruckDocumentType[TruckDocumentType.TAX_FILE]
+        );
+        return taxFile?.length > 0 ? taxFile.slice(0, 3) : null;
+      case 'Fitness certificate':
+        const fitFile = this.truckDetails?.truckDocumentList.filter(
+          x =>
+            x.documentType ===
+            TruckDocumentType[TruckDocumentType.FITNESS_CERTIFICATE_FILE]
+        );
+        this.savedFitnessCertificate = fitFile?.length > 0 ? fitFile : null;
+        return fitFile?.length > 0 ? fitFile.slice(0, 3) : null;
+      case 'Route permit':
+        const routeFile = this.truckDetails?.truckDocumentList.filter(
+          x =>
+            x.documentType ===
+            TruckDocumentType[TruckDocumentType.ROUTE_PERMIT_FILE]
+        );
+        this.savedRoutePermit = routeFile?.length > 0 ? routeFile : null;
+        return routeFile?.length > 0 ? routeFile.slice(0, 3) : null;
+      case 'Case paper':
+        const caseFile = this.truckDetails?.truckDocumentList.filter(
+          x => x.documentType === TruckDocumentType[TruckDocumentType.CASE_FILE]
+        );
+        this.savedCasePaper = caseFile?.length > 0 ? caseFile : null;
+        return caseFile?.length > 0 ? caseFile.slice(0, 3) : null;
+      case 'Others document':
+        const otherFile = this.truckDetails?.truckDocumentList.filter(
+          x =>
+            x.documentType === TruckDocumentType[TruckDocumentType.OTHER_FILE]
+        );
+        this.savedOthers = otherFile?.length > 0 ? otherFile : null;
+        return otherFile?.length > 0 ? otherFile.slice(0, 3) : null;
+      case 'Truck images':
+        const truckImageFile = this.truckDetails?.truckDocumentList.filter(
+          x =>
+            x.documentType === TruckDocumentType[TruckDocumentType.TRUCK_IMAGE]
+        );
+        this.savedTruckImages =
+          truckImageFile?.length > 0 ? truckImageFile : null;
+        return truckImageFile?.length > 0 ? truckImageFile.slice(0, 3) : null;
+      case 'Insurance paper':
+        const insuranceFile = this.truckDetails?.truckDocumentList.filter(
+          x =>
+            x.documentType ===
+            TruckDocumentType[TruckDocumentType.INSURANCE_FILE]
+        );
+        this.savedInsurancePaper =
+          insuranceFile?.length > 0 ? insuranceFile : null;
+        return insuranceFile?.length > 0 ? insuranceFile.slice(0, 3) : null;
+      default:
+        return null;
+    }
+  }
+
+  getSavedFileArray(formControlName: string | undefined) {
+    switch (formControlName) {
+      case 'regPaperFile':
+        return this.savedRegistrationPaper;
+      case 'taxFile':
+        return this.checkThatFileIsAvailableOrNot('Tax paper');
+      case 'fitnessCertificateFile':
+        return this.savedFitnessCertificate;
+      case 'routePermitFile':
+        return this.savedRoutePermit;
+      case 'casePaperFile':
+        return this.savedCasePaper;
+      case 'others':
+        return this.savedOthers;
+      case 'truckImages':
+        console.log(this.savedTruckImages);
+        return this.savedTruckImages;
+      case 'insuranceFiles':
+        return this.savedInsurancePaper;
+      default:
+        return null;
     }
   }
 }
