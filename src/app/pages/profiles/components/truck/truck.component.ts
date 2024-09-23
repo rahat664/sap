@@ -23,6 +23,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
+import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
 
 @Component({
   selector: 'app-truck',
@@ -74,7 +77,8 @@ export class TruckComponent implements OnInit {
 
   constructor(
     private service: TruckService,
-    private shared: DriverEditSharedService
+    private shared: DriverEditSharedService,
+    private toastr: HandleToastrService
   ) {}
 
   ngOnInit(): void {
@@ -251,5 +255,92 @@ export class TruckComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  getBgColor(status: string) {
+    if (status === 'Approved') {
+      return 'bg-green';
+    } else if (status === 'Pending') {
+      return 'bg-another';
+    } else {
+      return 'bg-red';
+    }
+  }
+
+  onClickApprove(truckDetails: TruckModel) {
+    this.dialog
+      .open(ConfirmApproveComponent, {
+        data: {
+          title: 'Approve',
+          text: `Do you want to approve ${truckDetails.fullRegistrationNumber}"?`,
+          buttonText: 'Approve',
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res === 'updated') {
+          // Do something
+          const formData = new FormData();
+          const payload: Record<string, any> = {};
+          payload['id'] = truckDetails.id;
+          payload['status'] = 'Approved';
+          formData.append('payload', JSON.stringify(payload));
+          this.service.editTruck(formData).subscribe(
+            (res: any) => {
+              // Handle response
+              if (res.status == 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.truckList = [];
+                this.getTruckList();
+              } else {
+                this.toastr.showError(res.message);
+              }
+            },
+            error => {
+              // Handle error
+              this.toastr.showError(error.error.message);
+            }
+          );
+        }
+      });
+  }
+
+  onClickReject(truckDetails: TruckModel) {
+    this.dialog
+      .open(ConfirmRejectComponent, {
+        data: {
+          title: 'Reject',
+          text: `Do you want to reject ${truckDetails.fullRegistrationNumber}"?`,
+          buttonText: 'Reject',
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res.status === 'rejected') {
+          // Do something
+          const formData = new FormData();
+          const payload: Record<string, any> = {};
+          payload['id'] = truckDetails.id;
+          payload['status'] = 'Rejected';
+          payload['rejectedReason'] = res.reason;
+          formData.append('payload', JSON.stringify(payload));
+          this.service.editTruck(formData).subscribe(
+            (res: any) => {
+              // Handle response
+              if (res.status == 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.truckList = [];
+                this.getTruckList();
+              } else {
+                this.toastr.showError(res.message);
+              }
+            },
+            error => {
+              // Handle error
+              this.toastr.showError(error.error.message);
+            }
+          );
+        }
+      });
   }
 }

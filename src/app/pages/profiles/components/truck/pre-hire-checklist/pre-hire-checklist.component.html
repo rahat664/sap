@@ -22,7 +22,7 @@
             <div class="col-span-4 bg-[#FAFDFF] py-4 px-2"> {{ getChecklistPosition(i, j) }}. {{ item.name }}</div>
             <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
               <input
-                (change)="onChange($event, item.id)"
+                (change)="onChange($event, item.id, item.checklistId)"
                 [checked]="item.status === 'PASS'"
                 type="radio"
                 name="{{ item.name }}"
@@ -30,8 +30,8 @@
             </div>
             <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
               <input
-                [checked]="item.status === 'FAIL' || item.status == ''"
-                (change)="onChange($event, item.id)"
+                [checked]="item.status === 'FAIL'"
+                (change)="onChange($event, item.id,item.checklistId)"
                 type="radio"
                 name="{{ item.name }}"
                 value="FAIL" />
@@ -39,7 +39,7 @@
             <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
               <input
                 [checked]="item.status === 'NA'"
-                (change)="onChange($event, item.id)"
+                (change)="onChange($event, item.id,item.checklistId)"
                 type="radio"
                 name="{{ item.name }}"
                 value="NA" />

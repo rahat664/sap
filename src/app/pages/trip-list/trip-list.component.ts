@@ -188,9 +188,6 @@ export class TripListComponent implements OnInit {
     let fromDate = new Date();
     // to date should be yesterday
     let toDate = new Date();
-    console.log(
-      `fromDate: ${fromDate.getDate()}, toDate: ${toDate.getDate()}, dateEnum: ${dateEnum}`
-    );
     switch (dateEnum) {
       case DateEnum.Today:
         fromDate.setDate(fromDate.getDate());
@@ -381,7 +378,6 @@ export class TripListComponent implements OnInit {
   onKeyUpTripSearch($event: Event) {
     this.tripIdSuggestions = [];
     const value = ($event.target as HTMLInputElement).value;
-    console.log('value', value);
     if (value?.length > 0 && value) {
       of(value)
         .pipe(

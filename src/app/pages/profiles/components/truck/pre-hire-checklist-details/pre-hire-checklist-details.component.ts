@@ -31,6 +31,7 @@ export class PreHireChecklistDetailsComponent {
                 name: item.name,
                 status: item.status,
                 category: item.category,
+                checklistId: item.id,
               },
             ],
           });
@@ -43,6 +44,7 @@ export class PreHireChecklistDetailsComponent {
                 name: item.name,
                 status: item.status,
                 category: item.category,
+                checklistId: item.id,
               });
             }
           });

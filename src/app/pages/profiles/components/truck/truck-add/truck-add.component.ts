@@ -209,8 +209,52 @@ export class TruckAddComponent implements OnInit {
           this.truckAddForm.get('registration_num')
         );
     });
-    this.truckAddForm.valueChanges.subscribe(() => {
-      if (this.truckAddForm.valid) {
+    // only listen to registration zone, registration category, registration serial and registration number
+    this.truckAddForm.get('registration_zone')?.valueChanges.subscribe(() => {
+      if (
+        this.truckAddForm.get('registration_num')?.valid &&
+        this.truckAddForm.get('registration_serial')?.valid &&
+        this.truckAddForm.get('registration_category')?.valid &&
+        this.truckAddForm.get('registration_zone')?.valid
+      ) {
+        this.validateTruckInformation();
+      } else {
+        this.everyThingDisabled = true;
+      }
+    });
+    this.truckAddForm
+      .get('registration_category')
+      ?.valueChanges.subscribe(() => {
+        if (
+          this.truckAddForm.get('registration_num')?.valid &&
+          this.truckAddForm.get('registration_serial')?.valid &&
+          this.truckAddForm.get('registration_category')?.valid &&
+          this.truckAddForm.get('registration_zone')?.valid
+        ) {
+          this.validateTruckInformation();
+        } else {
+          this.everyThingDisabled = true;
+        }
+      });
+    this.truckAddForm.get('registration_serial')?.valueChanges.subscribe(() => {
+      if (
+        this.truckAddForm.get('registration_num')?.valid &&
+        this.truckAddForm.get('registration_serial')?.valid &&
+        this.truckAddForm.get('registration_category')?.valid &&
+        this.truckAddForm.get('registration_zone')?.valid
+      ) {
+        this.validateTruckInformation();
+      } else {
+        this.everyThingDisabled = true;
+      }
+    });
+    this.truckAddForm.get('registration_num')?.valueChanges.subscribe(() => {
+      if (
+        this.truckAddForm.get('registration_num')?.valid &&
+        this.truckAddForm.get('registration_serial')?.valid &&
+        this.truckAddForm.get('registration_category')?.valid &&
+        this.truckAddForm.get('registration_zone')?.valid
+      ) {
         this.validateTruckInformation();
       } else {
         this.everyThingDisabled = true;
@@ -233,7 +277,6 @@ export class TruckAddComponent implements OnInit {
       Object.keys(this.truckAddForm.controls).forEach(key => {
         const control = this.truckAddForm.get(key);
         const value = control.value;
-        console.log(value);
 
         if (
           key.endsWith('File') ||
@@ -322,7 +365,7 @@ export class TruckAddComponent implements OnInit {
     this.service.getPreHireChecklist().subscribe((res: any) => {
       this.preHireCheckList = res.data;
       this.preHireCheckList.forEach((item: any) => {
-        this.singleChecklist[item.id] = 'NA';
+        this.singleChecklist[item.id] = '';
       });
     });
   }
@@ -356,30 +399,6 @@ export class TruckAddComponent implements OnInit {
         }
       },
     });
-  }
-
-  onClickAddList() {
-    localStorage.removeItem('truck');
-    this.dialog
-      .open(PreHireChecklistComponent, {
-        width: '40%',
-        data: {
-          save: true,
-        },
-      })
-      .afterClosed()
-      .subscribe(res => {
-        this.countPassCheckList = 0;
-        this.singleChecklist = res;
-        this.truckAddForm.patchValue({
-          checklist: res,
-        });
-        for (const key in res) {
-          if (res[key] === 'PASS') {
-            this.countPassCheckList += 1;
-          }
-        }
-      });
   }
 
   onDateChange($event: Event, expiryFormControlName: string) {
@@ -562,14 +581,8 @@ export class TruckAddComponent implements OnInit {
 
   onCloseImage(formControlName: string | undefined, file: any) {
     let files: any[] = [];
-    if (formControlName === 'truckImages') {
-      files = this.truckImages;
-      if (files.length < 5) {
-        this.dialog.closeAll();
-      }
-    } else {
-      files = this.getSpecificFiles(formControlName);
-    }
+    files = this.getSpecificFiles(formControlName);
+    this.dialog.closeAll();
     const index = files.indexOf(file);
     files.splice(index, 1);
     const formControlFiles = [];

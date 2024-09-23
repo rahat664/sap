@@ -5,35 +5,39 @@
         <img src="assets/svg/list.svg" class="notPreview h-[2rem] w-[2rem]" alt="">
         <h1 class="text-h3 leading-h3 font-semibold">Pre Hire Checklist</h1>
       </div>
-      <button
-        (click)="onClickEdit()"
-        *ngIf="!isInEditMode"
-        class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
-        <i class="far fa-pen text-primary"></i>
-      </button>
-      <div class="flex space-x-4 items-center" *ngIf="isInEditMode">
+      <div class="flex space-x-4 items-center">
         <button
+          *ngIf="isInEditMode"
           (click)="onClickSave()"
           class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
           <span>Save</span>
         </button>
         <button
-          (click)="onClickSave()"
+          *ngIf="isInEditMode"
+          (click)="isInEditMode = false"
           class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
           <span>Cancel</span>
         </button>
         <button
-          (click)="onClickSave()"
+          *ngIf="!isInEditMode && (truckDetails?.status === 'Pending' || truckDetails?.status === 'Rejected')"
+          (click)="onClickApprove()"
           class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
           <span>Approve</span>
         </button>
         <button
-          (click)="onClickSave()"
+          *ngIf="!isInEditMode && (truckDetails?.status === 'Pending')"
+          (click)="onClickReject()"
           class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
           <span>Reject</span>
+        </button>
+        <button
+          (click)="onClickEdit()"
+          *ngIf="!isInEditMode"
+          class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
+          <i class="far fa-pen text-primary"></i>
         </button>
       </div>
     </div>
@@ -54,7 +58,17 @@
             </div>
             <div class="flex flex-col space-y-1">
               <span class="text-body text-web-text-secondary">Status</span>
-              <span class="text-body_title leading-body_title font-semibold">Pending</span>
+              <span class="text-body_title leading-body_title font-semibold">{{ truckDetails?.status }}</span>
+            </div>
+          </div>
+          <div class="py-3 px-4 bg-red rounded-lg bg-opacity-[10%]"
+               *ngIf="truckDetails.status === 'Rejected' && truckDetails.rejectedReason">
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-red">Rejection cause</span>
+              <span
+                class="text-body text-not-black">{{
+                  truckDetails?.rejectedReason
+                }}</span>
             </div>
           </div>
           <div class="grid" *ngIf="isInEditMode">
@@ -138,20 +152,28 @@
             <img src="assets/svg/truckDocument.svg" class="notPreview" alt="truck document">
             <span class="text-not-black text-h3 leading-h3 font-semibold">Document</span>
           </div>
-          <div *ngIf="isInEditMode" class="flex flex-col space-y-1">
+          <div class="flex flex-col space-y-1">
             <ng-container *ngFor="let option of truckFileType; index as i">
               <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
                 <div class="flex space-x-4 items-center">
-                  <img src="assets/svg/not-available.svg" class="notPreview" alt="" *ngIf="!option.uploaded">
-                  <img src="assets/svg/available.svg" alt="" class="notPreview" *ngIf="option.uploaded">
+                  <img src="assets/svg/not-available.svg" class="notPreview" alt=""
+                       *ngIf="!checkThatFileIsAvailableOrNot(option.name).length">
+                  <img src="assets/svg/available.svg" alt="" class="notPreview"
+                       *ngIf=" checkThatFileIsAvailableOrNot(option.name).length > 0"
+                  >
                   <div class="flex flex-col space-y-0.5">
                     <span
                       class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
-                    <mat-form-field *ngIf="option?.expiryAvailable" class="example-full-width flex-1 custom"
+                    <span
+                      *ngIf="option.expiryAvailable && checkThatFileIsAvailableOrNot(option.name) && checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate && !isInEditMode"
+                      class="{{checkDateIsExpiredOrNot(checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate).isExpired ? 'text-red' : 'text-not-black' }} text-body">{{ checkDateIsExpiredOrNot(checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate).text }}</span>
+                    <mat-form-field *ngIf="option?.expiryAvailable && isInEditMode"
+                                    class="example-full-width flex-1 custom"
                                     appearance="outline"
                                     [ngClass]="{ 'error' : truckUpdateForm.get(option.expiryFormControlName).invalid }"
                     >
-                      <input [formControlName]="option.expiryFormControlName" matInput [matDatepicker]="picker"
+                      <input [formControlName]="option.expiryFormControlName" matInput
+                             [matDatepicker]="picker"
                              placeholder="Expiry Date" (focusin)="picker.open()"
                              (selectionchange)="onDateChange($event, option.expiryFormControlName)">
                       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -161,65 +183,7 @@
                 </div>
 
                 <div class="flex space-x-6 items-center">
-                  <div class="flex">
-                    <div class="flex space-x-3 relative">
-                      <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
-                           *ngFor="let file of getSpecificFiles(option?.formControlName)">
-                        <img class="h-full w-full" [src]="file.preview" alt="">
-                        <button (click)="onCloseImage(option?.formControlName, file)"
-                                class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
-                          <i class="far fa-times"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div *ngIf="getFileArray(option?.formControlName).length > 3">
-                      <button [matMenuTriggerFor]="truckImagePop"
-                              (click)="viewMoreFormControlName = option?.formControlName"
-                              class="px-2 h-[3.75rem] flex text-link items-center justify-center bg-opacity-10 bg-blue
-                              space-x-1  text-h2_medium font-semibold rounded-md">
-                        <span
-                          class="text-link font-semibold"
-                        >+{{ getFileArray(option?.formControlName).length - 3 }}</span
-                        >
-                      </button>
-                    </div>
-                  </div>
-                  <app-upload-button
-                    *ngIf="getSpecificFiles(option?.formControlName)?.length === 0 || !getSpecificFiles(option?.formControlName)"
-                    buttonText="Upload"
-                    [file]="true"
-                    (click)="triggerFileUpload(option?.formControlName, option.max)"
-                    icon="upload"></app-upload-button>
-                  <app-upload-button
-                    *ngIf="getSpecificFiles(option?.formControlName)?.length > 0 && getSpecificFiles(option?.formControlName)?.length < option?.max"
-                    (click)="triggerFileUpload(option?.formControlName, option.max)"
-                    icon="plus"></app-upload-button>
-                  <input [multiple]="option.multiple" type="file" #fileInput
-                         style="display:none;" (change)="onFileSelected($event)" />
-                </div>
-              </div>
-            </ng-container>
-          </div>
-          <div class="flex flex-col space-y-1">
-            <ng-container *ngFor="let option of truckFileType; index as i">
-              <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
-                <div class="flex space-x-4 items-center">
-                  <img src="assets/svg/not-available.svg" class="notPreview" alt=""
-                       *ngIf="!checkThatFileIsAvailableOrNot(option.name)">
-                  <img src="assets/svg/available.svg" alt="" class="notPreview"
-                       *ngIf=" checkThatFileIsAvailableOrNot(option.name)"
-                  >
-                  <div class="flex flex-col space-y-0.5">
-                    <span
-                      class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
-                    <span
-                      *ngIf="option.expiryAvailable && checkThatFileIsAvailableOrNot(option.name) && checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate"
-                      class="text-not-black text-body">Expiry Date: {{ checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate  | date }}</span>
-                  </div>
-                </div>
-
-                <div class="flex space-x-6 items-center">
-                  <div class="flex">
+                  <div class="flex space-x-3 items-center">
                     <div class="flex space-x-3 relative">
                       <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
                            *ngFor="let file of checkThatFileIsAvailableOrNot(option.name)">
@@ -229,18 +193,46 @@
                           <i class="far fa-times"></i>
                         </button>
                       </div>
+                      <ng-container *ngIf="isInEditMode && checkThatFileIsAvailableOrNot(option.name)?.length < 3">
+                        <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+                             *ngFor="let file of getSpecificFiles(option?.formControlName, checkThatFileIsAvailableOrNot(option.name).length)">
+                          <img class="h-full w-full" [src]="file.preview" alt="">
+                          <button (click)="onCloseImage(option?.formControlName, file)"
+                                  class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+                            <i class="far fa-times"></i>
+                          </button>
+                        </div>
+                      </ng-container>
                     </div>
-                    <div *ngIf="getSavedFileArray(option?.formControlName)?.length > 3">
+                    <div
+                      *ngIf="(getSavedFileArray(option?.formControlName)?.length + getFileArray(option.formControlName).length )> 3  && (getSavedFileArray(option?.formControlName)?.length + getFileArray(option.formControlName).length > 0 )">
                       <button [matMenuTriggerFor]="truckImagePop"
                               (click)="viewMoreFormControlName = option?.formControlName"
                               class="px-2 h-[3.75rem] flex text-link items-center justify-center bg-opacity-10 bg-blue
                               space-x-1  text-h2_medium font-semibold rounded-md">
                         <span
                           class="text-link font-semibold"
-                        >+{{ getSavedFileArray(option?.formControlName).length - 3 }}</span
+                        >+{{ isInEditMode ? (getSavedFileArray(option?.formControlName).length + getFileArray(option?.formControlName).length - 3) : (getSavedFileArray(option?.formControlName).length - 3) }}</span
                         >
                       </button>
                     </div>
+                    <span class="text-web-text-secondary text-body"
+                          *ngIf="getSavedFileArray(option?.formControlName)?.length <= 0 && !isInEditMode">Not Uploaded Yet</span>
+                    <ng-container *ngIf="isInEditMode">
+                      <app-upload-button
+                        *ngIf="(getSpecificFiles(option?.formControlName)?.length === 0 && getSavedFileArray(option?.formControlName)?.length === 0) || !getSpecificFiles(option?.formControlName) "
+                        buttonText="Upload"
+                        [file]="true"
+                        (click)="triggerFileUpload(option?.formControlName, option.max)"
+                        icon="upload"></app-upload-button>
+                      <app-upload-button
+                        *ngIf="(getSpecificFiles(option?.formControlName)?.length > 0 || getSavedFileArray(option?.formControlName)?.length > 0) && getSpecificFiles(option?.formControlName)?.length < option?.max"
+                        (click)="triggerFileUpload(option?.formControlName, option.max)"
+                        icon="plus"></app-upload-button>
+                      <input [multiple]="option.multiple" type="file" #fileInput
+                             style="display:none;" (change)="onFileSelected($event)" />
+                    </ng-container>
+
                   </div>
                 </div>
               </div>
@@ -262,7 +254,8 @@
       <div>
         <app-pre-hire-checklist-details *ngIf="!isInEditMode"
                                         [object]="preHiredCheckList"></app-pre-hire-checklist-details>
-        <app-pre-hire-checklist *ngIf="isInEditMode" [object]="preHiredCheckList"></app-pre-hire-checklist>
+        <app-pre-hire-checklist *ngIf="isInEditMode" (preHireCheckListObject)="onClickPreHiredChecklist($event)"
+                                [object]="preHiredCheckList"></app-pre-hire-checklist>
       </div>
     </div>
   </form>
@@ -287,6 +280,16 @@
         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
         >
           <img (click)="onClickImage(file.preSignedFileUrl)" class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+          <button *ngIf="isInEditMode" (click)="onCloseSaveImage('truckImages', file)"
+                  class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+            <i class="far fa-times"></i>
+          </button>
+        </div>
+      </ng-container>
+      <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
+        <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+        >
+          <img (click)="onClickImage(file.preview)" class="h-full w-full" [src]="file.preview" alt="">
           <button *ngIf="isInEditMode" (click)="onCloseImage('truckImages', file)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>

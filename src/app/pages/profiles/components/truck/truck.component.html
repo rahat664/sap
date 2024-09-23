@@ -210,8 +210,9 @@
             class="whitespace-nowrap w-[10rem] inline-flex text-secondary items-center justify-center sticky text-center bg-white right-[5rem]">
             <div [style.min-height]="firstColumnHeight"
                  class="flex items-center justify-center">
-              <div class="bg-another bg-opacity-[30%] z-30 px-2 py-0.5 rounded-full flex items-center">
-                <span class="text-web-text-secondary">Pending</span>
+              <div
+                class="{{getBgColor(truck.status)}} bg-opacity-[30%] z-30 px-2 py-0.5 rounded-full flex items-center">
+                <span class="text-web-text-secondary">{{ truck.status }}</span>
               </div>
             </div>
           </td>
@@ -220,33 +221,31 @@
                     [matMenuTriggerFor]="menu"><i
               class="fas fa-ellipsis-v"></i></button>
             <mat-menu #menu="matMenu">
+              <button (click)="onClickApprove(truck)" *ngIf="truck.status === 'Pending' || truck.status === 'Rejected'"
+                      mat-menu-item>
+                <div class="flex space-x-2 items-center">
+                  <i class="far fa-check text-green"></i>
+                  <span class="text-green">Approve</span>
+                </div>
+              </button>
+              <button (click)="onClickReject(truck)"
+                      *ngIf="truck.status === 'Pending'"
+                      mat-menu-item
+              >
+                <div class="flex space-x-2 items-center">
+                  <i class="far fa-times text-red"></i>
+                  <span class="text-red">Reject</span>
+                </div>
+              </button>
               <button
+                routerLink="/profile/truck/{{ truck.id }}/details"
                 mat-menu-item>
                 <div class="flex space-x-2 items-center">
                   <img
                     class="notPreview"
-                    src="./assets/svg/user-inactive.svg"
+                    src="./assets/svg/edit.svg"
                     alt="" />
-                  <span>Inactive</span>
-                </div>
-              </button>
-              <button mat-menu-item
-              >
-                <div class="flex space-x-2 items-center">
-                  <img
-                    class="notPreview"
-                    src="./assets/svg/user-active.svg"
-                    alt="" />
-                  <span>Active</span>
-                </div>
-              </button>
-              <button mat-menu-item>
-                <div class="flex space-x-2 items-center">
-                  <img
-                    class="notPreview"
-                    src="./assets/svg/user-remove.svg"
-                    alt="" />
-                  <span class="text-red">Remove</span>
+                  <span>Edit</span>
                 </div>
               </button>
             </mat-menu>

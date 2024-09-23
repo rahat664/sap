@@ -114,11 +114,12 @@
                                     appearance="outline"
                                     [ngClass]="{ 'error' : truckAddForm.get(option.expiryFormControlName).invalid }"
                     >
-                      <input [formControlName]="option.expiryFormControlName" matInput [matDatepicker]="picker"
+                      <input [disabled]="everyThingDisabled" [formControlName]="option.expiryFormControlName" matInput
+                             [matDatepicker]="picker"
                              placeholder="Expiry Date" (focusin)="picker.open()"
                              (selectionchange)="onDateChange($event, option.expiryFormControlName)">
                       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                      <mat-datepicker #picker></mat-datepicker>
+                      <mat-datepicker [disabled]="everyThingDisabled" #picker></mat-datepicker>
                     </mat-form-field>
                   </div>
                 </div>
@@ -148,12 +149,16 @@
                     </div>
                   </div>
                   <app-upload-button
+                    [buttonColor]="everyThingDisabled ? 'bg-input-hint' : 'bg-link'"
+                    [textColor]="everyThingDisabled ? 'text-input-hint' : 'text-link'"
+                    [isDisabled]="everyThingDisabled"
                     *ngIf="getSpecificFiles(option?.formControlName)?.length === 0 || !getSpecificFiles(option?.formControlName)"
                     buttonText="Upload"
                     [file]="true"
                     (click)="triggerFileUpload(option?.formControlName, option.max)"
-                    icon="upload"></app-upload-button>
+                    [icon]="everyThingDisabled ? 'disable-upload': 'upload'"></app-upload-button>
                   <app-upload-button
+                    [isDisabled]="everyThingDisabled"
                     *ngIf="getSpecificFiles(option?.formControlName)?.length > 0 && getSpecificFiles(option?.formControlName)?.length < option?.max"
                     (click)="triggerFileUpload(option?.formControlName, option.max)"
                     icon="plus"></app-upload-button>
@@ -166,7 +171,8 @@
         </div>
       </div>
       <div>
-        <app-pre-hire-checklist (preHireCheckListObject)="onClickPrehiredChecklist($event)"></app-pre-hire-checklist>
+        <app-pre-hire-checklist [object]="null"
+                                (preHireCheckListObject)="onClickPrehiredChecklist($event)"></app-pre-hire-checklist>
       </div>
     </div>
   </form>

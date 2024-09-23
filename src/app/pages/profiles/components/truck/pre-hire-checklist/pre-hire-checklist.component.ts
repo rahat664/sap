@@ -22,7 +22,7 @@ export class PreHireChecklistComponent implements OnInit {
 
   ngOnChanges(simpleChanges: any) {
     const singleTruck = localStorage.getItem('truck');
-    if (simpleChanges.object !== undefined) {
+    if (simpleChanges.object.currentValue) {
       this.setPreHireCheckList();
     } else {
       this.getPreHireChecklist();
@@ -45,6 +45,7 @@ export class PreHireChecklistComponent implements OnInit {
                 name: item.name,
                 status: item.status,
                 category: item.category,
+                checklistId: item.id,
               },
             ],
           });
@@ -60,6 +61,7 @@ export class PreHireChecklistComponent implements OnInit {
                   name: item.name,
                   status: item.status,
                   category: item.category,
+                  checklistId: item.id,
                 });
               } else {
                 itemExists.status = item.status;
@@ -71,29 +73,28 @@ export class PreHireChecklistComponent implements OnInit {
     });
   }
 
-  onChange($event: any, id: number) {
+  onChange($event: any, id: number, position: number) {
     this.preHireCheckList.forEach(items => {
       items.items.forEach(item => {
-        if (item.id === id) {
-          this.object[item.id] = $event.target.value;
-        }
+        this.shareObject[position] = $event.target.value;
       });
     });
-    this.preHireCheckListObject.emit(this.object);
+    this.preHireCheckListObject.emit(this.shareObject);
   }
 
   @Input() object!: any;
+  shareObject: any = {};
 
   getChecklistPosition(i: number, j: number) {
     if (i == 0) {
-      return `${j + 1}`;
+      return j + 1;
     } else {
       this.preHireCheckList.forEach((category, index) => {
         if (index < i) {
           j += category.items.length;
         }
       });
-      return `${j + 1}`;
+      return j + 1;
     }
   }
 
@@ -110,6 +111,7 @@ export class PreHireChecklistComponent implements OnInit {
               name: item.name,
               status: item.status,
               category: item.category,
+              checklistId: item.checklistId,
             },
           ],
         });
@@ -122,6 +124,7 @@ export class PreHireChecklistComponent implements OnInit {
               name: item.name,
               status: item.status,
               category: item.category,
+              checklistId: item.checklistId,
             });
           }
         });

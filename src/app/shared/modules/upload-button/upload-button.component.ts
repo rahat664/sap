@@ -14,4 +14,6 @@ export class UploadButtonComponent {
   @Input() file = false;
   @Input() isIconButton = true;
   @Input() buttonColor: string;
+  @Input() isDisabled = false;
+  @Input() textColor: string;
 }
