@@ -750,36 +750,52 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   checkDateIsExpiredOrNot(expiryDates: any) {
-    const currentDate = new Date();
-    const expiryDate = new Date(expiryDates);
-    const isPastDate = expiryDate < currentDate;
-    // count how many day, month, year left
-    const diffTime = Math.abs(expiryDate.getTime() - currentDate.getTime());
-    // split the difftime into years, months, days like if 30 days then 1 month and 0 days
-    const diffDays = Math.floor((diffTime / (1000 * 60 * 60 * 24)) % 30);
-    const diffMonths = Math.ceil((diffTime / (1000 * 60 * 60 * 24 * 30)) % 12);
-    const diffYears = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30 * 12));
+    const pastDate = new Date(expiryDates); // Convert the past date string to a Date object
+    const currentDate = new Date(); // Get the current date
 
-    let text: string = '';
-    if (isPastDate) {
-      if (diffDays > 0 && diffMonths === 0 && diffYears === 0) {
-        text = `Expired ${diffDays} ${diffDays > 1 ? 'days' : 'day'} ago`;
-      } else if (diffMonths > 0 && diffYears === 0 && diffDays === 0) {
-        text = `Expired ${diffMonths} ${diffMonths > 1 ? 'months' : 'month'} ago`;
-      } else if (diffDays > 0 && diffMonths > 0 && diffYears === 0) {
-        text = `Expired ${diffMonths} ${diffMonths > 1 ? 'months' : 'month'}, ${diffDays} ${diffDays > 1 ? 'days' : 'day'} ago`;
-      } else if (diffDays > 0 && diffMonths > 0 && diffYears > 0) {
-        text = `Expired ${diffYears} ${diffYears > 1 ? 'years' : 'year'}, ${diffMonths} ${diffMonths > 1 ? 'months' : 'month'}, ${diffDays} ${diffDays > 1 ? 'days' : 'day'} ago`;
-      } else if (diffYears > 0 && diffMonths > 0 && diffDays === 0) {
-        text = `Expired ${diffYears} ${diffYears > 1 ? 'years' : 'year'}, ${diffMonths} ${diffMonths > 1 ? 'months' : 'month'} ago`;
-      } else if (diffYears > 0 && diffMonths === 0 && diffDays > 0) {
-        text = `Expired ${diffYears} ${diffYears > 1 ? 'years' : 'year'}, ${diffDays} ${diffDays > 1 ? 'days' : 'day'} ago`;
-      } else {
-        text = `Expired ${diffYears} ${diffYears > 1 ? 'years' : 'year'} ago`;
-      }
+    pastDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
+    let isPastDate = false;
+    let text = '';
+
+    // Check if the past date is today
+    if (pastDate.getTime() >= currentDate.getTime()) {
+      isPastDate = false;
+      text = this.datePipe.transform(pastDate, 'dd MMM, yyyy');
     } else {
-      text = `Expiry Date: ${this.datePipe.transform(expiryDates, 'dd MMM yyyy')}`;
+      isPastDate = true;
     }
+
+    // Calculate the time difference in milliseconds
+    const timeDiff = currentDate.getTime() - pastDate.getTime();
+
+    // Convert milliseconds to days
+    let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+
+    // Convert days to months and years
+    let monthDiff = 0;
+    let yearDiff = 0;
+
+    if (dayDiff > 29) {
+      monthDiff = Math.floor(dayDiff / 30); // Approximate 30 days in a month
+      dayDiff = dayDiff % 30; // Remaining days after converting to months
+    }
+
+    if (monthDiff > 11) {
+      yearDiff = Math.floor(monthDiff / 12); // 12 months in a year
+      monthDiff = monthDiff % 12; // Remaining months after converting to years
+    }
+
+    // Build the result string
+    const yearString =
+      yearDiff > 0 ? `${yearDiff} year${yearDiff > 1 ? 's' : ''}` : '';
+    const monthString =
+      monthDiff > 0 ? `${monthDiff} month${monthDiff > 1 ? 's' : ''}` : '';
+    const dayString =
+      dayDiff > 0 ? `${dayDiff} day${dayDiff > 1 ? 's' : ''}` : '';
+
+    // Combine the results, filtering out empty values
+    text = `Expired ${[yearString, monthString, dayString].filter(Boolean).join(', ')} ago`;
     return {
       isExpired: isPastDate,
       text: text,

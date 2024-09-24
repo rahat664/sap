@@ -250,6 +250,8 @@ export class TruckComponent implements OnInit {
     if (expDate) {
       const today = new Date();
       const expiryDate = new Date(expDate);
+      today.setHours(0, 0, 0, 0);
+      expiryDate.setHours(0, 0, 0, 0);
       if (today > expiryDate) {
         return true;
       }
