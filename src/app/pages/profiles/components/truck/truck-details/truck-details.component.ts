@@ -695,65 +695,79 @@ export class TruckDetailsComponent implements OnInit {
     }
   }
 
-  private handleTruckAction(action: 'approve' | 'reject', dialogData: any) {
-    const dialogComponent =
-      action === 'reject' ? ConfirmRejectComponent : ConfirmApproveComponent;
-
+  onClickReject() {
     this.dialog
-      .open(dialogComponent, dialogData)
+      .open(ConfirmRejectComponent, {
+        data: {
+          title: 'Attention',
+          text: `Do you want to reject ${this.truckDetails.fullRegistrationNumber}?`,
+          buttonText: 'Reject',
+        },
+      })
       .afterClosed()
       .subscribe((res: any) => {
-        if (action === 'reject' && res.status === 'rejected') {
-          this.submitTruckUpdate('Rejected', res.reason);
-        } else if (action === 'approve' && res === 'updated') {
-          this.submitTruckUpdate('Approved');
+        if (res.status === 'rejected') {
+          // Do something
+          const formData = new FormData();
+          const payload: Record<string, any> = {};
+          payload['id'] = this.truckDetails.id;
+          payload['status'] = 'Rejected';
+          payload['rejectedReason'] = res.reason;
+          formData.append('payload', JSON.stringify(payload));
+          this.service.editTruck(formData).subscribe(
+            (res: any) => {
+              // Handle response
+              if (res.status == 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.router.navigate(['/profile/truck']);
+              } else {
+                this.toastr.showError(res.message);
+              }
+            },
+            error => {
+              // Handle error
+              this.toastr.showError(error.error.message);
+            }
+          );
         }
       });
   }
 
-  private submitTruckUpdate(status: string, rejectedReason?: string) {
-    const formData = new FormData();
-    const payload: Record<string, any> = {
-      id: this.truckDetails.id,
-      status,
-      ...(rejectedReason && { rejectedReason }), // Only add if reason is provided
-    };
-
-    formData.append('payload', JSON.stringify(payload));
-    this.service.editTruck(formData).subscribe(
-      (res: any) => {
-        // Handle response
-        if (res.status === 'OK') {
-          this.toastr.showSuccess(res.message);
-          this.router.navigate(['/profile/truck']);
-        } else {
-          this.toastr.showError(res.message);
-        }
-      },
-      error => {
-        // Handle error
-        this.toastr.showError(error.error.message);
-      }
-    );
-  }
-
-  // Usage in your methods
-  onClickReject() {
-    const dialogData = {
-      title: 'Attention',
-      text: `Do you want to reject ${this.truckDetails.fullRegistrationNumber}?`,
-      buttonText: 'Reject',
-    };
-    this.handleTruckAction('reject', dialogData);
-  }
-
   onClickApprove() {
-    const dialogData = {
-      title: 'Approve',
-      text: `Do you want to approve ${this.truckDetails.fullRegistrationNumber}?`,
-      buttonText: 'Approve',
-    };
-    this.handleTruckAction('approve', dialogData);
+    this.dialog
+      .open(ConfirmApproveComponent, {
+        data: {
+          title: 'Approve',
+          text: `Do you want to approve ${this.truckDetails.fullRegistrationNumber}"?`,
+          buttonText: 'Approve',
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res === 'updated') {
+          // Do something
+          const formData = new FormData();
+          const payload: Record<string, any> = {};
+          payload['id'] = this.truckDetails.id;
+          payload['status'] = 'Approved';
+          formData.append('payload', JSON.stringify(payload));
+          this.service.editTruck(formData).subscribe(
+            (res: any) => {
+              // Handle response
+              if (res.status == 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.router.navigate(['/profile/truck']);
+              } else {
+                this.toastr.showError(res.message);
+              }
+            },
+            error => {
+              // Handle error
+              this.toastr.showError(error.error.message);
+            }
+          );
+        }
+      });
   }
 
   private previewFile(
