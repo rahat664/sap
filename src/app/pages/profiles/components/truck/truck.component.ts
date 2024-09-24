@@ -4,9 +4,10 @@ import { CustomInputComponent } from '../../../../shared/modules/custom-input/cu
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { DatePipe, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
+import { TruckDocument, TruckModel } from './models/truck.model';
 import { TruckService } from './services/truck.service';
 import { RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
@@ -19,8 +20,12 @@ import { debounceTime } from 'rxjs';
 import { CheckListPopupComponent } from '../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checklist.component';
 import { MatDialog } from '@angular/material/dialog';
-import { TruckDocument, TruckModel } from './models/truck.model';
+import { MatButton } from '@angular/material/button';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
+import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
 
 @Component({
   selector: 'app-truck',
@@ -44,6 +49,11 @@ import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
     PreHireChecklistComponent,
     DatePipe,
     FormsModule,
+    NgClass,
+    MatButton,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss',
@@ -63,10 +73,12 @@ export class TruckComponent implements OnInit {
   singleTruckId: number;
   size: number = 30;
   truckEnum = TruckDocumentType;
+  firstColumnHeight: any;
 
   constructor(
     private service: TruckService,
-    private shared: DriverEditSharedService
+    private shared: DriverEditSharedService,
+    private toastr: HandleToastrService
   ) {}
 
   ngOnInit(): void {
@@ -131,6 +143,10 @@ export class TruckComponent implements OnInit {
     }
     if (fit == 'other') {
       this.newDriverFileType = [{ id: 6, value: 'Other', selected: false }];
+    }
+
+    if (fit == 'insurance') {
+      this.newDriverFileType = [{ id: 7, value: 'Insurance', selected: false }];
     }
 
     this.dialog
@@ -200,6 +216,7 @@ export class TruckComponent implements OnInit {
     localStorage.setItem('truck', JSON.stringify(truck));
     this.dialog.open(PreHireChecklistComponent, {
       width: '40%',
+      height: '80%',
     });
   }
 
@@ -216,11 +233,116 @@ export class TruckComponent implements OnInit {
 
   checkThatFileIsExistOrNot(fileName: any, truckDocumentList: TruckDocument[]) {
     let isExist = false;
+    let expDate = '';
     truckDocumentList.forEach(doc => {
       if (doc.documentType == this.truckEnum[fileName]) {
         isExist = true;
+        expDate = doc?.expiryDate;
       }
     });
-    return isExist;
+    return {
+      isExist: isExist,
+      expDate: expDate,
+    };
+  }
+
+  checkExpiryDate(expDate: string) {
+    if (expDate) {
+      const today = new Date();
+      const expiryDate = new Date(expDate);
+      today.setHours(0, 0, 0, 0);
+      expiryDate.setHours(0, 0, 0, 0);
+      if (today > expiryDate) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  getBgColor(status: string) {
+    if (status === 'Approved') {
+      return 'bg-green';
+    } else if (status === 'Pending') {
+      return 'bg-another';
+    } else {
+      return 'bg-red';
+    }
+  }
+
+  onClickApprove(truckDetails: TruckModel) {
+    this.dialog
+      .open(ConfirmApproveComponent, {
+        data: {
+          title: 'Approve',
+          text: `Do you want to approve ${truckDetails.fullRegistrationNumber}"?`,
+          buttonText: 'Approve',
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res === 'updated') {
+          // Do something
+          const formData = new FormData();
+          const payload: Record<string, any> = {};
+          payload['id'] = truckDetails.id;
+          payload['status'] = 'Approved';
+          formData.append('payload', JSON.stringify(payload));
+          this.service.editTruck(formData).subscribe(
+            (res: any) => {
+              // Handle response
+              if (res.status == 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.truckList = [];
+                this.getTruckList();
+              } else {
+                this.toastr.showError(res.message);
+              }
+            },
+            error => {
+              // Handle error
+              this.toastr.showError(error.error.message);
+            }
+          );
+        }
+      });
+  }
+
+  onClickReject(truckDetails: TruckModel) {
+    this.dialog
+      .open(ConfirmRejectComponent, {
+        data: {
+          title: 'Reject',
+          text: `Do you want to reject ${truckDetails.fullRegistrationNumber}"?`,
+          buttonText: 'Reject',
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res.status === 'rejected') {
+          // Do something
+          const formData = new FormData();
+          const payload: Record<string, any> = {};
+          payload['id'] = truckDetails.id;
+          payload['status'] = 'Rejected';
+          payload['rejectedReason'] = res.reason;
+          formData.append('payload', JSON.stringify(payload));
+          this.service.editTruck(formData).subscribe(
+            (res: any) => {
+              // Handle response
+              if (res.status == 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.truckList = [];
+                this.getTruckList();
+              } else {
+                this.toastr.showError(res.message);
+              }
+            },
+            error => {
+              // Handle error
+              this.toastr.showError(error.error.message);
+            }
+          );
+        }
+      });
   }
 }

@@ -26,7 +26,7 @@ export class TruckService {
     return this.http.post(this.url, truck);
   }
 
-  getPreHireChecklist(id?: number) {
+  getPreHireChecklist(id?: string) {
     if (id) {
       return this.http.get(`${this.preHireChecklistUrl}/${id}`);
     } else {
@@ -46,5 +46,9 @@ export class TruckService {
 
   validateTruckInformation(body) {
     return this.http.post(`${this.url}/checkVehicle`, body);
+  }
+
+  getTruckById(id: string) {
+    return this.http.get(`${this.url}/${id}`);
   }
 }
