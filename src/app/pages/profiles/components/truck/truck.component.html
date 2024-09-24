@@ -34,6 +34,37 @@
         </button>
       </div>
     </div>
+    <div class="w-full bg-white rounded-lg">
+      <button
+        (click)="onClickFilterOpened()"
+        class="flex px-2 py-1 space-x-3 items-center w-full"
+        [ngClass]="{ 'border-b-2 border-[#0CD5F0]': filterOpened }">
+        <i class="fas fa-caret-down text-input-hint text-xl"></i>
+        <span class="text-not-black text-body_title leading-body_title"
+        >Filter
+          <span *ngIf="statusInputPlaceholder"
+          >({{ statusInputPlaceholder ? 1 : 0 }})</span
+          >
+          <span *ngIf="statusInputPlaceholder" class="text-input-hint px-3"
+          >|</span
+          >
+          <a
+            *ngIf="statusInputPlaceholder"
+            (click)="onClearFilter()"
+            class="text-red"
+          >Clear all</a
+          >
+        </span>
+      </button>
+      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
+        <app-custom-input
+          appGetClickEvent
+          [inputSearch]="statusInputPlaceholder"
+          [options]="statusOptionsArray"
+          inputPlaceholder="Select Status"
+          (selectedId)="onSelectStatus($event)"></app-custom-input>
+      </div>
+    </div>
   </div>
   <div
     appGiveMaxHeight
@@ -46,15 +77,15 @@
       <tr class="whitespace-nowrap bg-white">
         <th class="text-left w-[20rem] inline-block sticky left-0 bg-white">Registration number</th>
         <th class="text-left w-[10rem] inline-block">Pre-hire checklist</th>
-        <th class="text-left w-[10rem] inline-block whitespace-nowrap">Created On</th>
-        <th class="text-left w-[10rem] inline-block">Number of trip</th>
-        <th class="text-center w-[10rem] inline-block">Registration</th>
-        <th class="text-center w-[10rem] inline-block">Truck fitness</th>
+        <th class="text-center w-[10rem] inline-block whitespace-nowrap">Created On</th>
+        <th class="text-center w-[10rem] inline-block">Number of trip</th>
+        <th class="text-center w-[10rem] inline-block">Registration paper</th>
+        <th class="text-center w-[10rem] inline-block">Fitness certificate</th>
         <th class="text-center w-[10rem] inline-block">Route permit</th>
-        <th class="text-center w-[10rem] inline-block">Case</th>
-        <th class="text-center w-[10rem] inline-block">Tax</th>
-        <th class="text-center w-[10rem] inline-block">Insurance</th>
-        <th class="text-center w-[10rem] inline-block">Other Document</th>
+        <th class="text-center w-[10rem] inline-block">Case paper</th>
+        <th class="text-center w-[10rem] inline-block">Tax paper</th>
+        <th class="text-center w-[10rem] inline-block">Insurance paper</th>
+        <th class="text-center w-[10rem] inline-block">Others document</th>
         <th class="text-center w-[10rem] inline-block z-20 sticky right-[5rem] bg-white">Status
         </th>
         <th class="text-center w-[5rem] inline-block z-20 sticky right-0 bg-white"></th>

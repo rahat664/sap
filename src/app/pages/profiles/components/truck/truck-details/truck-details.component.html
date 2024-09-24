@@ -62,7 +62,7 @@
             </div>
           </div>
           <div class="py-3 px-4 bg-red rounded-lg bg-opacity-[10%]"
-               *ngIf="truckDetails.status === 'Rejected' && truckDetails.rejectedReason">
+               *ngIf="truckDetails?.status === 'Rejected' && truckDetails?.rejectedReason">
             <div class="flex flex-col space-y-1">
               <span class="text-body text-red">Rejection cause</span>
               <span
@@ -183,26 +183,26 @@
                 </div>
 
                 <div class="flex space-x-6 items-center">
-                  <div class="flex space-x-3 items-center">
+                  <div class="flex">
                     <div class="flex space-x-3 relative">
-                      <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
-                           *ngFor="let file of checkThatFileIsAvailableOrNot(option.name)">
-                        <img class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
-                        <button *ngIf="isInEditMode" (click)="onCloseImage(option?.formControlName, file)"
-                                class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
-                          <i class="far fa-times"></i>
-                        </button>
-                      </div>
                       <ng-container *ngIf="isInEditMode && checkThatFileIsAvailableOrNot(option.name)?.length < 3">
                         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
                              *ngFor="let file of getSpecificFiles(option?.formControlName, checkThatFileIsAvailableOrNot(option.name).length)">
                           <img class="h-full w-full" [src]="file.preview" alt="">
-                          <button (click)="onCloseImage(option?.formControlName, file)"
+                          <button (click)="onCloseImage(option?.formControlName, file, option?.expiryFormControlName)"
                                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
                             <i class="far fa-times"></i>
                           </button>
                         </div>
                       </ng-container>
+                      <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+                           *ngFor="let file of checkThatFileIsAvailableOrNot(option.name)">
+                        <img class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+                        <button *ngIf="isInEditMode" (click)="onCloseImageSavedImage(option?.formControlName, file)"
+                                class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+                          <i class="far fa-times"></i>
+                        </button>
+                      </div>
                     </div>
                     <div
                       *ngIf="(getSavedFileArray(option?.formControlName)?.length + getFileArray(option.formControlName).length )> 3  && (getSavedFileArray(option?.formControlName)?.length + getFileArray(option.formControlName).length > 0 )">
@@ -216,24 +216,23 @@
                         >
                       </button>
                     </div>
-                    <span class="text-web-text-secondary text-body"
-                          *ngIf="getSavedFileArray(option?.formControlName)?.length <= 0 && !isInEditMode">Not Uploaded Yet</span>
-                    <ng-container *ngIf="isInEditMode">
-                      <app-upload-button
-                        *ngIf="(getSpecificFiles(option?.formControlName)?.length === 0 && getSavedFileArray(option?.formControlName)?.length === 0) || !getSpecificFiles(option?.formControlName) "
-                        buttonText="Upload"
-                        [file]="true"
-                        (click)="triggerFileUpload(option?.formControlName, option.max)"
-                        icon="upload"></app-upload-button>
-                      <app-upload-button
-                        *ngIf="(getSpecificFiles(option?.formControlName)?.length > 0 || getSavedFileArray(option?.formControlName)?.length > 0) && getSpecificFiles(option?.formControlName)?.length < option?.max"
-                        (click)="triggerFileUpload(option?.formControlName, option.max)"
-                        icon="plus"></app-upload-button>
-                      <input [multiple]="option.multiple" type="file" #fileInput
-                             style="display:none;" (change)="onFileSelected($event)" />
-                    </ng-container>
-
                   </div>
+                  <span class="text-web-text-secondary text-body"
+                        *ngIf="getSavedFileArray(option?.formControlName)?.length <= 0 && !isInEditMode">Not Uploaded Yet</span>
+                  <ng-container *ngIf="isInEditMode">
+                    <app-upload-button
+                      *ngIf="(getSpecificFiles(option?.formControlName)?.length === 0 && getSavedFileArray(option?.formControlName)?.length === 0) || !getSpecificFiles(option?.formControlName) "
+                      buttonText="Upload"
+                      [file]="true"
+                      (click)="triggerFileUpload(option?.formControlName, option.max)"
+                      icon="upload"></app-upload-button>
+                    <app-upload-button
+                      *ngIf="(getSpecificFiles(option?.formControlName)?.length > 0 || getSavedFileArray(option?.formControlName)?.length > 0) && getSpecificFiles(option?.formControlName)?.length < option?.max"
+                      (click)="triggerFileUpload(option?.formControlName, option.max)"
+                      icon="plus"></app-upload-button>
+                    <input [multiple]="option.multiple" type="file" #fileInput
+                           style="display:none;" (change)="onFileSelected($event)" />
+                  </ng-container>
                 </div>
               </div>
             </ng-container>
@@ -280,7 +279,7 @@
         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
         >
           <img (click)="onClickImage(file.preSignedFileUrl)" class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
-          <button *ngIf="isInEditMode" (click)="onCloseSaveImage('truckImages', file)"
+          <button *ngIf="isInEditMode" (click)="onCloseImageSavedImage(viewMoreFormControlName, file)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>
           </button>
@@ -290,7 +289,7 @@
         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
         >
           <img (click)="onClickImage(file.preview)" class="h-full w-full" [src]="file.preview" alt="">
-          <button *ngIf="isInEditMode" (click)="onCloseImage('truckImages', file)"
+          <button *ngIf="isInEditMode" (click)="onCloseImage(viewMoreFormControlName, file, viewMoreExpiryControlName)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>
           </button>

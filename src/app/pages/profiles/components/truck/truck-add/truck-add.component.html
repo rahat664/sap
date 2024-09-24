@@ -105,8 +105,10 @@
             <ng-container *ngFor="let option of truckFileType; index as i">
               <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
                 <div class="flex space-x-4 items-center">
-                  <img src="assets/svg/not-available.svg" class="notPreview" alt="" *ngIf="!option.uploaded">
-                  <img src="assets/svg/available.svg" alt="" class="notPreview" *ngIf="option.uploaded">
+                  <img src="assets/svg/not-available.svg" class="notPreview" alt=""
+                       *ngIf="getFileArray(option?.formControlName)?.length <= 0">
+                  <img src="assets/svg/available.svg" alt="" class="notPreview"
+                       *ngIf="getFileArray(option?.formControlName).length > 0">
                   <div class="flex flex-col space-y-0.5">
                     <span
                       class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
@@ -130,7 +132,7 @@
                       <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
                            *ngFor="let file of getSpecificFiles(option?.formControlName)">
                         <img class="h-full w-full" [src]="file.preview" alt="">
-                        <button (click)="onCloseImage(option?.formControlName, file)"
+                        <button (click)="onCloseImage(option?.formControlName, file, option?.expiryFormControlName)"
                                 class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
                           <i class="far fa-times"></i>
                         </button>
@@ -138,7 +140,7 @@
                     </div>
                     <div *ngIf="getFileArray(option?.formControlName).length > 3">
                       <button [matMenuTriggerFor]="truckImagePop"
-                              (click)="viewMoreFormControlName = option?.formControlName"
+                              (click)="viewMoreFormControlName = option?.formControlName; viewMoreExpiryControlName = option?.expiryFormControlName"
                               class="px-2 h-[3.75rem] flex text-link items-center justify-center bg-opacity-10 bg-blue
                               space-x-1  text-h2_medium font-semibold rounded-md">
                         <span
@@ -149,7 +151,7 @@
                     </div>
                   </div>
                   <app-upload-button
-                    [buttonColor]="everyThingDisabled ? 'bg-input-hint' : 'bg-link'"
+                    [buttonColor]="everyThingDisabled ? 'bg-input-hint' : ''"
                     [textColor]="everyThingDisabled ? 'text-input-hint' : 'text-link'"
                     [isDisabled]="everyThingDisabled"
                     *ngIf="getSpecificFiles(option?.formControlName)?.length === 0 || !getSpecificFiles(option?.formControlName)"
@@ -197,7 +199,7 @@
         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
         >
           <img (click)="onClickImage(file.preview)" class="h-full w-full" [src]="file.preview" alt="">
-          <button (click)="onCloseImage('truckImages', file)"
+          <button (click)="onCloseImage(viewMoreFormControlName, file, viewMoreExpiryControlName)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>
           </button>

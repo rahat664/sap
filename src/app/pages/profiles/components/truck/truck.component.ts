@@ -74,6 +74,13 @@ export class TruckComponent implements OnInit {
   size: number = 30;
   truckEnum = TruckDocumentType;
   firstColumnHeight: any;
+  filterOpened: boolean = true;
+  statusInputPlaceholder: string;
+  statusOptionsArray: CustomInputSelectModel[] = [
+    { id: 1, value: 'Approved', selected: false },
+    { id: 2, value: 'Pending', selected: false },
+    { id: 3, value: 'Rejected', selected: false },
+  ];
 
   constructor(
     private service: TruckService,
@@ -343,6 +350,46 @@ export class TruckComponent implements OnInit {
             }
           );
         }
+      });
+  }
+
+  onClickFilterOpened() {
+    this.filterOpened = !this.filterOpened;
+  }
+
+  onClearFilter() {
+    this.statusOptionsArray.forEach(option => {
+      option.selected = false;
+    });
+    this.statusInputPlaceholder = '';
+    this.page = 0;
+    this.size = 30;
+    this.getTruckList();
+  }
+
+  onSelectStatus($event: number) {
+    this.statusOptionsArray.forEach(option => {
+      if (option.id === $event) {
+        option.selected = !option.selected;
+        if (option.selected) {
+          this.statusInputPlaceholder = option.value;
+        } else {
+          this.statusInputPlaceholder = '';
+        }
+      } else {
+        option.selected = false;
+      }
+    });
+    this.truckList = [];
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.service
+      .getTruckList(this.page, this.size, null, this.statusInputPlaceholder)
+      .subscribe((res: any) => {
+        this.truckList = res.data.responses;
+        this.totalPages = res.data.totalPages;
+        this.loading = false;
       });
   }
 }

@@ -18,7 +18,6 @@ import {
 } from '@angular/forms';
 import { registrationCategoryList } from '../models/registration-category';
 import { registrationZoneList } from '../models/registration-zone';
-import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
 import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup.component';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
@@ -83,6 +82,15 @@ export class TruckDetailsComponent implements OnInit {
   registrationOpenedType: boolean;
   registrationListType: CustomInputSelectModel[] = registrationCategoryList;
   registrationZoneList: CustomInputSelectModel[] = registrationZoneList;
+  protected readonly Date = Date;
+  protected readonly truckFileType = truckFileType;
+  viewMoreFormControlName: string;
+  registrationNumErrorMessage: string;
+  registrationSerialErrorMessage: string;
+  registrationCategoryErrorMessage: string;
+  registrationErrorMessage: string;
+  isInEditMode: boolean;
+  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   registrationZoneOpened: boolean;
   registrationZonePlaceholder: string = '';
   documents: TruckDocument[] = [];
@@ -110,9 +118,9 @@ export class TruckDetailsComponent implements OnInit {
   othersImages: any[] = [];
   countPassCheckList: number;
   singleChecklist: any;
+  viewMoreExpiryControlName: string;
 
   constructor(
-    private shared: DriverEditSharedService,
     private route: ActivatedRoute,
     private service: TruckService,
     private fb: FormBuilder,
@@ -123,14 +131,23 @@ export class TruckDetailsComponent implements OnInit {
   ) {}
 
   onSelectRegistrationType($event: number) {
-    this.registrationTypePlaceholder = this.registrationListType.find(
-      x => x.id === $event
-    ).value;
-    this.registrationListType.forEach(x => (x.selected = x.id === $event));
-    this.registrationOpenedType = false;
-    this.truckUpdateForm.patchValue({
-      registration_category: this.registrationTypePlaceholder,
-    });
+    // Find the selected type based on the event id
+    const selectedType = this.registrationListType.find(x => x.id === $event);
+
+    if (selectedType) {
+      this.registrationTypePlaceholder = selectedType.value;
+
+      // Update selection status efficiently using a map
+      this.registrationListType.forEach(x => {
+        x.selected = x.id === $event;
+      });
+
+      // Update form value and close the dropdown
+      this.registrationOpenedType = false;
+      this.truckUpdateForm.patchValue({
+        registration_category: this.registrationTypePlaceholder,
+      });
+    }
   }
 
   onClickRegistrationType($event: boolean) {
@@ -141,15 +158,23 @@ export class TruckDetailsComponent implements OnInit {
     this.registrationZoneOpened = $event;
   }
 
-  onSelectRegistrationZone($event: number) {
-    this.registrationZonePlaceholder = this.registrationZoneList.find(
-      x => x.id === $event
-    ).value;
-    this.registrationZoneList.forEach(x => (x.selected = x.id === $event));
-    this.registrationZoneOpened = false;
-    this.truckUpdateForm.patchValue({
-      registration_zone: this.registrationZonePlaceholder,
-    });
+  onSelectRegistrationZone(zoneId: number) {
+    const selectedZone = this.registrationZoneList.find(x => x.id === zoneId);
+
+    if (selectedZone) {
+      this.registrationZonePlaceholder = selectedZone.value;
+
+      // Update the selected status for each zone efficiently
+      this.registrationZoneList.forEach(zone => {
+        zone.selected = zone.id === zoneId;
+      });
+
+      // Close the dropdown and update the form value
+      this.registrationZoneOpened = false;
+      this.truckUpdateForm.patchValue({
+        registration_zone: this.registrationZonePlaceholder,
+      });
+    }
   }
 
   ngOnInit(): void {
@@ -158,77 +183,93 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   onClickSave() {
-    this.truckUpdateForm.get('id').setValue(this.truckDetails.id);
     this.loading = true;
-    if (this.truckUpdateForm.valid) {
-      if (this.truckUpdateForm.get('checklist')?.value === null) {
-        this.truckUpdateForm.patchValue({
-          checklist: this.singleChecklist,
-        });
-      }
-      const formData = new FormData();
-      const payload: Record<string, any> = {};
 
-      // Iterate over form controls
-      Object.keys(this.truckUpdateForm.controls).forEach(key => {
-        const control = this.truckUpdateForm.get(key);
-        const value = control.value;
-
-        if (
-          key.endsWith('File') ||
-          key === 'others' ||
-          key === 'truckImages' ||
-          key === 'insuranceFiles'
-        ) {
-          // Append multiple files to the FormData
-          if (value) {
-            Array.from(value).forEach((file: any) => {
-              formData.append(key, file);
-            });
-          }
-          // Append file controls directly to the FormData
-        } else {
-          // Add other controls to the payload object
-          payload[key] = value;
-        }
-      });
-      formData.append('payload', JSON.stringify(payload));
-
-      this.service.editTruck(formData).subscribe(
-        (res: any) => {
-          this.loading = false;
-          // Handle response
-          if (res.status == 'OK') {
-            this.toastr.showSuccess(res.message);
-            this.router.navigate(['/profile/truck']);
-          } else {
-            this.toastr.showError(res.message);
-          }
-        },
-        error => {
-          // Handle error
-          this.toastr.showError(error.error.message);
-        }
-      );
-    } else {
-      this.truckUpdateForm.markAllAsTouched();
-      this.loading = false;
-      this.registrationErrorMessage = this.validation.getDropdownValidation(
-        this.truckUpdateForm.get('registration_zone')
-      );
-      this.registrationCategoryErrorMessage =
-        this.validation.getDropdownValidation(
-          this.truckUpdateForm.get('registration_category')
-        );
-      this.registrationSerialErrorMessage =
-        this.validation.getRegistrationSerialValidation(
-          this.truckUpdateForm.get('registration_serial')
-        );
-      this.registrationNumErrorMessage =
-        this.validation.getRegistrationNoValidation(
-          this.truckUpdateForm.get('registration_num')
-        );
+    // Early return if form is invalid
+    if (!this.truckUpdateForm.valid) {
+      this.handleFormErrors();
+      return;
     }
+
+    // Set the 'id' field only after form validity is confirmed
+    this.truckUpdateForm.get('id')?.setValue(this.truckDetails.id);
+
+    // Check and set default for checklist if it's null
+    if (!this.truckUpdateForm.get('checklist')?.value) {
+      this.truckUpdateForm.patchValue({ checklist: this.singleChecklist });
+    }
+
+    const formData = this.prepareFormData();
+
+    // Send the form data via the service
+    this.service.editTruck(formData).subscribe(
+      (res: any) => {
+        this.loading = false;
+        if (res.status === 'OK') {
+          this.toastr.showSuccess(res.message);
+          this.router.navigate(['/profile/truck']);
+        } else {
+          this.toastr.showError(res.message);
+        }
+      },
+      error => {
+        this.loading = false;
+        this.toastr.showError(error?.error?.message || 'An error occurred');
+      }
+    );
+  }
+
+  // Prepares FormData with files and other form controls
+  prepareFormData(): FormData {
+    const formData = new FormData();
+    const payload: Record<string, any> = {};
+
+    // Iterate over form controls to build the payload and append files
+    Object.keys(this.truckUpdateForm.controls).forEach(key => {
+      const control = this.truckUpdateForm.get(key);
+      const value = control?.value;
+
+      if (this.isFileField(key)) {
+        if (value) {
+          Array.from(value).forEach((file: any) => formData.append(key, file));
+        }
+      } else {
+        payload[key] = value;
+      }
+    });
+
+    formData.append('payload', JSON.stringify(payload));
+    return formData;
+  }
+
+  // Helper to check if the control key corresponds to a file input
+  isFileField(key: string): boolean {
+    return (
+      ['others', 'truckImages', 'insuranceFiles'].includes(key) ||
+      key.endsWith('File')
+    );
+  }
+
+  // Handles form errors and validation messages
+  handleFormErrors() {
+    this.truckUpdateForm.markAllAsTouched();
+    this.loading = false;
+
+    this.registrationErrorMessage = this.validation.getDropdownValidation(
+      this.truckUpdateForm.get('registration_zone')
+    );
+    this.registrationCategoryErrorMessage =
+      this.validation.getDropdownValidation(
+        this.truckUpdateForm.get('registration_category')
+      );
+    this.registrationSerialErrorMessage =
+      this.validation.getRegistrationSerialValidation(
+        this.truckUpdateForm.get('registration_serial')
+      );
+    this.registrationNumErrorMessage =
+      this.validation.getRegistrationNoValidation(
+        this.truckUpdateForm.get('registration_num')
+      );
   }
 
   private numberOnly(value: any) {
@@ -241,123 +282,118 @@ export class TruckDetailsComponent implements OnInit {
     }
   }
 
-  protected readonly Date = Date;
-  protected readonly truckFileType = truckFileType;
-  viewMoreFormControlName: string;
-  registrationNumErrorMessage: string;
-  registrationSerialErrorMessage: string;
-  registrationCategoryErrorMessage: string;
-  registrationErrorMessage: string;
-  isInEditMode: boolean;
-  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
-
   triggerFileUpload(formControlName: string, max: number) {
     this.selectedFormControlName = formControlName;
-    this.maxUploadAble = max - this.getSpecificFiles(formControlName)?.length;
-    if (this.fileInput && this.fileInput.nativeElement) {
-      this.fileInput.nativeElement.click();
-    }
+
+    // Calculate the number of files that can still be uploaded
+    const currentFilesCount =
+      this.getSpecificFiles(formControlName)?.length || 0;
+    this.maxUploadAble = Math.max(0, max - currentFilesCount); // Ensure it doesn't go negative
+
+    // Trigger the file input click if it exists
+    this.fileInput?.nativeElement?.click();
   }
 
-  getSpecificFiles(formControlName: string | undefined, length?: number) {
-    switch (formControlName) {
-      case 'truckImages':
-        if (this.truckImages.length > length) {
-          return this.truckImages.slice(0, length);
-        } else {
-          return this.truckImages;
-        }
-      case 'insuranceFiles':
-        if (this.insuranceImages.length > length) {
-          return this.insuranceImages.slice(0, length);
-        } else {
-          return this.insuranceImages;
-        }
-      case 'regPaperFile':
-        if (this.regPaperImages.length > length) {
-          return this.regPaperImages.slice(0, length);
-        } else {
-          return this.regPaperImages;
-        }
-      case 'taxFile':
-        if (this.taxImages.length > length) {
-          return this.taxImages.slice(0, length);
-        } else {
-          return this.taxImages;
-        }
-      case 'fitnessCertificateFile':
-        if (this.fitnessImages.length > length) {
-          return this.fitnessImages.slice(0, length);
-        } else {
-          return this.fitnessImages;
-        }
-      case 'routePermitFile':
-        if (this.routePermitImages.length > length) {
-          return this.routePermitImages.slice(0, length);
-        } else {
-          return this.routePermitImages;
-        }
-      case 'casePaperFile':
-        if (this.casePaperImages.length > length) {
-          return this.casePaperImages.slice(0, length);
-        } else {
-          return this.casePaperImages;
-        }
-      case 'others':
-        if (this.othersImages.length > length) {
-          return this.othersImages.slice(0, length);
-        } else {
-          return this.othersImages;
-        }
-      default:
-        return [];
+  getSpecificFiles(formControlName?: string, length?: number) {
+    const maxFilesAllowed = length ? Math.max(0, 3 - length) : 3; // Ensure length does not go negative
+
+    // Map of form control names to their respective file arrays
+    const fileMap: Record<string, any[]> = {
+      truckImages: this.truckImages,
+      insuranceFiles: this.insuranceImages,
+      regPaperFile: this.regPaperImages,
+      taxFile: this.taxImages,
+      fitnessCertificateFile: this.fitnessImages,
+      routePermitFile: this.routePermitImages,
+      casePaperFile: this.casePaperImages,
+      others: this.othersImages,
+    };
+
+    const files = fileMap[formControlName!]; // Use non-null assertion as we've already checked for undefined
+
+    if (files) {
+      return files.slice(0, Math.min(files.length, maxFilesAllowed)); // Return the appropriate slice
     }
+
+    return []; // Return an empty array if the formControlName is invalid or no files are found
   }
 
-  getFileArray(formControlName: any) {
-    switch (formControlName) {
-      case 'truckImages':
-        return this.truckImages;
-      case 'insuranceFiles':
-        return this.insuranceImages;
-      case 'regPaperFile':
-        return this.regPaperImages;
-      case 'taxFile':
-        return this.taxImages;
-      case 'fitnessCertificateFile':
-        return this.fitnessImages;
-      case 'routePermitFile':
-        return this.routePermitImages;
-      case 'casePaperFile':
-        return this.casePaperImages;
-      case 'others':
-        return this.othersImages;
-      default:
-        return [];
-    }
+  getFileArray(formControlName: string) {
+    // Map of form control names to their respective file arrays
+    const fileMap: Record<string, any[]> = {
+      truckImages: this.truckImages,
+      insuranceFiles: this.insuranceImages,
+      regPaperFile: this.regPaperImages,
+      taxFile: this.taxImages,
+      fitnessCertificateFile: this.fitnessImages,
+      routePermitFile: this.routePermitImages,
+      casePaperFile: this.casePaperImages,
+      others: this.othersImages,
+    };
+
+    // Return the corresponding file array or an empty array if the name is invalid
+    return fileMap[formControlName] || [];
   }
 
-  onCloseImage(formControlName: string | undefined, file: any) {
-    let files: any[] = [];
-    files = this.getSpecificFiles(formControlName);
-    this.dialog.closeAll();
-    const index = files.indexOf(file);
-    files.splice(index, 1);
-    const formControlFiles = [];
-    files.forEach((file: any) => {
-      formControlFiles.push(file.file);
-    });
-    this.truckUpdateForm.patchValue({
-      [formControlName]: formControlFiles,
-    });
+  onCloseImage(
+    formControlName: string | undefined,
+    file: any,
+    expiredControl: string
+  ) {
+    // Map of form control names to their respective image arrays
+    const imageMap: Record<string, any[]> = {
+      truckImages: this.truckImages,
+      insuranceFiles: this.insuranceImages,
+      regPaperFile: this.regPaperImages,
+      taxFile: this.taxImages,
+      fitnessCertificateFile: this.fitnessImages,
+      routePermitFile: this.routePermitImages,
+      casePaperFile: this.casePaperImages,
+      others: this.othersImages,
+    };
+
+    // Get the corresponding image array based on formControlName
+    const images = imageMap[formControlName];
+
+    if (images) {
+      // Filter out the file to be removed
+      const updatedImages = images.filter(
+        item => item.preview !== file.preview
+      );
+
+      // Update the image array in the map
+      imageMap[formControlName] = updatedImages;
+
+      // Prepare formControlFiles for the patchValue
+      const formControlFiles = updatedImages.map(item => item.file);
+      this.truckUpdateForm.patchValue({ [formControlName]: formControlFiles });
+
+      // Clear validators if no files are left
+      if (formControlFiles.length === 0) {
+        const control = this.truckUpdateForm.get(expiredControl);
+        if (control) {
+          control.clearValidators();
+          control.updateValueAndValidity();
+        }
+      }
+    }
   }
 
   onDateChange($event: Event, expiryFormControlName: string) {
-    let date = ($event.target as HTMLInputElement).value;
-    date = this.datePipe.transform(date, 'yyyy-MM-ddThh:mm:ss');
-    this.truckUpdateForm.patchValue({
-      [expiryFormControlName]: date,
-    });
+    const dateInput = ($event.target as HTMLInputElement).value;
+
+    // Transform the date input using datePipe
+    const formattedDate = this.datePipe.transform(
+      dateInput,
+      'yyyy-MM-ddTHH:mm:ss'
+    );
+
+    // Patch the form with the formatted date if it's valid
+    if (formattedDate) {
+      this.truckUpdateForm.patchValue({
+        [expiryFormControlName]: formattedDate,
+      });
+    }
   }
 
   onClickImage(preview: any) {
@@ -373,48 +409,70 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   getTruckImageTitle(viewMoreFormControlName: string) {
-    switch (viewMoreFormControlName) {
-      case 'regPaperFile':
-        return 'Registration paper';
-      case 'taxFile':
-        return 'Tax paper';
-      case 'fitnessCertificateFile':
-        return 'Fitness certificate';
-      case 'routePermitFile':
-        return 'Route permit';
-      case 'casePaperFile':
-        return 'Case paper';
-      case 'others':
-        return 'Others document';
-      case 'truckImages':
-        return 'Truck images';
-      case 'insuranceFiles':
-        return 'Insurance paper';
-      default:
-        return '';
-    }
+    // Map of form control names to their respective titles
+    const titleMap: Record<string, string> = {
+      regPaperFile: 'Registration paper',
+      taxFile: 'Tax paper',
+      fitnessCertificateFile: 'Fitness certificate',
+      routePermitFile: 'Route permit',
+      casePaperFile: 'Case paper',
+      others: 'Others document',
+      truckImages: 'Truck images',
+      insuranceFiles: 'Insurance paper',
+    };
+
+    // Return the title based on the form control name or an empty string if not found
+    return titleMap[viewMoreFormControlName] || '';
   }
 
   private getTruckDetailsByTruckId() {
-    let truckId: string;
-    // get truck id from query params
+    // Get truck ID from query params
     this.route.paramMap.subscribe(params => {
-      truckId = params.get('id'); // Assuming the truck ID is part of the route parameters
-      this.service.getTruckById(truckId).subscribe((res: any) => {
-        const truck: TruckModel = res.data;
-        this.truckDetails = truck;
-        this.documents = truck.truckDocumentList;
-        this.updateFormValues(truck);
-      });
-      this.service.getPreHireChecklist(truckId).subscribe((res: any) => {
-        // Do something with the pre-hire checklist
-        this.preHiredCheckList = res.data;
-      });
+      const truckId = params.get('id'); // Assuming the truck ID is part of the route parameters
+
+      if (truckId) {
+        // Fetch truck details
+        this.service.getTruckById(truckId).subscribe(
+          (res: any) => {
+            if (res && res.data) {
+              const truck: TruckModel = res.data;
+              this.truckDetails = truck;
+              this.documents = truck.truckDocumentList;
+              this.updateFormValues(truck);
+            } else {
+              console.error('Truck details not found in response');
+            }
+          },
+          error => {
+            console.error('Error fetching truck details:', error);
+            // Handle error (e.g., show a notification)
+          }
+        );
+
+        // Fetch pre-hire checklist
+        this.service.getPreHireChecklist(truckId).subscribe(
+          (res: any) => {
+            if (res && res.data) {
+              // Do something with the pre-hire checklist
+              this.preHiredCheckList = res.data;
+            } else {
+              console.error('Pre-hire checklist not found in response');
+            }
+          },
+          error => {
+            console.error('Error fetching pre-hire checklist:', error);
+            // Handle error (e.g., show a notification)
+          }
+        );
+      } else {
+        console.error('Truck ID is missing in the route parameters.');
+        // Handle missing truck ID case (e.g., show a notification)
+      }
     });
   }
 
   private updateFormValues(truck: TruckModel) {
-    this.truckUpdateForm.patchValue({
+    const formValues = {
       registration_zone: truck.registrationZone,
       registration_category: truck.registrationCategory,
       registration_serial: truck.registrationSerial,
@@ -426,22 +484,24 @@ export class TruckDetailsComponent implements OnInit {
       insuranceExpDate: truck.insuranceExpDate,
       regPaperFile: truck.regPaperFile,
       taxFile: truck.taxFile,
-    });
+    };
+
+    // Update the form with the truck values
+    this.truckUpdateForm.patchValue(formValues);
+
+    // Set placeholders
     this.registrationZonePlaceholder = truck.registrationZone;
     this.registrationTypePlaceholder = truck.registrationCategory;
   }
 
   onClickPreHiredChecklist($event: any) {
-    this.countPassCheckList = 0;
     this.singleChecklist = $event;
-    this.truckUpdateForm.patchValue({
-      checklist: $event,
-    });
-    for (const key in $event) {
-      if ($event[key] === 'PASS') {
-        this.countPassCheckList += 1;
-      }
-    }
+    this.truckUpdateForm.patchValue({ checklist: $event });
+
+    // Count the number of 'PASS' in the checklist
+    this.countPassCheckList = Object.values($event).filter(
+      status => status === 'PASS'
+    ).length;
   }
 
   private initiateForm() {
@@ -451,10 +511,15 @@ export class TruckDetailsComponent implements OnInit {
       registration_category: [null],
       registration_serial: [null],
       registration_num: [null],
+
+      // Expiry Dates
       fitnessCertExpDate: [null],
       routePermitExpDate: [null],
       caseExpDate: [null],
       taxExpDate: [null],
+      insuranceExpDate: [null],
+
+      // Files
       regPaperFile: [null],
       taxFile: [null],
       fitnessCertificateFile: [null],
@@ -464,7 +529,6 @@ export class TruckDetailsComponent implements OnInit {
       checklist: [null],
       insuranceFiles: [null],
       truckImages: [null],
-      insuranceExpDate: [null],
     });
   }
 
@@ -473,157 +537,139 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   private onAddFile(files: FileList) {
+    // Update the form with the selected files
     this.truckUpdateForm.patchValue({
       [this.selectedFormControlName]: files,
     });
-    switch (this.selectedFormControlName) {
-      case 'truckImages':
-        this.previewFile(files, this.truckImages);
-        break;
-      case 'insuranceFiles':
-        this.previewFile(files, this.insuranceImages);
-        if (this.insuranceImages.length > 0) {
-          this.truckUpdateForm
-            .get('insuranceExpDate')
-            ?.setValidators([Validators.required]);
-          this.truckUpdateForm
-            .get('insuranceExpDate')
-            ?.updateValueAndValidity();
-        }
-        break;
-      case 'regPaperFile':
-        this.previewFile(files, this.regPaperImages);
-        break;
-      case 'taxFile':
-        this.previewFile(files, this.taxImages, 'taxExpDate');
-        break;
-      case 'fitnessCertificateFile':
-        this.previewFile(files, this.fitnessImages, 'fitnessCertExpDate');
-        if (this.fitnessImages.length > 0) {
-          this.truckUpdateForm
-            .get('fitnessCertExpDate')
-            ?.setValidators([Validators.required]);
-          this.truckUpdateForm
-            .get('fitnessCertExpDate')
-            ?.updateValueAndValidity();
-        }
-        break;
-      case 'routePermitFile':
-        this.previewFile(files, this.routePermitImages, 'routePermitExpDate');
-        if (this.routePermitImages.length > 0) {
-          this.truckUpdateForm
-            .get('caseExpDate')
-            ?.setValidators([Validators.required]);
-          this.truckUpdateForm.get('caseExpDate')?.updateValueAndValidity();
-        }
-        break;
-      case 'casePaperFile':
-        this.previewFile(files, this.casePaperImages, 'caseExpDate');
-        if (this.casePaperImages.length > 0) {
-          this.truckUpdateForm
-            .get('others')
-            ?.setValidators([Validators.required]);
-          this.truckUpdateForm.get('others')?.updateValueAndValidity();
-        }
-        break;
-      case 'others':
-        this.previewFile(files, this.othersImages);
-        break;
+
+    // Handle file preview and validation based on the selected form control
+    const validationMap = {
+      insuranceFiles: {
+        imagesArray: this.insuranceImages,
+        expiryField: 'insuranceExpDate',
+      },
+      fitnessCertificateFile: {
+        imagesArray: this.fitnessImages,
+        expiryField: 'fitnessCertExpDate',
+      },
+      routePermitFile: {
+        imagesArray: this.routePermitImages,
+        expiryField: 'routePermitExpDate',
+      },
+      casePaperFile: {
+        imagesArray: this.casePaperImages,
+        expiryField: 'caseExpDate',
+      },
+      taxFile: {
+        imagesArray: this.taxImages,
+        expiryField: 'taxExpDate',
+      },
+    };
+
+    const selectedField = validationMap[this.selectedFormControlName];
+
+    if (selectedField) {
+      this.previewFile(files, selectedField.imagesArray);
+
+      if (selectedField.imagesArray.length > 0) {
+        this.truckUpdateForm
+          .get(selectedField.expiryField)
+          ?.setValidators([Validators.required]);
+        this.truckUpdateForm
+          .get(selectedField.expiryField)
+          ?.updateValueAndValidity();
+      }
+    } else if (
+      this.selectedFormControlName === 'truckImages' ||
+      this.selectedFormControlName === 'others'
+    ) {
+      this.previewFile(
+        files,
+        this.selectedFormControlName === 'truckImages'
+          ? this.truckImages
+          : this.othersImages
+      );
     }
   }
 
   onFileSelected($event: Event) {
     const input = $event.target as HTMLInputElement;
     const files = input.files;
-    if (this.truckUpdateForm.get(this.selectedFormControlName)?.value) {
-      const currentFiles = Array.from(
-        this.truckUpdateForm.get(this.selectedFormControlName)?.value
-      );
-      if (currentFiles.length + files.length > this.maxUploadAble) {
-        this.toastr.showError(
-          `You can upload maximum of ${this.maxUploadAble} files`
-        );
-        return;
-      } else {
-        this.onAddFile(files);
-      }
-    } else {
-      if (files.length > this.maxUploadAble) {
-        this.toastr.showError(
-          `You can upload maximum of ${this.maxUploadAble} files`
-        );
-        return;
-      } else {
-        this.onAddFile(files);
-      }
+
+    // Check if files exist
+    if (!files || files.length === 0) {
+      return;
     }
+
+    const currentFiles =
+      this.truckUpdateForm.get(this.selectedFormControlName)?.value || [];
+    const totalFilesCount = Array.from(currentFiles).length + files.length;
+
+    // Validate total files count against the maximum allowed
+    if (totalFilesCount > this.maxUploadAble) {
+      this.toastr.showError(
+        `You can upload a maximum of ${this.maxUploadAble} files`
+      );
+      return;
+    }
+
+    // If validation passes, proceed to add files
+    this.onAddFile(files);
   }
 
   checkThatFileIsAvailableOrNot(name: string) {
+    const documentTypeMapping: Record<string, TruckDocumentType> = {
+      'Registration paper': TruckDocumentType.REG_PAPER_FILE,
+      'Tax paper': TruckDocumentType.TAX_FILE,
+      'Fitness certificate': TruckDocumentType.FITNESS_CERTIFICATE_FILE,
+      'Route permit': TruckDocumentType.ROUTE_PERMIT_FILE,
+      'Case paper': TruckDocumentType.CASE_FILE,
+      'Others document': TruckDocumentType.OTHER_FILE,
+      'Truck images': TruckDocumentType.TRUCK_IMAGE,
+      'Insurance paper': TruckDocumentType.INSURANCE_FILE,
+    };
+
+    const documentType = documentTypeMapping[name];
+
+    if (!documentType) {
+      return [];
+    }
+
+    const filteredFiles =
+      this.truckDetails?.truckDocumentList.filter(
+        x => x.documentType === TruckDocumentType[documentType]
+      ) || [];
+
+    // Save the filtered files to the corresponding property
     switch (name) {
       case 'Registration paper':
-        const regFile = this.truckDetails?.truckDocumentList.filter(
-          x =>
-            x.documentType ===
-            TruckDocumentType[TruckDocumentType.REG_PAPER_FILE]
-        );
-        this.savedRegistrationPaper = regFile?.length > 0 ? regFile : [];
-        return regFile?.length > 0 ? regFile.slice(0, 3) : [];
+        this.savedRegistrationPaper = filteredFiles;
+        break;
       case 'Tax paper':
-        const taxFile = this.truckDetails?.truckDocumentList.filter(
-          x => x.documentType === TruckDocumentType[TruckDocumentType.TAX_FILE]
-        );
-        this.savedTaxPaper = taxFile?.length > 0 ? taxFile : [];
-        return taxFile?.length > 0 ? taxFile.slice(0, 3) : [];
+        this.savedTaxPaper = filteredFiles;
+        break;
       case 'Fitness certificate':
-        const fitFile = this.truckDetails?.truckDocumentList.filter(
-          x =>
-            x.documentType ===
-            TruckDocumentType[TruckDocumentType.FITNESS_CERTIFICATE_FILE]
-        );
-        this.savedFitnessCertificate = fitFile?.length > 0 ? fitFile : [];
-        return fitFile?.length > 0 ? fitFile.slice(0, 3) : [];
+        this.savedFitnessCertificate = filteredFiles;
+        break;
       case 'Route permit':
-        const routeFile = this.truckDetails?.truckDocumentList.filter(
-          x =>
-            x.documentType ===
-            TruckDocumentType[TruckDocumentType.ROUTE_PERMIT_FILE]
-        );
-        this.savedRoutePermit = routeFile?.length > 0 ? routeFile : [];
-        return routeFile?.length > 0 ? routeFile.slice(0, 3) : [];
+        this.savedRoutePermit = filteredFiles;
+        break;
       case 'Case paper':
-        const caseFile = this.truckDetails?.truckDocumentList.filter(
-          x => x.documentType === TruckDocumentType[TruckDocumentType.CASE_FILE]
-        );
-        this.savedCasePaper = caseFile?.length > 0 ? caseFile : [];
-        return caseFile?.length > 0 ? caseFile.slice(0, 3) : [];
+        this.savedCasePaper = filteredFiles;
+        break;
       case 'Others document':
-        const otherFile = this.truckDetails?.truckDocumentList.filter(
-          x =>
-            x.documentType === TruckDocumentType[TruckDocumentType.OTHER_FILE]
-        );
-        this.savedOthers = otherFile?.length > 0 ? otherFile : [];
-        return otherFile?.length > 0 ? otherFile.slice(0, 3) : [];
+        this.savedOthers = filteredFiles;
+        break;
       case 'Truck images':
-        const truckImageFile = this.truckDetails?.truckDocumentList.filter(
-          x =>
-            x.documentType === TruckDocumentType[TruckDocumentType.TRUCK_IMAGE]
-        );
-        this.savedTruckImages =
-          truckImageFile?.length > 0 ? truckImageFile : [];
-        return truckImageFile?.length > 0 ? truckImageFile.slice(0, 3) : [];
+        this.savedTruckImages = filteredFiles;
+        break;
       case 'Insurance paper':
-        const insuranceFile = this.truckDetails?.truckDocumentList.filter(
-          x =>
-            x.documentType ===
-            TruckDocumentType[TruckDocumentType.INSURANCE_FILE]
-        );
-        this.savedInsurancePaper =
-          insuranceFile?.length > 0 ? insuranceFile : [];
-        return insuranceFile?.length > 0 ? insuranceFile.slice(0, 3) : [];
-      default:
-        return [];
+        this.savedInsurancePaper = filteredFiles;
+        break;
     }
+
+    // Return the first three files or an empty array
+    return filteredFiles.length > 0 ? filteredFiles.slice(0, 3) : [];
   }
 
   getSavedFileArray(formControlName: string | undefined) {
@@ -649,156 +695,162 @@ export class TruckDetailsComponent implements OnInit {
     }
   }
 
-  onCloseSaveImage(formControlName: string, file: TruckDocument) {}
+  private handleTruckAction(action: 'approve' | 'reject', dialogData: any) {
+    const dialogComponent =
+      action === 'reject' ? ConfirmRejectComponent : ConfirmApproveComponent;
 
-  onClickReject() {
     this.dialog
-      .open(ConfirmRejectComponent, {
-        data: {
-          title: 'Attention',
-          text: `Do you want to reject ${this.truckDetails.fullRegistrationNumber}?`,
-          buttonText: 'Reject',
-        },
-      })
+      .open(dialogComponent, dialogData)
       .afterClosed()
       .subscribe((res: any) => {
-        if (res.status === 'rejected') {
-          // Do something
-          const formData = new FormData();
-          const payload: Record<string, any> = {};
-          payload['id'] = this.truckDetails.id;
-          payload['status'] = 'Rejected';
-          payload['rejectedReason'] = res.reason;
-          formData.append('payload', JSON.stringify(payload));
-          this.service.editTruck(formData).subscribe(
-            (res: any) => {
-              // Handle response
-              if (res.status == 'OK') {
-                this.toastr.showSuccess(res.message);
-                this.router.navigate(['/profile/truck']);
-              } else {
-                this.toastr.showError(res.message);
-              }
-            },
-            error => {
-              // Handle error
-              this.toastr.showError(error.error.message);
-            }
-          );
+        if (action === 'reject' && res.status === 'rejected') {
+          this.submitTruckUpdate('Rejected', res.reason);
+        } else if (action === 'approve' && res === 'updated') {
+          this.submitTruckUpdate('Approved');
         }
       });
   }
 
-  onClickApprove() {
-    this.dialog
-      .open(ConfirmApproveComponent, {
-        data: {
-          title: 'Approve',
-          text: `Do you want to approve ${this.truckDetails.fullRegistrationNumber}"?`,
-          buttonText: 'Approve',
-        },
-      })
-      .afterClosed()
-      .subscribe((res: any) => {
-        if (res === 'updated') {
-          // Do something
-          const formData = new FormData();
-          const payload: Record<string, any> = {};
-          payload['id'] = this.truckDetails.id;
-          payload['status'] = 'Approved';
-          formData.append('payload', JSON.stringify(payload));
-          this.service.editTruck(formData).subscribe(
-            (res: any) => {
-              // Handle response
-              if (res.status == 'OK') {
-                this.toastr.showSuccess(res.message);
-                this.router.navigate(['/profile/truck']);
-              } else {
-                this.toastr.showError(res.message);
-              }
-            },
-            error => {
-              // Handle error
-              this.toastr.showError(error.error.message);
-            }
-          );
+  private submitTruckUpdate(status: string, rejectedReason?: string) {
+    const formData = new FormData();
+    const payload: Record<string, any> = {
+      id: this.truckDetails.id,
+      status,
+      ...(rejectedReason && { rejectedReason }), // Only add if reason is provided
+    };
+
+    formData.append('payload', JSON.stringify(payload));
+    this.service.editTruck(formData).subscribe(
+      (res: any) => {
+        // Handle response
+        if (res.status === 'OK') {
+          this.toastr.showSuccess(res.message);
+          this.router.navigate(['/profile/truck']);
+        } else {
+          this.toastr.showError(res.message);
         }
-      });
+      },
+      error => {
+        // Handle error
+        this.toastr.showError(error.error.message);
+      }
+    );
+  }
+
+  // Usage in your methods
+  onClickReject() {
+    const dialogData = {
+      title: 'Attention',
+      text: `Do you want to reject ${this.truckDetails.fullRegistrationNumber}?`,
+      buttonText: 'Reject',
+    };
+    this.handleTruckAction('reject', dialogData);
+  }
+
+  onClickApprove() {
+    const dialogData = {
+      title: 'Approve',
+      text: `Do you want to approve ${this.truckDetails.fullRegistrationNumber}?`,
+      buttonText: 'Approve',
+    };
+    this.handleTruckAction('approve', dialogData);
   }
 
   private previewFile(
     files: FileList,
-    targetArray: any[],
-    expiredControl?: any
-  ) {
+    targetArray: { preview: string | ArrayBuffer | null; file: File }[],
+    expiredControl?: string // Changed to string to reflect form control name
+  ): void {
     Array.from(files).forEach((file: File) => {
       const reader = new FileReader();
-      reader.readAsDataURL(file);
+
+      // Event listener for file reading completion
       reader.onload = () => {
         targetArray.push({
           preview: reader.result,
           file: file,
         });
       };
+
+      // Event listener for error handling
+      reader.onerror = () => {
+        console.error(`Error reading file: ${file.name}`);
+        this.toastr.showError(`Failed to load ${file.name}`);
+      };
+
+      // Start reading the file
+      reader.readAsDataURL(file);
     });
+
+    // Handle form control validation if specified
     if (expiredControl) {
-      this.truckUpdateForm
-        .get(expiredControl)
-        ?.setValidators([Validators.required]);
-      this.truckUpdateForm.get(expiredControl)?.updateValueAndValidity();
+      const control = this.truckUpdateForm.get(expiredControl);
+      if (control) {
+        control.setValidators([Validators.required]);
+        control.updateValueAndValidity();
+      }
     }
   }
 
-  checkDateIsExpiredOrNot(expiryDates: any) {
-    const pastDate = new Date(expiryDates); // Convert the past date string to a Date object
-    const currentDate = new Date(); // Get the current date
+  checkDateIsExpiredOrNot(expiryDate: string): {
+    isExpired: boolean;
+    text: string;
+  } {
+    const pastDate = new Date(expiryDate);
+    const currentDate = new Date();
 
+    // Normalize time to midnight for accurate comparison
     pastDate.setHours(0, 0, 0, 0);
     currentDate.setHours(0, 0, 0, 0);
-    let isPastDate = false;
-    let text = '';
 
-    // Check if the past date is today
-    if (pastDate.getTime() >= currentDate.getTime()) {
-      isPastDate = false;
-      text = this.datePipe.transform(pastDate, 'dd MMM, yyyy');
-    } else {
-      isPastDate = true;
+    // Check if the past date is today or in the future
+    if (pastDate >= currentDate) {
+      return {
+        isExpired: false,
+        text: this.datePipe.transform(pastDate, 'dd MMM, yyyy') || '',
+      };
     }
 
     // Calculate the time difference in milliseconds
     const timeDiff = currentDate.getTime() - pastDate.getTime();
 
-    // Convert milliseconds to days
-    let dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-
-    // Convert days to months and years
-    let monthDiff = 0;
-    let yearDiff = 0;
-
-    if (dayDiff > 29) {
-      monthDiff = Math.floor(dayDiff / 30); // Approximate 30 days in a month
-      dayDiff = dayDiff % 30; // Remaining days after converting to months
-    }
-
-    if (monthDiff > 11) {
-      yearDiff = Math.floor(monthDiff / 12); // 12 months in a year
-      monthDiff = monthDiff % 12; // Remaining months after converting to years
-    }
+    // Convert milliseconds to days, months, and years
+    const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    const yearDiff = Math.floor(dayDiff / 365);
+    const monthDiff = Math.floor((dayDiff % 365) / 30);
+    const remainingDays = dayDiff % 30;
 
     // Build the result string
-    const yearString =
-      yearDiff > 0 ? `${yearDiff} year${yearDiff > 1 ? 's' : ''}` : '';
-    const monthString =
-      monthDiff > 0 ? `${monthDiff} month${monthDiff > 1 ? 's' : ''}` : '';
-    const dayString =
-      dayDiff > 0 ? `${dayDiff} day${dayDiff > 1 ? 's' : ''}` : '';
+    const resultParts = [];
+    if (yearDiff > 0)
+      resultParts.push(`${yearDiff} year${yearDiff > 1 ? 's' : ''}`);
+    if (monthDiff > 0)
+      resultParts.push(`${monthDiff} month${monthDiff > 1 ? 's' : ''}`);
+    if (remainingDays > 0)
+      resultParts.push(`${remainingDays} day${remainingDays > 1 ? 's' : ''}`);
 
-    // Combine the results, filtering out empty values
-    text = `Expired ${[yearString, monthString, dayString].filter(Boolean).join(', ')} ago`;
     return {
-      isExpired: isPastDate,
-      text: text,
+      isExpired: true,
+      text: `Expired ${resultParts.join(', ')} ago`,
     };
+  }
+
+  onCloseImageSavedImage(formControlName: string | undefined, file: any) {
+    const savedImagesMap: { [key: string]: any[] } = {
+      regPaperFile: this.savedRegistrationPaper,
+      taxFile: this.savedTaxPaper,
+      fitnessCertificateFile: this.savedFitnessCertificate,
+      routePermitFile: this.savedRoutePermit,
+      casePaperFile: this.savedCasePaper,
+      others: this.savedOthers,
+      truckImages: this.savedTruckImages,
+      insuranceFiles: this.savedInsurancePaper,
+    };
+
+    if (formControlName && savedImagesMap[formControlName]) {
+      savedImagesMap[formControlName] = savedImagesMap[formControlName].filter(
+        item => item.preSignedFileUrl !== file.preSignedFileUrl
+      );
+    }
   }
 }

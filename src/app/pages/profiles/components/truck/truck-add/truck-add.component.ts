@@ -411,6 +411,7 @@ export class TruckAddComponent implements OnInit {
 
   protected readonly truckFileType: TruckFileType[] = truckFileType;
   viewMoreFormControlName: string | undefined;
+  viewMoreExpiryControlName: string;
 
   onFileSelected($event: Event) {
     const input = $event.target as HTMLInputElement;
@@ -579,12 +580,53 @@ export class TruckAddComponent implements OnInit {
     }
   }
 
-  onCloseImage(formControlName: string | undefined, file: any) {
+  onCloseImage(formControlName: string | undefined, file: any, expiredControl) {
     let files: any[] = [];
-    files = this.getSpecificFiles(formControlName);
-    this.dialog.closeAll();
-    const index = files.indexOf(file);
-    files.splice(index, 1);
+    switch (formControlName) {
+      case 'truckImages':
+        this.truckImages = this.truckImages.filter(
+          item => item.preview !== file.preview
+        );
+        files = this.truckImages;
+        break;
+      case 'insuranceFiles':
+        this.insuranceImages = this.insuranceImages.filter(
+          item => item.preview !== file.preview
+        );
+        files = this.insuranceImages;
+        break;
+      case 'regPaperFile':
+        this.regPaperImages = this.regPaperImages.filter(
+          item => item.preview !== file.preview
+        );
+        files = this.regPaperImages;
+        break;
+      case 'taxFile':
+        this.taxImages = this.taxImages.filter(
+          item => item.preview !== file.preview
+        );
+        break;
+      case 'fitnessCertificateFile':
+        this.fitnessImages = this.fitnessImages.filter(
+          item => item.preview !== file.preview
+        );
+        break;
+      case 'routePermitFile':
+        this.routePermitImages = this.routePermitImages.filter(
+          item => item.preview !== file.preview
+        );
+        break;
+      case 'casePaperFile':
+        this.casePaperImages = this.casePaperImages.filter(
+          item => item.preview !== file.preview
+        );
+        break;
+      case 'others':
+        this.othersImages = this.othersImages.filter(
+          item => item.preview !== file.preview
+        );
+        break;
+    }
     const formControlFiles = [];
     files.forEach((file: any) => {
       formControlFiles.push(file.file);
@@ -592,6 +634,11 @@ export class TruckAddComponent implements OnInit {
     this.truckAddForm.patchValue({
       [formControlName]: formControlFiles,
     });
+
+    if (formControlFiles.length === 0) {
+      this.truckAddForm.get(expiredControl)?.clearValidators();
+      this.truckAddForm.get(expiredControl)?.updateValueAndValidity();
+    }
   }
 
   onClickViewMore(truckImagePop: any) {

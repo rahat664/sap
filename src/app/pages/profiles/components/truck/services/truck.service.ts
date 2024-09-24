@@ -13,10 +13,17 @@ export class TruckService {
 
   constructor(private http: HttpClient) {}
 
-  getTruckList(page: number, size: number, search?: string): Observable<any> {
+  getTruckList(
+    page: number,
+    size: number,
+    search?: string,
+    status?: string
+  ): Observable<any> {
     let apiUrl = `${this.url}?page=${page}&size=${size}`;
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
+    } else if (status) {
+      apiUrl += `&status=${status}`;
     }
 
     return this.http.get(apiUrl);
