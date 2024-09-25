@@ -53,7 +53,7 @@ export class PreHireChecklistDetailsComponent {
     }
   }
 
-  protected readonly onclick = onclick;
+  @Input() passedCheckList: string = '0';
 
   getChecklistPosition(i: number, j: number) {
     if (i == 0) {

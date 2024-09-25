@@ -38,7 +38,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TruckService } from '../services/truck.service';
 import { PreHireChecklistDetailsComponent } from '../pre-hire-checklist-details/pre-hire-checklist-details.component';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { TruckDocumentType } from '../../../../../shared/Enums/registration_type';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { ConfirmApproveComponent } from '../../../../../shared/modules/confirm-approve/confirm-approve.component';
@@ -116,7 +115,7 @@ export class TruckDetailsComponent implements OnInit {
   fitnessImages: any[] = [];
   routePermitImages: any[] = [];
   othersImages: any[] = [];
-  countPassCheckList: number;
+  countPassCheckList: number = 0;
   singleChecklist: any;
   viewMoreExpiryControlName: string;
 
@@ -438,6 +437,8 @@ export class TruckDetailsComponent implements OnInit {
               const truck: TruckModel = res.data;
               this.truckDetails = truck;
               this.documents = truck.truckDocumentList;
+              // split the document by type
+              this.splitDoucumentsByType(this.documents);
               this.updateFormValues(truck);
             } else {
               console.error('Truck details not found in response');
@@ -618,53 +619,31 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   checkThatFileIsAvailableOrNot(name: string) {
-    const documentTypeMapping: Record<string, TruckDocumentType> = {
-      'Registration paper': TruckDocumentType.REG_PAPER_FILE,
-      'Tax paper': TruckDocumentType.TAX_FILE,
-      'Fitness certificate': TruckDocumentType.FITNESS_CERTIFICATE_FILE,
-      'Route permit': TruckDocumentType.ROUTE_PERMIT_FILE,
-      'Case paper': TruckDocumentType.CASE_FILE,
-      'Others document': TruckDocumentType.OTHER_FILE,
-      'Truck images': TruckDocumentType.TRUCK_IMAGE,
-      'Insurance paper': TruckDocumentType.INSURANCE_FILE,
-    };
-
-    const documentType = documentTypeMapping[name];
-
-    if (!documentType) {
-      return [];
-    }
-
-    const filteredFiles =
-      this.truckDetails?.truckDocumentList.filter(
-        x => x.documentType === TruckDocumentType[documentType]
-      ) || [];
-
-    // Save the filtered files to the corresponding property
+    let filteredFiles = [];
     switch (name) {
       case 'Registration paper':
-        this.savedRegistrationPaper = filteredFiles;
+        filteredFiles = this.savedRegistrationPaper;
         break;
       case 'Tax paper':
-        this.savedTaxPaper = filteredFiles;
+        filteredFiles = this.savedTaxPaper;
         break;
       case 'Fitness certificate':
-        this.savedFitnessCertificate = filteredFiles;
+        filteredFiles = this.savedFitnessCertificate;
         break;
       case 'Route permit':
-        this.savedRoutePermit = filteredFiles;
+        filteredFiles = this.savedRoutePermit;
         break;
       case 'Case paper':
-        this.savedCasePaper = filteredFiles;
+        filteredFiles = this.savedCasePaper;
         break;
       case 'Others document':
-        this.savedOthers = filteredFiles;
+        filteredFiles = this.savedOthers;
         break;
       case 'Truck images':
-        this.savedTruckImages = filteredFiles;
+        filteredFiles = this.savedTruckImages;
         break;
       case 'Insurance paper':
-        this.savedInsurancePaper = filteredFiles;
+        filteredFiles = this.savedInsurancePaper;
         break;
     }
 
@@ -700,7 +679,7 @@ export class TruckDetailsComponent implements OnInit {
       .open(ConfirmRejectComponent, {
         data: {
           title: 'Attention',
-          text: `Do you want to reject ${this.truckDetails.fullRegistrationNumber}?`,
+          text: `${this.truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Reject',
         },
       })
@@ -821,7 +800,7 @@ export class TruckDetailsComponent implements OnInit {
     if (pastDate >= currentDate) {
       return {
         isExpired: false,
-        text: this.datePipe.transform(pastDate, 'dd MMM, yyyy') || '',
+        text: `Expiry date: ${this.datePipe.transform(pastDate, 'dd MMM, yyyy') || ''}`,
       };
     }
 
@@ -862,9 +841,49 @@ export class TruckDetailsComponent implements OnInit {
     };
 
     if (formControlName && savedImagesMap[formControlName]) {
-      savedImagesMap[formControlName] = savedImagesMap[formControlName].filter(
+      console.log(savedImagesMap[formControlName], formControlName);
+      const updatedImages = savedImagesMap[formControlName].filter(
         item => item.preSignedFileUrl !== file.preSignedFileUrl
       );
+      console.log(updatedImages);
+      savedImagesMap[formControlName] = updatedImages;
+      console.log(savedImagesMap[formControlName]);
     }
+    // update the file array
+  }
+
+  private splitDoucumentsByType(documents: TruckDocument[]) {
+    // Split the documents by type
+    documents.forEach(doc => {
+      // split by trucj document type
+      const documentType = doc.documentType;
+      console.log(documentType);
+      switch (documentType) {
+        case 'REG_PAPER_FILE':
+          this.savedRegistrationPaper.push(doc);
+          break;
+        case 'TAX_FILE':
+          this.savedTaxPaper.push(doc);
+          break;
+        case 'FITNESS_CERTIFICATE_FILE':
+          this.savedFitnessCertificate.push(doc);
+          break;
+        case 'ROUTE_PERMIT_FILE':
+          this.savedRoutePermit.push(doc);
+          break;
+        case 'CASE_FILE':
+          this.savedCasePaper.push(doc);
+          break;
+        case 'OTHER_FILE':
+          this.savedOthers.push(doc);
+          break;
+        case 'TRUCK_IMAGE':
+          this.savedTruckImages.push(doc);
+          break;
+        case 'INSURANCE_FILE':
+          this.savedInsurancePaper.push(doc);
+          break;
+      }
+    });
   }
 }

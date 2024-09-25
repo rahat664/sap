@@ -251,9 +251,10 @@
         </div>
       </div>
       <div>
-        <app-pre-hire-checklist-details *ngIf="!isInEditMode"
+        <app-pre-hire-checklist-details [passedCheckList]="countPassCheckList.toString()" *ngIf="!isInEditMode"
                                         [object]="preHiredCheckList"></app-pre-hire-checklist-details>
-        <app-pre-hire-checklist *ngIf="isInEditMode" (preHireCheckListObject)="onClickPreHiredChecklist($event)"
+        <app-pre-hire-checklist [passedCheckList]="countPassCheckList.toString()" *ngIf="isInEditMode"
+                                (preHireCheckListObject)="onClickPreHiredChecklist($event)"
                                 [object]="preHiredCheckList"></app-pre-hire-checklist>
       </div>
     </div>

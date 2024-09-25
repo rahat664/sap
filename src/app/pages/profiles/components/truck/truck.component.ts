@@ -26,6 +26,7 @@ import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
 import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
+import { PreHireChecklistPopupComponent } from './pre-hire-checklist-popup/pre-hire-checklist-popup.component';
 
 @Component({
   selector: 'app-truck',
@@ -217,13 +218,36 @@ export class TruckComponent implements OnInit {
   }
 
   onClickCheckList(truck) {
-    this.isCheckListOpened = true;
-    this.singleTruckId = truck.id;
-    localStorage.removeItem('truck');
-    localStorage.setItem('truck', JSON.stringify(truck));
-    this.dialog.open(PreHireChecklistComponent, {
-      width: '40%',
-      height: '80%',
+    this.service.getPreHireChecklist(truck.id).subscribe((res: any) => {
+      this.dialog
+        .open(PreHireChecklistPopupComponent, {
+          data: {
+            title: 'Pre Hire Checklist',
+            checklist: res.data,
+            truck: truck,
+            checked: truck.preHireCheckList,
+          },
+          maxHeight: '90vh',
+        })
+        .afterClosed()
+        .subscribe((res: any) => {
+          if (res) {
+            const formData = new FormData();
+            const payload: Record<string, any> = {};
+            payload['id'] = truck.id;
+            payload['checklist'] = res;
+            formData.append('payload', JSON.stringify(payload));
+            this.service.editTruck(formData).subscribe((res: any) => {
+              if (res.status === 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.truckList = [];
+                this.getTruckList();
+              } else {
+                this.toastr.showError(res.message);
+              }
+            });
+          }
+        });
     });
   }
 
@@ -319,7 +343,7 @@ export class TruckComponent implements OnInit {
       .open(ConfirmRejectComponent, {
         data: {
           title: 'Reject',
-          text: `Do you want to reject ${truckDetails.fullRegistrationNumber}"?`,
+          text: `${truckDetails.fullRegistrationNumber}"?`,
           buttonText: 'Reject',
         },
       })

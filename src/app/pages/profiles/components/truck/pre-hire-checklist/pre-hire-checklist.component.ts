@@ -84,6 +84,7 @@ export class PreHireChecklistComponent implements OnInit {
 
   @Input() object!: any;
   shareObject: any = {};
+  @Input() passedCheckList: string = '0';
 
   getChecklistPosition(i: number, j: number) {
     if (i == 0) {
