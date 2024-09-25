@@ -211,13 +211,13 @@ export class TruckDetailsComponent implements OnInit {
       document =>
         document.documentType ===
           TruckDocumentType[TruckDocumentType.INSURANCE_FILE] ||
-        document.documentType === 'Insuranc,e'
+        document.documentType === 'Insurance'
     );
     if (insuranceFile.length > 1) {
       this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
-        item => item.value !== 'Insuranc,e'
+        item => item.value !== 'Insurance'
       );
-    } else {
+    } else if (insuranceFile.length === 1) {
       this.newTruckFileTypeOptions.push({
         id: 6,
         value: 'Insurance',
@@ -229,19 +229,20 @@ export class TruckDetailsComponent implements OnInit {
       document =>
         document.documentType ===
           TruckDocumentType[TruckDocumentType.TRUCK_IMAGE] ||
-        document.documentType === 'Truck Im,age'
+        document.documentType === 'Truck Image'
     );
     if (truckImage.length > 9) {
       this.newTruckFileTypeOptions = this.newTruckFileTypeOptions.filter(
-        item => item.value !== 'Truck Im,age'
+        item => item.value !== 'Truck Image'
       );
-    } else {
+    } else if (truckImage.length > 0 && truckImage.length < 10) {
       this.newTruckFileTypeOptions.push({
         id: 7,
         value: 'Truck Image',
         selected: false,
       } as any);
     }
+    // remove file type options if duplicate
   }
 
   performRemove($event: any) {
