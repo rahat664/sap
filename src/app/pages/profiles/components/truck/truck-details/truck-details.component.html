@@ -3,7 +3,7 @@
     <div class="p-4  rounded-lg bg-white flex justify-between items-center ">
       <div class="flex space-x-2 items-center  pb-4">
         <img src="assets/svg/list.svg" class="notPreview h-[2rem] w-[2rem]" alt="">
-        <h1 class="text-h3 leading-h3 font-semibold">Pre Hire Checklist</h1>
+        <h1 class="text-h3 leading-h3 font-semibold">{{ isInEditMode ? 'Truck Edit' : 'Truck Details' }}</h1>
       </div>
       <div class="flex space-x-4 items-center">
         <button
@@ -15,7 +15,7 @@
         </button>
         <button
           *ngIf="isInEditMode"
-          (click)="isInEditMode = false"
+          (click)="onClickCancel()"
           class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
           <span>Cancel</span>
         </button>
@@ -139,7 +139,7 @@
                   </mat-form-field>
                   <span
                     *ngIf="truckUpdateForm.get('registration_num').touched && registrationNumErrorMessage"
-                    class="text-red text-xs"
+                    class="text-red text-xs" `
                   >{{ registrationNumErrorMessage }}</span
                   >
                 </div>
@@ -157,9 +157,9 @@
               <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
                 <div class="flex space-x-4 items-center">
                   <img src="assets/svg/not-available.svg" class="notPreview" alt=""
-                       *ngIf="!checkThatFileIsAvailableOrNot(option.name).length">
+                       *ngIf="!checkThatFileIsAvailableOrNot(option.name).length && !truckUpdateForm.get(option.formControlName).value">
                   <img src="assets/svg/available.svg" alt="" class="notPreview"
-                       *ngIf=" checkThatFileIsAvailableOrNot(option.name).length > 0"
+                       *ngIf=" checkThatFileIsAvailableOrNot(option.name).length > 0 || truckUpdateForm.get(option.formControlName).value"
                   >
                   <div class="flex flex-col space-y-0.5">
                     <span
@@ -230,7 +230,7 @@
                       *ngIf="(getSpecificFiles(option?.formControlName)?.length > 0 || getSavedFileArray(option?.formControlName)?.length > 0) && getSpecificFiles(option?.formControlName)?.length < option?.max"
                       (click)="triggerFileUpload(option?.formControlName, option.max)"
                       icon="plus"></app-upload-button>
-                    <input [multiple]="option.multiple" type="file" #fileInput
+                    <input [multiple]="option.multiple" type="file" #fileInput accept=".png, .jpg, .jpeg, .pdf"
                            style="display:none;" (change)="onFileSelected($event)" />
                   </ng-container>
                 </div>

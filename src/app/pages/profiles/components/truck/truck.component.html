@@ -270,6 +270,7 @@
               </button>
               <button
                 routerLink="/profile/truck/{{ truck.id }}/details"
+                (click)="localStorage.setItem('directEdit', 'true')"
                 mat-menu-item>
                 <div class="flex space-x-2 items-center">
                   <img

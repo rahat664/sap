@@ -42,6 +42,7 @@ import { HandleToastrService } from '../../../../../shared/services/handle-toast
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { ConfirmApproveComponent } from '../../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-reject/confirm-reject.component';
+import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
 
 @Component({
   selector: 'app-truck-details',
@@ -118,6 +119,7 @@ export class TruckDetailsComponent implements OnInit {
   countPassCheckList: number = 0;
   singleChecklist: any;
   viewMoreExpiryControlName: string;
+  deletedFileUrls: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -177,6 +179,13 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.deletedFileUrls = [];
+    if (JSON.parse(localStorage.getItem('directEdit')) === true) {
+      this.isInEditMode = true;
+      localStorage.removeItem('directEdit');
+    } else {
+      this.isInEditMode = false;
+    }
     this.getTruckDetailsByTruckId();
     this.initiateForm();
   }
@@ -190,6 +199,18 @@ export class TruckDetailsComponent implements OnInit {
       return;
     }
 
+    if (this.deletedFileUrls.length > 0) {
+      this.deletedFileUrls.forEach(url => {
+        this.service.deleteTruckFiles(url, this.truckDetails.id).subscribe(
+          (res: any) => {
+            console.log(res);
+          },
+          error => {
+            console.error('Error deleting file:', error);
+          }
+        );
+      });
+    }
     // Set the 'id' field only after form validity is confirmed
     this.truckUpdateForm.get('id')?.setValue(this.truckDetails.id);
 
@@ -375,6 +396,77 @@ export class TruckDetailsComponent implements OnInit {
           control.updateValueAndValidity();
         }
       }
+      switch (formControlName) {
+        case 'regPaperFile':
+          this.regPaperImages = updatedImages;
+          if (updatedImages.length === 0) {
+            this.truckUpdateForm.get('regPaperFile').setValue(null);
+          }
+          break;
+        case 'taxFile':
+          this.taxImages = updatedImages;
+          if (updatedImages.length === 0) {
+            this.truckUpdateForm.get('taxFile').setValue(null);
+            this.truckUpdateForm.get('taxExpDate').setValue(null);
+            this.truckUpdateForm.get('taxExpDate')?.clearValidators();
+            this.truckUpdateForm.get('taxExpDate')?.updateValueAndValidity;
+          }
+          break;
+        case 'fitnessCertificateFile':
+          this.fitnessImages = updatedImages;
+          if (updatedImages.length === 0) {
+            this.truckUpdateForm.get('fitnessCertificateFile').setValue(null);
+            this.truckUpdateForm.get('fitnessCertExpDate').setValue(null);
+            this.truckUpdateForm.get('fitnessCertExpDate')?.clearValidators();
+            this.truckUpdateForm
+              .get('fitnessCertExpDate')
+              ?.updateValueAndValidity();
+          }
+          break;
+        case 'routePermitFile':
+          this.routePermitImages = updatedImages;
+          if (updatedImages.length === 0) {
+            this.truckUpdateForm.get('routePermitFile').setValue(null);
+            this.truckUpdateForm.get('routePermitExpDate').setValue(null);
+            this.truckUpdateForm.get('routePermitExpDate')?.clearValidators();
+            this.truckUpdateForm
+              .get('routePermitExpDate')
+              ?.updateValueAndValidity();
+          }
+          break;
+        case 'casePaperFile':
+          this.casePaperImages = updatedImages;
+          if (updatedImages.length === 0) {
+            this.truckUpdateForm.get('casePaperFile').setValue(null);
+            this.truckUpdateForm.get('caseExpDate').setValue(null);
+            this.truckUpdateForm.get('caseExpDate')?.clearValidators();
+            this.truckUpdateForm.get('caseExpDate')?.updateValueAndValidity();
+          }
+          break;
+        case 'others':
+          this.othersImages = updatedImages;
+          if (updatedImages.length === 0) {
+            this.truckUpdateForm.get('others').setValue(null);
+          }
+          break;
+        case 'truckImages':
+          this.truckImages = updatedImages;
+          if (updatedImages.length === 0) {
+            this.truckUpdateForm.get('truckImages').setValue(null);
+          }
+          break;
+        case 'insuranceFiles':
+          this.insuranceImages = updatedImages;
+          if (updatedImages.length === 0) {
+            this.truckUpdateForm.get('insuranceFiles').setValue(null);
+            this.truckUpdateForm.get('insuranceExpDate').setValue(null);
+            this.truckUpdateForm.get('insuranceExpDate')?.clearValidators();
+            this.truckUpdateForm
+              .get('insuranceExpDate')
+              ?.updateValueAndValidity();
+          }
+          break;
+      }
     }
   }
 
@@ -478,11 +570,11 @@ export class TruckDetailsComponent implements OnInit {
       registration_category: truck.registrationCategory,
       registration_serial: truck.registrationSerial,
       registration_num: truck.registrationNum,
-      fitnessCertExpDate: truck.fitnessCertExpDate,
-      routePermitExpDate: truck.routePermitExpDate,
-      caseExpDate: truck.caseExpDate,
-      taxExpDate: truck.taxExpDate,
-      insuranceExpDate: truck.insuranceExpDate,
+      fitnessCertExpDate: this.getExpireDate('FITNESS_CERTIFICATE_FILE'),
+      routePermitExpDate: this.getExpireDate('ROUTE_PERMIT_FILE'),
+      caseExpDate: this.getExpireDate('CASE_FILE'),
+      taxExpDate: this.getExpireDate('TAX_FILE'),
+      insuranceExpDate: this.getExpireDate('INSURANCE_FILE'),
       regPaperFile: truck.regPaperFile,
       taxFile: truck.taxFile,
     };
@@ -568,11 +660,15 @@ export class TruckDetailsComponent implements OnInit {
     };
 
     const selectedField = validationMap[this.selectedFormControlName];
+    console.log(selectedField);
 
     if (selectedField) {
       this.previewFile(files, selectedField.imagesArray);
 
-      if (selectedField.imagesArray.length > 0) {
+      if (
+        selectedField.expiryField &&
+        this.truckUpdateForm.get(this.selectedFormControlName)
+      ) {
         this.truckUpdateForm
           .get(selectedField.expiryField)
           ?.setValidators([Validators.required]);
@@ -580,6 +676,7 @@ export class TruckDetailsComponent implements OnInit {
           .get(selectedField.expiryField)
           ?.updateValueAndValidity();
       }
+      console.log(this.truckUpdateForm.get(selectedField.expiryField));
     } else if (
       this.selectedFormControlName === 'truckImages' ||
       this.selectedFormControlName === 'others'
@@ -646,7 +743,6 @@ export class TruckDetailsComponent implements OnInit {
         filteredFiles = this.savedInsurancePaper;
         break;
     }
-
     // Return the first three files or an empty array
     return filteredFiles.length > 0 ? filteredFiles.slice(0, 3) : [];
   }
@@ -829,27 +925,110 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   onCloseImageSavedImage(formControlName: string | undefined, file: any) {
-    const savedImagesMap: { [key: string]: any[] } = {
-      regPaperFile: this.savedRegistrationPaper,
-      taxFile: this.savedTaxPaper,
-      fitnessCertificateFile: this.savedFitnessCertificate,
-      routePermitFile: this.savedRoutePermit,
-      casePaperFile: this.savedCasePaper,
-      others: this.savedOthers,
-      truckImages: this.savedTruckImages,
-      insuranceFiles: this.savedInsurancePaper,
-    };
+    this.dialog
+      .open(ConfirmDeleteComponent, {
+        data: {
+          title: 'Delete',
+          text: `Do you want to delete this file?`,
+          buttonText: 'Delete',
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res) {
+          if (this.deletedFileUrls.length > 0) {
+            this.deletedFileUrls.push(file.fileUrl);
+          } else {
+            this.deletedFileUrls = [file.fileUrl];
+          }
+          const savedImagesMap: { [key: string]: any[] } = {
+            regPaperFile: this.savedRegistrationPaper,
+            taxFile: this.savedTaxPaper,
+            fitnessCertificateFile: this.savedFitnessCertificate,
+            routePermitFile: this.savedRoutePermit,
+            casePaperFile: this.savedCasePaper,
+            others: this.savedOthers,
+            truckImages: this.savedTruckImages,
+            insuranceFiles: this.savedInsurancePaper,
+          };
 
-    if (formControlName && savedImagesMap[formControlName]) {
-      console.log(savedImagesMap[formControlName], formControlName);
-      const updatedImages = savedImagesMap[formControlName].filter(
-        item => item.preSignedFileUrl !== file.preSignedFileUrl
-      );
-      console.log(updatedImages);
-      savedImagesMap[formControlName] = updatedImages;
-      console.log(savedImagesMap[formControlName]);
-    }
-    // update the file array
+          if (formControlName && savedImagesMap[formControlName]) {
+            console.log(savedImagesMap[formControlName], formControlName);
+            const updatedImages = savedImagesMap[formControlName].filter(
+              item => item.preSignedFileUrl !== file.preSignedFileUrl
+            );
+            switch (formControlName) {
+              case 'regPaperFile':
+                this.savedRegistrationPaper = updatedImages;
+                break;
+              case 'taxFile':
+                this.savedTaxPaper = updatedImages;
+                if (updatedImages.length === 0) {
+                  this.truckUpdateForm.get('taxFile').setValue(null);
+                  this.truckUpdateForm.get('taxExpDate')?.clearValidators();
+                  this.truckUpdateForm
+                    .get('taxExpDate')
+                    ?.updateValueAndValidity();
+                }
+                break;
+              case 'fitnessCertificateFile':
+                this.savedFitnessCertificate = updatedImages;
+                if (updatedImages.length === 0) {
+                  this.truckUpdateForm
+                    .get('fitnessCertificateFile')
+                    .setValue(null);
+                  this.truckUpdateForm
+                    .get('fitnessCertExpDate')
+                    ?.clearValidators();
+                  this.truckUpdateForm
+                    .get('fitnessCertExpDate')
+                    ?.updateValueAndValidity();
+                }
+                break;
+              case 'routePermitFile':
+                this.savedRoutePermit = updatedImages;
+                if (updatedImages.length === 0) {
+                  this.truckUpdateForm.get('routePermitFile').setValue(null);
+                  this.truckUpdateForm
+                    .get('routePermitExpDate')
+                    ?.clearValidators();
+                  this.truckUpdateForm
+                    .get('routePermitExpDate')
+                    ?.updateValueAndValidity();
+                }
+                break;
+              case 'casePaperFile':
+                this.savedCasePaper = updatedImages;
+                if (updatedImages.length === 0) {
+                  this.truckUpdateForm.get('casePaperFile').setValue(null);
+                  this.truckUpdateForm.get('caseExpDate')?.clearValidators();
+                  this.truckUpdateForm
+                    .get('caseExpDate')
+                    ?.updateValueAndValidity();
+                }
+                break;
+              case 'others':
+                this.savedOthers = updatedImages;
+                break;
+              case 'truckImages':
+                this.savedTruckImages = updatedImages;
+                break;
+              case 'insuranceFiles':
+                this.savedInsurancePaper = updatedImages;
+                if (updatedImages.length === 0) {
+                  this.truckUpdateForm.get('insuranceFiles').setValue(null);
+                  this.truckUpdateForm
+                    .get('insuranceExpDate')
+                    ?.clearValidators();
+                  this.truckUpdateForm
+                    .get('insuranceExpDate')
+                    ?.updateValueAndValidity();
+                }
+                break;
+            }
+          }
+        }
+      });
   }
 
   private splitDoucumentsByType(documents: TruckDocument[]) {
@@ -885,5 +1064,37 @@ export class TruckDetailsComponent implements OnInit {
           break;
       }
     });
+  }
+
+  private getExpireDate(fitnesscertificatefile: string) {
+    const doc = this.documents.find(
+      doc => doc.documentType === fitnesscertificatefile
+    );
+    return doc?.expiryDate;
+  }
+
+  onClickCancel() {
+    this.deletedFileUrls = [];
+    this.isInEditMode = false;
+    this.truckDetails = null;
+    this.documents = [];
+    this.savedRegistrationPaper = [];
+    this.savedTaxPaper = [];
+    this.savedFitnessCertificate = [];
+    this.savedRoutePermit = [];
+    this.savedCasePaper = [];
+    this.savedOthers = [];
+    this.savedTruckImages = [];
+    this.savedInsurancePaper = [];
+    this.truckImages = [];
+    this.insuranceImages = [];
+    this.casePaperImages = [];
+    this.regPaperImages = [];
+    this.taxImages = [];
+    this.fitnessImages = [];
+    this.routePermitImages = [];
+    this.othersImages = [];
+    this.getTruckDetailsByTruckId();
+    this.updateFormValues(this.truckDetails);
   }
 }

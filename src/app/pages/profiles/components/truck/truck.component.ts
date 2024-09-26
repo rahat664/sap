@@ -416,4 +416,7 @@ export class TruckComponent implements OnInit {
         this.loading = false;
       });
   }
+
+  protected readonly JSON = JSON;
+  protected readonly localStorage = localStorage;
 }

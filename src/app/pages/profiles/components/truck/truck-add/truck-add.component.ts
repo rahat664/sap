@@ -41,6 +41,7 @@ import { TruckFileType, truckFileType } from '../models/truck-file-type';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @Component({
   selector: 'app-truck-add',
@@ -66,6 +67,7 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
     NgForOf,
     MatMenu,
     MatMenuTrigger,
+    PdfViewerModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './truck-add.component.html',
@@ -413,6 +415,8 @@ export class TruckAddComponent implements OnInit {
   viewMoreFormControlName: string | undefined;
   viewMoreExpiryControlName: string;
 
+  pdfSrc = 'assets/Angular.pdf';
+
   onFileSelected($event: Event) {
     const input = $event.target as HTMLInputElement;
     const files = input.files;
@@ -563,14 +567,24 @@ export class TruckAddComponent implements OnInit {
     expiredControl?: any
   ) {
     Array.from(files).forEach((file: File) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
+      console.log(file.type);
+      // handle if file is a pdf
+      if (file.type === 'application/pdf') {
         targetArray.push({
-          preview: reader.result,
+          preview: 'assets/svg/pdf.svg',
           file: file,
         });
-      };
+        return;
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          targetArray.push({
+            preview: reader.result,
+            file: file,
+          });
+        };
+      }
     });
     if (expiredControl) {
       this.truckAddForm
