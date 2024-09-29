@@ -5,11 +5,12 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-confirm-reject',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NgClass],
   templateUrl: './confirm-reject.component.html',
   styleUrl: './confirm-reject.component.scss',
 })

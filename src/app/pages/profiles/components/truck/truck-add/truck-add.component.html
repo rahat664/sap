@@ -132,11 +132,6 @@
                       <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
                            *ngFor="let file of getSpecificFiles(option?.formControlName)">
                         <img class="h-full w-full" [src]="file.preview" alt="">
-                        <pdf-viewer [src]="pdfSrc"
-                                    [render-text]="true"
-                                    [original-size]="false"
-                                    style="width: 400px; height: 500px"
-                        ></pdf-viewer>
                         <button (click)="onCloseImage(option?.formControlName, file, option?.expiryFormControlName)"
                                 class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
                           <i class="far fa-times"></i>
@@ -203,7 +198,8 @@
       <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
         >
-          <img (click)="onClickImage(file.preview)" class="h-full w-full" [src]="file.preview" alt="">
+          <img (click)="onClickImage(file.preview);" class="h-full w-full" [src]="file.preview"
+               alt="">
           <button (click)="onCloseImage(viewMoreFormControlName, file, viewMoreExpiryControlName)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>

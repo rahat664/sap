@@ -285,6 +285,7 @@ export class TripListComponent implements OnInit {
   }
 
   onClearFilter() {
+    this.customerCode = '';
     this.tripId = '';
     this.page = 0;
     this.size = 30;

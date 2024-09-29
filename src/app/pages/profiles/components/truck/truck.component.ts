@@ -306,7 +306,7 @@ export class TruckComponent implements OnInit {
       .open(ConfirmApproveComponent, {
         data: {
           title: 'Approve',
-          text: `Do you want to approve ${truckDetails.fullRegistrationNumber}"?`,
+          text: `Do you want to approve ${truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Approve',
         },
       })
@@ -344,7 +344,7 @@ export class TruckComponent implements OnInit {
       .open(ConfirmRejectComponent, {
         data: {
           title: 'Reject',
-          text: `${truckDetails.fullRegistrationNumber}"?`,
+          text: `${truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Reject',
         },
       })

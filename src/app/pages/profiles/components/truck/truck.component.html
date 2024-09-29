@@ -255,7 +255,9 @@
               <button (click)="onClickApprove(truck)" *ngIf="truck.status === 'Pending' || truck.status === 'Rejected'"
                       mat-menu-item>
                 <div class="flex space-x-2 items-center">
-                  <i class="far fa-check text-green"></i>
+                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
+                    <i class="far fa-check text-green"></i>
+                  </div>
                   <span class="text-green">Approve</span>
                 </div>
               </button>
@@ -264,7 +266,9 @@
                       mat-menu-item
               >
                 <div class="flex space-x-2 items-center">
-                  <i class="far fa-times text-red"></i>
+                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
+                    <i class="far fa-times text-red"></i>
+                  </div>
                   <span class="text-red">Reject</span>
                 </div>
               </button>
@@ -272,7 +276,7 @@
                 routerLink="/profile/truck/{{ truck.id }}/details"
                 (click)="localStorage.setItem('directEdit', 'true')"
                 mat-menu-item>
-                <div class="flex space-x-2 items-center">
+                <div class="flex  space-x-2 items-center">
                   <img
                     class="notPreview"
                     src="./assets/svg/edit.svg"

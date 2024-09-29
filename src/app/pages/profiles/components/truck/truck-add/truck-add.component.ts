@@ -318,6 +318,47 @@ export class TruckAddComponent implements OnInit {
       );
     } else {
       this.truckAddForm.markAllAsTouched();
+      const invalidFields = Object.keys(this.truckAddForm.controls).filter(
+        key => this.truckAddForm.controls[key].invalid
+      );
+      // concat all the invalid fields
+      let message = '';
+      invalidFields.forEach((field, index) => {
+        switch (field) {
+          case 'registration_zone':
+            field = 'Registration Zone';
+            break;
+          case 'registration_category':
+            field = 'Registration Category';
+            break;
+          case 'registration_serial':
+            field = 'Registration Serial';
+            break;
+          case 'registration_num':
+            field = 'Registration Number';
+            break;
+          case 'fitnessCertExpDate':
+            field = 'Fitness Certificate Expiry Date';
+            break;
+          case 'routePermitExpDate':
+            field = 'Route Permit Expiry Date';
+            break;
+          case 'caseExpDate':
+            field = 'Case Expiry Date';
+            break;
+          case 'taxExpDate':
+            field = 'Tax Expiry Date';
+            break;
+          default:
+            field = field.charAt(0).toUpperCase() + field.slice(1);
+            break;
+        }
+        message += field;
+        if (index !== invalidFields.length - 1) {
+          message += ', ';
+        }
+      });
+      this.toastr.showError(`Please fill the required fields: ${message}`);
       this.loading = false;
       this.registrationErrorMessage = this.validation.getDropdownValidation(
         this.truckAddForm.get('registration_zone')

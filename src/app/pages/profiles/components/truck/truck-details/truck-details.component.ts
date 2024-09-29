@@ -43,6 +43,7 @@ import { ValidationService } from '../../../../../shared/services/validation/val
 import { ConfirmApproveComponent } from '../../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-reject/confirm-reject.component';
 import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
+import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 
 @Component({
   selector: 'app-truck-details',
@@ -128,7 +129,8 @@ export class TruckDetailsComponent implements OnInit {
     private datePipe: DatePipe,
     private toastr: HandleToastrService,
     private router: Router,
-    private validation: ValidationService
+    private validation: ValidationService,
+    private imageGalleryService: ImageGalleryService
   ) {}
 
   onSelectRegistrationType($event: number) {
@@ -273,6 +275,47 @@ export class TruckDetailsComponent implements OnInit {
   // Handles form errors and validation messages
   handleFormErrors() {
     this.truckUpdateForm.markAllAsTouched();
+    const invalidFields = Object.keys(this.truckUpdateForm.controls).filter(
+      key => this.truckUpdateForm.controls[key].invalid
+    );
+    // concat all the invalid fields
+    let message = '';
+    invalidFields.forEach((field, index) => {
+      switch (field) {
+        case 'registration_zone':
+          field = 'Registration Zone';
+          break;
+        case 'registration_category':
+          field = 'Registration Category';
+          break;
+        case 'registration_serial':
+          field = 'Registration Serial';
+          break;
+        case 'registration_num':
+          field = 'Registration Number';
+          break;
+        case 'fitnessCertExpDate':
+          field = 'Fitness Certificate Expiry Date';
+          break;
+        case 'routePermitExpDate':
+          field = 'Route Permit Expiry Date';
+          break;
+        case 'caseExpDate':
+          field = 'Case Expiry Date';
+          break;
+        case 'taxExpDate':
+          field = 'Tax Expiry Date';
+          break;
+        default:
+          field = field.charAt(0).toUpperCase() + field.slice(1);
+          break;
+      }
+      message += field;
+      if (index !== invalidFields.length - 1) {
+        message += ', ';
+      }
+    });
+    this.toastr.showError(`Please fill the required fields: ${message}`);
     this.loading = false;
 
     this.registrationErrorMessage = this.validation.getDropdownValidation(
@@ -488,6 +531,7 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   onClickImage(preview: any) {
+    this.imageGalleryService.setCurrentImage(preview);
     this.dialog.open(ImageGalleryComponent, {
       data: {
         images: preview,
@@ -704,7 +748,11 @@ export class TruckDetailsComponent implements OnInit {
     const totalFilesCount = Array.from(currentFiles).length + files.length;
 
     // Validate total files count against the maximum allowed
-    if (totalFilesCount > this.maxUploadAble) {
+    if (
+      totalFilesCount >
+      this.maxUploadAble +
+        this.getSavedFileArray(this.selectedFormControlName).length
+    ) {
       this.toastr.showError(
         `You can upload a maximum of ${this.maxUploadAble} files`
       );
@@ -813,7 +861,7 @@ export class TruckDetailsComponent implements OnInit {
       .open(ConfirmApproveComponent, {
         data: {
           title: 'Approve',
-          text: `Do you want to approve ${this.truckDetails.fullRegistrationNumber}"?`,
+          text: `Do you want to approve ${this.truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Approve',
         },
       })
