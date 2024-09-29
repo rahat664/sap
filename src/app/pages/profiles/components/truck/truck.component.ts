@@ -78,6 +78,7 @@ export class TruckComponent implements OnInit {
   filterOpened: boolean = true;
   statusInputPlaceholder: string;
   statusOptionsArray: CustomInputSelectModel[] = [
+    { id: 0, value: 'All', selected: false },
     { id: 1, value: 'Approved', selected: false },
     { id: 2, value: 'Pending', selected: false },
     { id: 3, value: 'Rejected', selected: false },
@@ -395,7 +396,7 @@ export class TruckComponent implements OnInit {
     this.statusOptionsArray.forEach(option => {
       if (option.id === $event) {
         option.selected = !option.selected;
-        if (option.selected) {
+        if (option.selected && option.value !== 'All') {
           this.statusInputPlaceholder = option.value;
         } else {
           this.statusInputPlaceholder = '';
