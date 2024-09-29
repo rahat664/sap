@@ -3,11 +3,13 @@ import { NgForOf } from '@angular/common';
 import { PreHireChecklistModel } from '../models/pre-hire-checklist.model';
 import { TruckService } from '../services/truck.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { GetElementHeightDirective } from '../../../../../shared/directive/get-element-height.directive';
 
 @Component({
   selector: 'app-pre-hire-checklist-popup',
   standalone: true,
-  imports: [NgForOf],
+  imports: [NgForOf, MatRadioButton, MatRadioGroup, GetElementHeightDirective],
   templateUrl: './pre-hire-checklist-popup.component.html',
   styleUrl: './pre-hire-checklist-popup.component.scss',
 })
@@ -19,6 +21,7 @@ export class PreHireChecklistPopupComponent {
   shareObject: any = {};
   @Output() preHireCheckListObject = new EventEmitter<any>();
   passedCheckList: string = '0';
+  width: string = '0px';
 
   constructor(
     private service: TruckService,
@@ -33,7 +36,7 @@ export class PreHireChecklistPopupComponent {
   onChange($event: any, id: number, position: number) {
     this.preHireCheckList.forEach(items => {
       items.items.forEach(item => {
-        this.shareObject[position] = $event.target.value;
+        this.shareObject[position] = $event.value;
       });
     });
   }
@@ -91,5 +94,9 @@ export class PreHireChecklistPopupComponent {
 
   closePopup() {
     this.dialogRef.close();
+  }
+
+  getWidth($event: any) {
+    console.log($event);
   }
 }

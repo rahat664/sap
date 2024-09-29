@@ -502,7 +502,7 @@ export class TruckAddComponent implements OnInit {
         this.previewFile(files, this.truckImages);
         break;
       case 'insuranceFiles':
-        this.previewFile(files, this.insuranceImages);
+        this.previewFile(files, this.insuranceImages, 'insuranceExpDate');
         if (this.insuranceImages.length > 0) {
           this.truckAddForm
             .get('insuranceExpDate')
@@ -635,7 +635,11 @@ export class TruckAddComponent implements OnInit {
     }
   }
 
-  onCloseImage(formControlName: string | undefined, file: any, expiredControl) {
+  onCloseImage(
+    formControlName: string | undefined,
+    file: any,
+    expiredControl: any
+  ) {
     let files: any[] = [];
     switch (formControlName) {
       case 'truckImages':

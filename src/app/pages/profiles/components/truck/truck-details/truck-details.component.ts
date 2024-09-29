@@ -592,6 +592,11 @@ export class TruckDetailsComponent implements OnInit {
             if (res && res.data) {
               // Do something with the pre-hire checklist
               this.preHiredCheckList = res.data;
+              this.countPassCheckList = this.preHiredCheckList.filter(
+                (x: any) => {
+                  return x.status === 'PASS';
+                }
+              ).length;
             } else {
               console.error('Pre-hire checklist not found in response');
             }
@@ -635,9 +640,16 @@ export class TruckDetailsComponent implements OnInit {
     this.singleChecklist = $event;
     this.truckUpdateForm.patchValue({ checklist: $event });
 
-    // Count the number of 'PASS' in the checklist
-    this.countPassCheckList = Object.values($event).filter(
-      status => status === 'PASS'
+    let newCheckList = JSON.parse(JSON.stringify(this.preHiredCheckList));
+    newCheckList.forEach((category: any) => {
+      Object.keys($event).forEach((key: any) => {
+        if (category.checklistId == key) {
+          category.status = $event[key];
+        }
+      });
+    });
+    this.countPassCheckList = newCheckList.filter(
+      (x: any) => x.status === 'PASS'
     ).length;
   }
 
@@ -861,7 +873,7 @@ export class TruckDetailsComponent implements OnInit {
       .open(ConfirmApproveComponent, {
         data: {
           title: 'Approve',
-          text: `Do you want to approve ${this.truckDetails.fullRegistrationNumber}?`,
+          text: `${this.truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Approve',
         },
       })

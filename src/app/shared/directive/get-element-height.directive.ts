@@ -15,6 +15,7 @@ import {
 })
 export class GetElementHeightDirective implements OnInit, OnDestroy {
   @Output() height: EventEmitter<any> = new EventEmitter<any>();
+  @Output() width: EventEmitter<any> = new EventEmitter<any>();
   private mutationObserver: MutationObserver;
 
   constructor(
@@ -37,6 +38,10 @@ export class GetElementHeightDirective implements OnInit, OnDestroy {
 
   private emitHeight(): void {
     this.height.emit(this.el.nativeElement.offsetHeight + 'px');
+  }
+
+  private emitWidth(): void {
+    this.width.emit(this.el.nativeElement.offsetWidth + 'px');
   }
 
   private observeDOMChanges(): void {

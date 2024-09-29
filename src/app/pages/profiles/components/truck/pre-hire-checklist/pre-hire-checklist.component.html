@@ -17,34 +17,31 @@
       <div class="px-4 flex flex-col py-2 space-y-2">
         <ng-container *ngFor="let items of preHireCheckList; index as i">
           <h1 class="text-not-black text-body_title leading-body_title font-semibold">{{ items.categoryName }}</h1>
-          <div *ngFor="let item of items.items; index as j"
-               class="text-body_title leading-body_title font-normal grid grid-cols-7 ">
-            <div class="col-span-4 bg-[#FAFDFF] py-4 px-2"> {{ getChecklistPosition(i, j) }}. {{ item.name }}</div>
+          <mat-radio-group *ngFor="let item of items.items; index as j"
+                           class="text-body_title leading-body_title font-normal grid grid-cols-7 ">
+            <div
+              class="col-span-4 bg-[#FAFDFF] py-4 px-2 flex  items-center"> {{ getChecklistPosition(i, j) }}
+              . {{ item.name }}
+            </div>
             <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
-              <input
+              <mat-radio-button (change)="onChange($event, item.id, item.checklistId)"
+                                [disabled]="isDisabled" [checked]="item.status === 'PASS'"
+                                value="PASS"></mat-radio-button>
+            </div>
+            <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
+              <mat-radio-button
                 (change)="onChange($event, item.id, item.checklistId)"
-                [checked]="item.status === 'PASS'"
-                type="radio"
-                name="{{ item.name }}"
-                value="PASS" />
-            </div>
-            <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
-              <input
                 [checked]="item.status === 'FAIL'"
-                (change)="onChange($event, item.id,item.checklistId)"
-                type="radio"
-                name="{{ item.name }}"
-                value="FAIL" />
+                [disabled]="isDisabled" value="FAIL"></mat-radio-button>
             </div>
             <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
-              <input
-                [checked]="item.status === 'NA'"
-                (change)="onChange($event, item.id,item.checklistId)"
-                type="radio"
-                name="{{ item.name }}"
-                value="NA" />
+              <mat-radio-button
+                (change)="onChange($event, item.id, item.checklistId)"
+                [disabled]="isDisabled"
+                value="NA"
+                [checked]="item.status === 'NA'"></mat-radio-button>
             </div>
-          </div>
+          </mat-radio-group>
         </ng-container>
       </div>
     </div>

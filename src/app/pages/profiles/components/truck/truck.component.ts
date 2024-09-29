@@ -94,6 +94,7 @@ export class TruckComponent implements OnInit {
     this.truckList = [];
     this.getTruckList();
     this.makeSureUploadCompletedOrNot();
+    this.onSelectStatus(0);
   }
 
   private getTruckList() {
@@ -306,7 +307,7 @@ export class TruckComponent implements OnInit {
       .open(ConfirmApproveComponent, {
         data: {
           title: 'Approve',
-          text: `Do you want to approve ${truckDetails.fullRegistrationNumber}?`,
+          text: `${truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Approve',
         },
       })
@@ -399,7 +400,7 @@ export class TruckComponent implements OnInit {
         if (option.selected && option.value !== 'All') {
           this.statusInputPlaceholder = option.value;
         } else {
-          this.statusInputPlaceholder = '';
+          this.statusInputPlaceholder = 'All';
         }
       } else {
         option.selected = false;
@@ -410,7 +411,12 @@ export class TruckComponent implements OnInit {
     this.size = 30;
     this.loading = true;
     this.service
-      .getTruckList(this.page, this.size, null, this.statusInputPlaceholder)
+      .getTruckList(
+        this.page,
+        this.size,
+        null,
+        this.statusInputPlaceholder == 'All' ? '' : this.statusInputPlaceholder
+      )
       .subscribe((res: any) => {
         this.truckList = res.data.responses;
         this.totalPages = res.data.totalPages;

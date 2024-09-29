@@ -2,11 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TruckService } from '../services/truck.service';
 import { PreHireChecklistModel } from '../models/pre-hire-checklist.model';
 import { NgForOf, NgIf } from '@angular/common';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 
 @Component({
   selector: 'app-pre-hire-checklist',
   standalone: true,
-  imports: [NgForOf, NgIf],
+  imports: [NgForOf, NgIf, MatRadioButton, MatRadioGroup],
   templateUrl: './pre-hire-checklist.component.html',
   styleUrl: './pre-hire-checklist.component.scss',
 })
@@ -15,16 +16,19 @@ export class PreHireChecklistComponent implements OnInit {
   @Input() saveButtonEnabled = false;
   preHireCheckList: PreHireChecklistModel[] = [];
   @Output() preHireCheckListObject = new EventEmitter<any>();
+  @Input() isDisabled = false;
 
   constructor(private service: TruckService) {}
 
   ngOnInit(): void {}
 
   ngOnChanges(simpleChanges: any) {
-    const singleTruck = localStorage.getItem('truck');
-    if (simpleChanges.object.currentValue) {
+    if (simpleChanges.object?.currentValue) {
       this.setPreHireCheckList();
-    } else {
+    } else if (
+      this.object == null &&
+      simpleChanges.passedCheckList?.currentValue == '0'
+    ) {
       this.getPreHireChecklist();
     }
   }
@@ -75,9 +79,10 @@ export class PreHireChecklistComponent implements OnInit {
 
   onChange($event: any, id: number, position: number) {
     this.preHireCheckList.forEach(items => {
-      items.items.forEach(item => {
-        this.shareObject[position] = $event.target.value;
+      items.items?.forEach(item => {
+        this.shareObject[position] = $event.value;
       });
+      console.log(this.shareObject);
     });
     this.preHireCheckListObject.emit(this.shareObject);
   }

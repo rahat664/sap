@@ -106,9 +106,9 @@
               <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
                 <div class="flex space-x-4 items-center">
                   <img src="assets/svg/not-available.svg" class="notPreview" alt=""
-                       *ngIf="getFileArray(option?.formControlName)?.length <= 0">
+                       *ngIf="getFileArray(option?.formControlName)?.length <= 0 || (option.expiryAvailable == true && truckAddForm.get(option?.expiryFormControlName)?.value == null)">
                   <img src="assets/svg/available.svg" alt="" class="notPreview"
-                       *ngIf="getFileArray(option?.formControlName).length > 0">
+                       *ngIf="getFileArray(option?.formControlName).length > 0 &&  (option.expiryAvailable == false || truckAddForm.get(option?.expiryFormControlName).value != null)">
                   <div class="flex flex-col space-y-0.5">
                     <span
                       class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
@@ -173,7 +173,8 @@
         </div>
       </div>
       <div>
-        <app-pre-hire-checklist [object]="null" [passedCheckList]="countPassCheckList.toString()"
+        <app-pre-hire-checklist [isDisabled]="everyThingDisabled" [object]="null"
+                                [passedCheckList]="countPassCheckList.toString()"
                                 (preHireCheckListObject)="onClickPrehiredChecklist($event)"></app-pre-hire-checklist>
       </div>
     </div>

@@ -1,5 +1,5 @@
-<div class=" bg-white rounded-lg">
-  <div class="flex justify-between bg-white items-center sticky top-0 px-11 py-5">
+<div class=" bg-white rounded-lg relative" appGetElementHeight (width)="getWidth($event)">
+  <div class="flex justify-between bg-white z-20 items-center sticky top-0 px-11 py-5">
     <div class="flex space-x-2 items-center ">
       <img src="assets/svg/list.svg" class="notPreview h-[2rem] w-[2rem]" alt="">
       <h1 class="text-h3 leading-h3 font-semibold">Pre hire checklist ({{ data.checked }}/22)</h1>
@@ -13,8 +13,8 @@
   </div>
   <div
     class="px-11 overflow-auto w-full border-not-black overflow-x-hidden">
-    <div class="rounded-lg bg-white table-auto w-full border border-line overflow-hidden">
-      <div class="bg-input text-not-black font-semibold text-body_title leading-body_title top-0 ">
+    <div class="rounded-lg bg-white table-auto h-[70vh] w-full border border-line overflow-y-scroll">
+      <div class="bg-input text-not-black font-semibold sticky z-20 text-body_title leading-body_title top-0 ">
         <div class="px-4 py-3 grid grid-cols-7">
           <span class="col-span-4">Inspection Item</span>
           <div class="w-full flex justify-center items-center">Pass</div>
@@ -25,40 +25,39 @@
       <div class="px-4 flex flex-col py-2 space-y-2">
         <ng-container *ngFor="let items of preHireCheckList; index as i">
           <h1 class="text-not-black text-body_title leading-body_title font-semibold">{{ items.categoryName }}</h1>
-          <div *ngFor="let item of items.items; index as j"
-               class="text-body_title leading-body_title font-normal grid grid-cols-7 ">
-            <div class="col-span-4 bg-[#FAFDFF] py-4 px-2"> {{ getChecklistPosition(i, j) }}. {{ item.name }}</div>
+          <mat-radio-group *ngFor="let item of items.items; index as j"
+                           class="text-body_title leading-body_title font-normal grid grid-cols-7 ">
+            <div
+              class="col-span-4 bg-[#FAFDFF] py-4 px-2 flex  items-center"> {{ getChecklistPosition(i, j) }}
+              . {{ item.name }}
+            </div>
             <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
-              <input
+              <mat-radio-button (change)="onChange($event, item.id, item.checklistId)"
+                                [checked]="item.status === 'PASS'"
+                                value="PASS"></mat-radio-button>
+            </div>
+            <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
+              <mat-radio-button
                 (change)="onChange($event, item.id, item.checklistId)"
-                [checked]="item.status === 'PASS'"
-                type="radio"
-                name="{{ item.name }}"
-                value="PASS" />
-            </div>
-            <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
-              <input
                 [checked]="item.status === 'FAIL'"
-                (change)="onChange($event, item.id,item.checklistId)"
-                type="radio"
-                name="{{ item.name }}"
-                value="FAIL" />
+                value="FAIL"></mat-radio-button>
             </div>
             <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
-              <input
-                [checked]="item.status === 'NA'"
-                (change)="onChange($event, item.id,item.checklistId)"
-                type="radio"
-                name="{{ item.name }}"
-                value="NA" />
+              <mat-radio-button
+                (change)="onChange($event, item.id, item.checklistId)"
+                value="NA"
+                [checked]="item.status === 'NA'"></mat-radio-button>
             </div>
-          </div>
+          </mat-radio-group>
+
         </ng-container>
       </div>
     </div>
   </div>
-  <button
-    (click)="onSubmit()"
-    class="px-8 mr-11 float-end bg-primary text-white rounded-lg py-2 my-4">Save
-  </button>
+  <div class="bg-white w-[554px]  bottom-12 rounded-lg">
+    <button
+      (click)="onSubmit()"
+      class="px-8 mr-11 float-end bg-primary text-white rounded-lg py-2 my-4">Save
+    </button>
+  </div>
 </div>
