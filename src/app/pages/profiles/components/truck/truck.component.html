@@ -26,6 +26,12 @@
             placeholder="Enter truck registration number" />
         </div>
         <button
+          (click)="onClickGenerateReport()"
+          class="px-4 flex space-x-2  items-center ring ring-primary py-3 lg:py-2 bg-white text-primary rounded-lg">
+          <img src="assets/svg/excel.svg" class="notPreview" alt="excel">
+          <span class="hidden text-h2_medium font-semibold lg:block">Generate report</span>
+        </button>
+        <button
           (click)="onClickAddTruck()"
           routerLink="/profile/truck/add"
           class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
