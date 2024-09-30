@@ -71,7 +71,7 @@
             <input
               type="text"
               matInput
-              (input)="onKeyUpTripSearch($event)"
+              (keyup)="onKeyUpTripSearch($event)"
               [(ngModel)]="tripId"
               placeholder="Enter Trip Number"
               [matAutocomplete]="trip">
