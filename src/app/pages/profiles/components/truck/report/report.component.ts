@@ -1,15 +1,25 @@
 import { Component } from '@angular/core';
-import { NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { VehicleTracker } from '../../driver/models/tracker.model';
 import { TrackerService } from '../../../services/tracker.service';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
+import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-report',
   standalone: true,
-  imports: [NgForOf, MatCheckbox, NgIf, NgSelectModule, FormsModule],
+  imports: [
+    NgForOf,
+    MatCheckbox,
+    NgIf,
+    NgSelectModule,
+    FormsModule,
+    DatePipe,
+    NgClass,
+  ],
   templateUrl: './report.component.html',
   styleUrl: './report.component.scss',
 })
@@ -44,18 +54,44 @@ export class ReportComponent {
   selectedToYear: any;
   selectedFromMonth: string;
   selectedToMonth: string;
+  dates: any[] = [
+    { value: 'Today', selected: true },
+    {
+      value: 'Last 7 days',
+      selected: false,
+    },
+    { value: 'Last 15 days' },
+    { value: 'Last 30 days', selected: false },
+    { value: 'Custom', selected: false },
+  ];
+  fromDate: string;
+  toDate: string;
+  loading: boolean;
 
-  constructor(private service: TrackerService) {}
+  constructor(
+    private service: TrackerService,
+    private datePipe: DatePipe,
+    private toast: HandleToastrService,
+    private matRef: MatDialogRef<ReportComponent>
+  ) {}
 
-  onClose() {}
+  onClose() {
+    this.matRef.close();
+  }
 
   ngOnInit(): void {
     this.truckList = [];
+    // set today's date as default
+    this.fromDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+    this.toDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+    this.setDateValues(new Date(), new Date());
     this.getTruckList();
   }
 
   private getTruckList() {
+    this.loading = true;
     this.service.getTrackers(0, 100).subscribe((res: any) => {
+      this.loading = false;
       this.truckList = res.data.content;
     });
   }
@@ -67,11 +103,37 @@ export class ReportComponent {
   }
 
   onGenerateReport() {
-    this.dateSelection = true;
+    if (this.fromDate && this.toDate) {
+      this.matRef.close();
+      this.service
+        .generateReport(this.fromDate, this.toDate, this.truckerList.join(','))
+        .subscribe(
+          (res: any) => {
+            this.dateSelection = false;
+            if (res.status === 'OK') {
+              this.toast.showSuccess(
+                'Report generated successfully. Please wait a moment for the download to start.'
+              );
+            } else {
+              this.toast.showError('Failed to generate report');
+            }
+          },
+          error => {
+            this.dateSelection = false;
+            this.toast.showError('Failed to generate report');
+          }
+        );
+    } else {
+      this.toast.showError('Please select date range');
+    }
   }
 
-  onSelectTruck() {
-    this.dateSelection = true;
+  onSelectDate() {
+    if (this.truckerList.length > 0) {
+      this.dateSelection = true;
+    } else {
+      this.toast.showError('Please select at least one truck');
+    }
   }
 
   onFromMonthChange(month: string) {
@@ -125,15 +187,42 @@ export class ReportComponent {
         this.selectedFromMonth = '12';
         break;
     }
+    if (
+      this.selectedFromDay &&
+      this.selectedFromMonth &&
+      this.selectedFromYear
+    ) {
+      this.fromDate = `${this.selectedFromYear}-${this.selectedFromMonth}-${this.selectedFromDay}`;
+    } else {
+      this.fromDate = null;
+    }
   }
 
   onFromDayChange(day: number) {
     this.selectedFromDay =
       day.toString()?.length === 1 ? `0${day}` : day.toString();
+    if (
+      this.selectedFromDay &&
+      this.selectedFromMonth &&
+      this.selectedFromYear
+    ) {
+      this.fromDate = `${this.selectedFromYear}-${this.selectedFromMonth}-${this.selectedFromDay}`;
+    } else {
+      this.fromDate = null;
+    }
   }
 
   onFromYearChange(year: number) {
     this.selectedFromYear = year.toString();
+    if (
+      this.selectedFromDay &&
+      this.selectedFromMonth &&
+      this.selectedFromYear
+    ) {
+      this.fromDate = `${this.selectedFromYear}-${this.selectedFromMonth}-${this.selectedFromDay}`;
+    } else {
+      this.fromDate = null;
+    }
   }
 
   onToMonthChange(month: string) {
@@ -187,14 +276,97 @@ export class ReportComponent {
         this.selectedToMonth = '12';
         break;
     }
+    if (this.selectedToDay && this.selectedToMonth && this.selectedToYear) {
+      this.toDate = `${this.selectedToYear}-${this.selectedToMonth}-${this.selectedToDay}`;
+    } else {
+      this.toDate = null;
+    }
   }
 
   onToDayChange(day: number) {
     this.selectedToDay =
       day.toString()?.length === 1 ? `0${day}` : day.toString();
+    if (this.selectedToDay && this.selectedToMonth && this.selectedToYear) {
+      this.toDate = `${this.selectedToYear}-${this.selectedToMonth}-${this.selectedToDay}`;
+    } else {
+      this.toDate = null;
+    }
   }
 
   onToYearChange(year: number) {
     this.selectedToYear = year.toString();
+    if (this.selectedToDay && this.selectedToMonth && this.selectedToYear) {
+      this.toDate = `${this.selectedToYear}-${this.selectedToMonth}-${this.selectedToDay}`;
+    } else {
+      this.toDate = null;
+    }
+  }
+
+  private setDateValues(fromDate: Date, toDate: Date) {
+    if (fromDate && toDate) {
+      this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd');
+      this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd');
+      this.selectedFromDay =
+        fromDate.getDate() < 10 ? `0${fromDate.getDate()}` : fromDate.getDate();
+      this.selectedFromYear = fromDate.getFullYear();
+      this.selectedFromMonthInString = this.months[fromDate.getMonth()];
+      this.selectedToDay =
+        toDate.getDate() < 10 ? `0${toDate.getDate()}` : toDate.getDate();
+      this.selectedToYear = toDate.getFullYear();
+      this.selectedToMonthInString = this.months[toDate.getMonth()];
+    } else {
+      this.fromDate = null;
+      this.toDate = null;
+      this.selectedFromDay = null;
+      this.selectedFromYear = null;
+      this.selectedFromMonthInString = null;
+      this.selectedToDay = null;
+      this.selectedToYear = null;
+      this.selectedToMonthInString = null;
+    }
+  }
+
+  onClickButton(button: any) {
+    switch (button.value) {
+      case 'Today':
+        const today = new Date();
+        this.setDateValues(today, today);
+        break;
+      case 'Last 7 days':
+        const last7DaysFrom = new Date(
+          new Date().setDate(new Date().getDate() - 7)
+        );
+        const last7DaysTo = new Date(
+          new Date().setDate(new Date().getDate() - 1)
+        );
+        this.setDateValues(last7DaysFrom, last7DaysTo);
+        break;
+      case 'Last 15 days':
+        const last15DaysFrom = new Date(
+          new Date().setDate(new Date().getDate() - 15)
+        );
+        const last15DaysTo = new Date(
+          new Date().setDate(new Date().getDate() - 1)
+        );
+        this.setDateValues(last15DaysFrom, last15DaysTo);
+        break;
+      case 'Last 30 days':
+        const last30DaysFrom = new Date(
+          new Date().setDate(new Date().getDate() - 30)
+        );
+        const last30DaysTo = new Date(
+          new Date().setDate(new Date().getDate() - 1)
+        );
+        this.setDateValues(last30DaysFrom, last30DaysTo);
+        break;
+      case 'Custom':
+        this.toDate = null;
+        this.fromDate = null;
+        this.setDateValues(null, null);
+        break;
+    }
+    this.dates.forEach(date => {
+      date.selected = date.value === button.value;
+    });
   }
 }

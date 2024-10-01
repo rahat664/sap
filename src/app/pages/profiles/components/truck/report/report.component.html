@@ -1,38 +1,64 @@
 <ng-container *ngIf="!dateSelection">
-  <div class="flex justify-between w-full items-center px-4 py-4 pb-4 sticky top-0">
+  <div class="flex justify-between w-full items-center px-[40px] py-4  sticky top-0">
     <h2 class="text-h3 leading-h3 font-semibold">Choose Truck</h2>
     <button
       (click)="onClose()">
       <i class="fal fa-times"></i>
     </button>
   </div>
-  <div class="px-4">
-    <div *ngFor="let truck of truckList">
-      <div>
-        <mat-checkbox (change)="onChange($event, truck)"
-                      class="example-margin">{{ truck?.vehicleRegistrationNumber }}
-        </mat-checkbox>
+  <div class="min-w-96 mx-4 px-6  border-b border-line">
+    <ng-container>
+      <div *ngFor="let truck of truckList">
+        <div>
+          <mat-checkbox (change)="onChange($event, truck)"
+                        class="example-margin">{{ truck?.vehicleRegistrationNumber }}
+          </mat-checkbox>
+        </div>
       </div>
-    </div>
+    </ng-container>
+    <ng-container *ngIf="truckList.length === 0 && !loading">
+      <div class="flex justify-center items-center ">
+        <p class="text-body">No truck available</p>
+      </div>
+    </ng-container>
+    <ng-container>
+      <div
+        class="flex flex-col items-center justify-center  min-w-96"
+        *ngIf="loading"
+      >
+        <!--       make a spinner component-->
+        <i class="fas fa-spinner fa-spin text-primary text-4xl"></i>
+        <span class="text-center w-full text-secondary">Loading...</span>
+      </div>
+    </ng-container>
   </div>
-  <div>
+  <div class="flex justify-between items-center mx-4 px-6">
+    <div>
+    </div>
     <button
-      (click)="onSelectTruck()"
-      class="px-4 mr-4 mb-4 flex space-x-4 float-end items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
-      <span class="hidden lg:block">Select Truck</span>
+      (click)="onSelectDate()"
+      class="px-8  my-4 mb-4 flex space-x-4  items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+      <span class="hidden lg:block">Select Date</span>
     </button>
   </div>
 </ng-container>
-
 <ng-container *ngIf="dateSelection">
-  <div class="flex justify-between w-full items-center px-4 py-4 pb-4 sticky top-0">
+  <div class="flex justify-between w-full items-center px-[40px] py-4 pb-4 sticky top-0">
     <h2 class="text-h3 leading-h3 font-semibold">Choose Date</h2>
+
     <button
       (click)="onClose()">
       <i class="fal fa-times"></i>
     </button>
   </div>
-  <div class="min-w-96 px-4">
+  <div class="px-6 mx-4 pb-4 flex space-x-2 border-b border-line">
+    <button [ngClass]="{'bg-green border-none text-white': button.selected}" type="button"
+            (click)="onClickButton(button)"
+            class="px-4 py-1 rounded-lg whitespace-nowrap border border-primary text-body" *ngFor="let button of dates">
+      {{ button.value }}
+    </button>
+  </div>
+  <div class="min-w-96 mx-4 px-6 py-4 border-b border-line">
     <div class="flex items-center w-full h-full">
       <div class="flex w-full flex-col space-y-3">
         <div class="flex flex-col space-y-1">
@@ -122,11 +148,14 @@
       </div>
     </div>
   </div>
-  <div>
+  <div class="flex justify-between items-center mx-4 px-6">
+    <p class="text-not-black text-h2 leading-h2 font-semibold">
+      <span>{{ fromDate | date: 'MMMM d, yyyy' }}</span>
+      <span *ngIf="fromDate != toDate"> To {{ toDate | date : 'MMMM d, yyyy' }}</span>
+    </p>
     <button
       (click)="onGenerateReport()"
-      class="px-4 mr-4 my-4 float-end flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
-      <i class="fas fa-file-pdf"></i>
+      class="px-8 my-4 float-end flex  items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
       <span class="hidden lg:block">Generate</span>
     </button>
   </div>

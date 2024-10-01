@@ -228,7 +228,7 @@ export class TruckComponent implements OnInit {
   onClickGenerateReport() {
     this.dialog.open(ReportComponent, {
       maxHeight: '90vh',
-      width: '30%',
+      minWidth: '30%',
     });
   }
 }

@@ -9,6 +9,7 @@ import { TrackerRequestModel } from '../components/driver/models/tracker-request
 export class TrackerService {
   trackerUrl = `${environment.locationUrl}/api/tracker`;
   vendorUrl = `${environment.locationUrl}/api/vendors`;
+  reportUrl = `${environment.locationUrl}/api/vendors/generate-report`;
 
   constructor(private http: HttpClient) {}
 
@@ -35,5 +36,14 @@ export class TrackerService {
     body: { vehicleRegistrationNumber: any }
   ) {
     return this.http.put(`${this.trackerUrl}/${selectedTrackerId}`, body);
+  }
+
+  generateReport(fromDate: string, toDate: string, vehicleIds: string) {
+    return this.http.get(`${this.reportUrl}`, {
+      params: new HttpParams()
+        .set('from', fromDate)
+        .set('to', toDate)
+        .set('devices', vehicleIds),
+    });
   }
 }
