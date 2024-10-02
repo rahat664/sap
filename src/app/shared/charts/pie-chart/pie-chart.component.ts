@@ -1,11 +1,13 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import {
   ApexChart,
   ApexDataLabels,
   ApexLegend,
   ApexMarkers,
   ApexNonAxisChartSeries,
+  ApexPlotOptions,
   ApexResponsive,
+  ApexStates,
   ChartComponent,
   NgApexchartsModule,
 } from 'ng-apexcharts';
@@ -19,6 +21,8 @@ export type ChartOptions = {
   colors: string[];
   dataLabels: ApexDataLabels;
   markers: ApexMarkers;
+  plotOptions: ApexPlotOptions;
+  states: ApexStates;
 };
 
 @Component({
@@ -26,23 +30,30 @@ export type ChartOptions = {
   standalone: true,
   imports: [NgApexchartsModule],
   templateUrl: './pie-chart.component.html',
-  styleUrls: ['./pie-chart.component.scss'], // Corrected 'styleUrl' to 'styleUrls'
+  styleUrls: ['./pie-chart.component.scss'],
 })
-export class PieChartComponent {
+export class PieChartComponent implements OnChanges {
   @ViewChild('chart') chart: ChartComponent;
+  @Input() value: number[] = [0, 0];
   public chartOptions: Partial<ChartOptions>;
 
-  constructor() {
-    const colors = ['#91CAFF', '#F8BBB3', '#FFD182'];
+  constructor() {}
+
+  ngOnChanges() {
+    const colors = ['#91CAFF', '#CCF3FB'];
     let index = -1;
+    const labels = ['Received', 'Pending'];
+    const customLegendItems = labels.map(
+      (label, i) => `${label} - ${this.value[i]}`
+    );
 
     this.chartOptions = {
-      series: [14, 4, 2],
+      series: this.value,
       chart: {
         width: 340,
         type: 'pie',
       },
-      labels: ['Received', 'Pending', 'Not received'],
+      labels,
       colors,
       dataLabels: {
         enabled: false,
@@ -53,15 +64,30 @@ export class PieChartComponent {
           fillColors: colors,
           customHTML: function () {
             index++;
-            // change the legend marker to rectangle
             return `<span style="display:inline-block; width:13px; height:13px; border-radius: 2px; background-color: ${colors[index]};"></span>`;
           },
         },
         fontSize: '12px',
         fontFamily: 'Inter',
         fontWeight: 400,
+        formatter: function (seriesName, opts) {
+          return customLegendItems[opts.seriesIndex];
+        },
         labels: {
           colors: ['#5D5D5D', '#5D5D5D', '#5D5D5D'],
+        },
+      },
+      states: {
+        hover: {
+          filter: {
+            type: 'darken',
+            value: 0.5,
+          },
+        },
+      },
+      plotOptions: {
+        pie: {
+          customScale: 0.8,
         },
       },
       responsive: [

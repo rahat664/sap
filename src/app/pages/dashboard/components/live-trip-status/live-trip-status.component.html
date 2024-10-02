@@ -3,17 +3,21 @@
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
       Status highlight
     </h2>
-    <mat-form-field appearance="outline" class="w-[12rem]">
-      <mat-select
-        formControlName="vendorId"
-        placeholder="Select date">
-        <mat-option value="all">All time</mat-option>
-        <mat-option value="today">Today</mat-option>
-        <mat-option value="all">Yesterday</mat-option>
-        <mat-option value="all">Last 7 days</mat-option>
-        <mat-option value="all">Last 15 days</mat-option>
-        <mat-option value="all">Last 30 days</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <!--    <mat-form-field appearance="outline" class="w-[12rem]">-->
+    <!--      <mat-select-->
+    <!--        formControlName="vendorId"-->
+    <!--        placeholder="Select date">-->
+    <!--        <mat-option value="all">All time</mat-option>-->
+    <!--        <mat-option value="today">Today</mat-option>-->
+    <!--        <mat-option value="all">Yesterday</mat-option>-->
+    <!--        <mat-option value="all">Last 7 days</mat-option>-->
+    <!--        <mat-option value="all">Last 15 days</mat-option>-->
+    <!--        <mat-option value="all">Last 30 days</mat-option>-->
+    <!--      </mat-select>-->
+    <!--    </mat-form-field>-->
+  </div>
+  <div class="relative">
+    <app-g-map [truckLocationPosition]="truckLocationPosition" [starting]="startingPosition"
+               [destination]="destinationPosition" [tripStatus]="tripStatus"></app-g-map>
   </div>
 </div>

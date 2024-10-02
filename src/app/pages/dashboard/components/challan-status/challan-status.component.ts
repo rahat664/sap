@@ -5,6 +5,9 @@ import { MatSelect } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StatusCardComponent } from '../status-heighlight/status-card/status-card.component';
 import { PieChartComponent } from '../../../../shared/charts/pie-chart/pie-chart.component';
+import { DashboardService } from '../../services/dashboard.service';
+import { challanStatus } from '../../models/dashboard-stats.model';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-challan-status',
@@ -20,4 +23,36 @@ import { PieChartComponent } from '../../../../shared/charts/pie-chart/pie-chart
   templateUrl: './challan-status.component.html',
   styleUrl: './challan-status.component.scss',
 })
-export class ChallanStatusComponent {}
+export class ChallanStatusComponent {
+  challanStatus: challanStatus;
+  fromDate: string;
+  toDate: string;
+
+  constructor(
+    private service: DashboardService,
+    private datePipe: DatePipe
+  ) {}
+
+  ngOnInit() {
+    this.getFromDateAndToDate();
+    this.getChallanStatus();
+  }
+
+  private getFromDateAndToDate() {
+    // fromdate will be the first day of the current month
+    const fromDate = new Date();
+    fromDate.setDate(1);
+    this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd');
+    // todate should be the current date
+    const toDate = new Date();
+    this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd');
+  }
+
+  private getChallanStatus() {
+    this.service
+      .getChallanStatus(this.fromDate, this.toDate)
+      .subscribe((res: any) => {
+        this.challanStatus = res.data;
+      });
+  }
+}

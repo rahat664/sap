@@ -24,4 +24,6 @@ import { TopCustomerComponent } from './components/top-customer/top-customer.com
 })
 export class DashboardComponent {
   height: any;
+
+  ngOnInit() {}
 }

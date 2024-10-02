@@ -4,6 +4,12 @@ import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StatusCardComponent } from './status-card/status-card.component';
+import { DashboardService } from '../../services/dashboard.service';
+import { DatePipe } from '@angular/common';
+import {
+  customerStats,
+  DashboardStatsModel,
+} from '../../models/dashboard-stats.model';
 
 @Component({
   selector: 'app-status-heighlight',
@@ -18,4 +24,47 @@ import { StatusCardComponent } from './status-card/status-card.component';
   templateUrl: './status-heighlight.component.html',
   styleUrl: './status-heighlight.component.scss',
 })
-export class StatusHeighlightComponent {}
+export class StatusHeighlightComponent {
+  fromDate: string;
+  toDate: string;
+  dashboardStats: DashboardStatsModel;
+  customerStatistics: customerStats;
+
+  constructor(
+    private service: DashboardService,
+    private datePipe: DatePipe
+  ) {}
+
+  ngOnInit(): void {
+    this.countFromDateAndToDate();
+    this.getDashboardStats();
+    this.customerStats();
+  }
+
+  private getDashboardStats() {
+    this.service
+      .getApiStats(this.fromDate, this.toDate)
+      .subscribe((res: any) => {
+        if (res.status === 'OK') {
+          this.dashboardStats = res.data;
+        }
+      });
+  }
+
+  private customerStats() {
+    this.service
+      .getCustomerStats(this.fromDate, this.toDate)
+      .subscribe((res: any) => {
+        if (res.status === 'OK') {
+          this.customerStatistics = res.data;
+        }
+      });
+  }
+
+  private countFromDateAndToDate() {
+    // from date will be the starting date of the current month
+    this.fromDate = this.datePipe.transform(new Date(), 'yyyy-MM-01');
+    // to date will be the current date
+    this.toDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+  }
+}
