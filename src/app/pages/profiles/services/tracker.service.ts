@@ -46,4 +46,15 @@ export class TrackerService {
         .set('devices', vehicleIds),
     });
   }
+
+  downReport(fromDate: string, toDate: string, vehicleIds: string) {
+    return this.http.get(`${this.reportUrl}`, {
+      params: new HttpParams()
+        .set('from', fromDate)
+        .set('to', toDate)
+        .set('devices', vehicleIds),
+      responseType: 'blob',
+    });
+  }
+
 }

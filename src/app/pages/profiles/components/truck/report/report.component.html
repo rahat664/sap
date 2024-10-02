@@ -1,4 +1,4 @@
-<ng-container *ngIf="!dateSelection">
+<ng-container *ngIf="truckSelection && !dateSelection">
   <div class="flex justify-between w-full items-center px-[40px] py-4  sticky top-0">
     <h2 class="text-h3 leading-h3 font-semibold">Choose Truck</h2>
     <button
@@ -42,6 +42,59 @@
     </button>
   </div>
 </ng-container>
+<ng-container *ngIf="cashedReport && !truckSelection && !dateSelection">
+  <div class="flex justify-between w-full items-center px-[40px] py-4  sticky top-0">
+    <h2 class="text-h3 leading-h3 font-semibold">Download Report</h2>
+    <button
+      (click)="onClose()">
+      <i class="fal fa-times"></i>
+    </button>
+  </div>
+  <div class="min-w-96 mx-4 px-6  border-b border-line">
+    <ng-container>
+      <div class="flex flex-col space-y-2">
+        <div class="grid grid-cols-9 place-items-center border border-blue rounded-t-lg font-semibold text-not-black text-body_title leading-body_title px-2 py-4">
+          <span class="col-span-4">Trucks</span>
+          <span class="col-span-2">From</span>
+          <span class="col-span-2">To</span>
+          <span class="text-center w-full">Action</span>
+        </div>
+      </div>
+      <div class="border  border-blue rounded-b-lg mb-4">
+        <ng-container *ngFor="let truck of cashedReport" >
+          <div class="grid grid-cols-9  place-items-center font-semibold border-b border-blue last:border-none text-not-black text-body_title leading-body_title px-2 py-4">
+            <span class="col-span-4">{{truck.truckerNameList}}</span>
+            <span class="col-span-2">{{ truck.fromDate }}</span>
+            <span class="col-span-2">{{ truck.toDate }}</span>
+            <div class="w-full flex items-center justify-center">
+              <button
+                (click)="onDownloadReport(truck.fromDate, truck.toDate,truck.truckerList, truck.truckerNameList, truck.processed, truck.processing)"
+                class="px-2 flex space-x-4  items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+                <span class="block">
+                  <i *ngIf="truck.processing" class="fas fa-spinner mr-2 fa-spin text-white"></i>
+                  Download{{truck.processing? 'ing': ''}}
+                </span>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+  <div class="flex justify-between items-center mx-4 px-6">
+    <button
+      (click)="clearCache()"
+      class="px-8  my-4 mb-4 flex space-x-4 items-center py-3 lg:py-2 border border-primary text-primary rounded-lg">
+      <span class="hidden lg:block">Clear Cache</span>
+    </button>
+    <button
+      (click)="onGenerateNew()"
+      class="px-8  my-4 mb-4 flex space-x-4  items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+      <span class="hidden lg:block">Generate New</span>
+    </button>
+  </div>
+</ng-container>
+
 <ng-container *ngIf="dateSelection">
   <div class="flex justify-between w-full items-center px-[40px] py-4 pb-4 sticky top-0">
     <h2 class="text-h3 leading-h3 font-semibold">Choose Date</h2>

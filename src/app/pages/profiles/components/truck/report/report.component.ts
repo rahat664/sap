@@ -7,6 +7,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-report',
@@ -47,7 +48,7 @@ export class ReportComponent {
   selectedFromYear: any;
   years: any[] = Array.from(
     { length: new Date().getFullYear() - 1980 + 1 },
-    (_, i) => 1980 + i
+    (_, i) => 1980 + i,
   ).reverse();
   selectedToMonthInString: any;
   selectedToDay: any;
@@ -67,19 +68,32 @@ export class ReportComponent {
   fromDate: string;
   toDate: string;
   loading: boolean;
+  truckerNameList: any[] = [];
+  cashedReport: any;
+  cashedReportOpened: boolean;
+  truckSelection: boolean;
+  processing: boolean;
 
   constructor(
     private service: TrackerService,
     private datePipe: DatePipe,
     private toast: HandleToastrService,
-    private matRef: MatDialogRef<ReportComponent>
-  ) {}
+    private matRef: MatDialogRef<ReportComponent>,
+  ) {
+  }
 
   onClose() {
     this.matRef.close();
   }
 
   ngOnInit(): void {
+    if (localStorage.getItem('cashedReport')) {
+      this.cashedReport = JSON.parse(localStorage.getItem('cashedReport'));
+      this.cashedReportOpened = true;
+    } else {
+      this.cashedReportOpened = false;
+      this.truckSelection = true;
+    }
     this.truckList = [];
     // set today's date as default
     this.fromDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
@@ -99,32 +113,120 @@ export class ReportComponent {
   onChange($event: MatCheckboxChange, truck: VehicleTracker) {
     if ($event.checked) {
       this.truckerList.push(truck.vehicleId);
+      this.truckerNameList.push(truck.vehicleRegistrationNumber);
     }
   }
 
   onGenerateReport() {
     if (this.fromDate && this.toDate) {
+      if (localStorage.getItem('cashedReport')) {
+        const cashedReport = JSON.parse(localStorage.getItem('cashedReport'));
+        const truckerList = this.truckerList.join(',');
+        cashedReport.push({
+          fromDate: this.fromDate,
+          toDate: this.toDate,
+          truckerList: truckerList,
+          truckerNameList: this.truckerNameList.join(','),
+          processed: false,
+          processing: false,
+        });
+        localStorage.setItem('cashedReport', JSON.stringify(cashedReport));
+      } else {
+        const cashedReport = [
+          {
+            fromDate: this.fromDate,
+            toDate: this.toDate,
+            truckerList: this.truckerList.join(','),
+            truckerNameList: this.truckerNameList.join(','),
+            processed: false,
+            processing: false,
+          },
+        ];
+        localStorage.setItem('cashedReport', JSON.stringify(cashedReport));
+      }
       this.matRef.close();
       this.service
-        .generateReport(this.fromDate, this.toDate, this.truckerList.join(','))
+        .downReport(this.fromDate, this.toDate, this.truckerList.join(','))
         .subscribe(
           (res: any) => {
             this.dateSelection = false;
-            if (res.status === 'OK') {
-              this.toast.showSuccess(
-                'Report generated successfully. Please wait a moment for the download to start.'
-              );
-            } else {
-              this.toast.showError('Failed to generate report');
-            }
+            this.toast.showSuccess(
+              'Report generated successfully. Please wait a moment for the download to start.',
+            );
           },
           error => {
             this.dateSelection = false;
             this.toast.showError('Failed to generate report');
-          }
+          },
         );
     } else {
       this.toast.showError('Please select date range');
+    }
+  }
+
+  clearCache() {
+    localStorage.removeItem('cashedReport');
+    this.cashedReport = null;
+    this.cashedReportOpened = false;
+    this.dateSelection = false;
+    this.truckSelection = true;
+  }
+
+  onDownloadReport(fromDate: string, toDate: string, truckerList: string, truckerNameList: any, processed: any, processing: any) {
+    this.processing = true;
+    if (processed) {
+      this.processing = false;
+      this.service
+        .downReport(fromDate, toDate, truckerList)
+        .subscribe(
+          (res: any) => {
+            const url = window.URL.createObjectURL(res);
+            const a = document.createElement('a');
+            document.body.appendChild(a);
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `Report_${fromDate}_${toDate}_${truckerNameList}.pdf`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+          },
+          error => {
+            this.toast.showError('Failed to download report');
+          },
+        );
+    } else {
+      this.cashedReport.forEach(report => {
+        if (report.fromDate === fromDate && report.toDate === toDate && report.truckerList === truckerList) {
+          report.processing = true;
+        }
+      });
+      timer(60000).subscribe(() => {
+        this.cashedReport.forEach(report => {
+          if (report.fromDate === fromDate && report.toDate === toDate && report.truckerList === truckerList) {
+            report.processing = false;
+            report.processed = true;
+          }
+        });
+        localStorage.setItem('cashedReport', JSON.stringify(this.cashedReport));
+        this.service
+          .downReport(fromDate, toDate, truckerList)
+          .subscribe(
+            (res: any) => {
+              const url = window.URL.createObjectURL(res);
+              const a = document.createElement('a');
+              document.body.appendChild(a);
+              a.style.display = 'none';
+              a.href = url;
+              a.download = `Report_${fromDate}_${toDate}_${truckerNameList}.pdf`;
+              a.click();
+              window.URL.revokeObjectURL(url);
+              document.body.removeChild(a);
+            },
+            error => {
+              this.toast.showError('Failed to download report');
+            },
+          );
+      });
     }
   }
 
@@ -334,28 +436,28 @@ export class ReportComponent {
         break;
       case 'Last 7 days':
         const last7DaysFrom = new Date(
-          new Date().setDate(new Date().getDate() - 7)
+          new Date().setDate(new Date().getDate() - 7),
         );
         const last7DaysTo = new Date(
-          new Date().setDate(new Date().getDate() - 1)
+          new Date().setDate(new Date().getDate() - 1),
         );
         this.setDateValues(last7DaysFrom, last7DaysTo);
         break;
       case 'Last 15 days':
         const last15DaysFrom = new Date(
-          new Date().setDate(new Date().getDate() - 15)
+          new Date().setDate(new Date().getDate() - 15),
         );
         const last15DaysTo = new Date(
-          new Date().setDate(new Date().getDate() - 1)
+          new Date().setDate(new Date().getDate() - 1),
         );
         this.setDateValues(last15DaysFrom, last15DaysTo);
         break;
       case 'Last 30 days':
         const last30DaysFrom = new Date(
-          new Date().setDate(new Date().getDate() - 30)
+          new Date().setDate(new Date().getDate() - 30),
         );
         const last30DaysTo = new Date(
-          new Date().setDate(new Date().getDate() - 1)
+          new Date().setDate(new Date().getDate() - 1),
         );
         this.setDateValues(last30DaysFrom, last30DaysTo);
         break;
@@ -368,5 +470,12 @@ export class ReportComponent {
     this.dates.forEach(date => {
       date.selected = date.value === button.value;
     });
+  }
+
+  onGenerateNew() {
+    this.cashedReportOpened = false;
+    this.truckerList = [];
+    this.truckerNameList = [];
+    this.truckSelection = true;
   }
 }
