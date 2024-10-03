@@ -50,7 +50,7 @@ export class PieChartComponent implements OnChanges {
     this.chartOptions = {
       series: this.value,
       chart: {
-        width: 340,
+        width: 350,
         type: 'pie',
       },
       labels,

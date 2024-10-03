@@ -1,4 +1,4 @@
-<div class="px-6 py-5 bg-white rounded-lg flex flex-col space-y-[0.875rem]">
+<div class="px-6 py-5 bg-white rounded-lg flex flex-col w-full space-y-[0.875rem]">
   <div class="flex justify-between items-center">
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
       Top customer
@@ -16,17 +16,18 @@
     <!--      </mat-select>-->
     <!--    </mat-form-field>-->
   </div>
-  <div class="border border-[#A1D5DE] rounded-lg">
+  <div class="border w-full border-[#A1D5DE] rounded-lg">
     <div
-      class="grid grid-cols-7  text-body_title leading-body_title font-semibold text-not-black px-2 py-5 border-b border-[#A1D5DE]">
+      class="grid grid-cols-7 w-full  text-body_title leading-body_title font-semibold text-not-black px-2 py-5 border-b border-[#A1D5DE]">
       <span class="col-span-4">Customer</span>
       <span>No of trip</span>
       <span>CR(৳)</span>
       <span>GP(৳)</span>
     </div>
-    <div class="flex flex-col space-y-4">
+    <div class="flex flex-col">
       <ng-container *ngFor="let customer of topCustomer">
-        <div class="grid grid-cols-7  text-body_title leading-body_title font-semibold text-secondary px-2 py-5 ">
+        <div
+          class="grid grid-cols-7  text-body_title leading-body_title border-b last:border-none border-[#A1D5DE] font-semibold text-secondary px-2 py-5 ">
           <span class="col-span-4">{{ customer.customerName }}</span>
           <span>{{ customer.noOfTrip }}</span>
           <span>{{ customer.totalCustomerRate | number }} ৳</span>

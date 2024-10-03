@@ -74,7 +74,7 @@ export class AuthEffects {
                 JSON.stringify(permissions.data)
               );
               this.toaster.showSuccess('Login Successful', '');
-              this.router.navigate(['/trip-list']);
+              this.router.navigate(['/dashboard']);
             } else {
               this.toaster.showError(permissions.message, '');
             }

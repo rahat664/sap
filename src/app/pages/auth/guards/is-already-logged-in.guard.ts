@@ -18,7 +18,7 @@ class PermissionService {
 
   canActivate(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
     if (this.auth.isLoggedIn()) {
-      return this.router.navigate(['/trip-list']);
+      return this.router.navigate(['/dashboard']);
     } else {
       // Redirect to the login page with the return url
       return true;

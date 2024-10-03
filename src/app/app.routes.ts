@@ -118,12 +118,12 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'trip-list',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: 'trip-list',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
 ];

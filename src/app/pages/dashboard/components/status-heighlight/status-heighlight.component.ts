@@ -10,6 +10,7 @@ import {
   customerStats,
   DashboardStatsModel,
 } from '../../models/dashboard-stats.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-status-heighlight',
@@ -20,6 +21,7 @@ import {
     MatSelect,
     ReactiveFormsModule,
     StatusCardComponent,
+    RouterLink,
   ],
   templateUrl: './status-heighlight.component.html',
   styleUrl: './status-heighlight.component.scss',
@@ -67,4 +69,6 @@ export class StatusHeighlightComponent {
     // to date will be the current date
     this.toDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
   }
+
+  protected readonly localStorage = localStorage;
 }

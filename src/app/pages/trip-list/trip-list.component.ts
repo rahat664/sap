@@ -129,10 +129,17 @@ export class TripListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (localStorage.getItem('filter')) {
+      this.status = localStorage.getItem('filter') || '';
+      this.statusButtons.forEach(x => (x.isActive = x.name === this.status));
+      localStorage.removeItem('filter');
+    } else {
+      this.status = '';
+      this.statusButtons.forEach(x => (x.isActive = x.name === 'All'));
+    }
     this.loading = true;
     this.page = 0;
     this.size = 30;
-    this.statusButtons.forEach(x => (x.isActive = x.name === 'All'));
     this.getTripList();
     this.service.anotherStatusCalled.subscribe(value => {
       this.anotherStatusCalled = value;

@@ -21,7 +21,7 @@ class PermissionService {
       return true;
     } else {
       // Redirect to the login page with the return url
-      this.router.navigate(['/trip-list']);
+      this.router.navigate(['/dashboard']);
       return false;
     }
   }
