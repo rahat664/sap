@@ -88,7 +88,7 @@ export class ColumnChartComponent {
         offsetX: -42,
         offsetY: -1,
         fontSize: '12px',
-        customLegendItems: ['Trip created', 'Achievement'],
+        customLegendItems: ['Trip created', 'Trip Completed'],
         itemMargin: {
           horizontal: 10,
         },
