@@ -21,6 +21,7 @@ import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checkli
 import { MatDialog } from '@angular/material/dialog';
 import { TruckDocument, TruckModel } from './models/truck.model';
 import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
+import { ReportComponent } from './report/report.component';
 
 @Component({
   selector: 'app-truck',
@@ -222,5 +223,12 @@ export class TruckComponent implements OnInit {
       }
     });
     return isExist;
+  }
+
+  onClickGenerateReport() {
+    this.dialog.open(ReportComponent, {
+      maxHeight: '90vh',
+      minWidth: '30%',
+    });
   }
 }
