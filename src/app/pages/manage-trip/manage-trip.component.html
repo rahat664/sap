@@ -171,7 +171,7 @@
     </div>
   </div>
   <div class="w-full h-[calc(100vh-4.5rem)] flex-1 relative">
-    <app-g-map [truckLocationPosition]="truckLocationPosition" [starting]="startingPosition"
+    <app-g-map [truckFullRegistrationNumber]="truckRegistrationNumbers" [truckLocationPosition]="truckLocationPosition" [starting]="startingPosition"
                [destination]="destinationPosition" [tripStatus]="tripStatus"></app-g-map>
     <app-map-buttons [triggeredButtonName]="triggerFromParentName" [triggerFromParent]="isTriggerFromParent"
                      [statusButtons]="statusButtons" (buttonClickEmitter)="onClickButton($event)"

@@ -47,4 +47,8 @@ export class TruckService {
   validateTruckInformation(body) {
     return this.http.post(`${this.url}/checkVehicle`, body);
   }
+
+  getTruckData() {
+
+  }
 }
