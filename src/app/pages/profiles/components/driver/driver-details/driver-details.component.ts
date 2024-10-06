@@ -12,12 +12,21 @@ import {
 } from '@angular/forms';
 import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
 import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
-import { driverFileType } from '../../customer/model/driver-file-type';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import {
+  DriverFileType,
+  driverFileTypeModel,
+} from '../../truck/models/driver-file-type';
 
 @Component({
   selector: 'app-driver-details',
@@ -36,6 +45,11 @@ import { MatInput } from '@angular/material/input';
     MatFormField,
     MatInput,
     ReactiveFormsModule,
+    MatDatepicker,
+    MatMenu,
+    MatMenuTrigger,
+    MatDatepickerToggle,
+    MatDatepickerInput,
   ],
   templateUrl: './driver-details.component.html',
   styleUrl: './driver-details.component.scss',
@@ -91,10 +105,15 @@ export class DriverDetailsComponent implements OnInit {
     );
   }
 
-  protected readonly driverFileType = driverFileType;
+  protected readonly driverFileType: DriverFileType[] = driverFileTypeModel;
   isNewOpen: boolean = false;
   isConfirmModalOpen: boolean;
   fileName: string;
+  viewMoreFormControlName: string;
+  isInEditMode: any;
+  viewMoreExpiryControlName: string;
+  driverDetails: UserModel;
+  loading: boolean;
 
   onClickCloseButton(document: any) {
     this.fileName = document.name;
@@ -173,4 +192,57 @@ export class DriverDetailsComponent implements OnInit {
         }
       });
   }
+
+  getSavedFileArray(viewMoreFormControlName: any) {
+    return [] as any;
+  }
+
+  getDriverImageTitle(viewMoreFormControlName) {
+    return '';
+  }
+
+  onClickClosePopUp() {}
+
+  onClickImage(preSignedFileUrl: any) {}
+
+  onCloseImageSavedImage(viewMoreFormControlName, file: any) {}
+
+  onCloseImage(
+    viewMoreFormControlName,
+    file: any,
+    viewMoreExpiryControlName: any
+  ) {}
+
+  getFileArray(viewMoreFormControlName) {
+    return [] as any;
+  }
+
+  getSpecificFiles(formControlName: any, max?: any) {
+    return [] as any;
+  }
+
+  triggerFileUpload(formControlName: any, max: any) {}
+
+  onFileSelected($event: Event) {}
+
+  checkThatFileIsAvailableOrNot(name) {
+    return [] as any;
+  }
+
+  onDateChange($event: Event, expiryFormControlName: any) {}
+
+  checkDateIsExpiredOrNot(expiryDate: any) {
+    return {
+      isExpired: false,
+      text: '',
+    };
+  }
+
+  onClickSave() {}
+
+  onClickApprove() {}
+
+  onClickReject() {}
+
+  onClickEdit() {}
 }

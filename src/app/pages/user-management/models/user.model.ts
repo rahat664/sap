@@ -49,4 +49,6 @@ export class UserModel {
   drivingLicenseExpiryDate: any;
   department: string;
   status: string;
+  approveStatus: string;
+  rejectedReason: string;
 }

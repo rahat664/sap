@@ -22,6 +22,7 @@ import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
 
 @Component({
   selector: 'app-driver',
@@ -290,7 +291,9 @@ export class DriverComponent implements OnInit {
           const formData = new FormData();
           const payload: Record<string, any> = {};
           payload['driverId'] = driver.userId;
-          payload['status'] = 'Approved';
+          payload['driverName'] = driver.name;
+          payload['driverPhone'] = driver.phone;
+          payload['driverStatus'] = 'Approved';
           formData.append('payload', JSON.stringify(payload));
           this.user.editDriver(formData).subscribe(
             (res: any) => {
@@ -314,7 +317,7 @@ export class DriverComponent implements OnInit {
 
   onClickReject(driver: UserModel) {
     this.dialog
-      .open(ConfirmApproveComponent, {
+      .open(ConfirmRejectComponent, {
         data: {
           title: 'Reject',
           text: `${driver.userId}?`,
@@ -328,8 +331,10 @@ export class DriverComponent implements OnInit {
           const formData = new FormData();
           const payload: Record<string, any> = {};
           payload['driverId'] = driver.userId;
-          payload['status'] = 'Rejected';
-          payload['reason'] = res.reason;
+          payload['driverName'] = driver.name;
+          payload['driverPhone'] = driver.phone;
+          payload['driverStatus'] = 'Rejected';
+          payload['rejectedReason'] = res.reason;
           formData.append('payload', JSON.stringify(payload));
           this.user.editDriver(formData).subscribe(
             (res: any) => {

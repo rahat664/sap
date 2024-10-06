@@ -155,8 +155,8 @@
             <div
               class="flex items-center justify-center">
               <div
-                class="{{getBgColor(driver.status)}} bg-opacity-[30%] z-30 px-2 py-0.5 rounded-full flex items-center">
-                <span class="text-web-text-secondary">{{ driver.status }}</span>
+                class="{{getBgColor(driver.approveStatus)}} bg-opacity-[30%] z-30 px-2 py-0.5 rounded-full flex items-center">
+                <span class="text-web-text-secondary">{{ driver.approveStatus }}</span>
               </div>
             </div>
           </td>
@@ -166,7 +166,7 @@
               class="fas fa-ellipsis-v"></i></button>
             <mat-menu #menu="matMenu">
               <button (click)="onClickApprove(driver)"
-                      *ngIf="driver.status === 'Pending' || driver.status === 'Rejected'"
+                      *ngIf="driver.approveStatus === 'Pending' || driver.approveStatus === 'Rejected'"
                       mat-menu-item>
                 <div class="flex space-x-2 items-center">
                   <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
@@ -176,7 +176,7 @@
                 </div>
               </button>
               <button (click)="onClickReject(driver)"
-                      *ngIf="driver.status === 'Pending'"
+                      *ngIf="driver.approveStatus === 'Pending'"
                       mat-menu-item
               >
                 <div class="flex space-x-2 items-center">
