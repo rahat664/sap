@@ -57,4 +57,7 @@ export class TrackerService {
     });
   }
 
+  getTrackerData(truckId: any) {
+    return this.http.get(`${this.trackerUrl}/sensor-data?deviceId=${truckId}`);
+  }
 }

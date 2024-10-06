@@ -11,6 +11,12 @@ import { mapStyles } from '../../models/map-options';
 import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
 import { NgForOf, NgIf } from '@angular/common';
 import { TripService } from '../../../pages/trip-list/services/trip.service';
+import { TruckData } from '../../models/truck-data.model';
+import { TruckService } from '../../../pages/profiles/components/truck/services/truck.service';
+import { TrackerService } from '../../../pages/profiles/services/tracker.service';
+import { timer } from 'rxjs';
+
+
 
 @Component({
   selector: 'app-g-map',
@@ -50,10 +56,16 @@ export class GMapComponent implements OnInit, OnChanges {
   endMarker: google.maps.MarkerOptions = {};
   polylines: google.maps.PolylineOptions[] = [];
   bottomHeight: string = '0px';
+  infoWindow: any;
+  truckData: TruckData = {} as TruckData;
+  loading: boolean;
+  @Input() truckFullRegistrationNumber: string;
+  private intervalData: number;
 
   constructor(
     private geoLocationService: GeolocationService,
-    private trip: TripService
+    private trip: TripService,
+    private truckService: TrackerService
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +83,9 @@ export class GMapComponent implements OnInit, OnChanges {
           url: '/assets/images/focus.png',
           scaledSize: new google.maps.Size(30, 30),
         },
+        // api call and show when hover
         title: 'Current Location',
+
       };
     } else {
       this.geoLocationService.getCurrentPosition().then(position => {
@@ -87,14 +101,19 @@ export class GMapComponent implements OnInit, OnChanges {
       });
     }
   }
-
+  showLoadingSpinner(): void {
+    this.loading = true;
+    this.infoWindow.setContent(this.getLoadingSpinnerContent());
+    this.infoWindow.open(this.map, this.truckLocationMarker);
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['starting'] || changes['destination']) {
       this.updateRoute();
     }
-    if (changes['truckLocationPosition']) {
-      this.updateTruckLocation();
-    }
+      if (changes['truckLocationPosition']) {
+        console.log(changes['truckLocationPosition']);
+        this.updateTruckLocation();
+      }
   }
 
   private updateRoute() {
@@ -140,8 +159,8 @@ export class GMapComponent implements OnInit, OnChanges {
     if (
       this.truckLocationPosition?.lat &&
       this.truckLocationPosition?.lng &&
-      this.tripStatus != 'Completed' &&
-      this.tripStatus != 'Cancelled'
+      (this.tripStatus != 'Completed' &&
+        'Cancelled')
     ) {
       if (this.truckLocationMarker) {
         // Update existing marker position
@@ -152,12 +171,27 @@ export class GMapComponent implements OnInit, OnChanges {
           position: this.truckLocationPosition,
           icon: {
             url: '/assets/svg/truck-map.svg',
-            scaledSize: new google.maps.Size(36, 36),
+            scaledSize: new google.maps.Size(48, 48),
           },
           title: 'Truck Location',
           map: this.map.googleMap, // Add marker to the map
+          // implement when click on marker
         });
+
       }
+
+      // Create InfoWindow
+      this.infoWindow = new google.maps.InfoWindow({
+        content: this.getLoadingSpinnerContent(), // Initially show spinner
+        maxWidth: 400
+      });
+
+      // Add marker click listener to open InfoWindow and fetch data
+      this.truckLocationMarker.addListener('click', () => {
+        this.showLoadingSpinner(); // Show loading spinner
+        this.fetchTruckData(); // Fetch data from API
+        this.startInterval();
+      });
     } else {
       if (this.truckLocationMarker) {
         // Remove marker from the map
@@ -225,7 +259,27 @@ export class GMapComponent implements OnInit, OnChanges {
   private clearPolylines(): void {
     this.polylines = [];
   }
-
+  fetchTruckData(): void {
+    this.truckService.getTrackers(0, 10, this.truckFullRegistrationNumber).subscribe(
+      (res: any) => {
+        if (res.data?.content?.length > 0) {
+          const truckId = res.data.content[0].vehicleId;
+          this.truckService.getTrackerData(truckId).subscribe(
+            (res: any) => {
+                this.truckData = res.data;
+                this.updateInfoWindow();
+            },
+            error => {
+              console.log(error);
+            }
+          );
+        }
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
   calculatedHeight() {
     if (this.bottomHeight === '0px') {
       return '100%';
@@ -234,5 +288,64 @@ export class GMapComponent implements OnInit, OnChanges {
         window.innerHeight - Number(this.bottomHeight.split('px')[0]) + 'px'
       );
     }
+  }
+
+  updateInfoWindow(): void {
+    this.infoWindow.setContent(this.getInfoWindowContent());
+    this.infoWindow.open(this.map, this.truckLocationMarker);
+
+    // Add event listener for the close button
+    timer(100).subscribe(() => {
+      const closeBtn = document.getElementById('closeBtn');
+      closeBtn.addEventListener('click', () => {
+        this.infoWindow.close();
+        this.stopInterval();
+      });
+    });
+     // Delay to allow the DOM to render
+  }
+
+  getInfoWindowContent(): string {
+    return `
+      <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
+        <div class="flex flex-col space-y-1">
+          <div style="font-weight: bold; font-size: 16px">${this.truckData.numberPlate}</div>
+          <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.address.split(',')[0]}</div>
+          <div style="font-size: 12px; color: #777777">${this.truckData.address}</div>
+        </div>
+        <button id="closeBtn" style="background: transparent; border: none; cursor: pointer;">
+          <i class="far fa-times cursor-pointer"></i>
+        </button>
+      </div>
+      <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
+        <table id="info-table" style="width: 100%;">
+          <tr class="grid grid-cols-8 "><td class="col-span-3">Time</td><td>:</td><td class="col-span-4">${this.truckData.time}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${this.truckData.stopDuration}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Engine<td>:</td></td><td class="col-span-4">${this.truckData.engineStatus}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">GSM<td>:</td></td><td class="col-span-4">${this.truckData.gsmValue}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Speed<td>:</td></td><td class="col-span-4">${this.truckData.speed}</td></tr>
+        </table>
+      </div>
+    `;
+  }
+
+  getLoadingSpinnerContent(): string {
+    return `
+      <div style="text-align: center; padding: 20px;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 24px;"></i>
+        <p>Loading...</p>
+      </div>
+    `;
+  }
+
+  private startInterval() {
+    this.intervalData = setInterval(() => {
+      this.fetchTruckData();
+      this.updateInfoWindow()
+    }, 4900);
+  }
+
+  private stopInterval() {
+    clearInterval(this.intervalData);
   }
 }

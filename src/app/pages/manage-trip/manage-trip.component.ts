@@ -86,7 +86,7 @@ export class ManageTripComponent implements OnInit {
   endDate: string;
   isTriggerFromParent: boolean;
   triggerFromParentName: string;
-  truckLocationPosition: { lng: number; lat: number };
+  truckLocationPosition: { lng: number; lat: number } = {} as any;
   anotherStatusCalled: boolean;
   previousFilterLength: number = 0;
   customerName: any;
@@ -111,6 +111,7 @@ export class ManageTripComponent implements OnInit {
   selectedTruckValues: any[] = [];
   customerCodes: string[] = [];
   customerNames: string[] = [];
+   truckRegistrationNumbers: string;
 
   constructor(
     private tripService: TripService,
@@ -284,7 +285,7 @@ export class ManageTripComponent implements OnInit {
   private updateTripList(trip: any) {
     if (this.page === 0) {
       this.tripList = trip.data.responses;
-      this.getTruckTrackers(this.tripList[0].truck?.fullRegistrationNumber);
+      this.getTruckTrackers(this.getTruckRegistrationNumber(this.tripList[0].truck));
       this.getTripDetails(this.tripList[0].tripId);
       this.activatedId = this.tripList[0].tripId;
       this.tripStatus = this.tripList[0].status;
@@ -478,6 +479,7 @@ export class ManageTripComponent implements OnInit {
   }
 
   private getTruckTrackers(truckRegistrationNumber: string) {
+    this.truckRegistrationNumbers = truckRegistrationNumber;
     if (truckRegistrationNumber) {
       this.tripService.getTrackerDetails(truckRegistrationNumber).subscribe(
         (res: any) => {
