@@ -92,8 +92,13 @@ export class UserService {
     return this.http.put(`${this.url}/edit-driver`, body, {});
   }
 
-  getDriver(page: number, size: number, search?: string): Observable<any> {
-    let apiUrl = `${this.url}/drivers?page=${page}&size=${size}`;
+  getDriver(
+    page: number,
+    size: number,
+    search?: string,
+    status?: string
+  ): Observable<any> {
+    let apiUrl = `${this.url}/drivers?page=${page}&size=${size}&status=${status}`;
 
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
