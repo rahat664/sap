@@ -349,6 +349,9 @@ export class TruckAddComponent implements OnInit {
           case 'taxExpDate':
             field = 'Tax Expiry Date';
             break;
+          case 'insuranceExpDate':
+            field = 'Insurance Expiry Date';
+            break;
           default:
             field = field.charAt(0).toUpperCase() + field.slice(1);
             break;

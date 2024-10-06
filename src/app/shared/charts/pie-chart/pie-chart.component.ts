@@ -40,7 +40,7 @@ export class PieChartComponent implements OnChanges {
   constructor() {}
 
   ngOnChanges() {
-    const colors = ['#91CAFF', '#CCF3FB'];
+    const colors = ['#0CD5F0', '#CCF3FB'];
     let index = -1;
     const labels = ['Received', 'Pending'];
     const customLegendItems = labels.map(
