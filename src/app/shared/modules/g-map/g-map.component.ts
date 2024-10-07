@@ -12,11 +12,8 @@ import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
 import { NgForOf, NgIf } from '@angular/common';
 import { TripService } from '../../../pages/trip-list/services/trip.service';
 import { TruckData } from '../../models/truck-data.model';
-import { TruckService } from '../../../pages/profiles/components/truck/services/truck.service';
 import { TrackerService } from '../../../pages/profiles/services/tracker.service';
 import { timer } from 'rxjs';
-
-
 
 @Component({
   selector: 'app-g-map',
@@ -26,6 +23,14 @@ import { timer } from 'rxjs';
   styleUrls: ['./g-map.component.scss'],
 })
 export class GMapComponent implements OnInit, OnChanges {
+  get truckId(): string {
+    return this._truckId;
+  }
+
+  set truckId(value: string) {
+    this._truckId = value;
+  }
+
   @Input() tripStatus: string;
   @Input() lat: number;
   @Input() lng: number;
@@ -61,6 +66,7 @@ export class GMapComponent implements OnInit, OnChanges {
   loading: boolean;
   @Input() truckFullRegistrationNumber: string;
   private intervalData: number;
+  private _truckId: string;
 
   constructor(
     private geoLocationService: GeolocationService,
@@ -85,7 +91,6 @@ export class GMapComponent implements OnInit, OnChanges {
         },
         // api call and show when hover
         title: 'Current Location',
-
       };
     } else {
       this.geoLocationService.getCurrentPosition().then(position => {
@@ -101,19 +106,21 @@ export class GMapComponent implements OnInit, OnChanges {
       });
     }
   }
+
   showLoadingSpinner(): void {
     this.loading = true;
     this.infoWindow.setContent(this.getLoadingSpinnerContent());
     this.infoWindow.open(this.map, this.truckLocationMarker);
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['starting'] || changes['destination']) {
       this.updateRoute();
     }
-      if (changes['truckLocationPosition']) {
-        console.log(changes['truckLocationPosition']);
-        this.updateTruckLocation();
-      }
+    if (changes['truckLocationPosition']) {
+      console.log(changes['truckLocationPosition']);
+      this.updateTruckLocation();
+    }
   }
 
   private updateRoute() {
@@ -159,8 +166,8 @@ export class GMapComponent implements OnInit, OnChanges {
     if (
       this.truckLocationPosition?.lat &&
       this.truckLocationPosition?.lng &&
-      (this.tripStatus != 'Completed' &&
-        'Cancelled')
+      this.tripStatus != 'Completed' &&
+      'Cancelled'
     ) {
       if (this.truckLocationMarker) {
         // Update existing marker position
@@ -177,20 +184,18 @@ export class GMapComponent implements OnInit, OnChanges {
           map: this.map.googleMap, // Add marker to the map
           // implement when click on marker
         });
-
       }
 
       // Create InfoWindow
       this.infoWindow = new google.maps.InfoWindow({
         content: this.getLoadingSpinnerContent(), // Initially show spinner
-        maxWidth: 400
+        maxWidth: 400,
       });
 
       // Add marker click listener to open InfoWindow and fetch data
       this.truckLocationMarker.addListener('click', () => {
         this.showLoadingSpinner(); // Show loading spinner
         this.fetchTruckData(); // Fetch data from API
-        this.startInterval();
       });
     } else {
       if (this.truckLocationMarker) {
@@ -259,27 +264,32 @@ export class GMapComponent implements OnInit, OnChanges {
   private clearPolylines(): void {
     this.polylines = [];
   }
+
   fetchTruckData(): void {
-    this.truckService.getTrackers(0, 10, this.truckFullRegistrationNumber).subscribe(
-      (res: any) => {
-        if (res.data?.content?.length > 0) {
-          const truckId = res.data.content[0].vehicleId;
-          this.truckService.getTrackerData(truckId).subscribe(
-            (res: any) => {
+    this.truckService
+      .getTrackers(0, 10, this.truckFullRegistrationNumber)
+      .subscribe(
+        (res: any) => {
+          if (res.data?.content?.length > 0) {
+            this._truckId = res.data.content[0].vehicleId;
+            this.truckService.getTrackerData(this._truckId).subscribe(
+              (res: any) => {
                 this.truckData = res.data;
                 this.updateInfoWindow();
-            },
-            error => {
-              console.log(error);
-            }
-          );
+                this.startInterval();
+              },
+              error => {
+                console.log(error);
+              }
+            );
+          }
+        },
+        error => {
+          console.log(error);
         }
-      },
-      error => {
-        console.log(error);
-      }
-    );
+      );
   }
+
   calculatedHeight() {
     if (this.bottomHeight === '0px') {
       return '100%';
@@ -302,7 +312,7 @@ export class GMapComponent implements OnInit, OnChanges {
         this.stopInterval();
       });
     });
-     // Delay to allow the DOM to render
+    // Delay to allow the DOM to render
   }
 
   getInfoWindowContent(): string {
@@ -319,11 +329,11 @@ export class GMapComponent implements OnInit, OnChanges {
       </div>
       <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
         <table id="info-table" style="width: 100%;">
-          <tr class="grid grid-cols-8 "><td class="col-span-3">Time</td><td>:</td><td class="col-span-4">${this.truckData.time}</td></tr>
-        <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${this.truckData.stopDuration}</td></tr>
-        <tr  class="grid grid-cols-8 "><td class="col-span-3">Engine<td>:</td></td><td class="col-span-4">${this.truckData.engineStatus}</td></tr>
-        <tr  class="grid grid-cols-8 "><td class="col-span-3">GSM<td>:</td></td><td class="col-span-4">${this.truckData.gsmValue}</td></tr>
-        <tr  class="grid grid-cols-8 "><td class="col-span-3">Speed<td>:</td></td><td class="col-span-4">${this.truckData.speed}</td></tr>
+          <tr class="grid grid-cols-8 "><td class="col-span-3">Time</td><td>:</td><td class="col-span-4">${this.truckData.time ? this.truckData.time : 'N/A'}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${this.truckData.stopDuration ? this.truckData.stopDuration : 'N/A'}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Engine<td>:</td></td><td class="col-span-4">${this.truckData.engineStatus ? this.truckData.engineStatus : 'N/A'}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">GSM<td>:</td></td><td class="col-span-4">${this.truckData.gsmValue ? this.truckData.gsmValue : 'N/A'}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Speed<td>:</td></td><td class="col-span-4">${this.truckData.speed ? this.truckData.speed : 'N/A'}</td></tr>
         </table>
       </div>
     `;
@@ -340,12 +350,25 @@ export class GMapComponent implements OnInit, OnChanges {
 
   private startInterval() {
     this.intervalData = setInterval(() => {
-      this.fetchTruckData();
-      this.updateInfoWindow()
-    }, 4900);
+      this.updateTruckDataOnly();
+      this.stopInterval();
+    }, 3900);
   }
 
   private stopInterval() {
     clearInterval(this.intervalData);
+  }
+
+  private updateTruckDataOnly() {
+    this.truckService.getTrackerData(this._truckId).subscribe(
+      (res: any) => {
+        this.truckData = res.data;
+        this.startInterval();
+        this.updateInfoWindow();
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 }
