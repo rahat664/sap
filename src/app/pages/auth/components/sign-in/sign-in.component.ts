@@ -23,6 +23,7 @@ import { selectAuthError, selectAuthLoading } from '../../ngrx/auth.selectors';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { CountryISO, NgxMaterialIntlTelInputComponent } from 'ngx-material-intl-tel-input';
 
 @Component({
   selector: 'app-sign-in',
@@ -34,6 +35,7 @@ import { MatInput } from '@angular/material/input';
     MatAutocomplete,
     MatFormField,
     MatInput,
+    NgxMaterialIntlTelInputComponent,
   ],
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss'],
@@ -61,7 +63,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private toaster: HandleToastrService,
     private store: Store<{ auth: AuthState }>,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.loginRequestPayload = { email: '', password: '' };
     this.loginUsingPhonePayload = { phoneNumber: '' };
@@ -140,6 +142,7 @@ export class SignInComponent implements OnInit, OnDestroy {
       } else {
         this.$loading = true;
         this.loginUsingPhonePayload.phoneNumber = this.phoneNumber.value;
+        // delete the space and - from the phone number
         this.auth.loginUsingPhone(this.loginUsingPhonePayload).subscribe(
           response => {
             this.$loading = false;
@@ -154,7 +157,7 @@ export class SignInComponent implements OnInit, OnDestroy {
           error => {
             this.$loading = false;
             this.toaster.showError(error.error.message, '');
-          }
+          },
         );
       }
     } else {
@@ -324,7 +327,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.loginPhoneRequestPayload.phoneNumber = this.phoneNumber.value;
     this.loginPhoneRequestPayload.otpCode = `${this.loginForm.get('otp1').value}${this.loginForm.get('otp2').value}${this.loginForm.get('otp3').value}${this.loginForm.get('otp4').value}`;
     this.store.dispatch(
-      loginUsingPhoneNumber({ payload: this.loginPhoneRequestPayload })
+      loginUsingPhoneNumber({ payload: this.loginPhoneRequestPayload }),
     );
   }
 
@@ -356,13 +359,13 @@ export class SignInComponent implements OnInit, OnDestroy {
       },
       error => {
         this.toaster.showError(error.error.message, '');
-      }
+      },
     );
   }
 
   // backspace event handler on a window
   @HostListener('window:keydown', ['$event']) handleKeyDown(
-    event: KeyboardEvent
+    event: KeyboardEvent,
   ) {
     if (event.key === 'Backspace') {
       if (this.idName === 'otp4') {
@@ -417,4 +420,21 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.loginForm.get('otp3').updateValueAndValidity();
     this.loginForm.get('otp4').updateValueAndValidity();
   }
+
+  protected readonly CountryISO = CountryISO;
+  text = {
+    mainLabel: 'Mobile number',
+    codePlaceholder: 'Code',
+    searchPlaceholderLabel: 'Search',
+    noEntriesFoundLabel: 'No countries found',
+    nationalNumberLabel: 'Number',
+    hintLabel: '',
+    invalidNumberError: 'Number is not valid',
+    requiredError: 'This field is required',
+  };
+
+  onCurrentValue($event: any) {
+    this.loginForm.get('phoneNumber').setValue($event);
+  }
+
 }

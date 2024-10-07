@@ -40,24 +40,11 @@
           </div>
         </div>
         <div *ngIf="!usingEmail && !otpScreen" class="mb-4 flex flex-col space-y-2 text-secondary w-full">
-          <label for="phoneNumber" class="form-label">Mobile Number</label>
-          <mat-form-field appearance="outline" class="example-full-width ">
-            <input
-              id="phoneNumber"
-              type="text"
-              matInput
-              [minLength]="11"
-              [maxLength]="11"
-              formControlName="phoneNumber"
-              placeholder="Enter your mobile number">
-
-          </mat-form-field>
+          <ngx-material-intl-tel-input id="phoneNumber" [textLabels]="text" [fieldControl]="phoneNumber"
+                                       (currentValue)="onCurrentValue($event)"
+                                       [autoSelectedCountry]="CountryISO.Bangladesh" [hidePhoneIcon]="true"
+                                       [required]="true" [autoIpLookup]="false"></ngx-material-intl-tel-input>
           <!--        error-message-->
-          <div id="phoneError"
-               *ngIf="phoneNumber?.invalid && (phoneNumber?.dirty || phoneNumber?.touched)"
-               class="text-red text-xs">
-            {{ getPhoneNumberError() }}
-          </div>
         </div>
         <div class="w-full flex items-center justify-center mb-6" *ngIf="otpScreen">
           <div class="flex space-x-3 items-center">
