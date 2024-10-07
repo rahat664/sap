@@ -1,12 +1,17 @@
-::ng-deep .mat-mdc-select-panel {
-  border: 0 !important;
+::ng-deep thead {
+  @apply sticky top-0;
 }
 
-::ng-deep .ng-placeholder {
-  color: #A5B8BB !important;
+.border {
+  @apply h-[1px] p-0 bg-[#A1D5DE] sticky top-0;
 }
 
-::ng-deep .ng-select * {
-  color: #242424 !important;
-  font-weight: bolder;
+tbody > tr {
+  @apply border-b border-[#E8F1F3] last:border-b-0;
+}
+
+
+th,
+td {
+  @apply p-4 ;
 }
