@@ -45,6 +45,14 @@ export const profileRoutes: Routes = [
       ),
   },
   {
+    path: 'truck/report',
+    title: 'Report',
+    loadComponent: () =>
+      import('./components/truck/report/report.component').then(
+        c => c.ReportComponent
+      ),
+  },
+  {
     path: 'truck/:id/pre-hire-checklist',
     title: 'Pre Hire Checklist',
     loadComponent: () =>

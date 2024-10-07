@@ -8,7 +8,7 @@ import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
 import { TruckService } from './services/truck.service';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { FileUploadPopupComponent } from './file-upload-popup/file-upload-popup.component';
@@ -21,7 +21,6 @@ import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checkli
 import { MatDialog } from '@angular/material/dialog';
 import { TruckDocument, TruckModel } from './models/truck.model';
 import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
-import { ReportComponent } from './report/report.component';
 
 @Component({
   selector: 'app-truck',
@@ -67,7 +66,8 @@ export class TruckComponent implements OnInit {
 
   constructor(
     private service: TruckService,
-    private shared: DriverEditSharedService
+    private shared: DriverEditSharedService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -226,9 +226,6 @@ export class TruckComponent implements OnInit {
   }
 
   onClickGenerateReport() {
-    this.dialog.open(ReportComponent, {
-      maxHeight: '90vh',
-      minWidth: '30%',
-    });
+    this.router.navigateByUrl('/profile/truck/report');
   }
 }

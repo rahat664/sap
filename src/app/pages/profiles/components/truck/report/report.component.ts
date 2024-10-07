@@ -1,13 +1,32 @@
-import { Component } from '@angular/core';
-import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { VehicleTracker } from '../../driver/models/tracker.model';
-import { TrackerService } from '../../../services/tracker.service';
-import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
+import { Component, inject } from '@angular/core';
+import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
+import { statusButtons } from '../../../../trip-list/models/status-buttons';
+import { ButtonChipsComponent } from '../../../../trip-list/modules/button-chips/button-chips.component';
+import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
+import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
+import { GetElementHeightDirective } from '../../../../../shared/directive/get-element-height.directive';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+  MatOption,
+} from '@angular/material/autocomplete';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { ScrollByButtonDirective } from '../../../../../shared/directive/scroll-by-button.directive';
+import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
+import { DateEnum } from '../../../../trip-list/Enum/date.enum';
+import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
+import { LoadingComponent } from '../../../../../shared/modules/loading/loading.component';
+import { VehicleTracker } from '../../driver/models/tracker.model';
+import { RouterLink } from '@angular/router';
+import { GiveMaxHeightDirective } from '../../../../../shared/directive/give-max-height.directive';
+import { TrackerService } from '../../../services/tracker.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
-import { MatDialogRef } from '@angular/material/dialog';
-import { timer } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { ReportDownloadPopupComponent } from './report-download-popup/report-download-popup.component';
 
 @Component({
   selector: 'app-report',
@@ -20,89 +39,129 @@ import { timer } from 'rxjs';
     FormsModule,
     DatePipe,
     NgClass,
+    ButtonChipsComponent,
+    CustomInputComponent,
+    DecimalPipe,
+    GetClickEventDirective,
+    GetElementHeightDirective,
+    MatAutocomplete,
+    MatAutocompleteTrigger,
+    MatFormField,
+    MatInput,
+    MatOption,
+    ScrollByButtonDirective,
+    LoadingComponent,
+    RouterLink,
+    GiveMaxHeightDirective,
   ],
   templateUrl: './report.component.html',
   styleUrl: './report.component.scss',
 })
 export class ReportComponent {
+  readonly dialog = inject(MatDialog);
+  protected readonly statusButtons = statusButtons;
+  height: any;
+  dateOpened: boolean;
+  inputPlaceholder: string;
+  dateOptionArray: CustomInputSelectModel[] = [];
+  private fromDate: string;
+  private toDate: string;
+  loading: any;
   truckList: VehicleTracker[] = [];
-  truckerList: any[] = [];
-  dateSelection: boolean;
-  selectedFromMonthInString: any;
-  months: any[] = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  selectedFromDay: any;
-  days: any[] = Array.from({ length: 31 }, (_, i) => i + 1);
-  selectedFromYear: any;
-  years: any[] = Array.from(
-    { length: new Date().getFullYear() - 1980 + 1 },
-    (_, i) => 1980 + i,
-  ).reverse();
-  selectedToMonthInString: any;
-  selectedToDay: any;
-  selectedToYear: any;
-  selectedFromMonth: string;
-  selectedToMonth: string;
-  dates: any[] = [
-    { value: 'Today', selected: true },
-    {
-      value: 'Last 7 days',
-      selected: false,
-    },
-    { value: 'Last 15 days' },
-    { value: 'Last 30 days', selected: false },
-    { value: 'Custom', selected: false },
-  ];
-  fromDate: string;
-  toDate: string;
-  loading: boolean;
-  truckerNameList: any[] = [];
-  cashedReport: any;
-  cashedReportOpened: boolean;
-  truckSelection: boolean;
-  processing: boolean;
+  selectedTruckList: number[] = [];
+  selectedTruckName: string[] = [];
+  partiallyChecked: boolean;
 
   constructor(
-    private service: TrackerService,
     private datePipe: DatePipe,
-    private toast: HandleToastrService,
-    private matRef: MatDialogRef<ReportComponent>,
-  ) {
+    private shared: DriverEditSharedService,
+    private service: TrackerService,
+    private toaster: HandleToastrService
+  ) {}
+
+  onSelectedFromDate($event: string) {
+    this.fromDate = $event;
   }
 
-  onClose() {
-    this.matRef.close();
+  onSelectedToDate($event: string) {
+    this.toDate = $event;
   }
 
-  ngOnInit(): void {
-    if (localStorage.getItem('cashedReport')) {
-      this.cashedReport = JSON.parse(localStorage.getItem('cashedReport'));
-      this.cashedReportOpened = true;
+  ngOnInit() {
+    this.getTrackerList();
+    this.getDateOptionArray();
+  }
+
+  onSelectDate($event: number) {
+    if ($event === DateEnum.Custom) {
+      this.shared.closeInputSelect.next(true);
     } else {
-      this.cashedReportOpened = false;
-      this.truckSelection = true;
+      this.shared.closeInputSelect.next(false);
+      this.inputPlaceholder =
+        this.dateOptionArray.find(x => x.id === $event)?.value || '';
+      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
+      this.setDateRange($event);
     }
-    this.truckList = [];
-    // set today's date as default
-    this.fromDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-    this.toDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-    this.setDateValues(new Date(), new Date());
-    this.getTruckList();
   }
 
-  private getTruckList() {
+  private setDateRange(dateEnum: DateEnum) {
+    let fromDate = new Date();
+    // to date should be yesterday
+    let toDate = new Date();
+    switch (dateEnum) {
+      case DateEnum.Yesterday:
+        fromDate.setDate(fromDate.getDate() - 1);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastSevenDays:
+        // shouldn't be count today
+        fromDate.setDate(fromDate.getDate() - 7);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastFifteenDays:
+        fromDate.setDate(fromDate.getDate() - 15);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastThirtyDays:
+        fromDate.setDate(fromDate.getDate() - 30);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+    }
+    this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
+    this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+  }
+
+  getDateOptionArray() {
+    this.dateOptionArray = [
+      {
+        id: DateEnum.Yesterday,
+        value: 'Yesterday',
+        selected: false,
+      },
+      {
+        id: DateEnum.LastSevenDays,
+        value: 'Last 7 Days',
+        selected: false,
+      },
+      {
+        id: DateEnum.LastFifteenDays,
+        value: 'Last 15 Days',
+        selected: false,
+      },
+      {
+        id: DateEnum.LastThirtyDays,
+        value: 'Last 30 Days',
+        selected: false,
+      },
+      {
+        id: DateEnum.Custom,
+        value: 'Custom',
+        selected: false,
+      },
+    ];
+  }
+
+  private getTrackerList() {
     this.loading = true;
     this.service.getTrackers(0, 100).subscribe((res: any) => {
       this.loading = false;
@@ -110,372 +169,110 @@ export class ReportComponent {
     });
   }
 
-  onChange($event: MatCheckboxChange, truck: VehicleTracker) {
-    if ($event.checked) {
-      this.truckerList.push(truck.vehicleId);
-      this.truckerNameList.push(truck.vehicleRegistrationNumber);
-    }
-  }
-
-  onGenerateReport() {
-    if (this.fromDate && this.toDate) {
-      if (localStorage.getItem('cashedReport')) {
-        const cashedReport = JSON.parse(localStorage.getItem('cashedReport'));
-        const truckerList = this.truckerList.join(',');
-        cashedReport.push({
-          fromDate: this.fromDate,
-          toDate: this.toDate,
-          truckerList: truckerList,
-          truckerNameList: this.truckerNameList.join(','),
-          processed: false,
-          processing: false,
-        });
-        localStorage.setItem('cashedReport', JSON.stringify(cashedReport));
-      } else {
-        const cashedReport = [
-          {
-            fromDate: this.fromDate,
-            toDate: this.toDate,
-            truckerList: this.truckerList.join(','),
-            truckerNameList: this.truckerNameList.join(','),
-            processed: false,
-            processing: false,
-          },
-        ];
-        localStorage.setItem('cashedReport', JSON.stringify(cashedReport));
-      }
-      this.matRef.close();
-      this.service
-        .downReport(this.fromDate, this.toDate, this.truckerList.join(','))
-        .subscribe(
-          (res: any) => {
-            this.dateSelection = false;
-            this.toast.showSuccess(
-              'Report generated successfully. Please wait a moment for the download to start.',
-            );
-          },
-          error => {
-            this.dateSelection = false;
-            this.toast.showError('Failed to generate report');
-          },
-        );
-    } else {
-      this.toast.showError('Please select date range');
-    }
-  }
-
-  clearCache() {
-    localStorage.removeItem('cashedReport');
-    this.cashedReport = null;
-    this.cashedReportOpened = false;
-    this.dateSelection = false;
-    this.truckSelection = true;
-  }
-
-  onDownloadReport(fromDate: string, toDate: string, truckerList: string, truckerNameList: any, processed: any, processing: any) {
-    this.processing = true;
-    if (processed) {
-      this.processing = false;
-      this.service
-        .downReport(fromDate, toDate, truckerList)
-        .subscribe(
-          (res: any) => {
-            const url = window.URL.createObjectURL(res);
-            const a = document.createElement('a');
-            document.body.appendChild(a);
-            a.style.display = 'none';
-            a.href = url;
-            a.download = `Report_${fromDate}_${toDate}_${truckerNameList}.pdf`;
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-          },
-          error => {
-            this.toast.showError('Failed to download report');
-          },
-        );
-    } else {
-      this.cashedReport.forEach(report => {
-        if (report.fromDate === fromDate && report.toDate === toDate && report.truckerList === truckerList) {
-          report.processing = true;
+  selectAllTruck($any: any) {
+    if ($any.checked) {
+      this.truckList.forEach(x => {
+        if (x.vehicleRegistrationNumber) {
+          this.selectedTruckList.push(x.vehicleId);
+          this.selectedTruckName.push(x.vehicleRegistrationNumber);
+          x.checked = true;
         }
       });
-      timer(60000).subscribe(() => {
-        this.cashedReport.forEach(report => {
-          if (report.fromDate === fromDate && report.toDate === toDate && report.truckerList === truckerList) {
-            report.processing = false;
-            report.processed = true;
+    } else {
+      this.truckList.forEach(x => (x.checked = false));
+      this.selectedTruckList = [];
+      this.selectedTruckName = [];
+    }
+  }
+
+  selectSingleTruck($any: any, truck: VehicleTracker) {
+    if ($any.checked) {
+      this.selectedTruckList.push(truck.vehicleId);
+      this.selectedTruckName.push(truck.vehicleRegistrationNumber);
+      truck.checked = true;
+    } else {
+      const index = this.selectedTruckList.indexOf(truck.vehicleId);
+      if (index > -1) {
+        this.selectedTruckList.splice(index, 1);
+        this.selectedTruckName.splice(index, 1);
+      }
+      truck.checked = false;
+    }
+  }
+
+  checkThatAllIsCheckedOrNot() {
+    const truckListWhichHasName = this.truckList.filter(
+      x => x.vehicleRegistrationNumber
+    );
+    if (this.selectedTruckList.length === truckListWhichHasName.length) {
+      this.partiallyChecked = false;
+      return true;
+    } else if (
+      this.selectedTruckList.length < truckListWhichHasName.length &&
+      this.selectedTruckList.length > 0
+    ) {
+      this.partiallyChecked = true;
+      return false;
+    } else {
+      this.partiallyChecked = false;
+      return false;
+    }
+  }
+
+  onClickGenerateReport() {
+    let message = '';
+    if (this.selectedTruckList.length === 0) {
+      message += 'truck';
+    }
+    if (!this.fromDate) {
+      if (message) message += ' & ';
+      message += 'from date';
+    }
+    if (!this.toDate) {
+      if (message) message += ' & ';
+      message += 'to date';
+    } else {
+      this.dialog
+        .open(ReportDownloadPopupComponent, {
+          minWidth: '30vw',
+          maxHeight: '80vh',
+          maxWidth: '50vw',
+          minHeight: '60vh',
+          data: {
+            heading: `${this.selectedTruckName.join('_')}`,
+          },
+        })
+        .afterClosed()
+        .subscribe((res: any) => {
+          if (res === 'download') {
+            this.service
+              .downReport(
+                this.fromDate,
+                this.toDate,
+                this.selectedTruckList.join(',')
+              )
+              .subscribe(
+                (res: any) => {
+                  const url = window.URL.createObjectURL(res);
+                  const a = document.createElement('a');
+                  document.body.appendChild(a);
+                  a.style.display = 'none';
+                  a.href = url;
+                  a.download = `Report_${this.fromDate}_${this.toDate}_${this.selectedTruckName}.pdf`;
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+                  document.body.removeChild(a);
+                },
+                error => {
+                  this.toaster.showError('Failed to download report');
+                }
+              );
           }
         });
-        localStorage.setItem('cashedReport', JSON.stringify(this.cashedReport));
-        this.service
-          .downReport(fromDate, toDate, truckerList)
-          .subscribe(
-            (res: any) => {
-              const url = window.URL.createObjectURL(res);
-              const a = document.createElement('a');
-              document.body.appendChild(a);
-              a.style.display = 'none';
-              a.href = url;
-              a.download = `Report_${fromDate}_${toDate}_${truckerNameList}.pdf`;
-              a.click();
-              window.URL.revokeObjectURL(url);
-              document.body.removeChild(a);
-            },
-            error => {
-              this.toast.showError('Failed to download report');
-            },
-          );
-      });
     }
-  }
 
-  onSelectDate() {
-    if (this.truckerList.length > 0) {
-      this.dateSelection = true;
-    } else {
-      this.toast.showError('Please select at least one truck');
+    if (message) {
+      this.toaster.showError(`Please select ${message}`);
     }
-  }
-
-  onFromMonthChange(month: string) {
-    switch (month) {
-      case 'January':
-        this.selectedFromMonthInString = 'January';
-        this.selectedFromMonth = '01';
-        break;
-      case 'February':
-        this.selectedFromMonthInString = 'February';
-        this.selectedFromMonth = '02';
-        break;
-      case 'March':
-        this.selectedFromMonthInString = 'March';
-        this.selectedFromMonth = '03';
-        break;
-      case 'April':
-        this.selectedFromMonthInString = 'April';
-        this.selectedFromMonth = '04';
-        break;
-      case 'May':
-        this.selectedFromMonthInString = 'May';
-        this.selectedFromMonth = '05';
-        break;
-      case 'June':
-        this.selectedFromMonthInString = 'June';
-        this.selectedFromMonth = '06';
-        break;
-      case 'July':
-        this.selectedFromMonthInString = 'July';
-        this.selectedFromMonth = '07';
-        break;
-      case 'August':
-        this.selectedFromMonthInString = 'August';
-        this.selectedFromMonth = '08';
-        break;
-      case 'September':
-        this.selectedFromMonthInString = 'September';
-        this.selectedFromMonth = '09';
-        break;
-      case 'October':
-        this.selectedFromMonthInString = 'October';
-        this.selectedFromMonth = '10';
-        break;
-      case 'November':
-        this.selectedFromMonthInString = 'November';
-        this.selectedFromMonth = '11';
-        break;
-      case 'December':
-        this.selectedFromMonthInString = 'December';
-        this.selectedFromMonth = '12';
-        break;
-    }
-    if (
-      this.selectedFromDay &&
-      this.selectedFromMonth &&
-      this.selectedFromYear
-    ) {
-      this.fromDate = `${this.selectedFromYear}-${this.selectedFromMonth}-${this.selectedFromDay}`;
-    } else {
-      this.fromDate = null;
-    }
-  }
-
-  onFromDayChange(day: number) {
-    this.selectedFromDay =
-      day.toString()?.length === 1 ? `0${day}` : day.toString();
-    if (
-      this.selectedFromDay &&
-      this.selectedFromMonth &&
-      this.selectedFromYear
-    ) {
-      this.fromDate = `${this.selectedFromYear}-${this.selectedFromMonth}-${this.selectedFromDay}`;
-    } else {
-      this.fromDate = null;
-    }
-  }
-
-  onFromYearChange(year: number) {
-    this.selectedFromYear = year.toString();
-    if (
-      this.selectedFromDay &&
-      this.selectedFromMonth &&
-      this.selectedFromYear
-    ) {
-      this.fromDate = `${this.selectedFromYear}-${this.selectedFromMonth}-${this.selectedFromDay}`;
-    } else {
-      this.fromDate = null;
-    }
-  }
-
-  onToMonthChange(month: string) {
-    switch (month) {
-      case 'January':
-        this.selectedToMonthInString = 'January';
-        this.selectedToMonth = '01';
-        break;
-      case 'February':
-        this.selectedToMonthInString = 'February';
-        this.selectedToMonth = '02';
-        break;
-      case 'March':
-        this.selectedToMonthInString = 'March';
-        this.selectedToMonth = '03';
-        break;
-      case 'April':
-        this.selectedToMonthInString = 'April';
-        this.selectedToMonth = '04';
-        break;
-      case 'May':
-        this.selectedToMonthInString = 'May';
-        this.selectedToMonth = '05';
-        break;
-      case 'June':
-        this.selectedToMonthInString = 'June';
-        this.selectedToMonth = '06';
-        break;
-      case 'July':
-        this.selectedToMonthInString = 'July';
-        this.selectedToMonth = '07';
-        break;
-      case 'August':
-        this.selectedToMonthInString = 'August';
-        this.selectedToMonth = '08';
-        break;
-      case 'September':
-        this.selectedToMonthInString = 'September';
-        this.selectedToMonth = '09';
-        break;
-      case 'October':
-        this.selectedToMonthInString = 'October';
-        this.selectedToMonth = '10';
-        break;
-      case 'November':
-        this.selectedToMonthInString = 'November';
-        this.selectedToMonth = '11';
-        break;
-      case 'December':
-        this.selectedToMonthInString = 'December';
-        this.selectedToMonth = '12';
-        break;
-    }
-    if (this.selectedToDay && this.selectedToMonth && this.selectedToYear) {
-      this.toDate = `${this.selectedToYear}-${this.selectedToMonth}-${this.selectedToDay}`;
-    } else {
-      this.toDate = null;
-    }
-  }
-
-  onToDayChange(day: number) {
-    this.selectedToDay =
-      day.toString()?.length === 1 ? `0${day}` : day.toString();
-    if (this.selectedToDay && this.selectedToMonth && this.selectedToYear) {
-      this.toDate = `${this.selectedToYear}-${this.selectedToMonth}-${this.selectedToDay}`;
-    } else {
-      this.toDate = null;
-    }
-  }
-
-  onToYearChange(year: number) {
-    this.selectedToYear = year.toString();
-    if (this.selectedToDay && this.selectedToMonth && this.selectedToYear) {
-      this.toDate = `${this.selectedToYear}-${this.selectedToMonth}-${this.selectedToDay}`;
-    } else {
-      this.toDate = null;
-    }
-  }
-
-  private setDateValues(fromDate: Date, toDate: Date) {
-    if (fromDate && toDate) {
-      this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd');
-      this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd');
-      this.selectedFromDay =
-        fromDate.getDate() < 10 ? `0${fromDate.getDate()}` : fromDate.getDate();
-      this.selectedFromYear = fromDate.getFullYear();
-      this.selectedFromMonthInString = this.months[fromDate.getMonth()];
-      this.selectedToDay =
-        toDate.getDate() < 10 ? `0${toDate.getDate()}` : toDate.getDate();
-      this.selectedToYear = toDate.getFullYear();
-      this.selectedToMonthInString = this.months[toDate.getMonth()];
-    } else {
-      this.fromDate = null;
-      this.toDate = null;
-      this.selectedFromDay = null;
-      this.selectedFromYear = null;
-      this.selectedFromMonthInString = null;
-      this.selectedToDay = null;
-      this.selectedToYear = null;
-      this.selectedToMonthInString = null;
-    }
-  }
-
-  onClickButton(button: any) {
-    switch (button.value) {
-      case 'Today':
-        const today = new Date();
-        this.setDateValues(today, today);
-        break;
-      case 'Last 7 days':
-        const last7DaysFrom = new Date(
-          new Date().setDate(new Date().getDate() - 7),
-        );
-        const last7DaysTo = new Date(
-          new Date().setDate(new Date().getDate() - 1),
-        );
-        this.setDateValues(last7DaysFrom, last7DaysTo);
-        break;
-      case 'Last 15 days':
-        const last15DaysFrom = new Date(
-          new Date().setDate(new Date().getDate() - 15),
-        );
-        const last15DaysTo = new Date(
-          new Date().setDate(new Date().getDate() - 1),
-        );
-        this.setDateValues(last15DaysFrom, last15DaysTo);
-        break;
-      case 'Last 30 days':
-        const last30DaysFrom = new Date(
-          new Date().setDate(new Date().getDate() - 30),
-        );
-        const last30DaysTo = new Date(
-          new Date().setDate(new Date().getDate() - 1),
-        );
-        this.setDateValues(last30DaysFrom, last30DaysTo);
-        break;
-      case 'Custom':
-        this.toDate = null;
-        this.fromDate = null;
-        this.setDateValues(null, null);
-        break;
-    }
-    this.dates.forEach(date => {
-      date.selected = date.value === button.value;
-    });
-  }
-
-  onGenerateNew() {
-    this.cashedReportOpened = false;
-    this.truckerList = [];
-    this.truckerNameList = [];
-    this.truckSelection = true;
   }
 }
