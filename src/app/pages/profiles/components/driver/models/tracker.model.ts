@@ -29,4 +29,5 @@ export interface VehicleTracker {
   createdAt: string; // ISO 8601 string format
   updatedAt: string; // ISO 8601 string format
   trackerType: string;
+  checked: boolean;
 }
