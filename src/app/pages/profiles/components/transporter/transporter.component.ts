@@ -53,7 +53,9 @@ export class TransporterComponent implements OnInit {
 
   onClickAddTransporter() {
     const dialogRef = this.dialog
-      .open(TransporterAddComponent, {})
+      .open(TransporterAddComponent, {
+        minWidth: '50vw',
+      })
       .afterClosed()
       .subscribe(res => {
         if (res) {

@@ -4,11 +4,11 @@ import { CustomInputComponent } from '../../../../shared/modules/custom-input/cu
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { DatePipe, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
 import { TruckService } from './services/truck.service';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { FileUploadPopupComponent } from './file-upload-popup/file-upload-popup.component';
@@ -21,6 +21,10 @@ import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checkli
 import { MatDialog } from '@angular/material/dialog';
 import { TruckDocument, TruckModel } from './models/truck.model';
 import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
+import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-truck',
@@ -44,6 +48,9 @@ import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
     PreHireChecklistComponent,
     DatePipe,
     FormsModule,
+    MatMenuTrigger,
+    MatMenu,
+    NgClass,
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss',
@@ -75,7 +82,7 @@ export class TruckComponent implements OnInit {
 
   constructor(
     private service: TruckService,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
     private shared: DriverEditSharedService,
     private router: Router
   ) {}
