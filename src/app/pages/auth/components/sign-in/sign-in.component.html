@@ -40,9 +40,12 @@
           </div>
         </div>
         <div *ngIf="!usingEmail && !otpScreen" class="mb-4 flex flex-col space-y-2 text-secondary w-full">
-          <ngx-material-intl-tel-input id="phoneNumber" [textLabels]="text" [fieldControl]="phoneNumber"
-                                       (currentValue)="onCurrentValue($event)"
-                                       [autoSelectedCountry]="CountryISO.Bangladesh" [hidePhoneIcon]="true"
+          <ngx-material-intl-tel-input [includeDialCode]="false" #numberInput class="customize" id="phoneNumber"
+                                       [textLabels]="textLabels"
+                                       [autoSelectedCountry]="CountryISO.Bangladesh"
+                                       [preferredCountries]="[CountryISO.Bangladesh]"
+                                       [fieldControl]="phoneNumber"
+                                       [numberValidation]="true" [hidePhoneIcon]="true"
                                        [required]="true" [autoIpLookup]="false"></ngx-material-intl-tel-input>
           <!--        error-message-->
         </div>
