@@ -11,7 +11,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { interval, Subscription, timer } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
@@ -33,6 +33,7 @@ import {
   CountryISO,
   NgxMaterialIntlTelInputComponent,
 } from 'ngx-material-intl-tel-input';
+import { DriverEditSharedService } from '../../../profiles/services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -73,7 +74,8 @@ export class SignInComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private toaster: HandleToastrService,
     private store: Store<{ auth: AuthState }>,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private sharedService: DriverEditSharedService
   ) {
     this.loginRequestPayload = { email: '', password: '' };
     this.loginUsingPhonePayload = { phoneNumber: '' };
@@ -283,11 +285,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   onClickUseMobileNumber() {
-    timer(1000).subscribe(() => {
-      this.phoneInput.forEach((input: any) => {
-        console.log(input);
-      });
-    });
+    this.sharedService.validateInterNationalPhoneNumber();
     this.loginForm.get('email').clearValidators();
     this.loginForm.get('email').updateValueAndValidity();
     this.loginForm.get('email').setValue('');
@@ -332,6 +330,9 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   onOtpLogin() {
     this.loginPhoneRequestPayload.phoneNumber = this.phoneNumber.value;
+    // delete the space and - from the phone number
+    this.loginPhoneRequestPayload.phoneNumber =
+      this.loginPhoneRequestPayload.phoneNumber.replace(/[-\s]/g, '');
     this.loginPhoneRequestPayload.otpCode = `${this.loginForm.get('otp1').value}${this.loginForm.get('otp2').value}${this.loginForm.get('otp3').value}${this.loginForm.get('otp4').value}`;
     this.store.dispatch(
       loginUsingPhoneNumber({ payload: this.loginPhoneRequestPayload })

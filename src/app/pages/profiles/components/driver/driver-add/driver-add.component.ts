@@ -18,6 +18,11 @@ import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-
 import { FileUploadComponent } from '../../truck/file-upload/file-upload.component';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import {
+  CountryISO,
+  NgxMaterialIntlTelInputComponent,
+} from 'ngx-material-intl-tel-input';
+import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-driver-add',
@@ -32,6 +37,7 @@ import { MatInput } from '@angular/material/input';
     FileUploadComponent,
     MatFormField,
     MatInput,
+    NgxMaterialIntlTelInputComponent,
   ],
   templateUrl: './driver-add.component.html',
   styleUrl: './driver-add.component.scss',
@@ -45,7 +51,8 @@ export class DriverAddComponent implements OnInit {
     private validation: ValidationService,
     private router: Router,
     private service: UserService,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
+    private shared: DriverEditSharedService
   ) {
     this.driverAddForm = this.fb.group({
       driverName: [
@@ -56,15 +63,7 @@ export class DriverAddComponent implements OnInit {
           Validators.maxLength(50),
         ],
       ],
-      driverPhone: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern('01[0-9]{9}'),
-          Validators.minLength(11),
-          Validators.maxLength(11),
-        ],
-      ],
+      driverPhone: ['', [Validators.required]],
       nidFront: [null],
       nidBack: [null],
       drivingLicenseFront: [null],
@@ -75,6 +74,7 @@ export class DriverAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.shared.validateInterNationalPhoneNumber();
     this.driverAddForm
       .get('driverName')
       .valueChanges.subscribe((value: string) => {
@@ -83,15 +83,6 @@ export class DriverAddComponent implements OnInit {
         } else {
           this.driverNameErrorMessage = '';
         }
-      });
-    this.driverAddForm
-      .get('driverPhone')
-      .valueChanges.subscribe((value: string) => {
-        this.numberOnlyValidation(value);
-        this.driverPhoneErrorMessage =
-          this.validation.getDriverNumberValidation(
-            this.driverAddForm.get('driverPhone')
-          );
       });
   }
 
@@ -159,7 +150,11 @@ export class DriverAddComponent implements OnInit {
           // Append file controls directly to the FormData
         } else {
           // Add other controls to the payload object
-          payload[key] = value;
+          if (key === 'driverPhone') {
+            payload[key] = value.replace(/[\s-]/g, '');
+          } else {
+            payload[key] = value;
+          }
         }
       });
       formData.append('payload', JSON.stringify(payload));
@@ -244,4 +239,21 @@ export class DriverAddComponent implements OnInit {
       return '';
     }
   }
+
+  protected readonly CountryISO = CountryISO;
+
+  get phoneNumber() {
+    return this.driverAddForm.get('driverPhone');
+  }
+
+  textLabels = {
+    mainLabel: 'Mobile number',
+    codePlaceholder: 'Code',
+    searchPlaceholderLabel: 'Search',
+    noEntriesFoundLabel: 'No countries found',
+    nationalNumberLabel: '',
+    hintLabel: '',
+    invalidNumberError: 'Number is not valid',
+    requiredError: 'This field is required',
+  };
 }

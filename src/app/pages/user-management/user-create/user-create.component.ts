@@ -18,6 +18,11 @@ import { AlphabetOnlyDirective } from '../../../shared/directive/alphabet-only.d
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import {
+  CountryISO,
+  NgxMaterialIntlTelInputComponent,
+} from 'ngx-material-intl-tel-input';
+import { DriverEditSharedService } from '../../profiles/services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-user-create',
@@ -31,6 +36,7 @@ import { MatInput } from '@angular/material/input';
     MatFormField,
     MatInput,
     NgClass,
+    NgxMaterialIntlTelInputComponent,
   ],
   templateUrl: './user-create.component.html',
   styleUrl: './user-create.component.scss',
@@ -53,7 +59,8 @@ export class UserCreateComponent implements OnInit {
     private service: UserService,
     private validation: ValidationService,
     private fb: FormBuilder,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
+    private sharedService: DriverEditSharedService
   ) {
     this.userForm = this.fb.group({
       name: [
@@ -64,15 +71,7 @@ export class UserCreateComponent implements OnInit {
           Validators.maxLength(50),
         ],
       ],
-      phone: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern('^[0-9]*$'),
-          Validators.minLength(11),
-          Validators.maxLength(11),
-        ],
-      ],
+      phone: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       designation: [''],
       role: ['', [Validators.required]],
@@ -83,6 +82,8 @@ export class UserCreateComponent implements OnInit {
     if (this.userForm.valid) {
       this.userModel.name = this.userForm.get('name').value;
       this.userModel.mobile = this.userForm.get('phone').value;
+      // remove space and - from phone number
+      this.userModel.mobile = this.userModel.mobile.replace(/[\s-]/g, '');
       this.userModel.email = this.userForm.get('email').value;
       this.userModel.role = 'ROLE_ADMIN';
       this.userModel.department = this.userForm.get('role').value;
@@ -102,9 +103,7 @@ export class UserCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userForm.get('phone').valueChanges.subscribe(value => {
-      this.validation.mobileNumberValidation(value, this.userForm);
-    });
+    this.sharedService.validateInterNationalPhoneNumber();
   }
 
   onClickRole($event: boolean) {
@@ -160,4 +159,21 @@ export class UserCreateComponent implements OnInit {
     this.dialogRef.close(false);
     this.userForm.reset();
   }
+
+  protected readonly CountryISO = CountryISO;
+
+  get phoneNumber() {
+    return this.userForm.get('phone');
+  }
+
+  textLabels = {
+    mainLabel: 'Mobile number',
+    codePlaceholder: 'Code',
+    searchPlaceholderLabel: 'Search',
+    noEntriesFoundLabel: 'No countries found',
+    nationalNumberLabel: '',
+    hintLabel: '',
+    invalidNumberError: 'Number is not valid',
+    requiredError: 'This field is required',
+  };
 }

@@ -3,7 +3,7 @@ import { UserModel } from '../../user-management/models/user.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, timer } from 'rxjs';
 import { TruckService } from '../components/truck/services/truck.service';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 import {
@@ -71,6 +71,23 @@ export class DriverEditSharedService {
       insuranceFiles: [null],
       truckImages: [null],
       insuranceExpDate: [null],
+    });
+  }
+
+  validateInterNationalPhoneNumber() {
+    timer(1000).subscribe(() => {
+      const numberInput = document
+        .getElementsByClassName('tel-form')[0]
+        .children[1].getElementsByTagName('input')[0];
+      document.getElementsByClassName('tel-form')[0].classList.add('mt-1');
+      numberInput.maxLength = numberInput.placeholder.length;
+      numberInput.minLength = numberInput.placeholder.length;
+      // number input should not accept text
+      numberInput.addEventListener('keypress', e => {
+        if (isNaN(Number(e.key))) {
+          e.preventDefault();
+        }
+      });
     });
   }
 

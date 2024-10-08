@@ -268,9 +268,9 @@ textarea:focus {
 .tel-form {
   border: none !important;
   outline: none !important;
-  background-color: #F5FBFC !important;
+  background-color: #ffffff !important;
   border-radius: 0.5rem !important;
-  @apply space-x-2
+  @apply space-x-2 bg-white;
 }
 
 .tel-form input {

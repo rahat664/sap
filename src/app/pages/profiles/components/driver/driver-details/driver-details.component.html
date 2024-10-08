@@ -60,21 +60,17 @@
           <div
             class="flex flex-col space-y-1"
             [ngClass]="{ 'col-span-2': inEditMode }">
-            <label for="driverPhone" class="text-web-text-secondary font-semibold">Mobile</label>
             <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
                 singleDriver.phone
               }}</span>
             <div *ngIf="inEditMode">
-              <mat-form-field appearance="outline" class="example-full-width w-full">
-                <input
-                  id="driverPhone"
-                  [minLength]="11"
-                  [maxLength]="11"
-                  type="text"
-                  matInput
-                  formControlName="driverPhone"
-                  placeholder="Enter mobile number">
-              </mat-form-field>
+              <ngx-material-intl-tel-input [includeDialCode]="false" #numberInput class="customize" id="phoneNumber"
+                                           [textLabels]="textLabels"
+                                           [autoSelectedCountry]="CountryISO.Bangladesh"
+                                           [preferredCountries]="[CountryISO.Bangladesh]"
+                                           [fieldControl]="phoneNumber"
+                                           [numberValidation]="true" [hidePhoneIcon]="true"
+                                           [required]="true" [autoIpLookup]="false"></ngx-material-intl-tel-input>
             </div>
           </div>
         </form>

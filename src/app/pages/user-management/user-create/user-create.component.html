@@ -36,28 +36,14 @@
         <!--        error-message-->
       </div>
       <div class="flex flex-col space-y-2 w-full">
-        <label for="phone">Mobile</label>
-        <mat-form-field appearance="outline" class="example-full-width "
-                        [ngClass]="{'error': userForm.get('phone').invalid && userForm.get('phone').touched}"
-        >
-          <input
-            [minLength]="11"
-            [maxLength]="11"
-            type="text"
-            matInput
-            id="phone"
-            formControlName="phone"
-            placeholder="Enter Mobile">
-        </mat-form-field>
+        <ngx-material-intl-tel-input [includeDialCode]="false" #numberInput class="customize" id="phoneNumber"
+                                     [textLabels]="textLabels"
+                                     [autoSelectedCountry]="CountryISO.Bangladesh"
+                                     [preferredCountries]="[CountryISO.Bangladesh]"
+                                     [fieldControl]="phoneNumber"
+                                     [numberValidation]="true" [hidePhoneIcon]="true"
+                                     [required]="true" [autoIpLookup]="false"></ngx-material-intl-tel-input>
         <!--        error-message-->
-        <div
-          *ngIf="userForm.get('phone').dirty && !userForm.get('phone').touched"
-          class="text-red text-xs">
-          <span>{{ getPhoneErrorMessage() }}</span>
-        </div>
-        <div *ngIf="userForm.get('phone').touched" class="text-red text-xs">
-          <span>{{ getPhoneErrorMessageWithTouch() }}</span>
-        </div>
       </div>
       <div class="flex flex-col space-y-2 w-full">
         <label for="email">Email</label>

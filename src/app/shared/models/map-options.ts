@@ -11,7 +11,7 @@ export const mapStyles: google.maps.MapTypeStyle[] = [
     elementType: 'labels.icon',
     stylers: [
       {
-        visibility: 'off',
+        visibility: 'on',
       },
     ],
   },
@@ -63,7 +63,7 @@ export const mapStyles: google.maps.MapTypeStyle[] = [
     elementType: 'labels.text',
     stylers: [
       {
-        visibility: 'off',
+        visibility: 'on',
       },
     ],
   },
@@ -116,7 +116,7 @@ export const mapStyles: google.maps.MapTypeStyle[] = [
     elementType: 'labels.icon',
     stylers: [
       {
-        visibility: 'off',
+        visibility: 'on',
       },
     ],
   },
@@ -152,7 +152,7 @@ export const mapStyles: google.maps.MapTypeStyle[] = [
     elementType: 'labels',
     stylers: [
       {
-        visibility: 'off',
+        visibility: 'on',
       },
     ],
   },
@@ -169,7 +169,7 @@ export const mapStyles: google.maps.MapTypeStyle[] = [
     featureType: 'transit',
     stylers: [
       {
-        visibility: 'off',
+        visibility: 'on',
       },
     ],
   },
