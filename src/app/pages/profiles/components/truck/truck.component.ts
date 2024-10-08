@@ -4,10 +4,9 @@ import { CustomInputComponent } from '../../../../shared/modules/custom-input/cu
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
-import { TruckDocument, TruckModel } from './models/truck.model';
 import { TruckService } from './services/truck.service';
 import { RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
@@ -20,13 +19,8 @@ import { debounceTime } from 'rxjs';
 import { CheckListPopupComponent } from '../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checklist.component';
 import { MatDialog } from '@angular/material/dialog';
-import { MatButton } from '@angular/material/button';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { TruckDocument, TruckModel } from './models/truck.model';
 import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
-import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
-import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
-import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
-import { PreHireChecklistPopupComponent } from './pre-hire-checklist-popup/pre-hire-checklist-popup.component';
 
 @Component({
   selector: 'app-truck',
@@ -50,11 +44,6 @@ import { PreHireChecklistPopupComponent } from './pre-hire-checklist-popup/pre-h
     PreHireChecklistComponent,
     DatePipe,
     FormsModule,
-    NgClass,
-    MatButton,
-    MatMenu,
-    MatMenuItem,
-    MatMenuTrigger,
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss',
@@ -86,8 +75,9 @@ export class TruckComponent implements OnInit {
 
   constructor(
     private service: TruckService,
-    private shared: DriverEditSharedService,
     private toastr: HandleToastrService
+    private shared: DriverEditSharedService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -220,36 +210,12 @@ export class TruckComponent implements OnInit {
   }
 
   onClickCheckList(truck) {
-    this.service.getPreHireChecklist(truck.id).subscribe((res: any) => {
-      this.dialog
-        .open(PreHireChecklistPopupComponent, {
-          data: {
-            title: 'Pre Hire Checklist',
-            checklist: res.data,
-            truck: truck,
-            checked: truck.preHireCheckList,
-          },
-          maxHeight: '90vh',
-        })
-        .afterClosed()
-        .subscribe((res: any) => {
-          if (res) {
-            const formData = new FormData();
-            const payload: Record<string, any> = {};
-            payload['id'] = truck.id;
-            payload['checklist'] = res;
-            formData.append('payload', JSON.stringify(payload));
-            this.service.editTruck(formData).subscribe((res: any) => {
-              if (res.status === 'OK') {
-                this.toastr.showSuccess(res.message);
-                this.truckList = [];
-                this.getTruckList();
-              } else {
-                this.toastr.showError(res.message);
-              }
-            });
-          }
-        });
+    this.isCheckListOpened = true;
+    this.singleTruckId = truck.id;
+    localStorage.removeItem('truck');
+    localStorage.setItem('truck', JSON.stringify(truck));
+    this.dialog.open(PreHireChecklistComponent, {
+      width: '40%',
     });
   }
 
@@ -338,6 +304,10 @@ export class TruckComponent implements OnInit {
           );
         }
       });
+  }
+
+  onClickGenerateReport() {
+    this.router.navigateByUrl('/profile/truck/report');
   }
 
   onClickReject(truckDetails: TruckModel) {

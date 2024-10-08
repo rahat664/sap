@@ -58,4 +58,8 @@ export class TruckService {
   getTruckById(id: string) {
     return this.http.get(`${this.url}/${id}`);
   }
+
+  getTruckData() {
+
+  }
 }

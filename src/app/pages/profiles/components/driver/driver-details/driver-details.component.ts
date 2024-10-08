@@ -18,6 +18,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import {
+  CountryISO,
+  NgxMaterialIntlTelInputComponent,
+} from 'ngx-material-intl-tel-input';
 
 @Component({
   selector: 'app-driver-details',
@@ -36,6 +40,7 @@ import { MatInput } from '@angular/material/input';
     MatFormField,
     MatInput,
     ReactiveFormsModule,
+    NgxMaterialIntlTelInputComponent,
   ],
   templateUrl: './driver-details.component.html',
   styleUrl: './driver-details.component.scss',
@@ -63,6 +68,7 @@ export class DriverDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.driverEditSharedService.validateInterNationalPhoneNumber();
     localStorage.removeItem('previousDriverDocument');
     this.driverEditSharedService.isUploadPopupOpen.subscribe(res => {
       this.isUploadPopupOpen = res;
@@ -85,6 +91,8 @@ export class DriverDetailsComponent implements OnInit {
   onDriverUpdate() {
     this.driverName = this.driverUpdateForm.get('driverName').value;
     this.driverPhone = this.driverUpdateForm.get('driverPhone').value;
+    // remove space and - from phone number
+    this.driverPhone = this.driverPhone.replace(/[\s-]/g, '');
     this.driverEditSharedService.onDriverUpdate(
       this.driverName,
       this.driverPhone
@@ -172,5 +180,22 @@ export class DriverDetailsComponent implements OnInit {
           this.documents = this.driverEditSharedService.documents;
         }
       });
+  }
+
+  protected readonly CountryISO = CountryISO;
+
+  textLabels = {
+    mainLabel: 'Mobile number',
+    codePlaceholder: 'Code',
+    searchPlaceholderLabel: 'Search',
+    noEntriesFoundLabel: 'No countries found',
+    nationalNumberLabel: '',
+    hintLabel: '',
+    invalidNumberError: 'Number is not valid',
+    requiredError: 'This field is required',
+  };
+
+  get phoneNumber() {
+    return this.driverUpdateForm.get('driverPhone');
   }
 }

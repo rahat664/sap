@@ -274,3 +274,15 @@ img:hover {
 .mat-mdc-dialog-surface {
   background-color: white !important;
 }
+
+.tel-form {
+  border: none !important;
+  outline: none !important;
+  background-color: #ffffff !important;
+  border-radius: 0.5rem !important;
+  @apply space-x-2 bg-white;
+}
+
+.tel-form input {
+  --tw-ring-color: none !important;
+}
