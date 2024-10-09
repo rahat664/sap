@@ -2,7 +2,10 @@
   <div class="flex px-7 py-4  border-b border-line w-full  justify-between items-center">
     <h1 class="text-h1 leading-h1 font-semibold">Report</h1>
     <div>
-      <button (click)="onClickGenerateReport()"
+      <button [matTooltipDisabled]="fromDate != null && toDate != null && selectedTruckList.length > 0"
+              matTooltip="Please select date and at least one truck"
+              [disabled]="fromDate == null || toDate == null || selectedTruckList.length <= 0"
+              (click)="onClickGenerateReport()"
               class="px-16 flex space-x-2 text-white items-center  bg-primary py-3  rounded-lg">
         <span class="text-h2_medium font-medium lg:block">Generate report as pdf file</span>
       </button>

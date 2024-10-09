@@ -27,6 +27,7 @@ import { TrackerService } from '../../../services/tracker.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDownloadPopupComponent } from './report-download-popup/report-download-popup.component';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-report',
@@ -53,6 +54,7 @@ import { ReportDownloadPopupComponent } from './report-download-popup/report-dow
     LoadingComponent,
     RouterLink,
     GiveMaxHeightDirective,
+    MatTooltip,
   ],
   templateUrl: './report.component.html',
   styleUrl: './report.component.scss',
@@ -64,8 +66,8 @@ export class ReportComponent {
   dateOpened: boolean;
   inputPlaceholder: string;
   dateOptionArray: CustomInputSelectModel[] = [];
-  private fromDate: string;
-  private toDate: string;
+  protected fromDate: string;
+  protected toDate: string;
   loading: any;
   truckList: VehicleTracker[] = [];
   selectedTruckList: number[] = [];
@@ -80,11 +82,15 @@ export class ReportComponent {
   ) {}
 
   onSelectedFromDate($event: string) {
-    this.fromDate = $event;
+    if ($event) {
+      this.fromDate = $event;
+    }
   }
 
   onSelectedToDate($event: string) {
-    this.toDate = $event;
+    if ($event) {
+      this.toDate = $event;
+    }
   }
 
   ngOnInit() {
@@ -93,10 +99,11 @@ export class ReportComponent {
   }
 
   onSelectDate($event: number) {
+    console.log($event);
     if ($event === DateEnum.Custom) {
-      this.shared.closeInputSelect.next(true);
-    } else {
       this.shared.closeInputSelect.next(false);
+    } else {
+      this.shared.closeInputSelect.next(true);
       this.inputPlaceholder =
         this.dateOptionArray.find(x => x.id === $event)?.value || '';
       this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
