@@ -73,6 +73,7 @@ export class ReportComponent {
   selectedTruckList: number[] = [];
   selectedTruckName: string[] = [];
   partiallyChecked: boolean;
+  isCustomOpened: boolean = false;
 
   constructor(
     private datePipe: DatePipe,
@@ -102,6 +103,7 @@ export class ReportComponent {
     console.log($event);
     if ($event === DateEnum.Custom) {
       this.shared.closeInputSelect.next(false);
+      this.isCustomOpened = true;
     } else {
       this.shared.closeInputSelect.next(true);
       this.inputPlaceholder =
@@ -117,21 +119,31 @@ export class ReportComponent {
     let toDate = new Date();
     switch (dateEnum) {
       case DateEnum.Yesterday:
+        this.isCustomOpened = false;
         fromDate.setDate(fromDate.getDate() - 1);
         toDate.setDate(toDate.getDate() - 1);
         break;
       case DateEnum.LastSevenDays:
+        this.isCustomOpened = false;
         // shouldn't be count today
         fromDate.setDate(fromDate.getDate() - 7);
         toDate.setDate(toDate.getDate() - 1);
         break;
       case DateEnum.LastFifteenDays:
+        this.isCustomOpened = false;
         fromDate.setDate(fromDate.getDate() - 15);
         toDate.setDate(toDate.getDate() - 1);
         break;
       case DateEnum.LastThirtyDays:
+        this.isCustomOpened = false;
         fromDate.setDate(fromDate.getDate() - 30);
         toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.Custom:
+        this.isCustomOpened = true;
+        break;
+      default:
+        this.isCustomOpened = true;
         break;
     }
     this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
@@ -158,11 +170,6 @@ export class ReportComponent {
       {
         id: DateEnum.LastThirtyDays,
         value: 'Last 30 Days',
-        selected: false,
-      },
-      {
-        id: DateEnum.Custom,
-        value: 'Custom',
         selected: false,
       },
     ];
@@ -254,8 +261,8 @@ export class ReportComponent {
           if (res === 'download') {
             this.service
               .downReport(
-                this.fromDate,
-                this.toDate,
+                this.formateFromData(this.fromDate),
+                this.formateToData(this.toDate),
                 this.selectedTruckList.join(',')
               )
               .subscribe(
@@ -281,5 +288,15 @@ export class ReportComponent {
     if (message) {
       this.toaster.showError(`Please select ${message}`);
     }
+  }
+
+  private formateFromData(fromDate: string) {
+    // return from date with datetime format 00:00
+    return this.datePipe.transform(fromDate, 'yyyy-MM-dd') + ' 00:00';
+  }
+
+  private formateToData(toDate: string) {
+    // return to date with datetime format 23:59
+    return this.datePipe.transform(toDate, 'yyyy-MM-dd') + ' 23:59';
   }
 }
