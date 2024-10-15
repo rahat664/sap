@@ -18,14 +18,14 @@
         </button>
         <button
           *ngIf="!isInEditMode && (driverDetails?.approveStatus === 'Pending' || driverDetails?.approveStatus === 'Rejected')"
-          (click)="onClickApprove()"
+          (click)="onClickApprove(driverDetails)"
           class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
           <span>Approve</span>
         </button>
         <button
           *ngIf="!isInEditMode && (driverDetails?.approveStatus === 'Pending')"
-          (click)="onClickReject()"
+          (click)="onClickReject(driverDetails)"
           class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
           <span>Reject</span>
@@ -47,22 +47,55 @@
             <img class="h-8 w-8" loading="lazy" src="assets/svg/driver-info.svg" alt="" />
             <span class="text-h3 leading-h3 text-not-black font-semibold">Driver Info</span>
           </div>
-          <div class="">
-
+          <div *ngIf="!isInEditMode" class="flex justify-between">
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-web-text-secondary">Driver name</span>
+              <span
+                class="text-body_title leading-body_title font-semibold">{{ driverDetails?.name }}</span>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-web-text-secondary">Driver mobile no.</span>
+              <span
+                class="text-body_title leading-body_title font-semibold">{{ driverDetails?.phone }}</span>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-web-text-secondary">Status</span>
+              <span class="text-body_title leading-body_title font-semibold">{{ driverDetails?.approveStatus }}</span>
+            </div>
           </div>
-        </div>
-        <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
-          <div class="flex space-x-4 items-center">
-            <img src="assets/svg/truckDocument.svg" class="notPreview" alt="truck document">
-            <span class="text-not-black text-h3 leading-h3 font-semibold">Document</span>
+          <div class="py-3 px-4 bg-red rounded-lg bg-opacity-[10%]"
+               *ngIf="driverDetails?.approveStatus === 'Rejected' && driverDetails?.rejectedReason && !isInEditMode">
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-red">Rejection cause</span>
+              <span
+                class="text-body text-not-black">{{
+                  driverDetails?.rejectedReason
+                }}</span>
+            </div>
           </div>
-          <div
-            class="flex flex-col space-y-1"
-            [ngClass]="{ 'col-span-2': inEditMode }">
-            <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
-                singleDriver.phone
-              }}</span>
-            <div *ngIf="inEditMode">
+          <ng-container *ngIf="isInEditMode">
+            <div class="flex flex-col space-y-1">
+              <label for="driverName" class="text-not-black font-semibold">Name</label>
+              <div>
+                <mat-form-field appearance="outline" class="example-full-width w-full">
+                  <input
+                    appAlphabetOnly
+                    id="driverName"
+                    [minLength]="2"
+                    [maxLength]="50"
+                    type="text"
+                    matInput
+                    formControlName="driverName"
+                    placeholder="Enter driver Name">
+                </mat-form-field>
+                <span
+                  *ngIf="driverUpdateForm.get('driverName').touched"
+                  class="text-red text-xs"
+                >{{ getDriverNameError() }}</span
+                >
+              </div>
+            </div>
+            <div class="flex flex-col space-y-1 w-full">
               <ngx-material-intl-tel-input [includeDialCode]="false" #numberInput class="customize" id="phoneNumber"
                                            [textLabels]="textLabels"
                                            [autoSelectedCountry]="CountryISO.Bangladesh"
@@ -70,7 +103,45 @@
                                            [fieldControl]="phoneNumber"
                                            [numberValidation]="true" [hidePhoneIcon]="true"
                                            [required]="true" [autoIpLookup]="false"></ngx-material-intl-tel-input>
+              <!--        error-message-->
             </div>
+          </ng-container>
+        </div>
+        <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
+          <div class="flex space-x-4 items-center">
+            <img src="assets/svg/truckDocument.svg" class="notPreview" alt="truck document">
+            <span class="text-not-black text-h3 leading-h3 font-semibold">Document</span>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <ng-container *ngFor="let option of driverFileType; index as i">
+              <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
+                <div class="flex space-x-4 items-center">
+                  <img src="assets/svg/not-available.svg" class="notPreview" alt=""
+                       *ngIf="!checkThatFileIsAvailableOrNot(option.name).length && !driverUpdateForm.get(option.formControlName).value">
+                  <img src="assets/svg/available.svg" alt="" class="notPreview"
+                       *ngIf=" checkThatFileIsAvailableOrNot(option.name).length > 0 || driverUpdateForm.get(option.formControlName).value"
+                  >
+                  <div class="flex flex-col space-y-0.5">
+                    <span
+                      class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
+                    <span
+                      *ngIf="option.expiryAvailable && checkThatFileIsAvailableOrNot(option.name) && checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate && !isInEditMode"
+                      class="{{checkDateIsExpiredOrNot(checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate).isExpired ? 'text-red' : 'text-not-black' }} text-body">{{ checkDateIsExpiredOrNot(checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate).text }}</span>
+                    <mat-form-field *ngIf="option?.expiryAvailable && isInEditMode"
+                                    class="example-full-width flex-1 custom"
+                                    appearance="outline"
+                                    [ngClass]="{ 'error' : driverUpdateForm.get(option.expiryFormControlName).invalid }"
+                    >
+                      <input [formControlName]="option.expiryFormControlName" matInput
+                             [matDatepicker]="picker"
+                             placeholder="Expiry Date" (focusin)="picker.open()"
+                             (selectionchange)="onDateChange($event, option.expiryFormControlName)">
+                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+
                 <div class="flex space-x-6 items-center">
                   <div class="flex">
                     <div class="flex space-x-3 relative">

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
@@ -38,6 +38,9 @@ import { HandleToastrService } from '../../../../../shared/services/handle-toast
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
+import { ConfirmApproveComponent } from '../../../../../shared/modules/confirm-approve/confirm-approve.component';
+import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-reject/confirm-reject.component';
+import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 
 @Component({
   selector: 'app-driver-details',
@@ -62,6 +65,7 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
     MatDatepickerToggle,
     MatDatepickerInput,
     NgxMaterialIntlTelInputComponent,
+    AlphabetOnlyDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './driver-details.component.html',
@@ -680,9 +684,84 @@ export class DriverDetailsComponent implements OnInit {
     );
   }
 
-  onClickApprove() {}
+  onClickApprove(driver: UserModel) {
+    this.dialog
+      .open(ConfirmApproveComponent, {
+        data: {
+          title: 'Approve',
+          text: `${driver.userId}?`,
+          buttonText: 'Approve',
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res === 'updated') {
+          // Do something
+          const formData = new FormData();
+          const payload: Record<string, any> = {};
+          payload['driverId'] = driver.userId;
+          payload['driverName'] = driver.name;
+          payload['driverPhone'] = driver.phone;
+          payload['driverStatus'] = 'Approved';
+          formData.append('payload', JSON.stringify(payload));
+          this.service.editDriver(formData).subscribe(
+            (res: any) => {
+              // Handle response
+              if (res.status == 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.router.navigate(['/profile/driver']);
+              } else {
+                this.toastr.showError(res.message);
+              }
+            },
+            error => {
+              // Handle error
+              this.toastr.showError(error.error.message);
+            }
+          );
+        }
+      });
+  }
 
-  onClickReject() {}
+  onClickReject(driver: UserModel) {
+    this.dialog
+      .open(ConfirmRejectComponent, {
+        data: {
+          title: 'Reject',
+          text: `${driver.userId}?`,
+          buttonText: 'Reject',
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res.status === 'rejected') {
+          // Do something
+          const formData = new FormData();
+          const payload: Record<string, any> = {};
+          payload['driverId'] = driver.userId;
+          payload['driverName'] = driver.name;
+          payload['driverPhone'] = driver.phone;
+          payload['driverStatus'] = 'Rejected';
+          payload['rejectedReason'] = res.reason;
+          formData.append('payload', JSON.stringify(payload));
+          this.service.editDriver(formData).subscribe(
+            (res: any) => {
+              // Handle response
+              if (res.status == 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.router.navigate(['/profile/driver']);
+              } else {
+                this.toastr.showError(res.message);
+              }
+            },
+            error => {
+              // Handle error
+              this.toastr.showError(error.error.message);
+            }
+          );
+        }
+      });
+  }
 
   onClickEdit() {
     this.isInEditMode = true;
@@ -790,5 +869,17 @@ export class DriverDetailsComponent implements OnInit {
 
   get phoneNumber() {
     return this.driverUpdateForm.get('driverPhone');
+  }
+
+  getDriverNameError() {
+    if (this.driverUpdateForm?.get('driverName').hasError('required')) {
+      return 'Driver name required';
+    } else if (this.driverUpdateForm?.get('driverName').hasError('minlength')) {
+      return 'Invalid driver name';
+    } else if (this.driverUpdateForm?.get('driverName').hasError('maxlength')) {
+      return 'Invalid driver name';
+    } else {
+      return '';
+    }
   }
 }

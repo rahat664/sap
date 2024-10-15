@@ -96,8 +96,7 @@ export class DriverAddComponent implements OnInit {
     private router: Router,
     private service: UserService,
     private toastr: HandleToastrService,
-    private shared: DriverEditSharedService
-    private toastr: HandleToastrService,
+    private shared: DriverEditSharedService,
     private datePipe: DatePipe,
     private imageGalleryService: ImageGalleryService
   ) {
