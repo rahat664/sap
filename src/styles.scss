@@ -264,3 +264,15 @@ textarea:focus {
 .mat-date-range-input-separator {
   color: #A5B8BB !important;
 }
+
+.tel-form {
+  border: none !important;
+  outline: none !important;
+  background-color: #ffffff !important;
+  border-radius: 0.5rem !important;
+  @apply space-x-2 bg-white;
+}
+
+.tel-form input {
+  --tw-ring-color: none !important;
+}
