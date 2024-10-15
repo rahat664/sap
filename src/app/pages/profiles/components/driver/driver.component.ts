@@ -23,6 +23,10 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
+import {
+  DriverDocumentType,
+  TruckDocumentType,
+} from '../../../../shared/Enums/registration_type';
 
 @Component({
   selector: 'app-driver',
@@ -365,4 +369,36 @@ export class DriverComponent implements OnInit {
       return 'bg-red';
     }
   }
+
+  protected readonly driverEnum = DriverDocumentType;
+
+  checkThatFileIsExistOrNot(fileName: any, truckDocumentList: any[]) {
+    let isExist = false;
+    let expDate = '';
+    truckDocumentList.forEach(doc => {
+      if (doc.documentType == this.driverEnum[fileName]) {
+        isExist = true;
+        expDate = doc?.expiryDate;
+      }
+    });
+    return {
+      isExist: isExist,
+      expDate: expDate,
+    };
+  }
+
+  checkExpiryDate(expDate: string) {
+    if (expDate) {
+      const today = new Date();
+      const expiryDate = new Date(expDate);
+      today.setHours(0, 0, 0, 0);
+      expiryDate.setHours(0, 0, 0, 0);
+      if (today > expiryDate) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  protected readonly truckEnum = TruckDocumentType;
 }

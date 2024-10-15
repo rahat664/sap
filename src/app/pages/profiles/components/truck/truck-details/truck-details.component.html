@@ -1,10 +1,7 @@
 <div>
   <div class="p-2 sticky top-16 bg-app-bg z-30">
     <div class="p-4  rounded-lg bg-white flex justify-between items-center ">
-      <div class="flex space-x-2 items-center  pb-4">
-        <img src="assets/svg/list.svg" class="notPreview h-[2rem] w-[2rem]" alt="">
-        <h1 class="text-h3 leading-h3 font-semibold">{{ isInEditMode ? 'Truck Edit' : 'Truck Details' }}</h1>
-      </div>
+      <h1 class="text-h1 leading-h1 font-semibold">{{ isInEditMode ? 'Truck Edit' : 'Truck Details' }}</h1>
       <div class="flex space-x-4 items-center">
         <button
           *ngIf="isInEditMode"

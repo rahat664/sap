@@ -41,7 +41,6 @@ import { TruckFileType, truckFileType } from '../models/truck-file-type';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
-import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @Component({
   selector: 'app-truck-add',
@@ -67,7 +66,6 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     NgForOf,
     MatMenu,
     MatMenuTrigger,
-    PdfViewerModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './truck-add.component.html',

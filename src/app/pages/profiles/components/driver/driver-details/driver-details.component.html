@@ -1,10 +1,7 @@
 <div>
   <div class="p-2 sticky top-16 bg-app-bg z-30">
     <div class="p-4  rounded-lg bg-white flex justify-between items-center ">
-      <div class="flex space-x-2 items-center  pb-4">
-        <img src="assets/svg/list.svg" class="notPreview h-[2rem] w-[2rem]" alt="">
-        <h1 class="text-h3 leading-h3 font-semibold">{{ isInEditMode ? 'Truck Edit' : 'Truck Details' }}</h1>
-      </div>
+      <h1 class="text-h1 leading-h1 font-semibold">{{ isInEditMode ? 'Driver Edit' : 'Driver Details' }}</h1>
       <div class="flex space-x-4 items-center">
         <button
           *ngIf="isInEditMode"
@@ -20,14 +17,14 @@
           <span>Cancel</span>
         </button>
         <button
-          *ngIf="!isInEditMode && (driverDetails?.status === 'Pending' || driverDetails?.status === 'Rejected')"
+          *ngIf="!isInEditMode && (driverDetails?.approveStatus === 'Pending' || driverDetails?.approveStatus === 'Rejected')"
           (click)="onClickApprove()"
           class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
           <span>Approve</span>
         </button>
         <button
-          *ngIf="!isInEditMode && (driverDetails?.status === 'Pending')"
+          *ngIf="!isInEditMode && (driverDetails?.approveStatus === 'Pending')"
           (click)="onClickReject()"
           class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
@@ -49,6 +46,9 @@
           <div class="flex space-x-4 items-center text-not-black">
             <img class="h-8 w-8" loading="lazy" src="assets/svg/driver-info.svg" alt="" />
             <span class="text-h3 leading-h3 text-not-black font-semibold">Driver Info</span>
+          </div>
+          <div class="">
+
           </div>
         </div>
         <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">

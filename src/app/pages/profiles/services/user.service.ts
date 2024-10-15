@@ -96,9 +96,9 @@ export class UserService {
     page: number,
     size: number,
     search?: string,
-    status?: string
+    approveStatus?: string
   ): Observable<any> {
-    let apiUrl = `${this.url}/drivers?page=${page}&size=${size}&status=${status}`;
+    let apiUrl = `${this.url}/drivers?page=${page}&size=${size}&approveStatus=${approveStatus}`;
 
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
@@ -172,5 +172,9 @@ export class UserService {
     document.execCommand('copy');
     document.body.removeChild(el);
     this.toaster.showInfo(`${createdByPhone} copied to clipboard`);
+  }
+
+  getDriverById(driverId: any) {
+    return this.http.get(`${this.url}/drivers/${driverId}`);
   }
 }

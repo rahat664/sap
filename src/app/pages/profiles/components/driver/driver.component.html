@@ -117,17 +117,19 @@
           <td class="text-center">{{ driver.completedTripCountsForDriver }}</td>
           <td class="whitespace-nowrap">
             <div class="flex items-center justify-center h-full">
-              <i
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate) || checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate) }"
                 *ngIf="
-                    driver.driverFilesUrls?.drivingLicenseBack ||
-                    driver.driverFilesUrls?.drivingLicenseFront
+                    checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist || checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
                   "
-                class="fas fa-check text-green"></i>
+              >
+                {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}
+                {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}
+              </span>
               <app-upload-button
                 (click)="onClickLicenseUpload(driver)"
                 *ngIf="
-                    !driver.driverFilesUrls?.drivingLicenseBack &&
-                    !driver.driverFilesUrls?.drivingLicenseFront
+                    !checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist && !checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
                   "
                 icon="upload"
                 [file]="true"></app-upload-button>
@@ -137,15 +139,13 @@
             <div class="flex items-center justify-center h-full">
               <i
                 *ngIf="
-                    driver.driverFilesUrls?.nidFront ||
-                    driver.driverFilesUrls?.nidBack
+                    checkThatFileIsExistOrNot(driverEnum.NID_FRONT, driver.documentsList).isExist || checkThatFileIsExistOrNot(driverEnum.NID_BACK, driver.documentsList).isExist
                   "
                 class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickNidUpload(driver)"
                 *ngIf="
-                    !driver.driverFilesUrls?.nidBack &&
-                    !driver.driverFilesUrls?.nidFront
+                    !checkThatFileIsExistOrNot(driverEnum.NID_FRONT, driver.documentsList).isExist && !checkThatFileIsExistOrNot(driverEnum.NID_BACK, driver.documentsList).isExist
                   "
                 icon="upload"
                 [file]="true"></app-upload-button>
