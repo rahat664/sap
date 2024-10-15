@@ -27,6 +27,7 @@ import { TrackerService } from '../../../services/tracker.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDownloadPopupComponent } from './report-download-popup/report-download-popup.component';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-report',
@@ -53,6 +54,7 @@ import { ReportDownloadPopupComponent } from './report-download-popup/report-dow
     LoadingComponent,
     RouterLink,
     GiveMaxHeightDirective,
+    MatTooltip,
   ],
   templateUrl: './report.component.html',
   styleUrl: './report.component.scss',
@@ -64,13 +66,14 @@ export class ReportComponent {
   dateOpened: boolean;
   inputPlaceholder: string;
   dateOptionArray: CustomInputSelectModel[] = [];
-  private fromDate: string;
-  private toDate: string;
+  protected fromDate: string;
+  protected toDate: string;
   loading: any;
   truckList: VehicleTracker[] = [];
   selectedTruckList: number[] = [];
   selectedTruckName: string[] = [];
   partiallyChecked: boolean;
+  isCustomOpened: boolean = false;
 
   constructor(
     private datePipe: DatePipe,
@@ -80,11 +83,15 @@ export class ReportComponent {
   ) {}
 
   onSelectedFromDate($event: string) {
-    this.fromDate = $event;
+    if ($event) {
+      this.fromDate = $event;
+    }
   }
 
   onSelectedToDate($event: string) {
-    this.toDate = $event;
+    if ($event) {
+      this.toDate = $event;
+    }
   }
 
   ngOnInit() {
@@ -93,10 +100,12 @@ export class ReportComponent {
   }
 
   onSelectDate($event: number) {
+    console.log($event);
     if ($event === DateEnum.Custom) {
-      this.shared.closeInputSelect.next(true);
-    } else {
       this.shared.closeInputSelect.next(false);
+      this.isCustomOpened = true;
+    } else {
+      this.shared.closeInputSelect.next(true);
       this.inputPlaceholder =
         this.dateOptionArray.find(x => x.id === $event)?.value || '';
       this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
@@ -110,21 +119,31 @@ export class ReportComponent {
     let toDate = new Date();
     switch (dateEnum) {
       case DateEnum.Yesterday:
+        this.isCustomOpened = false;
         fromDate.setDate(fromDate.getDate() - 1);
         toDate.setDate(toDate.getDate() - 1);
         break;
       case DateEnum.LastSevenDays:
+        this.isCustomOpened = false;
         // shouldn't be count today
         fromDate.setDate(fromDate.getDate() - 7);
         toDate.setDate(toDate.getDate() - 1);
         break;
       case DateEnum.LastFifteenDays:
+        this.isCustomOpened = false;
         fromDate.setDate(fromDate.getDate() - 15);
         toDate.setDate(toDate.getDate() - 1);
         break;
       case DateEnum.LastThirtyDays:
+        this.isCustomOpened = false;
         fromDate.setDate(fromDate.getDate() - 30);
         toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.Custom:
+        this.isCustomOpened = true;
+        break;
+      default:
+        this.isCustomOpened = true;
         break;
     }
     this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
@@ -151,11 +170,6 @@ export class ReportComponent {
       {
         id: DateEnum.LastThirtyDays,
         value: 'Last 30 Days',
-        selected: false,
-      },
-      {
-        id: DateEnum.Custom,
-        value: 'Custom',
         selected: false,
       },
     ];
@@ -247,8 +261,8 @@ export class ReportComponent {
           if (res === 'download') {
             this.service
               .downReport(
-                this.fromDate,
-                this.toDate,
+                this.formateFromData(this.fromDate),
+                this.formateToData(this.toDate),
                 this.selectedTruckList.join(',')
               )
               .subscribe(
@@ -274,5 +288,15 @@ export class ReportComponent {
     if (message) {
       this.toaster.showError(`Please select ${message}`);
     }
+  }
+
+  private formateFromData(fromDate: string) {
+    // return from date with datetime format 00:00
+    return this.datePipe.transform(fromDate, 'yyyy-MM-dd') + ' 00:00';
+  }
+
+  private formateToData(toDate: string) {
+    // return to date with datetime format 23:59
+    return this.datePipe.transform(toDate, 'yyyy-MM-dd') + ' 23:59';
   }
 }
