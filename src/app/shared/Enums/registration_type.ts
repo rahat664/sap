@@ -9,3 +9,11 @@ export enum TruckDocumentType {
   REG_PAPER_FILE,
   INSURANCE_FILE,
 }
+
+export enum DriverDocumentType {
+  NID_FRONT = 1,
+  NID_BACK = 2,
+  DRIVING_LICENSE_FRONT = 3,
+  DRIVING_LICENSE_BACK = 4,
+  OTHER_FILE = 5,
+}

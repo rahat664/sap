@@ -33,6 +33,38 @@
         </button>
       </div>
     </div>
+
+    <div class="w-full bg-white rounded-lg">
+      <button
+        (click)="onClickFilterOpened()"
+        class="flex px-2 py-1 space-x-3 items-center w-full"
+        [ngClass]="{ 'border-b-2 border-[#0CD5F0]': filterOpened }">
+        <i class="fas fa-caret-down text-input-hint text-xl"></i>
+        <span class="text-not-black text-body_title leading-body_title"
+        >Filter
+          <span *ngIf="statusInputPlaceholder"
+          >({{ statusInputPlaceholder ? 1 : 0 }})</span
+          >
+          <span *ngIf="statusInputPlaceholder" class="text-input-hint px-3"
+          >|</span
+          >
+          <a
+            *ngIf="statusInputPlaceholder"
+            (click)="onClearFilter()"
+            class="text-red"
+          >Clear all</a
+          >
+        </span>
+      </button>
+      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
+        <app-custom-input
+          appGetClickEvent
+          [inputSearch]="statusInputPlaceholder"
+          [options]="statusOptionsArray"
+          inputPlaceholder="Select Status"
+          (selectedId)="onSelectStatus($event)"></app-custom-input>
+      </div>
+    </div>
   </div>
   <div
     appGiveMaxHeight
@@ -49,11 +81,12 @@
         <th class="text-center">Number of trip</th>
         <th class="text-center">Driving License</th>
         <th class="text-center">National ID</th>
-        <th class="text-left">Status</th>
+        <th class="text-center">Status</th>
+        <th class="text-left" style="width: 5%;"></th>
         <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
-        <th class="border" colspan="7"></th>
+        <th class="border" colspan="8"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -84,17 +117,19 @@
           <td class="text-center">{{ driver.completedTripCountsForDriver }}</td>
           <td class="whitespace-nowrap">
             <div class="flex items-center justify-center h-full">
-              <i
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate) || checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate) }"
                 *ngIf="
-                    driver.driverFilesUrls?.drivingLicenseBack ||
-                    driver.driverFilesUrls?.drivingLicenseFront
+                    checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist || checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
                   "
-                class="fas fa-check text-green"></i>
+              >
+                {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}
+                {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}
+              </span>
               <app-upload-button
                 (click)="onClickLicenseUpload(driver)"
                 *ngIf="
-                    !driver.driverFilesUrls?.drivingLicenseBack &&
-                    !driver.driverFilesUrls?.drivingLicenseFront
+                    !checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist && !checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
                   "
                 icon="upload"
                 [file]="true"></app-upload-button>
@@ -104,25 +139,66 @@
             <div class="flex items-center justify-center h-full">
               <i
                 *ngIf="
-                    driver.driverFilesUrls?.nidFront ||
-                    driver.driverFilesUrls?.nidBack
+                    checkThatFileIsExistOrNot(driverEnum.NID_FRONT, driver.documentsList).isExist || checkThatFileIsExistOrNot(driverEnum.NID_BACK, driver.documentsList).isExist
                   "
                 class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickNidUpload(driver)"
                 *ngIf="
-                    !driver.driverFilesUrls?.nidBack &&
-                    !driver.driverFilesUrls?.nidFront
+                    !checkThatFileIsExistOrNot(driverEnum.NID_FRONT, driver.documentsList).isExist && !checkThatFileIsExistOrNot(driverEnum.NID_BACK, driver.documentsList).isExist
                   "
                 icon="upload"
                 [file]="true"></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap">
-              <span
-                class="{{ driver.enabled ? 'text-not-black' : 'text-red' }}"
-              >{{ driver.enabled ? 'Approved' : 'Pending' }}</span
+            <div
+              class="flex items-center justify-center">
+              <div
+                class="{{getBgColor(driver.approveStatus)}} bg-opacity-[30%] z-30 px-2 py-0.5 rounded-full flex items-center">
+                <span class="text-web-text-secondary">{{ driver.approveStatus }}</span>
+              </div>
+            </div>
+          </td>
+          <td class="whitespace-nowrap">
+            <button mat-button
+                    [matMenuTriggerFor]="menu"><i
+              class="fas fa-ellipsis-v"></i></button>
+            <mat-menu #menu="matMenu">
+              <button (click)="onClickApprove(driver)"
+                      *ngIf="driver.approveStatus === 'Pending' || driver.approveStatus === 'Rejected'"
+                      mat-menu-item>
+                <div class="flex space-x-2 items-center">
+                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
+                    <i class="far fa-check text-green"></i>
+                  </div>
+                  <span class="text-green">Approve</span>
+                </div>
+              </button>
+              <button (click)="onClickReject(driver)"
+                      *ngIf="driver.approveStatus === 'Pending'"
+                      mat-menu-item
               >
+                <div class="flex space-x-2 items-center">
+                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
+                    <i class="far fa-times text-red"></i>
+                  </div>
+                  <span class="text-red">Reject</span>
+                </div>
+              </button>
+              <button
+                routerLink="/profile/driver/{{ driver.id }}/details"
+                (click)="localStorage.setItem('directEdit', 'true')"
+                mat-menu-item>
+                <div class="flex  space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/edit.svg"
+                    alt="" />
+                  <span>Edit</span>
+                </div>
+              </button>
+            </mat-menu>
           </td>
           <!--          <td>-->
           <!--            <i class="fas fa-ellipsis-v"></i>-->
