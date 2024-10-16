@@ -37,7 +37,7 @@ export class CustomInputComponent implements OnInit {
   @Output() isItemsOpened = new EventEmitter<boolean>();
   @Input() options: CustomInputSelectModel[] = [];
   itemsOpened = false;
-  @Input() customOpened: boolean = true;
+  @Input() customOpened: boolean = false;
   @Input() isError = false;
   months: string[] = [
     'January',

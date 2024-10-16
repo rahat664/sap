@@ -26,6 +26,12 @@
             placeholder="Enter truck registration number" />
         </div>
         <button
+          (click)="onClickGenerateReport()"
+          routerLink="/profile/truck/add"
+          class="px-16 flex space-x-4 items-center py-3 lg:py-2 border  border-primary text-primary rounded-lg">
+          <span class="hidden lg:block">Report</span>
+        </button>
+        <button
           (click)="onClickAddTruck()"
           routerLink="/profile/truck/add"
           class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
@@ -91,7 +97,7 @@
         <th class="text-center w-[5rem] inline-block z-20 sticky right-0 bg-white"></th>
       </tr>
       <tr>
-        <th class="border" colspan="11"></th>
+        <th class="border-custom" colspan="11"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
