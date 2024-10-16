@@ -718,7 +718,7 @@ export class TruckAddComponent implements OnInit {
     this.dialog.open(truckImagePop, {});
   }
 
-  onClickClosePopUp(truckImagePop: MatMenu) {
+  onClickClosePopUp() {
     this.matMenuTrigger.closeMenu();
   }
 

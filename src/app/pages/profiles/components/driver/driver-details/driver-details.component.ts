@@ -135,15 +135,6 @@ export class DriverDetailsComponent implements OnInit {
   driverDetails: UserModel;
   loading: boolean;
 
-  private driverFileTypeModify(documents: any[]) {
-    // make a copy of the documents array with true copy not shallow copy
-    this.newDriverFileType = JSON.parse(JSON.stringify(this.driverFileType));
-    documents.forEach(document => {
-      this.newDriverFileType = this.newDriverFileType.filter(
-        item => item.value !== document.name
-      );
-    });
-  }
 
   onClickCancel() {
     this.deletedFileUrls = [];

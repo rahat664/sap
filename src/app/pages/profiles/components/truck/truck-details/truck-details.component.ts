@@ -335,15 +335,6 @@ export class TruckDetailsComponent implements OnInit {
       );
   }
 
-  private numberOnly(value: any) {
-    const reg = /^[0-9]*$/;
-    if (!reg.test(value)) {
-      this.truckUpdateForm.patchValue({
-        registration_serial: value?.replace(/[^0-9]/g, ''),
-        registration_num: value?.replace(/[^0-9]/g, ''),
-      });
-    }
-  }
 
   triggerFileUpload(formControlName: string, max: number) {
     this.selectedFormControlName = formControlName;

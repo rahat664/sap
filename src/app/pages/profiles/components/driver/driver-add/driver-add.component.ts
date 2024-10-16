@@ -121,15 +121,13 @@ export class DriverAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.shared.validateInterNationalPhoneNumber();
-    this.driverAddForm
-      .get('driverName')
-      .valueChanges.subscribe((value: string) => {
-        if (this.driverAddForm.get('driverName').hasError('required')) {
-          this.driverNameErrorMessage = 'You must enter a value';
-        } else {
-          this.driverNameErrorMessage = '';
-        }
-      });
+    this.driverAddForm.get('driverName').valueChanges.subscribe(() => {
+      if (this.driverAddForm.get('driverName').hasError('required')) {
+        this.driverNameErrorMessage = 'You must enter a value';
+      } else {
+        this.driverNameErrorMessage = '';
+      }
+    });
     this.driverAddForm
       .get('driverPhone')
       .valueChanges.subscribe((value: string) => {
@@ -542,7 +540,7 @@ export class DriverAddComponent implements OnInit {
     }
   }
 
-  onClickClosePopUp(truckImagePop: MatMenu) {
+  onClickClosePopUp(driverImagePop: MatMenu) {
     this.matMenuTrigger.closeMenu();
   }
 
