@@ -18,7 +18,7 @@ import { UserService } from '../../../services/user.service';
 import { UserModel } from '../../../../user-management/models/user.model';
 import { bkashPaymentMethod, paymentMethod } from '../models/payment-method';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
@@ -44,6 +44,7 @@ import {
     MatFormField,
     MatInput,
     NgxMaterialIntlTelInputComponent,
+    NgClass,
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',
@@ -254,7 +255,7 @@ export class TransporterAddComponent implements OnInit {
     noEntriesFoundLabel: 'No countries found',
     nationalNumberLabel: '',
     hintLabel: '',
-    invalidNumberError: 'Number is not valid',
+    invalidNumberError: '',
     requiredError: 'This field is required',
   };
 }

@@ -11,7 +11,7 @@
       <img src="assets/svg/warning.svg" alt="warning" loading="lazy" class="notPreview">
     </div>
     <h1 class="text-h1_mobile leading-h1_mobile text-center text-not-black font-bold">{{ data?.title }}</h1>
-    <p class="text-body w-2/3 text-center text-secondary">Do you want to approve <span
+    <p class="text-body w-2/3 text-center text-secondary">Do you want to approve <span>{{ data?.textPrefix}}</span> <span
       class="font-semibold">{{ data?.text }}</span></p>
     <button class="bg-primary w-full text-white rounded-lg p-4 mt-4" (click)="confirmUpdate()">{{ data?.buttonText }}
     </button>

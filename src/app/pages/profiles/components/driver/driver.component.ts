@@ -284,7 +284,8 @@ export class DriverComponent implements OnInit {
       .open(ConfirmApproveComponent, {
         data: {
           title: 'Approve',
-          text: `${driver.userId}?`,
+          textPrefix: 'the driver ',
+          text: `${driver.name} (${driver.phone})?`,
           buttonText: 'Approve',
         },
       })
@@ -324,7 +325,8 @@ export class DriverComponent implements OnInit {
       .open(ConfirmRejectComponent, {
         data: {
           title: 'Reject',
-          text: `${driver.userId}?`,
+          textPrefix: 'the driver ',
+          text: ` ${driver.name} (${driver.phone})?`,
           buttonText: 'Reject',
         },
       })

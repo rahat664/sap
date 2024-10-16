@@ -11,7 +11,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { CustomerCreateModel } from '../model/customer-create.model';
 import { Subscription } from 'rxjs';
 import { CustomerService } from '../../../services/customer.service';
@@ -37,6 +37,7 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
     MatFormField,
     MatInput,
     NgxMaterialIntlTelInputComponent,
+    NgClass,
   ],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss',
@@ -279,7 +280,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     noEntriesFoundLabel: 'No countries found',
     nationalNumberLabel: '',
     hintLabel: '',
-    invalidNumberError: 'Number is not valid',
+    invalidNumberError: '',
     requiredError: 'This field is required',
   };
 

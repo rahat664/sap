@@ -20,6 +20,8 @@ import {
   NgxMaterialIntlTelInputComponent,
 } from 'ngx-material-intl-tel-input';
 import { DriverEditSharedService } from '../../profiles/services/driver-edit-shared.service';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-user-customer-admin-create',
@@ -32,6 +34,8 @@ import { DriverEditSharedService } from '../../profiles/services/driver-edit-sha
     ReactiveFormsModule,
     CommonModule,
     NgxMaterialIntlTelInputComponent,
+    MatFormField,
+    MatInput,
   ],
   templateUrl: './user-customer-admin-create.component.html',
   styleUrl: './user-customer-admin-create.component.scss',

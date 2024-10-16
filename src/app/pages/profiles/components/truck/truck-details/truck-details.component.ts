@@ -834,6 +834,7 @@ export class TruckDetailsComponent implements OnInit {
       .open(ConfirmRejectComponent, {
         data: {
           title: 'Attention',
+          textPrefix: 'the truck with registration number ',
           text: `${this.truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Reject',
         },
@@ -872,6 +873,7 @@ export class TruckDetailsComponent implements OnInit {
       .open(ConfirmApproveComponent, {
         data: {
           title: 'Approve',
+          textPrefix: 'the truck with registration number',
           text: `${this.truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Approve',
         },

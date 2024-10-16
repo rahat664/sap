@@ -128,10 +128,9 @@ export class FileUploadPopupComponent implements OnChanges {
         const isExpiryFilled = this.fileArray.every(
           (file) => file.registrationExpireDate !== null
         );
-        if (isExpiryFilled) {
-          this.dialogRef.close(this.fileArray);
+        if (isExpiryFilled || !this.isExpiryAvailable) {
           this.fileInput.emit(this.fileArray);
-          this.sharedDriverEditService.isUploadPopupOpen.next(false);
+          this.dialogRef.close(this.fileArray);
           this.sharedDriverEditService.getDocument(this.data?.value);
           this.sharedDriverEditService.bindDriverValueWithForm(this.data?.value);
           this.sharedDriverEditService.onChangeFile(this.fileArray);
@@ -141,24 +140,21 @@ export class FileUploadPopupComponent implements OnChanges {
             this.data?.value?.phone
           );
         } else {
-          this.sharedDriverEditService.isUploadPopupOpen.next(true);
           this.toastr.showError('Please fill the expiry date of all files');
         }
       } else if (this.data?.from == 'truck') {
         const isExpiryFilled = this.fileArray.every(
           (file) => file.registrationExpireDate !== null
         );
-        if (isExpiryFilled) {
+        if (isExpiryFilled || !this.isExpiryAvailable) {
           this.dialogRef.close(this.fileArray);
           this.fileInput.emit(this.fileArray);
-          this.sharedDriverEditService.isUploadPopupOpen.next(false);
           this.sharedDriverEditService.getTruckDocument(this.data?.value);
           this.sharedDriverEditService.bindTruckValueWithForm(this.data?.value);
           this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
           this.fileArray = [];
           this.sharedDriverEditService.onTruckUpdate();
         } else {
-          this.sharedDriverEditService.isUploadPopupOpen.next(true);
           this.toastr.showError('Please fill the expiry date of all files');
         }
       } else {

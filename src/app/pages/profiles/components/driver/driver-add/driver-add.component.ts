@@ -370,7 +370,7 @@ export class DriverAddComponent implements OnInit {
     nationalNumberLabel: '',
     hintLabel: '',
     invalidNumberError: 'Number is not valid',
-    requiredError: 'This field is required',
+    requiredError: '',
   };
 
   getFileArray(formControlName: any) {

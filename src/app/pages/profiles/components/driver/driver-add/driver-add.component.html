@@ -26,7 +26,7 @@
                 <div class="flex flex-col space-y-1">
                   <label for="driverName" class="text-not-black font-semibold">Name</label>
                   <div>
-                    <mat-form-field appearance="outline" class="example-full-width w-full">
+                    <mat-form-field appearance="outline" class="example-full-width w-full" [ngClass]="{ 'error' : driverAddForm.get('driverName').invalid && driverAddForm.get('driverName').touched }">
                       <input
                         appAlphabetOnly
                         id="driverName"
@@ -45,14 +45,17 @@
                   </div>
                 </div>
                 <div class="flex flex-col space-y-1 w-full">
-                  <ngx-material-intl-tel-input [includeDialCode]="false" #numberInput class="customize" id="phoneNumber"
+                  <ngx-material-intl-tel-input  [includeDialCode]="false" #numberInput class="customize" id="phoneNumber"
                                                [textLabels]="textLabels"
                                                [autoSelectedCountry]="CountryISO.Bangladesh"
                                                [preferredCountries]="[CountryISO.Bangladesh]"
                                                [fieldControl]="phoneNumber"
                                                [numberValidation]="true" [hidePhoneIcon]="true"
-                                               [required]="true" [autoIpLookup]="false"></ngx-material-intl-tel-input>
+                                               [required]="true" [autoIpLookup]="false" [ngClass]="{ 'customError' : driverAddForm.get('driverPhone').invalid && driverAddForm.get('driverPhone').touched }"></ngx-material-intl-tel-input>
                   <!--        error-message-->
+                    <span *ngIf="driverAddForm.get('driverPhone').touched" class="text-red text-xs">
+                      <span>Driver number required</span>
+                    </span>
                 </div>
               </div>
             </div>

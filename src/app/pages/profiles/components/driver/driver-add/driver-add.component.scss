@@ -48,14 +48,23 @@
   border-radius: 0.5rem;
 }
 
-::ng-deep .error .mat-mdc-text-field-wrapper {
-  width: 100%;
-  border-radius: 0.5rem !important;
-  background-color: #FFFAFB !important;
-  height: 3.5rem !important;
-}
-
 
 ::ng-deep .mat-mdc-menu-panel {
   max-width: 25rem !important;
 }
+
+::ng-deep .error .mat-mdc-text-field-wrapper {
+  width: 100%;
+  border-radius: 0.5rem !important;
+  background-color: #FFFAFB !important;
+  height: 3.3rem !important;
+}
+
+.customError ::ng-deep .tel-form .mat-mdc-form-field{
+  width: 100%;
+  border-radius: 0.5rem !important;
+  background-color: #FFFAFB !important;
+  height: 3.3rem !important;
+}
+
+

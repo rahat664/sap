@@ -120,12 +120,28 @@
               <span
                 [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate) || checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate) }"
                 *ngIf="
-                    checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist || checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
+                    checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist && !checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
                   "
               >
                 {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}
-                {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}
               </span>
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate) || checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate) }"
+                *ngIf="
+                    !checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist && checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
+                  "
+              >
+
+                {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}</span>
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate) || checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate) }"
+                *ngIf="
+                    checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist && checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
+                  "
+              >
+                {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}
+              </span>
+
               <app-upload-button
                 (click)="onClickLicenseUpload(driver)"
                 *ngIf="

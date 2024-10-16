@@ -234,9 +234,6 @@ export class CustomInputComponent implements OnInit {
     this.shared.closeInputSelect.subscribe(data => {
       this.itemsOpened = data;
     });
-    console.log(this.selectedValue.toString().includes('to'));
-    if (this.selectedValue.toString().includes('to')) {
-    }
   }
 
   onClickOption($event: { value: number }, select: MatSelect) {

@@ -1,4 +1,10 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
@@ -403,8 +409,7 @@ export class DriverDetailsComponent implements OnInit {
     this.selectedFormControlName = formControlName;
 
     // Calculate the number of files that can still be uploaded
-    const currentFilesCount =
-      this.getSavedFileArray(formControlName)?.length;
+    const currentFilesCount = this.getSavedFileArray(formControlName)?.length;
     this.maxUploadAble = Math.max(0, max - currentFilesCount); // Ensure it doesn't go negative
 
     // Trigger the file input click if it exists
@@ -701,7 +706,8 @@ export class DriverDetailsComponent implements OnInit {
       .open(ConfirmApproveComponent, {
         data: {
           title: 'Approve',
-          text: `${driver.userId}?`,
+          textPrefix: 'the driver ',
+          text: `the driver ${driver.name} (${driver.phone})?`,
           buttonText: 'Approve',
         },
       })
@@ -740,7 +746,8 @@ export class DriverDetailsComponent implements OnInit {
       .open(ConfirmRejectComponent, {
         data: {
           title: 'Reject',
-          text: `${driver.userId}?`,
+          textPrefix: 'the driver ',
+          text: `${driver.name} (${driver.phone})?`,
           buttonText: 'Reject',
         },
       })

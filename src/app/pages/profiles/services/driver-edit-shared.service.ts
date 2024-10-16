@@ -208,7 +208,7 @@ export class DriverEditSharedService {
 
   private generateDocumentList(entity: any, mappings: any[], fileUrlsKey = '') {
     const documents = [];
-    const fileUrls = fileUrlsKey ? entity[fileUrlsKey] : entity;
+    const fileUrls = entity;
     mappings.forEach(mapping => {
       if (fileUrls[mapping.key]) {
         documents.push({
