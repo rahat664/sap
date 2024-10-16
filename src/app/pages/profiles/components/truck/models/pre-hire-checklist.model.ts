@@ -4,6 +4,7 @@ export interface PreHireChecklistModel {
 }
 
 export interface checkListItem {
+  checklistId: number;
   id: number;
   name: string;
   status: string;

@@ -6,6 +6,8 @@ import { LiveTripStatusComponent } from './components/live-trip-status/live-trip
 import { ChallanStatusComponent } from './components/challan-status/challan-status.component';
 import { TopTransporterComponent } from './components/top-transporter/top-transporter.component';
 import { TopCustomerComponent } from './components/top-customer/top-customer.component';
+import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,10 +20,14 @@ import { TopCustomerComponent } from './components/top-customer/top-customer.com
     ChallanStatusComponent,
     TopTransporterComponent,
     TopCustomerComponent,
+    GiveMaxHeightDirective,
+    RouterLink,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
   height: any;
+
+  ngOnInit() {}
 }

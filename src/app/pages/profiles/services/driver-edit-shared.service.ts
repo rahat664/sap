@@ -348,17 +348,7 @@ export class DriverEditSharedService {
       ];
 
       if (key.endsWith('File') || key === 'others' || files.includes(key)) {
-        if (key === 'truckImages' || key === 'insuranceFiles') {
-          if (value) {
-            value.forEach((file: any) => {
-              formData.append(key, file);
-            });
-          }
-        } else {
-          if (value) {
-            formData.append(key, value);
-          }
-        }
+        formData.append(key, value);
       } else {
         payload[key] = value;
       }
@@ -465,17 +455,12 @@ export class DriverEditSharedService {
     );
   }
 
-  truckImages = [];
-  insuranceFiles = [];
-
   private handleFileChange(
     files: any[],
     form: FormGroup,
     documents: any[],
     name
   ) {
-    this.truckImages = [];
-    this.insuranceFiles = [];
     if (files?.length) {
       files.forEach(file => {
         if (name === 'driverFilesUrls') {
@@ -492,21 +477,13 @@ export class DriverEditSharedService {
           url: file.preview,
           expDate: file.registrationExpireDate,
         });
-        if (file.registrationType === 'Truck Image') {
-          this.truckImages.push(file.file);
-        } else if (file.registrationType === 'Insurance') {
-          this.insuranceFiles.push(file.file);
-        }
+
         form.patchValue({
           [this.getFileControlName(file.registrationType, name)]: file.file,
           ...(file.registrationExpireDate && {
             [this.getExpDateControlName(file.registrationType)]:
               file.registrationExpireDate,
           }),
-        });
-        form.patchValue({
-          truckImages: this.truckImages,
-          insuranceFiles: this.insuranceFiles,
         });
       });
       this.isUploadPopupOpen.next(false);

@@ -5,7 +5,7 @@ import { FileUploadPopupComponent } from '../truck/file-upload-popup/file-upload
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { DatePipe, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { UserModel } from '../../../user-management/models/user.model';
@@ -17,6 +17,16 @@ import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/d
 import { debounceTime } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
+import { MatButton } from '@angular/material/button';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
+import {
+  DriverDocumentType,
+  TruckDocumentType,
+} from '../../../../shared/Enums/registration_type';
 
 @Component({
   selector: 'app-driver',
@@ -36,6 +46,11 @@ import { MatDialog } from '@angular/material/dialog';
     CheckTheHeightCrossMaxHeightOrNotDirective,
     DatePipe,
     FormsModule,
+    NgClass,
+    MatButton,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
   ],
   templateUrl: './driver.component.html',
   styleUrl: './driver.component.scss',
@@ -54,10 +69,13 @@ export class DriverComponent implements OnInit {
 
   constructor(
     private user: UserService,
-    private sharedService: DriverEditSharedService
+    private sharedService: DriverEditSharedService,
+    private toastr: HandleToastrService
   ) {}
 
   ngOnInit(): void {
+    this.onSelectStatus(0);
+    this.driverList = [];
     this.getDriverList();
     this.makeSureUploadCompletedOrNot();
   }
@@ -68,7 +86,14 @@ export class DriverComponent implements OnInit {
     if (this.searchValue) {
       //subscribe with debounce time
       this.user
-        .getDriver(this.page, this.size, this.searchValue)
+        .getDriver(
+          this.page,
+          this.size,
+          this.searchValue,
+          this.statusInputPlaceholder === 'All'
+            ? ''
+            : this.statusInputPlaceholder
+        )
         .pipe(debounceTime(500))
         .subscribe((res: any) => {
           this.driverList = res.data.responses;
@@ -76,11 +101,20 @@ export class DriverComponent implements OnInit {
           this.loading = false;
         });
     } else {
-      this.user.getDriver(this.page, this.size).subscribe((res: any) => {
-        this.driverList = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+      this.user
+        .getDriver(
+          this.page,
+          this.size,
+          null,
+          this.statusInputPlaceholder === 'All'
+            ? ''
+            : this.statusInputPlaceholder
+        )
+        .subscribe((res: any) => {
+          this.driverList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     }
   }
 
@@ -96,6 +130,14 @@ export class DriverComponent implements OnInit {
   fileArray: any[];
   isNewOpen: any;
   singleDriver: any;
+  statusInputPlaceholder: any;
+  filterOpened: boolean = true;
+  statusOptionsArray: CustomInputSelectModel[] = [
+    { id: 0, value: 'All', selected: false },
+    { id: 1, value: 'Approved', selected: false },
+    { id: 2, value: 'Pending', selected: false },
+    { id: 3, value: 'Rejected', selected: false },
+  ];
 
   onClickLicenseUpload(driver: UserModel) {
     this.isNewOpen = true;
@@ -202,4 +244,161 @@ export class DriverComponent implements OnInit {
     $event.stopPropagation();
     this.user.copyToClipboard(createdByPhone);
   }
+
+  onClickFilterOpened() {
+    this.filterOpened = !this.filterOpened;
+  }
+
+  onClearFilter() {
+    this.statusOptionsArray.forEach(option => {
+      option.selected = false;
+    });
+    this.statusInputPlaceholder = 'All';
+    this.page = 0;
+    this.size = 30;
+    this.getDriverList();
+  }
+
+  onSelectStatus($event: number) {
+    this.statusOptionsArray.forEach(option => {
+      if (option.id === $event) {
+        option.selected = !option.selected;
+        if (option.selected && option.value !== 'All') {
+          this.statusInputPlaceholder = option.value;
+        } else {
+          this.statusInputPlaceholder = 'All';
+        }
+      } else {
+        option.selected = false;
+      }
+    });
+    this.driverList = [];
+    this.page = 0;
+    this.getDriverList();
+  }
+
+  protected readonly localStorage = localStorage;
+
+  onClickApprove(driver: UserModel) {
+    this.dialog
+      .open(ConfirmApproveComponent, {
+        data: {
+          title: 'Approve',
+          text: `${driver.userId}?`,
+          buttonText: 'Approve',
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res === 'updated') {
+          // Do something
+          const formData = new FormData();
+          const payload: Record<string, any> = {};
+          payload['driverId'] = driver.userId;
+          payload['driverName'] = driver.name;
+          payload['driverPhone'] = driver.phone;
+          payload['driverStatus'] = 'Approved';
+          formData.append('payload', JSON.stringify(payload));
+          this.user.editDriver(formData).subscribe(
+            (res: any) => {
+              // Handle response
+              if (res.status == 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.driverList = [];
+                this.getDriverList();
+              } else {
+                this.toastr.showError(res.message);
+              }
+            },
+            error => {
+              // Handle error
+              this.toastr.showError(error.error.message);
+            }
+          );
+        }
+      });
+  }
+
+  onClickReject(driver: UserModel) {
+    this.dialog
+      .open(ConfirmRejectComponent, {
+        data: {
+          title: 'Reject',
+          text: `${driver.userId}?`,
+          buttonText: 'Reject',
+        },
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res.status === 'rejected') {
+          // Do something
+          const formData = new FormData();
+          const payload: Record<string, any> = {};
+          payload['driverId'] = driver.userId;
+          payload['driverName'] = driver.name;
+          payload['driverPhone'] = driver.phone;
+          payload['driverStatus'] = 'Rejected';
+          payload['rejectedReason'] = res.reason;
+          formData.append('payload', JSON.stringify(payload));
+          this.user.editDriver(formData).subscribe(
+            (res: any) => {
+              // Handle response
+              if (res.status == 'OK') {
+                this.toastr.showSuccess(res.message);
+                this.driverList = [];
+                this.getDriverList();
+              } else {
+                this.toastr.showError(res.message);
+              }
+            },
+            error => {
+              // Handle error
+              this.toastr.showError(error.error.message);
+            }
+          );
+        }
+      });
+  }
+
+  getBgColor(status: string) {
+    if (status === 'Approved') {
+      return 'bg-green';
+    } else if (status === 'Pending') {
+      return 'bg-another';
+    } else {
+      return 'bg-red';
+    }
+  }
+
+  protected readonly driverEnum = DriverDocumentType;
+
+  checkThatFileIsExistOrNot(fileName: any, truckDocumentList: any[]) {
+    let isExist = false;
+    let expDate = '';
+    truckDocumentList.forEach(doc => {
+      if (doc.documentType == this.driverEnum[fileName]) {
+        isExist = true;
+        expDate = doc?.expiryDate;
+      }
+    });
+    return {
+      isExist: isExist,
+      expDate: expDate,
+    };
+  }
+
+  checkExpiryDate(expDate: string) {
+    if (expDate) {
+      const today = new Date();
+      const expiryDate = new Date(expDate);
+      today.setHours(0, 0, 0, 0);
+      expiryDate.setHours(0, 0, 0, 0);
+      if (today > expiryDate) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  protected readonly truckEnum = TruckDocumentType;
 }

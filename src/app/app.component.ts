@@ -1,4 +1,10 @@
-import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  OnInit,
+  Renderer2,
+} from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { LayoutComponent } from './core/layout/layout.component';
 import { initFlowbite } from 'flowbite';
@@ -12,6 +18,7 @@ import { HandleToastrService } from './shared/services/handle-toastr/handle-toas
 import { GeolocationService } from './shared/services/location/geolocation.service';
 import { filter } from 'rxjs';
 import { DriverEditSharedService } from './pages/profiles/services/driver-edit-shared.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +35,7 @@ import { DriverEditSharedService } from './pages/profiles/services/driver-edit-s
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   private focusListener: () => void;
   title = 'snz-web';
   isOpen: boolean;
@@ -52,7 +60,7 @@ export class AppComponent implements OnInit {
         this.isOpen = false;
         return;
       } else {
-        this.isOpen = true;
+        this.dialog.open(ImageGalleryComponent, {});
         return this.imageGalleryService.setCurrentImage(
           target.getAttribute('src')
         );

@@ -1,165 +1,300 @@
-<div class="m-2 bg-white">
-  <div class="p-4 border-b-2 border-input flex justify-between items-center">
-    <h1 class="text-h1 leading-h1 font-semibold">Truck detail</h1>
-    <div class="flex space-x-3">
-      <button
-        (click)="onClickEdit()"
-        *ngIf="!inEditMode"
-        class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
-        <i class="far fa-pen text-primary"></i>
-      </button>
-      <button
-        (click)="onClickSave()"
-        *ngIf="inEditMode"
-        class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
-        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-        <span>Update</span>
-      </button>
-      <button
-        (click)="onClickCancel()"
-        *ngIf="inEditMode"
-        class="px-4 py-2 text-blue border border-blue rounded-lg text-center font-semibold">
-        <span>Cancel</span>
-      </button>
+<div>
+  <div class="p-2 sticky top-16 bg-app-bg z-30">
+    <div class="p-4  rounded-lg bg-white flex justify-between items-center ">
+      <h1 class="text-h1 leading-h1 font-semibold">{{ isInEditMode ? 'Truck Edit' : 'Truck Details' }}</h1>
+      <div class="flex space-x-4 items-center">
+        <button
+          *ngIf="isInEditMode"
+          (click)="onClickSave()"
+          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+          <span>Save</span>
+        </button>
+        <button
+          *ngIf="isInEditMode"
+          (click)="onClickCancel()"
+          class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
+          <span>Cancel</span>
+        </button>
+        <button
+          *ngIf="!isInEditMode && (truckDetails?.status === 'Pending' || truckDetails?.status === 'Rejected')"
+          (click)="onClickApprove()"
+          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+          <span>Approve</span>
+        </button>
+        <button
+          *ngIf="!isInEditMode && (truckDetails?.status === 'Pending')"
+          (click)="onClickReject()"
+          class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+          <span>Reject</span>
+        </button>
+        <button
+          (click)="onClickEdit()"
+          *ngIf="!isInEditMode"
+          class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
+          <i class="far fa-pen text-primary"></i>
+        </button>
+      </div>
     </div>
   </div>
-  <form [formGroup]="truckAddForm">
-    <div class="grid lg:grid-cols-2 text-body">
-      <div class="w-full border-r-2 border-input">
-        <div class="border-b-2 border-input p-4 flex flex-col space-y-3">
-          <div class="flex space-x-3 items-center text-not-black">
-            <img loading="lazy" class="notPreview" src="assets/svg/truckinfo.svg" alt="" />
-            <span class="text-h2 leading-h2 font-semibold">Truck Info</span>
+  <form [formGroup]="truckUpdateForm">
+    <div class="grid lg:grid-cols-2 gap-3 px-2 text-body">
+      <div class="w-full flex flex-col space-y-2">
+        <div class="border-b-2 bg-white rounded-lg border-input px-6 py-5 flex flex-col space-y-3">
+          <div class="flex space-x-4 items-center text-not-black">
+            <img class="h-8 w-8" loading="lazy" src="assets/svg/truckinfo.svg" alt="" />
+            <span class="text-h3 leading-h3 text-not-black font-semibold">Truck Info</span>
           </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div
-              class="flex flex-col space-y-1"
-              [ngClass]="{ 'col-span-2': inEditMode }">
-              <span class="text-not-black font-semibold">Registration Number</span>
-              <span *ngIf="!inEditMode" class="text-web-text-secondary">{{
-                  getFullRegistrationName()
-                }}</span>
-              <div *ngIf="inEditMode" class="grid grid-cols-5 w-full gap-3">
-                <app-custom-input
-                  class="w-full col-span-2"
-                  appGetClickEvent
-                  (clickedElement)="onClickRegistrationZone($event)"
-                  [options]="registrationZoneList"
-                  inputPlaceholder="Zone"
-                  (selectedId)="onSelectRegistrationZone($event)"
-                  [inputSearch]="
-                    registrationZonePlaceholder
-                  "></app-custom-input>
-                <app-custom-input
-                  class="w-full"
-                  appGetClickEvent
-                  (clickedElement)="onClickRegistrationType($event)"
-                  [options]="registrationListType"
-                  inputPlaceholder="Category"
-                  (selectedId)="onSelectRegistrationype($event)"
-                  [inputSearch]="
-                    registrationTypePlaceholder
-                  "></app-custom-input>
-                <mat-form-field appearance="outline" class="example-full-width ">
-                  <input
-                    id="registration_serial"
-                    [minLength]="2"
-                    [maxLength]="2"
-                    type="text"
-                    matInput
-                    formControlName="registration_serial"
-                    placeholder="Serial">
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="example-full-width ">
-                  <input
-                    id="registration_num"
-                    [minLength]="4"
-                    [maxLength]="4"
-                    type="text"
-                    matInput
-                    formControlName="registration_num"
-                    placeholder="Number">
-                </mat-form-field>
-              </div>
+          <div *ngIf="!isInEditMode" class="flex justify-between">
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-web-text-secondary">Registration Number</span>
+              <span
+                class="text-body_title leading-body_title font-semibold">{{ truckDetails?.fullRegistrationNumber }}</span>
             </div>
-            <div *ngIf="!inEditMode" class="flex flex-col space-y-1">
-              <span class="text-not-black font-semibold">Number of trips</span>
-              <span class="text-web-text-secondary">{{
-                  singleTruck.noOfTrips
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-web-text-secondary">Status</span>
+              <span class="text-body_title leading-body_title font-semibold">{{ truckDetails?.status }}</span>
+            </div>
+          </div>
+          <div class="py-3 px-4 bg-red rounded-lg bg-opacity-[10%]"
+               *ngIf="truckDetails?.status === 'Rejected' && truckDetails?.rejectedReason">
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-red">Rejection cause</span>
+              <span
+                class="text-body text-not-black">{{
+                  truckDetails?.rejectedReason
                 }}</span>
+            </div>
+          </div>
+          <div class="grid" *ngIf="isInEditMode">
+            <div class="flex flex-col space-y-1">
+              <span class="text-not-black font-semibold">Registration Number</span>
+              <div class="grid grid-cols-5 w-full gap-3">
+                <div class="flex flex-col w-full col-span-2">
+                  <app-custom-input
+                    class="w-full"
+                    appGetClickEvent
+                    [isError]="registrationErrorMessage !== ''"
+                    [errorMessage]="registrationErrorMessage"
+                    (clickedElement)="onClickRegistrationZone($event)"
+                    [options]="registrationZoneList"
+                    inputPlaceholder="Zone"
+                    (selectedId)="onSelectRegistrationZone($event)"
+                    [inputSearch]="
+                      registrationZonePlaceholder
+                    "></app-custom-input>
+                  <span class="text-red text-xs">{{
+                      registrationErrorMessage
+                    }}</span>
+                </div>
+                <div class="flex flex-col">
+                  <app-custom-input
+                    class="w-full"
+                    appGetClickEvent
+                    [isError]="registrationErrorMessage !== ''"
+                    [errorMessage]="registrationCategoryErrorMessage"
+                    (clickedElement)="onClickRegistrationType($event)"
+                    [options]="registrationListType"
+                    inputPlaceholder="Category"
+                    (selectedId)="onSelectRegistrationType($event)"
+                    [inputSearch]="
+                      registrationTypePlaceholder
+                    "></app-custom-input>
+                  <span class="text-red text-xs">{{
+                      registrationCategoryErrorMessage
+                    }}</span>
+                </div>
+                <div class="flex flex-col w-full">
+                  <mat-form-field appearance="outline" class="example-full-width ">
+                    <input
+                      id="registration_serial"
+                      [minLength]="2"
+                      [maxLength]="2"
+                      type="text"
+                      matInput
+                      formControlName="registration_serial"
+                      placeholder="Serial">
+                  </mat-form-field>
+                  <span
+                    *ngIf="truckUpdateForm.get('registration_serial').touched && registrationSerialErrorMessage"
+                    class="text-red text-xs"
+                  >{{ registrationSerialErrorMessage }}</span
+                  >
+                </div>
+                <div class="flex flex-col w-full">
+                  <mat-form-field appearance="outline" class="example-full-width ">
+                    <input
+                      id="registration_num"
+                      [minLength]="4"
+                      [maxLength]="4"
+                      type="text"
+                      matInput
+                      formControlName="registration_num"
+                      placeholder="Number">
+                  </mat-form-field>
+                  <span
+                    *ngIf="truckUpdateForm.get('registration_num').touched && registrationNumErrorMessage"
+                    class="text-red text-xs" `
+                  >{{ registrationNumErrorMessage }}</span
+                  >
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class=" p-4">
-          <div class="flex justify-between items-center">
-            <div class="flex space-x-3 items-center text-not-black">
-              <img loading="lazy" class="notPreview" src="assets/svg/list.svg" alt="" />
-              <span class="text-not-black font-semibold"
-              >Pre hire check list ({{
-                  singleTruck.preHireCheckList
-                }}/22)</span
-              >
+        <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
+          <div class="flex space-x-4 items-center">
+            <img src="assets/svg/truckDocument.svg" class="notPreview" alt="truck document">
+            <span class="text-not-black text-h3 leading-h3 font-semibold">Document</span>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <ng-container *ngFor="let option of truckFileType; index as i">
+              <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
+                <div class="flex space-x-4 items-center">
+                  <img src="assets/svg/not-available.svg" class="notPreview" alt=""
+                       *ngIf="!checkThatFileIsAvailableOrNot(option.name).length && !truckUpdateForm.get(option.formControlName).value">
+                  <img src="assets/svg/available.svg" alt="" class="notPreview"
+                       *ngIf=" checkThatFileIsAvailableOrNot(option.name).length > 0 || truckUpdateForm.get(option.formControlName).value"
+                  >
+                  <div class="flex flex-col space-y-0.5">
+                    <span
+                      class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
+                    <span
+                      *ngIf="option.expiryAvailable && checkThatFileIsAvailableOrNot(option.name) && checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate && !isInEditMode"
+                      class="{{checkDateIsExpiredOrNot(checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate).isExpired ? 'text-red' : 'text-not-black' }} text-body">{{ checkDateIsExpiredOrNot(checkThatFileIsAvailableOrNot(option.name)[0]?.expiryDate).text }}</span>
+                    <mat-form-field *ngIf="option?.expiryAvailable && isInEditMode"
+                                    class="example-full-width flex-1 custom"
+                                    appearance="outline"
+                                    [ngClass]="{ 'error' : truckUpdateForm.get(option.expiryFormControlName).invalid }"
+                    >
+                      <input [formControlName]="option.expiryFormControlName" matInput
+                             [matDatepicker]="picker"
+                             placeholder="Expiry Date" (focusin)="picker.open()"
+                             (selectionchange)="onDateChange($event, option.expiryFormControlName)">
+                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="flex space-x-6 items-center">
+                  <div class="flex">
+                    <div class="flex space-x-3 relative">
+                      <ng-container *ngIf="isInEditMode && checkThatFileIsAvailableOrNot(option.name)?.length < 3">
+                        <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+                             *ngFor="let file of getSpecificFiles(option?.formControlName, checkThatFileIsAvailableOrNot(option.name).length)">
+                          <img class="h-full w-full" [src]="file.preview" alt="">
+                          <button (click)="onCloseImage(option?.formControlName, file, option?.expiryFormControlName)"
+                                  class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+                            <i class="far fa-times"></i>
+                          </button>
+                        </div>
+                      </ng-container>
+                      <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+                           *ngFor="let file of checkThatFileIsAvailableOrNot(option.name)">
+                        <img class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+                        <button *ngIf="isInEditMode" (click)="onCloseImageSavedImage(option?.formControlName, file)"
+                                class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+                          <i class="far fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      *ngIf="(getSavedFileArray(option?.formControlName)?.length + getFileArray(option.formControlName).length )> 3  && (getSavedFileArray(option?.formControlName)?.length + getFileArray(option.formControlName).length > 0 )">
+                      <button [matMenuTriggerFor]="truckImagePop"
+                              (click)="viewMoreFormControlName = option?.formControlName"
+                              class="px-2 h-[3.75rem] flex text-link items-center justify-center bg-opacity-10 bg-blue
+                              space-x-1  text-h2_medium font-semibold rounded-md">
+                        <span
+                          class="text-link font-semibold"
+                        >+{{ isInEditMode ? (getSavedFileArray(option?.formControlName).length + getFileArray(option?.formControlName).length - 3) : (getSavedFileArray(option?.formControlName).length - 3) }}</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                  <span class="text-web-text-secondary text-body"
+                        *ngIf="getSavedFileArray(option?.formControlName)?.length <= 0 && !isInEditMode">Not Uploaded Yet</span>
+                  <ng-container *ngIf="isInEditMode">
+                    <app-upload-button
+                      *ngIf="(getSpecificFiles(option?.formControlName)?.length === 0 && getSavedFileArray(option?.formControlName)?.length === 0) || !getSpecificFiles(option?.formControlName) "
+                      buttonText="Upload"
+                      [file]="true"
+                      (click)="triggerFileUpload(option?.formControlName, option.max)"
+                      icon="upload"></app-upload-button>
+                    <app-upload-button
+                      *ngIf="(getSpecificFiles(option?.formControlName)?.length > 0 || getSavedFileArray(option?.formControlName)?.length > 0) && getSpecificFiles(option?.formControlName)?.length < option?.max"
+                      (click)="triggerFileUpload(option?.formControlName, option.max)"
+                      icon="plus"></app-upload-button>
+                    <input [multiple]="option.multiple" type="file" #fileInput accept=".png, .jpg, .jpeg, .pdf"
+                           style="display:none;" (change)="onFileSelected($event)" />
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
+          <div class="flex space-y-[3px] flex-col">
+            <span class="text-web-text-secondary text-body">Added by</span>
+            <div class="flex flex-col space-y-[1px]">
+              <span
+                class="text-body_title  font-semibold">{{ truckDetails?.createdByUser?.name }}</span>
+              <span class="text-not-black text-body">{{ truckDetails?.createdByUser?.email }}</span>
+              <span class="text-not-black text-body">{{ truckDetails?.createdByUser?.phone }}</span>
             </div>
-            <a (click)="onClickPrehireCheckList()" class="text-link cursor-pointer">Browse
-              list</a>
           </div>
         </div>
       </div>
-      <div class="w-full p-4 flex flex-col space-y-3">
-        <div class="flex justify-between items-center h-8">
-          <div class="text-not-black flex space-x-3 items-center">
-            <img loading="lazy" class="notPreview" src="assets/svg/document.svg" alt="" />
-            <span>Documents</span>
-          </div>
-          <app-upload-button
-            (click)="onCLickUpload()"
-            *ngIf="inEditMode"
-            icon="upload"
-            [file]="true"
-            buttonText="Upload"></app-upload-button>
-        </div>
-        <div class="grid grid-cols-4 gap-3" *ngIf="singleTruck.truckDocumentList.length > 0">
-          <ng-container *ngFor="let document of documents; index as i">
-            <div class="w-full flex flex-col space-y-1">
-              <div
-                class="p-4 rounded-lg border border-input relative flex items-center justify-center">
-                <div class="h-32 w-32 object-cover object-center">
-                  <img
-                    class="w-full h-full"
-                    [src]="
-                      document.preSignedFileUrl ? document.preSignedFileUrl : 'assets/images/dummy.jpg'
-                    "
-                    alt="" />
-                </div>
-                <button
-                  (click)="onClickClose(document)"
-                  *ngIf="inEditMode"
-                  class="h-6 w-6 bg-red rounded-full flex justify-center items-center text-white absolute top-2 right-2">
-                  <i class="fal fa-times"></i>
-                </button>
-              </div>
-              <div class="flex space-y-1 flex-col">
-                <span class="text-web-text-secondary font-semibold">{{
-                    getDocumentName(document.documentType)
-                  }}</span>
-                <span *ngIf="document.expiryDate" class="text-web-text-secondary"
-                >Exp:
-                  {{
-                    document.expiryDate
-                      ? (document.expiryDate | date: 'd MMM yyyy')
-                      : 'N/A'
-                  }}</span
-                >
-              </div>
-            </div>
-          </ng-container>
-        </div>
-        <div class="w-full flex flex-col space-y-3 justify-center items-center"
-             *ngIf="singleTruck.truckDocumentList.length <=0">
-          <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-          <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
-        </div>
+      <div>
+        <app-pre-hire-checklist-details [passedCheckList]="countPassCheckList.toString()"
+                                        *ngIf="!isInEditMode"
+                                        [object]="preHiredCheckList"></app-pre-hire-checklist-details>
+        <app-pre-hire-checklist [passedCheckList]="countPassCheckList.toString()"
+                                *ngIf="isInEditMode"
+                                (preHireCheckListObject)="onClickPreHiredChecklist($event)"
+                                [object]="preHiredCheckList"></app-pre-hire-checklist>
       </div>
     </div>
   </form>
 </div>
+
+<!--<ng-template #truckImagePop>-->
+
+<!--</ng-template>-->
+
+<mat-menu #truckImagePop="matMenu" class="truck-menu">
+  <div (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center pl-6 pr-2 py-2">
+      <h1 class="text-body_title leading-body_title text-not-black font-semibold">
+        {{ getTruckImageTitle(viewMoreFormControlName) }}
+      </h1>
+      <button (click)="onClickClosePopUp()" class="h-6 w-6 rounded-full hover:bg-input ">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+    <div class="grid grid-cols-6 gap-3 px-6 py-4">
+      <ng-container *ngFor="let file of getSavedFileArray(viewMoreFormControlName)">
+        <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+        >
+          <img (click)="onClickImage(file.preSignedFileUrl)" class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+          <button *ngIf="isInEditMode" (click)="onCloseImageSavedImage(viewMoreFormControlName, file)"
+                  class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+            <i class="far fa-times"></i>
+          </button>
+        </div>
+      </ng-container>
+      <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
+        <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+        >
+          <img (click)="onClickImage(file.preview)" class="h-full w-full" [src]="file.preview" alt="">
+          <button *ngIf="isInEditMode" (click)="onCloseImage(viewMoreFormControlName, file, viewMoreExpiryControlName)"
+                  class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+            <i class="far fa-times"></i>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</mat-menu>

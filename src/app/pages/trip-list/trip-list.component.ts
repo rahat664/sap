@@ -31,14 +31,7 @@ import {
 } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  of,
-  Subject,
-  switchMap,
-  timer,
-} from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-trip-list',
@@ -112,6 +105,7 @@ export class TripListComponent implements OnInit {
   customerCode: any;
   truckType: string;
   searchSubject: Subject<string> = new Subject();
+  customerSearchSubject: Subject<string> = new Subject();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -129,13 +123,23 @@ export class TripListComponent implements OnInit {
     this.searchSubject.pipe(debounceTime(300)).subscribe(searchText => {
       this.performSearch(searchText);
     });
+    this.customerSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+      this.performCustomerSearch(searchText);
+    });
   }
 
   ngOnInit(): void {
+    if (localStorage.getItem('filter')) {
+      this.status = localStorage.getItem('filter') || '';
+      this.statusButtons.forEach(x => (x.isActive = x.name === this.status));
+      localStorage.removeItem('filter');
+    } else {
+      this.status = '';
+      this.statusButtons.forEach(x => (x.isActive = x.name === 'All'));
+    }
     this.loading = true;
     this.page = 0;
     this.size = 30;
-    this.statusButtons.forEach(x => (x.isActive = x.name === 'All'));
     this.getTripList();
     this.service.anotherStatusCalled.subscribe(value => {
       this.anotherStatusCalled = value;
@@ -188,9 +192,6 @@ export class TripListComponent implements OnInit {
     let fromDate = new Date();
     // to date should be yesterday
     let toDate = new Date();
-    console.log(
-      `fromDate: ${fromDate.getDate()}, toDate: ${toDate.getDate()}, dateEnum: ${dateEnum}`
-    );
     switch (dateEnum) {
       case DateEnum.Today:
         fromDate.setDate(fromDate.getDate());
@@ -288,6 +289,7 @@ export class TripListComponent implements OnInit {
   }
 
   onClearFilter() {
+    this.customerCode = '';
     this.tripId = '';
     this.page = 0;
     this.size = 30;
@@ -378,36 +380,9 @@ export class TripListComponent implements OnInit {
     this.loading = false;
   }
 
-  onKeyUpTripSearch($event: Event) {
-    this.tripIdSuggestions = [];
-    const value = ($event.target as HTMLInputElement).value;
-    console.log('value', value);
-    if (value?.length > 0 && value) {
-      of(value)
-        .pipe(
-          debounceTime(1000),
-          distinctUntilChanged(),
-          switchMap(search => this.service.getTripSuggestions(search))
-        )
-        .subscribe((trip: any) => {
-          this.tripIdSuggestions = trip.responses;
-          if (this.tripIdSuggestions.length === 0) {
-            this.tripIdSuggestions.push('No trip found');
-          }
-        });
-    } else {
-      timer(500).subscribe(() => {
-        this.tripId = '';
-        this.page = 0;
-        this.size = 30;
-        this.tripFilter = 0;
-        this.tripIdSuggestions = [];
-        this.isTripSearchedMenuOpened = false;
-        this.tripIdSuggestions.push('No trip found');
-        this.service.anotherStatusCalled.next(true);
-        this.getTripList();
-      });
-    }
+  onKeyUpTripSearch($event: any) {
+    const value = $event.target.value;
+    this.customerSearchSubject.next(value); // Trigger the Subject when input changes
   }
 
   onClickTripSearchSuggestion(result: any) {
@@ -429,5 +404,30 @@ export class TripListComponent implements OnInit {
   onClickTripNumber(tripId: string) {
     localStorage.setItem('fromTripListTripId', tripId);
     this.router.navigateByUrl('/manage-trip');
+  }
+
+  private performCustomerSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.service.getTripSuggestions(searchText).subscribe((trip: any) => {
+        this.tripIdSuggestions = trip.responses;
+        if (this.tripIdSuggestions.length === 0) {
+          this.tripIdSuggestions.push('No trip found');
+        }
+      });
+    } else {
+      this.resetTripIdSearch();
+    }
+  }
+
+  private resetTripIdSearch() {
+    this.isTripSearchedMenuOpened = false;
+    this.tripId = '';
+    this.page = 0;
+    this.size = 30;
+    this.tripIdSuggestions = [];
+    this.tripIdSuggestions.push('No trip found');
+    this.service.anotherStatusCalled.next(true);
+    this.getTripList();
+    this.tripFilter = 0;
   }
 }

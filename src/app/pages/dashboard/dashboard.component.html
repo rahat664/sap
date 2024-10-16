@@ -1,28 +1,40 @@
-<!--<div class="p-2 flex flex-col space-y-3">-->
-<!--  <div-->
-<!--    appGetElementHeight-->
-<!--    (height)="height = $event"-->
-<!--    class="flex flex-col space-y-3">-->
-<!--    <div-->
-<!--      class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem]  space-y-3 lg:space-y-0 lg:flex-row justify-between">-->
-<!--      <h1 class="text-h1 leading-h1 font-semibold">Dashboard</h1>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <div class="grid grid-cols-4 gap-3">-->
-<!--    <app-status-heighlight class="col-span-2 h-full"></app-status-heighlight>-->
-<!--    <app-challan-status></app-challan-status>-->
-<!--    <app-top-transporter></app-top-transporter>-->
-<!--    <div class="flex flex-col col-span-2 w-full space-y-3">-->
-<!--      <app-month-wise-revenue></app-month-wise-revenue>-->
-<!--      <app-live-trip-status></app-live-trip-status>-->
-<!--    </div>-->
-<!--    <app-top-customer class="col-span-2"></app-top-customer>-->
-
-<!--  </div>-->
-<!--</div>-->
-<!--coming soon with image-->
-<div class="h-[90vh] w-full flex justify-center items-center bg-white">
-    <span class="text-7xl font-extrabold text-not-black">
-      COMING SOON
-    </span>
+<div class="flex flex-col space-y-3 mx-2 pb-4">
+  <div
+    appGetElementHeight
+    (height)="height = $event"
+    class="flex flex-col space-y-3 sticky top-16 z-50 bg-white py-4 px-2">
+    <div
+      class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem]  space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      <h1 class="text-h1 leading-h1 font-semibold">Dashboard</h1>
+    </div>
+  </div>
+  <div class="grid grid-cols-4 gap-3">
+    <div class="col-span-2 h-full rounded-lg">
+      <app-status-heighlight></app-status-heighlight>
+    </div>
+    <div class="h-full  bg-white  rounded-lg">
+      <app-challan-status></app-challan-status>
+    </div>
+    <div routerLink="/profile/transporter" class="h-full cursor-pointer bg-white rounded-lg">
+      <app-top-transporter></app-top-transporter>
+    </div>
+    <div class="flex flex-col col-span-2 w-full cursor-pointer space-y-3">
+      <button routerLink="/trip-list" class="w-full">
+        <app-month-wise-revenue></app-month-wise-revenue>
+      </button>
+      <button routerLink="/manage-trip" class="w-full">
+        <app-live-trip-status></app-live-trip-status>
+      </button>
+    </div>
+    <div routerLink="/profile/customer"
+         class="h-full w-full flex cursor-pointer items-start bg-white col-span-2 rounded-lg">
+      <app-top-customer class="w-full"></app-top-customer>
+    </div>
+  </div>
 </div>
+<!--coming soon with image-->
+<!--<div class="h-[90vh] w-full flex justify-center items-center bg-white">-->
+<!--    <span class="text-7xl font-extrabold text-not-black">-->
+<!--      COMING SOON-->
+<!--    </span>-->
+<!--</div>-->

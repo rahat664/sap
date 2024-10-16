@@ -4,11 +4,9 @@
     (height)="height = $event"
     class="flex flex-col space-y-3">
     <div
-      class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between items-center">
-      <div>
-        <h1 class="text-h1 leading-h1 font-semibold">Truck</h1>
-      </div>
-      <div class="flex space-x-4 h-full items-center">
+      class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      <h1 class="text-h1 leading-h1 font-semibold">Truck</h1>
+      <div class="flex space-x-4 items-center">
         <div class="relative">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -27,22 +25,44 @@
             class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
             placeholder="Enter truck registration number" />
         </div>
-        <div>
-          <button
-            (click)="onClickGenerateReport()"
-            class="px-16 flex space-x-2  items-center border border-primary py-3 lg:py-2 bg-white text-primary rounded-lg">
-            <span class=" text-h2_medium font-semibold lg:block">Report</span>
-          </button>
-        </div>
-        <div>
-          <button
-            (click)="onClickAddTruck()"
-            routerLink="/profile/truck/add"
-            class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
-            <i class="fas fa-plus-circle"></i>
-            <span class="hidden lg:block">Add Truck</span>
-          </button>
-        </div>
+        <button
+          (click)="onClickAddTruck()"
+          routerLink="/profile/truck/add"
+          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+          <i class="fas fa-plus-circle"></i>
+          <span class="hidden lg:block">Add Truck</span>
+        </button>
+      </div>
+    </div>
+    <div class="w-full bg-white rounded-lg">
+      <button
+        (click)="onClickFilterOpened()"
+        class="flex px-2 py-1 space-x-3 items-center w-full"
+        [ngClass]="{ 'border-b-2 border-[#0CD5F0]': filterOpened }">
+        <i class="fas fa-caret-down text-input-hint text-xl"></i>
+        <span class="text-not-black text-body_title leading-body_title"
+        >Filter
+          <span *ngIf="statusInputPlaceholder"
+          >({{ statusInputPlaceholder ? 1 : 0 }})</span
+          >
+          <span *ngIf="statusInputPlaceholder" class="text-input-hint px-3"
+          >|</span
+          >
+          <a
+            *ngIf="statusInputPlaceholder"
+            (click)="onClearFilter()"
+            class="text-red"
+          >Clear all</a
+          >
+        </span>
+      </button>
+      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
+        <app-custom-input
+          appGetClickEvent
+          [inputSearch]="statusInputPlaceholder"
+          [options]="statusOptionsArray"
+          inputPlaceholder="Select Status"
+          (selectedId)="onSelectStatus($event)"></app-custom-input>
       </div>
     </div>
   </div>
@@ -55,26 +75,30 @@
     <table class="table-auto rounded-lg w-full text-body_title leading-body_title">
       <thead>
       <tr class="whitespace-nowrap bg-white">
-        <th class="text-left">Registration number</th>
-        <th class="text-left">Pre-hire checklist</th>
-        <th class="text-left whitespace-nowrap">Created On</th>
-        <th class="text-left">Number of trip</th>
-        <th class="text-center w-[10rem] inline-block">Registration</th>
-        <th class="text-center w-[10rem] inline-block">Truck fitness</th>
+        <th class="text-left w-[20rem] inline-block sticky left-0 bg-white">Registration number</th>
+        <th class="text-left w-[10rem] inline-block">Pre-hire checklist</th>
+        <th class="text-center w-[10rem] inline-block whitespace-nowrap">Created On</th>
+        <th class="text-center w-[10rem] inline-block">Number of trip</th>
+        <th class="text-center w-[10rem] inline-block">Registration paper</th>
+        <th class="text-center w-[10rem] inline-block">Fitness certificate</th>
         <th class="text-center w-[10rem] inline-block">Route permit</th>
-        <th class="text-center w-[10rem] inline-block">Case</th>
-        <th class="text-center w-[10rem] inline-block">Tax</th>
-        <th class="text-center w-[10rem] inline-block">Other Document</th>
+        <th class="text-center w-[10rem] inline-block">Case paper</th>
+        <th class="text-center w-[10rem] inline-block">Tax paper</th>
+        <th class="text-center w-[10rem] inline-block">Insurance paper</th>
+        <th class="text-center w-[10rem] inline-block">Others document</th>
+        <th class="text-center w-[10rem] inline-block z-20 sticky right-[5rem] bg-white">Status
+        </th>
+        <th class="text-center w-[5rem] inline-block z-20 sticky right-0 bg-white"></th>
       </tr>
       <tr>
-        <th class="border-custom" colspan="10"></th>
+        <th class="border" colspan="11"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
         <tr *ngFor="let truck of truckList">
-          <td class="whitespace-nowrap">
-            <div class="flex items-center space-x-4">
+          <td class="whitespace-nowrap w-[20rem] inline-block sticky left-0 bg-white">
+            <div appGetElementHeight (height)="firstColumnHeight = $event" class="flex items-center space-x-4">
               <div
                 class="w-8 h-8 rounded-full bg-another flex items-center justify-center">
                   <span class="text-white font-bold capitalize">{{
@@ -89,96 +113,184 @@
               >
             </div>
           </td>
-          <td class="text-center">
-            <a (click)="onClickCheckList(truck)"
-               class="text-link cursor-pointer"
-            >{{ truck.preHireCheckList }}/22</a
+          <td class="text-center w-[10rem] inline-block">
+            <div [style.height]="firstColumnHeight" (click)="onClickCheckList(truck)"
+                 class="text-link cursor-pointer flex items-center justify-center"
+            ><span>{{ truck.preHireCheckList }}/22</span>
+            </div
             >
           </td>
-          <td class="whitespace-nowrap">{{ truck.createdOn ? (truck.createdOn | date : 'd MMM yyyy') : '' }}</td>
-          <td class="text-center">{{ truck.noOfTrips }}</td>
+          <td
+
+            class="w-[10rem] inline-block whitespace-nowrap">
+            <div class="flex items-center justify-center" [style.min-height]="firstColumnHeight">
+              <span>{{ truck.createdOn ? (truck.createdOn | date : 'd MMM yyyy') : '' }}</span>
+            </div>
+          </td>
+          <td class="w-[10rem] inline-block text-center">
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center">
+              <span>
+                {{ truck.noOfTrips }}
+              </span>
+            </div>
+          </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
-              <i *ngIf="checkThatFileIsExistOrNot(truckEnum.REG_PAPER_FILE, truck.truckDocumentList)"
-                 class="fas fa-check text-green"></i>
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <i
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.REG_PAPER_FILE, truck.truckDocumentList).isExist"
+                class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('reg', truck)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.REG_PAPER_FILE, truck.truckDocumentList)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.REG_PAPER_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              ></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
-              <i
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList)"
-                class="fas fa-check text-green"></i>
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList).expDate) }"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList).isExist"> {{ checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList).expDate | date: 'd MMM yyyy' }}
+              </span>
               <app-upload-button
                 (click)="onClickUpdate('fit', truck)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.FITNESS_CERTIFICATE_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              >
+              </app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
-              <i
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList)"
-                class="fas fa-check text-green"></i>
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList).expDate) }"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList).isExist"> {{ checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList).expDate | date: 'd MMM yyyy' }}
+              </span>
               <app-upload-button
                 (click)="onClickUpdate('route', truck)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.ROUTE_PERMIT_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              >
+              </app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
-              <i
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList)"
-                class="fas fa-check text-green"></i>
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList).expDate) }"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList).isExist"> {{ checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList).expDate | date: 'd MMM yyyy' }}
+              </span>
               <app-upload-button
                 (click)="onClickUpdate('case', truck)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.CASE_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              >
+              </app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
-              <i
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList)"
-                class="fas fa-check text-green"></i>
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList).expDate) }"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList).isExist"> {{ checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList).expDate | date: 'd MMM yyyy' }}
+              </span>
               <app-upload-button
                 (click)="onClickUpdate('tax', truck)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList)"
+
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.TAX_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              >
+              </app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap w-[10rem] inline-block">
-            <div class="flex items-center justify-center h-full">
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
+              <span
+                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(truckEnum.INSURANCE_FILE, truck.truckDocumentList).expDate) }"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.INSURANCE_FILE, truck.truckDocumentList).isExist"> {{ checkThatFileIsExistOrNot(truckEnum.INSURANCE_FILE, truck.truckDocumentList).expDate | date: 'd MMM yyyy' }}</span>
+              <app-upload-button
+                (click)="onClickUpdate('insurance', truck)"
+
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.INSURANCE_FILE, truck.truckDocumentList).isExist"
+                icon="upload"
+                [file]="true"
+              >
+              </app-upload-button>
+            </div>
+          </td>
+          <td class="whitespace-nowrap w-[10rem] inline-block">
+            <div [style.min-height]="firstColumnHeight" class="flex items-center justify-center h-full">
               <i
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, truck.truckDocumentList)"
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, truck.truckDocumentList).isExist"
                 class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickUpdate('other', truck)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, truck.truckDocumentList)"
+
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, truck.truckDocumentList).isExist"
                 icon="upload"
                 [file]="true"
-                buttonText="Upload"></app-upload-button>
+              ></app-upload-button>
             </div>
+          </td>
+          <td
+            class="whitespace-nowrap w-[10rem] inline-flex text-secondary items-center justify-center sticky text-center bg-white right-[5rem]">
+            <div [style.min-height]="firstColumnHeight"
+                 class="flex items-center justify-center">
+              <div
+                class="{{getBgColor(truck.status)}} bg-opacity-[30%] z-30 px-2 py-0.5 rounded-full flex items-center">
+                <span class="text-web-text-secondary">{{ truck.status }}</span>
+              </div>
+            </div>
+          </td>
+          <td class="whitespace-nowrap w-[5rem] inline-block sticky text-center bg-white right-0">
+            <button [style.max-height]="firstColumnHeight" [style.min-height]="firstColumnHeight" mat-button
+                    [matMenuTriggerFor]="menu"><i
+              class="fas fa-ellipsis-v"></i></button>
+            <mat-menu #menu="matMenu">
+              <button (click)="onClickApprove(truck)" *ngIf="truck.status === 'Pending' || truck.status === 'Rejected'"
+                      mat-menu-item>
+                <div class="flex space-x-2 items-center">
+                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
+                    <i class="far fa-check text-green"></i>
+                  </div>
+                  <span class="text-green">Approve</span>
+                </div>
+              </button>
+              <button (click)="onClickReject(truck)"
+                      *ngIf="truck.status === 'Pending'"
+                      mat-menu-item
+              >
+                <div class="flex space-x-2 items-center">
+                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
+                    <i class="far fa-times text-red"></i>
+                  </div>
+                  <span class="text-red">Reject</span>
+                </div>
+              </button>
+              <button
+                routerLink="/profile/truck/{{ truck.id }}/details"
+                (click)="localStorage.setItem('directEdit', 'true')"
+                mat-menu-item>
+                <div class="flex  space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/edit.svg"
+                    alt="" />
+                  <span>Edit</span>
+                </div>
+              </button>
+            </mat-menu>
           </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="truckList?.length === 0">
-          <td class="text-center" colspan="10">
+          <td class="text-center" colspan="11">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
               <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
               <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
@@ -188,7 +300,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="10">
+          <td class="h-full" colspan="11">
             <app-loading></app-loading>
           </td>
         </tr>

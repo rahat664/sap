@@ -2,4 +2,9 @@
   *ngIf="showGallery"
   class="h-[90vh] flex items-center object-center object-contain justify-center">
   <img loading="lazy" class="h-full" [src]="galleryImages" />
+  <button
+    (click)="closeModal()"
+    class="absolute top-4 right-4 p-1 h-6 z-50 w-6 shadow-lg bg-white rounded-full flex items-center justify-center">
+    <i class="fal fa-times text-lg"></i>
+  </button>
 </div>

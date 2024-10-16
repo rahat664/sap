@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import '@ng-select/ng-select/themes/default.theme.css';
-@import "@angular/material/prebuilt-themes/indigo-pink.css";
+@import "@angular/material/prebuilt-themes/azure-blue.css";
 
 * {
   --webkit-box-sizing: border-box;
@@ -221,8 +221,10 @@ input::-webkit-outer-spin-button {
 }
 
 .error {
-  outline: 1px solid #F7CAD0;
-  border-radius: 0.5rem;
+  outline: none !important;
+  --tw-ring-color: none !important;
+  border: 1px solid #F7CAD0 !important;
+  border-radius: 0.5rem !important;
 }
 
 ::ng-deep .error .mat-mdc-text-field-wrapper {
@@ -263,6 +265,14 @@ textarea:focus {
 
 .mat-date-range-input-separator {
   color: #A5B8BB !important;
+}
+
+img:hover {
+  cursor: pointer;
+}
+
+.mat-mdc-dialog-surface {
+  background-color: white !important;
 }
 
 .tel-form {

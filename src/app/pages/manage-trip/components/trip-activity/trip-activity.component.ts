@@ -81,7 +81,6 @@ export class TripActivityComponent {
     this.selectedEvent = event;
     this.selectedEventNameLoading = event.eventName;
     this.addPaginationWhenImageAreMoreThanThree(event);
-    console.log(this.imageToShow);
   }
 
   changeTripUnloadingEvent(event: EventData) {
