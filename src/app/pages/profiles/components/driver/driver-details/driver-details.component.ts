@@ -404,7 +404,7 @@ export class DriverDetailsComponent implements OnInit {
 
     // Calculate the number of files that can still be uploaded
     const currentFilesCount =
-      this.getSpecificFiles(formControlName)?.length || 0;
+      this.getSavedFileArray(formControlName)?.length;
     this.maxUploadAble = Math.max(0, max - currentFilesCount); // Ensure it doesn't go negative
 
     // Trigger the file input click if it exists
@@ -414,37 +414,49 @@ export class DriverDetailsComponent implements OnInit {
   onFileSelected($event: Event) {
     const input = $event.target as HTMLInputElement;
     const files = input.files;
-
-    // Check if files exist
-    if (!files || files.length === 0) {
-      return;
-    }
-
-    const currentFiles =
-      this.driverUpdateForm.get(this.selectedFormControlName)?.value || [];
-    const totalFilesCount = Array.from(currentFiles).length + files.length;
-
-    // Validate total files count against the maximum allowed
-    if (
-      totalFilesCount >
-      this.maxUploadAble +
-        this.getSavedFileArray(this.selectedFormControlName).length
-    ) {
-      this.toastr.showError(
-        `You can upload a maximum of ${this.maxUploadAble} files`
+    if (this.driverUpdateForm.get(this.selectedFormControlName)?.value) {
+      const currentFiles = Array.from(
+        this.driverUpdateForm.get(this.selectedFormControlName)?.value
       );
-      return;
+      console.log(currentFiles);
+      if (currentFiles.length + files.length > this.maxUploadAble) {
+        this.toastr.showError(
+          `You can upload maximum of ${this.maxUploadAble + this.getSavedFileArray(this.selectedFormControlName)?.length} files`
+        );
+        return;
+      } else {
+        this.onAddFile(files);
+      }
+    } else {
+      if (files.length > this.maxUploadAble) {
+        this.toastr.showError(
+          `You can upload maximum of ${this.maxUploadAble + this.getSavedFileArray(this.selectedFormControlName).length} files`
+        );
+        return;
+      } else {
+        this.onAddFile(files);
+      }
     }
-
-    // If validation passes, proceed to add files
-    this.onAddFile(files);
   }
 
   private onAddFile(files: FileList) {
     // Update the form with the selected files
-    this.driverUpdateForm.patchValue({
-      [this.selectedFormControlName]: files,
-    });
+    if (this.driverUpdateForm.get(this.selectedFormControlName)?.value) {
+      // concat new files with existing files
+      const currentFiles = Array.from(
+        this.driverUpdateForm.get(this.selectedFormControlName)?.value
+      );
+      Array.from(files).forEach((file: File) => {
+        currentFiles.push(file);
+      });
+      this.driverUpdateForm.patchValue({
+        [this.selectedFormControlName]: currentFiles,
+      });
+    } else {
+      this.driverUpdateForm.patchValue({
+        [this.selectedFormControlName]: files,
+      });
+    }
 
     // Handle file preview and validation based on the selected form control
     const validationMap = {

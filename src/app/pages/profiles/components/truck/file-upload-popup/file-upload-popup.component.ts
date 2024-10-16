@@ -30,6 +30,7 @@ import { MatSelect } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-file-upload-popup',
@@ -82,7 +83,8 @@ export class FileUploadPopupComponent implements OnChanges {
     private sharedDriverEditService: DriverEditSharedService,
     private cdr: ChangeDetectorRef,
     private datePipe: DatePipe,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private toastr: HandleToastrService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {}
@@ -120,30 +122,48 @@ export class FileUploadPopupComponent implements OnChanges {
 
   @Output() modalClosed: EventEmitter<any> = new EventEmitter<any>();
   @Input() isUploadDisabled: boolean = false;
-  selectedDate: Date = new Date();
 
   onSubmit() {
-    this.sharedDriverEditService.isUploadPopupOpen.next(false);
-    this.dialogRef.close(this.fileArray);
-    this.fileInput.emit(this.fileArray);
-    if (this.data?.from == 'driver') {
-      this.sharedDriverEditService.getDocument(this.data?.value);
-      this.sharedDriverEditService.bindDriverValueWithForm(this.data?.value);
-      this.sharedDriverEditService.onChangeFile(this.fileArray);
-      this.fileArray = [];
-      this.sharedDriverEditService.onDriverUpdate(
-        this.data?.value?.name,
-        this.data?.value?.phone
-      );
-    } else if (this.data?.from == 'truck') {
-      this.sharedDriverEditService.getTruckDocument(this.data?.value);
-      this.sharedDriverEditService.bindTruckValueWithForm(this.data?.value);
-      this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
-      this.fileArray = [];
-      this.sharedDriverEditService.onTruckUpdate();
-    } else {
-      this.fileArray = [];
-    }
+      if (this.data?.from == 'driver') {
+        const isExpiryFilled = this.fileArray.every(
+          (file) => file.registrationExpireDate !== null
+        );
+        if (isExpiryFilled) {
+          this.dialogRef.close(this.fileArray);
+          this.fileInput.emit(this.fileArray);
+          this.sharedDriverEditService.isUploadPopupOpen.next(false);
+          this.sharedDriverEditService.getDocument(this.data?.value);
+          this.sharedDriverEditService.bindDriverValueWithForm(this.data?.value);
+          this.sharedDriverEditService.onChangeFile(this.fileArray);
+          this.fileArray = [];
+          this.sharedDriverEditService.onDriverUpdate(
+            this.data?.value?.name,
+            this.data?.value?.phone
+          );
+        } else {
+          this.sharedDriverEditService.isUploadPopupOpen.next(true);
+          this.toastr.showError('Please fill the expiry date of all files');
+        }
+      } else if (this.data?.from == 'truck') {
+        const isExpiryFilled = this.fileArray.every(
+          (file) => file.registrationExpireDate !== null
+        );
+        if (isExpiryFilled) {
+          this.dialogRef.close(this.fileArray);
+          this.fileInput.emit(this.fileArray);
+          this.sharedDriverEditService.isUploadPopupOpen.next(false);
+          this.sharedDriverEditService.getTruckDocument(this.data?.value);
+          this.sharedDriverEditService.bindTruckValueWithForm(this.data?.value);
+          this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
+          this.fileArray = [];
+          this.sharedDriverEditService.onTruckUpdate();
+        } else {
+          this.sharedDriverEditService.isUploadPopupOpen.next(true);
+          this.toastr.showError('Please fill the expiry date of all files');
+        }
+      } else {
+        this.fileArray = [];
+      }
   }
 
   previewFile(file: File) {
@@ -172,6 +192,8 @@ export class FileUploadPopupComponent implements OnChanges {
       }
     }
   }
+
+  selectedDate: any = new Date();
 
   onDateChange($event: any, i: number) {
     this.selectedDate = $event.target.value;

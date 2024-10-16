@@ -56,7 +56,7 @@
     </label>
   </div>
   <div
-    class="flex flex-col bg-input px-4 py-2 space-y-2 rounded-lg"
+    class="flex flex-col bg-input px-4 py-3 space-y-2 rounded-lg"
     *ngIf="fileArray.length > 0">
     <ng-container *ngFor="let file of fileArray; index as i">
       <div class="flex py-2 space-x-3 items-center">
@@ -92,9 +92,9 @@
               file.registrationType === 'Driving License Front' ||file.registrationType === 'Insurance'"
             >
               <!--             Date picker cannot take previous date-->
-              <mat-form-field class="example-full-width flex-1 w-full" appearance="outline">
+              <mat-form-field class="example-full-width flex-1 w-full" appearance="outline" [ngClass]="{ 'error' : !file?.registrationExpireDate}">
                 <input matInput [matDatepicker]="picker" placeholder="Expiry Date" (focusin)="picker.open()"
-                       (selectionchange)="onDateChange($event, i)">
+                       (selectionchange)="onDateChange($event, i)" >
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>

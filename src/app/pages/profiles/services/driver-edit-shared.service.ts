@@ -77,17 +77,18 @@ export class DriverEditSharedService {
   validateInterNationalPhoneNumber() {
     timer(1000).subscribe(() => {
       const numberInput = document
-        .getElementsByClassName('tel-form')[0]
-        .children[1].getElementsByTagName('input')[0];
-      document.getElementsByClassName('tel-form')[0].classList.add('mt-1');
-      numberInput.maxLength = numberInput.placeholder.length;
-      numberInput.minLength = numberInput.placeholder.length;
+        .getElementsByClassName('tel-form')[0]?.children[1]?.getElementsByTagName('input')[0];
+      document.getElementsByClassName('tel-form')[0]?.classList.add('mt-1');
+      if (numberInput) {
+        numberInput.maxLength = numberInput?.placeholder.length;
+        numberInput.minLength = numberInput?.placeholder.length;
+        numberInput.addEventListener('keypress', e => {
+          if (isNaN(Number(e.key))) {
+            e.preventDefault();
+          }
+        });
+      }
       // number input should not accept text
-      numberInput.addEventListener('keypress', e => {
-        if (isNaN(Number(e.key))) {
-          e.preventDefault();
-        }
-      });
     });
   }
 

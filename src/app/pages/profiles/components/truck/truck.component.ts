@@ -24,7 +24,8 @@ import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
 import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-truck',
@@ -51,6 +52,8 @@ import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
     MatMenuTrigger,
     MatMenu,
     NgClass,
+    MatMenuItem,
+    MatButton,
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss',

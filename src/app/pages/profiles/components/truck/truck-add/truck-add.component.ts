@@ -495,9 +495,22 @@ export class TruckAddComponent implements OnInit {
   }
 
   private onAddFile(files: FileList) {
-    this.truckAddForm.patchValue({
-      [this.selectedFormControlName]: files,
-    });
+    if (this.truckAddForm.get(this.selectedFormControlName)?.value) {
+      // concat new files with existing files
+      const currentFiles = Array.from(
+        this.truckAddForm.get(this.selectedFormControlName)?.value
+      );
+      Array.from(files).forEach((file: File) => {
+        currentFiles.push(file);
+      });
+      this.truckAddForm.patchValue({
+        [this.selectedFormControlName]: currentFiles,
+      });
+    } else {
+      this.truckAddForm.patchValue({
+        [this.selectedFormControlName]: files,
+      });
+    }
     switch (this.selectedFormControlName) {
       case 'truckImages':
         this.previewFile(files, this.truckImages);

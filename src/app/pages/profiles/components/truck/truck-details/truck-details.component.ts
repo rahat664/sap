@@ -350,7 +350,7 @@ export class TruckDetailsComponent implements OnInit {
 
     // Calculate the number of files that can still be uploaded
     const currentFilesCount =
-      this.getSpecificFiles(formControlName)?.length || 0;
+      this.getSavedFileArray(formControlName)?.length;
     this.maxUploadAble = Math.max(0, max - currentFilesCount); // Ensure it doesn't go negative
 
     // Trigger the file input click if it exists
@@ -749,30 +749,29 @@ export class TruckDetailsComponent implements OnInit {
   onFileSelected($event: Event) {
     const input = $event.target as HTMLInputElement;
     const files = input.files;
-
-    // Check if files exist
-    if (!files || files.length === 0) {
-      return;
-    }
-
-    const currentFiles =
-      this.truckUpdateForm.get(this.selectedFormControlName)?.value || [];
-    const totalFilesCount = Array.from(currentFiles).length + files.length;
-
-    // Validate total files count against the maximum allowed
-    if (
-      totalFilesCount >
-      this.maxUploadAble +
-        this.getSavedFileArray(this.selectedFormControlName).length
-    ) {
-      this.toastr.showError(
-        `You can upload a maximum of ${this.maxUploadAble} files`
+    if (this.truckUpdateForm.get(this.selectedFormControlName)?.value) {
+      const currentFiles = Array.from(
+        this.truckUpdateForm.get(this.selectedFormControlName)?.value
       );
-      return;
+      console.log(currentFiles);
+      if (currentFiles.length + files.length > this.maxUploadAble) {
+        this.toastr.showError(
+          `You can upload maximum of ${this.maxUploadAble + this.getSavedFileArray(this.selectedFormControlName)?.length} files`
+        );
+        return;
+      } else {
+        this.onAddFile(files);
+      }
+    } else {
+      if (files.length > this.maxUploadAble) {
+        this.toastr.showError(
+          `You can upload maximum of ${this.maxUploadAble + this.getSavedFileArray(this.selectedFormControlName).length} files`
+        );
+        return;
+      } else {
+        this.onAddFile(files);
+      }
     }
-
-    // If validation passes, proceed to add files
-    this.onAddFile(files);
   }
 
   checkThatFileIsAvailableOrNot(name: string) {
@@ -1094,7 +1093,7 @@ export class TruckDetailsComponent implements OnInit {
   private splitDoucumentsByType(documents: TruckDocument[]) {
     // Split the documents by type
     documents.forEach(doc => {
-      // split by trucj document type
+      // split by truck document type
       const documentType = doc.documentType;
       console.log(documentType);
       switch (documentType) {

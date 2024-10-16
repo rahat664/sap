@@ -76,7 +76,7 @@
                       class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
                     <mat-form-field *ngIf="option?.expiryAvailable" class="example-full-width flex-1 custom"
                                     appearance="outline"
-                                    [ngClass]="{ 'error' : driverAddForm.get(option.expiryFormControlName).invalid }"
+                                    [ngClass]="{ 'error' : driverAddForm.get(option.expiryFormControlName)?.invalid }"
                     >
                       <input [disabled]="everyThingDisabled" [formControlName]="option.expiryFormControlName" matInput
                              [matDatepicker]="picker"

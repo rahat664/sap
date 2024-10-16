@@ -142,9 +142,22 @@ export class DriverAddComponent implements OnInit {
   }
 
   private onAddFile(files: FileList) {
-    this.driverAddForm.patchValue({
-      [this.selectedFormControlName]: files,
-    });
+    if (this.driverAddForm.get(this.selectedFormControlName)?.value) {
+      // concat new files with existing files
+      const currentFiles = Array.from(
+        this.driverAddForm.get(this.selectedFormControlName)?.value
+      );
+      Array.from(files).forEach((file: File) => {
+        currentFiles.push(file);
+      });
+      this.driverAddForm.patchValue({
+        [this.selectedFormControlName]: currentFiles,
+      });
+    } else {
+      this.driverAddForm.patchValue({
+        [this.selectedFormControlName]: files,
+      });
+    }
     switch (this.selectedFormControlName) {
       case 'nidFront':
         this.previewFile(files, this.nidFrontImages);
@@ -487,6 +500,7 @@ export class DriverAddComponent implements OnInit {
       const currentFiles = Array.from(
         this.driverAddForm.get(this.selectedFormControlName)?.value
       );
+      console.log(currentFiles);
       if (currentFiles.length + files.length > this.maxUploadAble) {
         this.toastr.showError(
           `You can upload maximum of ${this.maxUploadAble} files`

@@ -98,10 +98,12 @@ export class UserService {
     search?: string,
     approveStatus?: string
   ): Observable<any> {
-    let apiUrl = `${this.url}/drivers?page=${page}&size=${size}&approveStatus=${approveStatus}`;
+    let apiUrl = `${this.url}/drivers?page=${page}&size=${size}`;
 
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
+    }  if (approveStatus) {
+      apiUrl += `&approveStatus=${approveStatus}`;
     }
 
     return this.http.get(apiUrl);
