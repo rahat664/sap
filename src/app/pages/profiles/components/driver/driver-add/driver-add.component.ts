@@ -239,6 +239,7 @@ export class DriverAddComponent implements OnInit {
 
   onDriverSave() {
     if (this.driverAddForm.valid) {
+      this.loading = true;
       if (!this.driverAddForm.get('drivingLicenseExpiryDate')?.value) {
         this.driverAddForm.removeControl('drivingLicenseExpiryDate');
       }
@@ -277,6 +278,7 @@ export class DriverAddComponent implements OnInit {
         (res: any) => {
           // Handle response
           if (res.status == 'OK') {
+            this.loading = false;
             localStorage.removeItem('driver');
             this.toastr.showSuccess(res.message);
             this.router.navigate(['/profile/driver']);
