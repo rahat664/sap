@@ -23,11 +23,12 @@ import { NgForOf } from '@angular/common';
   styleUrl: './live-trip-status.component.scss',
 })
 export class LiveTripStatusComponent {
-  startingPosition: google.maps.LatLngLiteral = {
+  startingPosition: any = {
+    // dhaka coordinates
     lat: 23.8103,
     lng: 90.4125,
   };
-  destinationPosition: google.maps.LatLngLiteral = {
+  destinationPosition: any = {
     // rangpur coordinates
     lat: 23.8103,
     lng: 90.4125,
@@ -43,6 +44,14 @@ export class LiveTripStatusComponent {
 
   private getTripList() {
     this.service.getTrips(0, 200).subscribe(res => {
+      this.startingPosition = {
+        lng: res.data.responses[0]?.tripPoints[0]?.pointLon,
+        lat: res.data.responses[0]?.tripPoints[0]?.pointLat,
+      };
+      this.destinationPosition = {
+        lng: res.data.responses[0]?.tripPoints[res.data.responses[0]?.tripPoints.length - 1]?.pointLon,
+        lat: res.data.responses[0]?.tripPoints[res.data.responses[0]?.tripPoints.length - 1]?.pointLat,
+      };
       this.makeArrayFromThisObject(res.data.statusCount);
     });
   }
@@ -50,13 +59,12 @@ export class LiveTripStatusComponent {
   private makeArrayFromThisObject(statusCount: any) {
     const status = Object.keys(statusCount);
     const count = Object.values(statusCount);
-    const statusArray = status.map((s, i) => {
+    this.tripStatuses = status.map((s, i) => {
       return {
         status: s,
         count: count[i],
       };
     });
-    this.tripStatuses = statusArray;
   }
 
   getColorByStatus(status: string) {

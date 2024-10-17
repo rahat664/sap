@@ -40,7 +40,10 @@ export class ChallanStatusComponent {
 
   private getFromDateAndToDate() {
     // fromdate will be the first day of the current month
+    // fromDate will be 1st january 2024
     const fromDate = new Date();
+    fromDate.setFullYear(2024);
+    fromDate.setMonth(0);
     fromDate.setDate(1);
     this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd');
     // todate should be the current date

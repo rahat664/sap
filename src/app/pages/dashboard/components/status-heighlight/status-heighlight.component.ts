@@ -5,7 +5,7 @@ import { MatSelect } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StatusCardComponent } from './status-card/status-card.component';
 import { DashboardService } from '../../services/dashboard.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   customerStats,
   DashboardStatsModel,
@@ -22,6 +22,7 @@ import { RouterLink } from '@angular/router';
     ReactiveFormsModule,
     StatusCardComponent,
     RouterLink,
+    DecimalPipe,
   ],
   templateUrl: './status-heighlight.component.html',
   styleUrl: './status-heighlight.component.scss',
