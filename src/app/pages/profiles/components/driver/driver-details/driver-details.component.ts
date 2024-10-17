@@ -603,7 +603,7 @@ export class DriverDetailsComponent implements OnInit {
     }
 
     // Set the 'id' field only after form validity is confirmed
-    this.driverUpdateForm.get('id')?.setValue(this.driverDetails.userId);
+    this.driverUpdateForm.get('driverId')?.setValue(this.driverDetails.userId);
 
     // Check and set default for checklist if it's null
 
@@ -779,6 +779,7 @@ export class DriverDetailsComponent implements OnInit {
 
   private initiateForm() {
     this.driverUpdateForm = this.fb.group({
+      driverId: [null],
       driverName: [
         '',
         [

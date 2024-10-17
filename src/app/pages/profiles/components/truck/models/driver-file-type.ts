@@ -2,7 +2,7 @@ export const driverFileTypeModel: DriverFileType[] = [
   {
     id: 1,
     name: 'NID Front',
-    max: 50,
+    max: 1,
     expiryAvailable: false,
     uploaded: false,
     multiple: true,
@@ -11,7 +11,7 @@ export const driverFileTypeModel: DriverFileType[] = [
   {
     id: 2,
     name: 'NID Back',
-    max: 50,
+    max: 1,
     expiryAvailable: false,
     uploaded: false,
     multiple: true,
