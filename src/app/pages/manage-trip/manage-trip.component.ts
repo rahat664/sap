@@ -555,7 +555,13 @@ export class ManageTripComponent implements OnInit {
       this.startDate = '';
       this.endDate = '';
       this.previousFilterLength -= 1;
-    } else {
+    } else if(filter === this.customDateText) {
+      this.selectedButton = '';
+      this.dateSelected = false;
+      this.startDate = '';
+      this.endDate = '';
+      this.previousFilterLength -= 1;
+    }else {
       const filterId = this.vehicleTypeList.find(
         (element: any) => element.name === filter
       ).id;
