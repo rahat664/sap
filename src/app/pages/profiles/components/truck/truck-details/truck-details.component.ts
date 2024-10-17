@@ -863,7 +863,7 @@ export class TruckDetailsComponent implements OnInit {
     this.dialog
       .open(ConfirmApproveComponent, {
         data: {
-          title: 'Approve',
+          title: 'Attention',
           textPrefix: 'the truck with registration number',
           text: `${this.truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Approve',

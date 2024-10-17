@@ -696,7 +696,7 @@ export class DriverDetailsComponent implements OnInit {
     this.dialog
       .open(ConfirmApproveComponent, {
         data: {
-          title: 'Approve',
+          title: 'Attention',
           textPrefix: 'the driver ',
           text: `the driver ${driver.name} (${driver.phone})?`,
           buttonText: 'Approve',
@@ -736,7 +736,7 @@ export class DriverDetailsComponent implements OnInit {
     this.dialog
       .open(ConfirmRejectComponent, {
         data: {
-          title: 'Reject',
+          title: 'Attention',
           textPrefix: 'the driver ',
           text: `${driver.name} (${driver.phone})?`,
           buttonText: 'Reject',
