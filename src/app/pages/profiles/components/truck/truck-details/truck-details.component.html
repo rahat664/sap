@@ -224,7 +224,7 @@
                       (click)="triggerFileUpload(option?.formControlName, option.max)"
                       icon="upload"></app-upload-button>
                     <app-upload-button
-                      *ngIf="(getSpecificFiles(option?.formControlName)?.length > 0 || getSavedFileArray(option?.formControlName)?.length > 0) && getSpecificFiles(option?.formControlName)?.length < option?.max"
+                      *ngIf="(getSpecificFiles(option?.formControlName)?.length > 0  || getSavedFileArray(option?.formControlName).length > 0)&& (getFileArray(option?.formControlName)?.length + getSavedFileArray(option?.formControlName).length) < option?.max"
                       (click)="triggerFileUpload(option?.formControlName, option.max)"
                       icon="plus"></app-upload-button>
                     <input [multiple]="option.multiple" type="file" #fileInput accept=".png, .jpg, .jpeg, .pdf"

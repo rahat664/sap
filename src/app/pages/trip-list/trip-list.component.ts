@@ -246,6 +246,7 @@ export class TripListComponent implements OnInit {
 
   resetSearch() {
     this.isSearchedMenuOpened = false;
+    this.customerCode = '';
     this.searchValue = '';
     this.page = 0;
     this.size = 30;

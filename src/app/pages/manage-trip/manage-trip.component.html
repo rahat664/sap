@@ -110,7 +110,7 @@
               </ng-container>
             </div>
             <mat-date-range-picker #picker></mat-date-range-picker>
-            <ng-container *ngIf="dateText || customDateText">
+            <ng-container *ngIf="dateText || customDateText || customSelected">
               <mat-form-field appearance="outline" >
                 <mat-date-range-input [rangePicker]="picker">
                   <input [disabled]="!customSelected" (focus)="picker.open()" [(ngModel)]="startDate" (selectionchange)="onChangeStartDate($event)"
