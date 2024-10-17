@@ -403,4 +403,28 @@ export class DriverComponent implements OnInit {
   }
 
   protected readonly truckEnum = TruckDocumentType;
+
+  onClickOther(other: string, driver: UserModel) {
+    this.singleDriver = driver;
+    this.isOpen = true;
+    if (localStorage.getItem('driver')) {
+      localStorage.removeItem('driver');
+    }
+    localStorage.setItem('driver', JSON.stringify(driver));
+    const DFT = [];
+    this.driverFileType.filter(item => {
+      if (item.value?.includes('Other')) {
+        DFT.push(item);
+      }
+    });
+    this.newDriverFileType = DFT;
+    this.dialog.open(FileUploadPopupComponent, {
+      width: '40%',
+      data: {
+        from: 'driver',
+        filetype: this.newDriverFileType,
+        value: driver,
+      },
+    });
+  }
 }

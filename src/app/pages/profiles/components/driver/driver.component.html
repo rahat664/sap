@@ -81,12 +81,13 @@
         <th class="text-center">Number of trip</th>
         <th class="text-center">Driving License</th>
         <th class="text-center">National ID</th>
+        <th class="text-center">Other Document</th>
         <th class="text-center">Status</th>
         <th class="text-left" style="width: 5%;"></th>
         <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
-        <th class="border" colspan="8"></th>
+        <th class="border" colspan="9"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -165,6 +166,19 @@
                   "
                 icon="upload"
                 [file]="true"></app-upload-button>
+            </div>
+          </td>
+          <td class="whitespace-nowrap">
+            <div  class="flex items-center justify-center h-full">
+              <i
+                *ngIf="checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, driver.documentsList).isExist"
+                class="fas fa-check text-green"></i>
+              <app-upload-button
+                (click)="onClickOther('other', driver)"
+                *ngIf="!checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, driver.documentsList).isExist"
+                icon="upload"
+                [file]="true"
+              ></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap">
