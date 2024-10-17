@@ -124,42 +124,48 @@ export class FileUploadPopupComponent implements OnChanges {
   @Input() isUploadDisabled: boolean = false;
 
   onSubmit() {
-      if (this.data?.from == 'driver') {
-        const isExpiryFilled = this.fileArray.every(
-          (file) => file.registrationExpireDate !== null
-        );
-        if (isExpiryFilled || !this.isExpiryAvailable) {
-          this.fileInput.emit(this.fileArray);
-          this.dialogRef.close(this.fileArray);
-          this.sharedDriverEditService.getDocument(this.data?.value);
-          this.sharedDriverEditService.bindDriverValueWithForm(this.data?.value);
-          this.sharedDriverEditService.onChangeFile(this.fileArray);
-          this.fileArray = [];
-          this.sharedDriverEditService.onDriverUpdate(
-            this.data?.value?.name,
-            this.data?.value?.phone
-          );
-        } else {
-          this.toastr.showError('Please fill the expiry date of all files');
-        }
-      } else if (this.data?.from == 'truck') {
-        const isExpiryFilled = this.fileArray.every(
-          (file) => file.registrationExpireDate !== null
-        );
-        if (isExpiryFilled || !this.isExpiryAvailable) {
-          this.dialogRef.close(this.fileArray);
-          this.fileInput.emit(this.fileArray);
-          this.sharedDriverEditService.getTruckDocument(this.data?.value);
-          this.sharedDriverEditService.bindTruckValueWithForm(this.data?.value);
-          this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
-          this.fileArray = [];
-          this.sharedDriverEditService.onTruckUpdate();
-        } else {
-          this.toastr.showError('Please fill the expiry date of all files');
-        }
-      } else {
-        this.fileArray = [];
-      }
+    const isExpiryFilled = this.fileArray.every(
+      (file) => file.registrationExpireDate !== null
+    );
+
+    if (this.data?.from === 'driver') {
+      this.handleDriverSubmission(isExpiryFilled);
+    } else if (this.data?.from === 'truck') {
+      this.handleTruckSubmission(isExpiryFilled);
+    } else {
+      this.fileArray = [];
+    }
+  }
+
+  private handleDriverSubmission(isExpiryFilled: boolean) {
+    if (isExpiryFilled || this.excludeExpiryField(this.fileArray)) {
+      this.fileInput.emit(this.fileArray);
+      this.dialogRef.close(this.fileArray);
+      this.sharedDriverEditService.getDocument(this.data?.value);
+      this.sharedDriverEditService.bindDriverValueWithForm(this.data?.value);
+      this.sharedDriverEditService.onChangeFile(this.fileArray);
+      this.fileArray = [];
+      this.sharedDriverEditService.onDriverUpdate(
+        this.data?.value?.name,
+        this.data?.value?.phone
+      );
+    } else {
+      this.toastr.showError('Please fill the expiry date of all files');
+    }
+  }
+
+  private handleTruckSubmission(isExpiryFilled: boolean) {
+    if (isExpiryFilled || this.excludeExpiryField(this.fileArray)) {
+      this.fileInput.emit(this.fileArray);
+      this.dialogRef.close(this.fileArray);
+      this.sharedDriverEditService.getTruckDocument(this.data?.value);
+      this.sharedDriverEditService.bindTruckValueWithForm(this.data?.value);
+      this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
+      this.fileArray = [];
+      this.sharedDriverEditService.onTruckUpdate();
+    } else {
+      this.toastr.showError('Please fill the expiry date of all files');
+    }
   }
 
   previewFile(file: File) {
@@ -173,6 +179,7 @@ export class FileUploadPopupComponent implements OnChanges {
         registrationExpireDate: null,
         fileOpened: false,
         registrationOptions: this.newFileType,
+        expiryAvailable: false,
       });
     };
   }
@@ -206,5 +213,10 @@ export class FileUploadPopupComponent implements OnChanges {
 
   onClose() {
     this.dialogRef.close('close');
+  }
+
+
+  private excludeExpiryField(fileArray: any[]) {
+    return fileArray.every((file) => file.registrationType === 'Other' || file.registrationType === 'NID Front' || file.registrationType === 'NID Back'  || file.registrationType === 'Registration Paper' );
   }
 }
