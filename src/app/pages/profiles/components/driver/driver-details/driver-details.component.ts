@@ -874,7 +874,7 @@ export class DriverDetailsComponent implements OnInit {
     noEntriesFoundLabel: 'No countries found',
     nationalNumberLabel: '',
     hintLabel: '',
-    invalidNumberError: 'Number is not valid',
+    invalidNumberError: '',
     requiredError: 'This field is required',
   };
 

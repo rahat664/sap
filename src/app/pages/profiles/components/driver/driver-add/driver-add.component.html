@@ -53,7 +53,7 @@
                                                [numberValidation]="true" [hidePhoneIcon]="true"
                                                [required]="true" [autoIpLookup]="false" [ngClass]="{ 'customError' : driverAddForm.get('driverPhone').invalid && driverAddForm.get('driverPhone').touched }"></ngx-material-intl-tel-input>
                   <!--        error-message-->
-                    <span *ngIf="driverAddForm.get('driverPhone').touched" class="text-red text-xs">
+                    <span *ngIf="driverAddForm.get('driverPhone').touched && driverAddForm.get('driverPhone').invalid" class="text-red text-xs">
                       <span>Driver number required</span>
                     </span>
                 </div>

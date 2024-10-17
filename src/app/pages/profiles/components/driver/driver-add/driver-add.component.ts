@@ -367,7 +367,7 @@ export class DriverAddComponent implements OnInit {
     noEntriesFoundLabel: 'No countries found',
     nationalNumberLabel: '',
     hintLabel: '',
-    invalidNumberError: 'Number is not valid',
+    invalidNumberError: '',
     requiredError: '',
   };
 
