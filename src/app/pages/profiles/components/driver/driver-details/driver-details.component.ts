@@ -115,7 +115,6 @@ export class DriverDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.driverEditSharedService.validateInterNationalPhoneNumber();
     this.deletedFileUrls = [];
     if (JSON.parse(localStorage.getItem('directEdit')) === true) {
       this.isInEditMode = true;
@@ -573,10 +572,46 @@ export class DriverDetailsComponent implements OnInit {
     }
   }
 
-  checkDateIsExpiredOrNot(expiryDate: any) {
+  checkDateIsExpiredOrNot(expiryDate: string): {
+    isExpired: boolean;
+    text: string;
+  } {
+    const pastDate = new Date(expiryDate);
+    const currentDate = new Date();
+
+    // Normalize time to midnight for accurate comparison
+    pastDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
+
+    // Check if the past date is today or in the future
+    if (pastDate >= currentDate) {
+      return {
+        isExpired: false,
+        text: `Expiry date: ${this.datePipe.transform(pastDate, 'dd MMM, yyyy') || ''}`,
+      };
+    }
+
+    // Calculate the time difference in milliseconds
+    const timeDiff = currentDate.getTime() - pastDate.getTime();
+
+    // Convert milliseconds to days, months, and years
+    const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    const yearDiff = Math.floor(dayDiff / 365);
+    const monthDiff = Math.floor((dayDiff % 365) / 30);
+    const remainingDays = dayDiff % 30;
+
+    // Build the result string
+    const resultParts = [];
+    if (yearDiff > 0)
+      resultParts.push(`${yearDiff} year${yearDiff > 1 ? 's' : ''}`);
+    if (monthDiff > 0)
+      resultParts.push(`${monthDiff} month${monthDiff > 1 ? 's' : ''}`);
+    if (remainingDays > 0)
+      resultParts.push(`${remainingDays} day${remainingDays > 1 ? 's' : ''}`);
+
     return {
-      isExpired: false,
-      text: '',
+      isExpired: true,
+      text: `Expired ${resultParts.join(', ')} ago`,
     };
   }
 
@@ -672,7 +707,11 @@ export class DriverDetailsComponent implements OnInit {
           Array.from(value).forEach((file: any) => formData.append(key, file));
         }
       } else {
-        payload[key] = value;
+        if (key === 'driverPhone') {
+          payload[key] = value.replace(/[\s-]/g, '');
+        } else {
+          payload[key] = value;
+        }
       }
     });
 
@@ -775,6 +814,7 @@ export class DriverDetailsComponent implements OnInit {
 
   onClickEdit() {
     this.isInEditMode = true;
+    this.driverEditSharedService.validateInterNationalPhoneNumber();
   }
 
   private initiateForm() {
