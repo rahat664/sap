@@ -109,18 +109,20 @@
                 </button>
               </ng-container>
             </div>
-            <mat-form-field appearance="outline">
-              <mat-date-range-input [rangePicker]="picker">
-                <input [disabled]="!customSelected" (focus)="picker.open()" [(ngModel)]="startDate" (selectionchange)="onChangeStartDate($event)"
-                       matStartDate
-                       placeholder="Start date">
-                <input [disabled]="!customSelected" (focus)="picker.open()" [(ngModel)]="endDate" (selectionchange)="onChangeEndDate($event)"
-                       matEndDate
-                       placeholder="End date">
-              </mat-date-range-input>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+            <ng-container *ngIf="dateText || customDateText">
+              <mat-form-field appearance="outline" >
+                <mat-date-range-input [rangePicker]="picker">
+                  <input [disabled]="!customSelected" (focus)="picker.open()" [(ngModel)]="startDate" (selectionchange)="onChangeStartDate($event)"
+                         matStartDate
+                         placeholder="Start date">
+                  <input [disabled]="!customSelected" (focus)="picker.open()" [(ngModel)]="endDate" (selectionchange)="onChangeEndDate($event)"
+                         matEndDate
+                         placeholder="End date">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              </mat-form-field>
+            </ng-container>
           </div>
           <div class="flex flex-col space-y-2 w-full" *ngIf="isAdmin()">
             <label class="text-base text-secondary">Customer</label>

@@ -229,6 +229,7 @@ export class ManageTripComponent implements OnInit {
       this.startDate = '';
       this.endDate = '';
       this.customSelected = true;
+      this.dateSelected = false;
       picker.open();
     } else {
       this.customSelected = false;
@@ -530,11 +531,16 @@ export class ManageTripComponent implements OnInit {
       (value: any) => value !== filter
     );
     if (this.customerNames.includes(filter)) {
+      const customerCode = this.customers.find(
+        (element: any) => element.name === filter
+      ).customerCode;
       this.customers = this.customers.filter(
         (value: any) => value.name !== filter
       );
+      // find customer code from customer
+
       this.customerCodes = this.customerCodes.filter(
-        (value: any) => value !== this.customerCode
+        (value: any) => value !== customerCode
       );
       this.customerNames = this.customerNames.filter(
         (value: any) => value !== filter
