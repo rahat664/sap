@@ -22,7 +22,7 @@ import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upl
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import {
   CountryISO,
@@ -47,31 +47,39 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
 import { ConfirmApproveComponent } from '../../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-reject/confirm-reject.component';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
+import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
+import { PreHireChecklistComponent } from '../../truck/pre-hire-checklist/pre-hire-checklist.component';
+import {
+  PreHireChecklistDetailsComponent
+} from '../../truck/pre-hire-checklist-details/pre-hire-checklist-details.component';
 
 @Component({
   selector: 'app-driver-details',
   standalone: true,
   imports: [
-    CustomInputComponent,
-    GetClickEventDirective,
     NgIf,
     UploadButtonComponent,
+    CustomInputComponent,
+    GetClickEventDirective,
     NgClass,
     NgForOf,
-    FormsModule,
+    DatePipe,
+    ReactiveFormsModule,
     CreatePopupComponent,
     FileUploadPopupComponent,
-    DatePipe,
+    ImageGalleryComponent,
+    CheckListPopupComponent,
+    PreHireChecklistComponent,
     MatFormField,
     MatInput,
-    ReactiveFormsModule,
     MatDatepicker,
     MatMenu,
     MatMenuTrigger,
     MatDatepickerToggle,
     MatDatepickerInput,
+    PreHireChecklistDetailsComponent,
+    MatSuffix,
     NgxMaterialIntlTelInputComponent,
-    AlphabetOnlyDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './driver-details.component.html',
@@ -117,6 +125,7 @@ export class DriverDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.deletedFileUrls = [];
     if (JSON.parse(localStorage.getItem('directEdit')) === true) {
+      this.driverEditSharedService.validateInterNationalPhoneNumber()
       this.isInEditMode = true;
       localStorage.removeItem('directEdit');
     } else {
@@ -134,7 +143,6 @@ export class DriverDetailsComponent implements OnInit {
   driverDetails: UserModel;
   loading: boolean;
 
-
   onClickCancel() {
     this.deletedFileUrls = [];
     this.isInEditMode = false;
@@ -149,7 +157,7 @@ export class DriverDetailsComponent implements OnInit {
     this.drivingLicenseBackFile = [];
     this.otherFile = [];
     this.documents = [];
-    this.updateFormValues(this.driverDetails);
+    this.getDriverDetailsByDriverId();
   }
 
   getSavedFileArray(formControlName: string | undefined) {
@@ -902,7 +910,7 @@ export class DriverDetailsComponent implements OnInit {
     this.driverUpdateForm.get('driverPhone').setValue(this.driverPhone);
     this.driverUpdateForm
       .get('drivingLicenseExpiryDate')
-      .setValue(driver.drivingLicenseExpiryDate);
+      .setValue(this.getDrivingLicenseExpiryDate());
   }
 
   protected readonly CountryISO = CountryISO;
@@ -929,6 +937,19 @@ export class DriverDetailsComponent implements OnInit {
       return 'Invalid driver name';
     } else if (this.driverUpdateForm?.get('driverName').hasError('maxlength')) {
       return 'Invalid driver name';
+    } else {
+      return '';
+    }
+  }
+
+  private getDrivingLicenseExpiryDate() {
+    const drivingLicenseFront = this.savedDrivingLicenseFrontFile;
+    const drivingLicenseBack = this.savedDrivingLicenseBackFile;
+
+    if (drivingLicenseFront.length > 0) {
+      return drivingLicenseFront[0].expiryDate;
+    } else if (drivingLicenseBack.length > 0) {
+      return drivingLicenseBack[0].expiryDate;
     } else {
       return '';
     }

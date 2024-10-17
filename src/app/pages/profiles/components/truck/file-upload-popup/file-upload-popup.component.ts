@@ -124,8 +124,23 @@ export class FileUploadPopupComponent implements OnChanges {
   @Input() isUploadDisabled: boolean = false;
 
   onSubmit() {
-    const isExpiryFilled = this.fileArray.every(
-      (file) => file.registrationExpireDate !== null
+
+    // remove the file from the file array if expiry not required for that filled like Nid front, Nid back, Driving License Front, Driving License Back, Other
+    let newFileArray = JSON.parse(JSON.stringify(this.fileArray));
+    newFileArray = newFileArray.filter(
+      (file: { registrationType: string }) =>
+        file.registrationType !== 'Other' &&
+        file.registrationType !== 'NID Front' &&
+        file.registrationType !== 'NID Back' &&
+        file.registrationType !== 'Driving License Back' &&
+        file.registrationType !== 'Registration Paper'
+    );
+
+    console.log(newFileArray)
+
+    const isExpiryFilled = newFileArray.every(
+      (file: { registrationExpireDate: null }) =>
+        file.registrationExpireDate !== null
     );
 
     if (this.data?.from === 'driver') {
@@ -217,6 +232,6 @@ export class FileUploadPopupComponent implements OnChanges {
 
 
   private excludeExpiryField(fileArray: any[]) {
-    return fileArray.every((file) => file.registrationType === 'Other' || file.registrationType === 'NID Front' || file.registrationType === 'NID Back'  || file.registrationType === 'Registration Paper' );
+    return fileArray.every((file) => file.registrationType === 'Other' || file.registrationType === 'NID Front' || file.registrationType === 'NID Back'  || file.registrationType === 'Registration Paper' || file.registrationType === 'Driving License Back' );
   }
 }
