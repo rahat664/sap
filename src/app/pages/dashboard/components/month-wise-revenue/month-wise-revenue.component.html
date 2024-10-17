@@ -1,22 +1,23 @@
 <div class="px-6 pb-5 bg-white rounded-lg flex flex-col relative">
   <div class="flex justify-between items-end z-0">
     <h2 class="text-h2 leading-h2 font-semibold text-not-black pt-5">
-      Month-wise revenue
+      Created trip vs Completed
     </h2>
-    <div class="absolute top-5 right-6">
-      <mat-form-field appearance="outline" class="w-[12rem]">
-        <mat-select
-          formControlName="vendorId"
-          placeholder="Select date">
-          <mat-option value="all">All time</mat-option>
-          <mat-option value="today">Today</mat-option>
-          <mat-option value="all">Yesterday</mat-option>
-          <mat-option value="all">Last 7 days</mat-option>
-          <mat-option value="all">Last 15 days</mat-option>
-          <mat-option value="all">Last 30 days</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <!--    <div class="absolute top-5 right-6">-->
+    <!--      <mat-form-field appearance="outline" class="w-[12rem]">-->
+    <!--        <mat-select-->
+    <!--          formControlName="vendorId"-->
+    <!--          placeholder="Select date">-->
+    <!--          <mat-option value="all">All time</mat-option>-->
+    <!--          <mat-option value="today">Today</mat-option>-->
+    <!--          <mat-option value="all">Yesterday</mat-option>-->
+    <!--          <mat-option value="all">Last 7 days</mat-option>-->
+    <!--          <mat-option value="all">Last 15 days</mat-option>-->
+    <!--          <mat-option value="all">Last 30 days</mat-option>-->
+    <!--        </mat-select>-->
+    <!--      </mat-form-field>-->
+    <!--    </div>-->
   </div>
-  <app-column-chart></app-column-chart>
+  <app-column-chart [createdValue]="createdTrips" [completedValue]="completedTrips"
+                    [categories]="months"></app-column-chart>
 </div>

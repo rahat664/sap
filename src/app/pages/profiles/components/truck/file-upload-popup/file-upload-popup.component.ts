@@ -30,6 +30,7 @@ import { MatSelect } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-file-upload-popup',
@@ -82,7 +83,8 @@ export class FileUploadPopupComponent implements OnChanges {
     private sharedDriverEditService: DriverEditSharedService,
     private cdr: ChangeDetectorRef,
     private datePipe: DatePipe,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private toastr: HandleToastrService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {}
@@ -120,13 +122,40 @@ export class FileUploadPopupComponent implements OnChanges {
 
   @Output() modalClosed: EventEmitter<any> = new EventEmitter<any>();
   @Input() isUploadDisabled: boolean = false;
-  selectedDate: Date = new Date();
 
   onSubmit() {
-    this.sharedDriverEditService.isUploadPopupOpen.next(false);
-    this.dialogRef.close(this.fileArray);
-    this.fileInput.emit(this.fileArray);
-    if (this.data?.from == 'driver') {
+
+    // remove the file from the file array if expiry not required for that filled like Nid front, Nid back, Driving License Front, Driving License Back, Other
+    let newFileArray = JSON.parse(JSON.stringify(this.fileArray));
+    newFileArray = newFileArray.filter(
+      (file: { registrationType: string }) =>
+        file.registrationType !== 'Other' &&
+        file.registrationType !== 'NID Front' &&
+        file.registrationType !== 'NID Back' &&
+        file.registrationType !== 'Driving License Back' &&
+        file.registrationType !== 'Registration Paper'
+    );
+
+    console.log(newFileArray)
+
+    const isExpiryFilled = newFileArray.every(
+      (file: { registrationExpireDate: null }) =>
+        file.registrationExpireDate !== null
+    );
+
+    if (this.data?.from === 'driver') {
+      this.handleDriverSubmission(isExpiryFilled);
+    } else if (this.data?.from === 'truck') {
+      this.handleTruckSubmission(isExpiryFilled);
+    } else {
+      this.fileArray = [];
+    }
+  }
+
+  private handleDriverSubmission(isExpiryFilled: boolean) {
+    if (isExpiryFilled || this.excludeExpiryField(this.fileArray)) {
+      this.fileInput.emit(this.fileArray);
+      this.dialogRef.close(this.fileArray);
       this.sharedDriverEditService.getDocument(this.data?.value);
       this.sharedDriverEditService.bindDriverValueWithForm(this.data?.value);
       this.sharedDriverEditService.onChangeFile(this.fileArray);
@@ -135,14 +164,22 @@ export class FileUploadPopupComponent implements OnChanges {
         this.data?.value?.name,
         this.data?.value?.phone
       );
-    } else if (this.data?.from == 'truck') {
+    } else {
+      this.toastr.showError('Please fill the expiry date of all files');
+    }
+  }
+
+  private handleTruckSubmission(isExpiryFilled: boolean) {
+    if (isExpiryFilled || this.excludeExpiryField(this.fileArray)) {
+      this.fileInput.emit(this.fileArray);
+      this.dialogRef.close(this.fileArray);
       this.sharedDriverEditService.getTruckDocument(this.data?.value);
       this.sharedDriverEditService.bindTruckValueWithForm(this.data?.value);
       this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
       this.fileArray = [];
       this.sharedDriverEditService.onTruckUpdate();
     } else {
-      this.fileArray = [];
+      this.toastr.showError('Please fill the expiry date of all files');
     }
   }
 
@@ -157,6 +194,7 @@ export class FileUploadPopupComponent implements OnChanges {
         registrationExpireDate: null,
         fileOpened: false,
         registrationOptions: this.newFileType,
+        expiryAvailable: false,
       });
     };
   }
@@ -173,6 +211,8 @@ export class FileUploadPopupComponent implements OnChanges {
     }
   }
 
+  selectedDate: any = new Date();
+
   onDateChange($event: any, i: number) {
     this.selectedDate = $event.target.value;
     this.fileArray[i].registrationExpireDate = this.datePipe.transform(
@@ -188,5 +228,10 @@ export class FileUploadPopupComponent implements OnChanges {
 
   onClose() {
     this.dialogRef.close('close');
+  }
+
+
+  private excludeExpiryField(fileArray: any[]) {
+    return fileArray.every((file) => file.registrationType === 'Other' || file.registrationType === 'NID Front' || file.registrationType === 'NID Back'  || file.registrationType === 'Registration Paper' || file.registrationType === 'Driving License Back' );
   }
 }

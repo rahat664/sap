@@ -1,3 +1,8 @@
+import {
+  CreatedByUser,
+  TruckDocument,
+} from '../../profiles/components/truck/models/truck.model';
+
 export class UserModel {
   'id': number;
   'userId': string;
@@ -34,6 +39,8 @@ export class UserModel {
     accHolderName: string;
     paymentMethod: string;
   };
+  documentsList: TruckDocument[];
+  createdByUser: CreatedByUser;
   PaymentMethod: string;
   designation: string;
   createdOn: string;
@@ -42,4 +49,6 @@ export class UserModel {
   drivingLicenseExpiryDate: any;
   department: string;
   status: string;
+  approveStatus: string;
+  rejectedReason: string;
 }

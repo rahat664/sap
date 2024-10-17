@@ -37,7 +37,7 @@ export class CustomInputComponent implements OnInit {
   @Output() isItemsOpened = new EventEmitter<boolean>();
   @Input() options: CustomInputSelectModel[] = [];
   itemsOpened = false;
-  @Input() customOpened: boolean = true;
+  @Input() customOpened: boolean = false;
   @Input() isError = false;
   months: string[] = [
     'January',
@@ -234,9 +234,6 @@ export class CustomInputComponent implements OnInit {
     this.shared.closeInputSelect.subscribe(data => {
       this.itemsOpened = data;
     });
-    console.log(this.selectedValue.toString().includes('to'));
-    if (this.selectedValue.toString().includes('to')) {
-    }
   }
 
   onClickOption($event: { value: number }, select: MatSelect) {

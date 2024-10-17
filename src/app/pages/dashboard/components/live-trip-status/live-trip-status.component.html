@@ -1,19 +1,36 @@
 <div class="px-6 py-5 bg-white rounded-lg flex flex-col space-y-[0.875rem]">
   <div class="flex justify-between items-center">
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
-      Status highlight
+      Current trip status
     </h2>
-    <mat-form-field appearance="outline" class="w-[12rem]">
-      <mat-select
-        formControlName="vendorId"
-        placeholder="Select date">
-        <mat-option value="all">All time</mat-option>
-        <mat-option value="today">Today</mat-option>
-        <mat-option value="all">Yesterday</mat-option>
-        <mat-option value="all">Last 7 days</mat-option>
-        <mat-option value="all">Last 15 days</mat-option>
-        <mat-option value="all">Last 30 days</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <!--    <mat-form-field appearance="outline" class="w-[12rem]">-->
+    <!--      <mat-select-->
+    <!--        formControlName="vendorId"-->
+    <!--        placeholder="Select date">-->
+    <!--        <mat-option value="all">All time</mat-option>-->
+    <!--        <mat-option value="today">Today</mat-option>-->
+    <!--        <mat-option value="all">Yesterday</mat-option>-->
+    <!--        <mat-option value="all">Last 7 days</mat-option>-->
+    <!--        <mat-option value="all">Last 15 days</mat-option>-->
+    <!--        <mat-option value="all">Last 30 days</mat-option>-->
+    <!--      </mat-select>-->
+    <!--    </mat-form-field>-->
+  </div>
+  <div class="relative border border-line rounded-lg">
+    <div class=" h-96 rounded-lg overflow-hidden">
+      <app-g-map [starting]="startingPosition"
+                 [destination]="destinationPosition" [tripStatus]="tripStatus"></app-g-map>
+    </div>
+    <div class="absolute w-full bg-white rounded-lg top-0 grid grid-cols-6 p-6 place-items-center">
+      <ng-container *ngFor="let tripStatus of tripStatuses">
+        <div class="flex flex-col w-full items-center space-y-1">
+          <span class="text-body_title leading-body_title font-semibold">{{ tripStatus.count }}</span>
+          <div class="flex space-x-2 items-center">
+            <span class="w-[0.875rem] h-[0.875rem]  rounded-sm {{getColorByStatus(tripStatus.status)}}"></span>
+            <span class="text-body text-web-text-secondary">{{ tripStatus.status }}</span>
+          </div>
+        </div>
+      </ng-container>
+    </div>
   </div>
 </div>

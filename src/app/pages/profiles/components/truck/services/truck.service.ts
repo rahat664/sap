@@ -13,10 +13,17 @@ export class TruckService {
 
   constructor(private http: HttpClient) {}
 
-  getTruckList(page: number, size: number, search?: string): Observable<any> {
+  getTruckList(
+    page: number,
+    size: number,
+    search?: string,
+    status?: string
+  ): Observable<any> {
     let apiUrl = `${this.url}?page=${page}&size=${size}`;
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
+    } else if (status) {
+      apiUrl += `&status=${status}`;
     }
 
     return this.http.get(apiUrl);
@@ -26,7 +33,7 @@ export class TruckService {
     return this.http.post(this.url, truck);
   }
 
-  getPreHireChecklist(id?: number) {
+  getPreHireChecklist(id?: string) {
     if (id) {
       return this.http.get(`${this.preHireChecklistUrl}/${id}`);
     } else {
@@ -46,6 +53,10 @@ export class TruckService {
 
   validateTruckInformation(body) {
     return this.http.post(`${this.url}/checkVehicle`, body);
+  }
+
+  getTruckById(id: string) {
+    return this.http.get(`${this.url}/${id}`);
   }
 
   getTruckData() {

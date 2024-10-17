@@ -18,7 +18,9 @@
       class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
       <div class="flex flex-col space-y-2 w-full lg:col-span-2">
         <label for="name">Transporter name</label>
-        <mat-form-field appearance="outline" class="example-full-width ">
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error': transporterForm.get('name').invalid && transporterForm.get('name').touched}"
+        >
           <input
             appAlphabetOnly
             id="name"
@@ -43,12 +45,21 @@
                                      [preferredCountries]="[CountryISO.Bangladesh]"
                                      [fieldControl]="phoneNumber"
                                      [numberValidation]="true" [hidePhoneIcon]="true"
-                                     [required]="true" [autoIpLookup]="false"></ngx-material-intl-tel-input>
+                                     [required]="true" [autoIpLookup]="false"  [ngClass]="{ 'customError' : transporterForm.get('phone').invalid && transporterForm.get('phone').touched }"
+        ></ngx-material-intl-tel-input>
         <!--        error-message-->
+        <div>
+          <span *ngIf="transporterForm.get('phone').touched && transporterForm.get('phone').invalid"
+                class="text-red text-xs">
+            <span>Phone number is required</span>
+          </span>
+        </div>
       </div>
       <div class="flex flex-col space-y-2 w-full">
         <label for="truckStand">Truck Stand</label>
-        <mat-form-field appearance="outline" class="example-full-width ">
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error': transporterForm.get('truckStand').invalid && transporterForm.get('truckStand').touched}"
+        >
           <input
             id="truckStand"
             type="text"

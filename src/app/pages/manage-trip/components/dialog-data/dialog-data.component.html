@@ -47,7 +47,7 @@
                         [class.error]="tripUpdateForm.get('transporterPhone').invalid && tripUpdateForm.get('transporterPhone').touched"
         >
           <input readonly formControlName="transporterPhone"
-                 [disabled]="true" [readonly]="true" type="number" step="0.1" matInput
+                 [disabled]="true" [readonly]="true" type="text" matInput
                  placeholder="Transporter Mobile Number"
           >
         </mat-form-field>
@@ -156,7 +156,7 @@
                         [class.error]="tripUpdateForm.get('driverPhone').invalid && tripUpdateForm.get('driverPhone').touched"
         >
           <input formControlName="driverPhone"
-                 [disabled]="true" [readonly]="true" type="number" step="0.1" matInput
+                 [disabled]="true" [readonly]="true" type="text"  matInput
                  placeholder="Driver Mobile Number"
           >
         </mat-form-field>
@@ -200,7 +200,7 @@
         <label for="helperMobile" class="text-body text-secondary">Mobile Number</label>
         <mat-form-field disabled id="helperMobile" appearance="outline">
           <input [readonly]="true" formControlName="helperPhone"
-                 [disabled]="true" type="number" step="0.1" matInput placeholder="Helper Mobile Number"
+                 [disabled]="true" type="text"  matInput placeholder="Helper Mobile Number"
           >
         </mat-form-field>
       </div>

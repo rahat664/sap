@@ -77,17 +77,18 @@ export class DriverEditSharedService {
   validateInterNationalPhoneNumber() {
     timer(1000).subscribe(() => {
       const numberInput = document
-        .getElementsByClassName('tel-form')[0]
-        .children[1].getElementsByTagName('input')[0];
-      document.getElementsByClassName('tel-form')[0].classList.add('mt-1');
-      numberInput.maxLength = numberInput.placeholder.length;
-      numberInput.minLength = numberInput.placeholder.length;
+        .getElementsByClassName('tel-form')[0]?.children[1]?.getElementsByTagName('input')[0];
+      document.getElementsByClassName('tel-form')[0]?.classList.add('mt-1');
+      if (numberInput) {
+        numberInput.maxLength = numberInput?.placeholder.length;
+        numberInput.minLength = numberInput?.placeholder.length;
+        numberInput.addEventListener('keypress', e => {
+          if (isNaN(Number(e.key))) {
+            e.preventDefault();
+          }
+        });
+      }
       // number input should not accept text
-      numberInput.addEventListener('keypress', e => {
-        if (isNaN(Number(e.key))) {
-          e.preventDefault();
-        }
-      });
     });
   }
 
@@ -207,7 +208,7 @@ export class DriverEditSharedService {
 
   private generateDocumentList(entity: any, mappings: any[], fileUrlsKey = '') {
     const documents = [];
-    const fileUrls = fileUrlsKey ? entity[fileUrlsKey] : entity;
+    const fileUrls = entity;
     mappings.forEach(mapping => {
       if (fileUrls[mapping.key]) {
         documents.push({
@@ -348,17 +349,7 @@ export class DriverEditSharedService {
       ];
 
       if (key.endsWith('File') || key === 'others' || files.includes(key)) {
-        if (key === 'truckImages' || key === 'insuranceFiles') {
-          if (value) {
-            value.forEach((file: any) => {
-              formData.append(key, file);
-            });
-          }
-        } else {
-          if (value) {
-            formData.append(key, value);
-          }
-        }
+        formData.append(key, value);
       } else {
         payload[key] = value;
       }
@@ -465,17 +456,12 @@ export class DriverEditSharedService {
     );
   }
 
-  truckImages = [];
-  insuranceFiles = [];
-
   private handleFileChange(
     files: any[],
     form: FormGroup,
     documents: any[],
     name
   ) {
-    this.truckImages = [];
-    this.insuranceFiles = [];
     if (files?.length) {
       files.forEach(file => {
         if (name === 'driverFilesUrls') {
@@ -492,21 +478,13 @@ export class DriverEditSharedService {
           url: file.preview,
           expDate: file.registrationExpireDate,
         });
-        if (file.registrationType === 'Truck Image') {
-          this.truckImages.push(file.file);
-        } else if (file.registrationType === 'Insurance') {
-          this.insuranceFiles.push(file.file);
-        }
+
         form.patchValue({
           [this.getFileControlName(file.registrationType, name)]: file.file,
           ...(file.registrationExpireDate && {
             [this.getExpDateControlName(file.registrationType)]:
               file.registrationExpireDate,
           }),
-        });
-        form.patchValue({
-          truckImages: this.truckImages,
-          insuranceFiles: this.insuranceFiles,
         });
       });
       this.isUploadPopupOpen.next(false);

@@ -92,11 +92,18 @@ export class UserService {
     return this.http.put(`${this.url}/edit-driver`, body, {});
   }
 
-  getDriver(page: number, size: number, search?: string): Observable<any> {
+  getDriver(
+    page: number,
+    size: number,
+    search?: string,
+    approveStatus?: string
+  ): Observable<any> {
     let apiUrl = `${this.url}/drivers?page=${page}&size=${size}`;
 
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
+    }  if (approveStatus) {
+      apiUrl += `&approveStatus=${approveStatus}`;
     }
 
     return this.http.get(apiUrl);
@@ -167,5 +174,9 @@ export class UserService {
     document.execCommand('copy');
     document.body.removeChild(el);
     this.toaster.showInfo(`${createdByPhone} copied to clipboard`);
+  }
+
+  getDriverById(driverId: any) {
+    return this.http.get(`${this.url}/drivers/${driverId}`);
   }
 }

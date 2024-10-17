@@ -1,5 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { NgIf } from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
 import {
@@ -10,14 +16,30 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { driverFileType } from '../../customer/model/driver-file-type';
 import { UserService } from '../../../services/user.service';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 import { FileUploadComponent } from '../../truck/file-upload/file-upload.component';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
+import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { PreHireChecklistComponent } from '../../truck/pre-hire-checklist/pre-hire-checklist.component';
+import {
+  DriverFileType,
+  driverFileTypeModel,
+} from '../../truck/models/driver-file-type';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
+import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
+import { MatDialog } from '@angular/material/dialog';
 import {
   CountryISO,
   NgxMaterialIntlTelInputComponent,
@@ -28,6 +50,7 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
   selector: 'app-driver-add',
   standalone: true,
   imports: [
+    CommonModule,
     NgIf,
     UploadButtonComponent,
     FileUploadPopupComponent,
@@ -37,14 +60,35 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
     FileUploadComponent,
     MatFormField,
     MatInput,
+    CustomInputComponent,
+    GetClickEventDirective,
+    MatDatepicker,
+    MatDatepickerInput,
+    MatDatepickerToggle,
+    MatMenu,
+    MatSuffix,
+    NgForOf,
+    PreHireChecklistComponent,
+    MatMenuTrigger,
     NgxMaterialIntlTelInputComponent,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './driver-add.component.html',
   styleUrl: './driver-add.component.scss',
 })
 export class DriverAddComponent implements OnInit {
+  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
+  @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
+  readonly dialog = inject(MatDialog);
   driverAddForm: FormGroup;
   driverPhoneErrorMessage: string;
+  nidFrontImages: any[] = [];
+  nidBackImages: any[] = [];
+  drivingLicenseFrontImages: any[] = [];
+  drivingLicenseBackImages: any[] = [];
+  othersImages: any[] = [];
+  selectedFormControlName: string = '';
+  maxUploadAble: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -52,7 +96,9 @@ export class DriverAddComponent implements OnInit {
     private router: Router,
     private service: UserService,
     private toastr: HandleToastrService,
-    private shared: DriverEditSharedService
+    private shared: DriverEditSharedService,
+    private datePipe: DatePipe,
+    private imageGalleryService: ImageGalleryService
   ) {
     this.driverAddForm = this.fb.group({
       driverName: [
@@ -75,58 +121,125 @@ export class DriverAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.shared.validateInterNationalPhoneNumber();
+    this.driverAddForm.get('driverName').valueChanges.subscribe(() => {
+      if (this.driverAddForm.get('driverName').hasError('required')) {
+        this.driverNameErrorMessage = 'You must enter a value';
+      } else {
+        this.driverNameErrorMessage = '';
+      }
+    });
     this.driverAddForm
-      .get('driverName')
+      .get('driverPhone')
       .valueChanges.subscribe((value: string) => {
-        if (this.driverAddForm.get('driverName').hasError('required')) {
-          this.driverNameErrorMessage = 'You must enter a value';
-        } else {
-          this.driverNameErrorMessage = '';
-        }
+        this.numberOnlyValidation(value);
+        this.driverPhoneErrorMessage =
+          this.validation.getDriverNumberValidation(
+            this.driverAddForm.get('driverPhone')
+          );
       });
   }
 
-  onAddFile($event: any) {
-    $event.forEach(($event: any) => {
-      switch ($event.registrationType) {
-        case 'NID Front':
-          this.driverAddForm.get('nidFront').setValue($event.file);
-          this.driverAddForm.patchValue({
-            nidFront: $event.file,
-          });
-          break;
-        case 'NID Back':
-          this.driverAddForm.patchValue({
-            nidBack: $event.file,
-          });
-          break;
-        case 'Driving License Front':
-          this.driverAddForm.patchValue({
-            drivingLicenseFront: $event.file,
-            drivingLicenseExpiryDate: $event.registrationExpireDate,
-          });
-          break;
-        case 'Driving License Back':
-          this.driverAddForm.patchValue({
-            drivingLicenseBack: $event.file,
-          });
-          break;
-        case 'Other':
-          this.driverAddForm.patchValue({
-            other: $event.file,
-          });
-          break;
-      }
-    });
+  private onAddFile(files: FileList) {
+    if (this.driverAddForm.get(this.selectedFormControlName)?.value) {
+      // concat new files with existing files
+      const currentFiles = Array.from(
+        this.driverAddForm.get(this.selectedFormControlName)?.value
+      );
+      Array.from(files).forEach((file: File) => {
+        currentFiles.push(file);
+      });
+      this.driverAddForm.patchValue({
+        [this.selectedFormControlName]: currentFiles,
+      });
+    } else {
+      this.driverAddForm.patchValue({
+        [this.selectedFormControlName]: files,
+      });
+    }
+    switch (this.selectedFormControlName) {
+      case 'nidFront':
+        this.previewFile(files, this.nidFrontImages);
+        break;
+      case 'nidBack':
+        this.previewFile(files, this.nidBackImages);
+        break;
+      case 'drivingLicenseFront':
+        this.previewFile(
+          files,
+          this.drivingLicenseFrontImages,
+          'drivingLicenseExpiryDate'
+        );
+        if (this.drivingLicenseFrontImages.length > 0) {
+          this.driverAddForm
+            .get('drivingLicenseExpiryDate')
+            ?.setValidators([Validators.required]);
+          this.driverAddForm.get('insuranceExpDate')?.updateValueAndValidity();
+        }
+        break;
+      case 'drivingLicenseBack':
+        this.previewFile(
+          files,
+          this.drivingLicenseBackImages,
+          'drivingLicenseExpiryDate'
+        );
+        if (this.drivingLicenseBackImages.length > 0) {
+          this.driverAddForm
+            .get('drivingLicenseExpiryDate')
+            ?.setValidators([Validators.required]);
+          this.driverAddForm.get('insuranceExpDate')?.updateValueAndValidity();
+        }
+        break;
+      case 'other':
+        this.previewFile(files, this.othersImages);
+        break;
+    }
   }
 
-  protected readonly driverFileType = driverFileType;
+  private previewFile(
+    files: FileList,
+    targetArray: any[],
+    expiredControl?: any
+  ) {
+    Array.from(files).forEach((file: File) => {
+      console.log(file.type);
+      // handle if file is a pdf
+      if (file.type === 'application/pdf') {
+        targetArray.push({
+          preview: 'assets/svg/pdf.svg',
+          file: file,
+        });
+        return;
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          targetArray.push({
+            preview: reader.result,
+            file: file,
+          });
+        };
+      }
+    });
+    if (expiredControl) {
+      this.driverAddForm
+        .get(expiredControl)
+        ?.setValidators([Validators.required]);
+      this.driverAddForm.get(expiredControl)?.updateValueAndValidity();
+    }
+  }
+
+  protected readonly driverFileType: DriverFileType[] = driverFileTypeModel;
   driverName: string;
   driverPhone: string;
   driverNameErrorMessage: string;
+  loading: any;
+  everyThingDisabled: boolean;
+  viewMoreFormControlName: string | undefined;
+  viewMoreExpiryControlName: string | undefined;
 
   onDriverSave() {
     if (this.driverAddForm.valid) {
+      this.loading = true;
       if (!this.driverAddForm.get('drivingLicenseExpiryDate')?.value) {
         this.driverAddForm.removeControl('drivingLicenseExpiryDate');
       }
@@ -145,7 +258,9 @@ export class DriverAddComponent implements OnInit {
           key != 'role'
         ) {
           if (value) {
-            formData.append(key, value);
+            Array.from(value).forEach((file: any) => {
+              formData.append(key, file);
+            });
           }
           // Append file controls directly to the FormData
         } else {
@@ -163,6 +278,7 @@ export class DriverAddComponent implements OnInit {
         (res: any) => {
           // Handle response
           if (res.status == 'OK') {
+            this.loading = false;
             localStorage.removeItem('driver');
             this.toastr.showSuccess(res.message);
             this.router.navigate(['/profile/driver']);
@@ -253,7 +369,185 @@ export class DriverAddComponent implements OnInit {
     noEntriesFoundLabel: 'No countries found',
     nationalNumberLabel: '',
     hintLabel: '',
-    invalidNumberError: 'Number is not valid',
-    requiredError: 'This field is required',
+    invalidNumberError: '',
+    requiredError: '',
   };
+
+  getFileArray(formControlName: any) {
+    switch (formControlName) {
+      case 'nidFront':
+        return this.nidFrontImages;
+      case 'nidBack':
+        return this.nidBackImages;
+      case 'drivingLicenseFront':
+        return this.drivingLicenseFrontImages;
+      case 'drivingLicenseBack':
+        return this.drivingLicenseBackImages;
+      case 'other':
+        return this.othersImages;
+      default:
+        return [];
+    }
+  }
+
+  onDateChange($event: Event, expiryFormControlName: string) {
+    let date = ($event.target as HTMLInputElement).value;
+    date = this.datePipe.transform(date, 'yyyy-MM-ddThh:mm:ss');
+    this.driverAddForm.patchValue({
+      [expiryFormControlName]: date,
+    });
+  }
+
+  getSpecificFiles(formControlName: string | undefined) {
+    switch (formControlName) {
+      case 'nidFront':
+        if (this.nidFrontImages.length > 3) {
+          return this.nidFrontImages.slice(0, 3);
+        } else {
+          return this.nidFrontImages;
+        }
+      case 'nidBack':
+        if (this.nidBackImages.length > 3) {
+          return this.nidBackImages.slice(0, 3);
+        } else {
+          return this.nidBackImages;
+        }
+      case 'drivingLicenseFront':
+        if (this.drivingLicenseFrontImages.length > 3) {
+          return this.drivingLicenseFrontImages.slice(0, 3);
+        } else {
+          return this.drivingLicenseFrontImages;
+        }
+      case 'drivingLicenseBack':
+        if (this.drivingLicenseBackImages.length > 3) {
+          return this.drivingLicenseBackImages.slice(0, 3);
+        } else {
+          return this.drivingLicenseBackImages;
+        }
+      case 'other':
+        if (this.othersImages.length > 3) {
+          return this.othersImages.slice(0, 3);
+        } else {
+          return this.othersImages;
+        }
+      default:
+        return [];
+    }
+  }
+
+  onCloseImage(
+    formControlName: string | undefined,
+    file: any,
+    expiredControl: any
+  ) {
+    let files: any[] = [];
+    switch (formControlName) {
+      case 'nidFront':
+        this.nidFrontImages = this.nidFrontImages.filter(
+          item => item.preview !== file.preview
+        );
+        files = this.nidFrontImages;
+        break;
+      case 'nidBack':
+        this.nidBackImages = this.nidBackImages.filter(
+          item => item.preview !== file.preview
+        );
+        files = this.nidBackImages;
+        break;
+      case 'drivingLicenseFront':
+        this.drivingLicenseFrontImages = this.drivingLicenseFrontImages.filter(
+          item => item.preview !== file.preview
+        );
+        files = this.drivingLicenseFrontImages;
+        break;
+      case 'drivingLicenseBack':
+        this.drivingLicenseBackImages = this.drivingLicenseBackImages.filter(
+          item => item.preview !== file.preview
+        );
+        break;
+      case 'other':
+        this.othersImages = this.othersImages.filter(
+          item => item.preview !== file.preview
+        );
+        break;
+    }
+    const formControlFiles = [];
+    files.forEach((file: any) => {
+      formControlFiles.push(file.file);
+    });
+    this.driverAddForm.patchValue({
+      [formControlName]: formControlFiles,
+    });
+
+    if (formControlFiles.length === 0) {
+      this.driverAddForm.get(expiredControl)?.clearValidators();
+      this.driverAddForm.get(expiredControl)?.updateValueAndValidity();
+    }
+  }
+
+  triggerFileUpload(formControlName: string, max: number) {
+    this.selectedFormControlName = formControlName;
+    this.maxUploadAble = max;
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.click();
+    }
+  }
+
+  onFileSelected($event: Event) {
+    const input = $event.target as HTMLInputElement;
+    const files = input.files;
+    if (this.driverAddForm.get(this.selectedFormControlName)?.value) {
+      const currentFiles = Array.from(
+        this.driverAddForm.get(this.selectedFormControlName)?.value
+      );
+      console.log(currentFiles);
+      if (currentFiles.length + files.length > this.maxUploadAble) {
+        this.toastr.showError(
+          `You can upload maximum of ${this.maxUploadAble} files`
+        );
+        return;
+      } else {
+        this.onAddFile(files);
+      }
+    } else {
+      if (files.length > this.maxUploadAble) {
+        this.toastr.showError(
+          `You can upload maximum of ${this.maxUploadAble} files`
+        );
+        return;
+      } else {
+        this.onAddFile(files);
+      }
+    }
+  }
+
+  getDriverImageTitle(menuData: any) {
+    if (menuData) {
+      switch (menuData) {
+        case 'nidFront':
+          return 'NID Front';
+        case 'nidBack':
+          return 'NID Back';
+        case 'drivingLicenseFront':
+          return 'Driving License Front';
+        case 'drivingLicenseBack':
+          return 'Driving License Back';
+        case 'other':
+          return 'Other';
+        default:
+          return '';
+      }
+    } else {
+      return '';
+    }
+  }
+
+  onClickClosePopUp(driverImagePop: MatMenu) {
+    this.matMenuTrigger.closeMenu();
+  }
+
+  onClickImage(preview: any) {
+    this.imageGalleryService.setCurrentImage(preview);
+    this.dialog.open(ImageGalleryComponent, {});
+  }
 }
