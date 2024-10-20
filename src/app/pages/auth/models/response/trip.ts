@@ -1,3 +1,5 @@
+import { TripPoint } from '../../../manage-trip/model/trip.details.model';
+
 export interface Trip {
   id: number;
   tripId: string;
@@ -17,7 +19,6 @@ export interface Trip {
   grossProfit: number;
   priority: boolean;
 }
-
 export interface VehicleCategory {
   name: string;
   imageUrl: string;
@@ -28,13 +29,7 @@ export interface Good {
   name: string;
 }
 
-export interface TripPoint {
-  pointDistrict: string;
-  pointName: string;
-  pointType: 'Loading' | 'Unloading';
-  pointLat: number;
-  pointLon: number;
-}
+
 
 export interface Truck {
   id: number;
