@@ -21,7 +21,7 @@ export const routes: Routes = [
       import('./pages/dashboard/dashboard.component').then(
         c => c.DashboardComponent
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
   },
   {
     path: 'trip-list',
