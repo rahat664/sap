@@ -1,8 +1,10 @@
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -23,6 +25,9 @@ import { timer } from 'rxjs';
   styleUrls: ['./g-map.component.scss'],
 })
 export class GMapComponent implements OnInit, OnChanges {
+  @Output() clearInput: EventEmitter<boolean> = new EventEmitter<boolean>(
+    false
+  );
   get truckId(): string {
     return this._truckId;
   }
@@ -34,8 +39,8 @@ export class GMapComponent implements OnInit, OnChanges {
   @Input() tripStatus: string;
   @Input() lat: number;
   @Input() lng: number;
-  @Input() starting: google.maps.LatLngLiteral;
-  @Input() destination: google.maps.LatLngLiteral;
+  @Input() starting: google.maps.LatLngLiteral[] = [];
+  @Input() destination: google.maps.LatLngLiteral[] = [];
   @Input() truckLocationPosition: google.maps.LatLngLiteral;
 
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
@@ -79,10 +84,13 @@ export class GMapComponent implements OnInit, OnChanges {
       this.bottomHeight = height;
     });
 
+    if (this.starting.length > 0 && this.destination.length > 0) {
+      this.updateRoute();
+    }
+
     const currentLocation = localStorage.getItem('currentLocation');
     if (currentLocation) {
-      const location = JSON.parse(currentLocation);
-      this.center = location;
+      this.center = JSON.parse(currentLocation);
       this.initialMarker = {
         position: this.center,
         icon: {
@@ -114,29 +122,53 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['starting'] || changes['destination']) {
-      this.updateRoute();
+    if (changes) {
+      if (this.starting.length > 0 && this.destination.length > 0) {
+        this.updateRoute();
+      }
     }
     if (changes['truckLocationPosition']) {
-      console.log(changes['truckLocationPosition']);
       this.updateTruckLocation();
     }
   }
 
   private updateRoute() {
-    const start = this.starting;
-    const end = this.destination;
+    const startPoints: google.maps.LatLngLiteral[] = this.starting;
 
-    if (
-      start &&
-      start.lng > 0 &&
-      start.lat > 0 &&
-      end &&
-      end.lng > 0 &&
-      end.lat > 0
-    ) {
-      this.clearPolylines();
-      this.initialMarker = {};
+    const endPoints: google.maps.LatLngLiteral[] = this.destination;
+
+    this.clearInput.emit(true);
+
+    console.log(startPoints, endPoints);
+
+    this.clearPolylines();
+    this.initialMarker = {};
+
+    // Connect starting points sequentially
+    for (let i = 0; i < startPoints.length - 1; i++) {
+      this.connectPoints(startPoints[i], startPoints[i + 1], 'loading');
+    }
+
+    // Connect the last starting point with the first destination point
+    this.connectPoints(
+      startPoints[startPoints.length - 1],
+      endPoints[0],
+      'unloading'
+    );
+
+    // Connect destination points sequentially
+    for (let i = 0; i < endPoints.length - 1; i++) {
+      this.connectPoints(endPoints[i], endPoints[i + 1], 'unloading');
+    }
+  }
+
+  // Connects two points and renders the route
+  private connectPoints(
+    start: google.maps.LatLngLiteral,
+    end: google.maps.LatLngLiteral,
+    pointType: string
+  ) {
+    if (start && end) {
       const request: google.maps.DirectionsRequest = {
         origin: start,
         destination: end,
@@ -148,18 +180,47 @@ export class GMapComponent implements OnInit, OnChanges {
 
       this.directionsService.route(request, (result, status) => {
         if (status === 'OK') {
-          this.directionsRenderer.setDirections(result);
+          if (pointType === 'loading') {
+            this.setLoadingMarker(start);
+          } else if (pointType === 'unloading') {
+            this.setUnloadingMarker(end);
+          }
+
           const bound = new google.maps.LatLngBounds();
           bound.extend(start);
           bound.extend(end);
           this.map.googleMap.fitBounds(bound);
+
           this.updatePolylineWithTraffic(result);
         } else {
+          console.error('Error fetching directions', status);
         }
       });
-    } else {
-      this.resetMarkers();
     }
+  }
+
+  private setLoadingMarker(position: google.maps.LatLngLiteral) {
+    const loadingMarker = new google.maps.Marker({
+      position: position,
+      icon: {
+        url: '/assets/svg/start.svg', // Replace with your custom loading marker icon
+        scaledSize: new google.maps.Size(30, 30),
+      },
+      title: 'Loading Point',
+      map: this.map.googleMap,
+    });
+  }
+
+  private setUnloadingMarker(position: google.maps.LatLngLiteral) {
+    const unloadingMarker = new google.maps.Marker({
+      position: position,
+      icon: {
+        url: '/assets/svg/end.svg', // Replace with your custom unloading marker icon
+        scaledSize: new google.maps.Size(30, 30),
+      },
+      title: 'Unloading Point',
+      map: this.map.googleMap,
+    });
   }
 
   private updateTruckLocation() {
@@ -231,34 +292,20 @@ export class GMapComponent implements OnInit, OnChanges {
   private updatePolylineWithTraffic(
     directionsResult: google.maps.DirectionsResult
   ): void {
-    const route = directionsResult.routes[0];
-
-    this.startMarker = {
-      position: route.legs[0].start_location.toJSON(),
-      icon: {
-        url: '/assets/svg/start.svg',
-        scaledSize: new google.maps.Size(30, 30),
-      },
-      title: route.legs[0].start_address,
-    };
-
-    this.endMarker = {
-      position: route.legs[route.legs.length - 1].end_location.toJSON(),
-      icon: {
-        url: '/assets/svg/end.svg',
-        scaledSize: new google.maps.Size(30, 30),
-      },
-      title: route.legs[route.legs.length - 1].end_address,
-    };
-
-    this.polylines = route.legs.flatMap(leg =>
-      leg.steps.map(step => ({
-        path: step.path.map(latlng => latlng.toJSON()),
-        strokeColor: '#11484F',
-        strokeOpacity: 1,
-        strokeWeight: 4,
-      }))
-    );
+    directionsResult.routes.forEach(route => {
+      route.legs.forEach(leg => {
+        leg.steps.forEach(step => {
+          const polyline = new google.maps.Polyline({
+            path: step.path.map(latlng => latlng.toJSON()),
+            strokeColor: '#11484F', // Polyline color
+            strokeOpacity: 1,
+            strokeWeight: 4,
+          });
+          polyline.setMap(this.map.googleMap);
+          // Store the polyline for management
+        });
+      });
+    });
   }
 
   private clearPolylines(): void {

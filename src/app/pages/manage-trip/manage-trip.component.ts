@@ -63,8 +63,8 @@ import { CustomerModel } from '../profiles/components/customer/model/customer.mo
 })
 export class ManageTripComponent implements OnInit {
   tripList: Trip[] = [];
-  startingPosition: { lng: number; lat: number };
-  destinationPosition: { lng: number; lat: number };
+  startingPosition: { lng: number; lat: number }[] = [];
+  destinationPosition: { lng: number; lat: number }[] = [];
   statusButtons = statusButtons;
   totalPages: number;
   page: number = 0;
@@ -325,18 +325,22 @@ export class ManageTripComponent implements OnInit {
       this.tripService.getTripDetailsByTripId(tripId).subscribe(
         (trip: any) => {
           this.singleTripDetails = trip.data;
-          this.startingPosition = {
-            lng: this.singleTripDetails?.tripPoints[0]?.pointLon,
-            lat: this.singleTripDetails?.tripPoints[0]?.pointLat,
-          };
-          this.destinationPosition = {
-            lng: this.singleTripDetails?.tripPoints[
-              this.singleTripDetails.tripPoints.length - 1
-            ]?.pointLon,
-            lat: this.singleTripDetails?.tripPoints[
-              this.singleTripDetails.tripPoints.length - 1
-            ]?.pointLat,
-          };
+          this.startingPosition = [];
+          this.destinationPosition = [];
+          // store starting and destination position
+          this.singleTripDetails.tripPoints.forEach((point: TripPoint) => {
+            if (point.pointType === 'Loading') {
+              this.startingPosition.push({
+                lng: point.pointLon,
+                lat: point.pointLat,
+              });
+            } else if (point.pointType === 'Unloading') {
+              this.destinationPosition.push({
+                lng: point.pointLon,
+                lat: point.pointLat,
+              });
+            }
+          });
         },
         error => {}
       );
@@ -676,5 +680,8 @@ export class ManageTripComponent implements OnInit {
       this.filterLength = 0;
       this.previousFilterLength = 0;
     }
+  }
+
+  onClearInput($event: boolean) {
   }
 }

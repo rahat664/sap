@@ -140,4 +140,8 @@ export class TripInfoComponent {
   getLoadingPoint(tripPoints: TripPoint[]) {
     return tripPoints.filter((point) => point.pointType === 'Loading');
   }
+
+  getUnloadingPoint(tripPoints: TripPoint[]) {
+    return tripPoints.filter((point) => point.pointType === 'Unloading');
+  }
 }
