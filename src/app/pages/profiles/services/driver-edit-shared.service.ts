@@ -77,10 +77,14 @@ export class DriverEditSharedService {
   validateInterNationalPhoneNumber() {
     timer(1000).subscribe(() => {
       const flagInput = document.getElementsByClassName('tel-form')[0]?.children[0]?.getElementsByClassName('country-option')[0].children[1];
+      let isBangladeshiNumber = false;
       if (flagInput) {
         // remove 0 from last of the phone number
         if (flagInput.innerHTML.endsWith('0') && flagInput.innerHTML == '+880') {
+          isBangladeshiNumber = true;
           flagInput.innerHTML = '+88';
+        } else {
+          isBangladeshiNumber = false;
         }
       }
       const arrow = document.getElementsByClassName('tel-form')[0]?.getElementsByClassName('mat-mdc-select-arrow')[0];
