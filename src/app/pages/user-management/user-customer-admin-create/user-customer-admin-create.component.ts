@@ -15,6 +15,13 @@ import { HandleToastrService } from '../../../shared/services/handle-toastr/hand
 import { CustomerService } from '../../profiles/services/customer.service';
 import { CustomerAdminModel } from '../models/customer-admin-model';
 import { MatDialogRef } from '@angular/material/dialog';
+import {
+  CountryISO,
+  NgxMaterialIntlTelInputComponent,
+} from 'ngx-material-intl-tel-input';
+import { DriverEditSharedService } from '../../profiles/services/driver-edit-shared.service';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-user-customer-admin-create',
@@ -26,6 +33,9 @@ import { MatDialogRef } from '@angular/material/dialog';
     NgIf,
     ReactiveFormsModule,
     CommonModule,
+    NgxMaterialIntlTelInputComponent,
+    MatFormField,
+    MatInput,
   ],
   templateUrl: './user-customer-admin-create.component.html',
   styleUrl: './user-customer-admin-create.component.scss',
@@ -48,7 +58,8 @@ export class UserCustomerAdminCreateComponent {
     private service: CustomerService,
     private validation: ValidationService,
     private fb: FormBuilder,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
+    private shared: DriverEditSharedService
   ) {
     this.userForm = this.fb.group({
       name: [
@@ -59,15 +70,7 @@ export class UserCustomerAdminCreateComponent {
           Validators.maxLength(50),
         ],
       ],
-      phone: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern('^[0-9]*$'),
-          Validators.minLength(11),
-          Validators.maxLength(11),
-        ],
-      ],
+      phone: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       designation: [''],
       role: ['', [Validators.required]],
@@ -79,6 +82,8 @@ export class UserCustomerAdminCreateComponent {
       if (this.userForm.valid) {
         this.userModel.name = this.userForm.get('name').value;
         this.userModel.phone = this.userForm.get('phone').value;
+        // remove space and - from phone number
+        this.userModel.phone = this.userModel.phone.replace(/[\s-]/g, '');
         this.userModel.email = this.userForm.get('email').value;
         this.userModel.role =
           this.roleInputPlaceholder === 'Admin'
@@ -106,9 +111,7 @@ export class UserCustomerAdminCreateComponent {
   }
 
   ngOnInit(): void {
-    this.userForm.get('phone').valueChanges.subscribe(value => {
-      this.validation.mobileNumberValidation(value, this.userForm);
-    });
+    this.shared.validateInterNationalPhoneNumber();
   }
 
   onClickRole($event: boolean) {
@@ -166,4 +169,21 @@ export class UserCustomerAdminCreateComponent {
   closeModal() {
     this.dialogRef.close(false);
   }
+
+  get phoneNumber() {
+    return this.userForm.get('phone');
+  }
+
+  textLabels = {
+    mainLabel: 'Mobile number',
+    codePlaceholder: 'Code',
+    searchPlaceholderLabel: 'Search',
+    noEntriesFoundLabel: 'No countries found',
+    nationalNumberLabel: '',
+    hintLabel: '',
+    invalidNumberError: '',
+    requiredError: 'This field is required',
+  };
+
+  protected readonly CountryISO = CountryISO;
 }

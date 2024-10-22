@@ -18,7 +18,7 @@ import { UserService } from '../../../services/user.service';
 import { UserModel } from '../../../../user-management/models/user.model';
 import { bkashPaymentMethod, paymentMethod } from '../models/payment-method';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
@@ -26,6 +26,10 @@ import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import {
+  CountryISO,
+  NgxMaterialIntlTelInputComponent,
+} from 'ngx-material-intl-tel-input';
 
 @Component({
   selector: 'app-transporter-add',
@@ -39,6 +43,8 @@ import { MatInput } from '@angular/material/input';
     MatDialogModule,
     MatFormField,
     MatInput,
+    NgxMaterialIntlTelInputComponent,
+    NgClass,
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',
@@ -70,15 +76,7 @@ export class TransporterAddComponent implements OnInit {
           Validators.maxLength(50),
         ],
       ],
-      phone: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern('01[0-9]{9}'),
-          Validators.minLength(11),
-          Validators.maxLength(11),
-        ],
-      ],
+      phone: ['', [Validators.required]],
       truckStand: ['', Validators.required],
       preferredPaymentMethod: ['', Validators.required],
       bkashName: [null],
@@ -97,6 +95,11 @@ export class TransporterAddComponent implements OnInit {
     if (this.transporterForm.valid) {
       this.transporterModel.name = this.transporterForm.get('name').value;
       this.transporterModel.phone = this.transporterForm.get('phone').value;
+      // remove space and - from phone number
+      this.transporterModel.phone = this.transporterModel.phone.replace(
+        /[\s-]/g,
+        ''
+      );
       this.transporterModel.note = this.transporterForm.get('note').value;
       this.transporterModel.role = 'ROLE_TRANSPORTER';
       this.transporterModel.truckStand =
@@ -173,9 +176,7 @@ export class TransporterAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.transporterForm.get('phone').valueChanges.subscribe(value => {
-      this.validation.mobileNumberValidation(value, this.transporterForm);
-    });
+    this.shared.validateInterNationalPhoneNumber();
   }
 
   onClickPayment($event: boolean) {
@@ -240,4 +241,21 @@ export class TransporterAddComponent implements OnInit {
   onClickClose() {
     this.dialogRef.close(false);
   }
+
+  protected readonly CountryISO = CountryISO;
+
+  get phoneNumber() {
+    return this.transporterForm.get('phone');
+  }
+
+  textLabels = {
+    mainLabel: 'Mobile number',
+    codePlaceholder: 'Code',
+    searchPlaceholderLabel: 'Search',
+    noEntriesFoundLabel: 'No countries found',
+    nationalNumberLabel: '',
+    hintLabel: '',
+    invalidNumberError: '',
+    requiredError: 'This field is required',
+  };
 }

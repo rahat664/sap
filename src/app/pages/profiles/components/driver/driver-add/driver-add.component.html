@@ -1,90 +1,173 @@
-<div class="m-2 bg-white">
-  <div class="p-4 border-b-2 border-input flex justify-between items-center">
-    <h1 class="text-h1 leading-h1 font-semibold">Add New Driver</h1>
-    <div>
-      <button
-        (click)="onDriverSave()"
-        class="px-4 py-2 text-white bg-primary rounded-lg text-center font-semibold">
-        <span>Save</span>
-      </button>
+<div>
+  <div class="p-2 sticky top-16 bg-app-bg z-30">
+    <div class="p-4  rounded-lg bg-white flex justify-between items-center ">
+      <h1 class="text-h1 leading-h1 font-semibold">Add New Driver</h1>
+      <div>
+        <button
+          (click)="onDriverSave()"
+          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+          <span>Save</span>
+        </button>
+      </div>
     </div>
   </div>
   <form [formGroup]="driverAddForm">
-    <div class="grid lg:grid-cols-2 text-body">
-      <div class="w-full border-r-2 border-input">
-        <div class="p-4 flex flex-col space-y-3">
-          <div class="flex space-x-3 items-center text-not-black">
-            <img loading="lazy" src="assets/svg/user.svg" alt="" />
-            <span class="text-h2 leading-h2 font-semibold">Driver Info</span>
+    <div class="grid lg:grid-cols-2 gap-3 px-2 text-body">
+      <div class="w-full flex flex-col space-y-2">
+        <div class="border-b-2 bg-white rounded-lg border-input px-6 py-5 flex flex-col space-y-3">
+          <div class="flex space-x-4 items-center text-not-black">
+            <img class="h-8 w-8" loading="lazy" src="assets/svg/driver-info.svg" alt="" />
+            <span class="text-h3 leading-h3 text-not-black font-semibold">Driver Info</span>
           </div>
-          <div class="grid gap-3">
+          <div class="grid">
             <div class="flex flex-col space-y-1">
-              <label for="driverName" class="text-not-black font-semibold">Name</label>
-              <div>
-                <mat-form-field appearance="outline" class="example-full-width w-full">
-                  <input
-                    appAlphabetOnly
-                    id="driverName"
-                    [minLength]="2"
-                    [maxLength]="50"
-                    type="text"
-                    matInput
-                    formControlName="driverName"
-                    placeholder="Enter driver Name">
-                </mat-form-field>
-                <span
-                  *ngIf="driverAddForm.get('driverName').touched"
-                  class="text-red text-xs"
-                >{{ getDriverNameError() }}</span
-                >
-              </div>
-            </div>
-            <div class="flex flex-col space-y-1">
-              <span class="text-not-black font-semibold">Mobile</span>
-              <div>
-                <mat-form-field appearance="outline" class="example-full-width w-full">
-                  <input
-                    id="name"
-                    [minLength]="11"
-                    [maxLength]="11"
-                    type="text"
-                    matInput
-                    formControlName="driverPhone"
-                    placeholder="Enter mobile number">
-                </mat-form-field>
-                <div
-                  *ngIf="
-                    driverAddForm.get('driverPhone').dirty &&
-                    !driverAddForm.get('driverPhone').touched
-                  "
-                  class="text-red text-xs">
-                  <span>{{ getDriverPhoneErrorWithoutTouch() }}</span>
+              <div class="grid grid-cols-1 w-full gap-3">
+                <div class="flex flex-col space-y-1">
+                  <label for="driverName" class="text-not-black font-semibold">Name</label>
+                  <div>
+                    <mat-form-field appearance="outline" class="example-full-width w-full" [ngClass]="{ 'error' : driverAddForm.get('driverName').invalid && driverAddForm.get('driverName').touched }">
+                      <input
+                        appAlphabetOnly
+                        id="driverName"
+                        [minLength]="2"
+                        [maxLength]="50"
+                        type="text"
+                        matInput
+                        formControlName="driverName"
+                        placeholder="Enter driver Name">
+                    </mat-form-field>
+                    <span
+                      *ngIf="driverAddForm.get('driverName').touched"
+                      class="text-red text-xs"
+                    >{{ getDriverNameError() }}</span
+                    >
+                  </div>
                 </div>
-                <div
-                  *ngIf="driverAddForm.get('driverPhone').touched"
-                  class="text-red text-xs">
-                  <span>{{ getDriverPhoneErrorWithTouch() }}</span>
+                <div class="flex flex-col space-y-1 w-full">
+                  <ngx-material-intl-tel-input  [includeDialCode]="false" #numberInput class="customize" id="phoneNumber"
+                                               [textLabels]="textLabels"
+                                               [autoSelectedCountry]="CountryISO.Bangladesh"
+                                               [preferredCountries]="[CountryISO.Bangladesh]"
+                                               [fieldControl]="phoneNumber"
+                                               [numberValidation]="true" [hidePhoneIcon]="true"
+                                               [required]="true" [autoIpLookup]="false" [ngClass]="{ 'customError' : driverAddForm.get('driverPhone').invalid && driverAddForm.get('driverPhone').touched }"></ngx-material-intl-tel-input>
+                  <!--        error-message-->
+                    <span *ngIf="driverAddForm.get('driverPhone').touched && driverAddForm.get('driverPhone').invalid" class="text-red text-xs">
+                      <span>Driver number required</span>
+                    </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="w-full p-4 flex flex-col space-y-3">
-        <div class="flex justify-between items-center h-8">
-          <div class="text-not-black flex space-x-3 items-center">
-            <img loading="lazy" src="assets/svg/document.svg" alt="" />
-            <span>Documents</span>
+        <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
+          <div class="flex space-x-4 items-center">
+            <img src="assets/svg/truckDocument.svg" class="notPreview" alt="truck document">
+            <span class="text-not-black text-h3 leading-h3 font-semibold">Document</span>
           </div>
-        </div>
-        <div>
-          <app-file-upload
-            [fileTypeOptions]="driverFileType"
-            (fileInput)="onAddFile($event)"
-            padding="0"
-            [isUploadIconEnabled]="false"></app-file-upload>
+          <div class="flex flex-col space-y-1">
+            <ng-container *ngFor="let option of driverFileType; index as i">
+              <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
+                <div class="flex space-x-4 items-center">
+                  <img src="assets/svg/not-available.svg" class="notPreview" alt=""
+                       *ngIf="getFileArray(option?.formControlName)?.length <= 0 || (option.expiryAvailable == true && driverAddForm.get(option?.expiryFormControlName)?.value == null)">
+                  <img src="assets/svg/available.svg" alt="" class="notPreview"
+                       *ngIf="getFileArray(option?.formControlName).length > 0 &&  (option.expiryAvailable == false || driverAddForm.get(option?.expiryFormControlName).value != null)">
+                  <div class="flex flex-col space-y-0.5">
+                    <span
+                      class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
+                    <mat-form-field *ngIf="option?.expiryAvailable" class="example-full-width flex-1 custom"
+                                    appearance="outline"
+                                    [ngClass]="{ 'error' : driverAddForm.get(option.expiryFormControlName)?.invalid }"
+                    >
+                      <input [disabled]="everyThingDisabled" [formControlName]="option.expiryFormControlName" matInput
+                             [matDatepicker]="picker"
+                             placeholder="Expiry Date" (focusin)="picker.open()"
+                             (selectionchange)="onDateChange($event, option.expiryFormControlName)">
+                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker [disabled]="everyThingDisabled" #picker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="flex space-x-6 items-center">
+                  <div class="flex">
+                    <div class="flex space-x-3 relative">
+                      <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+                           *ngFor="let file of getSpecificFiles(option?.formControlName)">
+                        <img class="h-full w-full" [src]="file.preview" alt="">
+                        <button (click)="onCloseImage(option?.formControlName, file, option?.expiryFormControlName)"
+                                class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+                          <i class="far fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div *ngIf="getFileArray(option?.formControlName).length > 3">
+                      <button [matMenuTriggerFor]="driverImagePop"
+                              (click)="viewMoreFormControlName = option?.formControlName; viewMoreExpiryControlName = option?.expiryFormControlName"
+                              class="px-2 h-[3.75rem] flex text-link items-center justify-center bg-opacity-10 bg-blue
+                              space-x-1  text-h2_medium font-semibold rounded-md">
+                        <span
+                          class="text-link font-semibold"
+                        >+{{ getFileArray(option?.formControlName).length - 3 }}</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                  <app-upload-button
+                    [buttonColor]="everyThingDisabled ? 'bg-input-hint' : ''"
+                    [textColor]="everyThingDisabled ? 'text-input-hint' : 'text-link'"
+                    [isDisabled]="everyThingDisabled"
+                    *ngIf="getSpecificFiles(option?.formControlName)?.length === 0 || !getSpecificFiles(option?.formControlName)"
+                    buttonText="Upload"
+                    [file]="true"
+                    (click)="triggerFileUpload(option?.formControlName, option.max)"
+                    [icon]="everyThingDisabled ? 'disable-upload': 'upload'"></app-upload-button>
+                  <app-upload-button
+                    [isDisabled]="everyThingDisabled"
+                    *ngIf="getSpecificFiles(option?.formControlName)?.length > 0 && getSpecificFiles(option?.formControlName)?.length < option?.max"
+                    (click)="triggerFileUpload(option?.formControlName, option.max)"
+                    icon="plus"></app-upload-button>
+                  <input [multiple]="option.multiple" type="file" #fileInput accept=".png, .jpg, .jpeg, .pdf"
+                         style="display:none;" (change)="onFileSelected($event)" />
+                </div>
+              </div>
+            </ng-container>
+          </div>
         </div>
       </div>
     </div>
   </form>
 </div>
+
+<!--<ng-template #truckImagePop>-->
+
+<!--</ng-template>-->
+
+<mat-menu #driverImagePop="matMenu" class="truck-menu">
+  <div (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center pl-6 pr-2 py-2">
+      <h1 class="text-body_title leading-body_title text-not-black font-semibold">
+        {{ getDriverImageTitle(viewMoreFormControlName) }}
+      </h1>
+      <button (click)="onClickClosePopUp(driverImagePop)" class="h-6 w-6 rounded-full hover:bg-input ">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+    <div class="grid grid-cols-6 gap-3 px-6 py-4">
+      <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
+        <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+        >
+          <img (click)="onClickImage(file.preview);" class="h-full w-full" [src]="file.preview"
+               alt="">
+          <button (click)="onCloseImage(viewMoreFormControlName, file, viewMoreExpiryControlName)"
+                  class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
+            <i class="far fa-times"></i>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</mat-menu>
+

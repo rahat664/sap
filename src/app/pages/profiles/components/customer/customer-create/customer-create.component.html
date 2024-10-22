@@ -20,7 +20,9 @@
       class="w-full px-8 flex flex-col h-full space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
       <div class="flex flex-col space-y-2 w-full lg:col-span-2">
         <label for="name">Customer Name</label>
-        <mat-form-field appearance="outline" class="example-full-width ">
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error':  customerForm.get('name').invalid && customerForm.get('name').touched}"
+        >
           <input
             id="name"
             [minLength]="2"
@@ -42,7 +44,9 @@
       </div>
       <div class="flex flex-col space-y-2 w-full">
         <label for="code">Customer Code</label>
-        <mat-form-field appearance="outline" class="example-full-width ">
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error':  customerForm.get('code').invalid && customerForm.get('code').touched}"
+        >
           <input
             (input)="onCodeKeyPress($event)"
             [minLength]="4"
@@ -65,7 +69,9 @@
       </div>
       <div class="flex flex-col space-y-2 w-full">
         <label for="contactPerson">Contact Person</label>
-        <mat-form-field appearance="outline" class="example-full-width ">
+        <mat-form-field appearance="outline" class="example-full-width "
+                        [ngClass]="{'error':  customerForm.get('contactPerson').invalid && customerForm.get('contactPerson').touched}"
+        >
           <input
             id="contactPerson"
             type="text"
@@ -84,28 +90,20 @@
         </div>
       </div>
       <div class="flex flex-col space-y-2 w-full">
-        <label for="phone">Mobile</label>
-        <mat-form-field appearance="outline" class="example-full-width ">
-          <input
-            [minLength]="11"
-            [maxLength]="11"
-            type="text"
-            matInput
-            id="phone"
-            formControlName="phone"
-            placeholder="Enter Mobile">
-        </mat-form-field>
+        <ngx-material-intl-tel-input [includeDialCode]="false" #numberInput class="customize" id="phoneNumber"
+                                     [textLabels]="textLabels"
+                                     [autoSelectedCountry]="CountryISO.Bangladesh"
+                                     [preferredCountries]="[CountryISO.Bangladesh]"
+                                     [fieldControl]="phoneNumber"
+                                     [numberValidation]="true" [hidePhoneIcon]="true"
+                                     [required]="true" [autoIpLookup]="false"
+                                     [ngClass]="{ 'customError' : customerForm.get('phone').invalid && customerForm.get('phone').touched }"></ngx-material-intl-tel-input>
+
         <!--        error-message-->
-        <div
-          *ngIf="
-            customerForm.get('phone').dirty &&
-            !customerForm.get('phone').touched
-          "
-          class="text-red text-xs">
-          <span>{{ getErrorMessage() }}</span>
-        </div>
         <div *ngIf="customerForm.get('phone').touched" class="text-red text-xs">
-          <span>{{ getPhoneErrorMessageWithTouch() }}</span>
+          <span>
+            <span>Phone number is required</span>
+          </span>
         </div>
       </div>
       <div class="flex flex-col space-y-2 w-full">

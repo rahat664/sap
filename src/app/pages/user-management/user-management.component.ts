@@ -150,7 +150,9 @@ export class UserManagementComponent implements OnInit {
 
   onClickAddUser(): void {
     this.dialog
-      .open(UserCreateComponent, {})
+      .open(UserCreateComponent, {
+        minWidth: '50vw',
+      })
       .afterClosed()
       .subscribe({
         next: (isCreated: boolean) => {

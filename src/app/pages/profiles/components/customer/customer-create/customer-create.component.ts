@@ -11,7 +11,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { CustomerCreateModel } from '../model/customer-create.model';
 import { Subscription } from 'rxjs';
 import { CustomerService } from '../../../services/customer.service';
@@ -21,6 +21,11 @@ import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import {
+  CountryISO,
+  NgxMaterialIntlTelInputComponent,
+} from 'ngx-material-intl-tel-input';
+import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-customer-create',
@@ -31,6 +36,8 @@ import { MatInput } from '@angular/material/input';
     AlphabetOnlyDirective,
     MatFormField,
     MatInput,
+    NgxMaterialIntlTelInputComponent,
+    NgClass,
   ],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss',
@@ -48,7 +55,8 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     private service: CustomerService,
     private toastr: HandleToastrService,
     private validation: ValidationService,
-    public dialogRef: MatDialogRef<CustomerCreateComponent>
+    public dialogRef: MatDialogRef<CustomerCreateComponent>,
+    private shared: DriverEditSharedService
   ) {
     this.customerForm = this.fb.group({
       name: [
@@ -64,15 +72,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
         [Validators.required, Validators.minLength(4), Validators.maxLength(4)],
       ],
       email: [null, [Validators.email]],
-      phone: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern('^[0-9]*$'),
-          Validators.minLength(11),
-          Validators.maxLength(11),
-        ],
-      ],
+      phone: ['', [Validators.required]],
       contactPerson: [
         '',
         [
@@ -87,9 +87,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.customerForm.get('phone').valueChanges.subscribe(value => {
-      this.validation.mobileNumberValidation(value, this.customerForm);
-    });
+    this.shared.validateInterNationalPhoneNumber();
   }
 
   onSave() {
@@ -99,6 +97,8 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       this.customerModel.contactPerson =
         this.customerForm.get('contactPerson').value;
       this.customerModel.phone = this.customerForm.get('phone').value;
+      // remove space and - from phone number
+      this.customerModel.phone = this.customerModel.phone.replace(/[\s-]/g, '');
       this.customerModel.email = this.customerForm.get('email').value;
       this.customerModel.address = this.customerForm.get('address').value;
       this.customerModel.note = this.customerForm.get('note').value;
@@ -269,5 +269,22 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     } else {
       this.customerForm.get('code').setValue('');
     }
+  }
+
+  protected readonly CountryISO = CountryISO;
+
+  textLabels = {
+    mainLabel: 'Mobile number',
+    codePlaceholder: 'Code',
+    searchPlaceholderLabel: 'Search',
+    noEntriesFoundLabel: 'No countries found',
+    nationalNumberLabel: '',
+    hintLabel: '',
+    invalidNumberError: '',
+    requiredError: 'This field is required',
+  };
+
+  get phoneNumber() {
+    return this.customerForm.get('phone');
   }
 }

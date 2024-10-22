@@ -86,7 +86,7 @@ export class ManageTripComponent implements OnInit {
   endDate: string;
   isTriggerFromParent: boolean;
   triggerFromParentName: string;
-  truckLocationPosition: { lng: number; lat: number };
+  truckLocationPosition: { lng: number; lat: number } = {} as any;
   anotherStatusCalled: boolean;
   previousFilterLength: number = 0;
   customerName: any;
@@ -111,6 +111,7 @@ export class ManageTripComponent implements OnInit {
   selectedTruckValues: any[] = [];
   customerCodes: string[] = [];
   customerNames: string[] = [];
+   truckRegistrationNumbers: string;
 
   constructor(
     private tripService: TripService,
@@ -228,6 +229,7 @@ export class ManageTripComponent implements OnInit {
       this.startDate = '';
       this.endDate = '';
       this.customSelected = true;
+      this.dateSelected = false;
       picker.open();
     } else {
       this.customSelected = false;
@@ -284,7 +286,7 @@ export class ManageTripComponent implements OnInit {
   private updateTripList(trip: any) {
     if (this.page === 0) {
       this.tripList = trip.data.responses;
-      this.getTruckTrackers(this.tripList[0].truck?.fullRegistrationNumber);
+      this.getTruckTrackers(this.getTruckRegistrationNumber(this.tripList[0].truck));
       this.getTripDetails(this.tripList[0].tripId);
       this.activatedId = this.tripList[0].tripId;
       this.tripStatus = this.tripList[0].status;
@@ -478,6 +480,7 @@ export class ManageTripComponent implements OnInit {
   }
 
   private getTruckTrackers(truckRegistrationNumber: string) {
+    this.truckRegistrationNumbers = truckRegistrationNumber;
     if (truckRegistrationNumber) {
       this.tripService.getTrackerDetails(truckRegistrationNumber).subscribe(
         (res: any) => {
@@ -528,11 +531,16 @@ export class ManageTripComponent implements OnInit {
       (value: any) => value !== filter
     );
     if (this.customerNames.includes(filter)) {
+      const customerCode = this.customers.find(
+        (element: any) => element.name === filter
+      ).customerCode;
       this.customers = this.customers.filter(
         (value: any) => value.name !== filter
       );
+      // find customer code from customer
+
       this.customerCodes = this.customerCodes.filter(
-        (value: any) => value !== this.customerCode
+        (value: any) => value !== customerCode
       );
       this.customerNames = this.customerNames.filter(
         (value: any) => value !== filter
@@ -547,7 +555,13 @@ export class ManageTripComponent implements OnInit {
       this.startDate = '';
       this.endDate = '';
       this.previousFilterLength -= 1;
-    } else {
+    } else if(filter === this.customDateText) {
+      this.selectedButton = '';
+      this.dateSelected = false;
+      this.startDate = '';
+      this.endDate = '';
+      this.previousFilterLength -= 1;
+    }else {
       const filterId = this.vehicleTypeList.find(
         (element: any) => element.name === filter
       ).id;

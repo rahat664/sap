@@ -74,7 +74,7 @@ export class AuthEffects {
                 JSON.stringify(permissions.data)
               );
               this.toaster.showSuccess('Login Successful', '');
-              this.router.navigate(['/trip-list']);
+              this.isAdmin() ? this.router.navigate(['/dashboard']) : this.router.navigate(['/trip-list']);
             } else {
               this.toaster.showError(permissions.message, '');
             }
@@ -103,4 +103,9 @@ export class AuthEffects {
     private toaster: HandleToastrService,
     private user: UserService
   ) {}
+
+  isAdmin() {
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
 }

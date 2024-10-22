@@ -31,6 +31,7 @@ import {
 } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-trip-list',
@@ -101,6 +102,10 @@ export class TripListComponent implements OnInit {
   tripFilter: number = 0;
   size: number = 0;
   anotherStatusCalled: boolean;
+  customerCode: any;
+  truckType: string;
+  searchSubject: Subject<string> = new Subject();
+  customerSearchSubject: Subject<string> = new Subject();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -115,13 +120,26 @@ export class TripListComponent implements OnInit {
       startDate: [''],
       endDate: [''],
     });
+    this.searchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+      this.performSearch(searchText);
+    });
+    this.customerSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+      this.performCustomerSearch(searchText);
+    });
   }
 
   ngOnInit(): void {
+    if (localStorage.getItem('filter')) {
+      this.status = localStorage.getItem('filter') || '';
+      this.statusButtons.forEach(x => (x.isActive = x.name === this.status));
+      localStorage.removeItem('filter');
+    } else {
+      this.status = '';
+      this.statusButtons.forEach(x => (x.isActive = x.name === 'All'));
+    }
     this.loading = true;
     this.page = 0;
     this.size = 30;
-    this.statusButtons.forEach(x => (x.isActive = x.name === 'All'));
     this.getTripList();
     this.service.anotherStatusCalled.subscribe(value => {
       this.anotherStatusCalled = value;
@@ -134,10 +152,12 @@ export class TripListComponent implements OnInit {
       .getTrips(
         this.page,
         this.size,
-        this.searchValue,
+        this.customerCode,
         this.from,
         this.to,
         this.status,
+        this.searchValue,
+        this.truckType,
         this.tripId
       )
       .subscribe(
@@ -205,23 +225,35 @@ export class TripListComponent implements OnInit {
     ];
   }
 
-  onKeyUpSearch($event: any) {
+  onSearchInputChange($event: any) {
     const value = $event.target.value;
+    this.searchSubject.next(value); // Trigger the Subject when input changes
+  }
+
+  performSearch(value: string) {
     if (value?.length > 0) {
       this.customer.searchCustomer(0, 100, value).subscribe((company: any) => {
         this.tripSuggestions = company.data.content;
+        if (this.tripSuggestions.length === 0) {
+          this.tripSuggestions.push('No customer found');
+        }
         this.isSearchedMenuOpened = true;
-        this.searchFilter = 1;
       });
     } else {
-      this.isSearchedMenuOpened = false;
-      this.searchValue = '';
-      this.page = 0;
-      this.size = 30;
-      this.service.anotherStatusCalled.next(true);
-      this.getTripList();
-      this.searchFilter = 0;
+      this.resetSearch();
     }
+  }
+
+  resetSearch() {
+    this.isSearchedMenuOpened = false;
+    this.customerCode = '';
+    this.searchValue = '';
+    this.page = 0;
+    this.size = 30;
+    this.tripSuggestions = ['No customer found'];
+    this.service.anotherStatusCalled.next(true);
+    this.getTripList();
+    this.searchFilter = 0;
   }
 
   onSelectedToDate($event: string) {
@@ -241,9 +273,10 @@ export class TripListComponent implements OnInit {
   }
 
   onClickSearchSuggestion(result: any) {
+    this.searchFilter = 1;
     this.loading = true;
     this.page = 0;
-    this.searchValue = result.customerCode;
+    this.customerCode = result.customerCode;
     this.searchName = result.name;
     this.tripSuggestions = [];
     this.isSearchedMenuOpened = false;
@@ -257,6 +290,7 @@ export class TripListComponent implements OnInit {
   }
 
   onClearFilter() {
+    this.customerCode = '';
     this.tripId = '';
     this.page = 0;
     this.size = 30;
@@ -347,24 +381,9 @@ export class TripListComponent implements OnInit {
     this.loading = false;
   }
 
-  onKeyUpTripSearch($event: Event) {
-    const value = ($event.target as HTMLInputElement).value;
-    if (value?.length > 0) {
-      this.service
-        .getTrips(0, 100, null, null, null, null, value, null)
-        .subscribe((trip: any) => {
-          this.tripIdSuggestions = trip.data.responses;
-          this.isTripSearchedMenuOpened = true;
-        });
-    } else {
-      this.isTripSearchedMenuOpened = false;
-      this.tripId = '';
-      this.page = 0;
-      this.size = 30;
-      this.tripFilter = 0;
-      this.service.anotherStatusCalled.next(true);
-      this.getTripList();
-    }
+  onKeyUpTripSearch($event: any) {
+    const value = $event.target.value;
+    this.customerSearchSubject.next(value); // Trigger the Subject when input changes
   }
 
   onClickTripSearchSuggestion(result: any) {
@@ -386,5 +405,30 @@ export class TripListComponent implements OnInit {
   onClickTripNumber(tripId: string) {
     localStorage.setItem('fromTripListTripId', tripId);
     this.router.navigateByUrl('/manage-trip');
+  }
+
+  private performCustomerSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.service.getTripSuggestions(searchText).subscribe((trip: any) => {
+        this.tripIdSuggestions = trip.responses;
+        if (this.tripIdSuggestions.length === 0) {
+          this.tripIdSuggestions.push('No trip found');
+        }
+      });
+    } else {
+      this.resetTripIdSearch();
+    }
+  }
+
+  private resetTripIdSearch() {
+    this.isTripSearchedMenuOpened = false;
+    this.tripId = '';
+    this.page = 0;
+    this.size = 30;
+    this.tripIdSuggestions = [];
+    this.tripIdSuggestions.push('No trip found');
+    this.service.anotherStatusCalled.next(true);
+    this.getTripList();
+    this.tripFilter = 0;
   }
 }

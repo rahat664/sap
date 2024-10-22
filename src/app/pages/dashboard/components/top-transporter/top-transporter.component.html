@@ -1,19 +1,33 @@
 <div class="px-6 py-5 bg-white rounded-lg flex flex-col space-y-[0.875rem]">
   <div class="flex justify-between items-center">
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
-      Top transporter
+      Top Transporter
     </h2>
-    <mat-form-field appearance="outline" class="w-[12rem]">
-      <mat-select
-        formControlName="vendorId"
-        placeholder="Select date">
-        <mat-option value="all">All time</mat-option>
-        <mat-option value="today">Today</mat-option>
-        <mat-option value="all">Yesterday</mat-option>
-        <mat-option value="all">Last 7 days</mat-option>
-        <mat-option value="all">Last 15 days</mat-option>
-        <mat-option value="all">Last 30 days</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <!--    <mat-form-field appearance="outline" class="w-[12rem]">-->
+    <!--      <mat-select-->
+    <!--        formControlName="vendorId"-->
+    <!--        placeholder="Select date">-->
+    <!--        <mat-option value="all">All time</mat-option>-->
+    <!--        <mat-option value="today">Today</mat-option>-->
+    <!--        <mat-option value="all">Yesterday</mat-option>-->
+    <!--        <mat-option value="all">Last 7 days</mat-option>-->
+    <!--        <mat-option value="all">Last 15 days</mat-option>-->
+    <!--        <mat-option value="all">Last 30 days</mat-option>-->
+    <!--      </mat-select>-->
+    <!--    </mat-form-field>-->
+  </div>
+  <div>
+    <div class="flex justify-between items-center py-4 text-body text-input-hint">
+      <span>Name</span>
+      <span>Total Gross Profit (GP)</span>
+    </div>
+    <div class="flex flex-col space-y-4">
+      <ng-container *ngFor="let transporter of topTransporter">
+        <div class="flex justify-between items-center text-body text-not-black">
+          <span>{{ transporter.transporterName }}</span>
+          <span>{{ transporter.totalProfit | number }} ৳</span>
+        </div>
+      </ng-container>
+    </div>
   </div>
 </div>

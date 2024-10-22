@@ -9,6 +9,7 @@ export class TruckDocument {
 }
 
 export interface TruckModel {
+  rejectedReason: string | null; // Can be null
   id: number;
   name: string | null; // Can be null
   registrationZone: string;
@@ -30,6 +31,7 @@ export interface TruckModel {
   otherFile: string | null; // Can be null
   fitnessCertExpDate: string; // Date format as string
   routePermitExpDate: string | null; // Can be null
+  insuranceExpDate: string | null; // Can be null
   taxExpDate: string | null; // Can be null
   caseExpDate: string | null; // Can be null
   createdBy: string;
@@ -38,5 +40,36 @@ export interface TruckModel {
   updatedOn: string; // Date format as string
   preHireCheckList: number;
   noOfTrips: number;
+  status: string;
   truckDocumentList: TruckDocument[];
+  createdByUser: CreatedByUser;
+}
+
+export interface CreatedByUser {
+  id: string | null;
+  userId: string;
+  userShortCode: string;
+  name: string;
+  phone: string;
+  email: string;
+  password: string | null;
+  enabled: boolean;
+  lastPasswordResetDate: Date | null;
+  contactPerson: string | null;
+  address: string | null;
+  note: string | null;
+  roles: string[] | null;
+  status: string | null;
+  createdOn: Date | null;
+  designation: string | null;
+  drivingLicenseFront: string | null;
+  drivingLicenseBack: string | null;
+  nidFront: string | null;
+  nidBack: string | null;
+  other: string | null;
+  department: string | null;
+  customer: string | null;
+  associatedCustomerCode: string | null;
+  username: string;
+  authorities: string[] | null;
 }

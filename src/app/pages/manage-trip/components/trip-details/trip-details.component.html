@@ -11,7 +11,7 @@
       <button *ngIf="expanded" (click)="onClickFold()">
         <img loading="lazy" class="notPreview" src="assets/svg/fold.svg" alt="unfold">
       </button>
-      <button [matMenuTriggerFor]="menu" *ngIf="tripDetails.status != 'Completed'">
+      <button [matMenuTriggerFor]="menu" *ngIf="tripDetails.status != 'Completed' && tripDetails.status != 'Cancelled'">
         <img loading="lazy" class="notPreview" src="assets/svg/eclipse.svg" alt="ellipsis">
       </button>
       <mat-menu #menu="matMenu">

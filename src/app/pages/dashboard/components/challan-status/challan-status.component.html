@@ -3,21 +3,21 @@
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
       Challan Status
     </h2>
-    <mat-form-field appearance="outline" class="w-[12rem]">
-      <mat-select
-        formControlName="vendorId"
-        placeholder="Select date">
-        <mat-option value="all">All time</mat-option>
-        <mat-option value="today">Today</mat-option>
-        <mat-option value="all">Yesterday</mat-option>
-        <mat-option value="all">Last 7 days</mat-option>
-        <mat-option value="all">Last 15 days</mat-option>
-        <mat-option value="all">Last 30 days</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <!--    <mat-form-field appearance="outline" class="w-[12rem]">-->
+    <!--      <mat-select-->
+    <!--        formControlName="vendorId"-->
+    <!--        placeholder="Select date">-->
+    <!--        <mat-option value="all">All time</mat-option>-->
+    <!--        <mat-option value="today">Today</mat-option>-->
+    <!--        <mat-option value="all">Yesterday</mat-option>-->
+    <!--        <mat-option value="all">Last 7 days</mat-option>-->
+    <!--        <mat-option value="all">Last 15 days</mat-option>-->
+    <!--        <mat-option value="all">Last 30 days</mat-option>-->
+    <!--      </mat-select>-->
+    <!--    </mat-form-field>-->
   </div>
   <div class="flex w-full items-center justify-center">
-    <app-pie-chart></app-pie-chart>
+    <app-pie-chart [value]="[challanStatus?.Received, challanStatus?.Pending]"></app-pie-chart>
   </div>
 </div>
 

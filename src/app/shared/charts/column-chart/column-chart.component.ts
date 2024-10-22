@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -37,19 +37,32 @@ export type ChartOptions = {
 export class ColumnChartComponent {
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
+  @Input() createdValue: number[] = [];
+  @Input() completedValue: number[] = [];
+  @Input() categories: string[] = [
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun',
+  ];
 
-  constructor() {
+  constructor() {}
+
+  ngOnChanges() {
     const colors = ['#E5EAEB', '#0CD5F0'];
     this.chartOptions = {
       series: [
         {
-          name: 'Net Profit',
-          data: [44, 55, 57, 56, 61, 58],
+          name: 'Trip Created',
+          data: this.createdValue,
           color: colors[0],
         },
         {
-          name: 'Revenue',
-          data: [76, 85, 101, 98, 87, 105],
+          name: 'Trip Completed',
+          data: this.completedValue,
           color: colors[1],
         },
       ],
@@ -75,13 +88,12 @@ export class ColumnChartComponent {
         offsetX: -42,
         offsetY: -1,
         fontSize: '12px',
-        customLegendItems: ['Trip created', 'Achievement'],
+        customLegendItems: ['Trip created', 'Trip Completed'],
         itemMargin: {
           horizontal: 10,
         },
         markers: {
           fillColors: colors,
-          radius: 0,
         },
       },
       stroke: {
@@ -90,7 +102,7 @@ export class ColumnChartComponent {
         colors: ['transparent'],
       },
       xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        categories: this.categories,
         labels: {
           style: {
             colors: '#777777',
@@ -112,7 +124,7 @@ export class ColumnChartComponent {
       tooltip: {
         y: {
           formatter: function (val) {
-            return '$ ' + val + ' thousands';
+            return val + `${val > 1 ? ' trips' : ' trip'}`;
           },
         },
       },

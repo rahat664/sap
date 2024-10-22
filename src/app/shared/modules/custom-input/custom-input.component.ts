@@ -37,7 +37,7 @@ export class CustomInputComponent implements OnInit {
   @Output() isItemsOpened = new EventEmitter<boolean>();
   @Input() options: CustomInputSelectModel[] = [];
   itemsOpened = false;
-  customOpened: any;
+  @Input() customOpened: boolean = false;
   @Input() isError = false;
   months: string[] = [
     'January',
@@ -63,9 +63,9 @@ export class CustomInputComponent implements OnInit {
   selectedFromYear: string; // Default selected year
   // Default selected date for To date
   selectedToMonth: string =
-    new Date().getMonth().toString().length === 1
-      ? `0${new Date().getMonth().toString()}`
-      : new Date().getMonth().toString(); // Default selected month
+    (new Date().getMonth() + 1).toString().length === 1
+      ? `0${(new Date().getMonth() + 1).toString()}`
+      : (new Date().getMonth() + 1).toString(); // Default selected month
   selectedToDay: string =
     new Date().getDate().toString().length === 1
       ? `0${new Date().getDate().toString()}`
@@ -236,26 +236,31 @@ export class CustomInputComponent implements OnInit {
     });
   }
 
-  onClickOption($event, select: MatSelect) {
+  onClickOption($event: { value: number }, select: MatSelect) {
     this.selection = $event.value;
     this.selectedId.emit($event.value);
     if ($event.value === 99) {
       setTimeout(() => {
         select.open();
       }, 0);
+      this.selectedToMonth =
+        (new Date().getMonth() + 1).toString().length === 1
+          ? `0${(new Date().getMonth() + 1).toString()}`
+          : (new Date().getMonth() + 1).toString();
+      this.selectedToDay =
+        new Date().getDate().toString().length === 1
+          ? `0${new Date().getDate().toString()}`
+          : new Date().getDate().toString();
+      this.selectedToYear = new Date().getFullYear().toString();
       this.itemsOpened = true;
       this.customOpened = true;
     } else {
-      this.customOpened = false;
-      this.itemsOpened = false;
-      this.selectedToMonth = null;
-      this.selectedToDay = null;
-      this.selectedToDate = null;
-      this.selectedFromDate = null;
+      this.selectedFromMonthInString = null;
       this.selectedFromMonth = null;
       this.selectedFromDay = null;
-      this.selectedToYear = null;
       this.selectedFromYear = null;
+      this.customOpened = false;
+      this.itemsOpened = false;
       this.options.forEach(option => {
         if (option.id == 99) {
           option.value = 'Custom';
@@ -273,13 +278,16 @@ export class CustomInputComponent implements OnInit {
       this.options.forEach(option => {
         if (option.id === this.selection) {
           option.value = `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`;
+          option.id = 99;
           setTimeout(() => {
             select.close();
           }, 0);
         }
       });
-      this.selectedFromDate.emit(this.combineFromIntoSingleDate());
-      this.selectedToDate.emit(this.combineToIntoSingleDate());
+      const selectedFromDate = this.combineFromIntoSingleDate();
+      this.selectedFromDate.emit(selectedFromDate);
+      const selectedToDate = this.combineToIntoSingleDate();
+      this.selectedToDate.emit(selectedToDate);
       this.selectedFromDateToToDate.emit(
         `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`
       );
@@ -300,6 +308,16 @@ export class CustomInputComponent implements OnInit {
       )?.id;
     } else {
       this.selectedValue = undefined;
+    }
+  }
+
+  onClickMatOption(id: number, select: MatSelect) {
+    if (id === 99) {
+      this.itemsOpened = true;
+      this.customOpened = true;
+      setTimeout(() => {
+        select.open();
+      }, 0);
     }
   }
 }

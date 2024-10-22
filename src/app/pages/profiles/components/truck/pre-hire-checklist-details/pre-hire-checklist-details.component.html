@@ -1,0 +1,43 @@
+<div class="px-11 py-5 bg-white rounded-lg">
+  <div class="flex space-x-2 items-center  pb-4">
+    <img src="assets/svg/list.svg" class="notPreview h-[2rem] w-[2rem]" alt="">
+    <h1 class="text-h3 leading-h3 font-semibold">Pre-hire checklist ({{ passedCheckList }}/22)</h1>
+  </div>
+  <div
+    class=" overflow-auto w-full border-not-black overflow-x-hidden">
+    <div class="rounded-lg bg-white table-auto w-full border border-line overflow-hidden">
+      <div class="bg-input text-not-black font-semibold text-body_title leading-body_title top-0 ">
+        <div class="px-4 py-3 grid grid-cols-7">
+          <span class="col-span-4">Inspection Item</span>
+          <div class="w-full flex justify-center items-center">Pass</div>
+          <span class="w-full flex justify-center items-center">Fail</span>
+          <span class="w-full flex justify-center items-center">N/A</span>
+        </div>
+      </div>
+      <div class="px-4 flex flex-col py-2 space-y-2">
+        <ng-container *ngFor="let items of preHireCheckList; index as i">
+          <h1 class="text-not-black text-body_title leading-body_title font-semibold">{{ items.categoryName }}</h1>
+          <div *ngFor="let item of items.items; index as j"
+               class="text-body_title leading-body_title font-normal grid grid-cols-7 ">
+            <div class="col-span-4 bg-[#FAFDFF] py-4 px-2"> {{ getChecklistPosition(i, j) }}. {{ item.name }}</div>
+            <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
+              <span *ngIf="item.status == 'PASS'">
+                <i class="far fa-check text-green"></i>
+              </span>
+            </div>
+            <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
+              <span *ngIf="item.status == 'FAIL'">
+                <i class="far fa-check text-red"></i>
+              </span>
+            </div>
+            <div class="w-full bg-[#FAFDFF] py-4 px-2 h-full flex justify-center items-center">
+              <span *ngIf="item.status == 'NA'">
+                <i class="far fa-check text-gray"></i>
+              </span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

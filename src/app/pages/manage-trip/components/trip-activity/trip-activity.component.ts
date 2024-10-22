@@ -26,17 +26,14 @@ export class TripActivityComponent {
   unloadingIndex: number = 0;
   loadingEventsLoaded: boolean = false;
   unloadingEventsLoaded: boolean = false;
-  loadingHeight: any;
-  unloadingHeight: any;
+  loadingHeight: string = '0px';
+  unloadingHeight: string = '0px';
 
-  constructor(private trip: TripService) {
-  }
+  constructor(private trip: TripService) {}
 
   ngOnInit() {
     this.index = 0;
     this.unloadingIndex = 0;
-    this.imageToShow = [];
-    this.unloadImageToShow = [];
   }
 
   ngOnChanges(SimpleChanges: any) {
@@ -56,9 +53,12 @@ export class TripActivityComponent {
     this.trip.getAllTripEvent(tripId, 'Loading').subscribe((res: any) => {
       this.loadingEventsLoaded = true;
       this.loadingEvents = res.data;
-      this.selectedEventNameLoading = this.loadingEvents[0].eventName;
-      this.selectedEvent = this.loadingEvents[0];
-      this.addPaginationWhenImageAreMoreThanThree(this.selectedEvent);
+      if (this.loadingEvents.length > 0) {
+        this.changeTripLoadingEvent(this.loadingEvents[0]);
+      } else {
+        this.selectedEventNameLoading = '';
+        this.imageToShow = [];
+      }
     });
   }
 
@@ -66,21 +66,26 @@ export class TripActivityComponent {
     this.trip.getAllTripEvent(tripId, 'Unloading').subscribe((res: any) => {
       this.unloadEvents = res.data;
       this.unloadingEventsLoaded = true;
-      this.selectedEventNameUnloading = this.unloadEvents[0].eventName;
-      this.selectedUnloadingEvent = this.unloadEvents[0];
-      this.addUnloadingPaginationWhenImageAreMoreThanThree(
-        this.selectedUnloadingEvent,
-      );
+      if (this.unloadEvents.length > 0) {
+        this.changeTripUnloadingEvent(this.unloadEvents[0]);
+      } else {
+        this.selectedEventNameUnloading = '';
+        this.unloadImageToShow = [];
+      }
     });
   }
 
   changeTripLoadingEvent(event: EventData) {
+    this.imageToShow = [];
+    this.unloadingIndex = 0;
     this.selectedEvent = event;
     this.selectedEventNameLoading = event.eventName;
     this.addPaginationWhenImageAreMoreThanThree(event);
   }
 
   changeTripUnloadingEvent(event: EventData) {
+    this.unloadImageToShow = [];
+    this.index = 0;
     this.selectedUnloadingEvent = event;
     this.selectedEventNameUnloading = event.eventName;
     this.addUnloadingPaginationWhenImageAreMoreThanThree(event);
@@ -112,25 +117,26 @@ export class TripActivityComponent {
 
   private addPaginationWhenImageAreMoreThanThree(selectedEvent: EventData) {
     this.imageToShow = [];
-    // initially load four of the images and then load the rest of the images
     if (selectedEvent.tripDocuments) {
       if (selectedEvent.tripDocuments.length > 3) {
         const totalImages = selectedEvent.tripDocuments.length;
         const dividedImages = Math.ceil(totalImages / 3);
         for (let i = 0; i < dividedImages; i++) {
           this.imageToShow.push(
-            selectedEvent.tripDocuments.slice(i * 3, i * 3 + 3),
+            selectedEvent.tripDocuments.slice(i * 3, i * 3 + 3)
           );
         }
       } else {
         this.imageToShow = [];
         this.imageToShow.push(selectedEvent.tripDocuments);
       }
+    } else {
+      this.imageToShow = [];
     }
   }
 
   private addUnloadingPaginationWhenImageAreMoreThanThree(
-    selectedEvent: EventData,
+    selectedEvent: EventData
   ) {
     this.unloadImageToShow = [];
     // initially load four of the images and then load the rest of the images
@@ -140,13 +146,17 @@ export class TripActivityComponent {
         const dividedImages = Math.ceil(totalImages / 3);
         for (let i = 0; i < dividedImages; i++) {
           this.unloadImageToShow.push(
-            selectedEvent.tripDocuments.slice(i * 3, i * 3 + 3),
+            selectedEvent.tripDocuments.slice(i * 3, i * 3 + 3)
           );
         }
       } else {
         this.unloadImageToShow = [];
         this.unloadImageToShow.push(selectedEvent.tripDocuments);
       }
+    } else {
+      this.unloadImageToShow = [];
     }
   }
+
+  ngAfterViewInit() {}
 }

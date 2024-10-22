@@ -181,7 +181,9 @@ export class UserManagementCustomerAdminComponent {
 
   onClickAddUser() {
     this.dialog
-      .open(UserCustomerAdminCreateComponent, {})
+      .open(UserCustomerAdminCreateComponent, {
+        minWidth: '50vw',
+      })
       .afterClosed()
       .subscribe({
         next: (isCreated: boolean) => {

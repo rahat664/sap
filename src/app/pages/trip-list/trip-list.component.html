@@ -52,13 +52,14 @@
               id="customerName"
               type="text"
               matInput
-              (keyup)="onKeyUpSearch($event)"
+              (keyup)="onSearchInputChange($event)"
               [(ngModel)]="searchName"
               placeholder="Enter Company Name"
               [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete">
               @for (option of tripSuggestions; track option) {
-                <mat-option (click)="onClickSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+                <mat-option (click)="onClickSearchSuggestion(option)"
+                            [value]="option.name">{{ option.name ? option.name : option }}
                 </mat-option>
               }
             </mat-autocomplete>
@@ -70,13 +71,14 @@
             <input
               type="text"
               matInput
-              (input)="onKeyUpTripSearch($event)"
+              (keyup)="onKeyUpTripSearch($event)"
               [(ngModel)]="tripId"
               placeholder="Enter Trip Number"
               [matAutocomplete]="trip">
             <mat-autocomplete #trip="matAutocomplete">
               @for (option of tripIdSuggestions; track option) {
-                <mat-option (click)="onClickTripSearchSuggestion(option)" [value]="option.tripId">{{ option.tripId }}
+                <mat-option (click)="onClickTripSearchSuggestion(option)"
+                            [value]="option.tripId">{{ option.tripId ? option.tripId : option }}
                 </mat-option>
               }
             </mat-autocomplete>
@@ -90,7 +92,7 @@
            class="bg-white rounded-lg min-h-[11.75rem] flex justify-center items-center text-body_title leading-body_title px-4 py-8 whitespace-nowrap w-[23.75rem]">
         <div class="flex flex-col space-y-[1.375rem] text-center">
           <h1 class="font-bold text-[2.5rem]">
-            {{ summary.crs }} ৳
+            {{ summary.crs | number }} ৳
           </h1>
           <div
             class="flex items-center space-x-3 text-web-text-secondary text-body_title  leading-body_title font-semibold">
@@ -110,16 +112,16 @@
         <div
           class="flex justify-between space-x-16 items-center text-web-text-secondary py-4 px-3 border-b border-[#F0F0F0]">
           <span>Customer Rate (CR)</span>
-          <span>{{ (summary.crs ? summary.crs : 0) | number }}৳</span>
+          <span>{{ (summary.crs ? summary.crs : 0) | number }} ৳</span>
         </div>
         <div
           class="flex justify-between items-center py-4 px-3 text-web-text-secondary border-b border-[#F0F0F0]">
           <span>Transporter Rate (TR)</span>
-          <span>{{ (summary.trs ? summary.trs : 0) | number }}৳</span>
+          <span>{{ (summary.trs ? summary.trs : 0) | number }} ৳</span>
         </div>
         <div class="flex justify-between items-center text-web-text-secondary py-4 px-3">
           <span>Gross Profit (GP)</span>
-          <span>{{ (summary.gps ? summary.gps : 0) |number }}৳</span>
+          <span>{{ (summary.gps ? summary.gps : 0) |number }} ৳</span>
         </div>
       </div>
       <div class="overflow-hidden relative p-4 w-full rounded-lg bg-white">
@@ -243,3 +245,4 @@
     </table>
   </div>
 </div>
+

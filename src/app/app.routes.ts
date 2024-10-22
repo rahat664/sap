@@ -21,7 +21,7 @@ export const routes: Routes = [
       import('./pages/dashboard/dashboard.component').then(
         c => c.DashboardComponent
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard],
   },
   {
     path: 'trip-list',
@@ -118,12 +118,12 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'trip-list',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: 'trip-list',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
 ];
