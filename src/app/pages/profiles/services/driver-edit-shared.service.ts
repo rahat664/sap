@@ -75,7 +75,7 @@ export class DriverEditSharedService {
   }
 
   validateInterNationalPhoneNumber() {
-    timer(0).subscribe(() => {
+    timer(10).subscribe(() => {
       const flagInput = document.getElementsByClassName('tel-form')[0]?.children[0]?.getElementsByClassName('country-option')[0].children[1];
       let isBangladeshiNumber = false;
       if (flagInput) {
