@@ -11,7 +11,7 @@ import { GetElementHeightDirective } from '../../shared/directive/get-element-he
 import { ToggleResponsiveService } from '../../shared/services/toggle-responsive-services/toggle-responsive.service';
 import { TripDetailsComponent } from './components/trip-details/trip-details.component';
 import { finalize } from 'rxjs/operators';
-import { TripData } from './model/trip.details.model';
+import { TripData, TripPoint } from './model/trip.details.model';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import {
   MatDatepickerModule,
@@ -63,8 +63,8 @@ import { CustomerModel } from '../profiles/components/customer/model/customer.mo
 })
 export class ManageTripComponent implements OnInit {
   tripList: Trip[] = [];
-  startingPosition: { lng: number; lat: number };
-  destinationPosition: { lng: number; lat: number };
+  startingPosition: { lng: number; lat: number }[] = [];
+  destinationPosition: { lng: number; lat: number }[] = [];
   statusButtons = statusButtons;
   totalPages: number;
   page: number = 0;
@@ -111,7 +111,7 @@ export class ManageTripComponent implements OnInit {
   selectedTruckValues: any[] = [];
   customerCodes: string[] = [];
   customerNames: string[] = [];
-   truckRegistrationNumbers: string;
+  truckRegistrationNumbers: string;
 
   constructor(
     private tripService: TripService,
@@ -286,7 +286,9 @@ export class ManageTripComponent implements OnInit {
   private updateTripList(trip: any) {
     if (this.page === 0) {
       this.tripList = trip.data.responses;
-      this.getTruckTrackers(this.getTruckRegistrationNumber(this.tripList[0].truck));
+      this.getTruckTrackers(
+        this.getTruckRegistrationNumber(this.tripList[0].truck)
+      );
       this.getTripDetails(this.tripList[0].tripId);
       this.activatedId = this.tripList[0].tripId;
       this.tripStatus = this.tripList[0].status;
@@ -323,18 +325,22 @@ export class ManageTripComponent implements OnInit {
       this.tripService.getTripDetailsByTripId(tripId).subscribe(
         (trip: any) => {
           this.singleTripDetails = trip.data;
-          this.startingPosition = {
-            lng: this.singleTripDetails?.tripPoints[0]?.pointLon,
-            lat: this.singleTripDetails?.tripPoints[0]?.pointLat,
-          };
-          this.destinationPosition = {
-            lng: this.singleTripDetails?.tripPoints[
-              this.singleTripDetails.tripPoints.length - 1
-            ]?.pointLon,
-            lat: this.singleTripDetails?.tripPoints[
-              this.singleTripDetails.tripPoints.length - 1
-            ]?.pointLat,
-          };
+          this.startingPosition = [];
+          this.destinationPosition = [];
+          // store starting and destination position
+          this.singleTripDetails.tripPoints.forEach((point: TripPoint) => {
+            if (point.pointType === 'Loading') {
+              this.startingPosition.push({
+                lng: point.pointLon,
+                lat: point.pointLat,
+              });
+            } else if (point.pointType === 'Unloading') {
+              this.destinationPosition.push({
+                lng: point.pointLon,
+                lat: point.pointLat,
+              });
+            }
+          });
         },
         error => {}
       );
@@ -555,13 +561,13 @@ export class ManageTripComponent implements OnInit {
       this.startDate = '';
       this.endDate = '';
       this.previousFilterLength -= 1;
-    } else if(filter === this.customDateText) {
+    } else if (filter === this.customDateText) {
       this.selectedButton = '';
       this.dateSelected = false;
       this.startDate = '';
       this.endDate = '';
       this.previousFilterLength -= 1;
-    }else {
+    } else {
       const filterId = this.vehicleTypeList.find(
         (element: any) => element.name === filter
       ).id;
@@ -674,5 +680,8 @@ export class ManageTripComponent implements OnInit {
       this.filterLength = 0;
       this.previousFilterLength = 0;
     }
+  }
+
+  onClearInput($event: boolean) {
   }
 }
