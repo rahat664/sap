@@ -62,8 +62,8 @@ export class GMapComponent implements OnInit, OnChanges {
 
   initialMarker: google.maps.MarkerOptions = {};
   truckLocationMarker: google.maps.Marker = null; // Change to google.maps.Marker
-  startMarker: google.maps.MarkerOptions = {};
-  endMarker: google.maps.MarkerOptions = {};
+  startMarker: google.maps.MarkerOptions[] = [];
+  endMarker: google.maps.MarkerOptions[] = [];
   polylines: google.maps.PolylineOptions[] = [];
   bottomHeight: string = '0px';
   infoWindow: any;
@@ -85,6 +85,7 @@ export class GMapComponent implements OnInit, OnChanges {
     });
 
     if (this.starting.length > 0 && this.destination.length > 0) {
+      this.clearPolylines()
       this.updateRoute();
     }
 
@@ -133,32 +134,25 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   private updateRoute() {
-    const startPoints: google.maps.LatLngLiteral[] = this.starting;
+    let startPoints: google.maps.LatLngLiteral[] = [];
+    let endPoints: google.maps.LatLngLiteral[] = [];
 
-    const endPoints: google.maps.LatLngLiteral[] = this.destination;
+    startPoints = this.starting;
+    endPoints = this.destination;
 
     this.clearInput.emit(true);
 
-    console.log(startPoints, endPoints);
-
-    this.clearPolylines();
     this.initialMarker = {};
 
-    // Connect starting points sequentially
-    for (let i = 0; i < startPoints.length - 1; i++) {
-      this.connectPoints(startPoints[i], startPoints[i + 1], 'loading');
-    }
+    this.connectSequentialPoints(startPoints, 'loading');
+    this.connectPoints(startPoints[startPoints.length - 1], endPoints[0], 'loading');
+    this.connectPoints(startPoints[startPoints.length - 1], endPoints[0], 'unloading');
+    this.connectSequentialPoints(endPoints, 'unloading');
+  }
 
-    // Connect the last starting point with the first destination point
-    this.connectPoints(
-      startPoints[startPoints.length - 1],
-      endPoints[0],
-      'unloading'
-    );
-
-    // Connect destination points sequentially
-    for (let i = 0; i < endPoints.length - 1; i++) {
-      this.connectPoints(endPoints[i], endPoints[i + 1], 'unloading');
+  private connectSequentialPoints(points: google.maps.LatLngLiteral[], pointType: string) {
+    for (let i = 0; i < points.length - 1; i++) {
+      this.connectPoints(points[i], points[i + 1], pointType);
     }
   }
 
@@ -169,6 +163,10 @@ export class GMapComponent implements OnInit, OnChanges {
     pointType: string
   ) {
     if (start && end) {
+      // clear previous markers and polylines
+      this.startMarker = [];
+      this.endMarker = [];
+      this.clearPolylines();
       const request: google.maps.DirectionsRequest = {
         origin: start,
         destination: end,
@@ -185,7 +183,6 @@ export class GMapComponent implements OnInit, OnChanges {
           } else if (pointType === 'unloading') {
             this.setUnloadingMarker(end);
           }
-
           const bound = new google.maps.LatLngBounds();
           bound.extend(start);
           bound.extend(end);
@@ -200,27 +197,30 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   private setLoadingMarker(position: google.maps.LatLngLiteral) {
-    const loadingMarker = new google.maps.Marker({
-      position: position,
-      icon: {
-        url: '/assets/svg/start.svg', // Replace with your custom loading marker icon
-        scaledSize: new google.maps.Size(30, 30),
-      },
-      title: 'Loading Point',
-      map: this.map.googleMap,
-    });
+    this.initialMarker = {};
+    this.startMarker.push(
+      {
+        position: position,
+        icon: {
+          url: '/assets/svg/start.svg', // Replace with your custom loading marker icon
+          scaledSize: new google.maps.Size(30, 30),
+        },
+        title: 'Loading Point',
+      }
+    );
   }
 
   private setUnloadingMarker(position: google.maps.LatLngLiteral) {
-    const unloadingMarker = new google.maps.Marker({
-      position: position,
-      icon: {
-        url: '/assets/svg/end.svg', // Replace with your custom unloading marker icon
-        scaledSize: new google.maps.Size(30, 30),
-      },
-      title: 'Unloading Point',
-      map: this.map.googleMap,
-    });
+    this.endMarker.push(
+      {
+        position: position,
+        icon: {
+          url: '/assets/svg/end.svg', // Replace with your custom loading marker icon
+          scaledSize: new google.maps.Size(30, 30),
+        },
+        title: 'Unloading Point',
+      }
+    );
   }
 
   private updateTruckLocation() {
@@ -275,7 +275,8 @@ export class GMapComponent implements OnInit, OnChanges {
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(this.center);
     this.map.googleMap.fitBounds(bounds);
-    this.endMarker = {};
+    this.endMarker = [];
+    this.startMarker = [];
     this.initialMarker = {
       position: this.center,
       icon: {
@@ -295,13 +296,12 @@ export class GMapComponent implements OnInit, OnChanges {
     directionsResult.routes.forEach(route => {
       route.legs.forEach(leg => {
         leg.steps.forEach(step => {
-          const polyline = new google.maps.Polyline({
+          this.polylines.push({
             path: step.path.map(latlng => latlng.toJSON()),
             strokeColor: '#11484F', // Polyline color
             strokeOpacity: 1,
             strokeWeight: 4,
-          });
-          polyline.setMap(this.map.googleMap);
+          })
           // Store the polyline for management
         });
       });
@@ -310,6 +310,8 @@ export class GMapComponent implements OnInit, OnChanges {
 
   private clearPolylines(): void {
     this.polylines = [];
+    this.starting = [];
+    this.destination = [];
   }
 
   fetchTruckData(): void {
