@@ -284,6 +284,8 @@ export class ManageTripComponent implements OnInit {
   }
 
   private updateTripList(trip: any) {
+    this.totalPages = trip.data.totalPages;
+    this.retriveStatusButtons(trip.data.statusCount);
     if (this.page === 0) {
       this.tripList = trip.data.responses;
       this.getTruckTrackers(this.getTruckRegistrationNumber(this.tripList[0].truck));
@@ -293,8 +295,6 @@ export class ManageTripComponent implements OnInit {
     } else {
       this.tripList.push(...trip.data.responses);
     }
-    this.totalPages = trip.data.totalPages;
-    this.retriveStatusButtons(trip.data.statusCount);
   }
 
   onScrollEnd($event: boolean) {
