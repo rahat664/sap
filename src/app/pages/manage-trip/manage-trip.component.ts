@@ -149,6 +149,22 @@ export class ManageTripComponent implements OnInit {
         this.page = 0;
         this.size = 30;
         this.searchValue = '';
+        // clear the filter values
+        this.filterValues = [];
+        this.selectedButton = '';
+        this.startDate = '';
+        this.endDate = '';
+        this.dateText = '';
+        this.customDateText = '';
+        this.selectedTruckValues = [];
+        this.truckType = '';
+        this.customerCodes = [];
+        this.customerNames = [];
+        this.customers = [];
+        this.customerSelected = false;
+        this.filterLength = 0;
+        this.previousFilterLength = 0;
+        this.filterHeight = '0px';
         this.tripService.anotherStatusCalled.next(true);
         this.getTripList();
       }
