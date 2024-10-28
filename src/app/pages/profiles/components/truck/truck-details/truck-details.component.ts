@@ -864,7 +864,7 @@ export class TruckDetailsComponent implements OnInit {
       .open(ConfirmApproveComponent, {
         data: {
           title: 'Attention',
-          textPrefix: 'the truck with registration number',
+          textPrefix: 'the truck with registration number ',
           text: `${this.truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Approve',
         },
