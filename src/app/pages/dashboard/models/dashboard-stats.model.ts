@@ -25,8 +25,12 @@ export interface customerStats {
 }
 
 export interface challanStatus {
-  Received: number;
-  Pending: number;
+  received: number;
+  inProgress: number;
+  approved: number;
+  rejected: number;
+  totalHardCopyReceived: number;
+  totalCustomerRateForPendingChallans: number;
 }
 
 export interface TripCountByStatus {
