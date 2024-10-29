@@ -240,6 +240,12 @@ export class ManageTripComponent implements OnInit {
   }
 
   onClickFilterButton(event: any, picker: any) {
+    if (this.dateSelected) {
+      this.dateSelected = false;
+    }
+    if (this.customSelected) {
+      this.customSelected = false;
+    }
     this.selectedButton = event;
     if (event === 'Custom') {
       this.startDate = '';
@@ -413,6 +419,9 @@ export class ManageTripComponent implements OnInit {
   }
 
   onChangeStartDate($event: Event) {
+    if (this.dateSelected) {
+      this.dateSelected = false
+    }
     this.startDate = ($event.target as HTMLInputElement).value;
     this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
   }
