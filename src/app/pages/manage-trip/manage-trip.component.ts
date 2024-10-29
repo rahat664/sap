@@ -240,12 +240,6 @@ export class ManageTripComponent implements OnInit {
   }
 
   onClickFilterButton(event: any, picker: any) {
-    if (this.dateSelected) {
-      this.dateSelected = false;
-    }
-    if (this.customSelected) {
-      this.customSelected = false;
-    }
     this.selectedButton = event;
     if (event === 'Custom') {
       this.startDate = '';
@@ -419,9 +413,6 @@ export class ManageTripComponent implements OnInit {
   }
 
   onChangeStartDate($event: Event) {
-    if (this.dateSelected) {
-      this.dateSelected = false
-    }
     this.startDate = ($event.target as HTMLInputElement).value;
     this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
   }
@@ -432,14 +423,16 @@ export class ManageTripComponent implements OnInit {
       this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
       this.customDateText = `${this.startDate} - ${this.endDate}`;
       if (!this.dateSelected) {
-        this.filterLength += 1;
         this.previousFilterLength += 1;
+        this.filterLength += 1;
       }
       this.dateSelected = true;
     } else {
       this.endDate = '';
-      this.filterLength -= 1;
-      this.previousFilterLength -= 1;
+      if (this.dateSelected && this.filterLength > 1) {
+        this.filterLength -= 1;
+        this.previousFilterLength -= 1;
+      }
     }
   }
 

@@ -325,7 +325,7 @@ export class TruckComponent implements OnInit {
     this.dialog
       .open(ConfirmRejectComponent, {
         data: {
-          title: 'Reject',
+          title: 'Attention',
           textPrefix: 'the truck with registration number ',
           text: `${truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Reject',
