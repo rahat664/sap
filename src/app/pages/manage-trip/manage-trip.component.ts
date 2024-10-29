@@ -149,6 +149,22 @@ export class ManageTripComponent implements OnInit {
         this.page = 0;
         this.size = 30;
         this.searchValue = '';
+        // clear the filter values
+        this.filterValues = [];
+        this.selectedButton = '';
+        this.startDate = '';
+        this.endDate = '';
+        this.dateText = '';
+        this.customDateText = '';
+        this.selectedTruckValues = [];
+        this.truckType = '';
+        this.customerCodes = [];
+        this.customerNames = [];
+        this.customers = [];
+        this.customerSelected = false;
+        this.filterLength = 0;
+        this.previousFilterLength = 0;
+        this.filterHeight = '0px';
         this.tripService.anotherStatusCalled.next(true);
         this.getTripList();
       }
@@ -407,14 +423,16 @@ export class ManageTripComponent implements OnInit {
       this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
       this.customDateText = `${this.startDate} - ${this.endDate}`;
       if (!this.dateSelected) {
-        this.filterLength += 1;
         this.previousFilterLength += 1;
+        this.filterLength += 1;
       }
       this.dateSelected = true;
     } else {
       this.endDate = '';
-      this.filterLength -= 1;
-      this.previousFilterLength -= 1;
+      if (this.dateSelected && this.filterLength > 1) {
+        this.filterLength -= 1;
+        this.previousFilterLength -= 1;
+      }
     }
   }
 
@@ -435,6 +453,7 @@ export class ManageTripComponent implements OnInit {
       this.filterValues.push(
         this.customSelected ? this.customDateText : this.dateText
       );
+      this.dateSelected = false;
     }
     if (this.truckType) {
       for (let i = 0; i < this.truckType.length; i++) {
@@ -527,6 +546,7 @@ export class ManageTripComponent implements OnInit {
   }
 
   onClickCloseFilter(filter: any) {
+    this.dateSelected = false;
     this.filterValues = this.filterValues.filter(
       (value: any) => value !== filter
     );

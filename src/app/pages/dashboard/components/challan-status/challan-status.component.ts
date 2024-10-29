@@ -48,7 +48,11 @@ export class ChallanStatusComponent {
     this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd');
     // todate should be the current date
     const toDate = new Date();
-    this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd');
+    // to date will be the last day of the current month
+    this.toDate =this.datePipe.transform(
+      new Date(toDate.getFullYear(), toDate.getMonth() + 1, 0),
+      'yyyy-MM-dd'
+    );
   }
 
   private getChallanStatus() {
