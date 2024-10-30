@@ -225,10 +225,19 @@ export class TruckComponent implements OnInit {
     this.singleTruckId = truck.id;
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
-    this.dialog.open(PreHireChecklistPopupComponent, {
-      width: '40%',
-      data: {
-      }
+    this.service.getPreHireChecklist(truck.id).subscribe((res: any) => {
+      this.dialog.open(PreHireChecklistPopupComponent, {
+        width: '40%',
+        data: {
+          checklist: res.data,
+          truck: truck,
+          checked: res.data.filter((x: any) => x.status === 'PASS').length,
+        },
+      }).afterClosed().subscribe((res: any) => {
+        if (res) {
+          this.editPreHireChecklist(res);
+        }
+      });
     });
   }
 
@@ -411,4 +420,28 @@ export class TruckComponent implements OnInit {
 
   protected readonly JSON = JSON;
   protected readonly localStorage = localStorage;
+
+  private editPreHireChecklist(res: any) {
+    const formData = new FormData();
+    const payload: Record<string, any> = {};
+    payload['id'] = this.singleTruckId;
+    payload['checklist'] = res;
+    formData.append('payload', JSON.stringify(payload));
+    this.service.editTruck(formData).subscribe(
+      (res: any) => {
+        // Handle response
+        if (res.status == 'OK') {
+          this.toastr.showSuccess('Checklist updated successfully');
+          this.truckList = [];
+          this.getTruckList();
+        } else {
+          this.toastr.showError(res.message);
+        }
+      },
+      error => {
+        // Handle error
+        this.toastr.showError(error.error.message);
+      }
+    );
+  }
 }
