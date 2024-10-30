@@ -417,10 +417,6 @@ export class TruckComponent implements OnInit {
         this.loading = false;
       });
   }
-
-  protected readonly JSON = JSON;
-  protected readonly localStorage = localStorage;
-
   private editPreHireChecklist(res: any) {
     const formData = new FormData();
     const payload: Record<string, any> = {};
@@ -444,4 +440,6 @@ export class TruckComponent implements OnInit {
       }
     );
   }
+  protected readonly JSON = JSON;
+  protected readonly localStorage = localStorage;
 }
