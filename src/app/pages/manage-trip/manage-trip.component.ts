@@ -429,14 +429,16 @@ export class ManageTripComponent implements OnInit {
       this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
       this.customDateText = `${this.startDate} - ${this.endDate}`;
       if (!this.dateSelected) {
-        this.filterLength += 1;
         this.previousFilterLength += 1;
+        this.filterLength += 1;
       }
       this.dateSelected = true;
     } else {
       this.endDate = '';
-      this.filterLength -= 1;
-      this.previousFilterLength -= 1;
+      if (this.dateSelected && this.filterLength > 1) {
+        this.filterLength -= 1;
+        this.previousFilterLength -= 1;
+      }
     }
   }
 
@@ -457,6 +459,7 @@ export class ManageTripComponent implements OnInit {
       this.filterValues.push(
         this.customSelected ? this.customDateText : this.dateText
       );
+      this.dateSelected = false;
     }
     if (this.truckType) {
       for (let i = 0; i < this.truckType.length; i++) {
@@ -549,6 +552,7 @@ export class ManageTripComponent implements OnInit {
   }
 
   onClickCloseFilter(filter: any) {
+    this.dateSelected = false;
     this.filterValues = this.filterValues.filter(
       (value: any) => value !== filter
     );

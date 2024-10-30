@@ -142,27 +142,42 @@ export class TripDetailsComponent {
 
   private changeTripTimeline(currentValue: TripData) {
     this.resetTripTimeline();
-    currentValue.tripEvents.forEach((event, index) => {
-      if (event.name != 'Cancelled') {
-        this.tripTimeline[index].dateTime = event.createdAt;
-        this.tripTimeline[index].dateTimeAvailable = true;
-        this.tripTimeline[index].active = true;
-        this.tripTimeline[index].truckInThisPoint = true;
-        this.tripTimeline[index].className = 'border border-green border-solid';
-        this.makeOtherTruckInActive(index);
-      } else {
-        this.tripTimeline[index].dateTime = event.createdAt;
-        this.tripTimeline[index].dateTimeAvailable = true;
-        if (index > 0) {
-          this.tripTimeline[index - 1].truckInThisPoint = true;
-          this.makeOtherTruckInActive(index - 1);
+    let onlyStatusTripEvents = [];
+    if (currentValue.tripEvents) {
+      currentValue.tripEvents.forEach(event => {
+        if (event.name === 'Cancelled') {
+          onlyStatusTripEvents.push(event);
+        } else if (
+          event.name === 'Trip booked' ||
+          event.name === 'Trip started' ||
+          event.name === 'Trip completed' || event.name === 'Trip created'
+        ) {
+          onlyStatusTripEvents.push(event);
         }
-        this.tripTimeline[index].cancelled = true;
-        this.makeOtherClosePointDisabled(index);
-        this.tripTimeline[index].className = 'border border-red border-dashed';
-      }
-    });
-  }
+      });
+      onlyStatusTripEvents?.forEach((event, index) => {
+        if (event.name != 'Cancelled') {
+          this.tripTimeline[index].dateTime = event.createdAt;
+          this.tripTimeline[index].dateTimeAvailable = true;
+          this.tripTimeline[index].active = true;
+          this.tripTimeline[index].truckInThisPoint = true;
+          this.tripTimeline[index].className = 'border border-green border-solid';
+          this.makeOtherTruckInActive(index);
+        } else {
+          this.tripTimeline[index].dateTime = event.createdAt;
+          this.tripTimeline[index].dateTimeAvailable = true;
+          if (index > 0) {
+            this.tripTimeline[index - 1].truckInThisPoint = true;
+            this.makeOtherTruckInActive(index - 1);
+          }
+          this.tripTimeline[index].cancelled = true;
+          this.makeOtherClosePointDisabled(index);
+          this.tripTimeline[index].className = 'border border-red border-dashed';
+        }
+      });
+
+    }
+   }
 
   private resetTripTimeline() {
     this.tripTimeline.forEach(event => {

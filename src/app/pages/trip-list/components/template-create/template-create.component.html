@@ -28,52 +28,56 @@
           <span class="text-h2 leading-h2 font-semibold">Loading Point</span>
         </div>
         <div formArrayName="loadingPoints" class="flex flex-col space-y-3 ml-2">
-          <ng-container *ngFor="let loadingPoint of loadingPoints.controls; index as i" [formGroupName]="i" class="flex flex-col space-y-3">
+          <ng-container *ngFor="let loadingPoint of loadingPoints.controls; index as i" [formGroupName]="i"
+                        class="flex flex-col space-y-3">
             <div class="step">
               <div class="circle">
                 <img src="assets/svg/circle.svg" alt="loading">
               </div>
-              <div class="flex justify-between space-x-2 w-full items-center">
-                <div class="grid lg:grid-cols-2 gap-4 w-full ">
-                  <div class="flex flex-col space-y-1 w-full">
-                    <label for="loadingPoint" class="form-label text-body">Loading Point</label>
-                    <mat-form-field appearance="outline" class="example-full-width "
-                                    [ngClass]="{'error': loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched}">
-                      <input
-                        id="loadingPoint"
-                        type="text"
-                        matInput
-                        placeholder="Address"
-                        formControlName="pointName"
-                        (keyup)="onKeyUpLoadingPoint($event, i)"
-                        [matAutocomplete]="auto">
-                      <mat-autocomplete #auto="matAutocomplete">
-                        @for (option of loadingSuggestions; track option) {
-                          <mat-option *ngIf="option.locationPointName !== null || option.doesBelongToGoogleMapApi === false"
-                                      (click)="onClickLoadingSuggestion(option, i)" [value]="option.locationPointName">
-                            <div class="w-full flex flex-col space-y-2 p-2">
-                              <div class="flex space-x-2 w-full">
-                                <img loading="lazy" src="assets/svg/star.svg" alt="star">
-                                <span
-                                  class="text-body_title leading-body_title text-not-black">{{ option.locationPointName }}</span>
-                              </div>
+              <div class="grid lg:grid-cols-2 gap-4 w-full ">
+                <div class="flex flex-col space-y-1 w-full">
+                  <label for="loadingPoint" class="form-label text-body">Loading Point</label>
+                  <mat-form-field appearance="outline" class="example-full-width "
+                                  [ngClass]="{'error': loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched}">
+                    <input
+                      id="loadingPoint"
+                      type="text"
+                      matInput
+                      placeholder="Address"
+                      formControlName="pointName"
+                      (keyup)="onKeyUpLoadingPoint($event, i)"
+                      [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete">
+                      @for (option of loadingSuggestions; track option) {
+                        <mat-option
+                          *ngIf="option.locationPointName !== null || option.doesBelongToGoogleMapApi === false"
+                          (click)="onClickLoadingSuggestion(option, i)" [value]="option.locationPointName">
+                          <div class="w-full flex flex-col space-y-2 p-2">
+                            <div class="flex space-x-2 w-full">
+                              <img loading="lazy" src="assets/svg/star.svg" alt="star">
                               <span
-                                class="text-body_title leading-body_title text-web-text-secondary">{{ option.addressText }}</span>
+                                class="text-body_title leading-body_title text-not-black">{{ option.locationPointName }}</span>
                             </div>
-                          </mat-option>
-                          <mat-option *ngIf="option.locationPointName === null && option.doesBelongToGoogleMapApi === true"
-                                      (click)="onClickLoadingSuggestion(option,i)" [value]="option.addressText">
-                            <div class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.addressText }}
-                            </div>
-                          </mat-option>
-                        }
-                      </mat-autocomplete>
-                    </mat-form-field>
-                    <mat-error *ngIf="loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched">
-                      Please select a valid loading point
-                    </mat-error
-                    >
-                  </div>
+                            <span
+                              class="text-body_title leading-body_title text-web-text-secondary">{{ option.addressText }}</span>
+                          </div>
+                        </mat-option>
+                        <mat-option
+                          *ngIf="option.locationPointName === null && option.doesBelongToGoogleMapApi === true"
+                          (click)="onClickLoadingSuggestion(option,i)" [value]="option.addressText">
+                          <div
+                            class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.addressText }}
+                          </div>
+                        </mat-option>
+                      }
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <mat-error *ngIf="loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched">
+                    Please select a valid loading point
+                  </mat-error
+                  >
+                </div>
+                <div class="flex justify-between space-x-2 w-full items-center">
                   <div class="flex flex-col space-y-1 w-full">
                     <label for="loadingDistrict" class="form-label text-body">Loading District</label>
                     <mat-form-field appearance="outline" class="example-full-width"
@@ -90,7 +94,9 @@
                       <mat-autocomplete #loadingDistrictAuto="matAutocomplete">
                         @for (option of loadingDistrictSuggestions; track option) {
                           <mat-option (click)="onSelectLoadingDistrict(option, i)" [value]="option.name">
-                            <div class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.name }}</div>
+                            <div
+                              class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.name }}
+                            </div>
                           </mat-option>
                         }
                       </mat-autocomplete>
@@ -100,27 +106,31 @@
                       Please select a valid loading district
                     </mat-error>
                   </div>
-                </div>
-                <div class="flex space-x-2 items-center">
-                  <div class="flex flex-col  w-full" *ngIf="loadingPoints?.length <= 1">
-                    <h1 class="invisible">height</h1>
-                    <button type="button" (click)="addLoadingPoint()" [disabled]=" loadingPoints?.length <= 1 && (loadingPoint.get('pointName').value === '' || loadingPoint.get('pointDistrict').value === '')"
-                            class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
-                      <i class="fas fa-plus text-primary text-lg"></i>
-                    </button>
-                  </div>
-                  <div class="flex flex-col  w-full" *ngIf="loadingPoint?.get('pointName')?.value != '' && loadingPoint?.get('pointDistrict')?.value != '' && loadingPoints?.length > 1 && i == loadingPoints?.length - 1">
-                    <h1 class="invisible">height</h1>
-                    <button (click)="addLoadingPoint()" [disabled]="loadingPoint[i]?.get('pointName')?.value === '' || loadingPoints[i]?.get('pointDistrict')?.value === ''"
-                            class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
-                      <i class="fas fa-plus text-primary text-lg"></i>
-                    </button>
-                  </div>
-                  <div class="flex flex-col w-full" *ngIf="loadingPoints?.length > 1">
-                    <h1 class="invisible">height</h1>
-                    <button (click)="removeLoadingPoint(i)" class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
-                      <i class="fas fa-trash-alt text-red text-lg"></i>
-                    </button>
+                  <div class="flex space-x-2 items-center">
+                    <div class="flex flex-col  w-full" *ngIf="loadingPoints?.length <= 1">
+                      <h1 class="invisible">height</h1>
+                      <button type="button" (click)="addLoadingPoint()"
+                              [disabled]=" loadingPoints?.length <= 1 && (loadingPoint.get('pointName').value === '' || loadingPoint.get('pointDistrict').value === '')"
+                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
+                        <i class="fas fa-plus text-primary text-lg"></i>
+                      </button>
+                    </div>
+                    <div class="flex flex-col  w-full"
+                         *ngIf="loadingPoint?.get('pointName')?.value != '' && loadingPoint?.get('pointDistrict')?.value != '' && loadingPoints?.length > 1 && i == loadingPoints?.length - 1">
+                      <h1 class="invisible">height</h1>
+                      <button (click)="addLoadingPoint()"
+                              [disabled]="loadingPoint[i]?.get('pointName')?.value === '' || loadingPoints[i]?.get('pointDistrict')?.value === ''"
+                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
+                        <i class="fas fa-plus text-primary text-lg"></i>
+                      </button>
+                    </div>
+                    <div class="flex flex-col w-full" *ngIf="loadingPoints?.length > 1">
+                      <h1 class="invisible">height</h1>
+                      <button (click)="removeLoadingPoint(i)"
+                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                        <i class="fas fa-trash-alt text-red text-lg"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -139,47 +149,52 @@
               <div class="circle">
                 <img src="assets/svg/circle.svg" alt="loading">
               </div>
-              <div class="flex justify-between space-x-2 items-center w-full">
-                <div class="grid lg:grid-cols-2 gap-4 w-full ">
-                  <div class="flex  flex-col space-y-1 w-full">
-                    <label for="unLoadingPoint" class="form-label text-body">Unloading Point</label>
-                    <mat-form-field appearance="outline" class="example-full-width"
-                                    [ngClass]="{'error': unloadingPoint.get('pointName').invalid && unloadingPoint.get('pointName').touched}"
-                    >
-                      <input
-                        id="unLoadingPoint"
-                        type="text"
-                        matInput
-                        placeholder="Address"
-                        formControlName="pointName"
-                        (keyup)="onKeyUpUnloadingPoint($event, i)"
-                        [matAutocomplete]="autoUnload">
-                      <mat-autocomplete #autoUnload="matAutocomplete">
-                        @for (option of unloadingSuggestions; track option) {
-                          <mat-option *ngIf="option.locationPointName !== null || option.doesBelongToGoogleMapApi === false"
-                                      (click)="onClickUnloadingSuggestion(option, i)" [value]="option.locationPointName">
-                            <div class="w-full flex flex-col space-y-2 p-2">
-                              <div class="flex space-x-2 w-full">
-                                <img loading="lazy" src="assets/svg/star.svg" alt="star">
-                                <span
-                                  class="text-body_title leading-body_title text-not-black">{{ option.locationPointName }}</span>
-                              </div>
+
+              <div class="grid lg:grid-cols-2 gap-4 w-full ">
+                <div class="flex  flex-col space-y-1 w-full">
+                  <label for="unLoadingPoint" class="form-label text-body">Unloading Point</label>
+                  <mat-form-field appearance="outline" class="example-full-width"
+                                  [ngClass]="{'error': unloadingPoint.get('pointName').invalid && unloadingPoint.get('pointName').touched}"
+                  >
+                    <input
+                      id="unLoadingPoint"
+                      type="text"
+                      matInput
+                      placeholder="Address"
+                      formControlName="pointName"
+                      (keyup)="onKeyUpUnloadingPoint($event, i)"
+                      [matAutocomplete]="autoUnload">
+                    <mat-autocomplete #autoUnload="matAutocomplete">
+                      @for (option of unloadingSuggestions; track option) {
+                        <mat-option
+                          *ngIf="option.locationPointName !== null || option.doesBelongToGoogleMapApi === false"
+                          (click)="onClickUnloadingSuggestion(option, i)" [value]="option.locationPointName">
+                          <div class="w-full flex flex-col space-y-2 p-2">
+                            <div class="flex space-x-2 w-full">
+                              <img loading="lazy" src="assets/svg/star.svg" alt="star">
                               <span
-                                class="text-body_title leading-body_title text-web-text-secondary">{{ option.addressText }}</span>
+                                class="text-body_title leading-body_title text-not-black">{{ option.locationPointName }}</span>
                             </div>
-                          </mat-option>
-                          <mat-option *ngIf="option.locationPointName === null && option.doesBelongToGoogleMapApi === true"
-                                      (click)="onClickUnloadingSuggestion(option,i)" [value]="option.addressText">
-                            <div class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.addressText }}
-                            </div>
-                          </mat-option>
-                        }
-                      </mat-autocomplete>
-                    </mat-form-field>
-                    <mat-error *ngIf="unloadingPoint.get('pointName').invalid && unloadingPoint.get('pointName').touched">
-                      Please select a valid unloading point
-                    </mat-error>
-                  </div>
+                            <span
+                              class="text-body_title leading-body_title text-web-text-secondary">{{ option.addressText }}</span>
+                          </div>
+                        </mat-option>
+                        <mat-option
+                          *ngIf="option.locationPointName === null && option.doesBelongToGoogleMapApi === true"
+                          (click)="onClickUnloadingSuggestion(option,i)" [value]="option.addressText">
+                          <div
+                            class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.addressText }}
+                          </div>
+                        </mat-option>
+                      }
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <mat-error
+                    *ngIf="unloadingPoint.get('pointName').invalid && unloadingPoint.get('pointName').touched">
+                    Please select a valid unloading point
+                  </mat-error>
+                </div>
+                <div class="flex justify-between space-x-2 items-center w-full">
                   <div class="flex  flex-col space-y-1 w-full">
                     <label for="unLoadingDistrict" class="form-label text-body">Unloading District</label>
                     <mat-form-field appearance="outline" class="example-full-width"
@@ -196,7 +211,9 @@
                       <mat-autocomplete #unloadingDistrictAuto="matAutocomplete">
                         @for (option of unloadingDistrictSuggestions; track option) {
                           <mat-option (click)="onSelectUnloadingDistrict(option, i)" [value]="option.name">
-                            <div class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.name }}</div>
+                            <div
+                              class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.name }}
+                            </div>
                           </mat-option>
                         }
                       </mat-autocomplete>
@@ -206,27 +223,31 @@
                       Please select a valid unloading district
                     </mat-error>
                   </div>
-                </div>
-                <div class="flex space-x-2 items-center">
-                  <div class="flex flex-col  w-full" *ngIf="unloadingPoints?.length <= 1">
-                    <h1 class="invisible">height</h1>
-                    <button type="button" (click)="addUnloadingPoint()" [disabled]=" unloadingPoints?.length <= 1 && (unloadingPoint.get('pointName').value === '' || unloadingPoint.get('pointDistrict').value === '')"
-                            class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
-                      <i class="fas fa-plus text-primary text-lg"></i>
-                    </button>
-                  </div>
-                  <div class="flex flex-col  w-full" *ngIf="unloadingPoint?.get('pointName')?.value != '' && unloadingPoint?.get('pointDistrict')?.value != '' && unloadingPoints?.length > 1 && i == unloadingPoints?.length - 1">
-                    <h1 class="invisible">height</h1>
-                    <button (click)="addUnloadingPoint()" [disabled]="unloadingPoints[i]?.get('pointName')?.value === '' || unloadingPoints[i]?.get('pointDistrict')?.value === ''"
-                            class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
-                      <i class="fas fa-plus text-primary text-lg"></i>
-                    </button>
-                  </div>
-                  <div class="flex flex-col w-full" *ngIf="unloadingPoints?.length > 1">
-                    <h1 class="invisible">height</h1>
-                    <button (click)="removeUnloadingPoint(i)" class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
-                      <i class="fas fa-trash-alt text-red text-lg"></i>
-                    </button>
+                  <div class="flex space-x-2 items-center">
+                    <div class="flex flex-col  w-full" *ngIf="unloadingPoints?.length <= 1">
+                      <h1 class="invisible">height</h1>
+                      <button type="button" (click)="addUnloadingPoint()"
+                              [disabled]=" unloadingPoints?.length <= 1 && (unloadingPoint.get('pointName').value === '' || unloadingPoint.get('pointDistrict').value === '')"
+                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
+                        <i class="fas fa-plus text-primary text-lg"></i>
+                      </button>
+                    </div>
+                    <div class="flex flex-col  w-full"
+                         *ngIf="unloadingPoint?.get('pointName')?.value != '' && unloadingPoint?.get('pointDistrict')?.value != '' && unloadingPoints?.length > 1 && i == unloadingPoints?.length - 1">
+                      <h1 class="invisible">height</h1>
+                      <button (click)="addUnloadingPoint()"
+                              [disabled]="unloadingPoints[i]?.get('pointName')?.value === '' || unloadingPoints[i]?.get('pointDistrict')?.value === ''"
+                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
+                        <i class="fas fa-plus text-primary text-lg"></i>
+                      </button>
+                    </div>
+                    <div class="flex flex-col w-full" *ngIf="unloadingPoints?.length > 1">
+                      <h1 class="invisible">height</h1>
+                      <button (click)="removeUnloadingPoint(i)"
+                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                        <i class="fas fa-trash-alt text-red text-lg"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
