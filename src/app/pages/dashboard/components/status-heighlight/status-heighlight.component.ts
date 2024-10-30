@@ -67,8 +67,11 @@ export class StatusHeighlightComponent {
   private countFromDateAndToDate() {
     // from date will be the starting date of the current month
     this.fromDate = this.datePipe.transform(new Date(), 'yyyy-MM-01');
-    // to date will be the current date
-    this.toDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+    // to date will be the last date of the current month
+    this.toDate = this.datePipe.transform(
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      'yyyy-MM-dd'
+    );
   }
 
   protected readonly localStorage = localStorage;

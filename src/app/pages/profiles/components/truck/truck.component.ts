@@ -26,6 +26,7 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatButton } from '@angular/material/button';
+import { PreHireChecklistPopupComponent } from './pre-hire-checklist-popup/pre-hire-checklist-popup.component';
 
 @Component({
   selector: 'app-truck',
@@ -224,8 +225,19 @@ export class TruckComponent implements OnInit {
     this.singleTruckId = truck.id;
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
-    this.dialog.open(PreHireChecklistComponent, {
-      width: '40%',
+    this.service.getPreHireChecklist(truck.id).subscribe((res: any) => {
+      this.dialog.open(PreHireChecklistPopupComponent, {
+        width: '40%',
+        data: {
+          checklist: res.data,
+          truck: truck,
+          checked: res.data.filter((x: any) => x.status === 'PASS').length,
+        },
+      }).afterClosed().subscribe((res: any) => {
+        if (res) {
+          this.editPreHireChecklist(res);
+        }
+      });
     });
   }
 
@@ -283,7 +295,7 @@ export class TruckComponent implements OnInit {
       .open(ConfirmApproveComponent, {
         data: {
           title: 'Attention',
-          textPrefix: 'the truck with registration number',
+          textPrefix: 'the truck with registration number ',
           text: `${truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Approve',
         },
@@ -325,7 +337,7 @@ export class TruckComponent implements OnInit {
     this.dialog
       .open(ConfirmRejectComponent, {
         data: {
-          title: 'Reject',
+          title: 'Attention',
           textPrefix: 'the truck with registration number ',
           text: `${truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Reject',
@@ -408,4 +420,28 @@ export class TruckComponent implements OnInit {
 
   protected readonly JSON = JSON;
   protected readonly localStorage = localStorage;
+
+  private editPreHireChecklist(res: any) {
+    const formData = new FormData();
+    const payload: Record<string, any> = {};
+    payload['id'] = this.singleTruckId;
+    payload['checklist'] = res;
+    formData.append('payload', JSON.stringify(payload));
+    this.service.editTruck(formData).subscribe(
+      (res: any) => {
+        // Handle response
+        if (res.status == 'OK') {
+          this.toastr.showSuccess('Checklist updated successfully');
+          this.truckList = [];
+          this.getTruckList();
+        } else {
+          this.toastr.showError(res.message);
+        }
+      },
+      error => {
+        // Handle error
+        this.toastr.showError(error.error.message);
+      }
+    );
+  }
 }
