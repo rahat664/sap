@@ -26,6 +26,7 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatButton } from '@angular/material/button';
+import { PreHireChecklistPopupComponent } from './pre-hire-checklist-popup/pre-hire-checklist-popup.component';
 
 @Component({
   selector: 'app-truck',
@@ -224,8 +225,10 @@ export class TruckComponent implements OnInit {
     this.singleTruckId = truck.id;
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
-    this.dialog.open(PreHireChecklistComponent, {
+    this.dialog.open(PreHireChecklistPopupComponent, {
       width: '40%',
+      data: {
+      }
     });
   }
 
