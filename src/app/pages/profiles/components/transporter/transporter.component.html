@@ -48,10 +48,13 @@
         <th class="text-left whitespace-nowrap">Created On</th>
         <th class="text-left">Truck Stand</th>
         <th class="text-left">Preferred Payment Method</th>
+        <th class="text-left">No Of Trips</th>
+        <th class="text-left">Gross Profit</th>
+        <th class="text-left">Rank</th>
         <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
-        <th class="border" colspan="5"></th>
+        <th class="border" colspan="8"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -80,6 +83,9 @@
                 : 'Cash'
             }}
           </td>
+          <td>{{transporter.noOfTrips != null ? transporter.noOfTrips : '0'}}</td>
+          <td>{{transporter.grossProfit != null ? transporter.grossProfit : '0'}}</td>
+          <td>{{transporter.rank != null ? transporter.rank : '0'}}</td>
           <!--          <td>-->
           <!--            <i class="fas fa-ellipsis-v"></i>-->
           <!--          </td>-->
@@ -87,7 +93,7 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="transporterList?.length === 0">
-          <td class="text-center" colspan="5">
+          <td class="text-center" colspan="8">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
               <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
               <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
@@ -97,7 +103,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="5">
+          <td class="h-full" colspan="8">
             <app-loading></app-loading>
           </td>
         </tr>
