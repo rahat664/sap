@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
-import { DatePipe, DecimalPipe, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
@@ -36,6 +36,8 @@ import { Trip } from '../auth/models/response/trip';
     NgForOf,
     NgIf,
     ScrollByButtonDirective,
+    NgClass,
+    NgOptimizedImage,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
@@ -45,7 +47,7 @@ export class ChallanDashboardComponent {
   pendingChallanAmount: number = 120000;
   pendingChallanText: string = 'Pending challan value for 30 trips';
   receivedAmount: number = 75;
-  receivedText: string = 'Received'
+  receivedText: string = 'Received';
   pendingAmount: number = 25;
   pendingText: string = 'In-progress';
   approvedAmount: number = 25;
@@ -64,20 +66,19 @@ export class ChallanDashboardComponent {
   protected tripList: Trip[] = [];
   protected totalPages: any = 0;
   private anotherStatusCalled: boolean;
+  activatedChallanStatus: string = 'Pending';
 
   constructor(
     private datePipe: DatePipe,
     private service: ChallanDashboardService,
     private trip: TripService,
     private number: DecimalPipe
-  ) {
-  }
-
+  ) {}
 
   ngOnInit() {
     this.getFromDateAndToDate();
     this.getChallanStatus();
-    this.getTripList()
+    this.getTripList();
   }
   private getFromDateAndToDate() {
     // fromdate will be the first day of the current month
@@ -90,7 +91,7 @@ export class ChallanDashboardComponent {
     // todate should be the current date
     const toDate = new Date();
     // to date will be the last day of the current month
-    this.toDate =this.datePipe.transform(
+    this.toDate = this.datePipe.transform(
       new Date(toDate.getFullYear(), toDate.getMonth() + 1, 0),
       'yyyy-MM-dd'
     );
@@ -100,7 +101,8 @@ export class ChallanDashboardComponent {
     this.service
       .getChallanStatus(this.fromDate, this.toDate)
       .subscribe((res: any) => {
-        this.pendingChallanAmount = res.data.totalCustomerRateForPendingChallans;
+        this.pendingChallanAmount =
+          res.data.totalCustomerRateForPendingChallans;
         this.receivedAmount = res.data.received;
         this.pendingAmount = res.data.inProgress;
         this.approvedAmount = res.data.approved;
@@ -108,8 +110,6 @@ export class ChallanDashboardComponent {
         this.hardCopyReceived = res.data.totalHardCopyReceived;
       });
   }
-
-
 
   private getTripList() {
     this.loading = true;
@@ -135,12 +135,11 @@ export class ChallanDashboardComponent {
       );
   }
 
-
   private updateTripList(trip: any) {
     this.loading = false;
     this.completedTrips = trip.data?.statusCount?.Completed || 0;
     this.totalPages = trip.data.totalPages;
-    this.pendingChallanText = `Pending challan value for ${ this.number.transform(trip.data?.challanStatusCount?.Pending) || 0 } ${ trip.data?.challanStatusCount?.Pending === 1 ? 'trip' : 'trips' }`;
+    this.pendingChallanText = `Pending challan value for ${this.number.transform(trip.data?.challanStatusCount?.Pending) || 0} ${trip.data?.challanStatusCount?.Pending === 1 ? 'trip' : 'trips'}`;
     if (this.page === 0) {
       this.tripList = trip.data.responses;
     } else {

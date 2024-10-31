@@ -10,24 +10,24 @@
     <!--  summary section-->
     <div class="grid grid-cols-10 w-full gap-2 min-h-[10.5rem]">
       <div class="col-span-4 w-full bg-white  rounded-lg p-2">
-        <div class="bg-[#005577] h-full flex items-center justify-center rounded-lg bg-opacity-[5%]">
+        <button [ngClass]="{'border border-[#0005577]' : activatedChallanStatus === 'Pending'}" class="bg-[#005577] h-full w-full flex items-center justify-center rounded-lg bg-opacity-[5%]">
             <div class="flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/pending-challan.svg" alt="pending-challan">
+                <img ngSrc="assets/svg/pending-challan.svg" alt="pending-challan">
               </div>
               <div class="flex flex-col space-y-1">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{pendingChallanAmount | number}} ৳</h1>
                 <p class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{pendingChallanText}}</p>
               </div>
             </div>
-        </div>
+        </button>
       </div>
       <div class="col-span-4 bg-white w-full rounded-lg p-2">
-        <div class="grid grid-cols-3 gap-1 w-full h-full">
-          <div class="bg-link col-span-3 flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+        <div  class="grid grid-cols-3 gap-1 w-full h-full">
+          <div [ngClass]="{'border border-link' : activatedChallanStatus}"  class="bg-link col-span-3 flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="  flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/received.svg" alt="received">
+                <img ngSrc="assets/svg/received.svg" alt="received">
               </div>
               <div class="flex flex-col">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{receivedAmount | number}}</h1>
@@ -35,10 +35,10 @@
               </div>
             </div>
           </div>
-          <div class="bg-another flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+          <div [ngClass]="{'border border-another' : activatedChallanStatus}" class="bg-another flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/in-progress.svg" alt="pending-challan">
+                <img ngSrc="assets/svg/in-progress.svg" alt="pending-challan">
               </div>
               <div class="flex flex-col space-y-1">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{pendingAmount | number}}</h1>
@@ -46,10 +46,10 @@
               </div>
             </div>
           </div>
-          <div class="bg-green  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+          <div [ngClass]="{'border border-green' : activatedChallanStatus}" class="bg-green  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/approved.svg" alt="pending-challan">
+                <img ngSrc="assets/svg/approved.svg" alt="pending-challan">
               </div>
               <div class="flex flex-col space-y-1">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{approvedAmount | number}}</h1>
@@ -57,10 +57,10 @@
               </div>
             </div>
           </div>
-          <div class="bg-red  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+          <div [ngClass]="{'border border-red' : activatedChallanStatus}" class="bg-red  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/rejected.svg" alt="pending-challan">
+                <img ngSrc="assets/svg/rejected.svg" alt="pending-challan">
               </div>
               <div class="flex flex-col space-y-1">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{rejectedAmount | number}}</h1>
@@ -72,10 +72,10 @@
       </div>
       <div class="col-span-2 bg-white p-2 rounded-lg">
         <div class="grid gap-1 w-full h-full">
-          <div class="bg-green  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+          <div [ngClass]="{'border border-green' : activatedChallanStatus}" class="bg-green  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/completed_trip.svg" alt="pending-challan">
+                <img ngSrc="assets/svg/completed_trip.svg" alt="pending-challan">
               </div>
               <div class="flex flex-col space-y-1">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{completedTrips | number}}</h1>
@@ -83,10 +83,10 @@
               </div>
             </div>
           </div>
-          <div class="bg-blue  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+          <div [ngClass]="{'border border-blue' : activatedChallanStatus}" class="bg-blue  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
                 <div>
-                  <img src="assets/svg/hardcopy.svg" alt="pending-challan">
+                  <img ngngSrc="assets/svg/hardcopy.svg" alt="pending-challan" height="40" width="40">
                 </div>
                 <div class="flex flex-col space-y-1">
                   <h1 class="font-bold text-h1 leading-h1 text-not-black">{{hardCopyReceived | number}}</h1>
@@ -121,7 +121,7 @@
         <th class="text-left"></th>
       </tr>
       <tr>
-        <th class="border" [colSpan]="12"></th>
+        <th class="custom-border" [colSpan]="12"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -154,7 +154,7 @@
         <tr *ngIf="tripList?.length === 0">
           <td class="text-center" [colSpan]="12">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
-              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <img loading="lazy" ngSrc="assets/svg/no-data.svg" class="notPreview" alt="nodata">
               <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
             </div>
           </td>
