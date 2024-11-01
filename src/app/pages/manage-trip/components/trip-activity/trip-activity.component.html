@@ -12,8 +12,8 @@
           <button (click)="changeTripLoadingEvent(event)" *ngFor="let event of loadingEvents"
                   [ngClass]="{'border border-blue': event.eventName == selectedEventNameLoading}"
                   class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
-            <img loading="lazy" class="notPreview" *ngIf="event.tripDocuments" ngSrc="assets/svg/available.svg" alt="">
-            <img loading="lazy" class="notPreview" *ngIf="!event.tripDocuments" ngSrc="assets/svg/not-available.svg"
+            <img loading="lazy" class="notPreview" *ngIf="event.tripDocuments" src="assets/svg/available.svg" alt="">
+            <img loading="lazy" class="notPreview" *ngIf="!event.tripDocuments" src="assets/svg/not-available.svg"
                  alt="">
             <span class="text-body_title leading-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
           </button>
@@ -22,7 +22,7 @@
           <div *ngIf="imageToShow.length == 0 && loadingEventsLoaded"
                class="w-full h-full flex items-center justify-center">
             <div class="flex flex-col space-y-3">
-              <img loading="lazy" ngSrc="assets/svg/no-data.svg" alt="">
+              <img loading="lazy" src="assets/svg/no-data.svg" alt="">
               <h1 class="text-body_title leading-body_title text-secondary text-center font-semibold">No Data
                 Available</h1>
             </div>
@@ -95,8 +95,8 @@
           <button (click)="changeTripUnloadingEvent(event)" *ngFor="let event of unloadEvents"
                   [ngClass]="{'border border-blue': event.eventName == selectedEventNameUnloading}"
                   class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
-            <img loading="lazy" class="notPreview" *ngIf="event.tripDocuments" ngSrc="assets/svg/available.svg" alt="">
-            <img loading="lazy" class="notPreview" *ngIf="!event.tripDocuments" ngSrc="assets/svg/not-available.svg"
+            <img loading="lazy" class="notPreview" *ngIf="event.tripDocuments" src="assets/svg/available.svg" alt="">
+            <img loading="lazy" class="notPreview" *ngIf="!event.tripDocuments" src="assets/svg/not-available.svg"
                  alt="">
             <span class="text-body_title leading-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
           </button>
@@ -105,7 +105,7 @@
           <div *ngIf="unloadImageToShow.length == 0 && unloadingEventsLoaded"
                class="w-full h-full flex items-center justify-center">
             <div class="flex flex-col space-y-3">
-              <img loading="lazy" ngSrc="assets/svg/no-data.svg" alt="">
+              <img loading="lazy" src="assets/svg/no-data.svg" alt="">
               <h1 class="text-body_title leading-body_title text-secondary text-center font-semibold">No Data
                 Available</h1>
             </div>

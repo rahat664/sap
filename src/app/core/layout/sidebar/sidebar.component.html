@@ -15,7 +15,7 @@
               <div class="relative">
                 <div
                   class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <img ngSrc="assets/svg/search.svg" height="" width="" class="notPreview" alt="search">
+                  <img src="assets/svg/search.svg" height="" width="" class="notPreview" alt="search">
                 </div>
                 <input
                   type="text"
@@ -32,7 +32,7 @@
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img loading="lazy" class="notPreview"
-                   ngSrc="assets/svg/dashboard-{{isActive('/dashboard') ? 'select': 'deselect'}}.svg" alt="" height="24" width="24" />
+                   src="assets/svg/dashboard-{{isActive('/dashboard') ? 'select': 'deselect'}}.svg" alt="" height="24" width="24" />
               <span class="ml-3 font-semibold">Dashboard</span>
             </a>
           </li>
@@ -42,7 +42,7 @@
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img loading="lazy" class="notPreview"
-                   ngSrc="assets/svg/dashboard-{{isActive('/challan-management') ? 'select': 'deselect'}}.svg" alt=""
+                   src="assets/svg/dashboard-{{isActive('/challan-management') ? 'select': 'deselect'}}.svg" alt=""
                    height="24" width="24" />
               <span class="ml-3 font-semibold">Challan Management</span>
             </a>
@@ -55,7 +55,7 @@
               [routerLinkActiveOptions]="{ exact: true}"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img loading="lazy" class="notPreview"
-                   ngSrc="assets/svg/trip-create-{{isActive('/trip-create') ? 'select': 'deselect'}}.svg" alt="" height="24" width="24"/>
+                   src="assets/svg/trip-create-{{isActive('/trip-create') ? 'select': 'deselect'}}.svg" alt="" height="24" width="24"/>
               <span class="ml-3 font-semibold">Create Trip</span>
             </a>
           </li>
@@ -66,7 +66,7 @@
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img height="24" width="24" loading="lazy" class="notPreview"
-                   ngSrc="assets/svg/trip-management-{{isActive('/manage-trip') ? 'select': 'deselect'}}.svg"
+                   src="assets/svg/trip-management-{{isActive('/manage-trip') ? 'select': 'deselect'}}.svg"
                    alt="" />
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Manage Trip</span>
             </a>
@@ -78,7 +78,7 @@
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img class="notPreview"
-                   height="24" width="24" ngSrc="assets/svg/trip-list-{{isActive('/trip-list') ? 'select': 'deselect'}}.svg" alt="" />
+                   height="24" width="24" src="assets/svg/trip-list-{{isActive('/trip-list') ? 'select': 'deselect'}}.svg" alt="" />
               <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Trip List</span>
             </a>
           </li>
@@ -91,7 +91,7 @@
               <img
                 loading="lazy"
                 class="notPreview"
-                ngSrc="assets/svg/user-management-{{isActive('/user-management') ? 'select': 'deselect'}}.svg"
+                src="assets/svg/user-management-{{isActive('/user-management') ? 'select': 'deselect'}}.svg"
                 alt="" height="" width="" />
               <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
             </a>
@@ -104,7 +104,7 @@
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img
                 loading="lazy"
-                class="notPreview" ngSrc="assets/svg/user-management-{{isActive('/user-management-customer') ? 'select': 'deselect'}}.svg"
+                class="notPreview" src="assets/svg/user-management-{{isActive('/user-management-customer') ? 'select': 'deselect'}}.svg"
                 alt="" height="24" width="24" />
               <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
             </a>
@@ -118,7 +118,7 @@
               class="cursor-pointer text-base {{isActive('/profile') ? 'text-primary' : 'text-secondary'}} w-full leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
               aria-controls="dropdown-example">
               <img loading="lazy" class="notPreview"
-                   ngSrc="assets/svg/user-{{isActive('/profile') ? 'select': 'deselect'}}.svg"
+                   src="assets/svg/user-{{isActive('/profile') ? 'select': 'deselect'}}.svg"
                    alt="" height="24" width="24" />
               <span
                 class="flex-1 ms-3 text-left font-semibold rtl:text-right whitespace-nowrap"
@@ -183,7 +183,7 @@
   <div class="fixed bottom-0 mr-0 border-app-bg border-r">
     <div class="p-4 flex items-center justify-center w-[19rem] bg-[#FAFEFF]">
       <div class="flex flex-col items-center  space-y-3">
-        <img loading="lazy" class="w-2/3" height="18" width="101" ngSrc="assets/svg/ecoflit.svg" alt="ecoflit" >
+        <img loading="lazy" class="w-2/3" height="18" width="101" src="assets/svg/ecoflit.svg" alt="ecoflit" >
         <span class="text-[.75rem] text-secondary">© SNZ Technologies Limited {{ currentYear }}</span>
       </div>
     </div>

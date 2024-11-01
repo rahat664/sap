@@ -17,7 +17,7 @@
       <div class="w-full flex flex-col space-y-2">
         <div class="border-b-2 bg-white rounded-lg border-input px-6 py-5 flex flex-col space-y-3">
           <div class="flex space-x-4 items-center text-not-black">
-            <img class="h-8 w-8" loading="lazy" ngngSrc="assets/svg/driver-info.svg" alt="" />
+            <img class="h-8 w-8" loading="lazy" src="assets/svg/driver-info.svg" alt="" />
             <span class="text-h3 leading-h3 text-not-black font-semibold">Driver Info</span>
           </div>
           <div class="grid">
@@ -63,16 +63,16 @@
         </div>
         <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
           <div class="flex space-x-4 items-center">
-            <img ngngSrc="assets/svg/truckDocument.svg" class="notPreview" alt="truck document">
+            <img src="assets/svg/truckDocument.svg" class="notPreview" alt="truck document">
             <span class="text-not-black text-h3 leading-h3 font-semibold">Document</span>
           </div>
           <div class="flex flex-col space-y-1">
             <ng-container *ngFor="let option of driverFileType; index as i">
               <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
                 <div class="flex space-x-4 items-center">
-                  <img ngngSrc="assets/svg/not-available.svg" class="notPreview" alt=""
+                  <img src="assets/svg/not-available.svg" class="notPreview" alt=""
                        *ngIf="getFileArray(option?.formControlName)?.length <= 0 || (option.expiryAvailable == true && driverAddForm.get(option?.expiryFormControlName)?.value == null)">
-                  <img ngngSrc="assets/svg/available.svg" alt="" class="notPreview"
+                  <img src="assets/svg/available.svg" alt="" class="notPreview"
                        *ngIf="getFileArray(option?.formControlName).length > 0 &&  (option.expiryAvailable == false || driverAddForm.get(option?.expiryFormControlName).value != null)">
                   <div class="flex flex-col space-y-0.5">
                     <span

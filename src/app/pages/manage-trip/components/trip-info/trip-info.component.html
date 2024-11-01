@@ -37,7 +37,7 @@
       <div class="flex flex-col space-y-3 w-full items-center justify-center"
            *ngFor="let timeline of tripTimeline; index as i">
         <img loading="lazy" class="notPreview {{timeline.truckInThisPoint ? '': 'invisible'}}"
-             ngngSrc="assets/svg/truckImg.svg"
+             src="assets/svg/truckImg.svg"
              alt="truckImg">
         <div class="relative w-full h-4 flex items-center justify-center">
           <div [hidden]="tripDetails.status === 'Cancelled' && tripDetails.tripEvents.length < i+2"
@@ -63,14 +63,14 @@
     <div class="flex flex-col w-1/2 space-y-3">
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6" ngngSrc="assets/svg/loading.svg">
+          <img loading="lazy" class="w-6 h-6" src="assets/svg/loading.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">Loading Point</h1>
         </div>
         <div class="ml-2 flex flex-col space-y-4">
           <ng-container *ngFor="let point of getLoadingPoint(tripDetails.tripPoints)">
             <div class="step">
               <div class="circle">
-                <img ngngSrc="assets/svg/circle.svg" alt="loading">
+                <img src="assets/svg/circle.svg" alt="loading">
               </div>
               <div class="flex items-center justify-between text-body text-not-black"><p class="w-full">
                 {{ point.pointName }}
@@ -82,14 +82,14 @@
       </div>
       <div class="flex flex-col  space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6" ngngSrc="assets/svg/locinfo.svg">
+          <img loading="lazy" class="w-6 h-6" src="assets/svg/locinfo.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">Unloading Point</h1>
         </div>
         <div class="ml-2 flex flex-col space-y-4">
           <ng-container *ngFor="let point of getUnloadingPoint(tripDetails.tripPoints)">
             <div class="step">
               <div class="circle">
-                <img ngngSrc="assets/svg/circle.svg" alt="loading">
+                <img src="assets/svg/circle.svg" alt="loading">
               </div>
               <div class="flex items-center justify-between text-body text-not-black"><p class="w-full">
                 {{ point.pointName }}
@@ -101,7 +101,7 @@
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6" ngngSrc="assets/svg/truckinfo.svg">
+          <img loading="lazy" class="w-6 h-6" src="assets/svg/truckinfo.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">Truck</h1>
         </div>
         <h1 class="text-body  text-wrap text-web-text-secondary">{{ tripDetails.vehicleCategory.name }}
@@ -110,14 +110,14 @@
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6" ngSrc="assets/svg/goodsinfo.svg">
+          <img loading="lazy" class="w-6 h-6" src="assets/svg/goodsinfo.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">Goods</h1>
         </div>
         <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.good.name }}</h1>
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="notPreview h-6 w-6" ngSrc="assets/svg/cr.svg">
+          <img loading="lazy" class="notPreview h-6 w-6" src="assets/svg/cr.svg">
           <h1
             class="text-body_title leading-body_title text-not-black font-semibold">{{ isAdmin() ? 'Customer Rate' : 'Trip Rate' }}</h1>
         </div>
@@ -128,7 +128,7 @@
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="notPreview h-6 w-6" ngSrc="assets/svg/cgm.svg">
+          <img loading="lazy" class="notPreview h-6 w-6" src="assets/svg/cgm.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">CGM</h1>
         </div>
         <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.createdByName }} <span
@@ -176,7 +176,7 @@
     <div class="flex flex-col items-end w-1/2 flex-1 space-y-3">
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" ngSrc="assets/svg/additional.svg">
+          <img loading="lazy" src="assets/svg/additional.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">Additional Instruction</h1>
         </div>
         <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.note }}</h1>

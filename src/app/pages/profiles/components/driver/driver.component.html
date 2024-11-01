@@ -10,7 +10,7 @@
         <div class="relative">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <img ngngSrc="assets/svg/search.svg" class="notPreview" alt="search">
+            <img src="assets/svg/search.svg" class="notPreview" alt="search">
           </div>
           <button (click)="onClickClear()" *ngIf="searchValue"
                   class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -223,7 +223,7 @@
                 <div class="flex  space-x-2 items-center">
                   <img
                     class="notPreview"
-                    ngngSrc="./assets/svg/edit.svg"
+                    src="./assets/svg/edit.svg"
                     alt="" />
                   <span>Edit</span>
                 </div>
@@ -239,7 +239,7 @@
         <tr *ngIf="driverList?.length === 0">
           <td class="text-center" colspan="7">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
-              <img loading="lazy" ngngSrc="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
               <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
             </div>
           </td>

@@ -7,7 +7,7 @@
           (click)="onClickLogo()"
           class="cursor-pointer text-xl font-bold  h-16 object-center object-cover flex items-center lg:justify-center  py-2">
           <img
-            ngngSrc="assets/logo/shamolima.png"
+            src="assets/logo/shamolima.png"
             class="notPreview cursor-pointer"
             alt="Shamolima Logo" />
         </a>
@@ -18,7 +18,7 @@
           aria-expanded="true"
           aria-controls="sidebar"
         >
-          <img ngngSrc="assets/svg/bar.svg" class="notPreview cursor-pointer" alt="bar">
+          <img src="assets/svg/bar.svg" class="notPreview cursor-pointer" alt="bar">
         </button>
       </div>
       <div class="flex items-center space-x-3 justify-end w-full mr-2">
@@ -34,7 +34,7 @@
         </button>
         <button matTooltip="Logout" (click)="onClickLogOut()"
                 class="lg:hidden text-gray-500 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-lg">
-          <img loading="lazy" class="notPreview" ngngSrc="assets/svg/logout.svg" alt="logout">
+          <img loading="lazy" class="notPreview" src="assets/svg/logout.svg" alt="logout">
         </button>
 
         <button class="flex items-center" [matMenuTriggerFor]="menu" (click)="isProfileOpened = !isProfileOpened">
@@ -64,7 +64,7 @@
             <div class="flex space-x-2 items-center">
               <img
                 class="notPreview"
-                ngngSrc="./assets/svg/user-inactive.svg"
+                src="./assets/svg/user-inactive.svg"
                 alt="" />
               <span>Logout</span>
             </div>
