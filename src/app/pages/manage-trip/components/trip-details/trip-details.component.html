@@ -3,23 +3,23 @@
     <h1 class="text-h2 leading-h2 font-semibold text-not-black">{{ tripDetails?.tripId }}</h1>
     <div class="flex space-x-4">
       <button (click)="onCLickMinimize()">
-        <img loading="lazy" class="notPreview" src="assets/svg/minimize.svg" alt="minimize">
+        <img loading="lazy" class="notPreview" ngSrc="assets/svg/minimize.svg" alt="minimize">
       </button>
       <button *ngIf="!expanded || minimized" (click)="onClickExpand()">
-        <img loading="lazy" class="notPreview" src="assets/svg/unfold.svg" alt="unfold">
+        <img loading="lazy" class="notPreview" ngSrc="assets/svg/unfold.svg" alt="unfold">
       </button>
       <button *ngIf="expanded" (click)="onClickFold()">
-        <img loading="lazy" class="notPreview" src="assets/svg/fold.svg" alt="unfold">
+        <img loading="lazy" class="notPreview" ngSrc="assets/svg/fold.svg" alt="unfold">
       </button>
       <button [matMenuTriggerFor]="menu" *ngIf="tripDetails.status != 'Completed' && tripDetails.status != 'Cancelled'">
-        <img loading="lazy" class="notPreview" src="assets/svg/eclipse.svg" alt="ellipsis">
+        <img loading="lazy" class="notPreview" ngSrc="assets/svg/eclipse.svg" alt="ellipsis">
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="onClickTripUpdate(tripDetails)">
           <div class="flex space-x-2 items-center">
             <img
               class="notPreview"
-              src="./assets/svg/edit.svg"
+              ngSrc="./assets/svg/edit.svg"
               alt="" />
             <span>Edit</span>
           </div>
@@ -66,7 +66,7 @@
         <div class="flex flex-col space-y-3 w-full items-center justify-center"
              *ngFor="let timeline of tripTimeline; index as i">
           <img loading="lazy" class="notPreview {{timeline.truckInThisPoint ? '': 'invisible'}}"
-               src="assets/svg/truckImg.svg"
+               ngSrc="assets/svg/truckImg.svg"
                alt="truckImg">
           <div class="relative w-full h-4 flex items-center justify-center">
             <div [hidden]="tripDetails.status === 'Cancelled' && tripDetails.tripEvents.length < i+2"

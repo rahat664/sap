@@ -1,7 +1,7 @@
 <div class="px-4 py-5 flex flex-col space-y-4 {{backgroundColor}} bg-opacity-[5%] rounded-lg">
   <div class="flex space-x-[0.625rem] items-center">
     <div>
-      <img src="assets/svg/{{icon}}.svg" alt="" class="notPreview w-[2.5rem] h-[2.5rem]">
+      <img ngSrc="assets/svg/{{icon}}.svg" alt="" class="notPreview w-[2.5rem] h-[2.5rem]" fill>
     </div>
     <div class="flex flex-col flex-1 space-y-1">
       <span class="text-h3 leading-h3 text-not-black font-semibold">{{ value ? (value |number) : 0 }}<span

@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { DecimalPipe, NgIf } from '@angular/common';
+import { DecimalPipe, NgIf, NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-status-card',
   standalone: true,
-  imports: [DecimalPipe, NgIf],
+  imports: [DecimalPipe, NgIf, NgOptimizedImage],
   templateUrl: './status-card.component.html',
   styleUrl: './status-card.component.scss',
 })

@@ -4,7 +4,7 @@ import { CustomInputComponent } from '../../../../shared/modules/custom-input/cu
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
 import { TruckService } from './services/truck.service';
@@ -55,6 +55,7 @@ import { PreHireChecklistPopupComponent } from './pre-hire-checklist-popup/pre-h
     NgClass,
     MatMenuItem,
     MatButton,
+    NgOptimizedImage,
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss',
@@ -226,18 +227,21 @@ export class TruckComponent implements OnInit {
     localStorage.removeItem('truck');
     localStorage.setItem('truck', JSON.stringify(truck));
     this.service.getPreHireChecklist(truck.id).subscribe((res: any) => {
-      this.dialog.open(PreHireChecklistPopupComponent, {
-        width: '40%',
-        data: {
-          checklist: res.data,
-          truck: truck,
-          checked: res.data.filter((x: any) => x.status === 'PASS').length,
-        },
-      }).afterClosed().subscribe((res: any) => {
-        if (res) {
-          this.editPreHireChecklist(res);
-        }
-      });
+      this.dialog
+        .open(PreHireChecklistPopupComponent, {
+          width: '40%',
+          data: {
+            checklist: res.data,
+            truck: truck,
+            checked: res.data.filter((x: any) => x.status === 'PASS').length,
+          },
+        })
+        .afterClosed()
+        .subscribe((res: any) => {
+          if (res) {
+            this.editPreHireChecklist(res);
+          }
+        });
     });
   }
 
@@ -440,6 +444,5 @@ export class TruckComponent implements OnInit {
       }
     );
   }
-  protected readonly JSON = JSON;
   protected readonly localStorage = localStorage;
 }

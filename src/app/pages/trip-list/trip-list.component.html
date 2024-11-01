@@ -96,7 +96,7 @@
           </h1>
           <div
             class="flex items-center space-x-3 text-web-text-secondary text-body_title  leading-body_title font-semibold">
-            <img src="assets/svg/trip-fare.svg" class="notPreview" alt="">
+            <img ngSrc="assets/svg/trip-fare.svg" class="notPreview" alt="">
             <span>Total trip fare for {{ summary.trips }} {{ summary.trips > 1 ? 'trips' : 'trip' }}</span>
           </div>
         </div>
@@ -228,7 +228,7 @@
         <tr *ngIf="tripList?.length === 0">
           <td class="text-center" [colSpan]="isAdmin() ? 9: 6">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
-              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <img loading="lazy" ngSrc="assets/svg/no-data.svg" class="notPreview" alt="nodata">
               <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
             </div>
           </td>
