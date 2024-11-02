@@ -13,7 +13,9 @@ import { MatInput } from '@angular/material/input';
 import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
 import { ChallanDashboardService } from './challan-dashboard.service';
 import { TripService } from '../trip-list/services/trip.service';
-import { Trip } from '../auth/models/response/trip';
+import { Trip, Truck } from '../auth/models/response/trip';
+import { MatButton } from '@angular/material/button';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -38,6 +40,10 @@ import { Trip } from '../auth/models/response/trip';
     ScrollByButtonDirective,
     NgClass,
     NgOptimizedImage,
+    MatButton,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
@@ -67,6 +73,9 @@ export class ChallanDashboardComponent {
   protected totalPages: any = 0;
   private anotherStatusCalled: boolean;
   activatedChallanStatus: string = 'Pending';
+  chalanStatus: string;
+  status: string;
+  challanHardCopyReceived: boolean;
 
   constructor(
     private datePipe: DatePipe,
@@ -76,6 +85,9 @@ export class ChallanDashboardComponent {
   ) {}
 
   ngOnInit() {
+    this.activatedChallanStatus = 'Pending';
+    this.chalanStatus = 'Pending';
+    this.status = 'Completed';
     this.getFromDateAndToDate();
     this.getChallanStatus();
     this.getTripList();
@@ -120,10 +132,12 @@ export class ChallanDashboardComponent {
         null,
         null,
         null,
-        'Completed',
+        this.status,
         null,
         null,
-        null
+        null,
+        this.chalanStatus,
+        this.challanHardCopyReceived
       )
       .subscribe(
         (trip: any) => {
@@ -171,6 +185,51 @@ export class ChallanDashboardComponent {
     return trip.customerRate && trip.transporterRate
       ? trip.customerRate - trip.transporterRate
       : 'N/A';
+  }
+
+  onClickStatusButtons(status: any) {
+    this.activatedChallanStatus = status;
+    this.chalanStatus = status;
+    if (status === 'Completed') {
+      this.status = 'Completed';
+      this.chalanStatus = null;
+    } else if (status === 'hardcopy') {
+      this.chalanStatus = null;
+      this.challanHardCopyReceived = true;
+    }
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.tripList = [];
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  changeStatus(id, name, status: string) {
+
+  }
+
+  getFullRegistrationNumber(truck: Truck) {
+    if (truck) {
+      return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial}-${truck.registrationNum}`;
+    } else {
+      return 'truck not found';
+    }
+  }
+
+  getBgColor(challanStatus: string) {
+    switch (challanStatus) {
+      case 'Pending':
+        return 'bg-another';
+      case 'Approved':
+        return 'bg-green';
+      case 'Rejected':
+        return 'bg-red';
+      case 'In-Progress':
+        return 'bg-yellow';
+      default:
+        return 'bg-another';
+    }
   }
 }
 
