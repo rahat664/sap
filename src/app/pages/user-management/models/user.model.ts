@@ -51,4 +51,7 @@ export class UserModel {
   status: string;
   approveStatus: string;
   rejectedReason: string;
+  grossProfit: number;
+  numberOfTrips: number;
+  rank: number;
 }
