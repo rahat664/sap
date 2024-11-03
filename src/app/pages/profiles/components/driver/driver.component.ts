@@ -327,6 +327,7 @@ export class DriverComponent implements OnInit {
           title: 'Attention',
           textPrefix: 'the driver ',
           text: ` ${driver.name} (${driver.phone})?`,
+          reasonAvailable: true,
           buttonText: 'Reject',
         },
       })

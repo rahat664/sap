@@ -50,7 +50,9 @@ export class TripService {
     status?: string,
     tripId?: string,
     truckType?: string,
-    onlyTripId?: string
+    onlyTripId?: string,
+    chalanStatus?: string,
+    challanHardCopyReceived?: boolean
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -76,6 +78,10 @@ export class TripService {
     }
     if (onlyTripId) {
       params = params.set('tripId', onlyTripId);
+    } if (chalanStatus) {
+      params = params.set('chalanStatus', chalanStatus);
+    } if (challanHardCopyReceived) {
+      params = params.set('challanHardCopyReceived', challanHardCopyReceived.toString());
     }
 
     return this.http.get(`${this.url}`, { params });

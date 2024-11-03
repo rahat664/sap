@@ -6,7 +6,7 @@ import {
 } from '@angular/material/autocomplete';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { MyErrorStateMatcher } from '../template-create/template-create.component';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TripService } from '../../services/trip.service';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
@@ -102,29 +102,8 @@ export class TripUpdateComponent {
               customerRate: this.tripUpdateForm.get('customerRate').value,
               note: this.tripUpdateForm.get('note').value,
               points: [
-                {
-                  pointDistrict: this.tripUpdateForm.get('loadingPointDistrict')
-                    .value,
-                  pointName: this.tripUpdateForm.get('loadingPointName').value,
-                  pointLat: this.tripUpdateForm.get('loadingPointLatitude')
-                    .value,
-                  pointLon: this.tripUpdateForm.get('loadingPointLongitude')
-                    .value,
-                  pointType: 'Loading',
-                },
-                {
-                  pointDistrict: this.tripUpdateForm.get(
-                    'unloadingPointDistrict'
-                  ).value,
-                  pointName:
-                    this.tripUpdateForm.get('unloadingPointName').value,
-                  pointLat: this.tripUpdateForm.get('unloadingPointLatitude')
-                    .value,
-                  pointLon: this.tripUpdateForm.get('unloadingPointLongitude')
-                    .value,
-
-                  pointType: 'Unloading',
-                },
+                ...this.tripUpdateForm.get('loadingPoints').value,
+                ...this.tripUpdateForm.get('unloadingPoints').value,
               ],
               transporterCode: this.tripUpdateForm.get('transporterCode').value,
               transporterName: this.tripUpdateForm.get('transporterName').value,
@@ -381,14 +360,8 @@ export class TripUpdateComponent {
       goodsName: [''],
       customerRate: [null],
       note: [''],
-      loadingPointDistrict: [''],
-      loadingPointName: [''],
-      unloadingPointDistrict: [''],
-      unloadingPointName: [''],
-      loadingPointLatitude: [''],
-      loadingPointLongitude: [''],
-      unloadingPointLatitude: [''],
-      unloadingPointLongitude: [''],
+      loadingPoints: this.fb.array([this.createLoadingPoint()]),
+      unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
       transporterCode: [''],
       transporterName: [''],
       transporterPhone: [''],
@@ -407,7 +380,53 @@ export class TripUpdateComponent {
     });
   }
 
-  onKeyUpLoadingPoint($event: KeyboardEvent) {
+  private createLoadingPoint() {
+    return this.fb.group({
+      id: [''],
+      pointDistrict: ['', Validators.required],
+      pointName: ['', Validators.required],
+      pointLat: ['', Validators.required],
+      pointLon: ['', Validators.required],
+      pointType: ['Loading'],
+    });
+  }
+
+  private createUnloadingPoint() {
+    return this.fb.group({
+      id: [''],
+      pointDistrict: ['', Validators.required],
+      pointName: ['', Validators.required],
+      pointLat: ['', Validators.required],
+      pointLon: ['', Validators.required],
+      pointType: ['Unloading'],
+    });
+  }
+
+  addLoadingPoint() {
+    this.loadingPoints.push(this.createLoadingPoint());
+  }
+
+  get loadingPoints() {
+    return this.tripUpdateForm.get('loadingPoints') as FormArray;
+  }
+
+  addUnloadingPoint() {
+    this.unloadingPoints.push(this.createUnloadingPoint());
+  }
+
+  get unloadingPoints() {
+    return this.tripUpdateForm.get('unloadingPoints') as FormArray;
+  }
+
+  removeLoadingPoint(index: number) {
+    this.loadingPoints.removeAt(index);
+  }
+
+  removeUnloadingPoint(index: number) {
+    this.unloadingPoints.removeAt(index);
+  }
+
+  onKeyUpLoadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.service
@@ -417,10 +436,11 @@ export class TripUpdateComponent {
         });
     } else {
       this.loadingSuggestions = [];
-      this.tripUpdateForm.get('loadingPointDistrict').enable();
-      this.tripUpdateForm.get('loadingPointDistrict').setValue('');
-      this.tripUpdateForm.get('loadingPointLatitude').setValue('');
-      this.tripUpdateForm.get('loadingPointLongitude').setValue('');
+
+      this.loadingPoints?.controls[i]?.get('pointDistrict').enable();
+      this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
+      this.loadingPoints?.controls[i]?.get('pointLat').setValue('');
+      this.loadingPoints?.controls[i]?.get('pointLon').setValue('');
     }
   }
 
@@ -433,91 +453,104 @@ export class TripUpdateComponent {
     }
   }
 
-  onClickLoadingSuggestion(option: any) {
-    option.locationPointName
-      ? this.tripUpdateForm
-          .get('loadingPointName')
-          .setValue(option.locationPointName)
-      : this.tripUpdateForm
-          .get('loadingPointName')
-          .setValue(option.addressText);
+  onClickLoadingSuggestion(option: any, i: number) {
+    // update above functionality with form array
+    option?.locationPointName
+      ? this.loadingPoints?.controls[i]
+        ?.get('pointName')
+        .setValue(option.locationPointName)
+      : this.loadingPoints?.controls[i]
+        ?.get('pointName')
+        .setValue(option.addressText);
     if (option.district) {
-      this.tripUpdateForm.get('loadingPointDistrict').setValue(option.district);
-      this.tripUpdateForm.get('loadingPointDistrict').disable();
+      this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
+      this.loadingPoints?.controls[i]
+        ?.get('pointDistrict')
+        .setValue(option.district);
     } else {
-      for (let i = 0; i < this.district.length; i++) {
-        if (option.addressText.includes(this.district[i].name)) {
-          this.tripUpdateForm
-            .get('loadingPointDistrict')
-            .setValue(this.district[i].name);
-          this.tripUpdateForm.get('loadingPointDistrict').disable();
+      for (
+        let singleDistrict = 0;
+        singleDistrict < this.district.length;
+        singleDistrict++
+      ) {
+        console.log(option.addressText);
+        if (option.addressText.includes(this.district[singleDistrict].name)) {
+          this.loadingPoints?.controls[i]
+            ?.get('pointDistrict')
+            .setValue(this.district[singleDistrict].name);
           break;
         } else {
-          this.tripUpdateForm.get('loadingPointDistrict').enable();
+          this.loadingPoints?.controls[i]?.get('pointDistrict').enable();
         }
       }
     }
 
     if (option.latitude > 0 && option.longitude > 0) {
-      this.tripUpdateForm.get('loadingPointLatitude').setValue(option.latitude);
-      this.tripUpdateForm
-        .get('loadingPointLongitude')
+      this.loadingPoints?.controls[i]
+        ?.get('pointLat')
+        .setValue(option.latitude);
+      this.loadingPoints?.controls[i]
+        ?.get('pointLon')
         .setValue(option.longitude);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         const lat = res.location.latitude;
         const lng = res.location.longitude;
-        this.tripUpdateForm.get('loadingPointLatitude').setValue(lat);
-        this.tripUpdateForm.get('loadingPointLongitude').setValue(lng);
+        this.loadingPoints?.controls[i]?.get('pointLat').setValue(lat);
+        this.loadingPoints?.controls[i]?.get('pointLon').setValue(lng);
       });
     }
     this.loadingSuggestions = [];
   }
 
-  onClickUnloadingSuggestion(option: any) {
-    this.tripUpdateForm
-      .get('unloadingPointName')
+  onClickUnloadingSuggestion(option: any, i: number) {
+    this.unloadingPoints?.controls[i]
+      ?.get('pointName')
       .setValue(
         option.locationPointName ? option.locationPointName : option.addressText
       );
     if (option.district) {
-      this.tripUpdateForm.get('unloadingPointDistrict').setValue('');
-      this.tripUpdateForm
-        .get('unloadingPointDistrict')
+      this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue('');
+      this.unloadingPoints?.controls[i]
+        ?.get('pointDistrict')
         .setValue(option.district);
     } else {
-      for (let i = 0; i < this.district.length; i++) {
-        if (option.addressText.includes(this.district[i].name)) {
-          this.tripUpdateForm
-            .get('unloadingPointDistrict')
-            .setValue(this.district[i].name);
+      for (
+        let singleDistrict = 0;
+        singleDistrict < this.district.length;
+        singleDistrict++
+      ) {
+        if (option.addressText.includes(this.district[singleDistrict].name)) {
+          this.unloadingPoints?.controls[i]
+            ?.get('pointDistrict')
+            .setValue(this.district[singleDistrict].name);
           break;
         } else {
-          this.tripUpdateForm.get('unloadingPointDistrict').enable();
+          this.unloadingPoints?.controls[i]?.get('pointDistrict').enable();
         }
       }
     }
     if (option.latitude > 0 && option.longitude > 0) {
-      this.tripUpdateForm
-        .get('unloadingPointLatitude')
+      this.unloadingPoints?.controls[i]
+        ?.get('pointLat')
         .setValue(option.latitude);
-      this.tripUpdateForm
-        .get('unloadingPointLongitude')
+      this.unloadingPoints?.controls[i]
+        ?.get('pointLon')
         .setValue(option.longitude);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
-        this.tripUpdateForm
-          .get('unloadingPointLatitude')
+        this.unloadingPoints?.controls[i]
+          ?.get('pointLat')
           .setValue(res?.location?.latitude);
-        this.tripUpdateForm
-          .get('unloadingPointLongitude')
+        this.unloadingPoints?.controls[i]
+          ?.get('pointLon')
           .setValue(res?.location?.longitude);
       });
     }
     this.unloadingSuggestions = [];
   }
 
-  onKeyUpUnloadingPoint($event: KeyboardEvent) {
+  onKeyUpUnloadingPoint($event: KeyboardEvent, i:number) {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.service
@@ -527,14 +560,15 @@ export class TripUpdateComponent {
         });
     } else {
       this.unloadingSuggestions = [];
-      this.tripUpdateForm.get('unloadingPointDistrict').enable();
-      this.tripUpdateForm.get('unloadingPointDistrict').setValue('');
-      this.tripUpdateForm.get('unloadingPointLatitude').setValue('');
-      this.tripUpdateForm.get('unloadingPointLongitude').setValue('');
+
+      this.unloadingPoints?.controls[i]?.get('pointDistrict').enable();
+      this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue('');
+      this.unloadingPoints?.controls[i]?.get('pointLat').setValue('');
+      this.unloadingPoints?.controls[i]?.get('pointLon').setValue('');
     }
   }
 
-  onKeyUpLoadingDistrict($event: KeyboardEvent) {
+  onKeyUpLoadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
@@ -546,31 +580,32 @@ export class TripUpdateComponent {
     }
   }
 
-  onSelectLoadingDistrict(option: any) {
-    this.tripUpdateForm.get('loadingPointDistrict').setValue(option.name);
+
+  onSelectLoadingDistrict(option: any, i: number) {
+    this.loadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
     if (
-      this.tripUpdateForm.get('loadingPointLatitude').value === '' ||
-      this.tripUpdateForm.get('loadingPointLongitude').value === ''
+      this.loadingPoints?.controls[i]?.get('pointLat').value === '' ||
+      this.loadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.tripUpdateForm
-        .get('loadingPointLatitude')
+      this.loadingPoints?.controls[i]
+        ?.get('pointLat')
         .setValue(
-          this.tripUpdateForm.get('loadingPointLatitude').value
-            ? this.tripUpdateForm.get('loadingPointLatitude').value
+          this.loadingPoints?.controls[i]?.get('pointLat').value
+            ? this.loadingPoints?.controls[i]?.get('pointLat').value
             : option.lat
         );
-      this.tripUpdateForm
-        .get('loadingPointLongitude')
+      this.loadingPoints?.controls[i]
+        ?.get('pointLon')
         .setValue(
-          this.tripUpdateForm.get('loadingPointLongitude').value
-            ? this.tripUpdateForm.get('loadingPointLongitude').value
+          this.loadingPoints?.controls[i]?.get('pointLon').value
+            ? this.loadingPoints?.controls[i]?.get('pointLon').value
             : option.lon
         );
     }
     this.loadingDistrictSuggestions = [];
   }
 
-  onKeyUpUnloadingDistrict($event: KeyboardEvent) {
+  onKeyUpUnloadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
@@ -582,29 +617,29 @@ export class TripUpdateComponent {
     }
   }
 
-  onSelectUnloadingDistrict(option: any) {
-    this.tripUpdateForm.get('unloadingPointDistrict').setValue(option.name);
+
+  onSelectUnloadingDistrict(option: any, i: number) {
+    this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
     if (
-      this.tripUpdateForm.get('unloadingPointLatitude').value === '' ||
-      this.tripUpdateForm.get('unloadingPointLongitude').value === ''
+      this.unloadingPoints?.controls[i]?.get('pointLat').value === '' ||
+      this.unloadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.tripUpdateForm
-        .get('unloadingPointLatitude')
+      this.unloadingPoints?.controls[i]
         .setValue(
-          this.tripUpdateForm.get('unloadingPointLatitude').value
-            ? this.tripUpdateForm.get('unloadingPointLatitude').value
+          this.unloadingPoints?.controls[i]?.get('pointLat').value
+            ? this.unloadingPoints?.controls[i]?.get('pointLat').value
             : option.lat
         );
-      this.tripUpdateForm
-        .get('unloadingPointLongitude')
+      this.unloadingPoints?.controls[i]
         .setValue(
-          this.tripUpdateForm.get('unloadingPointLongitude').value
-            ? this.tripUpdateForm.get('unloadingPointLongitude').value
+          this.unloadingPoints?.controls[i]?.get('pointLon').value
+            ? this.unloadingPoints?.controls[i]?.get('pointLon').value
             : option.lon
         );
     }
     this.unloadingDistrictSuggestions = [];
   }
+
 
   onClickGoodsSuggestion(option: CustomInputSelectModel) {
     this.tripUpdateForm.get('goodsId').setValue(option.id);
@@ -785,6 +820,7 @@ export class TripUpdateComponent {
 
   private getValueFromTripDetails() {
     const tripData = JSON.parse(localStorage.getItem('updateTripDetails'));
+    console.log(tripData)
     if (tripData) {
       this.tripUpdateForm
         .get('categoryId')
@@ -794,34 +830,10 @@ export class TripUpdateComponent {
       this.tripUpdateForm
         .get('truckCapacityInTon')
         .setValue(tripData.truckCapacityInTon);
-      this.tripUpdateForm.get('goodsId').setValue(tripData.good.id);
-      this.tripUpdateForm.get('goodsName').setValue(tripData.good.name);
+      this.tripUpdateForm.get('goodsId').setValue(tripData.good?.id);
+      this.tripUpdateForm.get('goodsName').setValue(tripData.good?.name);
       this.tripUpdateForm.get('customerRate').setValue(tripData.customerRate);
       this.tripUpdateForm.get('note').setValue(tripData.note);
-      this.tripUpdateForm
-        .get('loadingPointDistrict')
-        .setValue(tripData.tripPoints[0].pointDistrict);
-      this.tripUpdateForm
-        .get('loadingPointName')
-        .setValue(tripData.tripPoints[0].pointName);
-      this.tripUpdateForm
-        .get('loadingPointLatitude')
-        .setValue(tripData.tripPoints[0].pointLat);
-      this.tripUpdateForm
-        .get('loadingPointLongitude')
-        .setValue(tripData.tripPoints[0].pointLon);
-      this.tripUpdateForm
-        .get('unloadingPointDistrict')
-        .setValue(tripData.tripPoints[1].pointDistrict);
-      this.tripUpdateForm
-        .get('unloadingPointName')
-        .setValue(tripData.tripPoints[1].pointName);
-      this.tripUpdateForm
-        .get('unloadingPointLatitude')
-        .setValue(tripData.tripPoints[1].pointLat);
-      this.tripUpdateForm
-        .get('unloadingPointLongitude')
-        .setValue(tripData.tripPoints[1].pointLon);
       this.tripUpdateForm
         .get('transporterName')
         .setValue(tripData.transporterName);
@@ -840,7 +852,7 @@ export class TripUpdateComponent {
       this.tripUpdateForm.get('helperCode').setValue(tripData.helperCode);
       this.tripUpdateForm.get('helperName').setValue(tripData.helperName);
       this.tripUpdateForm.get('helperPhone').setValue(tripData.helperPhone);
-      this.tripUpdateForm.get('truckId').setValue(tripData.truck.id);
+      this.tripUpdateForm.get('truckId').setValue(tripData.truck?.id);
       this.tripUpdateForm
         .get('registrationZone')
         .setValue(tripData.truck?.registrationZone);
@@ -853,6 +865,37 @@ export class TripUpdateComponent {
       this.tripUpdateForm
         .get('registrationNumber')
         .setValue(tripData.truck?.registrationNum);
+
+      const loadingPoints = tripData.tripPoints.filter(
+        (point: any) => point.pointType === 'Loading'
+      );
+      const unloadingPoints = tripData.tripPoints.filter(
+        (point: any) => point.pointType === 'Unloading'
+      );
+      loadingPoints?.forEach((point: any, index: number) => {
+        if (index > 0) {
+          this.addLoadingPoint();
+        }
+        if (point.id !== null && point.id !== undefined && point.id !== '') {
+          this.loadingPoints.controls[index].get('id').setValue(point.id);
+        }
+        this.loadingPoints.controls[index].get('pointDistrict').setValue(point.pointDistrict);
+        this.loadingPoints.controls[index].get('pointName').setValue(point.pointName);
+        this.loadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
+        this.loadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+      });
+      unloadingPoints?.forEach((point: any, index: number) => {
+        if (index > 0) {
+          this.addUnloadingPoint();
+        }
+        if (point.id !== null && point.id !== undefined && point.id !== '') {
+          this.unloadingPoints.controls[index].get('id').setValue(point.id);
+        }
+        this.unloadingPoints.controls[index].get('pointDistrict').setValue(point.pointDistrict);
+        this.unloadingPoints.controls[index].get('pointName').setValue(point.pointName);
+        this.unloadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
+        this.unloadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+      });
     }
   }
 

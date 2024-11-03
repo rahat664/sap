@@ -1,6 +1,6 @@
 import { Component, inject, Input } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { TripData } from '../../model/trip.details.model';
+import { TripData, TripPoint } from '../../model/trip.details.model';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { DialogDataComponent } from '../dialog-data/dialog-data.component';
 import { ConfirmUpdateComponent } from '../confirm-update/confirm-update.component';
@@ -135,5 +135,13 @@ export class TripInfoComponent {
   copyNumber($event, createdByPhone: string) {
     $event.stopPropagation();
     this.trip.copyToClipboard(createdByPhone);
+  }
+
+  getLoadingPoint(tripPoints: TripPoint[]) {
+    return tripPoints.filter((point) => point.pointType === 'Loading');
+  }
+
+  getUnloadingPoint(tripPoints: TripPoint[]) {
+    return tripPoints.filter((point) => point.pointType === 'Unloading');
   }
 }

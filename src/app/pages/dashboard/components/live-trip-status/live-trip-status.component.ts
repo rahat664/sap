@@ -23,16 +23,8 @@ import { NgForOf } from '@angular/common';
   styleUrl: './live-trip-status.component.scss',
 })
 export class LiveTripStatusComponent {
-  startingPosition: any = {
-    // dhaka coordinates
-    lat: 23.8103,
-    lng: 90.4125,
-  };
-  destinationPosition: any = {
-    // rangpur coordinates
-    lat: 23.8103,
-    lng: 90.4125,
-  };
+  startingPosition: any[] = []
+  destinationPosition: any[] = []
   tripStatus: string = 'In Progress';
   tripStatuses: { count: unknown; status: string }[];
 
@@ -44,14 +36,21 @@ export class LiveTripStatusComponent {
 
   private getTripList() {
     this.service.getTrips(0, 200).subscribe(res => {
-      this.startingPosition = {
-        lng: res.data.responses[0]?.tripPoints[0]?.pointLon,
-        lat: res.data.responses[0]?.tripPoints[0]?.pointLat,
-      };
-      this.destinationPosition = {
-        lng: res.data.responses[0]?.tripPoints[res.data.responses[0]?.tripPoints.length - 1]?.pointLon,
-        lat: res.data.responses[0]?.tripPoints[res.data.responses[0]?.tripPoints.length - 1]?.pointLat,
-      };
+      this.startingPosition = [];
+      this.destinationPosition = [];
+      res.data?.responses[0]?.tripPoints?.forEach((point: any) => {
+        if (point.pointType === 'Loading') {
+          this.startingPosition.push({
+            lng: point.pointLon,
+            lat: point.pointLat,
+          })
+        } else if (point.pointType === 'Unloading') {
+          this.destinationPosition.push({
+            lng: point.pointLon,
+            lat: point.pointLat,
+          });
+        }
+      });
       this.makeArrayFromThisObject(res.data.statusCount);
     });
   }

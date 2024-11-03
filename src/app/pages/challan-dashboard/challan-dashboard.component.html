@@ -1,0 +1,239 @@
+<div class="p-2 flex flex-col space-y-3">
+  <div
+    appGetElementHeight
+    (height)="height = $event"
+    class="flex flex-col space-y-3">
+    <div
+      class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem]  space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      <h1 class="text-h1 leading-h1 font-semibold">Challan management</h1>
+    </div>
+    <!--  summary section-->
+    <div class="grid grid-cols-10 w-full gap-2 min-h-[10.5rem] ">
+      <div class="col-span-4 w-full bg-white  rounded-lg p-2">
+        <button (click)="onClickStatusButtons('Pending')"
+                [ngClass]="{'border border-[#0005577]' : activatedChallanStatus === 'Pending'}"
+                class="bg-[#005577] h-full w-full flex items-center justify-center rounded-lg bg-opacity-[5%]">
+          <div class="flex space-x-4 items-center">
+            <div>
+              <img src="assets/svg/pending-challan.svg" alt="pending-challan">
+            </div>
+            <div class="flex flex-col text-left space-y-1">
+              <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ pendingChallanAmount | number }} ৳</h1>
+              <p
+                class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ pendingChallanText }}</p>
+            </div>
+          </div>
+        </button>
+      </div>
+      <div class="col-span-4 bg-white w-full rounded-lg p-2">
+        <div class="grid grid-cols-3 gap-1 w-full h-full">
+          <button (click)="onClickStatusButtons('Received')"
+                  [ngClass]="{'border border-link' : activatedChallanStatus === 'Received'}"
+                  class="bg-link col-span-3 flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+            <div class="  flex space-x-4 items-center">
+              <div>
+                <img src="assets/svg/received.svg" alt="received">
+              </div>
+              <div class="flex text-left flex-col">
+                <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ receivedAmount | number }}</h1>
+                <p
+                  class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ receivedText }}</p>
+              </div>
+            </div>
+          </button>
+          <button (click)="onClickStatusButtons('In-progress')"
+                  [ngClass]="{'border border-another' : activatedChallanStatus==='In-progress'}"
+                  class="bg-another flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+            <div class="flex space-x-4 items-center">
+              <div>
+                <img src="assets/svg/in-progress.svg" alt="pending-challan">
+              </div>
+              <div class="flex text-left flex-col space-y-1">
+                <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ pendingAmount | number }}</h1>
+                <p
+                  class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ pendingText }}</p>
+              </div>
+            </div>
+          </button>
+          <button (click)="onClickStatusButtons('Approved')"
+                  [ngClass]="{'border border-green' : activatedChallanStatus === 'Approved'}"
+                  class="bg-green  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+            <div class="flex space-x-4 items-center">
+              <div>
+                <img src="assets/svg/approved.svg" alt="pending-challan">
+              </div>
+              <div class="flex text-left flex-col space-y-1">
+                <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ approvedAmount | number }}</h1>
+                <p
+                  class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ approvedText }}</p>
+              </div>
+            </div>
+          </button>
+          <button (click)="onClickStatusButtons('Rejected')"
+                  [ngClass]="{'border border-red' : activatedChallanStatus === 'Rejected'}"
+                  class="bg-red  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+            <div class="flex space-x-4 items-center">
+              <div>
+                <img src="assets/svg/rejected.svg" alt="pending-challan">
+              </div>
+              <div class="flex text-left flex-col space-y-1">
+                <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ rejectedAmount | number }}</h1>
+                <p
+                  class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ rejectedText }}</p>
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+      <div class="col-span-2 bg-white p-2 rounded-lg">
+        <div class="grid gap-1 w-full h-full">
+          <button (click)="onClickStatusButtons('Completed')"
+                  [ngClass]="{'border border-green' : activatedChallanStatus === 'Completed'}"
+                  class="bg-green  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+            <div class="flex space-x-4 items-center">
+              <div>
+                <img src="assets/svg/completed_trip.svg" alt="pending-challan">
+              </div>
+              <div class="flex text-left flex-col space-y-1">
+                <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ completedTrips | number }}</h1>
+                <p
+                  class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ completedTripsText }}</p>
+              </div>
+            </div>
+          </button>
+          <button (click)="onClickStatusButtons('hardcopy')"
+                  [ngClass]="{'border border-blue' : activatedChallanStatus === 'hardcopy'}"
+                  class="bg-blue  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+            <div class="flex space-x-4 items-center">
+              <div>
+                <img src="assets/svg/hardcopy.svg" alt="pending-challan" height="40" width="40">
+              </div>
+              <div class="flex text-left flex-col space-y-1">
+                <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ hardCopyReceived | number }}</h1>
+                <p
+                  class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ hardCopyReceivedText }}</p>
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    appGiveMaxHeight
+    [totalPage]="totalPages"
+    (inBottomEnd)="onBottom($event)"
+    [anotherItemsHeight]="height"
+    class="bg-white w-full relative rounded-lg  overflow-auto">
+    <table class="table-auto w-full text-body_title leading-body_title rounded-sm">
+      <thead class="bg-white">
+      <tr class="whitespace-nowrap bg-white  text-not-black">
+        <th class="text-left">Trip Number</th>
+        <th class="text-left whitespace-nowrap">Trip Date</th>
+        <th class="text-left" *ngIf="isAdmin()">Company</th>
+        <th class="text-left">Transporter</th>
+        <th class="text-left">Truck number</th>
+        <th class="text-left whitespace-nowrap">Loading point</th>
+        <th class="text-left whitespace-nowrap">Unloading point</th>
+        <th class="text-center whitespace-nowrap">Hardcopy</th>
+        <th class="text-center whitespace-nowrap">Softcopy</th>
+        <th class="text-center whitespace-nowrap">Due Days</th>
+        <th
+          class="text-center sticky  bg-white right-{{chalanStatus != 'Pending' && chalanStatus != 'Approved' ? '[5rem]' : '0'}}">
+          Status
+        </th>
+        <th class="text-left w-[5rem] z-50 sticky right-0 bg-white"
+            *ngIf="chalanStatus != 'Pending' && chalanStatus != 'Approved'"></th>
+      </tr>
+      <tr>
+        <th class="custom-border" [colSpan]="12"></th>
+      </tr>
+      </thead>
+      <tbody class="text-web-text-secondary">
+      <ng-container *ngIf="!loading">
+        <tr *ngFor="let trip of tripList; index as i">
+          <td class="whitespace-nowrap">
+            <a class="text-blue cursor-pointer">
+              {{ trip.tripId }}
+            </a>
+          </td>
+          <td class="whitespace-nowrap">
+            {{ trip.tripStartDatetime | date: 'd MMM yyyy' }}
+          </td>
+          <td class="whitespace-nowrap">{{ trip.customerName }}</td>
+          <td class="whitespace-nowrap">{{ trip.transporterName }}</td>
+          <td class="whitespace-nowrap">{{ getFullRegistrationNumber(trip.truck) }}</td>
+          <td class="whitespace-nowrap">
+            {{ trip.tripPoints[0]?.pointName }}
+          </td>
+          <td class="whitespace-nowrap">
+            {{ trip.tripPoints[1]?.pointName }}
+          </td>
+          <td class="whitespace-nowrap text-center">
+            <span *ngIf="trip.challanHardCopyReceivedAt">{{ trip.challanHardCopyReceivedAt | date : 'dd MMM,yyyy' }}</span>
+            <div *ngIf="!trip.challanHardCopyReceivedAt" class="w-full flex items-center justify-center">
+              <button (click)="onClickHardCopyReceive(trip.tripId)" type="button" class="px-[0.875rem] py-[0.375rem] text-green bg-green bg-opacity-[5%] rounded-lg">
+                Receive
+              </button>
+            </div>
+          </td>
+          <td class="text-center whitespace-nowrap">
+            <a class="text-link text-center underline">View</a>
+          </td>
+          <td class="text-center whitespace-nowrap">{{ checkDueDays(trip) }}</td>
+          <td
+            class="whitespace-nowrap sticky right-{{chalanStatus != 'Pending' && chalanStatus != 'Approved' ? '[5rem]' : '0'}} w-full bg-white z-20">
+            <div class="w-full flex justify-center items-center">
+              <p
+                class="px-2 py-1 {{getBgColor(trip.challanStatus)}} bg-opacity-[30%] rounded-full">{{ trip.challanStatus }}</p>
+            </div>
+          </td>
+          <td *ngIf="chalanStatus != 'Approved' && chalanStatus != 'Pending'"
+              class="sticky right-0 bg-white w-[5rem]">
+            <button class="{{trip.challanStatus==='Approved' ? 'invisible' : 'visible' }}" mat-button
+                    [matMenuTriggerFor]="menu"><i
+              class="fas fa-ellipsis-v"></i></button>
+            <mat-menu #menu="matMenu">
+              <button
+                (click)="changeStatus(trip.tripId, trip.tripId, 'Approved')" mat-menu-item
+                *ngIf="trip.challanStatus !== 'Approved'">
+                <div class="flex space-x-2 items-center">
+                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
+                    <i class="far fa-check text-green"></i>
+                  </div>
+                  <span class="text-green">Approve</span>
+                </div>
+              </button>
+              <button (click)="changeStatus(trip.tripId, trip.tripId, 'Rejected')" mat-menu-item
+                      *ngIf="trip.challanStatus !== 'Rejected'">
+                <div class="flex space-x-2 items-center">
+                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
+                    <i class="far fa-times text-red"></i>
+                  </div>
+                  <span class="text-red">Reject</span>
+                </div>
+              </button>
+            </mat-menu>
+          </td>
+        </tr>
+
+        <tr *ngIf="tripList?.length === 0">
+          <td class="text-center" [colSpan]="12">
+            <div class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+              <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" [colSpan]="12">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
