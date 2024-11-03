@@ -19,7 +19,7 @@ export class ChallanDashboardService {
 
   updateChallanStatus(tripId: string, body: any) {
     return this.http.put(
-      `${this._dashboardUrl}/${tripId}/challans`,
+      `${this._tripUrl}/${tripId}/challans`,
       body
     );
   }

@@ -787,6 +787,7 @@ export class DriverDetailsComponent implements OnInit {
           textPrefix: 'the driver ',
           text: `${driver.name} (${driver.phone})?`,
           buttonText: 'Reject',
+          reasonAvailable: true,
         },
       })
       .afterClosed()

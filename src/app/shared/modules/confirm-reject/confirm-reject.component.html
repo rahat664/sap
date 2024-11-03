@@ -13,9 +13,9 @@
     </div>
     <p class="w-2/3 text-body text-center text-secondary">Do you want to reject <span>{{data?.textPrefix}}</span> <span
       class="font-semibold text-body_title leading-body_title">{{ data?.text }}</span></p>
-    <textarea class="w-full h-32 border border-gray-300 rounded-lg p-4 mt-4" placeholder="Write Cause"
+    <textarea *ngIf="data?.reasonAvailable" class="w-full h-32 border border-gray-300 rounded-lg p-4 mt-4" placeholder="Write Cause"
               [(ngModel)]="reason"></textarea>
-    <button [ngClass]="{'bg-opacity-[30%]': reason == null || reason == ''}" [disabled]="reason == null || reason == ''"
+    <button [ngClass]="{'bg-opacity-[30%]': data?.reasonAvailable && (reason == null || reason == '')}" [disabled]="data?.reasonAvailable && (reason == null || reason == '')"
             class="bg-red w-full text-white rounded-lg p-4 mt-4"
             (click)="confirmUpdate()">{{ data?.buttonText }}
     </button>

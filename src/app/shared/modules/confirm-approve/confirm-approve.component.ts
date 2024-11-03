@@ -4,11 +4,13 @@ import {
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { NgIf } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-confirm-approve',
   standalone: true,
-  imports: [],
+  imports: [NgIf, ReactiveFormsModule],
   templateUrl: './confirm-approve.component.html',
   styleUrl: './confirm-approve.component.scss',
 })

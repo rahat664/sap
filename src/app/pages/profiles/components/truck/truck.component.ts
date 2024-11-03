@@ -345,6 +345,8 @@ export class TruckComponent implements OnInit {
           textPrefix: 'the truck with registration number ',
           text: `${truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Reject',
+          reasonAvailable: true,
+
         },
       })
       .afterClosed()

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
@@ -16,6 +16,12 @@ import { TripService } from '../trip-list/services/trip.service';
 import { Trip, Truck } from '../auth/models/response/trip';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmApproveComponent } from '../../shared/modules/confirm-approve/confirm-approve.component';
+import { ConfirmRejectComponent } from '../../shared/modules/confirm-reject/confirm-reject.component';
+import {
+  ConfirmReceiveeComponentComponent
+} from '../../shared/modules/confirm-receivee-component/confirm-receivee-component.component';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -76,6 +82,7 @@ export class ChallanDashboardComponent {
   chalanStatus: string;
   status: string;
   challanHardCopyReceived: boolean;
+  readonly dialog = inject(MatDialog);
 
   constructor(
     private datePipe: DatePipe,
@@ -210,14 +217,42 @@ export class ChallanDashboardComponent {
     const body = {
       challanStatus: status,
     };
-    this.service.updateChallanStatus(id, body).subscribe(() => {
-      this.tripList = this.tripList.map(trip => {
-        if (trip.id === id) {
-          trip.challanStatus = status;
+    if (status === 'Approved') {
+      this.dialog.open(ConfirmApproveComponent, {
+        data: {
+          title: 'Attention',
+          textPrefix: 'the challan for tripId ',
+          text: `${name}?`,
+          buttonText: 'Approve',
+        },
+      }).afterClosed().subscribe((res) => {
+        if (res) {
+          this.service.updateChallanStatus(id, body).subscribe((res: any) => {
+            this.page = 0;
+            this.getChallanStatus();
+            this.getTripList();
+          });
         }
-        return trip;
-      });
-    })
+      })
+    } else {
+      this.dialog.open(ConfirmRejectComponent, {
+        data: {
+          title: 'Attention',
+          textPrefix: 'the challan for tripId ',
+          text: `${name}?`,
+          buttonText: 'Reject',
+          reasonAvailable: false,
+        },
+      }).afterClosed().subscribe((res) => {
+        if (res) {
+          this.service.updateChallanStatus(id, body).subscribe((res: any) => {
+            this.page = 0;
+            this.getChallanStatus();
+            this.getTripList();
+          });
+        }
+      })
+    }
   }
 
   getFullRegistrationNumber(truck: Truck) {
@@ -241,6 +276,42 @@ export class ChallanDashboardComponent {
       default:
         return 'bg-another';
     }
+  }
+
+  checkDueDays(trip: Trip) {
+    const tripCompletedDate = new Date(trip.tripEndedAt);
+    if (trip.challanStatusUpdatedAt) {
+      const challanStatusUpdatedDate = new Date(trip.challanStatusUpdatedAt);
+      return this.datePipe.transform(challanStatusUpdatedDate, 'dd MMM,yyyy');
+    } else {
+      // return due days from trip end date
+      const currentDate = new Date();
+      const diffTime = Math.abs(currentDate.getTime() - tripCompletedDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    }
+  }
+
+  onClickHardCopyReceive(tripId: string) {
+    const  body = {
+      hardCopyReceivedAt: new Date().toISOString(),
+    }
+    this.dialog.open(ConfirmReceiveeComponentComponent, {
+      data: {
+        title: 'Attention',
+        textPrefix: 'Have you received the hardcopy for ',
+        text: `${tripId}?`,
+        buttonText: 'Receive',
+      },
+    }).afterClosed().subscribe((res) => {
+      if (res) {
+        this.service.updateChallanStatus(tripId, body).subscribe((res: any) => {
+          this.page = 0;
+          this.getChallanStatus();
+          this.getTripList();
+        });
+      }
+    })
   }
 }
 
