@@ -827,8 +827,8 @@ export class TruckDetailsComponent implements OnInit {
           title: 'Attention',
           textPrefix: 'the truck with registration number ',
           text: `${this.truckDetails.fullRegistrationNumber}?`,
-          reasonAvailable: true,
           buttonText: 'Reject',
+          reasonAvailable: true,
         },
       })
       .afterClosed()
