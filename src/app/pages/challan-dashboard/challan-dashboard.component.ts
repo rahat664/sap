@@ -188,6 +188,7 @@ export class ChallanDashboardComponent {
   }
 
   onClickStatusButtons(status: any) {
+    this.challanHardCopyReceived = false;
     this.activatedChallanStatus = status;
     this.chalanStatus = status;
     if (status === 'Completed') {
@@ -206,7 +207,17 @@ export class ChallanDashboardComponent {
   }
 
   changeStatus(id, name, status: string) {
-
+    const body = {
+      challanStatus: status,
+    };
+    this.service.updateChallanStatus(id, body).subscribe(() => {
+      this.tripList = this.tripList.map(trip => {
+        if (trip.id === id) {
+          trip.challanStatus = status;
+        }
+        return trip;
+      });
+    })
   }
 
   getFullRegistrationNumber(truck: Truck) {

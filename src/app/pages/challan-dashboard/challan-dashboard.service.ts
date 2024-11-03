@@ -8,11 +8,19 @@ import { environment } from '../../../environments/environment';
 export class ChallanDashboardService {
 
   private _dashboardUrl = `${environment.backendUrl}/api/v1/dashboard`;
+  private _tripUrl = `${environment.backendUrl}/api/trips`;
 
   constructor(private http: HttpClient) { }
   getChallanStatus(from: string, to: string) {
     return this.http.get(
       `${this._dashboardUrl}/challan-status?from=${from}&to=${to}`
+    );
+  }
+
+  updateChallanStatus(tripId: string, body: any) {
+    return this.http.put(
+      `${this._dashboardUrl}/${tripId}/challans`,
+      body
     );
   }
 }
