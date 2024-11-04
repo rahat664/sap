@@ -106,6 +106,10 @@ export class AuthEffects {
 
   isAdmin() {
     const role = localStorage.getItem('role');
-    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+    if (role) {
+      return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+    } else {
+      return false;
+    }
   }
 }
