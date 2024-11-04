@@ -445,7 +445,7 @@
               </mat-error>
             </div>
           </div>
-          <div class="flex flex-col space-y-3">
+          <div class="flex flex-col space-y-3" *ngIf="isAdmin()">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="notPreview" src="assets/svg/cr.svg" alt="candt">
               <h1 class="text-h2 leading-h2 font-semibold">{{ isAdmin() ? 'Customer Rate (CR)' : 'Trip Rate' }}</h1>
