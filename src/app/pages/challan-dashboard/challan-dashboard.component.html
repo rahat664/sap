@@ -15,7 +15,7 @@
                 class="bg-[#005577] h-full w-full flex items-center justify-center rounded-lg bg-opacity-[5%]">
           <div class="flex space-x-4 items-center">
             <div>
-              <img src="assets/svg/pending-challan.svg" alt="pending-challan">
+              <img class="notPreview" src="assets/svg/pending-challan.svg" alt="pending-challan">
             </div>
             <div class="flex flex-col text-left space-y-1">
               <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ pendingChallanAmount | number }} ৳</h1>
@@ -32,7 +32,7 @@
                   class="bg-link col-span-3 flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="  flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/received.svg" alt="received">
+                <img class="notPreview" src="assets/svg/received.svg" alt="received">
               </div>
               <div class="flex text-left flex-col">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ receivedAmount | number }}</h1>
@@ -46,7 +46,7 @@
                   class="bg-another flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/in-progress.svg" alt="pending-challan">
+                <img class="notPreview" src="assets/svg/in-progress.svg" alt="pending-challan">
               </div>
               <div class="flex text-left flex-col space-y-1">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ pendingAmount | number }}</h1>
@@ -60,7 +60,7 @@
                   class="bg-green  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/approved.svg" alt="pending-challan">
+                <img class="notPreview" src="assets/svg/approved.svg" alt="pending-challan">
               </div>
               <div class="flex text-left flex-col space-y-1">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ approvedAmount | number }}</h1>
@@ -74,7 +74,7 @@
                   class="bg-red  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/rejected.svg" alt="pending-challan">
+                <img class="notPreview" src="assets/svg/rejected.svg" alt="pending-challan">
               </div>
               <div class="flex text-left flex-col space-y-1">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ rejectedAmount | number }}</h1>
@@ -92,7 +92,7 @@
                   class="bg-green  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/completed_trip.svg" alt="pending-challan">
+                <img class="notPreview" src="assets/svg/completed_trip.svg" alt="pending-challan">
               </div>
               <div class="flex text-left flex-col space-y-1">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ completedTrips | number }}</h1>
@@ -106,7 +106,7 @@
                   class="bg-blue  flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
               <div>
-                <img src="assets/svg/hardcopy.svg" alt="pending-challan" height="40" width="40">
+                <img class="notPreview" src="assets/svg/hardcopy.svg" alt="pending-challan" height="40" width="40">
               </div>
               <div class="flex text-left flex-col space-y-1">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">{{ hardCopyReceived | number }}</h1>
