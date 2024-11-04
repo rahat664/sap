@@ -8,7 +8,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './pages/auth/interceptors/auth.interceptor';
-import { DatePipe, DecimalPipe, NgOptimizedImage } from '@angular/common';
+import { CommonModule, DatePipe, DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { provideHotToastConfig } from '@ngneat/hot-toast';
 import { provideStore } from '@ngrx/store';
 import { authReducer } from './pages/auth/ngrx/auth.reducer';
@@ -31,5 +31,6 @@ export const appConfig: ApplicationConfig = {
     DatePipe,
     DecimalPipe,
     NgOptimizedImage,
+    CommonModule,
   ],
 };
