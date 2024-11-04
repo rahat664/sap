@@ -29,7 +29,7 @@ export const routes: Routes = [
       import('./pages/challan-dashboard/challan-dashboard.component').then(
         c => c.ChallanDashboardComponent
       ),
-    canActivate: [authGuard, roleGuard],
+    canActivate: [authGuard],
   },
   {
     path: 'trip-list',
@@ -38,7 +38,7 @@ export const routes: Routes = [
       import('./pages/trip-list/trip-list.component').then(
         c => c.TripListComponent
       ),
-    canActivate: [authGuard, roleGuard],
+    canActivate: [authGuard],
   },{
     path: 'dashboard',
     title: 'Dashboard',
@@ -114,7 +114,7 @@ export const routes: Routes = [
       import('./pages/user-management/user-management.component').then(
         c => c.UserManagementComponent
       ),
-    canActivate: [authGuard, roleGuard],
+    canActivate: [authGuard],
   },
   {
     path: 'user-management-customer',
@@ -123,14 +123,14 @@ export const routes: Routes = [
       import(
         './pages/user-management/user-management-customer-admin/user-management-customer-admin.component'
       ).then(c => c.UserManagementCustomerAdminComponent),
-    canActivate: [authGuard, customerGuard],
+    canActivate: [authGuard],
   },
   {
     path: 'profile',
     title: 'Profile',
     loadChildren: () =>
       import('./pages/profiles/profile.routes').then(m => m.profileRoutes),
-    canActivate: [authGuard, roleGuard],
+    canActivate: [authGuard],
   },
   {
     path: '',

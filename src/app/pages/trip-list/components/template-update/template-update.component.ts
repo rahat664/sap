@@ -597,4 +597,8 @@ export class TemplateUpdateComponent {
   removeUnloadingPoint(index: number) {
     this.unloadingPoints.removeAt(index);
   }
+  isAdmin() {
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
 }
