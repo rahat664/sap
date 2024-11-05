@@ -127,6 +127,7 @@ export class CustomerComponent implements OnInit {
 
   onClickClear() {
     this.searchValue = '';
+    this.page = 0;
     this.getCustomer();
   }
 
