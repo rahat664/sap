@@ -6,5 +6,6 @@ export class CustomerCreateModel {
   phone: string;
   address: string;
   customerCode: string;
+  sendEmail: boolean;
   note: string;
 }

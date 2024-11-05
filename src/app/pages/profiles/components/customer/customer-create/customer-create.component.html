@@ -137,6 +137,11 @@
           id="note"
           formControlName="note"></textarea>
       </div>
+      <div class="flex flex-col space-y-2 w-full col-span-2">
+        <mat-checkbox (change)="toggleSendEmail($any($event))">
+          Send email to customer
+        </mat-checkbox>
+      </div>
       <div class="lg:col-span-2 pb-4">
         <button
           (click)="onSave()"

@@ -22,6 +22,7 @@ import {
 import { DriverEditSharedService } from '../../profiles/services/driver-edit-shared.service';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-user-customer-admin-create',
@@ -36,6 +37,7 @@ import { MatInput } from '@angular/material/input';
     NgxMaterialIntlTelInputComponent,
     MatFormField,
     MatInput,
+    MatCheckbox,
   ],
   templateUrl: './user-customer-admin-create.component.html',
   styleUrl: './user-customer-admin-create.component.scss',
@@ -52,6 +54,7 @@ export class UserCustomerAdminCreateComponent {
   roleInputPlaceholder = '';
   roleOpened = false;
   userModel: CustomerAdminModel = new CustomerAdminModel();
+  SendEmails: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<UserCustomerAdminCreateComponent>,
@@ -85,6 +88,7 @@ export class UserCustomerAdminCreateComponent {
         // remove space and - from phone number
         this.userModel.phone = this.userModel.phone.replace(/[\s-]/g, '');
         this.userModel.email = this.userForm.get('email').value;
+        this.userModel.sendEmail = this.SendEmails;
         this.userModel.role =
           this.roleInputPlaceholder === 'Admin'
             ? 'ROLE_CUSTOMER_ADMIN'
@@ -186,4 +190,8 @@ export class UserCustomerAdminCreateComponent {
   };
 
   protected readonly CountryISO = CountryISO;
+
+  SendEmail($any: any) {
+    this.SendEmails = !!$any.checked;
+  }
 }

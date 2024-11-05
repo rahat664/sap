@@ -26,6 +26,7 @@ import {
   NgxMaterialIntlTelInputComponent,
 } from 'ngx-material-intl-tel-input';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-customer-create',
@@ -38,6 +39,7 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
     MatInput,
     NgxMaterialIntlTelInputComponent,
     NgClass,
+    MatCheckbox,
   ],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss',
@@ -49,6 +51,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   @Output() formCreated: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
+  sendEmail: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -102,6 +105,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       this.customerModel.email = this.customerForm.get('email').value;
       this.customerModel.address = this.customerForm.get('address').value;
       this.customerModel.note = this.customerForm.get('note').value;
+      this.customerModel.sendEmail = this.sendEmail;
       this.service
         .customerCodeValidation(this.customerModel.customerCode)
         .subscribe((res: any) => {
@@ -286,5 +290,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
 
   get phoneNumber() {
     return this.customerForm.get('phone');
+  }
+
+  toggleSendEmail($any: any) {
+    this.sendEmail = !!$any.checked;
   }
 }
