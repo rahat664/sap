@@ -105,6 +105,7 @@ export class CustomerComponent implements OnInit {
           });
       }
     } else {
+      this.page = 0;
       this.getCustomer();
     }
   }
