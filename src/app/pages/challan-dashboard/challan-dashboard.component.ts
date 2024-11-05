@@ -97,6 +97,8 @@ export class ChallanDashboardComponent {
     this.status = 'Completed';
     this.getFromDateAndToDate();
     this.getChallanStatus();
+    this.loading = true;
+    this.anotherStatusCalled = false;
     this.getTripList();
   }
   private getFromDateAndToDate() {
@@ -131,7 +133,6 @@ export class ChallanDashboardComponent {
   }
 
   private getTripList() {
-    this.loading = true;
     this.trip
       .getTrips(
         this.page,
@@ -166,7 +167,6 @@ export class ChallanDashboardComponent {
     } else {
       this.tripList.push(...trip.data.responses);
     }
-    this.loading = false;
   }
   onBottom($event: boolean) {
     if (!$event) {
@@ -175,6 +175,7 @@ export class ChallanDashboardComponent {
     if ($event && this.page < this.totalPages - 1) {
       if (this.anotherStatusCalled) {
       } else {
+        this.loading = false
         this.page++;
         this.size = 30;
         this.loading = false;
