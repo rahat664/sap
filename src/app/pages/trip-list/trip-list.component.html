@@ -124,14 +124,14 @@
           <span>{{ (summary.gps ? summary.gps : 0) |number }} ৳</span>
         </div>
       </div>
-      <div class="overflow-hidden relative p-4 w-full rounded-lg bg-white">
+      <div class="overflow-hidden relative p-4 w-full rounded-lg min-h-44 bg-white">
         <div
           appScrollByButton
           (isVisible)="scrollable = $event"
           [rightButtonClicked]="rightButtonClicked"
           [leftButtonClicked]="leftButtonClicked"
           class="h-full overflow-hidden">
-          <div class="flex relative space-x-4 items-center h-full">
+          <div class="flex relative space-x-4 pt-8 items-center h-full">
             <ng-container *ngFor="let item of statusButtons">
               <app-button-chips
                 [isDisabled]="loading"
