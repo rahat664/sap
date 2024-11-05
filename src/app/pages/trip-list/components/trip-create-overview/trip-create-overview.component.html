@@ -59,7 +59,7 @@
             </div>
             <h1 class="text-body text-wrap text-web-text-secondary">{{ tripData.goodsName }}</h1>
           </div>
-          <div class="flex flex-col space-y-2">
+          <div class="flex flex-col space-y-2" *ngIf="isAdmin()">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="h-6 w-6" src="assets/svg/cr.svg">
               <h1

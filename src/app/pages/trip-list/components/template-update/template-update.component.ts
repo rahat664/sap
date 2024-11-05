@@ -557,4 +557,10 @@ export class TemplateUpdateComponent {
       this.district = res.data;
     });
   }
+
+  isAdmin() {
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
+
 }
