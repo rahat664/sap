@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe, NgIf } from '@angular/common';
 import { TripService } from '../../services/trip.service';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { ErrorModalComponent } from '../../../../shared/modules/error-modal/erro
 @Component({
   selector: 'app-trip-create-overview',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, CurrencyPipe],
+  imports: [DatePipe, DecimalPipe, CurrencyPipe, NgIf],
   templateUrl: './trip-create-overview.component.html',
   styleUrl: './trip-create-overview.component.scss',
 })
