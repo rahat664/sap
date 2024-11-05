@@ -170,11 +170,6 @@ export class TruckComponent implements OnInit {
           value: truck,
         },
       })
-      .afterClosed()
-      .subscribe((res: any) => {
-        if (res) {
-        }
-      });
   }
 
   private makeSureUploadCompletedOrNot() {

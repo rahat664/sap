@@ -87,7 +87,15 @@ export class FileUploadPopupComponent implements OnChanges {
     private toastr: HandleToastrService
   ) {}
 
-  ngOnChanges(changes: SimpleChanges) {}
+  ngOnInit() {
+    this.fileArray = [];
+    this.fileInput.emit(this.fileArray);
+    this.fileTypeOptions = this.data?.filetype;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+
+  }
 
   onFileDropped(event: DragEvent) {
     event.preventDefault();
@@ -124,7 +132,6 @@ export class FileUploadPopupComponent implements OnChanges {
   @Input() isUploadDisabled: boolean = false;
 
   onSubmit() {
-
     // remove the file from the file array if expiry not required for that filled like Nid front, Nid back, Driving License Front, Driving License Back, Other
     let newFileArray = JSON.parse(JSON.stringify(this.fileArray));
     newFileArray = newFileArray.filter(
@@ -135,7 +142,6 @@ export class FileUploadPopupComponent implements OnChanges {
         file.registrationType !== 'Driving License Back' &&
         file.registrationType !== 'Registration Paper'
     );
-
     console.log(newFileArray)
 
     const isExpiryFilled = newFileArray.every(
@@ -159,11 +165,15 @@ export class FileUploadPopupComponent implements OnChanges {
       this.sharedDriverEditService.getDocument(this.data?.value);
       this.sharedDriverEditService.bindDriverValueWithForm(this.data?.value);
       this.sharedDriverEditService.onChangeFile(this.fileArray);
-      this.fileArray = [];
       this.sharedDriverEditService.onDriverUpdate(
         this.data?.value?.name,
         this.data?.value?.phone
       );
+      this.sharedDriverEditService.completeUpload.subscribe((res) => {
+        if (res) {
+          this.fileArray = [];
+        }
+      });
     } else {
       this.toastr.showError('Please fill the expiry date of all files');
     }
@@ -176,27 +186,51 @@ export class FileUploadPopupComponent implements OnChanges {
       this.sharedDriverEditService.getTruckDocument(this.data?.value);
       this.sharedDriverEditService.bindTruckValueWithForm(this.data?.value);
       this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
-      this.fileArray = [];
       this.sharedDriverEditService.onTruckUpdate();
+      this.sharedDriverEditService.completeUpload.subscribe((res) => {
+        if (res) {
+          this.fileArray = [];
+        }
+      });
     } else {
       this.toastr.showError('Please fill the expiry date of all files');
     }
   }
 
   previewFile(file: File) {
-    const reader = new FileReader();
+    let reader = new FileReader();
+
+    // Read the file as Data URL (preview)
     reader.readAsDataURL(file);
+
     reader.onload = () => {
+      // Add file and preview data to the array
       this.fileArray.push({
         file: file,
-        preview: reader.result,
+        preview: reader.result, // This will hold the image or file preview
         registrationType: null,
         registrationExpireDate: null,
         fileOpened: false,
         registrationOptions: this.newFileType,
         expiryAvailable: false,
       });
+      this.fileInput.emit(this.fileArray);
     };
+
+    reader.onerror = (error) => {
+      console.error("Error reading file:", error);
+      // Handle error if needed
+    };
+  }
+
+// This function will clear the file data from memory (useful after uploading or previewing)
+  clearFileData(index: number) {
+    const fileItem = this.fileArray[index];
+    if (fileItem) {
+      // Clear the preview and reset other properties if needed
+      fileItem.preview = null;
+      fileItem.file = null; // Optionally remove the file from the object
+    }
   }
 
   onFileChange($event: any) {
