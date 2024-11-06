@@ -84,7 +84,7 @@
           <td>{{ customer.address }}</td>
           <td>{{customer.numberOfTrips != null ? customer.numberOfTrips : '0'}}</td>
           <td>{{customer.grossProfit != null ? customer.grossProfit : '0'}}</td>
-          <td>{{customer.rank != null ? customer.rank : '0'}}</td>
+          <td>{{customer.rank != null && customer.rank > 0 ? customer.rank : 'N/A'}}</td>
           <!--            <td>-->
           <!--              <i class="fas fa-ellipsis-v"></i>-->
           <!--            </td>-->
