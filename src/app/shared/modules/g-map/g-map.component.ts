@@ -191,7 +191,9 @@ export class GMapComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   private removeTruckMarker(): void {
-    this.truckLocationMarker.setMap(null);
+    if (this.truckLocationMarker) {
+      this.truckLocationMarker = null;
+    }
   }
 
   private resetMarkers(): void {
