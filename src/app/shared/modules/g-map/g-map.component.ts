@@ -5,6 +5,7 @@ import {
   OnInit,
   SimpleChanges,
   ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { GeolocationService } from '../../services/location/geolocation.service';
 import { mapStyles } from '../../models/map-options';
@@ -22,21 +23,14 @@ import { timer } from 'rxjs';
   templateUrl: './g-map.component.html',
   styleUrls: ['./g-map.component.scss'],
 })
-export class GMapComponent implements OnInit, OnChanges {
-  get truckId(): string {
-    return this._truckId;
-  }
-
-  set truckId(value: string) {
-    this._truckId = value;
-  }
-
+export class GMapComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() tripStatus: string;
   @Input() lat: number;
   @Input() lng: number;
-  @Input() starting: google.maps.LatLngLiteral;
-  @Input() destination: google.maps.LatLngLiteral;
-  @Input() truckLocationPosition: google.maps.LatLngLiteral;
+  @Input() starting: google.maps.LatLngLiteral = null;
+  @Input() destination: google.maps.LatLngLiteral = null;
+  @Input() truckLocationPosition: google.maps.LatLngLiteral = null;
+  @Input() truckFullRegistrationNumber: string;
 
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
 
@@ -50,13 +44,14 @@ export class GMapComponent implements OnInit, OnChanges {
     fullscreenControl: true,
     disableDefaultUI: true,
   };
+
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer({
     suppressMarkers: true,
   });
 
   initialMarker: google.maps.MarkerOptions = {};
-  truckLocationMarker: google.maps.Marker = null; // Change to google.maps.Marker
+  truckLocationMarker: google.maps.Marker = null;
   startMarker: google.maps.MarkerOptions = {};
   endMarker: google.maps.MarkerOptions = {};
   polylines: google.maps.PolylineOptions[] = [];
@@ -64,7 +59,6 @@ export class GMapComponent implements OnInit, OnChanges {
   infoWindow: any;
   truckData: TruckData = {} as TruckData;
   loading: boolean;
-  @Input() truckFullRegistrationNumber: string;
   private intervalData: number;
   private _truckId: string;
 
@@ -75,42 +69,22 @@ export class GMapComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    this.trip.bottomHeight.subscribe(height => {
+    this.trip.bottomHeight.subscribe((height) => {
       this.bottomHeight = height;
     });
 
+    // Initial location setup
     const currentLocation = localStorage.getItem('currentLocation');
     if (currentLocation) {
       const location = JSON.parse(currentLocation);
       this.center = location;
-      this.initialMarker = {
-        position: this.center,
-        icon: {
-          url: '/assets/images/focus.png',
-          scaledSize: new google.maps.Size(30, 30),
-        },
-        // api call and show when hover
-        title: 'Current Location',
-      };
+      this.setInitialMarker(location);
     } else {
-      this.geoLocationService.getCurrentPosition().then(position => {
+      this.geoLocationService.getCurrentPosition().then((position) => {
         this.center = { lat: position.latitude, lng: position.longitude };
-        this.initialMarker = {
-          position: this.center,
-          icon: {
-            url: '/assets/images/focus.png',
-            scaledSize: new google.maps.Size(30, 30),
-          },
-          title: 'Current Location',
-        };
+        this.setInitialMarker(this.center);
       });
     }
-  }
-
-  showLoadingSpinner(): void {
-    this.loading = true;
-    this.infoWindow.setContent(this.getLoadingSpinnerContent());
-    this.infoWindow.open(this.map, this.truckLocationMarker);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -118,43 +92,47 @@ export class GMapComponent implements OnInit, OnChanges {
       this.updateRoute();
     }
     if (changes['truckLocationPosition']) {
-      console.log(changes['truckLocationPosition']);
       this.updateTruckLocation();
     }
   }
 
-  private updateRoute() {
+  ngAfterViewInit() {
+  }
+
+
+  private setInitialMarker(location: google.maps.LatLngLiteral): void {
+    this.initialMarker = {
+      position: location,
+      icon: {
+        url: '/assets/images/focus.png',
+        scaledSize: new google.maps.Size(30, 30),
+      },
+      title: 'Current Location',
+    };
+  }
+
+  private updateRoute(): void {
     const start = this.starting;
     const end = this.destination;
 
-    if (
-      start &&
-      start.lng > 0 &&
-      start.lat > 0 &&
-      end &&
-      end.lng > 0 &&
-      end.lat > 0
-    ) {
+    if (start && end && start.lng > 0 && start.lat > 0 && end.lng > 0 && end.lat > 0) {
       this.clearPolylines();
-      this.initialMarker = {};
+      this.initialMarker = {}; // Clear initial marker when route is being set
       const request: google.maps.DirectionsRequest = {
         origin: start,
         destination: end,
         travelMode: google.maps.TravelMode.DRIVING,
-        drivingOptions: {
-          departureTime: new Date(),
-        },
+        drivingOptions: { departureTime: new Date() },
       };
 
       this.directionsService.route(request, (result, status) => {
         if (status === 'OK') {
           this.directionsRenderer.setDirections(result);
-          const bound = new google.maps.LatLngBounds();
-          bound.extend(start);
-          bound.extend(end);
-          this.map.googleMap.fitBounds(bound);
+          const bounds = new google.maps.LatLngBounds();
+          bounds.extend(start);
+          bounds.extend(end);
+          this.map?.googleMap?.fitBounds(bounds);
           this.updatePolylineWithTraffic(result);
-        } else {
         }
       });
     } else {
@@ -162,18 +140,13 @@ export class GMapComponent implements OnInit, OnChanges {
     }
   }
 
-  private updateTruckLocation() {
-    if (
-      this.truckLocationPosition?.lat &&
-      this.truckLocationPosition?.lng &&
-      this.tripStatus != 'Completed' &&
-      'Cancelled'
-    ) {
+  private updateTruckLocation(): void {
+    if (this.truckLocationPosition?.lat && this.truckLocationPosition?.lng && this.tripStatus !== 'Completed' && this.tripStatus !== 'Cancelled') {
       if (this.truckLocationMarker) {
         // Update existing marker position
         this.truckLocationMarker.setPosition(this.truckLocationPosition);
       } else {
-        // Create and add marker to the map
+        // Create new marker
         this.truckLocationMarker = new google.maps.Marker({
           position: this.truckLocationPosition,
           icon: {
@@ -181,39 +154,53 @@ export class GMapComponent implements OnInit, OnChanges {
             scaledSize: new google.maps.Size(48, 48),
           },
           title: 'Truck Location',
-          map: this.map.googleMap, // Add marker to the map
-          // implement when click on marker
+          map: this.map?.googleMap,
+        });
+
+        // Add InfoWindow and click event for fetching truck data
+        this.infoWindow = new google.maps.InfoWindow({
+          content: this.getLoadingSpinnerContent(),
+          maxWidth: 400,
+        });
+
+
+        this.truckLocationMarker.addListener('click', () => {
+          this.loading = true;
+          this.infoWindow.setContent(this.getLoadingSpinnerContent());
+          this.showLoadingSpinner();
+          this.fetchTruckData();
         });
       }
-
-      // Create InfoWindow
-      this.infoWindow = new google.maps.InfoWindow({
-        content: this.getLoadingSpinnerContent(), // Initially show spinner
-        maxWidth: 400,
-      });
-
-      // Add marker click listener to open InfoWindow and fetch data
-      this.truckLocationMarker.addListener('click', () => {
-        this.showLoadingSpinner(); // Show loading spinner
-        this.fetchTruckData(); // Fetch data from API
-      });
+      this.adjustMapToTruckPosition();
     } else {
       if (this.truckLocationMarker) {
-        // Remove marker from the map
-        this.truckLocationMarker.setMap(null);
-        this.truckLocationMarker = null;
+        this.removeTruckMarker()
+        this.truckLocationMarker=null
       }
     }
   }
 
-  private resetMarkers() {
-    this.center = {
-      lat: 23.8041,
-      lng: 90.4125,
-    };
+  private adjustMapToTruckPosition(): void {
+    if (this.map?.googleMap && this.truckLocationPosition) {
+      const bounds = new google.maps.LatLngBounds();
+      bounds.extend(this.starting);
+      bounds.extend(this.destination);
+      bounds.extend(this.truckLocationPosition)
+      this.map.googleMap.fitBounds(bounds); // Ensure the map adjusts to the truck location
+    }
+  }
+
+  private removeTruckMarker(): void {
+    if (this.truckLocationMarker) {
+      this.truckLocationMarker = null;
+    }
+  }
+
+  private resetMarkers(): void {
+    this.center = { lat: 23.8041, lng: 90.4125 }; // Default fallback position
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(this.center);
-    this.map.googleMap.fitBounds(bounds);
+    this.map?.googleMap?.fitBounds(bounds);
     this.endMarker = {};
     this.initialMarker = {
       position: this.center,
@@ -224,13 +211,10 @@ export class GMapComponent implements OnInit, OnChanges {
       title: 'Current Location',
       clickable: true,
     };
-    this.directionsRenderer.setMap(null);
     this.clearPolylines();
   }
 
-  private updatePolylineWithTraffic(
-    directionsResult: google.maps.DirectionsResult
-  ): void {
+  private updatePolylineWithTraffic(directionsResult: google.maps.DirectionsResult): void {
     const route = directionsResult.routes[0];
 
     this.startMarker = {
@@ -265,39 +249,38 @@ export class GMapComponent implements OnInit, OnChanges {
     this.polylines = [];
   }
 
-  fetchTruckData(): void {
-    this.truckService
-      .getTrackers(0, 10, this.truckFullRegistrationNumber)
-      .subscribe(
-        (res: any) => {
-          if (res.data?.content?.length > 0) {
-            this._truckId = res.data.content[0].vehicleId;
-            this.truckService.getTrackerData(this._truckId).subscribe(
-              (res: any) => {
-                this.truckData = res.data;
-                this.updateInfoWindow();
-                this.startInterval();
-              },
-              error => {
-                console.log(error);
-              }
-            );
-          }
-        },
-        error => {
-          console.log(error);
+  private fetchTruckData(): void {
+    this.truckService.getTrackers(0, 10, this.truckFullRegistrationNumber).subscribe(
+      (res: any) => {
+        if (res.data?.content?.length > 0) {
+          this._truckId = res.data.content[0].vehicleId;
+          this.truckService.getTrackerData(this._truckId).subscribe(
+            (res: any) => {
+              this.truckData = res.data;
+              this.updateInfoWindow();
+              this.startInterval();
+            },
+            error => console.log(error)
+          );
         }
-      );
+      },
+      error => console.log(error)
+    );
   }
 
-  calculatedHeight() {
-    if (this.bottomHeight === '0px') {
-      return '100%';
-    } else {
-      return (
-        window.innerHeight - Number(this.bottomHeight.split('px')[0]) + 'px'
-      );
+  private startInterval(): void {
+    if (this.intervalData) {
+      clearInterval(this.intervalData);
     }
+    this.intervalData = window.setInterval(() => {
+      this.truckService.getTrackerData(this._truckId).subscribe(
+        (res: any) => {
+          this.truckData = res.data;
+          this.updateInfoWindow();
+        },
+        error => console.log(error)
+      );
+    }, 5000);
   }
 
   updateInfoWindow(): void {
@@ -314,13 +297,11 @@ export class GMapComponent implements OnInit, OnChanges {
     });
     // Delay to allow the DOM to render
   }
-
   getInfoWindowContent(): string {
     return `
       <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
         <div class="flex flex-col space-y-1">
-          <div style="font-weight: bold; font-size: 16px">${this.truckData.numberPlate}</div>
-          <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.address.split(',')[0]}</div>
+          <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.numberPlate}</div>
           <div style="font-size: 12px; color: #777777">${this.truckData.address}</div>
         </div>
         <button id="closeBtn" style="background: transparent; border: none; cursor: pointer;">
@@ -339,6 +320,12 @@ export class GMapComponent implements OnInit, OnChanges {
     `;
   }
 
+  showLoadingSpinner(): void {
+    this.loading = true;
+    this.infoWindow.setContent(this.getLoadingSpinnerContent());
+    this.infoWindow.open(this.map, this.truckLocationMarker);
+  }
+
   getLoadingSpinnerContent(): string {
     return `
       <div style="text-align: center; padding: 20px;">
@@ -348,27 +335,23 @@ export class GMapComponent implements OnInit, OnChanges {
     `;
   }
 
-  private startInterval() {
-    this.intervalData = setInterval(() => {
-      this.updateTruckDataOnly();
-      this.stopInterval();
-    }, 3900);
+  ngOnDestroy(): void {
+    if (this.intervalData) {
+      clearInterval(this.intervalData);
+    }
   }
 
   private stopInterval() {
     clearInterval(this.intervalData);
   }
 
-  private updateTruckDataOnly() {
-    this.truckService.getTrackerData(this._truckId).subscribe(
-      (res: any) => {
-        this.truckData = res.data;
-        this.startInterval();
-        this.updateInfoWindow();
-      },
-      error => {
-        console.log(error);
-      }
-    );
+  calculatedHeight() {
+    if (this.bottomHeight === '0px') {
+      return '100%';
+    } else {
+      return (
+        window.innerHeight - Number(this.bottomHeight.split('px')[0]) + 'px'
+      );
+    }
   }
 }
