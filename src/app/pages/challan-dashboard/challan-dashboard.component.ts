@@ -22,6 +22,7 @@ import { ConfirmRejectComponent } from '../../shared/modules/confirm-reject/conf
 import {
   ConfirmReceiveeComponentComponent
 } from '../../shared/modules/confirm-receivee-component/confirm-receivee-component.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -50,6 +51,7 @@ import {
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
+    RouterLink,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
@@ -175,7 +177,7 @@ export class ChallanDashboardComponent {
     if ($event && this.page < this.totalPages - 1) {
       if (this.anotherStatusCalled) {
       } else {
-        this.loading = false
+        this.loading = false;
         this.page++;
         this.size = 30;
         this.loading = false;
@@ -219,40 +221,46 @@ export class ChallanDashboardComponent {
       challanStatus: status,
     };
     if (status === 'Approved') {
-      this.dialog.open(ConfirmApproveComponent, {
-        data: {
-          title: 'Attention',
-          textPrefix: 'the challan for tripId ',
-          text: `${name}?`,
-          buttonText: 'Approve',
-        },
-      }).afterClosed().subscribe((res) => {
-        if (res) {
-          this.service.updateChallanStatus(id, body).subscribe((res: any) => {
-            this.page = 0;
-            this.getChallanStatus();
-            this.getTripList();
-          });
-        }
-      })
+      this.dialog
+        .open(ConfirmApproveComponent, {
+          data: {
+            title: 'Attention',
+            textPrefix: 'the challan for tripId ',
+            text: `${name}?`,
+            buttonText: 'Approve',
+          },
+        })
+        .afterClosed()
+        .subscribe(res => {
+          if (res) {
+            this.service.updateChallanStatus(id, body).subscribe((res: any) => {
+              this.page = 0;
+              this.getChallanStatus();
+              this.getTripList();
+            });
+          }
+        });
     } else {
-      this.dialog.open(ConfirmRejectComponent, {
-        data: {
-          title: 'Attention',
-          textPrefix: 'the challan for tripId ',
-          text: `${name}?`,
-          buttonText: 'Reject',
-          reasonAvailable: false,
-        },
-      }).afterClosed().subscribe((res) => {
-        if (res) {
-          this.service.updateChallanStatus(id, body).subscribe((res: any) => {
-            this.page = 0;
-            this.getChallanStatus();
-            this.getTripList();
-          });
-        }
-      })
+      this.dialog
+        .open(ConfirmRejectComponent, {
+          data: {
+            title: 'Attention',
+            textPrefix: 'the challan for tripId ',
+            text: `${name}?`,
+            buttonText: 'Reject',
+            reasonAvailable: false,
+          },
+        })
+        .afterClosed()
+        .subscribe(res => {
+          if (res) {
+            this.service.updateChallanStatus(id, body).subscribe((res: any) => {
+              this.page = 0;
+              this.getChallanStatus();
+              this.getTripList();
+            });
+          }
+        });
     }
   }
 
@@ -287,32 +295,39 @@ export class ChallanDashboardComponent {
     } else {
       // return due days from trip end date
       const currentDate = new Date();
-      const diffTime = Math.abs(currentDate.getTime() - tripCompletedDate.getTime());
+      const diffTime = Math.abs(
+        currentDate.getTime() - tripCompletedDate.getTime()
+      );
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       return diffDays;
     }
   }
 
   onClickHardCopyReceive(tripId: string) {
-    const  body = {
+    const body = {
       hardCopyReceivedAt: new Date().toISOString(),
-    }
-    this.dialog.open(ConfirmReceiveeComponentComponent, {
-      data: {
-        title: 'Attention',
-        textPrefix: 'Have you received the hardcopy for ',
-        text: `${tripId}?`,
-        buttonText: 'Receive',
-      },
-    }).afterClosed().subscribe((res) => {
-      if (res) {
-        this.service.updateChallanStatus(tripId, body).subscribe((res: any) => {
-          this.page = 0;
-          this.getChallanStatus();
-          this.getTripList();
-        });
-      }
-    })
+    };
+    this.dialog
+      .open(ConfirmReceiveeComponentComponent, {
+        data: {
+          title: 'Attention',
+          textPrefix: 'Have you received the hardcopy for ',
+          text: `${tripId}?`,
+          buttonText: 'Receive',
+        },
+      })
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          this.service
+            .updateChallanStatus(tripId, body)
+            .subscribe((res: any) => {
+              this.page = 0;
+              this.getChallanStatus();
+              this.getTripList();
+            });
+        }
+      });
   }
 }
 

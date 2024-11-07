@@ -153,7 +153,7 @@
       <ng-container *ngIf="!loading">
         <tr *ngFor="let trip of tripList; index as i">
           <td class="whitespace-nowrap">
-            <a class="text-blue cursor-pointer">
+            <a class="text-blue cursor-pointer" routerLink="/challan-management/{{trip.tripId}}/details">
               {{ trip.tripId }}
             </a>
           </td>

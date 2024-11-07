@@ -230,7 +230,6 @@ export class DriverDetailsComponent implements OnInit {
           };
 
           if (formControlName && savedImagesMap[formControlName]) {
-            console.log(savedImagesMap[formControlName], formControlName);
             const updatedImages = savedImagesMap[formControlName].filter(
               item => item.preSignedFileUrl !== file.preSignedFileUrl
             );
@@ -421,7 +420,6 @@ export class DriverDetailsComponent implements OnInit {
       const currentFiles = Array.from(
         this.driverUpdateForm.get(this.selectedFormControlName)?.value
       );
-      console.log(currentFiles);
       if (currentFiles.length + files.length > this.maxUploadAble) {
         this.toastr.showError(
           `You can upload maximum of ${this.maxUploadAble + this.getSavedFileArray(this.selectedFormControlName)?.length} files`

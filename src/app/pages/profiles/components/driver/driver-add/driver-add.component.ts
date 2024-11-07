@@ -201,7 +201,6 @@ export class DriverAddComponent implements OnInit {
     expiredControl?: any
   ) {
     Array.from(files).forEach((file: File) => {
-      console.log(file.type);
       // handle if file is a pdf
       if (file.type === 'application/pdf') {
         targetArray.push({
@@ -500,7 +499,6 @@ export class DriverAddComponent implements OnInit {
       const currentFiles = Array.from(
         this.driverAddForm.get(this.selectedFormControlName)?.value
       );
-      console.log(currentFiles);
       if (currentFiles.length + files.length > this.maxUploadAble) {
         this.toastr.showError(
           `You can upload maximum of ${this.maxUploadAble} files`

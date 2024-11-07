@@ -32,6 +32,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'challan-management/:id/details',
+    title: 'Challan Details',
+    loadComponent: () =>
+      import('./pages/challan-dashboard/components/challan-details/challan-details.component').then(
+        c => c.ChallanDetailsComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'trip-list',
     title: 'Trip List',
     loadComponent: () =>
