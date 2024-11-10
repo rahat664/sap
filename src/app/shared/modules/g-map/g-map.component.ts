@@ -173,10 +173,8 @@ export class GMapComponent implements OnInit, OnChanges, AfterViewInit {
       }
       this.adjustMapToTruckPosition();
     } else {
-      if (this.truckLocationMarker) {
         this.removeTruckMarker()
         this.truckLocationMarker=null
-      }
     }
   }
 
@@ -192,7 +190,9 @@ export class GMapComponent implements OnInit, OnChanges, AfterViewInit {
 
   private removeTruckMarker(): void {
     if (this.truckLocationMarker) {
+      this.truckLocationMarker.setMap(null);
       this.truckLocationMarker = null;
+
     }
   }
 
