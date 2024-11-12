@@ -1,1 +1,224 @@
-<p>challan-details works!</p>
+<div class="flex flex-col space-y-2">
+  <div class="mx-3 mt-2 flex justify-between items-center rounded-lg bg-white pl-9 pr-6 py-[.875rem]">
+    <h1 class="text-h1 leading-h1 text-not-black font-semibold">Challan Details</h1>
+    <div class="flex space-x-4 items-center">
+      <button
+        class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+        <span>Save</span>
+      </button>
+      <button
+        class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
+        <span>Cancel</span>
+      </button>
+      <button
+        class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+        <span>Approve</span>
+      </button>
+      <button
+        class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
+        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+        <span>Reject</span>
+      </button>
+      <button
+        class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
+        <i class="far fa-pen text-primary"></i>
+      </button>
+    </div>
+  </div>
+  <div class="grid grid-cols-3  w-full">
+    <div class="flex flex-col space-y-2 w-full">
+      <div class="px-6 py-4 ml-3 bg-white rounded-lg ">
+        <div class="flex flex-col space-y-6">
+          <h1 class="text-h2 leading-h2 text-not-black font-bold">Trip info</h1>
+          <div class="flex space-y-0.5 flex-col">
+            <h1 class="text-body_title leading-body_title font-bold">{{ singleTrip?.tripId }}</h1>
+            <h1 class="text-body_title leading-body_title font-bold">{{ singleTrip?.customerName }}</h1>
+            <h1
+              class="text-body text-web-text-secondary">{{ singleTrip?.tripStartDatetime | date : 'd MMM yyyy, h:m:ss a' }}</h1>
+          </div>
+          <div class="flex flex-col space-y-2">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/loading.svg" class="notPreview">
+              <span class="text-body_title leading-body_title font-bold">Loading point</span>
+            </div>
+            <div class="ml-3">
+              <ng-container *ngFor="let point of getLoadingPoint(singleTrip?.tripPoints)">
+                <div class="step">
+                  <div class="circle">
+                    <img src="assets/svg/circle.svg" alt="loading">
+                  </div>
+                  <div class="flex items-center justify-between text-body text-secondary">
+                    <p class="w-full">{{ point.pointName }}</p>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="flex flex-col space-y-2">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/unloading.svg" class="notPreview">
+              <span class="text-body_title leading-body_title font-bold">Unloading point</span>
+            </div>
+            <div class="ml-3">
+              <ng-container *ngFor="let point of getUnloadingPoint(singleTrip?.tripPoints)">
+                <div class="step">
+                  <div class="circle">
+                    <img src="assets/svg/circle.svg" alt="loading">
+                  </div>
+                  <div class="flex items-center justify-between  text-secondary text-body"><p class="w-full">
+                    {{ point.pointName }}
+                  </p>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="flex flex-col space-y-2">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/transporter-info.svg" class="notPreview">
+              <span class="text-body_title leading-body_title font-bold">Transporter</span>
+            </div>
+            <span class="text-body ml-2.5 text-web-text-secondary">{{ singleTrip?.transporterName }}</span>
+          </div>
+          <div class="flex flex-col space-y-2">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/truckinfo.svg" class="notPreview">
+              <span class="text-body_title leading-body_title font-bold">Truck</span>
+            </div>
+            <span class="text-body ml-2.5 text-web-text-secondary">{{ singleTrip?.truck?.fullRegistrationNumber }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="px-6 py-4 ml-3 bg-white rounded-lg ">
+        <div class="flex flex-col space-y-4 w-full">
+          <h1 class="text-h2 leading-h2 font-bold">Unloading challan</h1>
+          <div class="flex justify-between w-full">
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-secondary">Status</span>
+              <span
+                class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanStatus }}</span>
+            </div>
+            <div class="flex flex-col space-y-1 text-center">
+              <span class="text-body text-secondary">Approval time</span>
+              <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanStatusUpdatedAt ? singleTrip?.challanStatusUpdatedAt : 'N/A'}}</span>
+            </div>
+            <div class="flex flex-col space-y-1 text-center">
+              <span class="text-body text-secondary">Due Days</span>
+              <span
+                class="text-body_title leading-body_title text-not-black font-semibold">{{ getDueDays(singleTrip) }}</span>
+            </div>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <span class="text-body text-secondary">Received By</span>
+            <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanReceivedFromDTOList[0]?.name }}</span>
+            <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanReceivedFromDTOList[0]?.phoneNumber }}</span>
+          </div>
+          <div class="flex flex-col space-y-1" *ngIf="singleTrip.challanStatus === 'Approved' || singleTrip.challanStatus === 'Rejected'">
+            <span class="text-body text-secondary">{{singleTrip?.challanStatus === 'Approved' ? 'Approved' : 'Rejected'}} By</span>
+            <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanReceivedFromDTOList[0]?.name }}</span>
+            <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanReceivedFromDTOList[0]?.phoneNumber }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-span-2 mx-3">
+      <div class="flex flex-col space-y-3">
+        <div class="flex flex-col space-y-3 px-6 py-4 bg-white rounded-lg">
+          <div class="flex justify-between items-center w-full">
+            <h1 class="text-h2 leading-h2 font-bold text-not-black">Unloading challan</h1>
+            <div class="flex space-x-3">
+              <button class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
+                <img src="assets/svg/notes.svg" class="notPreview">
+                <span class="text-h2_regular leading-h2_regular text-link">Add notes</span>
+              </button>
+              <button class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
+                <img src="assets/svg/upload.svg" class="notPreview">
+                <span class="text-h2_regular leading-h2_regular text-link">Upload</span>
+              </button>
+            </div>
+          </div>
+          <div class="min-h-48 flex items-center" *ngIf="unloadingEvents[0]?.tripDocuments?.length > 0">
+            <div class="flex space-x-2">
+              <ng-container *ngFor="let document of getFirstSixDocuments(unloadingEvents[0]?.tripDocuments)">
+                <div class="flex flex-col space-y-2">
+                  <div class="w-[7.5rem] h-[7.25rem] rounded-lg overflow-hidden border border-line">
+                    <img [src]="document.url" class="notPreview h-full w-full " alt="">
+                  </div>
+                  <div class="flex flex-col space-y-1 items-center">
+                    <span class="text-xs text-web-text-secondary font-semibold">{{document.createdAt | date: 'd MMM yyyy'}}</span>
+                    <span class="text-xs text-secondary font-semibold">{{document.createdAt | date: 'h:m a'}}</span>
+                  </div>
+                </div>
+              </ng-container>
+              <div *ngIf="unloadingEvents[0]?.tripDocuments.length > 6" class="w-[7.5rem] h-[7.25rem] flex items-center justify-center rounded-lg overflow-hidden border border-line">
+                <div class="flex flex-col space-y-1 items-center ">
+                  <span class="text-h2 leading-h2 font-bold text-not-black">+{{unloadingEvents[0]?.tripDocuments.length - 6}} more</span>
+                  <a class="text-h2_regular text-link ">View all</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-full flex flex-col min-h-48 space-y-3 justify-center items-center" *ngIf="unloadingEvents[0]?.tripDocuments?.length <= 0">
+            <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+            <p class="text-body_title leading-body_title text-secondary font-semibold">No challan image found</p>
+          </div>
+          <ng-container *ngFor="let note of unloadingEvents[0]?.notes">
+            <div class="bg-input rounded-lg w-full px-4 py-3 flex flex-col space-y-1">
+              <span class="text-xs text-secondary">Note | {{ note.createdAt | date: 'h:m a; d MMM yyyy' }}</span>
+              <p class="text-xs text-not-black">{{ note.note }}</p>
+            </div>
+          </ng-container>
+        </div>
+        <div class="flex flex-col space-y-3 px-6 py-4 bg-white rounded-lg">
+          <div class="flex justify-between items-center w-full">
+            <h1 class="text-h2 leading-h2 font-bold text-not-black">Loading challan</h1>
+            <div class="flex space-x-3">
+              <button class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
+                <img src="assets/svg/notes.svg" class="notPreview">
+                <span class="text-h2_regular leading-h2_regular text-link">Add notes</span>
+              </button>
+              <button routerLink="/image-upload" class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
+                <img src="assets/svg/upload.svg" class="notPreview">
+                <span class="text-h2_regular leading-h2_regular text-link">Upload</span>
+              </button>
+            </div>
+          </div>
+          <div class="min-h-48 flex items-center" *ngIf="loadingEvents[0]?.tripDocuments?.length > 0">
+            <div class="flex space-x-2">
+              <ng-container *ngFor="let document of getFirstSixDocuments(loadingEvents[0]?.tripDocuments)">
+                <div class="flex flex-col space-y-2">
+                  <div class="w-[7.5rem] h-[7.25rem] rounded-lg overflow-hidden border border-line">
+                    <img [src]="document.url" class="notPreview h-full w-full " alt="">
+                  </div>
+                  <div class="flex flex-col space-y-1 items-center">
+                    <span class="text-xs text-web-text-secondary font-semibold">{{document.createdAt | date: 'd MMM yyyy'}}</span>
+                    <span class="text-xs text-secondary font-semibold">{{document.createdAt | date: 'h:m a'}}</span>
+                  </div>
+                </div>
+              </ng-container>
+              <div *ngIf="loadingEvents[0]?.tripDocuments.length > 6" class="w-[7.5rem] h-[7.25rem] flex items-center justify-center rounded-lg overflow-hidden border border-line">
+                <div class="flex flex-col space-y-1 items-center ">
+                  <span class="text-h2 leading-h2 font-bold text-not-black">+{{loadingEvents[0]?.tripDocuments.length - 6}} more</span>
+                  <a class="text-h2_regular text-link ">View all</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full flex flex-col min-h-48 space-y-3 justify-center items-center" *ngIf="loadingEvents[0]?.tripDocuments?.length <= 0">
+            <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+            <p class="text-body_title leading-body_title text-secondary font-semibold">No challan image found</p>
+          </div>
+          <ng-container *ngFor="let note of loadingEvents[0]?.notes">
+            <div class="bg-input rounded-lg w-full px-4 py-3 flex flex-col space-y-1">
+              <span class="text-xs text-secondary">Note | {{ note.createdAt | date: 'h:m a; d MMM yyyy' }}</span>
+              <p class="text-xs text-not-black">{{ note.note }}</p>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

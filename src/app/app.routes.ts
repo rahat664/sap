@@ -142,6 +142,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'image-upload',
+    title: 'Image Upload',
+    loadComponent: () =>
+      import('./shared/modules/global-image-upload/global-image-upload.component').then(
+        m => m.GlobalImageUploadComponent
+      ),
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',
