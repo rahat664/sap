@@ -1,0 +1,82 @@
+<div class="grid grid-cols-3">
+  <div class="col-span-2 flex flex-col w-full bg-black h-[calc(100vh-4.125rem)]">
+    <div class="px-7 py-[1.375rem] flex justify-between bg-[#302F2F]">
+      <div class="flex space-x-3 items-center text-white">
+        <i class="fas fa-chevron-left text-white"></i>
+        <span class="text-h3 leading-h3 font-bold">Loading challan</span>
+      </div>
+      <div class="flex space-x-6">
+        <img src="assets/svg/download.svg" class="notPreview h-6 w-6">
+        <img src="assets/svg/delete.svg" class="notPreview h-6 w-[22.5px]">
+      </div>
+    </div>
+    <div class="h-full py-[1.125rem] flex justify-center">
+      <div class="bg-[#F0F4F8] w-[36.25rem] rounded-lg h-full">
+      </div>
+    </div>
+    <div class="h-32 bg-[#302F2F] flex items-center w-full justify-center">
+      <div class="flex space-x-4">
+        <div class="w-[5.25rem] h-20 bg-[#F0F4F8] bg-opacity-[30%] rounded-lg"></div>
+        <div class="w-[5.25rem] h-20 bg-[#F0F4F8] bg-opacity-[30%] rounded-lg"></div>
+        <div class="w-[5.25rem] h-20 bg-[#F0F4F8]  rounded-lg"></div>
+        <div class="w-[5.25rem] h-20 bg-[#F0F4F8] bg-opacity-[30%] rounded-lg"></div>
+        <div class="w-[5.25rem] h-20 bg-[#F0F4F8] bg-opacity-[30%] rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="mx-6">
+    <div class="px-10 py-5 flex justify-between items-center border-b border-b-line">
+      <span class="text-h3 leading-h3 text-not-black font-bold">Image details</span>
+      <button class="bg-primary py-2 text-white rounded-lg px-8 text-center text-h2_medium">Save</button>
+    </div>
+    <div class="px-10 py-5 flex flex-col space-y-5">
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Upload time</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black">{{ currentDate | date: 'd MMM yyyy' }}</span>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Image type</span>
+        <mat-form-field appearance="outline" class="w-2/3">
+          <mat-select
+            (selectionChange)="onChangeImageType($event)" placeholder="Select image type">
+            @for (imageType of imageTypes; track imageType) {
+              <mat-option [value]="imageType.id">{{ imageType.viewValue }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Expire date</span>
+        <div class="grid grid-cols-8 w-4/5 gap-3">
+          <mat-form-field appearance="outline" class="col-span-3">
+            <mat-select
+              (selectionChange)="onChangeImageType($event)" placeholder="Month">
+              @for (month of months; track month) {
+                <mat-option [value]="month.id">{{ month.viewValue }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="col-span-2">
+            <input
+              matInput
+              placeholder="Day"
+              class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="col-span-2">
+            <input
+              matInput
+              placeholder="Year"
+              class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="text-h2 leading-h2 font-semibold text-not-black">Note</span>
+        <textarea
+          placeholder="Enter Note"
+          class="bg-input rounded-lg  p-4 border border-disabled"
+          id="note"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
