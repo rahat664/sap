@@ -150,6 +150,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'image-details',
+    title: 'Image Details',
+    loadComponent: () =>
+      import('./shared/modules/global-image-gallery/global-image-gallery.component').then(
+        m => m.GlobalImageGalleryComponent
+      ),
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',

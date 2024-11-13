@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TripService } from '../../../trip-list/services/trip.service';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe, NgForOf, NgIf, SlicePipe } from '@angular/common';
 import { Trip } from '../../../auth/models/response/trip';
 
@@ -16,9 +16,11 @@ export class ChallanDetailsComponent {
   protected unloadingEvents: any;
   loading: any;
   singleTrip: Trip = null;
+  isInEditMode: boolean = false;
   constructor(
     private trip: TripService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -80,5 +82,25 @@ export class ChallanDetailsComponent {
     } else {
       return [];
     }
+  }
+
+  onSave() {}
+
+  onCancel() {}
+
+  onEdit() {}
+
+  onReject() {}
+
+  onDoubleClick(tripDocuments: any, document: any) {
+    this.router.navigate(['image-details'], {
+      state: {
+        tripDocuments: tripDocuments,
+        imageType: 'Unloading Challan',
+        expiryAvailable: false,
+        noteAvailable: false,
+        activatedDocument: document,
+      },
+    });
   }
 }

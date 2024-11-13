@@ -2,26 +2,33 @@
   <div class="mx-3 mt-2 flex justify-between items-center rounded-lg bg-white pl-9 pr-6 py-[.875rem]">
     <h1 class="text-h1 leading-h1 text-not-black font-semibold">Challan Details</h1>
     <div class="flex space-x-4 items-center">
-      <button
+      <button *ngIf="isInEditMode"
+              (click)="onSave()"
         class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
         <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
         <span>Save</span>
       </button>
-      <button
+      <button *ngIf="isInEditMode"
+              (click)="onCancel()"
         class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
         <span>Cancel</span>
       </button>
-      <button
+      <button *ngIf="!isInEditMode"
+              (click)="onEdit()"
         class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
         <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
         <span>Approve</span>
       </button>
       <button
+        *ngIf="!isInEditMode"
+        (click)="onReject()"
         class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
         <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
         <span>Reject</span>
       </button>
       <button
+        *ngIf="!isInEditMode"
+        (click)="onEdit()"
         class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
         <i class="far fa-pen text-primary"></i>
       </button>
@@ -143,7 +150,7 @@
             <div class="flex space-x-2">
               <ng-container *ngFor="let document of getFirstSixDocuments(unloadingEvents[0]?.tripDocuments)">
                 <div class="flex flex-col space-y-2">
-                  <div class="w-[7.5rem] h-[7.25rem] rounded-lg overflow-hidden border border-line">
+                  <div (dblclick)="onDoubleClick(unloadingEvents[0]?.tripDocuments, document)" class="w-[7.5rem] h-[7.25rem] rounded-lg overflow-hidden border border-line">
                     <img [src]="document.url" class="notPreview h-full w-full " alt="">
                   </div>
                   <div class="flex flex-col space-y-1 items-center">
@@ -160,7 +167,7 @@
               </div>
             </div>
           </div>
-          <div class="w-full flex flex-col min-h-48 space-y-3 justify-center items-center" *ngIf="unloadingEvents[0]?.tripDocuments?.length <= 0">
+          <div  class="w-full flex flex-col min-h-48 space-y-3 justify-center items-center" *ngIf="unloadingEvents[0]?.tripDocuments?.length <= 0">
             <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
             <p class="text-body_title leading-body_title text-secondary font-semibold">No challan image found</p>
           </div>
