@@ -3,22 +3,31 @@
     <div class="px-7 py-[1.375rem] flex justify-between bg-[#302F2F]">
       <div class="flex space-x-3 items-center text-white">
         <i class="fas fa-chevron-left text-white"></i>
-        <span class="text-h3 leading-h3 font-bold">{{imageType}}</span>
+        <span class="text-h3 leading-h3 font-bold">{{ imageType }}</span>
       </div>
       <div class="flex space-x-6">
         <img src="assets/svg/download.svg" class="notPreview h-6 w-6">
-        <img  src="assets/svg/delete.svg" class="notPreview h-6 w-[22.5px]">
+        <img src="assets/svg/delete.svg" class="notPreview h-6 w-[22.5px]">
       </div>
     </div>
-    <div class=" h-[calc(100vh-14rem)] py-[1.125rem] flex justify-center">
-      <div class="bg-[#F0F4F8] w-[36.25rem] overflow-hidden rounded-lg h-full">
+    <div class=" h-[calc(100vh-16.5rem)] py-[1.125rem] flex relative justify-center" (mouseenter)="onMouseEnter()"
+         (mouseleave)="onMouseLeave()"
+         (mousemove)="onMouseMove($event)" >
+      <button (click)="onClickLeftButton()" [ngClass]="{'show' : activeDocumentIndex > 0 && showLeftArrow}" class="arrow absolute left-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+        <i class="fas fa-chevron-left font-bold text-white text-xxl"></i>
+      </button>
+      <div class="bg-[#F0F4F8] w-[36.25rem] overflow-hidden rounded-lg h-[calc(100vh-18.75rem)]">
         <img [src]="activatedDocument?.url" alt="activeDocument" class="h-full w-full notPreview">
       </div>
+      <button (click)="onClickRightButton()" [ngClass]="{'show' : activeDocumentIndex < documents.length - 1 && showRightArrow}" class="arrow absolute right-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+        <i class="fas fa-chevron-right font-bold text-white text-xxl"></i>
+      </button>
     </div>
-    <div class="h-32 bg-[#302F2F] flex items-center w-full justify-center customScrollbar">
-      <div class="flex space-x-4 w-2/3 overflow-x-auto ">
-        <ng-container *ngFor="let doc of documents">
-          <div #activate (click)="onClickDocument(doc)" class="w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden  rounded-lg">
+    <div class="min-h-32 bg-[#302F2F] flex items-center w-full justify-center customScrollbar">
+      <div class="flex space-x-4 w-2/3 overflow-x-auto " #documentContainer>
+        <ng-container *ngFor="let doc of documents; index as i">
+          <div (click)="onClickDocument(doc, i)" [ngClass]="{'scaled': doc === activatedDocument}"
+               class=" document-item w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden  rounded-lg">
             <img [src]="doc.url" alt="document" class="h-full w-full notPreview">
           </div>
         </ng-container>
@@ -33,11 +42,12 @@
     <div class="px-10 py-5 flex flex-col space-y-5">
       <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Upload time</span>
-        <span class="text-h2 leading-h2 font-semibold text-not-black">{{activatedDocument?.createdAt | date : 'd MMM yyyy h:mm a'}}</span>
+        <span
+          class="text-h2 leading-h2 font-semibold text-not-black">{{ activatedDocument?.createdAt | date : 'd MMM yyyy h:mm a' }}</span>
       </div>
       <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Image type</span>
-        <span class="text-h2 leading-h2 font-semibold text-not-black">{{imageType}}</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black">{{ imageType }}</span>
       </div>
       <div class="flex flex-col space-y-1" *ngIf="expiryAvailable">
         <span class="text-body text-secondary">Expire date</span>

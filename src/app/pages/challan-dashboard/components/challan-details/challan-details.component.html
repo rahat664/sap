@@ -122,7 +122,7 @@
             <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanReceivedFromDTOList[0]?.name }}</span>
             <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanReceivedFromDTOList[0]?.phoneNumber }}</span>
           </div>
-          <div class="flex flex-col space-y-1" *ngIf="singleTrip.challanStatus === 'Approved' || singleTrip.challanStatus === 'Rejected'">
+          <div class="flex flex-col space-y-1" *ngIf="singleTrip?.challanStatus === 'Approved' || singleTrip?.challanStatus === 'Rejected'">
             <span class="text-body text-secondary">{{singleTrip?.challanStatus === 'Approved' ? 'Approved' : 'Rejected'}} By</span>
             <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanReceivedFromDTOList[0]?.name }}</span>
             <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanReceivedFromDTOList[0]?.phoneNumber }}</span>
@@ -135,7 +135,7 @@
         <div class="flex flex-col space-y-3 px-6 py-4 bg-white rounded-lg">
           <div class="flex justify-between items-center w-full">
             <h1 class="text-h2 leading-h2 font-bold text-not-black">Unloading challan</h1>
-            <div class="flex space-x-3">
+            <div class="flex space-x-3" *ngIf="isInEditMode">
               <button class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
                 <img src="assets/svg/notes.svg" class="notPreview">
                 <span class="text-h2_regular leading-h2_regular text-link">Add notes</span>
@@ -167,7 +167,7 @@
               </div>
             </div>
           </div>
-          <div  class="w-full flex flex-col min-h-48 space-y-3 justify-center items-center" *ngIf="unloadingEvents[0]?.tripDocuments?.length <= 0">
+          <div  class="w-full flex flex-col min-h-48 space-y-3 justify-center items-center" *ngIf="unloadingEvents[0]?.tripDocuments === null">
             <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
             <p class="text-body_title leading-body_title text-secondary font-semibold">No challan image found</p>
           </div>
@@ -196,7 +196,7 @@
             <div class="flex space-x-2">
               <ng-container *ngFor="let document of getFirstSixDocuments(loadingEvents[0]?.tripDocuments)">
                 <div class="flex flex-col space-y-2">
-                  <div class="w-[7.5rem] h-[7.25rem] rounded-lg overflow-hidden border border-line">
+                  <div (dblclick)="onDoubleClickLoading(loadingEvents[0]?.tripDocuments, document)" class="w-[7.5rem] h-[7.25rem] rounded-lg overflow-hidden border border-line">
                     <img [src]="document.url" class="notPreview h-full w-full " alt="">
                   </div>
                   <div class="flex flex-col space-y-1 items-center">
@@ -214,7 +214,7 @@
             </div>
           </div>
 
-          <div class="w-full flex flex-col min-h-48 space-y-3 justify-center items-center" *ngIf="loadingEvents[0]?.tripDocuments?.length <= 0">
+          <div class="w-full flex flex-col min-h-48 space-y-3 justify-center items-center" *ngIf="loadingEvents[0]?.tripDocuments === null">
             <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
             <p class="text-body_title leading-body_title text-secondary font-semibold">No challan image found</p>
           </div>

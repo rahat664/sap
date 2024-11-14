@@ -12,8 +12,8 @@ import { Trip } from '../../../auth/models/response/trip';
   styleUrl: './challan-details.component.scss',
 })
 export class ChallanDetailsComponent {
-  protected loadingEvents: any;
-  protected unloadingEvents: any;
+  protected loadingEvents: any[] = [];
+  protected unloadingEvents: any[] = [];
   loading: any;
   singleTrip: Trip = null;
   isInEditMode: boolean = false;
@@ -97,6 +97,18 @@ export class ChallanDetailsComponent {
       state: {
         tripDocuments: tripDocuments,
         imageType: 'Unloading Challan',
+        expiryAvailable: false,
+        noteAvailable: false,
+        activatedDocument: document,
+      },
+    });
+  }
+
+  onDoubleClickLoading(tripDocuments: any, document: any) {
+    this.router.navigate(['image-details'], {
+      state: {
+        tripDocuments: tripDocuments,
+        imageType: 'Loading Challan',
         expiryAvailable: false,
         noteAvailable: false,
         activatedDocument: document,
