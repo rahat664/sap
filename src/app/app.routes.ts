@@ -41,6 +41,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'challan-management/:id/image-upload',
+    title: 'Challan Image Upload',
+    loadComponent: () =>
+      import('./pages/challan-dashboard/components/challan-image-upload/challan-image-upload.component').then(
+        c => c.ChallanImageUploadComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'trip-list',
     title: 'Trip List',
     loadComponent: () =>
@@ -83,6 +92,7 @@ export const routes: Routes = [
       import(
         './pages/trip-list/components/create-trip-page/create-trip-page.component'
       ).then(c => c.CreateTripPageComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'trip-create/overview',
@@ -91,6 +101,7 @@ export const routes: Routes = [
       import(
         './pages/trip-list/components/trip-create-overview/trip-create-overview.component'
       ).then(c => c.TripCreateOverviewComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'update-trip',
@@ -99,6 +110,7 @@ export const routes: Routes = [
       import(
         './pages/trip-list/components/trip-update/trip-update.component'
       ).then(c => c.TripUpdateComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'trip-create/create-trip-template',
@@ -107,6 +119,7 @@ export const routes: Routes = [
       import(
         './pages/trip-list/components/template-create/template-create.component'
       ).then(c => c.TemplateCreateComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'update-trip-template',
@@ -115,6 +128,7 @@ export const routes: Routes = [
       import(
         './pages/trip-list/components/template-update/template-update.component'
       ).then(c => c.TemplateUpdateComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'user-management',
@@ -148,6 +162,7 @@ export const routes: Routes = [
       import('./shared/modules/global-image-upload/global-image-upload.component').then(
         m => m.GlobalImageUploadComponent
       ),
+    canActivate: [authGuard],
   },
   {
     path: 'image-details',
@@ -156,6 +171,7 @@ export const routes: Routes = [
       import('./shared/modules/global-image-gallery/global-image-gallery.component').then(
         m => m.GlobalImageGalleryComponent
       ),
+    canActivate: [authGuard],
   },
   {
     path: '',

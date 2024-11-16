@@ -117,10 +117,16 @@
                 class="text-body_title leading-body_title text-not-black font-semibold">{{ getDueDays(singleTrip) }}</span>
             </div>
           </div>
-          <div class="flex flex-col space-y-1">
+          <div class="flex flex-col space-y-1" *ngIf="singleTrip?.challanReceivedFromDTOList && singleTrip?.challanReceivedFromDTOList.length > 0">
             <span class="text-body text-secondary">Received By</span>
-            <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanReceivedFromDTOList[0]?.name }}</span>
-            <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanReceivedFromDTOList[0]?.phoneNumber }}</span>
+            <div class="grid w-full grid-cols-3">
+              <ng-container *ngFor="let receivedFrom of singleTrip?.challanReceivedFromDTOList">
+                <div class="flex flex-col space-y-1">
+                  <span class="text-body_title leading-body_title text-not-black font-semibold">{{ receivedFrom.name }}</span>
+                  <span class="text-body_title leading-body_title text-not-black font-semibold">{{ receivedFrom.phoneNumber }}</span>
+                </div>
+              </ng-container>
+            </div>
           </div>
           <div class="flex flex-col space-y-1" *ngIf="singleTrip?.challanStatus === 'Approved' || singleTrip?.challanStatus === 'Rejected'">
             <span class="text-body text-secondary">{{singleTrip?.challanStatus === 'Approved' ? 'Approved' : 'Rejected'}} By</span>
@@ -133,17 +139,25 @@
     <div class="col-span-2 mx-3">
       <div class="flex flex-col space-y-3">
         <div class="flex flex-col space-y-3 px-6 py-4 bg-white rounded-lg">
-          <div class="flex justify-between items-center w-full">
+          <div  class="flex justify-between items-center w-full min-h-10" >
             <h1 class="text-h2 leading-h2 font-bold text-not-black">Unloading challan</h1>
-            <div class="flex space-x-3" *ngIf="isInEditMode">
+            <div  class="flex space-x-3" *ngIf="isInEditMode">
               <button class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
                 <img src="assets/svg/notes.svg" class="notPreview">
                 <span class="text-h2_regular leading-h2_regular text-link">Add notes</span>
               </button>
-              <button class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
-                <img src="assets/svg/upload.svg" class="notPreview">
-                <span class="text-h2_regular leading-h2_regular text-link">Upload</span>
-              </button>
+              <label for="file-upload"
+                class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
+                  <img src="assets/svg/upload.svg" class="notPreview">
+                  <span class="text-h2_regular leading-h2_regular text-link">Upload</span>
+              </label>
+              <input
+                type="file"
+                id="file-upload"
+                multiple
+                accept="image/*, application/pdf"
+                (change)="onUnloadingFileChange($event)"
+                class="hidden w-full" />
             </div>
           </div>
           <div class="min-h-48 flex items-center" *ngIf="unloadingEvents[0]?.tripDocuments?.length > 0">
@@ -179,17 +193,25 @@
           </ng-container>
         </div>
         <div class="flex flex-col space-y-3 px-6 py-4 bg-white rounded-lg">
-          <div class="flex justify-between items-center w-full">
+          <div class="flex justify-between items-center w-full min-h-10">
             <h1 class="text-h2 leading-h2 font-bold text-not-black">Loading challan</h1>
-            <div class="flex space-x-3">
+            <div class="flex space-x-3" *ngIf="isInEditMode">
               <button class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
                 <img src="assets/svg/notes.svg" class="notPreview">
                 <span class="text-h2_regular leading-h2_regular text-link">Add notes</span>
               </button>
-              <button routerLink="/image-upload" class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
+              <label for="file-upload-loading"
+                     class="flex space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
                 <img src="assets/svg/upload.svg" class="notPreview">
                 <span class="text-h2_regular leading-h2_regular text-link">Upload</span>
-              </button>
+              </label>
+              <input
+                type="file"
+                id="file-upload-loading"
+                multiple
+                accept="image/*, application/pdf"
+                (change)="onLoadingFileChange($event)"
+                class="hidden w-full" />
             </div>
           </div>
           <div class="min-h-48 flex items-center" *ngIf="loadingEvents[0]?.tripDocuments?.length > 0">

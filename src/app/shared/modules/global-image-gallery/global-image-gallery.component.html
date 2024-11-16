@@ -12,14 +12,17 @@
     </div>
     <div class=" h-[calc(100vh-16.5rem)] py-[1.125rem] flex relative justify-center" (mouseenter)="onMouseEnter()"
          (mouseleave)="onMouseLeave()"
-         (mousemove)="onMouseMove($event)" >
-      <button (click)="onClickLeftButton()" [ngClass]="{'show' : activeDocumentIndex > 0 && showLeftArrow}" class="arrow absolute left-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+         (mousemove)="onMouseMove($event)">
+      <button (click)="onClickLeftButton()" [ngClass]="{'show' : activeDocumentIndex > 0 && showLeftArrow}"
+              class="arrow absolute left-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
         <i class="fas fa-chevron-left font-bold text-white text-xxl"></i>
       </button>
       <div class="bg-[#F0F4F8] w-[36.25rem] overflow-hidden rounded-lg h-[calc(100vh-18.75rem)]">
         <img [src]="activatedDocument?.url" alt="activeDocument" class="h-full w-full notPreview">
       </div>
-      <button (click)="onClickRightButton()" [ngClass]="{'show' : activeDocumentIndex < documents.length - 1 && showRightArrow}" class="arrow absolute right-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+      <button (click)="onClickRightButton()"
+              [ngClass]="{'show' : activeDocumentIndex < documents.length - 1 && showRightArrow}"
+              class="arrow absolute right-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
         <i class="fas fa-chevron-right font-bold text-white text-xxl"></i>
       </button>
     </div>

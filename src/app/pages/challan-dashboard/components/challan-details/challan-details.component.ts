@@ -16,12 +16,17 @@ export class ChallanDetailsComponent {
   protected unloadingEvents: any[] = [];
   loading: any;
   singleTrip: Trip = null;
-  isInEditMode: boolean = false;
+  isInEditMode: boolean;
   constructor(
     private trip: TripService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
+
+
+  ngOnChanges(changes: any) {
+    console.log(changes);
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -86,9 +91,13 @@ export class ChallanDetailsComponent {
 
   onSave() {}
 
-  onCancel() {}
+  onCancel() {
+    this.isInEditMode = false;
+  }
 
-  onEdit() {}
+  onEdit() {
+    this.isInEditMode = true;
+  }
 
   onReject() {}
 
@@ -114,5 +123,15 @@ export class ChallanDetailsComponent {
         activatedDocument: document,
       },
     });
+  }
+
+  onUnloadingFileChange($event: Event) {
+
+  }
+
+
+
+  onLoadingFileChange($event: Event) {
+
   }
 }
