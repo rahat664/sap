@@ -5,24 +5,55 @@
         <i class="fas fa-chevron-left text-white"></i>
         <span class="text-h3 leading-h3 font-bold">{{ imageType }}</span>
       </div>
-      <div class="flex space-x-6">
-        <img src="assets/svg/download.svg" class="notPreview h-6 w-6">
-        <img src="assets/svg/delete.svg" class="notPreview h-6 w-[22.5px]">
-      </div>
+        <div class="flex space-x-4 text-white items-center">
+          <button [disabled]="zoomLevel >= maxZoom" [ngClass]="{'text-secondary': zoomLevel >= maxZoom}" (click)="zoomIn()" class="flex items-center justify-center ">
+            <i class="fal  text-[2rem] fa-search-plus"></i>
+          </button>
+          <button [disabled]="zoomLevel <= minZoom" (click)="zoomOut()" [ngClass]="{'text-secondary': zoomLevel <= minZoom}" class="flex items-center justify-center">
+            <i class="fal  text-[2rem] fa-search-minus"></i>
+          </button>
+          <button type="button" (click)="onClickDownload()" class="h-full">
+            <img src="assets/svg/download.svg" class="notPreview h-full w-full" alt="">
+          </button>
+          <button type="button" (click)="onClickDelete()">
+            <img src="assets/svg/delete.svg" class="notPreview h-full w-full" alt="">
+          </button>
+        </div>
     </div>
-    <div class=" h-[calc(100vh-16.5rem)] py-[1.125rem] flex relative justify-center" (mouseenter)="onMouseEnter()"
-         (mouseleave)="onMouseLeave()"
-         (mousemove)="onMouseMove($event)">
-      <button (click)="onClickLeftButton()" [ngClass]="{'show' : activeDocumentIndex > 0 && showLeftArrow}"
-              class="arrow absolute left-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+    <div
+      (wheel)="onZoom($event)"
+      class="h-[calc(100vh-16.5rem)] py-[1.125rem] flex relative justify-center items-center overflow-hidden"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()"
+      (mousemove)="onMouseMove($event)"
+    >
+      <button
+        (click)="onClickLeftButton()"
+        [ngClass]="{'show': activeDocumentIndex > 0 && showLeftArrow}"
+        class="arrow absolute left-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]"
+      >
         <i class="fas fa-chevron-left font-bold text-white text-xxl"></i>
       </button>
-      <div class="bg-[#F0F4F8] w-[36.25rem] overflow-hidden rounded-lg h-[calc(100vh-18.75rem)]">
-        <img [src]="activatedDocument?.url" alt="activeDocument" class="h-full w-full notPreview">
+
+      <div
+        #containerElement
+        class=" w-[90%] h-[calc(100vh-18.75rem)] overflow-hidden rounded-lg flex items-center justify-center transition-transform duration-300 transform origin-center relative"
+      >
+        <div #imageElement class="transition-transform rounded-lg overflow-hidden duration-300 transform origin-center relative" [style.transform]="'scale(' + zoomLevel + ')'">
+          <img
+            [src]="activatedDocument.url"
+            alt="activeDocument"
+            class="notPreview h-full w-full"
+          />
+
+        </div>
       </div>
-      <button (click)="onClickRightButton()"
-              [ngClass]="{'show' : activeDocumentIndex < documents.length - 1 && showRightArrow}"
-              class="arrow absolute right-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+
+      <button
+        (click)="onClickRightButton()"
+        [ngClass]="{'show': activeDocumentIndex < documents.length - 1 && showRightArrow}"
+        class="arrow absolute right-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]"
+      >
         <i class="fas fa-chevron-right font-bold text-white text-xxl"></i>
       </button>
     </div>

@@ -8,6 +8,7 @@ import { MatInput } from '@angular/material/input';
 import { MatOption } from '@angular/material/core';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TripService } from '../../../trip-list/services/trip.service';
 
 @Component({
   selector: 'app-challan-image-upload',
@@ -47,8 +48,11 @@ export class ChallanImageUploadComponent {
   expiryAvailable:  boolean = false;
   notesAvailable: boolean = false;
   returnUrl: string;
+  private notes: string;
+  private eventTypeId: number;
+  private type: string;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private datePipe: DatePipe, private trip: TripService) {
   }
 
   ngOnInit() {
@@ -70,6 +74,8 @@ export class ChallanImageUploadComponent {
     this.tripDocuments = [];
     this.tripDocumentFiles = [];
     this.imageTypes = [];
+    this.eventTypeId = null;
+    this.type = null;
     this.tripId = null;
   }
 
@@ -81,6 +87,8 @@ export class ChallanImageUploadComponent {
       this.imageTypes  = navigation.imageType
       this.notesAvailable = navigation.noteAvailable;
       this.expiryAvailable = navigation.expiryAvailable;
+      this.eventTypeId = navigation.eventTypeId;
+      this.type = navigation.type;
       this.returnUrl = navigation.returnUrl;
     }
   }
@@ -108,5 +116,46 @@ export class ChallanImageUploadComponent {
       this.resetNavigationInformation();
       this.router.navigate([this.returnUrl]);
     }
+  }
+
+
+  onClickSave($event: boolean) {
+    if ($event) {
+      const request = {
+        tripPointNo : this.tripId,
+        tripPointEventTypeId: this.eventTypeId,
+        dateTime: this.datePipe.transform(
+          new Date(),
+          'yyyy-MM-ddTHH:mm:ss'
+        ),
+        type: this.type
+      }
+
+      if (this.notes) {
+        request['note'] = JSON.stringify(this.notes);
+      }
+
+      const files = []
+      this.tripDocumentFiles?.forEach(doc => {
+        files.push(doc.file);
+      })
+
+      // convert the request and files into formData
+      const formData = new FormData();
+
+      formData.append('request', JSON.stringify(request));
+      files.forEach(doc => {
+        formData.append('files', doc);
+      })
+
+      this.trip.manageLoadingUnloading(formData).subscribe(
+        response => {
+        }
+      )
+    }
+  }
+
+  onForwardedNote($event: string) {
+      this.notes = $event;
   }
 }

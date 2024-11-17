@@ -27,6 +27,13 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   activeDocumentIndex: number = -1;
   showRightArrow: boolean = false;
   showLeftArrow: boolean = false;
+  @ViewChild('containerElement') containerElement!: ElementRef<HTMLDivElement>;
+  @ViewChild('imageElement') imageElement!: ElementRef<HTMLImageElement>;
+  zoomLevel: number = 1; // Default zoom level
+  maxZoom: number = 3; // Maximum zoom level
+  minZoom: number = 1; // Minimum zoom level
+  translateX: number = 0; // Horizontal translation
+  translateY: number = 0; // Vertical translation
 
   ngOnInit() {
     this.resetNavigationInformation();
@@ -146,5 +153,62 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   }
   onClickRightButton() {
     this.changeActiveDocument(1);
+  }
+
+  onZoom(event: WheelEvent) {
+    event.preventDefault();
+    if (event.deltaY < 0) {
+      this.zoomIn();
+    } else {
+      this.zoomOut();
+    }
+  }
+
+  zoomIn() {
+    if (this.zoomLevel < this.maxZoom) {
+      this.zoomLevel += 0.1;
+      this.adjustZoomBoundaries();
+    }
+  }
+
+  // Zoom out
+  zoomOut() {
+    if (this.zoomLevel > this.minZoom) {
+      this.zoomLevel -= 0.1;
+      this.adjustZoomBoundaries();
+    }
+  }
+
+  adjustZoomBoundaries() {
+    const container = this.containerElement.nativeElement;
+    const image = this.imageElement.nativeElement;
+
+    const containerRect = container.getBoundingClientRect();
+    const imageRect = image.getBoundingClientRect();
+
+    // Calculate overflow distances
+    const overflowX = (imageRect.width - containerRect.width) / 2;
+    const overflowY = (imageRect.height - containerRect.height) / 2;
+
+    // Clamp the translations to prevent overflow
+    this.translateX = Math.max(-overflowX, Math.min(overflowX, this.translateX));
+    this.translateY = Math.max(-overflowY, Math.min(overflowY, this.translateY));
+  }
+
+  onClickDelete() {
+
+  }
+
+  onClickDownload() {
+    // apply download functionalities to activeDocument
+    if (this.documents?.length > 0) {
+      if (this.activatedDocument) {
+        const link = document.createElement('a');
+        link.href = this.activatedDocument.url;
+        link.download = `${this.imageType}`
+        document.body.appendChild(link);
+        link.click();
+      }
+    }
   }
 }

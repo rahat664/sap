@@ -97,6 +97,5 @@ export class PreHireChecklistPopupComponent {
   }
 
   getWidth($event: any) {
-    console.log($event);
   }
 }

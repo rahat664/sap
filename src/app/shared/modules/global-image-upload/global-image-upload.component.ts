@@ -3,7 +3,7 @@ import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 
 @Component({
@@ -19,12 +19,21 @@ import { MatInput } from '@angular/material/input';
     NgIf,
     NgForOf,
     NgClass,
+    FormsModule,
   ],
   templateUrl: './global-image-upload.component.html',
   styleUrl: './global-image-upload.component.scss',
 })
 export class GlobalImageUploadComponent {
   currentDate: Date = new Date();
+  @ViewChild('containerElement') containerElement!: ElementRef<HTMLDivElement>;
+  @ViewChild('imageElement') imageElement!: ElementRef<HTMLImageElement>;
+  zoomLevel: number = 1; // Default zoom level
+  maxZoom: number = 3; // Maximum zoom level
+  minZoom: number = 1; // Minimum zoom level
+  translateX: number = 0; // Horizontal translation
+  translateY: number = 0; // Vertical translation
+  note: string = '';
   @Input() imageTypes: any[] = [];
   months: any[] = [
     { value: '1', viewValue: 'January' },
@@ -46,9 +55,11 @@ export class GlobalImageUploadComponent {
   @Input() activeDocumentIndex: number = -1;
   @Input() activatedDocument: any;
   @Output() closedDocument: EventEmitter<any> = new EventEmitter();
+  @Output() saveButtonClicked: EventEmitter<boolean> = new EventEmitter();
   showLeftArrow: boolean;
   showRightArrow: boolean;
   activatedImageType: any;
+  @Output() forwardedNote: EventEmitter<string> = new EventEmitter();
 
   onChangeImageType($event: any) {}
 
@@ -69,6 +80,45 @@ export class GlobalImageUploadComponent {
         inline: 'center',
       });
     }
+  }
+  onZoom(event: WheelEvent) {
+    event.preventDefault();
+    if (event.deltaY < 0) {
+      this.zoomIn();
+    } else {
+      this.zoomOut();
+    }
+  }
+
+  zoomIn() {
+    if (this.zoomLevel < this.maxZoom) {
+      this.zoomLevel += 0.1;
+      this.adjustZoomBoundaries();
+    }
+  }
+
+  // Zoom out
+  zoomOut() {
+    if (this.zoomLevel > this.minZoom) {
+      this.zoomLevel -= 0.1;
+      this.adjustZoomBoundaries();
+    }
+  }
+
+  adjustZoomBoundaries() {
+    const container = this.containerElement.nativeElement;
+    const image = this.imageElement.nativeElement;
+
+    const containerRect = container.getBoundingClientRect();
+    const imageRect = image.getBoundingClientRect();
+
+    // Calculate overflow distances
+    const overflowX = (imageRect.width - containerRect.width) / 2;
+    const overflowY = (imageRect.height - containerRect.height) / 2;
+
+    // Clamp the translations to prevent overflow
+    this.translateX = Math.max(-overflowX, Math.min(overflowX, this.translateX));
+    this.translateY = Math.max(-overflowY, Math.min(overflowY, this.translateY));
   }
 
   onClickDocument(doc: any, index: number) {
@@ -151,12 +201,18 @@ export class GlobalImageUploadComponent {
     this.changeActiveDocument(1);
   }
 
-  protected readonly onclick = onclick;
+  zoomInAvailable: boolean = true;
+  zoomOutAvailable: boolean = false;
 
   onClickClose() {
     // remove the activated document from the documents array
     const index = this.documents.indexOf(this.activatedDocument);
     this.documents.splice(index, 1);
     this.closedDocument.emit(this.documents[index]);
+  }
+
+  onClickSave() {
+      this.forwardedNote.emit(this.note);
+    this.saveButtonClicked.emit(true);
   }
 }

@@ -30,6 +30,7 @@ export class TripService {
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
   locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
   trackByRegistationUrl = `${environment.locationUrl}/api/locations/filter`;
+  tripPointEventsUrl = `${environment.backendUrl}/api/tripPointEvents`;
   cachedTruckSize: BehaviorSubject<any[]> = new BehaviorSubject([]);
   cachedTruckCapacity: BehaviorSubject<any[]> = new BehaviorSubject([]);
   reloadManageTripPage: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -203,6 +204,10 @@ export class TripService {
           return trip.data.responses;
         })
       );
+  }
+
+  manageLoadingUnloading(body: any): Observable<any> {
+    return this.http.post(`${this.tripPointEventsUrl}`, body);
   }
 
 }

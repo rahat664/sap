@@ -205,7 +205,6 @@ export class TruckDetailsComponent implements OnInit {
       this.deletedFileUrls.forEach(url => {
         this.service.deleteTruckFiles(url, this.truckDetails.id).subscribe(
           (res: any) => {
-            console.log(res);
           },
           error => {
             console.error('Error deleting file:', error);
@@ -707,7 +706,7 @@ export class TruckDetailsComponent implements OnInit {
     };
 
     const selectedField = validationMap[this.selectedFormControlName];
-    console.log(selectedField);
+
 
     if (selectedField) {
       this.previewFile(files, selectedField.imagesArray);
@@ -723,7 +722,6 @@ export class TruckDetailsComponent implements OnInit {
           .get(selectedField.expiryField)
           ?.updateValueAndValidity();
       }
-      console.log(this.truckUpdateForm.get(selectedField.expiryField));
     } else if (
       this.selectedFormControlName === 'truckImages' ||
       this.selectedFormControlName === 'others'
@@ -744,7 +742,6 @@ export class TruckDetailsComponent implements OnInit {
       const currentFiles = Array.from(
         this.truckUpdateForm.get(this.selectedFormControlName)?.value
       );
-      console.log(currentFiles);
       if (currentFiles.length + files.length > this.maxUploadAble) {
         this.toastr.showError(
           `You can upload maximum of ${this.maxUploadAble + this.getSavedFileArray(this.selectedFormControlName)?.length} files`
@@ -1006,7 +1003,6 @@ export class TruckDetailsComponent implements OnInit {
           };
 
           if (formControlName && savedImagesMap[formControlName]) {
-            console.log(savedImagesMap[formControlName], formControlName);
             const updatedImages = savedImagesMap[formControlName].filter(
               item => item.preSignedFileUrl !== file.preSignedFileUrl
             );
@@ -1089,7 +1085,6 @@ export class TruckDetailsComponent implements OnInit {
     documents.forEach(doc => {
       // split by truck document type
       const documentType = doc.documentType;
-      console.log(documentType);
       switch (documentType) {
         case 'REG_PAPER_FILE':
           this.savedRegistrationPaper.push(doc);

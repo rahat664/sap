@@ -132,7 +132,6 @@ export class CreateTripPageComponent implements OnInit {
         ...this.tripForm.get('loadingPoints').value,
         ...this.tripForm.get('unloadingPoints').value,
       ]
-      console.log(this.tripDataModel);
       localStorage.setItem('tripData', JSON.stringify(this.tripDataModel));
       this.checkCacheDataAndUpdate(
         this.tripDataModel.numOfTrucks,
@@ -439,7 +438,6 @@ export class CreateTripPageComponent implements OnInit {
         singleDistrict < this.district.length;
         singleDistrict++
       ) {
-        console.log(option.addressText);
         if (option.addressText.includes(this.district[singleDistrict].name)) {
           this.loadingPoints?.controls[i]
             ?.get('pointDistrict')

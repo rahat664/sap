@@ -26,7 +26,6 @@ export class ChallanDetailsComponent {
   ) {}
 
   ngOnChanges(changes: any) {
-    console.log(changes);
   }
 
   ngOnInit() {
@@ -38,7 +37,6 @@ export class ChallanDetailsComponent {
           this.loadingEvents = this.loadingEvents.filter(
             event => event.eventName === 'Upload loading challan'
           );
-          console.log(this.loadingEvents);
         });
       this.trip
         .getAllTripEvent(params['id'], 'Unloading')
@@ -47,7 +45,6 @@ export class ChallanDetailsComponent {
           this.unloadingEvents = this.unloadingEvents.filter(
             event => event.eventName === 'Upload unloading challan'
           );
-          console.log(this.unloadingEvents);
         });
       this.trip.getTripDetailsByTripId(params['id']).subscribe((res: any) => {
         this.singleTrip = res.data;
@@ -140,6 +137,8 @@ export class ChallanDetailsComponent {
             imageType: [{ value: '1', viewValue: 'Unloading Challan' }],
             expiryAvailable: false,
             noteAvailable: true,
+            eventTypeId: this.unloadingEvents[0].eventTypeId,
+            type: 'Unloading',
             returnUrl: `/challan-management/${this.singleTrip?.tripId}/details`,
           },
         },
