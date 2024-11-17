@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
@@ -16,6 +16,7 @@ import { MatInput } from '@angular/material/input';
     MatSelect,
     ReactiveFormsModule,
     MatInput,
+    NgIf,
   ],
   templateUrl: './global-image-upload.component.html',
   styleUrl: './global-image-upload.component.scss',
@@ -41,6 +42,8 @@ export class GlobalImageUploadComponent {
     { value: '11', viewValue: 'November' },
     { value: '12', viewValue: 'December' },
   ];
+  @Input() expiryAvailable: boolean = false;
+  @Input() notesAvailable: boolean = false;
 
   onChangeImageType($event: any) {}
 }

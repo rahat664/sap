@@ -43,6 +43,8 @@ export class ChallanImageUploadComponent {
   ];
   private tripId: any;
   protected tripDocuments: any[] = [];
+  expiryAvailable:  boolean = false;
+  notesAvailable: boolean = false;
 
   constructor(private router: Router) {
   }
@@ -54,6 +56,8 @@ export class ChallanImageUploadComponent {
       this.tripId = navigation.tripId;
       this.tripDocuments = navigation.addedTripDocument;
       this.imageTypes  = navigation.imageType
+      this.notesAvailable = navigation.noteAvailable;
+      this.expiryAvailable = navigation.expiryAvailable;
       console.log(navigation);
     }
 

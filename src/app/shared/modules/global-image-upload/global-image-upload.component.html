@@ -36,16 +36,17 @@
       </div>
       <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Image type</span>
-        <mat-form-field appearance="outline" class="w-2/3">
+        <mat-form-field appearance="outline" class="w-2/3" *ngIf="imageTypes?.length > 1">
           <mat-select
             (selectionChange)="onChangeImageType($event)" placeholder="Select image type">
             @for (imageType of imageTypes; track imageType) {
-              <mat-option [value]="imageType.id">{{ imageType.viewValue }}</mat-option>
+              <mat-option [value]="imageType.id">{{ imageType?.viewValue }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
+        <span class="text-h2 leading-h2 font-semibold text-not-black" *ngIf="imageTypes.length === 1">{{imageTypes[0]?.viewValue}}</span>
       </div>
-      <div class="flex flex-col space-y-1">
+      <div class="flex flex-col space-y-1" *ngIf="expiryAvailable">
         <span class="text-body text-secondary">Expire date</span>
         <div class="grid grid-cols-8 w-4/5 gap-3">
           <mat-form-field appearance="outline" class="col-span-3">
@@ -70,7 +71,7 @@
           </mat-form-field>
         </div>
       </div>
-      <div class="flex flex-col space-y-1">
+      <div class="flex flex-col space-y-1" *ngIf="notesAvailable">
         <span class="text-h2 leading-h2 font-semibold text-not-black">Note</span>
         <textarea
           placeholder="Enter Note"

@@ -149,11 +149,13 @@ export class ChallanDetailsComponent {
       };
     }
     this.router.navigate(
-      [`challan-management/${this.singleTrip?.id}/image-upload`] , {
+      [`challan-management/${this.singleTrip?.tripId}/image-upload`] , {
         state: {
-          tripId: this.singleTrip?.id,
+          tripId: this.singleTrip?.tripId,
           addedTripDocument: this.addedTripDocuments,
           imageType: [{ value: '1', viewValue: 'Unloading Challan' }],
+          expiryAvailable: false,
+          noteAvailable: true,
         }
       }
     );
