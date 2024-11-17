@@ -17,12 +17,13 @@ export class ChallanDetailsComponent {
   loading: any;
   singleTrip: Trip = null;
   isInEditMode: boolean;
+  addedTripDocuments: any[] = [];
+
   constructor(
     private trip: TripService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
-
 
   ngOnChanges(changes: any) {
     console.log(changes);
@@ -125,13 +126,36 @@ export class ChallanDetailsComponent {
     });
   }
 
-  onUnloadingFileChange($event: Event) {
+  onLoadingFileChange($event: Event) {}
 
+  onUnloadingFileChange($event: Event) {
+    const input = $event.target as HTMLInputElement;
+    const files = input.files;
+    if (files && files.length > 0) {
+      this.previewFile(files);
+    }
   }
 
 
-
-  onLoadingFileChange($event: Event) {
-
+  previewFile(file: FileList): any {
+    for (let i = 0; i < file.length; i++) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file[i]);
+      reader.onload = () => {
+          this.addedTripDocuments.push({
+            file: file[i],
+            preview: reader.result,
+          })
+      };
+    }
+    this.router.navigate(
+      [`challan-management/${this.singleTrip?.id}/image-upload`] , {
+        state: {
+          tripId: this.singleTrip?.id,
+          addedTripDocument: this.addedTripDocuments,
+          imageType: [{ value: '1', viewValue: 'Unloading Challan' }],
+        }
+      }
+    );
   }
 }

@@ -58,19 +58,19 @@ import { RouterLink } from '@angular/router';
 })
 export class ChallanDashboardComponent {
   height: any = '0px';
-  pendingChallanAmount: number = 120000;
+  pendingChallanAmount: number = 0;
   pendingChallanText: string = 'Pending challan value for 30 trips';
-  receivedAmount: number = 75;
+  receivedAmount: number = 0;
   receivedText: string = 'Received';
-  pendingAmount: number = 25;
+  pendingAmount: number = 0;
   pendingText: string = 'In-progress';
-  approvedAmount: number = 25;
+  approvedAmount: number = 0;
   approvedText: string = 'Approved';
-  rejectedAmount: number = 25;
+  rejectedAmount: number = 0;
   rejectedText: string = 'Rejected';
-  completedTrips: number = 80;
+  completedTrips: number = 0;
   completedTripsText: string = 'No. of completed trips';
-  hardCopyReceived: number = 40;
+  hardCopyReceived: number = 0;
   hardCopyReceivedText: string = 'Hardcopy received';
   fromDate: string;
   toDate: string;
