@@ -3,24 +3,38 @@
     <div class="px-7 py-[1.375rem] flex justify-between bg-[#302F2F]">
       <div class="flex space-x-3 items-center text-white">
         <i class="fas fa-chevron-left text-white"></i>
-        <span class="text-h3 leading-h3 font-bold">Loading challan</span>
+        <span class="text-h3 leading-h3 font-bold">{{ activatedImageType }}</span>
       </div>
       <div class="flex space-x-6">
-        <img src="assets/svg/download.svg" class="notPreview h-6 w-6">
-        <img src="assets/svg/delete.svg" class="notPreview h-6 w-[22.5px]">
+        <button type="button" (click)="onClickClose()">
+          <i class="fal fa-times text-[2rem] text-red"></i>
+        </button>
       </div>
     </div>
-    <div class="h-full py-[1.125rem] flex justify-center">
-      <div class="bg-[#F0F4F8] w-[36.25rem] rounded-lg h-full">
+    <div class=" h-[calc(100vh-16.5rem)] py-[1.125rem] flex relative justify-center" (mouseenter)="onMouseEnter()"
+         (mouseleave)="onMouseLeave()"
+         (mousemove)="onMouseMove($event)">
+      <button (click)="onClickLeftButton()" [ngClass]="{'show' : activeDocumentIndex > 0 && showLeftArrow}"
+              class="arrow absolute left-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+        <i class="fas fa-chevron-left font-bold text-white text-xxl"></i>
+      </button>
+      <div class="bg-[#F0F4F8] w-[36.25rem] overflow-hidden rounded-lg h-[calc(100vh-18.75rem)]">
+        <img [src]="activatedDocument" alt="activeDocument" class="h-full w-full notPreview">
       </div>
+      <button (click)="onClickRightButton()"
+              [ngClass]="{'show' : activeDocumentIndex < documents.length - 1 && showRightArrow}"
+              class="arrow absolute right-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+        <i class="fas fa-chevron-right font-bold text-white text-xxl"></i>
+      </button>
     </div>
-    <div class="h-32 bg-[#302F2F] flex items-center w-full justify-center">
-      <div class="flex space-x-4">
-        <div class="w-[5.25rem] h-20 bg-[#F0F4F8] bg-opacity-[30%] rounded-lg"></div>
-        <div class="w-[5.25rem] h-20 bg-[#F0F4F8] bg-opacity-[30%] rounded-lg"></div>
-        <div class="w-[5.25rem] h-20 bg-[#F0F4F8]  rounded-lg"></div>
-        <div class="w-[5.25rem] h-20 bg-[#F0F4F8] bg-opacity-[30%] rounded-lg"></div>
-        <div class="w-[5.25rem] h-20 bg-[#F0F4F8] bg-opacity-[30%] rounded-lg"></div>
+    <div class="min-h-32 bg-[#302F2F] flex items-center w-full justify-center customScrollbar">
+      <div class="flex space-x-4 w-2/3 overflow-x-auto " #documentContainer *ngIf="documents?.length > 1">
+        <ng-container *ngFor="let doc of documents; index as i">
+          <div (click)="onClickDocument(doc, i)" [ngClass]="{'scaled': doc === activatedDocument}"
+               class=" document-item w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden  rounded-lg">
+            <img [src]="doc" alt="document" class="h-full w-full notPreview">
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

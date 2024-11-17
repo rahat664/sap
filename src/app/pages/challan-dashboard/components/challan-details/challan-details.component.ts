@@ -132,32 +132,20 @@ export class ChallanDetailsComponent {
     const input = $event.target as HTMLInputElement;
     const files = input.files;
     if (files && files.length > 0) {
-      this.previewFile(files);
+      this.router.navigate(
+        [`challan-management/${this.singleTrip?.tripId}/image-upload`] , {
+          state: {
+            tripId: this.singleTrip?.tripId,
+            addedTripDocument: files,
+            imageType: [{ value: '1', viewValue: 'Unloading Challan' }],
+            expiryAvailable: false,
+            noteAvailable: true,
+            returnUrl: `/challan-management/${this.singleTrip?.tripId}/details`,
+          },
+        },
+      );
     }
   }
 
 
-  previewFile(file: FileList): any {
-    for (let i = 0; i < file.length; i++) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file[i]);
-      reader.onload = () => {
-          this.addedTripDocuments.push({
-            file: file[i],
-            preview: reader.result,
-          })
-      };
-    }
-    this.router.navigate(
-      [`challan-management/${this.singleTrip?.tripId}/image-upload`] , {
-        state: {
-          tripId: this.singleTrip?.tripId,
-          addedTripDocument: this.addedTripDocuments,
-          imageType: [{ value: '1', viewValue: 'Unloading Challan' }],
-          expiryAvailable: false,
-          noteAvailable: true,
-        }
-      }
-    );
-  }
 }

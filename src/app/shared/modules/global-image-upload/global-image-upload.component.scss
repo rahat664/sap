@@ -1,0 +1,38 @@
+.customScrollbar > ::-webkit-scrollbar {
+  display: none;
+}
+
+.document-item {
+  transition: transform 0.3s ease; /* Smooth scaling transition */
+}
+
+.document-item.scaled {
+  // increase the height and width of the document item
+  border: 1px solid #0CD5F0;
+
+}
+
+// smaller the document item which is not scaled
+.document-item:not(.scaled) {
+  transform: scale(0.8);
+  opacity: 30%;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem; /* Adjust size as necessary */
+  height: 4rem; /* Adjust size as necessary */
+  background-color: #302F2F;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease, visibility 0s 0.3s, transform 1s ease;
+  z-index: 10;
+}
+
+.arrow.show {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 1s ease, visibility 0s 0s, transform 1s ease;
+}

@@ -43,23 +43,18 @@ export class ChallanImageUploadComponent {
   ];
   private tripId: any;
   protected tripDocuments: any[] = [];
+  protected tripDocumentFiles: any[] = [];
   expiryAvailable:  boolean = false;
   notesAvailable: boolean = false;
+  returnUrl: string;
 
   constructor(private router: Router) {
   }
 
   ngOnInit() {
-    console.log(this.router.getCurrentNavigation())
-    const navigation = history.state;
-    if (navigation) {
-      this.tripId = navigation.tripId;
-      this.tripDocuments = navigation.addedTripDocument;
-      this.imageTypes  = navigation.imageType
-      this.notesAvailable = navigation.noteAvailable;
-      this.expiryAvailable = navigation.expiryAvailable;
-      console.log(navigation);
-    }
+    this.resetNavigationInformation();
+    this.getNavigationInformation();
+
 
   }
 
@@ -68,4 +63,50 @@ export class ChallanImageUploadComponent {
   }
 
   onChangeImageType($event: MatSelectChange) {}
+
+  private resetNavigationInformation() {
+    this.expiryAvailable = false;
+    this.notesAvailable = false;
+    this.tripDocuments = [];
+    this.tripDocumentFiles = [];
+    this.imageTypes = [];
+    this.tripId = null;
+  }
+
+  private getNavigationInformation() {
+    const navigation = history.state;
+    if (navigation) {
+      this.tripId = navigation.tripId;
+      this.previewDocuments(navigation.addedTripDocument);
+      this.imageTypes  = navigation.imageType
+      this.notesAvailable = navigation.noteAvailable;
+      this.expiryAvailable = navigation.expiryAvailable;
+      this.returnUrl = navigation.returnUrl;
+    }
+  }
+
+  private previewDocuments(tripDocuments) {
+    if (tripDocuments) {
+      for (let i = 0; i < tripDocuments.length; i++) {
+        const reader = new FileReader();
+        reader.readAsDataURL(tripDocuments[i]);
+        reader.onload = () => {
+          this.tripDocuments.push(reader.result);
+          this.tripDocumentFiles.push({
+            file: tripDocuments[i],
+            preview: reader.result
+          });
+        }
+      }
+    }
+  }
+
+  onDocumentClose($event: any) {
+    // remove the document from the list
+    this.tripDocumentFiles = this.tripDocumentFiles.filter(doc => doc.preview !== $event);
+    if (this.tripDocumentFiles.length === 1) {
+      this.resetNavigationInformation();
+      this.router.navigate([this.returnUrl]);
+    }
+  }
 }

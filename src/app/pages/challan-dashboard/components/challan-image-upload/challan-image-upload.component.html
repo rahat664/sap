@@ -1,1 +1,3 @@
-<app-global-image-upload [notesAvailable]="notesAvailable" [expiryAvailable]="expiryAvailable" [imageTypes]="imageTypes"></app-global-image-upload>
+<app-global-image-upload (closedDocument)="onDocumentClose($event)" [activatedDocument]="tripDocuments[0]" [documents]="tripDocuments"
+                         [notesAvailable]="notesAvailable" [expiryAvailable]="expiryAvailable"
+                         [imageTypes]="imageTypes"></app-global-image-upload>
