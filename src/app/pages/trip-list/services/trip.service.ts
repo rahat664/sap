@@ -30,6 +30,8 @@ export class TripService {
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
   locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
   trackByRegistationUrl = `${environment.locationUrl}/api/locations/filter`;
+  tripPointEventsUrl = `${environment.backendUrl}/api/tripPointEvents`;
+  tripPointDeleteUrl = `${environment.backendUrl}/api/tripPoints`;
   cachedTruckSize: BehaviorSubject<any[]> = new BehaviorSubject([]);
   cachedTruckCapacity: BehaviorSubject<any[]> = new BehaviorSubject([]);
   reloadManageTripPage: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -50,7 +52,13 @@ export class TripService {
     status?: string,
     tripId?: string,
     truckType?: string,
-    onlyTripId?: string
+    onlyTripId?: string,
+    chalanStatus?: string,
+    challanHardCopyReceived?: boolean,
+    challanFrom?: string,
+    challanTo?: string,
+    truckRegId?: string,
+    transporterNameOrPhone?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -76,6 +84,18 @@ export class TripService {
     }
     if (onlyTripId) {
       params = params.set('tripId', onlyTripId);
+    } if (chalanStatus) {
+      params = params.set('chalanStatus', chalanStatus);
+    } if (challanHardCopyReceived) {
+      params = params.set('challanHardCopyReceived', challanHardCopyReceived.toString());
+    } if (challanFrom) {
+      params = params.set('challanFrom', challanFrom);
+    } if (challanTo) {
+      params = params.set('challanTo', challanTo);
+    } if (truckRegId) {
+      params = params.set('truckRegId', truckRegId);
+    } if (transporterNameOrPhone) {
+      params = params.set('transporterNameOrPhone', transporterNameOrPhone);
     }
 
     return this.http.get(`${this.url}`, { params });
@@ -202,4 +222,13 @@ export class TripService {
   getSensorData(vehicleRegNum?: string) {
     return this.http.get(`${environment.locationUrl}/api/tracker/sensor-data?vehicleRegNum=${vehicleRegNum}`);
   }
+
+  manageLoadingUnloading(body: any): Observable<any> {
+    return this.http.post(`${this.tripPointEventsUrl}`, body);
+  }
+
+  deleteTripDocument(tripPointId: string, tripPointEventId: string, documentId: string): Observable<any> {
+    return this.http.delete(`${this.tripPointDeleteUrl}/${tripPointId}/eventTypes/${tripPointEventId}/documents/${documentId}`);
+  }
+
 }

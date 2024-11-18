@@ -230,7 +230,6 @@ export class DriverDetailsComponent implements OnInit {
           };
 
           if (formControlName && savedImagesMap[formControlName]) {
-            console.log(savedImagesMap[formControlName], formControlName);
             const updatedImages = savedImagesMap[formControlName].filter(
               item => item.preSignedFileUrl !== file.preSignedFileUrl
             );
@@ -421,7 +420,6 @@ export class DriverDetailsComponent implements OnInit {
       const currentFiles = Array.from(
         this.driverUpdateForm.get(this.selectedFormControlName)?.value
       );
-      console.log(currentFiles);
       if (currentFiles.length + files.length > this.maxUploadAble) {
         this.toastr.showError(
           `You can upload maximum of ${this.maxUploadAble + this.getSavedFileArray(this.selectedFormControlName)?.length} files`
@@ -569,7 +567,7 @@ export class DriverDetailsComponent implements OnInit {
     // Transform the date input using datePipe
     const formattedDate = this.datePipe.transform(
       dateInput,
-      'yyyy-MM-ddTHH:mm:ss'
+      'yyyy-MM-dd Hh:mm:ss'
     );
 
     // Patch the form with the formatted date if it's valid
@@ -636,7 +634,6 @@ export class DriverDetailsComponent implements OnInit {
       this.deletedFileUrls.forEach(url => {
         this.service.deleteDriverFiles(url, this.driverDetails.id).subscribe(
           (res: any) => {
-            console.log(res);
           },
           error => {
             console.error('Error deleting file:', error);
@@ -787,6 +784,7 @@ export class DriverDetailsComponent implements OnInit {
           textPrefix: 'the driver ',
           text: `${driver.name} (${driver.phone})?`,
           buttonText: 'Reject',
+          reasonAvailable: true,
         },
       })
       .afterClosed()
@@ -882,7 +880,6 @@ export class DriverDetailsComponent implements OnInit {
     documents.forEach(doc => {
       // split by trucj document type
       const documentType = doc.documentType;
-      console.log(documentType);
       switch (documentType) {
         case 'NID_FRONT':
           this.savedNidFrontFile.push(doc);

@@ -45,12 +45,12 @@ export class ConfirmUpdateComponent {
       if (this.data?.trip?.status == 'Booked') {
         body['tripStartedAt'] = this.datePipe.transform(
           new Date(),
-          'yyyy-MM-dd hh:mm:ss'
+          'yyyy-MM-dd Hh:mm:ss'
         );
       } else {
         body['tripEndedAt'] = this.datePipe.transform(
           new Date(),
-          'yyyy-MM-dd hh:mm:ss'
+          'yyyy-MM-dd Hh:mm:ss'
         );
       }
       this.trip.updateTrip(body, this.data.trip.tripId).subscribe(

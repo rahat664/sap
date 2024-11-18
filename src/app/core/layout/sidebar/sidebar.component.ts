@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ToggleResponsiveService } from '../../../shared/services/toggle-responsive-services/toggle-responsive.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { GetOutsideModalClickDirective } from '../../../shared/directive/get-outside-modal-click.directive';
@@ -19,6 +19,7 @@ import { GetOutsideModalClickDirective } from '../../../shared/directive/get-out
     RouterLink,
     RouterLinkActive,
     GetOutsideModalClickDirective,
+    NgOptimizedImage,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
@@ -73,7 +74,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   clearSelectedTemplate() {
-    if(this.isAdmin()) {
+    if (this.isAdmin()) {
       localStorage.removeItem('customerCode');
       localStorage.removeItem('selectedTemplate');
       localStorage.removeItem('backFromTemplateEditOrUpdate');

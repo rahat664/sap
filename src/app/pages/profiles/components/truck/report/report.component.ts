@@ -100,7 +100,6 @@ export class ReportComponent {
   }
 
   onSelectDate($event: number) {
-    console.log($event);
     if ($event === DateEnum.Custom) {
       this.shared.closeInputSelect.next(false);
       this.isCustomOpened = true;

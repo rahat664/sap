@@ -132,6 +132,7 @@ export class FileUploadPopupComponent implements OnChanges {
   @Input() isUploadDisabled: boolean = false;
 
   onSubmit() {
+
     // remove the file from the file array if expiry not required for that filled like Nid front, Nid back, Driving License Front, Driving License Back, Other
     let newFileArray = JSON.parse(JSON.stringify(this.fileArray));
     newFileArray = newFileArray.filter(
@@ -142,6 +143,7 @@ export class FileUploadPopupComponent implements OnChanges {
         file.registrationType !== 'Driving License Back' &&
         file.registrationType !== 'Registration Paper'
     );
+
     console.log(newFileArray)
 
     const isExpiryFilled = newFileArray.every(
@@ -202,12 +204,10 @@ export class FileUploadPopupComponent implements OnChanges {
 
     // Read the file as Data URL (preview)
     reader.readAsDataURL(file);
-
     reader.onload = () => {
-      // Add file and preview data to the array
       this.fileArray.push({
         file: file,
-        preview: reader.result, // This will hold the image or file preview
+        preview: reader.result,
         registrationType: null,
         registrationExpireDate: null,
         fileOpened: false,

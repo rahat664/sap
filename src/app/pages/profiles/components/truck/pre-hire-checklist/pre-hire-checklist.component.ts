@@ -82,7 +82,6 @@ export class PreHireChecklistComponent implements OnInit {
       items.items?.forEach(item => {
         this.shareObject[position] = $event.value;
       });
-      console.log(this.shareObject);
     });
     this.preHireCheckListObject.emit(this.shareObject);
   }
