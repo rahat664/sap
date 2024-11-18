@@ -2,12 +2,16 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  HostListener,
+  HostListener, inject,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { navigation } from '@ngrx/router-store/data-persistence';
+import { Router } from '@angular/router';
+import { TripService } from '../../../pages/trip-list/services/trip.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDeleteComponent } from '../../../pages/manage-trip/components/confirm-delete/confirm-delete.component';
 
 @Component({
   selector: 'app-global-image-gallery',
@@ -34,6 +38,13 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   minZoom: number = 1; // Minimum zoom level
   translateX: number = 0; // Horizontal translation
   translateY: number = 0; // Vertical translation
+  returnUrl: any;
+  tripPointId: any;
+  eventTypeId: any;
+
+  readonly dialog = inject(MatDialog);
+
+  constructor(private router: Router, private trip: TripService) {}
 
   ngOnInit() {
     this.resetNavigationInformation();
@@ -45,6 +56,13 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
     this.notesAvailable = false;
     this.notes = '';
     this.expiryDate = '';
+    this.documents = [];
+    this.imageType = 'image';
+    this.activatedDocument = null;
+    this.activeDocumentIndex = -1;
+    this.returnUrl = null;
+    this.tripPointId = null;
+    this.eventTypeId = null;
   }
 
   private getNavigationInformation() {
@@ -56,9 +74,12 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
       this.expiryDate = navigation.expiryAvailable
         ? navigation.expiryDate
         : null;
-      this.documents = navigation.tripDocuments;
+      this.documents = navigation.tripDocuments ? navigation.tripDocuments : navigation.documents;
       this.imageType = navigation.imageType;
       this.activatedDocument = navigation.activatedDocument;
+      this.returnUrl = navigation.returnUrl;
+      this.tripPointId = navigation.tripPointId;
+      this.eventTypeId = navigation.eventTypeId;
       this.updateActiveDocumentIndex();
       this.scrollToActiveDocument();
     }
@@ -115,6 +136,7 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
     // Show the arrows when mouse enters the container
     this.updateArrows();
   }
+
   private updateArrows() {
     // Show or hide arrows based on the initial mouse position
     // This could be useful if we want to show arrows when the mouse enters the container
@@ -130,7 +152,7 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   }
 
   onMouseMove(event: MouseEvent) {
-   // only target parent element not child
+    // only target parent element not child
     if (event.target !== event.currentTarget) {
       return;
     }
@@ -151,6 +173,7 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   onClickLeftButton() {
     this.changeActiveDocument(-1);
   }
+
   onClickRightButton() {
     this.changeActiveDocument(1);
   }
@@ -191,12 +214,48 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
     const overflowY = (imageRect.height - containerRect.height) / 2;
 
     // Clamp the translations to prevent overflow
-    this.translateX = Math.max(-overflowX, Math.min(overflowX, this.translateX));
-    this.translateY = Math.max(-overflowY, Math.min(overflowY, this.translateY));
+    this.translateX = Math.max(
+      -overflowX,
+      Math.min(overflowX, this.translateX)
+    );
+    this.translateY = Math.max(
+      -overflowY,
+      Math.min(overflowY, this.translateY)
+    );
   }
 
   onClickDelete() {
-
+    // apply delete functionalities to activeDocument
+    if (this.documents?.length > 0) {
+      if (this.activatedDocument) {
+        this.dialog.open(ConfirmDeleteComponent, {
+          data: {
+            title: 'Attention',
+            text: 'Are you sure you want to delete this document?',
+            buttonText: 'Delete',
+          }
+        }).afterClosed().subscribe((res) => {
+          const tripPointId = this.tripPointId ? this.tripPointId : this.activatedDocument?.event?.tripPointId;
+          const eventTypeId = this.eventTypeId ? this.eventTypeId : this.activatedDocument?.event?.eventTypeId;
+          const documentId = this.activatedDocument?.id ? this.activatedDocument?.id : this.activatedDocument?.document.id;
+          if (res === 'deleted') {
+            this.trip
+              .deleteTripDocument(tripPointId,eventTypeId, documentId)
+              .subscribe(() => {
+                this.documents = this.documents.filter(
+                  doc => doc !== this.activatedDocument
+                );
+                this.activatedDocument = this.documents[0];
+                this.activeDocumentIndex = 0;
+                this.scrollToActiveDocument();
+                if (this.documents.length === 0) {
+                  this.router.navigate([this.returnUrl]);
+                }
+              });
+          }
+        });
+      }
+    }
   }
 
   onClickDownload() {
@@ -205,10 +264,14 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
       if (this.activatedDocument) {
         const link = document.createElement('a');
         link.href = this.activatedDocument.url;
-        link.download = `${this.imageType}`
+        link.download = `${this.imageType}`;
         document.body.appendChild(link);
         link.click();
       }
     }
+  }
+
+  onClickBack() {
+    this.router.navigate([this.returnUrl]);
   }
 }

@@ -1,34 +1,68 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe, NgForOf, NgIf, SlicePipe } from '@angular/common';
 import { Trip } from '../../../auth/models/response/trip';
+import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
+import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ChallanDashboardService } from '../../challan-dashboard.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { concatMap, of } from 'rxjs';
+import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
 
 @Component({
   selector: 'app-challan-details',
   standalone: true,
-  imports: [NgIf, DatePipe, NgForOf, RouterLink, SlicePipe],
+  imports: [
+    NgIf,
+    DatePipe,
+    NgForOf,
+    RouterLink,
+    SlicePipe,
+    ReactiveFormsModule,
+    FormsModule,
+  ],
   templateUrl: './challan-details.component.html',
   styleUrl: './challan-details.component.scss',
 })
 export class ChallanDetailsComponent {
   protected loadingEvents: any[] = [];
   protected unloadingEvents: any[] = [];
+  readonly dialog = inject(MatDialog);
   loading: any;
   singleTrip: Trip = null;
   isInEditMode: boolean;
   addedTripDocuments: any[] = [];
+  newNoteAvailableUnloading: boolean = false;
+  newNoteAvailableLoading: boolean = false;
+  currenDate: Date = new Date();
+  loadingNote: string = '';
+  unloadingNote: string = '';
+  deleteUnloadingIndex: number = -1;
+  deleteLoadingIndex: number = -1;
 
   constructor(
     private trip: TripService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private service: ChallanDashboardService,
+    private datePipe: DatePipe
   ) {}
 
-  ngOnChanges(changes: any) {
-  }
+  ngOnChanges(changes: any) {}
 
   ngOnInit() {
+    this.getSingleTripEvents()
+  }
+
+  resetSingleTripEvents() {
+    this.loadingEvents = [];
+    this.unloadingEvents = [];
+    this.singleTrip = null;
+  }
+
+  getSingleTripEvents() {
     this.route.params.subscribe(params => {
       this.trip
         .getAllTripEvent(params['id'], 'Loading')
@@ -87,10 +121,53 @@ export class ChallanDetailsComponent {
     }
   }
 
-  onSave() {}
+  onSave() {
+    const requests = [];
+
+    if (this.loadingNote) {
+      const loadingRequest = {
+        tripPointNo: this.singleTrip.tripId,
+        tripPointEventTypeId: this.loadingEvents[0].eventTypeId,
+        dateTime: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHh:mm:ss'),
+        type: 'Loading',
+        note: this.loadingNote,
+      };
+      const formData = new FormData();
+      formData.append('request', new Blob([JSON.stringify(loadingRequest)], { type: 'application/json' }));
+      requests.push(this.trip.manageLoadingUnloading(formData));
+    }
+
+    if (this.unloadingNote) {
+      const unloadingRequest = {
+        tripPointNo: this.singleTrip.tripId,
+        tripPointEventTypeId: this.unloadingEvents[0].eventTypeId,
+        dateTime: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHh:mm:ss'),
+        type: 'Unloading',
+        note: this.unloadingNote,
+      };
+      const formData2 = new FormData();
+      formData2.append('request', new Blob([JSON.stringify(unloadingRequest)], { type: 'application/json' }));
+      requests.push(this.trip.manageLoadingUnloading(formData2));
+    }
+
+    of(...requests).pipe(
+      concatMap(request => request)
+    ).subscribe(() => {
+      this.loadingNote = '';
+      this.unloadingNote = '';
+      this.newNoteAvailableLoading = false;
+      this.newNoteAvailableUnloading = false;
+      this.resetSingleTripEvents();
+      this.getSingleTripEvents();
+    });
+  }
 
   onCancel() {
     this.isInEditMode = false;
+    this.newNoteAvailableUnloading = false;
+    this.newNoteAvailableLoading = false;
+    this.loadingNote = '';
+    this.unloadingNote = '';
   }
 
   onEdit() {
@@ -107,6 +184,9 @@ export class ChallanDetailsComponent {
         expiryAvailable: false,
         noteAvailable: false,
         activatedDocument: document,
+        tripPointId: this.unloadingEvents[0].tripPointId,
+        eventTypeId: this.unloadingEvents[0].eventTypeId,
+        returnUrl: `/challan-management/${this.singleTrip?.tripId}/details`,
       },
     });
   }
@@ -119,18 +199,43 @@ export class ChallanDetailsComponent {
         expiryAvailable: false,
         noteAvailable: false,
         activatedDocument: document,
+        tripPointId: this.loadingEvents[0].tripPointId,
+        eventTypeId: this.loadingEvents[0].eventTypeId,
+        returnUrl: `/challan-management/${this.singleTrip?.tripId}/details`,
       },
     });
   }
 
-  onLoadingFileChange($event: Event) {}
+  onLoadingFileChange($event: Event) {
+    const input = $event.target as HTMLInputElement;
+    const files = input.files;
+    if (files && files.length > 0) {
+      this.router.navigate(
+        [`challan-management/${this.singleTrip?.tripId}/image-upload`],
+        {
+          state: {
+            tripId: this.singleTrip?.tripId,
+            addedTripDocument: files,
+            imageType: [{ value: '1', viewValue: 'Loading Challan' }],
+            expiryAvailable: false,
+            noteAvailable: true,
+            eventTypeId: this.loadingEvents[0].eventTypeId,
+            tripPointId: this.loadingEvents[0].tripPointId,
+            type: 'Loading',
+            returnUrl: `/challan-management/${this.singleTrip?.tripId}/details`,
+          },
+        }
+      );
+    }
+  }
 
   onUnloadingFileChange($event: Event) {
     const input = $event.target as HTMLInputElement;
     const files = input.files;
     if (files && files.length > 0) {
       this.router.navigate(
-        [`challan-management/${this.singleTrip?.tripId}/image-upload`] , {
+        [`challan-management/${this.singleTrip?.tripId}/image-upload`],
+        {
           state: {
             tripId: this.singleTrip?.tripId,
             addedTripDocument: files,
@@ -138,13 +243,114 @@ export class ChallanDetailsComponent {
             expiryAvailable: false,
             noteAvailable: true,
             eventTypeId: this.unloadingEvents[0].eventTypeId,
+            tripPointId: this.unloadingEvents[0].tripPointId,
             type: 'Unloading',
             returnUrl: `/challan-management/${this.singleTrip?.tripId}/details`,
           },
-        },
+        }
       );
     }
   }
 
+  changeStatus(id, name, status: string) {
+    const body = {
+      challanStatus: status,
+    };
+    if (status === 'Approved') {
+      this.dialog
+        .open(ConfirmApproveComponent, {
+          data: {
+            title: 'Attention',
+            textPrefix: 'the challan for tripId ',
+            text: `${name}?`,
+            buttonText: 'Approve',
+          },
+        })
+        .afterClosed()
+        .subscribe(res => {
+          if (res) {
+            this.service.updateChallanStatus(id, body).subscribe((res: any) => {
+              this.router.navigate(['/challan-management']);
+            });
+          }
+        });
+    } else {
+      this.dialog
+        .open(ConfirmRejectComponent, {
+          data: {
+            title: 'Attention',
+            textPrefix: 'the challan for tripId ',
+            text: `${name}?`,
+            buttonText: 'Reject',
+            reasonAvailable: false,
+          },
+        })
+        .afterClosed()
+        .subscribe(res => {
+          if (res) {
+            this.service.updateChallanStatus(id, body).subscribe((res: any) => {
+              this.router.navigate(['/challan-management']);
+            });
+          }
+        });
+    }
+  }
 
+  onClickAddNoteLoading() {
+    this.newNoteAvailableLoading = true;
+  }
+
+  onClickAddNoteUnloading() {
+    this.newNoteAvailableUnloading = true;
+  }
+
+  onMouseEnterUnloading(i: number) {
+    this.deleteUnloadingIndex = i;
+  }
+
+  onMouseEnterLoading(i: number) {
+    this.deleteLoadingIndex = i;
+  }
+
+  onMouseLeaveUnLoading() {
+    this.deleteUnloadingIndex = -1;
+  }
+
+  onMouseLeaveLoading() {
+    this.deleteLoadingIndex = -1;
+  }
+
+  onDeleteUnloadingDocuments(document: any) {
+    this.dialog.open(ConfirmDeleteComponent, {
+      data: {
+        title: 'Attention',
+        text: 'Are you sure you want to delete this document?',
+        buttonText: 'Delete',
+      },
+    }).afterClosed().subscribe(res => {
+      if (res === 'deleted') {
+        this.trip.deleteTripDocument(this.unloadingEvents[0].tripPointId, this.unloadingEvents[0].eventTypeId, document.id).subscribe(() => {
+          this.resetSingleTripEvents();
+          this.getSingleTripEvents();
+        });
+      }
+    });
+  }
+
+  onDeleteLoadingDocuments(document: any) {
+    this.dialog.open(ConfirmDeleteComponent, {
+      data: {
+        title: 'Attention',
+        text: 'Are you sure you want to delete this document?',
+        buttonText: 'Delete',
+      },
+    }).afterClosed().subscribe(res => {
+      if (res === 'deleted') {
+        this.trip.deleteTripDocument(this.loadingEvents[0].tripPointId, this.loadingEvents[0].eventTypeId, document.id).subscribe(() => {
+          this.resetSingleTripEvents();
+          this.getSingleTripEvents();
+        });
+      }
+    });
+  }
 }

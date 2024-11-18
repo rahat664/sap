@@ -509,7 +509,7 @@ export class TruckDetailsComponent implements OnInit {
     // Transform the date input using datePipe
     const formattedDate = this.datePipe.transform(
       dateInput,
-      'yyyy-MM-dd HH:mm:ss'
+      'yyyy-MM-dd Hh:mm:ss'
     );
 
     // Patch the form with the formatted date if it's valid

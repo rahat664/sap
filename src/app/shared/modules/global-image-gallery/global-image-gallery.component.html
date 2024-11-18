@@ -2,8 +2,8 @@
   <div class="col-span-2 flex flex-col w-full bg-black h-[calc(100vh-4.125rem)]">
     <div class="px-7 py-[1.375rem] flex justify-between bg-[#302F2F]">
       <div class="flex space-x-3 items-center text-white">
-        <i class="fas fa-chevron-left text-white"></i>
-        <span class="text-h3 leading-h3 font-bold">{{ imageType }}</span>
+        <a (click)="onClickBack()" class="cursor-pointer"><i class="fas fa-chevron-left text-white"></i></a>
+        <span class="text-h3 leading-h3 font-bold">{{ imageType ? imageType : activatedDocument?.event?.eventType}} challan</span>
       </div>
         <div class="flex space-x-4 text-white items-center">
           <button [disabled]="zoomLevel >= maxZoom" [ngClass]="{'text-secondary': zoomLevel >= maxZoom}" (click)="zoomIn()" class="flex items-center justify-center ">
@@ -41,7 +41,7 @@
       >
         <div #imageElement class="transition-transform rounded-lg overflow-hidden duration-300 transform origin-center relative" [style.transform]="'scale(' + zoomLevel + ')'">
           <img
-            [src]="activatedDocument.url"
+            [src]="activatedDocument.url ? activatedDocument.url : activatedDocument?.document?.url"
             alt="activeDocument"
             class="notPreview h-full w-full"
           />
@@ -62,7 +62,7 @@
         <ng-container *ngFor="let doc of documents; index as i">
           <div (click)="onClickDocument(doc, i)" [ngClass]="{'scaled': doc === activatedDocument}"
                class=" document-item w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden  rounded-lg">
-            <img [src]="doc.url" alt="document" class="h-full w-full notPreview">
+            <img [src]="doc.url ? doc.url : doc?.document?.url" alt="document" class="h-full w-full notPreview">
           </div>
         </ng-container>
       </div>
@@ -71,17 +71,16 @@
   <div class="mx-6">
     <div class="px-10 py-5 flex justify-between items-center border-b border-b-line">
       <span class="text-h3 leading-h3 text-not-black font-bold">Image details</span>
-      <i class="far fa-pen"></i>
     </div>
     <div class="px-10 py-5 flex flex-col space-y-5">
       <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Upload time</span>
         <span
-          class="text-h2 leading-h2 font-semibold text-not-black">{{ activatedDocument?.createdAt | date : 'd MMM yyyy h:mm a' }}</span>
+          class="text-h2 leading-h2 font-semibold text-not-black">{{ (activatedDocument?.createdAt ? activatedDocument?.createdAt : activatedDocument?.document?.createdAt) | date : 'd MMM yyyy h:mm a' }}</span>
       </div>
       <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Image type</span>
-        <span class="text-h2 leading-h2 font-semibold text-not-black">{{ imageType }}</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black">{{ imageType ? imageType : activatedDocument?.event?.eventType }} challan</span>
       </div>
       <div class="flex flex-col space-y-1" *ngIf="expiryAvailable">
         <span class="text-body text-secondary">Expire date</span>

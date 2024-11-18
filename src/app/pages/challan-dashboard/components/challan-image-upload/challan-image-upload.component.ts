@@ -9,6 +9,7 @@ import { MatOption } from '@angular/material/core';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TripService } from '../../../trip-list/services/trip.service';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-challan-image-upload',
@@ -52,7 +53,7 @@ export class ChallanImageUploadComponent {
   private eventTypeId: number;
   private type: string;
 
-  constructor(private router: Router, private datePipe: DatePipe, private trip: TripService) {
+  constructor(private router: Router, private datePipe: DatePipe, private trip: TripService, private toastr: HandleToastrService) {
   }
 
   ngOnInit() {
@@ -91,6 +92,7 @@ export class ChallanImageUploadComponent {
       this.type = navigation.type;
       this.returnUrl = navigation.returnUrl;
     }
+    console.log(this.returnUrl);
   }
 
   private previewDocuments(tripDocuments) {
@@ -126,13 +128,13 @@ export class ChallanImageUploadComponent {
         tripPointEventTypeId: this.eventTypeId,
         dateTime: this.datePipe.transform(
           new Date(),
-          'yyyy-MM-ddTHH:mm:ss'
+          'yyyy-MM-ddTHh:mm:ss'
         ),
         type: this.type
       }
 
       if (this.notes) {
-        request['note'] = JSON.stringify(this.notes);
+        request['note'] = this.notes;
       }
 
       const files = []
@@ -143,13 +145,18 @@ export class ChallanImageUploadComponent {
       // convert the request and files into formData
       const formData = new FormData();
 
-      formData.append('request', JSON.stringify(request));
+      formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
       files.forEach(doc => {
         formData.append('files', doc);
       })
 
       this.trip.manageLoadingUnloading(formData).subscribe(
-        response => {
+        (response : any) => {
+          this.toastr.showSuccess('Challan uploaded successfully');
+          this.router.navigate([this.returnUrl]);
+        },
+        (error) => {
+          this.toastr.showError('Error uploading challan');
         }
       )
     }
