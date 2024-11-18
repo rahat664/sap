@@ -473,7 +473,6 @@ export class TripUpdateComponent {
         singleDistrict < this.district.length;
         singleDistrict++
       ) {
-        console.log(option.addressText);
         if (option.addressText.includes(this.district[singleDistrict].name)) {
           this.loadingPoints?.controls[i]
             ?.get('pointDistrict')
@@ -820,7 +819,6 @@ export class TripUpdateComponent {
 
   private getValueFromTripDetails() {
     const tripData = JSON.parse(localStorage.getItem('updateTripDetails'));
-    console.log(tripData)
     if (tripData) {
       this.tripUpdateForm
         .get('categoryId')

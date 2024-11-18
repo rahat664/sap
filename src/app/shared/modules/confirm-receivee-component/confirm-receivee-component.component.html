@@ -1,29 +1,46 @@
-<div class="sticky top-0 flex items-start justify-between bg-white z-50">
-  <h1 class="text-h3 leading-h3  font-semibold text-not-black px-6 py-4"></h1>
-  <button class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
-          (click)="closeDialog()">
-    <i class="fal fa-times"></i>
-  </button>
-</div>
-<div class="w-full h-full flex flex-col py-4 px-12 pt-0">
-  <div class="flex flex-col space-y-4 items-center">
-    <div class="mb-4 flex flex-col space-y-2">
-      <img src="assets/svg/warning-red.svg" alt="warning" loading="lazy" class="notPreview">
-      <h1 class="text-h1_mobile leading-h1_mobile text-center text-not-black font-bold">{{ data?.title }}</h1>
-    </div>
-    <p class="w-2/3 text-body text-center text-secondary"><span>{{data?.textPrefix}}</span> <span
-      class="font-semibold text-body_title leading-body_title">{{ data?.text }}</span></p>
-    <div class="flex w-full items-center justify-center">
-      <div class="flex items-center space-x-4">
+<div class="min-w-48">
+  <div class="sticky top-0 flex items-start justify-between bg-white z-50">
+    <h1 class="text-h3 leading-h3  font-semibold text-not-black px-6 py-4"></h1>
+    <button class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
+            (click)="closeDialog()">
+      <i class="fal fa-times"></i>
+    </button>
+  </div>
+  <div class="w-full h-full flex flex-col py-4 px-12 pt-0">
+    <div class="flex flex-col space-y-4 items-center">
+      <div class="mb-4 flex flex-col space-y-2">
+        <h1 class="text-h1_mobile leading-h1_mobile text-center text-not-black font-bold">{{ data?.title }}</h1>
+      </div>
+      <button type="button" class="customButton" mat-button [matMenuTriggerFor]="dateAndTime">
+        <mat-form-field appearance="outline" id="date" class="example-full-width w-72">
+          <input [value]="getSelectedDate()" placeholder="Select date time" matInput />
+          <mat-datepicker-toggle matIconSuffix></mat-datepicker-toggle>
+        </mat-form-field>
+      </button>
+      <mat-menu #dateAndTime="matMenu">
+        <mat-card class="w-96" (click)="$event.stopPropagation()">
+          <mat-calendar
+            [(selected)]="selectedDate"
+            (selectedChange)="onSelect($event)"></mat-calendar>
+        </mat-card>
+        <mat-card class="w-96 mt-3 flex items-center justify-center">
+          <app-time-picker [fromModal]="true" [selectedDate]="returnToInputDate"
+                           (timeChange)="onTimeChange($event)"
+                           (click)="$event.stopPropagation()"></app-time-picker>
+        </mat-card>
         <button
-                class="bg-green w-full text-white rounded-lg p-4 mt-4"
-                (click)="confirmReceive()">Yes
+          (click)="onSelectTimeAndDate()"
+          class="py-3 mt-3 w-full px-6 text-white bg-primary rounded-lg font-semibold">
+          <span class="w-full">Set date & time</span>
         </button>
+      </mat-menu>
+      <div class="flex w-full items-center justify-center">
         <button
-                class="bg-red w-full text-white rounded-lg p-4 mt-4"
-                (click)="RejectReceive()">No
+          class="bg-primary w-full text-white rounded-lg p-4 mt-4"
+          (click)="confirmReceive()">Receive
         </button>
       </div>
     </div>
   </div>
+
 </div>

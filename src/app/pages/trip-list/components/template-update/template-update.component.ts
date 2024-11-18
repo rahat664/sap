@@ -106,7 +106,6 @@ export class TemplateUpdateComponent {
         (point: any) => point.pointType === 'Unloading'
       )
 
-      console.log(loadingPoints, unloadingPoints);
 
       loadingPoints?.forEach((point: any, index: number) => {
         if (index > 0) {
@@ -230,7 +229,6 @@ export class TemplateUpdateComponent {
         singleDistrict < this.district.length;
         singleDistrict++
       ) {
-        console.log(option.addressText);
         if (option.addressText.includes(this.district[singleDistrict].name)) {
           this.loadingPoints?.controls[i]
             ?.get('pointDistrict')

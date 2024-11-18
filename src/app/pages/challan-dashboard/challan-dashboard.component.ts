@@ -2,7 +2,7 @@ import { Component, inject, Inject } from '@angular/core';
 import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
@@ -22,6 +22,16 @@ import { ConfirmRejectComponent } from '../../shared/modules/confirm-reject/conf
 import {
   ConfirmReceiveeComponentComponent
 } from '../../shared/modules/confirm-receivee-component/confirm-receivee-component.component';
+import { Router, RouterLink } from '@angular/router';
+import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
+import { debounceTime, of, Subject } from 'rxjs';
+import { CustomerService } from '../profiles/services/customer.service';
+import { DateEnum } from '../trip-list/Enum/date.enum';
+import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
+import { UserService } from '../profiles/services/user.service';
+import { TruckService } from '../profiles/components/truck/services/truck.service';
+import { TruckModel } from '../profiles/components/truck/models/truck.model';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -50,25 +60,50 @@ import {
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
+    RouterLink,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
 })
 export class ChallanDashboardComponent {
+  private dateFilter: number = 0;
+  private searchFilter: number = 0;
+  private tripFilter: number = 0;
+  private customerCode: string;
+  private to: string;
+  private from: string;
+  private searchValue: string;
+  filterForm: FormGroup;
+  private isSearchedMenuOpened: boolean;
+  private isTripSearchedMenuOpened: boolean;
+  private isDateOpened: boolean;
+  protected truckRegistrationId: string;
+  protected transporterName: string;
+  private transporterFilter: number = 0;
+  private truckFilter: number = 0;
+  protected truckRegSuggestions: any[] = [];
+  protected transporterSuggestions: any[];
+  get tripSuggestions(): any {
+    return this._tripSuggestions;
+  }
+
+  set tripSuggestions(value: any) {
+    this._tripSuggestions = value;
+  }
   height: any = '0px';
-  pendingChallanAmount: number = 120000;
+  pendingChallanAmount: number = 0;
   pendingChallanText: string = 'Pending challan value for 30 trips';
-  receivedAmount: number = 75;
+  receivedAmount: number = 0;
   receivedText: string = 'Received';
-  pendingAmount: number = 25;
+  pendingAmount: number = 0;
   pendingText: string = 'In-progress';
-  approvedAmount: number = 25;
+  approvedAmount: number = 0;
   approvedText: string = 'Approved';
-  rejectedAmount: number = 25;
+  rejectedAmount: number = 0;
   rejectedText: string = 'Rejected';
-  completedTrips: number = 80;
+  completedTrips: number = 0;
   completedTripsText: string = 'No. of completed trips';
-  hardCopyReceived: number = 40;
+  hardCopyReceived: number = 0;
   hardCopyReceivedText: string = 'Hardcopy received';
   fromDate: string;
   toDate: string;
@@ -83,13 +118,156 @@ export class ChallanDashboardComponent {
   status: string;
   challanHardCopyReceived: boolean;
   readonly dialog = inject(MatDialog);
+  filterOpened: boolean = true;
+  dateOpened: boolean;
+  inputPlaceholder: string;
+  dateOptionArray: CustomInputSelectModel[];
+  searchName: any;
+  private _tripSuggestions: any;
+  tripId: any;
+  tripIdSuggestions: any;
+  searchSubject: Subject<string> = new Subject();
+  customerSearchSubject: Subject<string> = new Subject();
+  truckSearchSubject: Subject<string> = new Subject()
+  transporterSearchSubject: Subject<string> = new Subject()
 
   constructor(
     private datePipe: DatePipe,
     private service: ChallanDashboardService,
     private trip: TripService,
-    private number: DecimalPipe
-  ) {}
+    private number: DecimalPipe,
+    private formBuilder: FormBuilder,
+    private customer: CustomerService,
+    private shared: DriverEditSharedService,
+    private transporter: UserService,
+    private truck: TruckService,
+    private router: Router
+  ) {
+    this.filterForm = this.formBuilder.group({
+      search: [''],
+      startDate: [''],
+      endDate: [''],
+    });
+    this.searchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+      this.performSearch(searchText);
+    });
+    this.customerSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+      this.performCustomerSearch(searchText);
+    });
+    this.truckSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+      this.performTruckSearch(searchText);
+    });
+    this.transporterSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+      this.performTransporterSearch(searchText);
+    });
+  }
+
+  private performCustomerSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.trip.getTripSuggestions(searchText).subscribe((trip: any) => {
+        this.tripIdSuggestions = trip.responses;
+        if (this.tripIdSuggestions.length === 0) {
+          this.tripIdSuggestions.push('No trip found');
+        }
+      });
+    } else {
+      this.resetTripIdSearch();
+    }
+  }
+  private performTruckSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.truck.getTruckList(0, 100, searchText).subscribe((truck: any) => {
+        this.truckRegSuggestions = truck.data.responses;
+        if (this.tripIdSuggestions.length === 0) {
+          this.truckRegSuggestions.push('No trip found');
+        }
+      });
+    } else {
+      this.resetTruckSearch();
+    }
+  }
+  private performTransporterSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.transporter.getTransporter(0, 100, searchText).subscribe((transporter: any) => {
+        this.transporterSuggestions = transporter.data.responses;
+        if (this.transporterSuggestions.length === 0) {
+          this.transporterSuggestions.push('No trip found');
+        }
+      });
+    } else {
+      this.resetTransporterSearch();
+    }
+  }
+
+  private resetTripIdSearch() {
+    this.isTripSearchedMenuOpened = false;
+    this.tripId = '';
+    this.page = 0;
+    this.size = 30;
+    this.tripIdSuggestions = [];
+    this.tripIdSuggestions.push('No trip found');
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+    this.tripFilter = 0;
+  }
+  private resetTruckSearch() {
+    this.isTripSearchedMenuOpened = false;
+    this.truckRegistrationId = '';
+    this.page = 0;
+    this.size = 30;
+    this.truckRegSuggestions = [];
+    this.truckRegSuggestions.push('No trip found');
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+    this.truckFilter = 0;
+  }
+  private resetTransporterSearch() {
+    this.isTripSearchedMenuOpened = false;
+    this.transporterName = '';
+    this.page = 0;
+    this.size = 30;
+    this.truckRegSuggestions = [];
+    this.truckRegSuggestions.push('No trip found');
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+    this.transporterFilter = 0;
+  }
+  private generateDateOptionsArray() {
+    this.dateOptionArray = [
+      { id: DateEnum.Today, value: 'Today', selected: false },
+      { id: DateEnum.LastSevenDays, value: 'Last 7 days', selected: false },
+      { id: DateEnum.LastFifteenDays, value: 'Last 15 days', selected: false },
+      { id: DateEnum.LastThirtyDays, value: 'Last 30 days', selected: false },
+      { id: DateEnum.Custom, value: 'Custom', selected: false },
+    ];
+  }
+
+  performSearch(value: string) {
+    if (value?.length > 0) {
+      this.customer.searchCustomer(0, 100, value).subscribe((company: any) => {
+        this.tripSuggestions = company.data.content;
+        if (this.tripSuggestions.length === 0) {
+          this.tripSuggestions.push('No customer found');
+        }
+        this.isSearchedMenuOpened = true;
+      });
+    } else {
+      this.resetSearch();
+    }
+  }
+
+  resetSearch() {
+    this.isSearchedMenuOpened = false;
+    this.customerCode = '';
+    this.searchValue = '';
+    this.page = 0;
+    this.size = 30;
+    this.tripSuggestions = ['No customer found'];
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+    this.searchFilter = 0;
+  }
+
 
   ngOnInit() {
     this.activatedChallanStatus = 'Pending';
@@ -99,6 +277,7 @@ export class ChallanDashboardComponent {
     this.getChallanStatus();
     this.loading = true;
     this.anotherStatusCalled = false;
+    this.generateDateOptionsArray()
     this.getTripList();
   }
   private getFromDateAndToDate() {
@@ -137,15 +316,19 @@ export class ChallanDashboardComponent {
       .getTrips(
         this.page,
         this.size,
-        null,
+        this.customerCode,
         null,
         null,
         this.status,
-        null,
+        this.tripId,
         null,
         null,
         this.chalanStatus,
-        this.challanHardCopyReceived
+        this.challanHardCopyReceived,
+        this.from,
+        this.to,
+        this.truckRegistrationId,
+        this.transporterName
       )
       .subscribe(
         (trip: any) => {
@@ -175,7 +358,7 @@ export class ChallanDashboardComponent {
     if ($event && this.page < this.totalPages - 1) {
       if (this.anotherStatusCalled) {
       } else {
-        this.loading = false
+        this.loading = false;
         this.page++;
         this.size = 30;
         this.loading = false;
@@ -219,40 +402,46 @@ export class ChallanDashboardComponent {
       challanStatus: status,
     };
     if (status === 'Approved') {
-      this.dialog.open(ConfirmApproveComponent, {
-        data: {
-          title: 'Attention',
-          textPrefix: 'the challan for tripId ',
-          text: `${name}?`,
-          buttonText: 'Approve',
-        },
-      }).afterClosed().subscribe((res) => {
-        if (res) {
-          this.service.updateChallanStatus(id, body).subscribe((res: any) => {
-            this.page = 0;
-            this.getChallanStatus();
-            this.getTripList();
-          });
-        }
-      })
+      this.dialog
+        .open(ConfirmApproveComponent, {
+          data: {
+            title: 'Attention',
+            textPrefix: 'the challan for tripId ',
+            text: `${name}?`,
+            buttonText: 'Approve',
+          },
+        })
+        .afterClosed()
+        .subscribe(res => {
+          if (res) {
+            this.service.updateChallanStatus(id, body).subscribe((res: any) => {
+              this.page = 0;
+              this.getChallanStatus();
+              this.getTripList();
+            });
+          }
+        });
     } else {
-      this.dialog.open(ConfirmRejectComponent, {
-        data: {
-          title: 'Attention',
-          textPrefix: 'the challan for tripId ',
-          text: `${name}?`,
-          buttonText: 'Reject',
-          reasonAvailable: false,
-        },
-      }).afterClosed().subscribe((res) => {
-        if (res) {
-          this.service.updateChallanStatus(id, body).subscribe((res: any) => {
-            this.page = 0;
-            this.getChallanStatus();
-            this.getTripList();
-          });
-        }
-      })
+      this.dialog
+        .open(ConfirmRejectComponent, {
+          data: {
+            title: 'Attention',
+            textPrefix: 'the challan for tripId ',
+            text: `${name}?`,
+            buttonText: 'Reject',
+            reasonAvailable: false,
+          },
+        })
+        .afterClosed()
+        .subscribe(res => {
+          if (res) {
+            this.service.updateChallanStatus(id, body).subscribe((res: any) => {
+              this.page = 0;
+              this.getChallanStatus();
+              this.getTripList();
+            });
+          }
+        });
     }
   }
 
@@ -287,32 +476,238 @@ export class ChallanDashboardComponent {
     } else {
       // return due days from trip end date
       const currentDate = new Date();
-      const diffTime = Math.abs(currentDate.getTime() - tripCompletedDate.getTime());
+      const diffTime = Math.abs(
+        currentDate.getTime() - tripCompletedDate.getTime()
+      );
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       return diffDays;
     }
   }
 
   onClickHardCopyReceive(tripId: string) {
-    const  body = {
-      hardCopyReceivedAt: new Date().toISOString(),
+    this.dialog
+      .open(ConfirmReceiveeComponentComponent, {
+        data: {
+          title: 'Receive Challan',
+          textPrefix: 'Have you received the hardcopy for ',
+          text: `${tripId}?`,
+          buttonText: 'Receive',
+        },
+        "minWidth": "21.375rem",
+      })
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          const body = {
+            hardCopyReceivedAt: this.datePipe.transform(res, 'yyyy-MM-ddTHH:mm:ss'),
+          };
+          this.service
+            .updateChallanStatus(tripId, body)
+            .subscribe((res: any) => {
+              this.page = 0;
+              this.getChallanStatus();
+              this.getTripList();
+            });
+        }
+      });
+  }
+
+  getFilterLength() {
+    return this.dateFilter + this.searchFilter + this.tripFilter;
+  }
+
+    onClearFilter() {
+      this.customerCode = '';
+      this.tripId = '';
+      this.page = 0;
+      this.size = 30;
+      this.searchFilter = 0;
+      this.dateFilter = 0;
+      this.transporterFilter = 0;
+      this.truckFilter = 0
+      this.tripFilter = 0;
+      this.searchValue = '';
+      this.searchName = '';
+      this.from = '';
+      this.to = '';
+      this.truckRegistrationId = '';
+      this.transporterName = '';
+      this.filterForm.reset()
+      this.inputPlaceholder = '';
+      this.tripSuggestions = [];
+      this.loading = true;
+      this.trip.anotherStatusCalled.next(true);
+      this.getTripList();
+  }
+
+  onSelectedFromDate($event: string) {
+    this.filterForm.get('startDate')?.setValue($event);
+  }
+
+  onSelectedToDate($event: string) {
+    this.filterForm.get('endDate')?.setValue($event);
+    this.from = this.filterForm.get('startDate')?.value || '';
+    this.to = this.filterForm.get('endDate')?.value || '';
+    this.dateOpened = false;
+    this.isDateOpened = false;
+    this.page = 0;
+    this.size = 30;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onSelectDate($event: number) {
+    this.dateFilter = 1;
+    if ($event === DateEnum.Custom) {
+      this.shared.closeInputSelect.next(true);
+    } else {
+      this.shared.closeInputSelect.next(false);
+      this.inputPlaceholder =
+        this.dateOptionArray.find(x => x.id === $event)?.value || '';
+      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
+      this.setDateRange($event);
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.trip.anotherStatusCalled.next(true);
+      this.getTripList();
     }
-    this.dialog.open(ConfirmReceiveeComponentComponent, {
-      data: {
-        title: 'Attention',
-        textPrefix: 'Have you received the hardcopy for ',
-        text: `${tripId}?`,
-        buttonText: 'Receive',
-      },
-    }).afterClosed().subscribe((res) => {
-      if (res) {
-        this.service.updateChallanStatus(tripId, body).subscribe((res: any) => {
-          this.page = 0;
-          this.getChallanStatus();
-          this.getTripList();
-        });
-      }
-    })
+  }
+  private setDateRange(dateEnum: DateEnum) {
+    let fromDate = new Date();
+    // to date should be yesterday
+    let toDate = new Date();
+    switch (dateEnum) {
+      case DateEnum.Today:
+        fromDate.setDate(fromDate.getDate());
+        toDate.setDate(toDate.getDate());
+        break;
+      case DateEnum.LastSevenDays:
+        // shouldn't be count today
+        fromDate.setDate(fromDate.getDate() - 7);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastFifteenDays:
+        fromDate.setDate(fromDate.getDate() - 15);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastThirtyDays:
+        fromDate.setDate(fromDate.getDate() - 30);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+    }
+    this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
+    this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+  }
+
+  onSearchInputChange($event: any) {
+    const value = $event.target.value;
+    this.searchSubject.next(value); // Trigger the Subject when input changes
+  }
+
+  onClickSearchSuggestion(result: any) {
+    this.searchFilter = 1;
+    this.loading = true;
+    this.page = 0;
+    this.customerCode = result.customerCode;
+    this.searchName = result.name;
+    this.tripSuggestions = [];
+    this.isSearchedMenuOpened = false;
+    this.size = 30;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onKeyUpTripSearch($event: any) {
+    const value = $event.target.value;
+    this.customerSearchSubject.next(value); // Trigger the Subject when input changes
+  }
+  onKeyUpTruckSearch($event: any) {
+    const value = $event.target.value;
+    this.truckSearchSubject.next(value); // Trigger the Subject when input changes
+  }
+  onKeyUpTransporterSearch($event: any) {
+    const value = $event.target.value;
+    this.transporterSearchSubject.next(value); // Trigger the Subject when input changes
+  }
+
+  onClickTripSearchSuggestion(result: any) {
+    this.tripFilter = 1;
+    this.page = 0;
+    this.tripId = result.tripId;
+    this.tripIdSuggestions = [];
+    this.isTripSearchedMenuOpened = false;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+  onClickTruckSearchSuggestion(result: any) {
+    this.truckFilter = 1;
+    this.page = 0;
+    this.truckRegistrationId = result.fullRegistrationNumber;
+    this.truckRegSuggestions = [];
+    this.isTripSearchedMenuOpened = false;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+  onClickTransporterSearchSuggestion(result: any) {
+    this.transporterFilter = 1;
+    this.page = 0;
+    this.transporterName = result.name;
+    this.transporterSuggestions = [];
+    this.isTripSearchedMenuOpened = false;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onClickFilterOpened() {
+    this.filterOpened = !this.filterOpened;
+    this.dateOpened = false;
+    this.isDateOpened = false;
+    this.isSearchedMenuOpened = false;
+    this.shared.closeInputSelect.next(false);
+  }
+
+  onClickSoftCopyView(tripId: string) {
+    let loadingEvents = [];
+    let unloadingEvents = [];
+    this.trip.getAllTripEvent(tripId, 'Loading').pipe(
+      mergeMap((loadingRes: any) => {
+        const loadingEvents = loadingRes.data.filter(
+          event => event.eventName === 'Upload loading challan'
+        );
+        return this.trip.getAllTripEvent(tripId, 'Unloading').pipe(
+          mergeMap((unloadingRes: any) => {
+            const unloadingEvents = unloadingRes.data.filter(
+              event => event.eventName === 'Upload unloading challan'
+            );
+            return of({ loadingEvents, unloadingEvents });
+          })
+        );
+      })
+    ).subscribe(({ loadingEvents, unloadingEvents }) => {
+      const allEvents = [...loadingEvents, ...unloadingEvents];
+      //concat two event
+      // concat two tripDocuments
+      let documents = [];
+      allEvents.map((event)=> {
+        event.tripDocuments?.map((doc) => {
+          documents.push({
+            document: doc,
+            event: event
+          });
+        })
+      })
+      this.router.navigate(['/image-details'], {
+        state: {
+          tripDocuments: documents,
+          activatedDocument: documents[0],
+        }
+      })
+
+    });
   }
 }
 

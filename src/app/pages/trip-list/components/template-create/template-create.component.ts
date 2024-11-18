@@ -215,7 +215,6 @@ export class TemplateCreateComponent {
         singleDistrict < this.district.length;
         singleDistrict++
       ) {
-        console.log(option.addressText);
         if (option.addressText.includes(this.district[singleDistrict].name)) {
           this.loadingPoints?.controls[i]
             ?.get('pointDistrict')

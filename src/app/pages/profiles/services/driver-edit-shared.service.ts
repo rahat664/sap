@@ -88,7 +88,6 @@ export class DriverEditSharedService {
         }
       }
       const arrow = document.getElementsByClassName('tel-form')[0]?.getElementsByClassName('mat-mdc-select-arrow')[0];
-      console.log(arrow);
       if (arrow) {
         arrow.classList.add('pr-1')
         // change svg arrow icon color

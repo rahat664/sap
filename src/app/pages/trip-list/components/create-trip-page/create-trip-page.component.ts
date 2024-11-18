@@ -117,7 +117,7 @@ export class CreateTripPageComponent implements OnInit {
       this.tripDataModel.customerCode = this.tripForm.get('customerCode').value;
       this.tripDataModel.tripStartDatetime = this.datePipe.transform(
         new Date(this.tripForm.get('tripStartDatetime').value),
-        'yyyy-MM-dd HH:mm:ss'
+        'yyyy-MM-dd Hh:mm:ss'
       );
       this.tripDataModel.categoryId = this.tripForm.get('categoryId').value;
       this.tripDataModel.numOfTrucks = this.tripForm.get('numOfTrucks').value;
@@ -132,7 +132,6 @@ export class CreateTripPageComponent implements OnInit {
         ...this.tripForm.get('loadingPoints').value,
         ...this.tripForm.get('unloadingPoints').value,
       ]
-      console.log(this.tripDataModel);
       localStorage.setItem('tripData', JSON.stringify(this.tripDataModel));
       this.checkCacheDataAndUpdate(
         this.tripDataModel.numOfTrucks,
@@ -439,7 +438,6 @@ export class CreateTripPageComponent implements OnInit {
         singleDistrict < this.district.length;
         singleDistrict++
       ) {
-        console.log(option.addressText);
         if (option.addressText.includes(this.district[singleDistrict].name)) {
           this.loadingPoints?.controls[i]
             ?.get('pointDistrict')

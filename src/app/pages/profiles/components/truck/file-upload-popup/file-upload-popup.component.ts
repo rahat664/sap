@@ -136,7 +136,6 @@ export class FileUploadPopupComponent implements OnChanges {
         file.registrationType !== 'Registration Paper'
     );
 
-    console.log(newFileArray)
 
     const isExpiryFilled = newFileArray.every(
       (file: { registrationExpireDate: null }) =>
@@ -217,7 +216,7 @@ export class FileUploadPopupComponent implements OnChanges {
     this.selectedDate = $event.target.value;
     this.fileArray[i].registrationExpireDate = this.datePipe.transform(
       this.selectedDate,
-      'yyyy-MM-ddThh:mm:ss'
+      'yyyy-MM-dd Hh:mm:ss'
     );
   }
 
