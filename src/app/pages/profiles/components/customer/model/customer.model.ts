@@ -13,4 +13,7 @@ export class CustomerModel {
   user: any[];
   creationDate: any;
   contactPerson: string;
+  grossProfit: number;
+  rank: number;
+  numberOfTrips: string;
 }

@@ -105,6 +105,7 @@ export class CustomerComponent implements OnInit {
           });
       }
     } else {
+      this.page = 0;
       this.getCustomer();
     }
   }
@@ -127,6 +128,7 @@ export class CustomerComponent implements OnInit {
 
   onClickClear() {
     this.searchValue = '';
+    this.page = 0;
     this.getCustomer();
   }
 

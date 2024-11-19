@@ -219,6 +219,10 @@ export class TripService {
       );
   }
 
+  getSensorData(vehicleRegNum?: string) {
+    return this.http.get(`${environment.locationUrl}/api/tracker/sensor-data?vehicleRegNum=${vehicleRegNum}`);
+  }
+
   manageLoadingUnloading(body: any): Observable<any> {
     return this.http.post(`${this.tripPointEventsUrl}`, body);
   }

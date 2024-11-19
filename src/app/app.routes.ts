@@ -174,6 +174,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'about-us',
+    title: 'About Us',
+    loadComponent: () =>
+      import('./pages/about-us/about-us.component').then(c => c.AboutUsComponent),
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',

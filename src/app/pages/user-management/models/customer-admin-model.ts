@@ -4,5 +4,6 @@ export class CustomerAdminModel {
   address: string;
   role: string;
   email: string;
+  designation: string;
   sendEmail: boolean;
 }

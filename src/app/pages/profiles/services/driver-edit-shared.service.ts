@@ -382,6 +382,8 @@ export class DriverEditSharedService {
           completeSubject.next(true);
           localStorage.removeItem('driver');
           localStorage.removeItem('truck');
+          this.truckUpdateForm.reset();
+          this.driverUpdateForm.reset();
           this.router.navigate([navigatePath]);
         } else {
           this.handleToastr.showError(res.message, 'Error');

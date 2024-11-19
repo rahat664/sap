@@ -29,6 +29,7 @@ export interface challanStatus {
   inProgress: number;
   approved: number;
   rejected: number;
+  pending:number;
   totalHardCopyReceived: number;
   totalCustomerRateForPendingChallans: number;
 }

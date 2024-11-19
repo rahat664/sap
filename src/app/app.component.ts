@@ -85,6 +85,10 @@ export class AppComponent implements OnInit {
     }
   }
 
+  isAboutPage() {
+    return this.router.url === '/about-us';
+  }
+
   private handleRouter() {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))

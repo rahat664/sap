@@ -49,10 +49,13 @@
         <th class="text-left">Mobile</th>
         <th class="text-left">Email</th>
         <th class="text-left">Address</th>
+        <th class="text-left">No of Trips</th>
+        <th class="text-left">Gross Profit</th>
+        <th class="text-left">Rank</th>
         <!--          <th style="width: 5%"></th>-->
       </tr>
       <tr>
-        <th class="border" colspan="7"></th>
+        <th class="border" colspan="10"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -79,6 +82,9 @@
           <td><a class="cursor-pointer" (click)="copyNumber($event, customer.phone)">{{ customer.phone }}</a></td>
           <td><a href="mailto:{{customer.email}}">{{ customer.email }}</a></td>
           <td>{{ customer.address }}</td>
+          <td>{{customer.numberOfTrips != null ? customer.numberOfTrips : '0'}}</td>
+          <td>{{customer.grossProfit != null ? customer.grossProfit : '0'}}</td>
+          <td>{{customer.rank != null && customer.rank > 0 ? customer.rank : 'N/A'}}</td>
           <!--            <td>-->
           <!--              <i class="fas fa-ellipsis-v"></i>-->
           <!--            </td>-->
@@ -86,7 +92,7 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="customers?.length === 0">
-          <td class="text-center" colspan="7">
+          <td class="text-center" colspan="10">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
               <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
               <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
@@ -96,7 +102,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="7">
+          <td class="h-full" colspan="10">
             <app-loading></app-loading>
           </td>
         </tr>
