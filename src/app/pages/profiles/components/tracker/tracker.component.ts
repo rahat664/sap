@@ -5,7 +5,7 @@ import { FileUploadPopupComponent } from '../truck/file-upload-popup/file-upload
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { VehicleTracker } from '../driver/models/tracker.model';
 import { TrackerService } from '../../services/tracker.service';
@@ -26,6 +26,8 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TruckModel } from '../truck/models/truck.model';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { MatButton } from '@angular/material/button';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-tracker',
@@ -48,6 +50,10 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
     MatInput,
     MatOption,
     ReactiveFormsModule,
+    MatButton,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
   ],
   templateUrl: './tracker.component.html',
   styleUrl: './tracker.component.scss',
@@ -70,7 +76,8 @@ export class TrackerComponent {
     private service: TrackerService,
     private truck: TruckService,
     private fb: FormBuilder,
-    private toast: HandleToastrService
+    private toast: HandleToastrService,
+    private router: Router
   ) {
     this.trackerUpdateForm = this.fb.group({
       truckRegNo: [''],
@@ -172,5 +179,11 @@ export class TrackerComponent {
     this.page = 0;
     this.trackerList = [];
     this.getTrackers();
+  }
+
+  onClickChangeTruck(tracker: VehicleTracker) {
+    this.router.navigate([`/profile/tracker/${tracker.id}/edit`], {
+      state: { tracker },
+    });
   }
 }

@@ -50,7 +50,7 @@
         <th class="text-left">Email</th>
         <th class="text-left">Address</th>
         <th class="text-left">No of Trips</th>
-        <th class="text-left">Gross Profit</th>
+        <th class="text-left">Gross Profit (৳)</th>
         <th class="text-left">Rank</th>
         <!--          <th style="width: 5%"></th>-->
       </tr>
@@ -83,7 +83,7 @@
           <td><a href="mailto:{{customer.email}}">{{ customer.email }}</a></td>
           <td>{{ customer.address }}</td>
           <td>{{customer.numberOfTrips != null ? customer.numberOfTrips : '0'}}</td>
-          <td>{{customer.grossProfit != null ? customer.grossProfit : '0'}}</td>
+          <td>{{customer.grossProfit != null ? (customer.grossProfit | number) : '0'}}</td>
           <td>{{customer.rank != null && customer.rank > 0 ? customer.rank : 'N/A'}}</td>
           <!--            <td>-->
           <!--              <i class="fas fa-ellipsis-v"></i>-->

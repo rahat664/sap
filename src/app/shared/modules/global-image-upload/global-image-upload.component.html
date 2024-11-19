@@ -83,7 +83,7 @@
           <mat-select
             (selectionChange)="onChangeImageType($event)" placeholder="Select image type">
             @for (imageType of imageTypes; track imageType) {
-              <mat-option [value]="imageType.id">{{ imageType?.viewValue }}</mat-option>
+              <mat-option [value]="imageType.viewValue">{{ imageType?.viewValue }}</mat-option>
             }
           </mat-select>
         </mat-form-field>

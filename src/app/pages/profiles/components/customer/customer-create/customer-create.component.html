@@ -24,6 +24,7 @@
                         [ngClass]="{'error':  customerForm.get('name').invalid && customerForm.get('name').touched}"
         >
           <input
+            appAlphabetOnly
             id="name"
             [minLength]="2"
             [maxLength]="50"
@@ -48,6 +49,7 @@
                         [ngClass]="{'error':  customerForm.get('code').invalid && customerForm.get('code').touched}"
         >
           <input
+            appAlphabetOnly
             (input)="onCodeKeyPress($event)"
             [minLength]="4"
             [maxLength]="4"

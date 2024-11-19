@@ -93,9 +93,7 @@ export class FileUploadPopupComponent implements OnChanges {
     this.fileTypeOptions = this.data?.filetype;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-
-  }
+  ngOnChanges(changes: SimpleChanges) {}
 
   onFileDropped(event: DragEvent) {
     event.preventDefault();
@@ -132,7 +130,6 @@ export class FileUploadPopupComponent implements OnChanges {
   @Input() isUploadDisabled: boolean = false;
 
   onSubmit() {
-
     // remove the file from the file array if expiry not required for that filled like Nid front, Nid back, Driving License Front, Driving License Back, Other
     let newFileArray = JSON.parse(JSON.stringify(this.fileArray));
     newFileArray = newFileArray.filter(
@@ -144,7 +141,7 @@ export class FileUploadPopupComponent implements OnChanges {
         file.registrationType !== 'Registration Paper'
     );
 
-    console.log(newFileArray)
+    console.log(newFileArray);
 
     const isExpiryFilled = newFileArray.every(
       (file: { registrationExpireDate: null }) =>
@@ -171,7 +168,7 @@ export class FileUploadPopupComponent implements OnChanges {
         this.data?.value?.name,
         this.data?.value?.phone
       );
-      this.sharedDriverEditService.completeUpload.subscribe((res) => {
+      this.sharedDriverEditService.completeUpload.subscribe(res => {
         if (res) {
           this.fileArray = [];
         }
@@ -189,7 +186,7 @@ export class FileUploadPopupComponent implements OnChanges {
       this.sharedDriverEditService.bindTruckValueWithForm(this.data?.value);
       this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
       this.sharedDriverEditService.onTruckUpdate();
-      this.sharedDriverEditService.completeUpload.subscribe((res) => {
+      this.sharedDriverEditService.completeUpload.subscribe(res => {
         if (res) {
           this.fileArray = [];
         }
@@ -217,13 +214,13 @@ export class FileUploadPopupComponent implements OnChanges {
       this.fileInput.emit(this.fileArray);
     };
 
-    reader.onerror = (error) => {
-      console.error("Error reading file:", error);
+    reader.onerror = error => {
+      console.error('Error reading file:', error);
       // Handle error if needed
     };
   }
 
-// This function will clear the file data from memory (useful after uploading or previewing)
+  // This function will clear the file data from memory (useful after uploading or previewing)
   clearFileData(index: number) {
     const fileItem = this.fileArray[index];
     if (fileItem) {
@@ -251,7 +248,7 @@ export class FileUploadPopupComponent implements OnChanges {
     this.selectedDate = $event.target.value;
     this.fileArray[i].registrationExpireDate = this.datePipe.transform(
       this.selectedDate,
-      'yyyy-MM-ddThh:mm:ss'
+      'yyyy-MM-ddTHH:mm:ss'
     );
   }
 
@@ -264,8 +261,14 @@ export class FileUploadPopupComponent implements OnChanges {
     this.dialogRef.close('close');
   }
 
-
   private excludeExpiryField(fileArray: any[]) {
-    return fileArray.every((file) => file.registrationType === 'Other' || file.registrationType === 'NID Front' || file.registrationType === 'NID Back'  || file.registrationType === 'Registration Paper' || file.registrationType === 'Driving License Back' );
+    return fileArray.every(
+      file =>
+        file.registrationType === 'Other' ||
+        file.registrationType === 'NID Front' ||
+        file.registrationType === 'NID Back' ||
+        file.registrationType === 'Registration Paper' ||
+        file.registrationType === 'Driving License Back'
+    );
   }
 }

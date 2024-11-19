@@ -447,7 +447,7 @@ export class TruckAddComponent implements OnInit {
 
   onDateChange($event: Event, expiryFormControlName: string) {
     let date = ($event.target as HTMLInputElement).value;
-    date = this.datePipe.transform(date, 'yyyy-MM-ddThh:mm:ss');
+    date = this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss');
     this.truckAddForm.patchValue({
       [expiryFormControlName]: date,
     });

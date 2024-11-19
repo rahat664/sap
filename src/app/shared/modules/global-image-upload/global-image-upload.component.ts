@@ -1,4 +1,12 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
@@ -60,8 +68,12 @@ export class GlobalImageUploadComponent {
   showRightArrow: boolean;
   activatedImageType: any;
   @Output() forwardedNote: EventEmitter<string> = new EventEmitter();
+  @Output() forwardedImageType: EventEmitter<string> = new EventEmitter();
 
-  onChangeImageType($event: any) {}
+  onChangeImageType($event: any) {
+    this.activatedImageType = $event.value;
+    this.forwardedImageType.emit($event.value);
+  }
 
   private updateActiveDocumentIndex() {
     this.activeDocumentIndex = this.documents.findIndex(
@@ -117,8 +129,14 @@ export class GlobalImageUploadComponent {
     const overflowY = (imageRect.height - containerRect.height) / 2;
 
     // Clamp the translations to prevent overflow
-    this.translateX = Math.max(-overflowX, Math.min(overflowX, this.translateX));
-    this.translateY = Math.max(-overflowY, Math.min(overflowY, this.translateY));
+    this.translateX = Math.max(
+      -overflowX,
+      Math.min(overflowX, this.translateX)
+    );
+    this.translateY = Math.max(
+      -overflowY,
+      Math.min(overflowY, this.translateY)
+    );
   }
 
   onClickDocument(doc: any, index: number) {
@@ -212,7 +230,7 @@ export class GlobalImageUploadComponent {
   }
 
   onClickSave() {
-      this.forwardedNote.emit(this.note);
+    this.forwardedNote.emit(this.note);
     this.saveButtonClicked.emit(true);
   }
 }

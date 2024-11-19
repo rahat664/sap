@@ -53,7 +53,7 @@ export class ChallanDetailsComponent {
   ngOnChanges(changes: any) {}
 
   ngOnInit() {
-    this.getSingleTripEvents()
+    this.getSingleTripEvents();
   }
 
   resetSingleTripEvents() {
@@ -105,7 +105,7 @@ export class ChallanDetailsComponent {
   getDueDays(singleTrip: Trip) {
     if (singleTrip) {
       const currentDate = new Date();
-      const dueDate = new Date(singleTrip.tripStartDatetime);
+      const dueDate = new Date(singleTrip.tripEndedAt);
       const diffTime = Math.abs(dueDate.getTime() - currentDate.getTime());
       return Math.floor(diffTime / (1000 * 60 * 60 * 24));
     } else {
@@ -128,12 +128,15 @@ export class ChallanDetailsComponent {
       const loadingRequest = {
         tripPointNo: this.singleTrip.tripId,
         tripPointEventTypeId: this.loadingEvents[0].eventTypeId,
-        dateTime: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHh:mm:ss'),
+        dateTime: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
         type: 'Loading',
         note: this.loadingNote,
       };
       const formData = new FormData();
-      formData.append('request', new Blob([JSON.stringify(loadingRequest)], { type: 'application/json' }));
+      formData.append(
+        'request',
+        new Blob([JSON.stringify(loadingRequest)], { type: 'application/json' })
+      );
       requests.push(this.trip.manageLoadingUnloading(formData));
     }
 
@@ -141,25 +144,30 @@ export class ChallanDetailsComponent {
       const unloadingRequest = {
         tripPointNo: this.singleTrip.tripId,
         tripPointEventTypeId: this.unloadingEvents[0].eventTypeId,
-        dateTime: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHh:mm:ss'),
+        dateTime: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
         type: 'Unloading',
         note: this.unloadingNote,
       };
       const formData2 = new FormData();
-      formData2.append('request', new Blob([JSON.stringify(unloadingRequest)], { type: 'application/json' }));
+      formData2.append(
+        'request',
+        new Blob([JSON.stringify(unloadingRequest)], {
+          type: 'application/json',
+        })
+      );
       requests.push(this.trip.manageLoadingUnloading(formData2));
     }
 
-    of(...requests).pipe(
-      concatMap(request => request)
-    ).subscribe(() => {
-      this.loadingNote = '';
-      this.unloadingNote = '';
-      this.newNoteAvailableLoading = false;
-      this.newNoteAvailableUnloading = false;
-      this.resetSingleTripEvents();
-      this.getSingleTripEvents();
-    });
+    of(...requests)
+      .pipe(concatMap(request => request))
+      .subscribe(() => {
+        this.loadingNote = '';
+        this.unloadingNote = '';
+        this.newNoteAvailableLoading = false;
+        this.newNoteAvailableUnloading = false;
+        this.resetSingleTripEvents();
+        this.getSingleTripEvents();
+      });
   }
 
   onCancel() {
@@ -321,36 +329,54 @@ export class ChallanDetailsComponent {
   }
 
   onDeleteUnloadingDocuments(document: any) {
-    this.dialog.open(ConfirmDeleteComponent, {
-      data: {
-        title: 'Attention',
-        text: 'Are you sure you want to delete this document?',
-        buttonText: 'Delete',
-      },
-    }).afterClosed().subscribe(res => {
-      if (res === 'deleted') {
-        this.trip.deleteTripDocument(this.unloadingEvents[0].tripPointId, this.unloadingEvents[0].eventTypeId, document.id).subscribe(() => {
-          this.resetSingleTripEvents();
-          this.getSingleTripEvents();
-        });
-      }
-    });
+    this.dialog
+      .open(ConfirmDeleteComponent, {
+        data: {
+          title: 'Attention',
+          text: 'Are you sure you want to delete this document?',
+          buttonText: 'Delete',
+        },
+      })
+      .afterClosed()
+      .subscribe(res => {
+        if (res === 'deleted') {
+          this.trip
+            .deleteTripDocument(
+              this.unloadingEvents[0].tripPointId,
+              this.unloadingEvents[0].eventTypeId,
+              document.id
+            )
+            .subscribe(() => {
+              this.resetSingleTripEvents();
+              this.getSingleTripEvents();
+            });
+        }
+      });
   }
 
   onDeleteLoadingDocuments(document: any) {
-    this.dialog.open(ConfirmDeleteComponent, {
-      data: {
-        title: 'Attention',
-        text: 'Are you sure you want to delete this document?',
-        buttonText: 'Delete',
-      },
-    }).afterClosed().subscribe(res => {
-      if (res === 'deleted') {
-        this.trip.deleteTripDocument(this.loadingEvents[0].tripPointId, this.loadingEvents[0].eventTypeId, document.id).subscribe(() => {
-          this.resetSingleTripEvents();
-          this.getSingleTripEvents();
-        });
-      }
-    });
+    this.dialog
+      .open(ConfirmDeleteComponent, {
+        data: {
+          title: 'Attention',
+          text: 'Are you sure you want to delete this document?',
+          buttonText: 'Delete',
+        },
+      })
+      .afterClosed()
+      .subscribe(res => {
+        if (res === 'deleted') {
+          this.trip
+            .deleteTripDocument(
+              this.loadingEvents[0].tripPointId,
+              this.loadingEvents[0].eventTypeId,
+              document.id
+            )
+            .subscribe(() => {
+              this.resetSingleTripEvents();
+              this.getSingleTripEvents();
+            });
+        }
+      });
   }
 }

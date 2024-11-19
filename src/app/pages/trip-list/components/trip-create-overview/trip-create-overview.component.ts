@@ -1,5 +1,11 @@
 import { Component, HostListener } from '@angular/core';
-import { CurrencyPipe, DatePipe, DecimalPipe, NgForOf, NgIf } from '@angular/common';
+import {
+  CurrencyPipe,
+  DatePipe,
+  DecimalPipe,
+  NgForOf,
+  NgIf,
+} from '@angular/common';
 import { TripService } from '../../services/trip.service';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { Router } from '@angular/router';
@@ -23,6 +29,7 @@ export class TripCreateOverviewComponent {
   unloadPointNames: any[] = [];
   vehicleType: any;
   tripTemplateName: string;
+  loading: boolean;
 
   constructor(
     private service: TripService,
@@ -58,6 +65,7 @@ export class TripCreateOverviewComponent {
   }
 
   onCreateTrip() {
+    this.loading = true;
     this.service.createTrip(this.tripData).subscribe(
       (res: any) => {
         if (res.status === 'OK') {
@@ -109,6 +117,7 @@ export class TripCreateOverviewComponent {
                     })
                     .afterClosed()
                     .subscribe(() => {
+                      this.loading = false;
                       this.router.navigate(['/trip-list']);
                     });
                 } else {

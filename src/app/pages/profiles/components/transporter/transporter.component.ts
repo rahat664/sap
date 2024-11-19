@@ -3,7 +3,7 @@ import { CreatePopupComponent } from '../../../../shared/modal/create-popup/crea
 import { CustomerCreateComponent } from '../customer/customer-create/customer-create.component';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UserModel } from '../../../user-management/models/user.model';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
@@ -34,6 +34,7 @@ import { MatDialog } from '@angular/material/dialog';
     LoadingComponent,
     CheckTheHeightCrossMaxHeightOrNotDirective,
     DatePipe,
+    DecimalPipe,
   ],
   templateUrl: './transporter.component.html',
   styleUrl: './transporter.component.scss',

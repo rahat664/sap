@@ -1,13 +1,24 @@
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
-import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
+import {
+  DatePipe,
+  DecimalPipe,
+  NgClass,
+  NgForOf,
+  NgIf,
+  NgOptimizedImage,
+} from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
-import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+  MatOption,
+} from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
@@ -19,9 +30,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmApproveComponent } from '../../shared/modules/confirm-approve/confirm-approve.component';
 import { ConfirmRejectComponent } from '../../shared/modules/confirm-reject/confirm-reject.component';
-import {
-  ConfirmReceiveeComponentComponent
-} from '../../shared/modules/confirm-receivee-component/confirm-receivee-component.component';
+import { ConfirmReceiveeComponentComponent } from '../../shared/modules/confirm-receivee-component/confirm-receivee-component.component';
 import { Router, RouterLink } from '@angular/router';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { debounceTime, of, Subject } from 'rxjs';
@@ -30,8 +39,9 @@ import { DateEnum } from '../trip-list/Enum/date.enum';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
 import { UserService } from '../profiles/services/user.service';
 import { TruckService } from '../profiles/components/truck/services/truck.service';
-import { TruckModel } from '../profiles/components/truck/models/truck.model';
 import { mergeMap } from 'rxjs/operators';
+import { TruckDocumentType } from '../../shared/Enums/registration_type';
+import { UploadButtonComponent } from '../../shared/modules/upload-button/upload-button.component';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -61,6 +71,7 @@ import { mergeMap } from 'rxjs/operators';
     MatMenuItem,
     MatMenuTrigger,
     RouterLink,
+    UploadButtonComponent,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
@@ -92,7 +103,7 @@ export class ChallanDashboardComponent {
   }
   height: any = '0px';
   pendingChallanAmount: number = 0;
-  pendingChallanText: string = 'Pending challan value for 30 trips';
+  pendingChallanText: string = '';
   receivedAmount: number = 0;
   receivedText: string = 'Received';
   pendingAmount: number = 0;
@@ -128,8 +139,8 @@ export class ChallanDashboardComponent {
   tripIdSuggestions: any;
   searchSubject: Subject<string> = new Subject();
   customerSearchSubject: Subject<string> = new Subject();
-  truckSearchSubject: Subject<string> = new Subject()
-  transporterSearchSubject: Subject<string> = new Subject()
+  truckSearchSubject: Subject<string> = new Subject();
+  transporterSearchSubject: Subject<string> = new Subject();
 
   constructor(
     private datePipe: DatePipe,
@@ -157,9 +168,11 @@ export class ChallanDashboardComponent {
     this.truckSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
       this.performTruckSearch(searchText);
     });
-    this.transporterSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
-      this.performTransporterSearch(searchText);
-    });
+    this.transporterSearchSubject
+      .pipe(debounceTime(300))
+      .subscribe(searchText => {
+        this.performTransporterSearch(searchText);
+      });
   }
 
   private performCustomerSearch(searchText: string) {
@@ -188,12 +201,14 @@ export class ChallanDashboardComponent {
   }
   private performTransporterSearch(searchText: string) {
     if (searchText?.length > 0) {
-      this.transporter.getTransporter(0, 100, searchText).subscribe((transporter: any) => {
-        this.transporterSuggestions = transporter.data.responses;
-        if (this.transporterSuggestions.length === 0) {
-          this.transporterSuggestions.push('No trip found');
-        }
-      });
+      this.transporter
+        .getTransporter(0, 100, searchText)
+        .subscribe((transporter: any) => {
+          this.transporterSuggestions = transporter.data.responses;
+          if (this.transporterSuggestions.length === 0) {
+            this.transporterSuggestions.push('No trip found');
+          }
+        });
     } else {
       this.resetTransporterSearch();
     }
@@ -268,7 +283,6 @@ export class ChallanDashboardComponent {
     this.searchFilter = 0;
   }
 
-
   ngOnInit() {
     this.activatedChallanStatus = 'Pending';
     this.chalanStatus = 'Pending';
@@ -277,7 +291,7 @@ export class ChallanDashboardComponent {
     this.getChallanStatus();
     this.loading = true;
     this.anotherStatusCalled = false;
-    this.generateDateOptionsArray()
+    this.generateDateOptionsArray();
     this.getTripList();
   }
   private getFromDateAndToDate() {
@@ -344,7 +358,14 @@ export class ChallanDashboardComponent {
     this.loading = false;
     this.completedTrips = trip.data?.statusCount?.Completed || 0;
     this.totalPages = trip.data.totalPages;
-    this.pendingChallanText = `Pending challan value for ${this.number.transform(trip.data?.challanStatusCount?.Pending) || 0} ${trip.data?.challanStatusCount?.Pending === 1 ? 'trip' : 'trips'}`;
+    this.pendingChallanText = `Pending challan value for ${this.number.transform(trip.data?.challanStat?.pending) || 0} ${trip.data?.challanStat?.pending === 1 ? 'trip' : 'trips'}`;
+    this.receivedAmount = trip.data?.challanStat?.received || 0;
+    this.pendingAmount = trip.data?.challanStat.inProgress || 0;
+    this.approvedAmount = trip.data?.challanStat?.approved || 0;
+    this.rejectedAmount = trip.data?.challanStat?.rejected || 0;
+    this.pendingChallanAmount =
+      trip.data?.challanStat?.totalCustomerRateForPendingChallans || 0;
+    this.hardCopyReceived = trip.data?.challanStat?.totalHardCopyReceived || 0;
     if (this.page === 0) {
       this.tripList = trip.data.responses;
     } else {
@@ -479,7 +500,7 @@ export class ChallanDashboardComponent {
       const diffTime = Math.abs(
         currentDate.getTime() - tripCompletedDate.getTime()
       );
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       return diffDays;
     }
   }
@@ -493,13 +514,16 @@ export class ChallanDashboardComponent {
           text: `${tripId}?`,
           buttonText: 'Receive',
         },
-        "minWidth": "21.375rem",
+        minWidth: '21.375rem',
       })
       .afterClosed()
       .subscribe(res => {
         if (res) {
           const body = {
-            hardCopyReceivedAt: this.datePipe.transform(res, 'yyyy-MM-ddTHH:mm:ss'),
+            hardCopyReceivedAt: this.datePipe.transform(
+              res,
+              'yyyy-MM-ddTHH:mm:ss'
+            ),
           };
           this.service
             .updateChallanStatus(tripId, body)
@@ -516,28 +540,28 @@ export class ChallanDashboardComponent {
     return this.dateFilter + this.searchFilter + this.tripFilter;
   }
 
-    onClearFilter() {
-      this.customerCode = '';
-      this.tripId = '';
-      this.page = 0;
-      this.size = 30;
-      this.searchFilter = 0;
-      this.dateFilter = 0;
-      this.transporterFilter = 0;
-      this.truckFilter = 0
-      this.tripFilter = 0;
-      this.searchValue = '';
-      this.searchName = '';
-      this.from = '';
-      this.to = '';
-      this.truckRegistrationId = '';
-      this.transporterName = '';
-      this.filterForm.reset()
-      this.inputPlaceholder = '';
-      this.tripSuggestions = [];
-      this.loading = true;
-      this.trip.anotherStatusCalled.next(true);
-      this.getTripList();
+  onClearFilter() {
+    this.customerCode = '';
+    this.tripId = '';
+    this.page = 0;
+    this.size = 30;
+    this.searchFilter = 0;
+    this.dateFilter = 0;
+    this.transporterFilter = 0;
+    this.truckFilter = 0;
+    this.tripFilter = 0;
+    this.searchValue = '';
+    this.searchName = '';
+    this.from = '';
+    this.to = '';
+    this.truckRegistrationId = '';
+    this.transporterName = '';
+    this.filterForm.reset();
+    this.inputPlaceholder = '';
+    this.tripSuggestions = [];
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
   }
 
   onSelectedFromDate($event: string) {
@@ -671,44 +695,104 @@ export class ChallanDashboardComponent {
   }
 
   onClickSoftCopyView(tripId: string) {
+    this.trip
+      .getAllTripEvent(tripId, 'Loading')
+      .pipe(
+        mergeMap((loadingRes: any) => {
+          const loadingEvents = loadingRes.data.filter(
+            event => event.eventName === 'Upload loading challan'
+          );
+          return this.trip.getAllTripEvent(tripId, 'Unloading').pipe(
+            mergeMap((unloadingRes: any) => {
+              const unloadingEvents = unloadingRes.data.filter(
+                event => event.eventName === 'Upload unloading challan'
+              );
+              return of({ loadingEvents, unloadingEvents });
+            })
+          );
+        })
+      )
+      .subscribe(({ loadingEvents, unloadingEvents }) => {
+        const allEvents = [...loadingEvents, ...unloadingEvents];
+        //concat two event
+        // concat two tripDocuments
+        let documents = [];
+        allEvents.map(event => {
+          event.tripDocuments?.map(doc => {
+            documents.push({
+              document: doc,
+              event: event,
+            });
+          });
+        });
+        if (documents.length > 0) {
+          this.router.navigate(['/image-details'], {
+            state: {
+              tripDocuments: documents,
+              activatedDocument: documents[0],
+            },
+          });
+        }
+      });
+  }
+
+  protected readonly truckEnum = TruckDocumentType;
+
+  checkDocumentIsAvailableOrNot(tripId: string): any {
     let loadingEvents = [];
     let unloadingEvents = [];
-    this.trip.getAllTripEvent(tripId, 'Loading').pipe(
-      mergeMap((loadingRes: any) => {
-        const loadingEvents = loadingRes.data.filter(
-          event => event.eventName === 'Upload loading challan'
-        );
-        return this.trip.getAllTripEvent(tripId, 'Unloading').pipe(
-          mergeMap((unloadingRes: any) => {
-            const unloadingEvents = unloadingRes.data.filter(
-              event => event.eventName === 'Upload unloading challan'
-            );
-            return of({ loadingEvents, unloadingEvents });
-          })
-        );
-      })
-    ).subscribe(({ loadingEvents, unloadingEvents }) => {
-      const allEvents = [...loadingEvents, ...unloadingEvents];
-      //concat two event
-      // concat two tripDocuments
-      let documents = [];
-      allEvents.map((event)=> {
-        event.tripDocuments?.map((doc) => {
-          documents.push({
-            document: doc,
-            event: event
-          });
+    this.trip
+      .getAllTripEvent(tripId, 'Loading')
+      .pipe(
+        mergeMap((loadingRes: any) => {
+          const loadingEvents = loadingRes.data.filter(
+            event => event.eventName === 'Upload loading challan'
+          );
+          return this.trip.getAllTripEvent(tripId, 'Unloading').pipe(
+            mergeMap((unloadingRes: any) => {
+              const unloadingEvents = unloadingRes.data.filter(
+                event => event.eventName === 'Upload unloading challan'
+              );
+              return of({ loadingEvents, unloadingEvents });
+            })
+          );
         })
-      })
-      this.router.navigate(['/image-details'], {
-        state: {
-          tripDocuments: documents,
-          activatedDocument: documents[0],
-        }
-      })
+      )
+      .subscribe(({ loadingEvents, unloadingEvents }) => {
+        const allEvents = [...loadingEvents, ...unloadingEvents];
+        //concat two event
+        // concat two tripDocuments
+        let documents = [];
+        allEvents.map(event => {
+          event.tripDocuments?.map(doc => {
+            documents.push({
+              document: doc,
+              event: event,
+            });
+          });
+        });
+        return documents.length > 0;
+      });
+  }
 
-    });
+  onFileChange($event: Event, tripId: string) {
+    const input = $event.target as HTMLInputElement;
+    const files = input.files;
+    if (files && files.length > 0) {
+      this.router.navigate([`challan-management/${tripId}/image-upload`], {
+        state: {
+          tripId: tripId,
+          addedTripDocument: files,
+          imageType: [
+            { value: '1', viewValue: 'Unloading Challan' },
+            { value: '2', viewValue: 'Loading Challan' },
+          ],
+          expiryAvailable: false,
+          noteAvailable: true,
+          type: 'Unloading',
+          returnUrl: `/challan-management`,
+        },
+      });
+    }
   }
 }
-
-

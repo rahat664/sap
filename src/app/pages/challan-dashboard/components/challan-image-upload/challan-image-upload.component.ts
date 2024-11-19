@@ -1,13 +1,11 @@
-import { Component, Input } from '@angular/core';
-import {
-  GlobalImageUploadComponent
-} from '../../../../shared/modules/global-image-upload/global-image-upload.component';
+import { Component } from '@angular/core';
+import { GlobalImageUploadComponent } from '../../../../shared/modules/global-image-upload/global-image-upload.component';
 import { DatePipe, NgIf } from '@angular/common';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption } from '@angular/material/core';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
@@ -46,26 +44,26 @@ export class ChallanImageUploadComponent {
   private tripId: any;
   protected tripDocuments: any[] = [];
   protected tripDocumentFiles: any[] = [];
-  expiryAvailable:  boolean = false;
+  expiryAvailable: boolean = false;
   notesAvailable: boolean = false;
   returnUrl: string;
   private notes: string;
   private eventTypeId: number;
   private type: string;
 
-  constructor(private router: Router, private datePipe: DatePipe, private trip: TripService, private toastr: HandleToastrService) {
-  }
+  constructor(
+    private router: Router,
+    private datePipe: DatePipe,
+    private trip: TripService,
+    private toastr: HandleToastrService
+  ) {}
 
   ngOnInit() {
     this.resetNavigationInformation();
     this.getNavigationInformation();
-
-
   }
 
-  ngAfterContentInit() {
-
-  }
+  ngAfterContentInit() {}
 
   onChangeImageType($event: MatSelectChange) {}
 
@@ -85,7 +83,7 @@ export class ChallanImageUploadComponent {
     if (navigation) {
       this.tripId = navigation.tripId;
       this.previewDocuments(navigation.addedTripDocument);
-      this.imageTypes  = navigation.imageType
+      this.imageTypes = navigation.imageType;
       this.notesAvailable = navigation.noteAvailable;
       this.expiryAvailable = navigation.expiryAvailable;
       this.eventTypeId = navigation.eventTypeId;
@@ -104,65 +102,74 @@ export class ChallanImageUploadComponent {
           this.tripDocuments.push(reader.result);
           this.tripDocumentFiles.push({
             file: tripDocuments[i],
-            preview: reader.result
+            preview: reader.result,
           });
-        }
+        };
       }
     }
   }
 
   onDocumentClose($event: any) {
     // remove the document from the list
-    this.tripDocumentFiles = this.tripDocumentFiles.filter(doc => doc.preview !== $event);
+    this.tripDocumentFiles = this.tripDocumentFiles.filter(
+      doc => doc.preview !== $event
+    );
     if (this.tripDocumentFiles.length === 1) {
       this.resetNavigationInformation();
       this.router.navigate([this.returnUrl]);
     }
   }
 
-
   onClickSave($event: boolean) {
     if ($event) {
       const request = {
-        tripPointNo : this.tripId,
+        tripPointNo: this.tripId,
         tripPointEventTypeId: this.eventTypeId,
-        dateTime: this.datePipe.transform(
-          new Date(),
-          'yyyy-MM-ddTHh:mm:ss'
-        ),
-        type: this.type
-      }
+        dateTime: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
+        type: this.type,
+      };
 
       if (this.notes) {
         request['note'] = this.notes;
       }
 
-      const files = []
+      const files = [];
       this.tripDocumentFiles?.forEach(doc => {
         files.push(doc.file);
-      })
+      });
 
       // convert the request and files into formData
       const formData = new FormData();
 
-      formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
+      formData.append(
+        'request',
+        new Blob([JSON.stringify(request)], { type: 'application/json' })
+      );
       files.forEach(doc => {
         formData.append('files', doc);
-      })
+      });
 
       this.trip.manageLoadingUnloading(formData).subscribe(
-        (response : any) => {
-          this.toastr.showSuccess('Challan uploaded successfully');
+        (response: any) => {
+          this.toastr.showSuccess(response.message);
           this.router.navigate([this.returnUrl]);
         },
-        (error) => {
-          this.toastr.showError('Error uploading challan');
+        error => {
+          this.toastr.showError(error.message);
         }
-      )
+      );
     }
   }
 
   onForwardedNote($event: string) {
-      this.notes = $event;
+    this.notes = $event;
+  }
+
+  onSelectImageType($event: string) {
+    if ($event === 'Loading Challan') {
+      this.eventTypeId = 6;
+    } else if ($event === 'Unloading Challan') {
+      this.eventTypeId = 11;
+    }
   }
 }

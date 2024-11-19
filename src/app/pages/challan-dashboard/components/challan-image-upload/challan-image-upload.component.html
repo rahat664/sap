@@ -1,3 +1,5 @@
-<app-global-image-upload (forwardedNote)="onForwardedNote($event)" (saveButtonClicked)="onClickSave($event)" (closedDocument)="onDocumentClose($event)" [activatedDocument]="tripDocuments[0]" [documents]="tripDocuments"
+<app-global-image-upload (forwardedImageType)="onSelectImageType($event)"
+                         (forwardedNote)="onForwardedNote($event)"
+                          (saveButtonClicked)="onClickSave($event)" (closedDocument)="onDocumentClose($event)" [activatedDocument]="tripDocuments[0]" [documents]="tripDocuments"
                          [notesAvailable]="notesAvailable" [expiryAvailable]="expiryAvailable"
                          [imageTypes]="imageTypes"></app-global-image-upload>

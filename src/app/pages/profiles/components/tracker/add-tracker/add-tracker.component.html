@@ -28,6 +28,9 @@
                 }
               </mat-select>
             </mat-form-field>
+            <span
+              *ngIf="trackerAddForm.get('vendorId').hasError('required') && trackerAddForm.get('vendorId').touched"
+              class="text-red-500">Vendor is required</span>
           </div>
           <div class="flex flex-col space-y-1">
             <label class="text-not-black font-semibold">Username</label>
@@ -38,6 +41,9 @@
                 placeholder="Enter username"
                 class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
             </mat-form-field>
+            <span
+              *ngIf="trackerAddForm.get('username').hasError('required') && trackerAddForm.get('username').touched"
+              class="text-red-500">Username is required</span>
           </div>
           <div class="flex flex-col space-y-1">
             <label class="text-not-black font-semibold">Password</label>
@@ -49,6 +55,9 @@
                 placeholder="Enter password"
                 class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
             </mat-form-field>
+            <span
+              *ngIf="trackerAddForm.get('password').hasError('required') && trackerAddForm.get('password').touched"
+              class="text-red-500">Password is required</span>
           </div>
           <div class="flex flex-col space-y-1 col-span-2">
             <label class="text-not-black font-semibold">Tracker Id</label>
@@ -58,6 +67,9 @@
                      placeholder="Enter tracker ID"
                      class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
             </mat-form-field>
+            <span
+              *ngIf="trackerAddForm.get('trackerId').hasError('required') && trackerAddForm.get('trackerId').touched"
+              class="text-red-500">Tracker ID is required</span>
           </div>
           <div class="flex flex-col space-y-1">
             <label class="text-not-black font-semibold">Type</label>
@@ -67,6 +79,9 @@
                 <mat-option value="PORTABLE">Portable</mat-option>
               </mat-select>
             </mat-form-field>
+            <span
+              *ngIf="trackerAddForm.get('trackerType').hasError('required') && trackerAddForm.get('trackerType').touched"
+              class="text-red-500">Tracker Type is required</span>
           </div>
         </div>
       </div>
@@ -80,7 +95,6 @@
             <label class="text-not-black font-semibold">Truck Registration Number</label>
             <mat-form-field appearance="outline" class="example-full-width w-full">
               <input
-                id="transporterName"
                 type="text"
                 matInput
                 formControlName="truckRegNo"
@@ -89,7 +103,8 @@
                 [matAutocomplete]="truck">
               <mat-autocomplete #truck="matAutocomplete">
                 @for (option of truckSuggestion; track option) {
-                  <mat-option (click)="onClickTruckSearchSuggestion(option)" [value]="option.fullRegistrationNumber">
+                  <mat-option (click)="onClickTruckSearchSuggestion(option)"
+                              [value]="option.fullRegistrationNumber">
                     <div class="flex flex-col space-y-1">
                         <span
                           class="text-body_title leading-body_title text-not-black font-semibold">{{ option.fullRegistrationNumber }}</span>
@@ -98,6 +113,9 @@
                 }
               </mat-autocomplete>
             </mat-form-field>
+            <span
+              *ngIf="trackerAddForm.get('truckRegNo').hasError('required') && trackerAddForm.get('truckRegNo').touched"
+              class="text-red-500">Truck Registration Number is required</span>
           </div>
         </div>
       </div>
