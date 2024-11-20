@@ -144,4 +144,8 @@ export class AppComponent implements OnInit {
       }
     });
   }
+
+  isSupportPage() {
+    return this.router.url === '/support';
+  }
 }

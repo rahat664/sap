@@ -123,6 +123,12 @@ export const routes: Routes = [
       import('./pages/about-us/about-us.component').then(c => c.AboutUsComponent),
   },
   {
+    path: 'support',
+    title: 'Support',
+    loadComponent: () =>
+      import('./pages/support/support.component').then(m => m.SupportComponent),
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',

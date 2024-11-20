@@ -1,8 +1,8 @@
-<ng-container *ngIf="!isLoginPage() && !isAboutPage()">
+<ng-container *ngIf="!isLoginPage() && !isAboutPage() && !isSupportPage()">
   <app-layout>
     <router-outlet></router-outlet>
   </app-layout>
 </ng-container>
-<ng-container *ngIf="isLoginPage() || isAboutPage()">
+<ng-container *ngIf="isLoginPage() || isAboutPage() || isSupportPage()">
   <router-outlet></router-outlet>
 </ng-container>
