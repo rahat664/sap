@@ -19,10 +19,8 @@ import { GetClickEventDirective } from '../../shared/directive/get-click-event.d
 import { statusButtons } from './models/status-buttons';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 import { CustomerService } from '../profiles/services/customer.service';
-import { GetOutsideModalClickDirective } from '../../shared/directive/get-outside-modal-click.directive';
 import { Trip } from '../auth/models/response/trip';
-import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../shared/directive/check-the-height-cross-max-height-or-not.directive';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
 import {
   MatAutocomplete,
@@ -32,6 +30,7 @@ import {
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { debounceTime, Subject } from 'rxjs';
+import { TripPoint } from '../manage-trip/model/trip.details.model';
 
 @Component({
   selector: 'app-trip-list',
@@ -51,9 +50,6 @@ import { debounceTime, Subject } from 'rxjs';
     GiveMaxHeightDirective,
     GetClickEventDirective,
     LoadingComponent,
-    GetOutsideModalClickDirective,
-    CheckTheHeightCrossMaxHeightOrNotDirective,
-    RouterLink,
     DecimalPipe,
     MatAutocompleteTrigger,
     MatAutocomplete,
@@ -430,5 +426,13 @@ export class TripListComponent implements OnInit {
     this.service.anotherStatusCalled.next(true);
     this.getTripList();
     this.tripFilter = 0;
+  }
+
+  getLoadingPointsName(tripPoints: TripPoint[]) {
+    return tripPoints.filter(trip => trip.pointType === 'Loading');
+  }
+
+  getUnloadingPointsName(tripPoints: TripPoint[]) {
+    return tripPoints.filter(trip => trip.pointType === 'Unloading');
   }
 }

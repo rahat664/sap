@@ -36,10 +36,12 @@
     <!--  filter section-->
     <div class="w-full bg-white rounded-lg">
       <button
-        (click)="onClickFilterOpened()"
         class="flex px-2 py-1 space-x-3 items-center w-full"
         [ngClass]="{ 'border-b-2 border-[#0CD5F0]': filterOpened }">
-        <i class="fas fa-caret-down text-input-hint text-xl"></i>
+        <i (click)="onClickFilterOpened()" *ngIf="!filterOpened"
+           class="fas fa-caret-down text-input-hint text-xl"></i>
+        <i (click)="onClickFilterOpened()" *ngIf="filterOpened"
+           class="fas fa-caret-up text-input-hint text-xl"></i>
         <span class="text-not-black text-body_title leading-body_title"
         >Filter
           <span *ngIf="getFilterLength() > 0"
@@ -100,18 +102,22 @@
       <ng-container *ngIf="!loading">
         <tr *ngFor="let user of Users">
           <td class="whitespace-nowrap">{{ user.name }}</td>
-          <td><a class="cursor-pointer" (click)="copyNumber($event, user.phone)">{{ user.phone }}</a></td>
+          <td><a class="cursor-pointer"
+                 (click)="copyNumber($event, user.phone)">{{ user.phone }}</a></td>
           <td><a href="mailto:{{user.email}}">{{ user.email }}</a></td>
           <td>{{ getUserType(user.roles) }}</td>
           <td>{{ user.designation }}</td>
           <td>{{ user.status }}</td>
-          <td class="whitespace-nowrap">{{ user.createdOn ? (user.createdOn | date : 'd MMM yyyy') : '' }}</td>
+          <td
+            class="whitespace-nowrap">{{ user.createdOn ? (user.createdOn | date : 'd MMM yyyy') : '' }}
+          </td>
           <td>
             <button *ngIf="user.status != 'Removed'" mat-button [matMenuTriggerFor]="menu"><i
               class="fas fa-ellipsis-v"></i></button>
             <mat-menu #menu="matMenu">
               <button
-                (click)="changeStatus(user.id, user.name, 'Inactive')" mat-menu-item *ngIf="user.status === 'Active'">
+                (click)="changeStatus(user.id, user.name, 'Inactive')" mat-menu-item
+                *ngIf="user.status === 'Active'">
                 <div class="flex space-x-2 items-center">
                   <img
                     class="notPreview"
@@ -149,7 +155,8 @@
             <div class="flex items-center justify-center">
               <div class="w-full flex flex-col space-y-3 justify-center items-center">
                 <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-                <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+                <p class="text-body_title leading-body_title text-secondary font-semibold">No Data
+                  Found</p>
               </div>
             </div>
           </td>

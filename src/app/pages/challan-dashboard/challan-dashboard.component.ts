@@ -1,14 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
-import {
-  DatePipe,
-  DecimalPipe,
-  NgClass,
-  NgForOf,
-  NgIf,
-  NgOptimizedImage,
-} from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
@@ -21,7 +13,6 @@ import {
 } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
 import { ChallanDashboardService } from './challan-dashboard.service';
 import { TripService } from '../trip-list/services/trip.service';
 import { Trip, Truck } from '../auth/models/response/trip';
@@ -41,13 +32,12 @@ import { UserService } from '../profiles/services/user.service';
 import { TruckService } from '../profiles/components/truck/services/truck.service';
 import { mergeMap } from 'rxjs/operators';
 import { TruckDocumentType } from '../../shared/Enums/registration_type';
-import { UploadButtonComponent } from '../../shared/modules/upload-button/upload-button.component';
+import { TripPoint } from '../manage-trip/model/trip.details.model';
 
 @Component({
   selector: 'app-challan-dashboard',
   standalone: true,
   imports: [
-    ButtonChipsComponent,
     CustomInputComponent,
     DatePipe,
     DecimalPipe,
@@ -63,15 +53,12 @@ import { UploadButtonComponent } from '../../shared/modules/upload-button/upload
     MatOption,
     NgForOf,
     NgIf,
-    ScrollByButtonDirective,
     NgClass,
-    NgOptimizedImage,
     MatButton,
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
     RouterLink,
-    UploadButtonComponent,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
@@ -124,7 +111,7 @@ export class ChallanDashboardComponent {
   protected tripList: Trip[] = [];
   protected totalPages: any = 0;
   private anotherStatusCalled: boolean;
-  activatedChallanStatus: string = 'Pending';
+  activatedChallanStatus: string = 'Completed';
   chalanStatus: string;
   status: string;
   challanHardCopyReceived: boolean;
@@ -284,8 +271,8 @@ export class ChallanDashboardComponent {
   }
 
   ngOnInit() {
-    this.activatedChallanStatus = 'Pending';
-    this.chalanStatus = 'Pending';
+    this.activatedChallanStatus = 'Completed';
+    this.chalanStatus = '';
     this.status = 'Completed';
     this.getFromDateAndToDate();
     this.getChallanStatus();
@@ -493,7 +480,10 @@ export class ChallanDashboardComponent {
     const tripCompletedDate = new Date(trip.tripEndedAt);
     if (trip.challanStatusUpdatedAt) {
       const challanStatusUpdatedDate = new Date(trip.challanStatusUpdatedAt);
-      return this.datePipe.transform(challanStatusUpdatedDate, 'dd MMM,yyyy');
+      return this.datePipe.transform(
+        challanStatusUpdatedDate,
+        'dd MMM,yyyy h:mm a'
+      );
     } else {
       // return due days from trip end date
       const currentDate = new Date();
@@ -537,7 +527,13 @@ export class ChallanDashboardComponent {
   }
 
   getFilterLength() {
-    return this.dateFilter + this.searchFilter + this.tripFilter;
+    return (
+      this.dateFilter +
+      this.searchFilter +
+      this.tripFilter +
+      this.truckFilter +
+      this.transporterFilter
+    );
   }
 
   onClearFilter() {
@@ -560,6 +556,9 @@ export class ChallanDashboardComponent {
     this.inputPlaceholder = '';
     this.tripSuggestions = [];
     this.loading = true;
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
   }
@@ -581,6 +580,9 @@ export class ChallanDashboardComponent {
   }
 
   onSelectDate($event: number) {
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.dateFilter = 1;
     if ($event === DateEnum.Custom) {
       this.shared.closeInputSelect.next(true);
@@ -630,6 +632,9 @@ export class ChallanDashboardComponent {
   }
 
   onClickSearchSuggestion(result: any) {
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.searchFilter = 1;
     this.loading = true;
     this.page = 0;
@@ -656,6 +661,9 @@ export class ChallanDashboardComponent {
   }
 
   onClickTripSearchSuggestion(result: any) {
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.tripFilter = 1;
     this.page = 0;
     this.tripId = result.tripId;
@@ -666,6 +674,9 @@ export class ChallanDashboardComponent {
     this.getTripList();
   }
   onClickTruckSearchSuggestion(result: any) {
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.truckFilter = 1;
     this.page = 0;
     this.truckRegistrationId = result.fullRegistrationNumber;
@@ -676,6 +687,9 @@ export class ChallanDashboardComponent {
     this.getTripList();
   }
   onClickTransporterSearchSuggestion(result: any) {
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.transporterFilter = 1;
     this.page = 0;
     this.transporterName = result.name;
@@ -794,5 +808,13 @@ export class ChallanDashboardComponent {
         },
       });
     }
+  }
+
+  getLoadingPointsName(tripPoints: TripPoint[]) {
+    return tripPoints.filter(point => point.pointType === 'Loading');
+  }
+
+  getUnloadingPointsName(tripPoints: TripPoint[]) {
+    return tripPoints.filter(point => point.pointType === 'Unloading');
   }
 }

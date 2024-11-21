@@ -1,11 +1,7 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { CustomDatePickerComponent } from '../../../../shared/modules/custom-date-picker/custom-date-picker.component';
-import { ButtonChipsComponent } from '../../modules/button-chips/button-chips.component';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ScrollByButtonDirective } from '../../../../shared/directive/scroll-by-button.directive';
 import { TripService } from '../../services/trip.service';
-import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
-import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import {
   FormArray,
@@ -27,7 +23,6 @@ import {
   provideNativeDateAdapter,
   ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import { MatExpansionPanelActionRow } from '@angular/material/expansion';
 import { MatCard } from '@angular/material/card';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { TimePickerComponent } from '../../../../shared/modules/time-picker/time-picker.component';
@@ -47,12 +42,8 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
   selector: 'app-create-trip-page',
   standalone: true,
   imports: [
-    CustomDatePickerComponent,
-    ButtonChipsComponent,
     CommonModule,
     ScrollByButtonDirective,
-    CustomInputComponent,
-    GetClickEventDirective,
     ReactiveFormsModule,
     FormsModule,
     MatButtonToggleModule,
@@ -62,7 +53,6 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
     MatInputModule,
     TextFieldModule,
     MatDatepickerModule,
-    MatExpansionPanelActionRow,
     MatCard,
     MatMenuTrigger,
     MatMenu,
@@ -275,7 +265,7 @@ export class CreateTripPageComponent implements OnInit {
       .setValue(
         this.datePipe.transform(
           new Date(new Date().getTime() + 6 * 60 * 60 * 1000),
-          'd MMM yyyy, hh:mm a'
+          'd MMM yyyy HH:mm:ss'
         )
       );
   }

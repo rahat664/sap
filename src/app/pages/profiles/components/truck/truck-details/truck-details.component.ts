@@ -18,10 +18,7 @@ import {
 } from '@angular/forms';
 import { registrationCategoryList } from '../models/registration-category';
 import { registrationZoneList } from '../models/registration-zone';
-import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
-import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup.component';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
-import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checklist.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField, MatSuffix } from '@angular/material/form-field';
@@ -55,12 +52,7 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
     GetClickEventDirective,
     NgClass,
     NgForOf,
-    DatePipe,
     ReactiveFormsModule,
-    CreatePopupComponent,
-    FileUploadPopupComponent,
-    ImageGalleryComponent,
-    CheckListPopupComponent,
     PreHireChecklistComponent,
     MatFormField,
     MatInput,
@@ -204,8 +196,7 @@ export class TruckDetailsComponent implements OnInit {
     if (this.deletedFileUrls.length > 0) {
       this.deletedFileUrls.forEach(url => {
         this.service.deleteTruckFiles(url, this.truckDetails.id).subscribe(
-          (res: any) => {
-          },
+          (res: any) => {},
           error => {
             console.error('Error deleting file:', error);
           }
@@ -334,13 +325,11 @@ export class TruckDetailsComponent implements OnInit {
       );
   }
 
-
   triggerFileUpload(formControlName: string, max: number) {
     this.selectedFormControlName = formControlName;
 
     // Calculate the number of files that can still be uploaded
-    const currentFilesCount =
-      this.getSavedFileArray(formControlName)?.length;
+    const currentFilesCount = this.getSavedFileArray(formControlName)?.length;
     this.maxUploadAble = Math.max(0, max - currentFilesCount); // Ensure it doesn't go negative
 
     // Trigger the file input click if it exists
@@ -509,7 +498,7 @@ export class TruckDetailsComponent implements OnInit {
     // Transform the date input using datePipe
     const formattedDate = this.datePipe.transform(
       dateInput,
-      'yyyy-MM-dd Hh:mm:ss'
+      'yyyy-MM-dd HH:mm:ss'
     );
 
     // Patch the form with the formatted date if it's valid
@@ -706,7 +695,6 @@ export class TruckDetailsComponent implements OnInit {
     };
 
     const selectedField = validationMap[this.selectedFormControlName];
-
 
     if (selectedField) {
       this.previewFile(files, selectedField.imagesArray);
