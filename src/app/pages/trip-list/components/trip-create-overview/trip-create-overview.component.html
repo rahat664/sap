@@ -2,8 +2,10 @@
   <div class="px-4 py-2 flex justify-between items-center bg-white border-b border-input">
     <h1 class="text-h1 leading-h1 font-semibold">Trip Overview</h1>
     <button
+      [disabled]="loading"
       class="bg-primary text-white rounded-lg px-16 py-3"
-      (click)="onCreateTrip()">Create Trip
+      (click)="onCreateTrip()"> <i *ngIf="loading"
+                                   class="fas fa-spinner fa-spin text-white mx-2"></i> Create Trip
     </button>
   </div>
   <div class="bg-white h-[calc(100vh-8.1rem)] overflow-y-auto w-full flex justify-center overflow-hidden">
@@ -23,7 +25,10 @@
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/loading.svg" alt="">
-              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Loading Point ({{loadingPointNames?.length}})</h1>
+              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Loading
+                Point
+                <span *ngIf="loadingPointNames?.length > 1">({{loadingPointNames?.length}})
+                </span></h1>
             </div>
             <div class="ml-2 flex flex-col space-y-4">
               <ng-container *ngFor="let point of loadingPointNames">
@@ -42,7 +47,11 @@
           <div class="flex flex-col  space-y-2">
             <div class="flex space-x-3 items-center">
               <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/locinfo.svg" alt="">
-              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Unloading Point ({{unloadPointNames?.length}})</h1>
+              <h1
+                class="text-body_title leading-body_title text-not-black font-semibold">Unloading
+                Point <span *ngIf="unloadPointNames?.length > 1">
+                  ({{ unloadPointNames?.length }})
+                </span></h1>
             </div>
             <div class="ml-2 flex flex-col space-y-4">
               <ng-container *ngFor="let point of unloadPointNames">

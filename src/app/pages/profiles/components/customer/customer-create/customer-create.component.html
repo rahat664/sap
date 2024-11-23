@@ -24,6 +24,7 @@
                         [ngClass]="{'error':  customerForm.get('name').invalid && customerForm.get('name').touched}"
         >
           <input
+            appAlphabetOnly
             id="name"
             [minLength]="2"
             [maxLength]="50"
@@ -48,6 +49,7 @@
                         [ngClass]="{'error':  customerForm.get('code').invalid && customerForm.get('code').touched}"
         >
           <input
+            appAlphabetOnly
             (input)="onCodeKeyPress($event)"
             [minLength]="4"
             [maxLength]="4"
@@ -136,6 +138,11 @@
           class="bg-input rounded-lg  p-4 border border-disabled"
           id="note"
           formControlName="note"></textarea>
+      </div>
+      <div class="flex flex-col space-y-2 w-full col-span-2">
+        <mat-checkbox (change)="toggleSendEmail($any($event))">
+          Send email to customer
+        </mat-checkbox>
       </div>
       <div class="lg:col-span-2 pb-4">
         <button

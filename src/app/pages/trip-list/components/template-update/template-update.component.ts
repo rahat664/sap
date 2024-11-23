@@ -99,14 +99,13 @@ export class TemplateUpdateComponent {
         .get('customerRate')
         .setValue(template.customerRate);
       this.templateUpdateForm.get('note').setValue(template.note);
-     const loadingPoints = template.points.filter(
-       (point: any) => point.pointType === 'Loading'
-     )
+      const loadingPoints = template.points.filter(
+        (point: any) => point.pointType === 'Loading'
+      )
       const unloadingPoints = template.points.filter(
         (point: any) => point.pointType === 'Unloading'
       )
 
-      console.log(loadingPoints, unloadingPoints);
 
       loadingPoints?.forEach((point: any, index: number) => {
         if (index > 0) {
@@ -120,10 +119,10 @@ export class TemplateUpdateComponent {
         this.loadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
         this.loadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
       });
-     unloadingPoints?.forEach((point: any, index: number) => {
-       if (index > 0) {
-         this.addUnloadingPoint();
-       }
+      unloadingPoints?.forEach((point: any, index: number) => {
+        if (index > 0) {
+          this.addUnloadingPoint();
+        }
         if (point.id && point.id !== '') {
           this.unloadingPoints.controls[index].get('id').setValue(point.id);
         }
@@ -131,7 +130,7 @@ export class TemplateUpdateComponent {
         this.unloadingPoints.controls[index].get('pointDistrict').setValue(point.pointDistrict);
         this.unloadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
         this.unloadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
-     });
+      });
     }
   }
 
@@ -230,7 +229,6 @@ export class TemplateUpdateComponent {
         singleDistrict < this.district.length;
         singleDistrict++
       ) {
-        console.log(option.addressText);
         if (option.addressText.includes(this.district[singleDistrict].name)) {
           this.loadingPoints?.controls[i]
             ?.get('pointDistrict')

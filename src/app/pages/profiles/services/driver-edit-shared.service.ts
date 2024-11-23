@@ -88,7 +88,6 @@ export class DriverEditSharedService {
         }
       }
       const arrow = document.getElementsByClassName('tel-form')[0]?.getElementsByClassName('mat-mdc-select-arrow')[0];
-      console.log(arrow);
       if (arrow) {
         arrow.classList.add('pr-1')
         // change svg arrow icon color
@@ -383,6 +382,8 @@ export class DriverEditSharedService {
           completeSubject.next(true);
           localStorage.removeItem('driver');
           localStorage.removeItem('truck');
+          this.truckUpdateForm.reset();
+          this.driverUpdateForm.reset();
           this.router.navigate([navigatePath]);
         } else {
           this.handleToastr.showError(res.message, 'Error');

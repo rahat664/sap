@@ -131,8 +131,7 @@ export class CreateTripPageComponent implements OnInit {
       this.tripDataModel.points = [
         ...this.tripForm.get('loadingPoints').value,
         ...this.tripForm.get('unloadingPoints').value,
-      ]
-      console.log(this.tripDataModel);
+      ];
       localStorage.setItem('tripData', JSON.stringify(this.tripDataModel));
       this.checkCacheDataAndUpdate(
         this.tripDataModel.numOfTrucks,
@@ -439,7 +438,6 @@ export class CreateTripPageComponent implements OnInit {
         singleDistrict < this.district.length;
         singleDistrict++
       ) {
-        console.log(option.addressText);
         if (option.addressText.includes(this.district[singleDistrict].name)) {
           this.loadingPoints?.controls[i]
             ?.get('pointDistrict')
@@ -582,23 +580,23 @@ export class CreateTripPageComponent implements OnInit {
   }
 
   onSelectUnloadingDistrict(option: any, i: number) {
-    this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
+    this.unloadingPoints?.controls[i]
+      ?.get('pointDistrict')
+      .setValue(option.name);
     if (
       this.unloadingPoints?.controls[i]?.get('pointLat').value === '' ||
       this.unloadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.unloadingPoints?.controls[i]
-        .setValue(
-          this.unloadingPoints?.controls[i]?.get('pointLat').value
-            ? this.unloadingPoints?.controls[i]?.get('pointLat').value
-            : option.lat
-        );
-      this.unloadingPoints?.controls[i]
-        .setValue(
-          this.unloadingPoints?.controls[i]?.get('pointLon').value
-            ? this.unloadingPoints?.controls[i]?.get('pointLon').value
-            : option.lon
-        );
+      this.unloadingPoints?.controls[i].setValue(
+        this.unloadingPoints?.controls[i]?.get('pointLat').value
+          ? this.unloadingPoints?.controls[i]?.get('pointLat').value
+          : option.lat
+      );
+      this.unloadingPoints?.controls[i].setValue(
+        this.unloadingPoints?.controls[i]?.get('pointLon').value
+          ? this.unloadingPoints?.controls[i]?.get('pointLon').value
+          : option.lon
+      );
     }
     this.unloadingDistrictSuggestions = [];
   }
@@ -648,23 +646,35 @@ export class CreateTripPageComponent implements OnInit {
       if (index > 0) {
         this.addLoadingPoint();
       }
-      this.loadingPoints.controls[index].get('pointDistrict').setValue(
-        point.pointDistrict
-      );
-      this.loadingPoints.controls[index].get('pointName').setValue(point.pointName);
-      this.loadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
-      this.loadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+      this.loadingPoints.controls[index]
+        .get('pointDistrict')
+        .setValue(point.pointDistrict);
+      this.loadingPoints.controls[index]
+        .get('pointName')
+        .setValue(point.pointName);
+      this.loadingPoints.controls[index]
+        .get('pointLat')
+        .setValue(point.pointLat);
+      this.loadingPoints.controls[index]
+        .get('pointLon')
+        .setValue(point.pointLon);
     });
     templateUnloadingPoints.forEach((point: any, index: number) => {
       if (index > 0) {
         this.addUnloadingPoint();
       }
-      this.unloadingPoints.controls[index].get('pointDistrict').setValue(
-        point.pointDistrict
-      );
-      this.unloadingPoints.controls[index].get('pointName').setValue(point.pointName);
-      this.unloadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
-      this.unloadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+      this.unloadingPoints.controls[index]
+        .get('pointDistrict')
+        .setValue(point.pointDistrict);
+      this.unloadingPoints.controls[index]
+        .get('pointName')
+        .setValue(point.pointName);
+      this.unloadingPoints.controls[index]
+        .get('pointLat')
+        .setValue(point.pointLat);
+      this.unloadingPoints.controls[index]
+        .get('pointLon')
+        .setValue(point.pointLon);
     });
   }
 
@@ -754,24 +764,36 @@ export class CreateTripPageComponent implements OnInit {
       if (index > 0) {
         this.addLoadingPoint();
       }
-      this.loadingPoints.controls[index].get('pointDistrict').setValue(
-        point.pointDistrict
-      );
-      this.loadingPoints.controls[index].get('pointName').setValue(point.pointName);
-      this.loadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
-      this.loadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+      this.loadingPoints.controls[index]
+        .get('pointDistrict')
+        .setValue(point.pointDistrict);
+      this.loadingPoints.controls[index]
+        .get('pointName')
+        .setValue(point.pointName);
+      this.loadingPoints.controls[index]
+        .get('pointLat')
+        .setValue(point.pointLat);
+      this.loadingPoints.controls[index]
+        .get('pointLon')
+        .setValue(point.pointLon);
     });
 
     unloadingPoints.forEach((point: any, index: number) => {
       if (index > 0) {
         this.addUnloadingPoint();
       }
-      this.unloadingPoints.controls[index].get('pointDistrict').setValue(
-        point.pointDistrict
-      );
-      this.unloadingPoints.controls[index].get('pointName').setValue(point.pointName);
-      this.unloadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
-      this.unloadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+      this.unloadingPoints.controls[index]
+        .get('pointDistrict')
+        .setValue(point.pointDistrict);
+      this.unloadingPoints.controls[index]
+        .get('pointName')
+        .setValue(point.pointName);
+      this.unloadingPoints.controls[index]
+        .get('pointLat')
+        .setValue(point.pointLat);
+      this.unloadingPoints.controls[index]
+        .get('pointLon')
+        .setValue(point.pointLon);
     });
   }
 

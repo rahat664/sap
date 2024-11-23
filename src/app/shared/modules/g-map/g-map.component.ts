@@ -328,13 +328,11 @@ export class GMapComponent implements OnInit, OnChanges {
                 this.startInterval();
               },
               error => {
-                console.log(error);
               }
             );
           }
         },
         error => {
-          console.log(error);
         }
       );
   }
@@ -416,7 +414,6 @@ export class GMapComponent implements OnInit, OnChanges {
         this.updateInfoWindow();
       },
       error => {
-        console.log(error);
       }
     );
   }

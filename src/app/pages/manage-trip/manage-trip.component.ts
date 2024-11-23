@@ -507,11 +507,11 @@ export class ManageTripComponent implements OnInit {
   private getTruckTrackers(truckRegistrationNumber: string) {
     this.truckRegistrationNumbers = truckRegistrationNumber;
     if (truckRegistrationNumber) {
-      this.tripService.getTrackerDetails(truckRegistrationNumber).subscribe(
+      this.tripService.getSensorData(truckRegistrationNumber).subscribe(
         (res: any) => {
           this.truckLocationPosition = {
-            lng: res.data?.longitude,
-            lat: res.data?.latitude,
+            lng: res.data?.lng,
+            lat: res.data?.lat,
           };
         },
         error => {}

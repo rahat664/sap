@@ -100,4 +100,12 @@ export const profileRoutes: Routes = [
         c => c.AddTrackerComponent
       ),
   },
+  {
+    path: 'tracker/:id/edit',
+    title: 'Edit Tracker',
+    loadComponent: () =>
+      import('./components/tracker/edit-tracker/edit-tracker.component').then(
+        c => c.EditTrackerComponent
+      ),
+  },
 ];

@@ -262,7 +262,7 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   getEmailError() {
     if (this.email.hasError('required')) {
-      return 'Email is required';
+      return 'Enter your email address';
     } else if (this.email.hasError('minlength')) {
       return 'Invalid email';
     } else if (this.email.hasError('pattern')) {
@@ -276,7 +276,7 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   getPasswordError() {
     if (this.password.hasError('required')) {
-      return 'Password required';
+      return 'Enter your password';
     } else if (this.password.hasError('minlength')) {
       return 'Invalid password';
     } else {

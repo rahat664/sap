@@ -16,7 +16,7 @@ export class TimePickerComponent {
   inputTime: string;
   currentDate = new Date();
   currentHour = new Date().getHours();
-  @Input() selectedDate: Date;
+  @Input() selectedDate: Date = new Date();
   currentHourShow: string;
 
   currentMinuteCheck = new Date().getMinutes();
@@ -25,9 +25,11 @@ export class TimePickerComponent {
   currentHourError: boolean;
   @Output() buttonDisabled: EventEmitter<boolean> = new EventEmitter(false);
   currentMinuteError: any;
+  @Input() fromModal: boolean = false;
 
   ngOnInit() {
-    this.currentHourShow = this.currentHourShowWithSixHourPlus();
+      this.currentHourShow = this.currentHourShowWithSixHourPlus();
+
 
     this.currentHourShow =
       this.currentHourShow.length === 1
@@ -200,7 +202,7 @@ export class TimePickerComponent {
   checkCanSwithToAm() {
     return !(
       this.currentHour > 12 &&
-      this.selectedDate.getDate() !== new Date().getDate()
+      this.selectedDate?.getDate() !== new Date().getDate()
     );
   }
 
@@ -242,7 +244,12 @@ export class TimePickerComponent {
 
   private currentHourShowWithSixHourPlus() {
     // 6 hour plus to show in the time picker
-    const currentHour = this.currentHour + 6;
+    let currentHour = 0;
+    if (!this.fromModal) {
+       currentHour = this.currentHour + 6;
+    } else {
+      currentHour = this.currentHour;
+    }
     const currentHourWithExtraSix =
       currentHour > 23 ? currentHour - 24 : currentHour;
     return currentHourWithExtraSix > 12

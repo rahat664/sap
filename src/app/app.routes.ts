@@ -32,6 +32,24 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'challan-management/:id/details',
+    title: 'Challan Details',
+    loadComponent: () =>
+      import('./pages/challan-dashboard/components/challan-details/challan-details.component').then(
+        c => c.ChallanDetailsComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'challan-management/:id/image-upload',
+    title: 'Challan Image Upload',
+    loadComponent: () =>
+      import('./pages/challan-dashboard/components/challan-image-upload/challan-image-upload.component').then(
+        c => c.ChallanImageUploadComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'trip-list',
     title: 'Trip List',
     loadComponent: () =>
@@ -74,6 +92,7 @@ export const routes: Routes = [
       import(
         './pages/trip-list/components/create-trip-page/create-trip-page.component'
       ).then(c => c.CreateTripPageComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'trip-create/overview',
@@ -82,6 +101,7 @@ export const routes: Routes = [
       import(
         './pages/trip-list/components/trip-create-overview/trip-create-overview.component'
       ).then(c => c.TripCreateOverviewComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'update-trip',
@@ -90,6 +110,7 @@ export const routes: Routes = [
       import(
         './pages/trip-list/components/trip-update/trip-update.component'
       ).then(c => c.TripUpdateComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'trip-create/create-trip-template',
@@ -98,6 +119,7 @@ export const routes: Routes = [
       import(
         './pages/trip-list/components/template-create/template-create.component'
       ).then(c => c.TemplateCreateComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'update-trip-template',
@@ -106,6 +128,7 @@ export const routes: Routes = [
       import(
         './pages/trip-list/components/template-update/template-update.component'
       ).then(c => c.TemplateUpdateComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'user-management',
@@ -131,6 +154,30 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./pages/profiles/profile.routes').then(m => m.profileRoutes),
     canActivate: [authGuard],
+  },
+  {
+    path: 'image-upload',
+    title: 'Image Upload',
+    loadComponent: () =>
+      import('./shared/modules/global-image-upload/global-image-upload.component').then(
+        m => m.GlobalImageUploadComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'image-details',
+    title: 'Image Details',
+    loadComponent: () =>
+      import('./shared/modules/global-image-gallery/global-image-gallery.component').then(
+        m => m.GlobalImageGalleryComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'about-us',
+    title: 'About Us',
+    loadComponent: () =>
+      import('./pages/about-us/about-us.component').then(c => c.AboutUsComponent),
   },
   {
     path: '',
