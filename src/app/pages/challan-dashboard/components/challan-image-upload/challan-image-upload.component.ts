@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
 import { GlobalImageUploadComponent } from '../../../../shared/modules/global-image-upload/global-image-upload.component';
-import { DatePipe, NgIf } from '@angular/common';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatOption } from '@angular/material/core';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
@@ -12,15 +8,7 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 @Component({
   selector: 'app-challan-image-upload',
   standalone: true,
-  imports: [
-    GlobalImageUploadComponent,
-    DatePipe,
-    MatFormField,
-    MatInput,
-    MatOption,
-    MatSelect,
-    NgIf,
-  ],
+  imports: [GlobalImageUploadComponent],
   templateUrl: './challan-image-upload.component.html',
   styleUrl: './challan-image-upload.component.scss',
 })
@@ -50,6 +38,7 @@ export class ChallanImageUploadComponent {
   private notes: string;
   private eventTypeId: number;
   private type: string;
+  loading: boolean;
 
   constructor(
     private router: Router,
@@ -62,10 +51,6 @@ export class ChallanImageUploadComponent {
     this.resetNavigationInformation();
     this.getNavigationInformation();
   }
-
-  ngAfterContentInit() {}
-
-  onChangeImageType($event: MatSelectChange) {}
 
   private resetNavigationInformation() {
     this.expiryAvailable = false;
@@ -90,7 +75,6 @@ export class ChallanImageUploadComponent {
       this.type = navigation.type;
       this.returnUrl = navigation.returnUrl;
     }
-    console.log(this.returnUrl);
   }
 
   private previewDocuments(tripDocuments) {
@@ -121,13 +105,18 @@ export class ChallanImageUploadComponent {
   }
 
   onClickSave($event: boolean) {
+    this.loading = true;
     if ($event) {
       const request = {
         tripPointNo: this.tripId,
         tripPointEventTypeId: this.eventTypeId,
-        dateTime: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
+        dateTime: this.datePipe.transform(
+          this.currentDate,
+          'yyyy-MM-ddTHH:mm:ss'
+        ),
         type: this.type,
       };
+      console.log(request);
 
       if (this.notes) {
         request['note'] = this.notes;
@@ -151,13 +140,18 @@ export class ChallanImageUploadComponent {
 
       this.trip.manageLoadingUnloading(formData).subscribe(
         (response: any) => {
+          this.loading = false;
           this.toastr.showSuccess(response.message);
           this.router.navigate([this.returnUrl]);
         },
         error => {
+          this.loading = false;
           this.toastr.showError(error.message);
         }
       );
+    } else {
+      this.loading = false;
+      this.toastr.showError('Please select the required fields');
     }
   }
 
@@ -170,6 +164,13 @@ export class ChallanImageUploadComponent {
       this.eventTypeId = 6;
     } else if ($event === 'Unloading Challan') {
       this.eventTypeId = 11;
+    }
+  }
+
+  onSelectDateAndTime($event: string) {
+    if ($event) {
+      this.currentDate = new Date($event);
+      console.log(this.currentDate);
     }
   }
 }

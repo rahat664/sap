@@ -1,4 +1,6 @@
 <app-global-image-upload (forwardedImageType)="onSelectImageType($event)"
+                         [isLoading]="loading"
+                         (forwardedDateType)="onSelectDateAndTime($event)"
                          (forwardedNote)="onForwardedNote($event)"
                           (saveButtonClicked)="onClickSave($event)" (closedDocument)="onDocumentClose($event)" [activatedDocument]="tripDocuments[0]" [documents]="tripDocuments"
                          [notesAvailable]="notesAvailable" [expiryAvailable]="expiryAvailable"

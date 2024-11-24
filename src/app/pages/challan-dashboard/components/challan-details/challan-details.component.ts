@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { TripService } from '../../../trip-list/services/trip.service';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { DatePipe, NgForOf, NgIf, SlicePipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { Trip } from '../../../auth/models/response/trip';
 import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
@@ -10,19 +10,12 @@ import { ChallanDashboardService } from '../../challan-dashboard.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { concatMap, of } from 'rxjs';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-challan-details',
   standalone: true,
-  imports: [
-    NgIf,
-    DatePipe,
-    NgForOf,
-    RouterLink,
-    SlicePipe,
-    ReactiveFormsModule,
-    FormsModule,
-  ],
+  imports: [NgIf, DatePipe, NgForOf, ReactiveFormsModule, FormsModule],
   templateUrl: './challan-details.component.html',
   styleUrl: './challan-details.component.scss',
 })
@@ -47,7 +40,8 @@ export class ChallanDetailsComponent {
     private route: ActivatedRoute,
     private router: Router,
     private service: ChallanDashboardService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private toastr: HandleToastrService
   ) {}
 
   ngOnChanges(changes: any) {}
@@ -103,13 +97,23 @@ export class ChallanDetailsComponent {
   }
 
   getDueDays(singleTrip: Trip) {
-    if (singleTrip) {
-      const currentDate = new Date();
-      const dueDate = new Date(singleTrip.tripEndedAt);
-      const diffTime = Math.abs(dueDate.getTime() - currentDate.getTime());
-      return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const tripCompletedDate = new Date(singleTrip?.tripEndedAt);
+    if (singleTrip?.challanStatusUpdatedAt) {
+      const challanStatusUpdatedDate = new Date(
+        singleTrip?.challanStatusUpdatedAt
+      );
+      return this.datePipe.transform(
+        challanStatusUpdatedDate,
+        'dd MMM,yyyy h:mm a'
+      );
     } else {
-      return 0;
+      // return due days from trip end date
+      const currentDate = new Date();
+      const diffTime = Math.abs(
+        currentDate.getTime() - tripCompletedDate.getTime()
+      );
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
     }
   }
 
@@ -269,7 +273,7 @@ export class ChallanDetailsComponent {
         .open(ConfirmApproveComponent, {
           data: {
             title: 'Attention',
-            textPrefix: 'the challan for tripId ',
+            textPrefix: 'the challan for trip ID ',
             text: `${name}?`,
             buttonText: 'Approve',
           },
@@ -278,6 +282,7 @@ export class ChallanDetailsComponent {
         .subscribe(res => {
           if (res) {
             this.service.updateChallanStatus(id, body).subscribe((res: any) => {
+              this.toastr.showSuccess('Challan approved successfully');
               this.router.navigate(['/challan-management']);
             });
           }
@@ -287,7 +292,7 @@ export class ChallanDetailsComponent {
         .open(ConfirmRejectComponent, {
           data: {
             title: 'Attention',
-            textPrefix: 'the challan for tripId ',
+            textPrefix: 'the challan for trip ID ',
             text: `${name}?`,
             buttonText: 'Reject',
             reasonAvailable: false,
@@ -297,6 +302,7 @@ export class ChallanDetailsComponent {
         .subscribe(res => {
           if (res) {
             this.service.updateChallanStatus(id, body).subscribe((res: any) => {
+              this.toastr.showSuccess('Challan rejected successfully');
               this.router.navigate(['/challan-management']);
             });
           }
@@ -373,6 +379,7 @@ export class ChallanDetailsComponent {
               document.id
             )
             .subscribe(() => {
+              this.toastr.showSuccess('Document deleted successfully');
               this.resetSingleTripEvents();
               this.getSingleTripEvents();
             });

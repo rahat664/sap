@@ -33,6 +33,7 @@ import { TruckService } from '../profiles/components/truck/services/truck.servic
 import { mergeMap } from 'rxjs/operators';
 import { TruckDocumentType } from '../../shared/Enums/registration_type';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
+import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -139,7 +140,8 @@ export class ChallanDashboardComponent {
     private shared: DriverEditSharedService,
     private transporter: UserService,
     private truck: TruckService,
-    private router: Router
+    private router: Router,
+    private toastr: HandleToastrService
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -345,14 +347,15 @@ export class ChallanDashboardComponent {
     this.loading = false;
     this.completedTrips = trip.data?.statusCount?.Completed || 0;
     this.totalPages = trip.data.totalPages;
-    this.pendingChallanText = `Pending challan value for ${this.number.transform(trip.data?.challanStat?.pending) || 0} ${trip.data?.challanStat?.pending === 1 ? 'trip' : 'trips'}`;
-    this.receivedAmount = trip.data?.challanStat?.received || 0;
-    this.pendingAmount = trip.data?.challanStat.inProgress || 0;
-    this.approvedAmount = trip.data?.challanStat?.approved || 0;
-    this.rejectedAmount = trip.data?.challanStat?.rejected || 0;
+    this.pendingChallanText = `Pending challan value for ${this.number.transform(trip.data?.challanStatusCount?.Pending) || 0} ${trip.data?.challanStatusCount?.Pending === 1 ? 'trip' : 'trips'}`;
+    this.receivedAmount = trip.data?.challanStatusCount?.Received || 0;
+    this.pendingAmount = trip.data?.challanStatusCount['In-progress'] || 0;
+    this.approvedAmount = trip.data?.challanStatusCount?.Approved || 0;
+    this.rejectedAmount = trip.data?.challanStatusCount?.Rejected || 0;
     this.pendingChallanAmount =
-      trip.data?.challanStat?.totalCustomerRateForPendingChallans || 0;
-    this.hardCopyReceived = trip.data?.challanStat?.totalHardCopyReceived || 0;
+      trip.data?.challanStatusCount?.totalCustomerRateForPendingChallans || 0;
+    this.hardCopyReceived =
+      trip.data?.challanStatusCount?.HardCopyReceived || 0;
     if (this.page === 0) {
       this.tripList = trip.data.responses;
     } else {
@@ -414,7 +417,7 @@ export class ChallanDashboardComponent {
         .open(ConfirmApproveComponent, {
           data: {
             title: 'Attention',
-            textPrefix: 'the challan for tripId ',
+            textPrefix: 'the challan for trip ID ',
             text: `${name}?`,
             buttonText: 'Approve',
           },
@@ -434,7 +437,7 @@ export class ChallanDashboardComponent {
         .open(ConfirmRejectComponent, {
           data: {
             title: 'Attention',
-            textPrefix: 'the challan for tripId ',
+            textPrefix: 'the challan for trip ID ',
             text: `${name}?`,
             buttonText: 'Reject',
             reasonAvailable: false,
@@ -518,6 +521,7 @@ export class ChallanDashboardComponent {
           this.service
             .updateChallanStatus(tripId, body)
             .subscribe((res: any) => {
+              this.toastr.showSuccess('Challan received successfully');
               this.page = 0;
               this.getChallanStatus();
               this.getTripList();

@@ -13,14 +13,16 @@
         class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
         <span>Cancel</span>
       </button>
-      <button *ngIf="!isInEditMode"
+      <button *ngIf="!isInEditMode && singleTrip?.challanStatus != 'Approved' &&
+      singleTrip?.challanStatus != 'Pending'"
               (click)="changeStatus(singleTrip?.tripId, singleTrip?.tripId,'Approved')"
         class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
         <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
         <span>Approve</span>
       </button>
       <button
-        *ngIf="!isInEditMode"
+        *ngIf="!isInEditMode && singleTrip?.challanStatus != 'Rejected' &&
+        singleTrip?.challanStatus != 'Pending'"
         (click)="changeStatus(singleTrip?.tripId, singleTrip?.tripId,'Rejected')"
         class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
         <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
@@ -48,7 +50,9 @@
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img src="assets/svg/loading.svg" class="notPreview">
-              <span class="text-body_title leading-body_title font-bold">Loading point</span>
+              <span class="text-body_title leading-body_title font-bold">Loading point
+                <span
+                  *ngIf="getLoadingPoint(singleTrip?.tripPoints)?.length > 1">{{getLoadingPoint(singleTrip?.tripPoints)?.length}}</span></span>
             </div>
             <div class="ml-3">
               <ng-container *ngFor="let point of getLoadingPoint(singleTrip?.tripPoints)">
@@ -66,7 +70,10 @@
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
               <img src="assets/svg/unloading.svg" class="notPreview">
-              <span class="text-body_title leading-body_title font-bold">Unloading point</span>
+              <span class="text-body_title leading-body_title font-bold">Unloading point
+              <span
+                *ngIf="getUnloadingPoint(singleTrip?.tripPoints)?.length > 1">{{getUnloadingPoint(singleTrip?.tripPoints)?.length}}</span>
+              </span>
             </div>
             <div class="ml-3">
               <ng-container *ngFor="let point of getUnloadingPoint(singleTrip?.tripPoints)">
@@ -108,7 +115,10 @@
                 class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanStatus }}</span>
             </div>
             <div class="flex flex-col space-y-1 text-center">
-              <span class="text-body text-secondary">Approval time</span>
+              <span class="text-body text-secondary"
+                    *ngIf="singleTrip?.challanStatus === 'Approved'">Approval time</span>
+              <span class="text-body text-secondary"
+                    *ngIf="singleTrip?.challanStatus === 'Rejected'">Rejection time</span>
               <span class="text-body_title leading-body_title text-not-black font-semibold">{{ singleTrip?.challanStatusUpdatedAt ? singleTrip?.challanStatusUpdatedAt : 'N/A'}}</span>
             </div>
             <div class="flex flex-col space-y-1 text-center">

@@ -81,7 +81,6 @@ export class PieChartComponent implements OnChanges {
         hover: {
           filter: {
             type: 'darken',
-            value: 0.5,
           },
         },
       },
