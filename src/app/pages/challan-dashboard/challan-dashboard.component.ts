@@ -178,7 +178,7 @@ export class ChallanDashboardComponent {
     if (searchText?.length > 0) {
       this.truck.getTruckList(0, 100, searchText).subscribe((truck: any) => {
         this.truckRegSuggestions = truck.data.responses;
-        if (this.tripIdSuggestions.length === 0) {
+        if (this.truckRegSuggestions.length === 0) {
           this.truckRegSuggestions.push('No trip found');
         }
       });
@@ -218,7 +218,7 @@ export class ChallanDashboardComponent {
     this.page = 0;
     this.size = 30;
     this.truckRegSuggestions = [];
-    this.truckRegSuggestions.push('No trip found');
+    this.truckRegSuggestions.push('No truck found');
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
     this.truckFilter = 0;
