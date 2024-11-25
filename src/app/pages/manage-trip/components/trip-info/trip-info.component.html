@@ -173,7 +173,8 @@
             ৳</span></h1>
       </div>
 
-      <div class="flex flex-col space-y-2" *ngIf="tripDetails.driverCode && isAdmin()">
+      <div class="flex flex-col space-y-2" *ngIf="tripDetails.driverCode && (isAdmin() ||
+      (!isAdmin() && tripDetails?.status != 'Completed' && tripDetails?.status != 'Cancelled')) ">
         <div class="flex space-x-3 items-center">
           <div
             class="h-6 w-6 flex rounded-full items-center justify-center bg-green text-white font-bold">
