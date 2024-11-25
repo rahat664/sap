@@ -8,6 +8,7 @@ import {
   ApexPlotOptions,
   ApexResponsive,
   ApexStates,
+  ApexTooltip,
   ChartComponent,
   NgApexchartsModule,
 } from 'ng-apexcharts';
@@ -23,6 +24,7 @@ export type ChartOptions = {
   markers: ApexMarkers;
   plotOptions: ApexPlotOptions;
   states: ApexStates;
+  tooltip: ApexTooltip;
 };
 
 @Component({
@@ -80,14 +82,20 @@ export class PieChartComponent implements OnChanges {
       states: {
         hover: {
           filter: {
-            type: 'darken',
+            type: 'lighten',
           },
         },
       },
       plotOptions: {
         pie: {
-          customScale: 0.8,
+          customScale: 1,
+          expandOnClick: true,
         },
+      },
+      tooltip: {
+        enabled: true,
+        fillSeriesColor: false,
+        cssClass: 'apexcharts-tooltip',
       },
       responsive: [
         {
