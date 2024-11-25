@@ -3,6 +3,7 @@
                          (forwardedDateType)="onSelectDateAndTime($event)"
                          (forwardedNote)="onForwardedNote($event)"
                          (isBackButtonClick)="onBackButtonClick($event)"
+                         [tripId]="tripId"
                           (saveButtonClicked)="onClickSave($event)" (closedDocument)="onDocumentClose($event)" [activatedDocument]="tripDocuments[0]" [documents]="tripDocuments"
                          [notesAvailable]="notesAvailable" [expiryAvailable]="expiryAvailable"
                          [imageTypes]="imageTypes"></app-global-image-upload>

@@ -29,7 +29,7 @@ export class ChallanImageUploadComponent {
     { value: '11', viewValue: 'November' },
     { value: '12', viewValue: 'December' },
   ];
-  private tripId: any;
+  tripId: any;
   protected tripDocuments: any[] = [];
   protected tripDocumentFiles: any[] = [];
   expiryAvailable: boolean = false;
@@ -107,50 +107,52 @@ export class ChallanImageUploadComponent {
   onClickSave($event: boolean) {
     this.loading = true;
     if ($event) {
-      const request = {
-        tripPointNo: this.tripId,
-        tripPointEventTypeId: this.eventTypeId,
-        dateTime: this.datePipe.transform(
-          this.currentDate,
-          'yyyy-MM-ddTHH:mm:ss'
-        ),
-        type: this.type,
-      };
+      if (this.currentDate && this.eventTypeId) {
+        const request = {
+          tripPointNo: this.tripId,
+          tripPointEventTypeId: this.eventTypeId,
+          dateTime: this.datePipe.transform(
+            this.currentDate,
+            'yyyy-MM-ddTHH:mm:ss'
+          ),
+          type: this.type,
+        };
 
-      if (this.notes) {
-        request['note'] = this.notes;
-      }
-
-      const files = [];
-      this.tripDocumentFiles?.forEach(doc => {
-        files.push(doc.file);
-      });
-
-      // convert the request and files into formData
-      const formData = new FormData();
-
-      formData.append(
-        'request',
-        new Blob([JSON.stringify(request)], { type: 'application/json' })
-      );
-      files.forEach(doc => {
-        formData.append('files', doc);
-      });
-
-      this.trip.manageLoadingUnloading(formData).subscribe(
-        (response: any) => {
-          this.loading = false;
-          this.toastr.showSuccess(response.message);
-          this.router.navigate([this.returnUrl]);
-        },
-        error => {
-          this.loading = false;
-          this.toastr.showError(error.message);
+        if (this.notes) {
+          request['note'] = this.notes;
         }
-      );
-    } else {
-      this.loading = false;
-      this.toastr.showError('Please select the required fields');
+
+        const files = [];
+        this.tripDocumentFiles?.forEach(doc => {
+          files.push(doc.file);
+        });
+
+        // convert the request and files into formData
+        const formData = new FormData();
+
+        formData.append(
+          'request',
+          new Blob([JSON.stringify(request)], { type: 'application/json' })
+        );
+        files.forEach(doc => {
+          formData.append('files', doc);
+        });
+
+        this.trip.manageLoadingUnloading(formData).subscribe(
+          (response: any) => {
+            this.loading = false;
+            this.toastr.showSuccess(response.message);
+            this.router.navigate([this.returnUrl]);
+          },
+          error => {
+            this.loading = false;
+            this.toastr.showError(error.message);
+          }
+        );
+      } else {
+        this.loading = false;
+        this.toastr.showError('Please select all required fields');
+      }
     }
   }
 

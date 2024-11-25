@@ -275,6 +275,7 @@ export class GlobalImageUploadComponent {
     this.returnToInputDate = $event;
   }
   private time: any;
+  @Input() tripId: string;
   onTimeChange($event: any) {
     this.time = $event;
   }

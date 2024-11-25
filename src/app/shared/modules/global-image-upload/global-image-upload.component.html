@@ -81,6 +81,10 @@
     </div>
     <div class="px-10 py-5 flex flex-col space-y-5">
       <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Trip ID</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black">{{ tripId }}</span>
+      </div>
+      <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Upload time</span>
         <button type="button" class="customButton" mat-button [matMenuTriggerFor]="dateAndTime">
           <mat-form-field appearance="outline" id="date" class="example-full-width w-full">
