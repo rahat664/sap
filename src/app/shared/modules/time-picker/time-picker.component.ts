@@ -199,10 +199,14 @@ export class TimePickerComponent {
   }
 
   checkCanSwithToAm() {
-    return !(
-      this.currentHour > 12 &&
-      this.selectedDate?.getDate() !== new Date().getDate()
-    );
+    if (!this.fromModal) {
+      return !(
+        this.currentHour > 12 &&
+        this.selectedDate?.getDate() !== new Date().getDate()
+      );
+    } else {
+      return false;
+    }
   }
 
   onFocusOut() {

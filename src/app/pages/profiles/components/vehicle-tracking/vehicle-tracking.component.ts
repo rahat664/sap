@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
-import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { GMapComponent } from '../../../../shared/modules/g-map/g-map.component';
 import {
   MatAutocomplete,
   MatAutocompleteTrigger,
@@ -14,6 +12,7 @@ import { MatInput } from '@angular/material/input';
 import { debounceTime, Subject } from 'rxjs';
 import { TruckService } from '../truck/services/truck.service';
 import { UserService } from '../../services/user.service';
+import { TruckingMapComponent } from './trucking-map/trucking-map.component';
 
 @Component({
   selector: 'app-vehicle-tracking',
@@ -21,15 +20,14 @@ import { UserService } from '../../services/user.service';
   imports: [
     FormsModule,
     GetElementHeightDirective,
-    GiveMaxHeightDirective,
     NgIf,
     CommonModule,
-    GMapComponent,
     MatAutocomplete,
     MatAutocompleteTrigger,
     MatFormField,
     MatInput,
     MatOption,
+    TruckingMapComponent,
   ],
   templateUrl: './vehicle-tracking.component.html',
   styleUrl: './vehicle-tracking.component.scss',

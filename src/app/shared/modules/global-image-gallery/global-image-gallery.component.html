@@ -1,8 +1,8 @@
 <div class="grid grid-cols-3">
   <div class="col-span-2 flex flex-col w-full bg-black h-[calc(100vh-4.125rem)]">
     <div class="px-7 py-[1.375rem] flex justify-between bg-[#302F2F]">
-      <div class="flex space-x-3 items-center text-white">
-        <a (click)="onClickBack()" class="cursor-pointer"><i class="fas fa-chevron-left text-white"></i></a>
+      <div (click)="onClickBack()" class="flex space-x-3 items-center cursor-pointer text-white">
+        <a  class="cursor-pointer"><i class="fas fa-chevron-left text-white"></i></a>
         <span class="text-h3 leading-h3 font-bold">{{ imageType ? imageType : activatedDocument?.event?.eventType}} challan</span>
       </div>
         <div class="flex space-x-4 text-white items-center">
@@ -73,6 +73,11 @@
       <span class="text-h3 leading-h3 text-not-black font-bold">Image details</span>
     </div>
     <div class="px-10 py-5 flex flex-col space-y-5">
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Trip ID</span>
+        <span
+          class="text-h2 leading-h2 font-semibold text-not-black">{{ tripId }}</span>
+      </div>
       <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Upload time</span>
         <span

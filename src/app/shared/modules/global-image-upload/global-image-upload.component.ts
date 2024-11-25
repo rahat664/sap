@@ -83,6 +83,7 @@ export class GlobalImageUploadComponent {
   @Output() forwardedNote: EventEmitter<string> = new EventEmitter();
   @Output() forwardedImageType: EventEmitter<string> = new EventEmitter();
   @Output() forwardedDateType: EventEmitter<string> = new EventEmitter();
+  @Output() isBackButtonClick: EventEmitter<boolean> = new EventEmitter();
 
   constructor(private datePipe: DatePipe) {}
 
@@ -280,5 +281,9 @@ export class GlobalImageUploadComponent {
 
   getSelectedDate() {
     return this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd h:mm a');
+  }
+
+  onCLickBack() {
+    this.isBackButtonClick.emit(true);
   }
 }

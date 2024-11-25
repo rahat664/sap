@@ -11,11 +11,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { concatMap, of } from 'rxjs';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 
 @Component({
   selector: 'app-challan-details',
   standalone: true,
-  imports: [NgIf, DatePipe, NgForOf, ReactiveFormsModule, FormsModule],
+  imports: [
+    NgIf,
+    DatePipe,
+    NgForOf,
+    ReactiveFormsModule,
+    FormsModule,
+    LoadingComponent,
+  ],
   templateUrl: './challan-details.component.html',
   styleUrl: './challan-details.component.scss',
 })
@@ -47,6 +55,15 @@ export class ChallanDetailsComponent {
   ngOnChanges(changes: any) {}
 
   ngOnInit() {
+    this.loading = true;
+    const directChallanEdit = localStorage.getItem('directEditChallan')
+      ? JSON.parse(localStorage.getItem('directEditChallan'))
+      : null;
+    if (directChallanEdit) {
+      this.isInEditMode = true;
+      localStorage.removeItem('directEditChallan');
+    }
+
     this.getSingleTripEvents();
   }
 
@@ -61,6 +78,7 @@ export class ChallanDetailsComponent {
       this.trip
         .getAllTripEvent(params['id'], 'Loading')
         .subscribe((res: any) => {
+          this.loading = false;
           this.loadingEvents = res.data;
           this.loadingEvents = this.loadingEvents.filter(
             event => event.eventName === 'Upload loading challan'
@@ -69,6 +87,7 @@ export class ChallanDetailsComponent {
       this.trip
         .getAllTripEvent(params['id'], 'Unloading')
         .subscribe((res: any) => {
+          this.loading = false;
           this.unloadingEvents = res.data;
           this.unloadingEvents = this.unloadingEvents.filter(
             event => event.eventName === 'Upload unloading challan'

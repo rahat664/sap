@@ -332,8 +332,21 @@
             </div>
           </td>
           <td class="text-center whitespace-nowrap">
-            <a (click)="onClickSoftCopyView(trip.tripId)"
+            <a *ngIf="chalanStatus != 'Pending'" (click)="onClickSoftCopyView(trip.tripId)"
                class="cursor-pointer text-link text-center underline">View</a>
+            <ng-container *ngIf="chalanStatus == 'Pending'">
+              <label for="file-upload"
+                     class="flex space-x-2 px-4 py-2 rounded-lg items-center cursor-pointer bg-[#EEF7FD]">
+                <span class="text-h2_regular leading-h2_regular text-link">Upload</span>
+              </label>
+              <input
+                type="file"
+                id="file-upload"
+                multiple
+                accept="image/*, application/pdf"
+                (change)="onFileChange($event, trip.tripId)"
+                class="hidden w-full" />
+            </ng-container>
           </td>
           <td class="text-center whitespace-nowrap">{{ checkDueDays(trip) }}
           </td>
@@ -378,6 +391,18 @@
                     <i class="far fa-times text-red"></i>
                   </div>
                   <span class="text-red">Reject</span>
+                </div>
+              </button>
+              <button
+                routerLink="/challan-management/{{trip.tripId}}/details"
+                (click)="localStorage.setItem('directEditChallan', 'true')"
+                mat-menu-item>
+                <div class="flex  space-x-2 items-center">
+                  <img
+                    class="notPreview"
+                    src="./assets/svg/edit.svg"
+                    alt="" height="18" width="18" />
+                  <span>Edit</span>
                 </div>
               </button>
             </mat-menu>

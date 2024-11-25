@@ -390,6 +390,7 @@ export class ChallanDashboardComponent {
   }
 
   onClickStatusButtons(status: any) {
+    this.loading = true;
     this.challanHardCopyReceived = false;
     this.activatedChallanStatus = status;
     this.chalanStatus = status;
@@ -748,6 +749,8 @@ export class ChallanDashboardComponent {
             state: {
               tripDocuments: documents,
               activatedDocument: documents[0],
+              returnUrl: '/challan-management',
+              tripId: tripId,
             },
           });
         }
@@ -807,8 +810,7 @@ export class ChallanDashboardComponent {
           ],
           expiryAvailable: false,
           noteAvailable: true,
-          type: 'Unloading',
-          returnUrl: `/challan-management`,
+          returnUrl: '/challan-management',
         },
       });
     }
@@ -821,4 +823,6 @@ export class ChallanDashboardComponent {
   getUnloadingPointsName(tripPoints: TripPoint[]) {
     return tripPoints.filter(point => point.pointType === 'Unloading');
   }
+
+  protected readonly localStorage = localStorage;
 }

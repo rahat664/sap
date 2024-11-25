@@ -2,6 +2,7 @@
                          [isLoading]="loading"
                          (forwardedDateType)="onSelectDateAndTime($event)"
                          (forwardedNote)="onForwardedNote($event)"
+                         (isBackButtonClick)="onBackButtonClick($event)"
                           (saveButtonClicked)="onClickSave($event)" (closedDocument)="onDocumentClose($event)" [activatedDocument]="tripDocuments[0]" [documents]="tripDocuments"
                          [notesAvailable]="notesAvailable" [expiryAvailable]="expiryAvailable"
                          [imageTypes]="imageTypes"></app-global-image-upload>

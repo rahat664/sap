@@ -116,7 +116,6 @@ export class ChallanImageUploadComponent {
         ),
         type: this.type,
       };
-      console.log(request);
 
       if (this.notes) {
         request['note'] = this.notes;
@@ -171,6 +170,12 @@ export class ChallanImageUploadComponent {
     if ($event) {
       this.currentDate = new Date($event);
       console.log(this.currentDate);
+    }
+  }
+
+  onBackButtonClick($event: boolean) {
+    if ($event) {
+      this.router.navigate([this.returnUrl]);
     }
   }
 }
