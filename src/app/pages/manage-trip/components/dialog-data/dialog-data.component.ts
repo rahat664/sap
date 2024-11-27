@@ -371,7 +371,7 @@ export class DialogDataComponent {
           // body.status = 'Running';
           body.tripStartedAt = this.datePipe.transform(
             new Date(),
-            'yyyy-MM-dd HH:mm:ss'
+            'yyyy-MM-ddTHH:mm:ss'
           );
           this.trip.updateTrip(body, this.data.trip?.tripId).subscribe(
             (res: any) => {

@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { mapStyles } from '../../../../../shared/models/map-options';
-import { GoogleMap, MapMarker, MapPolyline } from '@angular/google-maps';
+import { GoogleMap } from '@angular/google-maps';
 import { TruckData } from '../../../../../shared/models/truck-data.model';
 import { CommonModule } from '@angular/common';
 import { GeolocationService } from '../../../../../shared/services/location/geolocation.service';
@@ -18,7 +18,7 @@ import { timer } from 'rxjs';
 @Component({
   selector: 'app-trucking-map',
   standalone: true,
-  imports: [GoogleMap, MapMarker, MapPolyline, CommonModule],
+  imports: [GoogleMap, CommonModule],
   templateUrl: './trucking-map.component.html',
   styleUrl: './trucking-map.component.scss',
 })
@@ -35,12 +35,12 @@ export class TruckingMapComponent {
   }
 
   @Input() tripStatus: string;
-  @Input() lat: number;
-  @Input() lng: number;
+  @Input() lat: number = 23.8103;
+  // Dhaka lat
+  @Input() lng: number = 90.4125;
   @Input() starting: google.maps.LatLngLiteral[] = [];
   @Input() destination: google.maps.LatLngLiteral[] = [];
-  @Input() truckLocationPosition: google.maps.LatLngLiteral;
-
+  @Input() truckLocationPosition: any[] = [];
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
 
   center: google.maps.LatLngLiteral;
@@ -53,15 +53,9 @@ export class TruckingMapComponent {
     fullscreenControl: true,
     disableDefaultUI: true,
   };
-  directionsService = new google.maps.DirectionsService();
-  directionsRenderer = new google.maps.DirectionsRenderer({
-    suppressMarkers: true,
-  });
 
-  initialMarker: google.maps.MarkerOptions = {};
-  truckLocationMarker: google.maps.Marker = null; // Change to google.maps.Marker
-  startMarker: google.maps.MarkerOptions[] = [];
-  endMarker: google.maps.MarkerOptions[] = [];
+  truckLocationMarker: google.maps.Marker[] = [];
+
   polylines: google.maps.PolylineOptions[] = [];
   bottomHeight: string = '0px';
   infoWindow: any;
@@ -81,37 +75,18 @@ export class TruckingMapComponent {
     this.trip.bottomHeight.subscribe(height => {
       this.bottomHeight = height;
     });
+    this.center = {
+      lat: this.lat,
+      lng: this.lng,
+    };
+  }
 
-    if (this.starting.length > 0 && this.destination.length > 0) {
-      this.clearPolylines();
-      this.updateRoute();
-    }
-
-    const currentLocation = localStorage.getItem('currentLocation');
-    if (currentLocation) {
-      this.center = JSON.parse(currentLocation);
-      this.initialMarker = {
-        position: this.center,
-        icon: {
-          url: '/assets/images/focus.png',
-          scaledSize: new google.maps.Size(30, 30),
-        },
-        // api call and show when hover
-        title: 'Current Location',
-      };
-    } else {
-      this.geoLocationService.getCurrentPosition().then(position => {
-        this.center = { lat: position.latitude, lng: position.longitude };
-        this.initialMarker = {
-          position: this.center,
-          icon: {
-            url: '/assets/images/focus.png',
-            scaledSize: new google.maps.Size(30, 30),
-          },
-          title: 'Current Location',
-        };
-      });
-    }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.truckLocationPosition.length > 0) {
+        this.updateTruckLocation(this.truckLocationPosition);
+      }
+    }, 2000);
   }
 
   showLoadingSpinner(): void {
@@ -121,196 +96,66 @@ export class TruckingMapComponent {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes) {
-      if (this.starting.length > 0 && this.destination.length > 0) {
-        this.updateRoute();
+    setTimeout(() => {
+      if (changes['truckLocationPosition']?.currentValue) {
+        console.log(this.truckLocationPosition.length);
+        this.updateTruckLocation(this.truckLocationPosition);
       }
-    }
-    if (changes['truckLocationPosition']) {
-      this.updateTruckLocation();
-    }
+    }, 2000);
   }
 
-  private updateRoute() {
-    let startPoints: google.maps.LatLngLiteral[] = [];
-    let endPoints: google.maps.LatLngLiteral[] = [];
-
-    startPoints = this.starting;
-    endPoints = this.destination;
-
-    this.clearInput.emit(true);
-
-    this.initialMarker = {};
-
-    this.connectSequentialPoints(startPoints, 'loading');
-    this.connectPoints(
-      startPoints[startPoints.length - 1],
-      endPoints[0],
-      'loading'
-    );
-    this.connectPoints(
-      startPoints[startPoints.length - 1],
-      endPoints[0],
-      'unloading'
-    );
-    this.connectSequentialPoints(endPoints, 'unloading');
-  }
-
-  private connectSequentialPoints(
-    points: google.maps.LatLngLiteral[],
-    pointType: string
-  ) {
-    for (let i = 0; i < points.length - 1; i++) {
-      this.connectPoints(points[i], points[i + 1], pointType);
-    }
-  }
-
-  // Connects two points and renders the route
-  private connectPoints(
-    start: google.maps.LatLngLiteral,
-    end: google.maps.LatLngLiteral,
-    pointType: string
-  ) {
-    if (start && end) {
-      // clear previous markers and polylines
-      this.startMarker = [];
-      this.endMarker = [];
-      this.clearPolylines();
-      const request: google.maps.DirectionsRequest = {
-        origin: start,
-        destination: end,
-        travelMode: google.maps.TravelMode.DRIVING,
-        drivingOptions: {
-          departureTime: new Date(),
-        },
-      };
-
-      this.directionsService.route(request, (result, status) => {
-        if (status === 'OK') {
-          if (pointType === 'loading') {
-            this.setLoadingMarker(start);
-          } else if (pointType === 'unloading') {
-            this.setUnloadingMarker(end);
-          }
-          const bound = new google.maps.LatLngBounds();
-          bound.extend(start);
-          bound.extend(end);
-          this.map.googleMap.fitBounds(bound);
-
-          this.updatePolylineWithTraffic(result);
-        } else {
-          console.error('Error fetching directions', status);
-        }
+  private updateTruckLocation(truckPosition?: any): void {
+    // Check if truckLocationPosition contains data
+    if (this.truckLocationMarker.length > 0) {
+      // Clear the markers if they exist
+      this.truckLocationMarker.forEach(marker => {
+        marker.setMap(null);
       });
+      this.truckLocationMarker = [];
     }
-  }
-
-  private setLoadingMarker(position: google.maps.LatLngLiteral) {
-    this.initialMarker = {};
-    this.startMarker.push({
-      position: position,
-      icon: {
-        url: '/assets/svg/start.svg', // Replace with your custom loading marker icon
-        scaledSize: new google.maps.Size(30, 30),
-      },
-      title: 'Loading Point',
-    });
-  }
-
-  private setUnloadingMarker(position: google.maps.LatLngLiteral) {
-    this.endMarker.push({
-      position: position,
-      icon: {
-        url: '/assets/svg/end.svg', // Replace with your custom loading marker icon
-        scaledSize: new google.maps.Size(30, 30),
-      },
-      title: 'Unloading Point',
-    });
-  }
-
-  private updateTruckLocation() {
-    if (
-      this.truckLocationPosition?.lat &&
-      this.truckLocationPosition?.lng &&
-      this.tripStatus != 'Completed' &&
-      'Cancelled'
-    ) {
-      if (this.truckLocationMarker) {
-        // Update existing marker position
-        this.truckLocationMarker.setPosition(this.truckLocationPosition);
-      } else {
-        // Create and add marker to the map
-        this.truckLocationMarker = new google.maps.Marker({
-          position: this.truckLocationPosition,
-          icon: {
-            url: '/assets/svg/truck-map.svg',
-            scaledSize: new google.maps.Size(48, 48),
-          },
-          title: 'Truck Location',
-          map: this.map.googleMap, // Add marker to the map
-          // implement when click on marker
+    if (truckPosition && truckPosition?.length > 0) {
+      // Clear the marker if it exists
+      // Loop through the truck locations and add a marker for each
+      truckPosition.forEach((truck, index) => {
+        // bound the map so that all markers are visible
+        this.map.googleMap?.fitBounds({
+          north: truck.position.lat + 1.2,
+          south: truck.position.lat - 1.2,
+          east: truck.position.lng + 1.2,
+          west: truck.position.lng - 1.2,
         });
-      }
 
-      // Create InfoWindow
-      this.infoWindow = new google.maps.InfoWindow({
-        content: this.getLoadingSpinnerContent(), // Initially show spinner
-        maxWidth: 400,
-      });
+        // Create a new marker for each truck
+        const truckLocationMarker = new google.maps.Marker({
+          position: truck.position,
+          icon: {
+            url: `/assets/svg/trucking-${truck?.image}.svg`, // Set appropriate icon
+            scaledSize: new google.maps.Size(48, 48), // Set appropriate size
+          },
+          title: 'Truck Location ' + (index + 1),
+          map: this.map.googleMap, // Ensure the map is set
+        });
+        this.truckLocationMarker.push(truckLocationMarker);
 
-      // Add marker click listener to open InfoWindow and fetch data
-      this.truckLocationMarker.addListener('click', () => {
-        this.showLoadingSpinner(); // Show loading spinner
-        this.fetchTruckData(); // Fetch data from API
+        // Create an InfoWindow for this marker
+        const infoWindow = new google.maps.InfoWindow({
+          content: this.getLoadingSpinnerContent(), // Initially show loading spinner
+          maxWidth: 400,
+        });
+
+        // Add a click event listener to the marker to show info when clicked
+        truckLocationMarker.addListener('click', () => {
+          this.showLoadingSpinner(); // Show loading spinner
+          this.fetchTruckData(truck.fullRegistrationNumber); // Fetch truck data based on the marker clicked
+          infoWindow.open(this.map.googleMap, truckLocationMarker); // Open the info
+          // window on
+          // the marker
+        });
       });
     } else {
-      if (this.truckLocationMarker) {
-        // Remove marker from the map
-        this.truckLocationMarker.setMap(null);
-        this.truckLocationMarker = null;
-      }
+      // If no truck location data is available, you can clear markers here if needed
+      console.log('No truck location data available');
     }
-  }
-
-  private resetMarkers() {
-    this.center = {
-      lat: 23.8041,
-      lng: 90.4125,
-    };
-    const bounds = new google.maps.LatLngBounds();
-    bounds.extend(this.center);
-    this.map.googleMap.fitBounds(bounds);
-    this.endMarker = [];
-    this.startMarker = [];
-    this.initialMarker = {
-      position: this.center,
-      icon: {
-        url: '/assets/images/focus.png',
-        scaledSize: new google.maps.Size(30, 30),
-      },
-      title: 'Current Location',
-      clickable: true,
-    };
-    this.directionsRenderer.setMap(null);
-    this.clearPolylines();
-  }
-
-  private updatePolylineWithTraffic(
-    directionsResult: google.maps.DirectionsResult
-  ): void {
-    directionsResult.routes.forEach(route => {
-      route.legs.forEach(leg => {
-        leg.steps.forEach(step => {
-          this.polylines.push({
-            path: step.path.map(latlng => latlng.toJSON()),
-            strokeColor: '#11484F', // Polyline color
-            strokeOpacity: 1,
-            strokeWeight: 4,
-          });
-          // Store the polyline for management
-        });
-      });
-    });
   }
 
   private clearPolylines(): void {
@@ -319,7 +164,7 @@ export class TruckingMapComponent {
     this.destination = [];
   }
 
-  fetchTruckData(): void {
+  fetchTruckData(registrationNumber: string): void {
     this.truckService
       .getTrackers(0, 10, this.truckFullRegistrationNumber)
       .subscribe(

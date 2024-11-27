@@ -181,7 +181,7 @@ export class FileUploadComponent {
   onDateChange($event: Event, i: number) {
     this.fileArray[i].registrationExpireDate = this.datePipe.transform(
       ($event.target as HTMLInputElement).value,
-      'yyyy-MM-dd HH:mm:ss'
+      'yyyy-MM-ddTHH:mm:ss'
     );
     if (!this.callFromModal) {
       this.fileInput.emit(this.fileArray);

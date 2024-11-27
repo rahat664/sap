@@ -107,7 +107,7 @@ export class CreateTripPageComponent implements OnInit {
       this.tripDataModel.customerCode = this.tripForm.get('customerCode').value;
       this.tripDataModel.tripStartDatetime = this.datePipe.transform(
         new Date(this.tripForm.get('tripStartDatetime').value),
-        'yyyy-MM-dd HH:mm:ss'
+        'yyyy-MM-ddTHH:mm:ss'
       );
       this.tripDataModel.categoryId = this.tripForm.get('categoryId').value;
       this.tripDataModel.numOfTrucks = this.tripForm.get('numOfTrucks').value;

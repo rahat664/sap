@@ -266,7 +266,7 @@ export class GlobalImageUploadComponent {
     selectedDate.setHours(timeIn24HourFormat, hour);
     selectedDate.setMinutes(minute);
     this.forwardedDateType.emit(
-      this.datePipe.transform(selectedDate, 'yyyy-MM-dd HH:mm:ss')
+      this.datePipe.transform(selectedDate, 'yyyy-MM-ddTHH:mm:ss')
     );
   }
 

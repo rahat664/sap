@@ -9,6 +9,7 @@ export class TruckDocument {
 }
 
 export interface TruckModel {
+  currentCondition: string;
   rejectedReason: string | null; // Can be null
   id: number;
   name: string | null; // Can be null
@@ -40,6 +41,10 @@ export interface TruckModel {
   updatedOn: string; // Date format as string
   preHireCheckList: number;
   noOfTrips: number;
+  condition: string;
+  lastRecordedLat: number;
+  lastRecordedLng: number;
+  currentSpeed: number;
   status: string;
   truckDocumentList: TruckDocument[];
   createdByUser: CreatedByUser;

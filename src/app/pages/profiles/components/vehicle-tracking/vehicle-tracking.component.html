@@ -80,7 +80,18 @@
     </div>
   </div>
   <div
-    class="h-[calc(100vh-18.5rem)] bg-transparent rounded-lg overflow-hidden border border-line">
-    <app-trucking-map></app-trucking-map>
+    class="h-[calc(100vh-18.5rem)] bg-transparent rounded-lg overflow-hidden border border-line relative">
+    <app-trucking-map [truckLocationPosition]="truckLocationPosition"></app-trucking-map>
+    <div class="absolute top-4 left-4 flex space-x-3">
+      <ng-container *ngFor="let conditions of conditionList">
+        <button
+          (click)="onClickCondition(conditions)"
+          class="px-4 {{conditions.value == condition ? 'border border-link scale-110':
+          'border-line border'}} py-1 rounded-full {{conditions?.color}} {{conditions?.backgroundColor}}">{{
+            conditions?.viewValue }}
+          <span>({{ conditions?.count }})</span></button>
+      </ng-container>
+    </div>
   </div>
 </div>
+
