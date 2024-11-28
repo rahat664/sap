@@ -98,7 +98,7 @@ export class VehicleTrackingComponent {
       id: 5,
       value: 'Idle',
       viewValue: 'Idle',
-      backgroundColor: 'bg-[#0CD5F0]',
+      backgroundColor: 'bg-[#721707]',
       color: 'text-white',
       count: 0,
     },
