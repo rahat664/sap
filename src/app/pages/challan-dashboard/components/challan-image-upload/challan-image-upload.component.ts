@@ -138,21 +138,25 @@ export class ChallanImageUploadComponent {
           formData.append('files', doc);
         });
 
-        this.trip.manageLoadingUnloading(formData).subscribe(
-          (response: any) => {
+      this.trip.manageLoadingUnloading(formData).subscribe(
+        (response: any) => {
+          if (response.status === 'OK') {
             this.loading = false;
             this.toastr.showSuccess(response.message);
             this.router.navigate([this.returnUrl]);
-          },
-          error => {
+          } else {
             this.loading = false;
-            this.toastr.showError(error.message);
+            this.toastr.showError(response.message);
           }
-        );
-      } else {
-        this.loading = false;
-        this.toastr.showError('Please select all required fields');
-      }
+        },
+        error => {
+          this.loading = false;
+          this.toastr.showError(error.message);
+        }
+      );
+    } else {
+      this.loading = false;
+      this.toastr.showError('Please select the required fields');
     }
   }
 

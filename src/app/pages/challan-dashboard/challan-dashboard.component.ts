@@ -429,6 +429,7 @@ export class ChallanDashboardComponent {
             this.service.updateChallanStatus(id, body).subscribe((res: any) => {
               this.page = 0;
               this.getChallanStatus();
+              this.toastr.showSuccess('Challan approved successfully');
               this.getTripList();
             });
           }
@@ -450,6 +451,7 @@ export class ChallanDashboardComponent {
             this.service.updateChallanStatus(id, body).subscribe((res: any) => {
               this.page = 0;
               this.getChallanStatus();
+              this.toastr.showSuccess('Challan rejected successfully');
               this.getTripList();
             });
           }
