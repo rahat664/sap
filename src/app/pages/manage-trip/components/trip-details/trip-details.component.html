@@ -56,15 +56,11 @@
       <div class="grid grid-cols-4 place-items-center text-xs font-semibold py-4 bg-input rounded-t-lg">
         <span>Created</span>
         <span
-          [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' &&
-          onlyStatusTripEvents?.length == 2}">{{ tripDetails?.status === 'Cancelled' &&
-        onlyStatusTripEvents?.length == 2 ? 'Cancelled' : 'Booked' }}</span>
+          [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 2}">{{ tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 2 ? 'Cancelled' : 'Booked' }}</span>
         <span [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 3}"
-              [hidden]="tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length < 3">{{
-            tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 3 ? 'Cancelled' : 'Running' }}</span>
+              [hidden]="tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length < 3">{{ tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 3 ? 'Cancelled' : 'Running' }}</span>
         <span [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 4}"
-              [hidden]="tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length < 4"> {{
-            tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 4 ? 'Cancelled' : 'Completed' }}</span>
+              [hidden]="tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length < 4"> {{ tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 4 ? 'Cancelled' : 'Completed' }}</span>
       </div>
       <div class="border border-input border-t-0 grid grid-cols-4 place-items-center py-6 mb-4 rounded-b-lg">
         <div class="flex flex-col space-y-3 w-full items-center justify-center"

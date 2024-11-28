@@ -147,7 +147,7 @@ export class TripDetailsComponent {
     if (currentValue.tripEvents) {
       currentValue.tripEvents.forEach(event => {
         if (event.name) {
-          if (event.name === 'Cancelled') {
+          if (event.name === 'Trip cancelled') {
             onlyStatusTripEvents.push(event);
           } else if (
             event.name === 'Trip booked' ||
@@ -159,9 +159,10 @@ export class TripDetailsComponent {
           }
         }
       });
+      console.log(onlyStatusTripEvents);
       this.onlyStatusTripEvents = onlyStatusTripEvents;
       onlyStatusTripEvents?.forEach((event, index) => {
-        if (event.name != 'Cancelled') {
+        if (event.name != 'Trip cancelled') {
           this.tripTimeline[index].dateTime = event.createdAt;
           this.tripTimeline[index].dateTimeAvailable = true;
           this.tripTimeline[index].active = true;
@@ -186,6 +187,7 @@ export class TripDetailsComponent {
   }
 
   private resetTripTimeline() {
+    this.onlyStatusTripEvents = [];
     this.tripTimeline.forEach(event => {
       event.dateTime = new Date();
       event.dateTimeAvailable = false;

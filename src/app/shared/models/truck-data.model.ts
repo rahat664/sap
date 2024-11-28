@@ -1,4 +1,3 @@
-
 export class TruckData {
   address: string;
   numberPlate: string;
@@ -7,4 +6,5 @@ export class TruckData {
   gsmValue: string;
   stopDuration: string;
   speed: string;
+  associatedRunningTripId: any;
 }
