@@ -132,7 +132,7 @@ export class TruckingMapComponent {
             url: `/assets/svg/trucking-${truck?.image}.svg`, // Set appropriate icon
             scaledSize: new google.maps.Size(48, 48), // Set appropriate size
           },
-          title: 'Truck Location ' + (index + 1),
+          title: truckPosition[index].fullRegistrationNumber,
           map: this.map.googleMap, // Ensure the map is set
         });
         this.truckLocationMarker.push(truckLocationMarker);
