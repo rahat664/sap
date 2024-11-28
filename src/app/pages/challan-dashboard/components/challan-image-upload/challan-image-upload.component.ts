@@ -139,9 +139,14 @@ export class ChallanImageUploadComponent {
 
       this.trip.manageLoadingUnloading(formData).subscribe(
         (response: any) => {
-          this.loading = false;
-          this.toastr.showSuccess(response.message);
-          this.router.navigate([this.returnUrl]);
+          if (response.status === 'OK') {
+            this.loading = false;
+            this.toastr.showSuccess(response.message);
+            this.router.navigate([this.returnUrl]);
+          } else {
+            this.loading = false;
+            this.toastr.showError(response.message);
+          }
         },
         error => {
           this.loading = false;

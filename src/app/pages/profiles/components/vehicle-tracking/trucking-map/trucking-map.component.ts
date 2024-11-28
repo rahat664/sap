@@ -89,10 +89,10 @@ export class TruckingMapComponent {
     }, 2000);
   }
 
-  showLoadingSpinner(): void {
+  showLoadingSpinner(marker: google.maps.Marker): void {
     this.loading = true;
     this.infoWindow.setContent(this.getLoadingSpinnerContent());
-    this.infoWindow.open(this.map, this.truckLocationMarker);
+    this.infoWindow.open(this.map, marker);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -138,24 +138,27 @@ export class TruckingMapComponent {
         this.truckLocationMarker.push(truckLocationMarker);
 
         // Create an InfoWindow for this marker
-        const infoWindow = new google.maps.InfoWindow({
-          content: this.getLoadingSpinnerContent(), // Initially show loading spinner
-          maxWidth: 400,
-        });
 
         // Add a click event listener to the marker to show info when clicked
-        truckLocationMarker.addListener('click', () => {
-          this.showLoadingSpinner(); // Show loading spinner
-          this.fetchTruckData(truck.fullRegistrationNumber); // Fetch truck data based on the marker clicked
-          infoWindow.open(this.map.googleMap, truckLocationMarker); // Open the info
-          // window on
-          // the marker
-        });
       });
     } else {
       // If no truck location data is available, you can clear markers here if needed
       console.log('No truck location data available');
     }
+    this.truckLocationMarker.forEach((marker, index) => {
+      this.infoWindow = new google.maps.InfoWindow({
+        content: this.getLoadingSpinnerContent(), // Initially show loading spinner
+        maxWidth: 400,
+      });
+      marker.addListener('click', (registrationNumber: string) => {
+        this.stopInterval();
+        this.showLoadingSpinner(marker);
+        this.fetchTruckData(
+          truckPosition[index].fullRegistrationNumber,
+          marker
+        );
+      });
+    });
   }
 
   private clearPolylines(): void {
@@ -164,25 +167,23 @@ export class TruckingMapComponent {
     this.destination = [];
   }
 
-  fetchTruckData(registrationNumber: string): void {
-    this.truckService
-      .getTrackers(0, 10, this.truckFullRegistrationNumber)
-      .subscribe(
-        (res: any) => {
-          if (res.data?.content?.length > 0) {
-            this._truckId = res.data.content[0].vehicleId;
-            this.truckService.getTrackerData(this._truckId).subscribe(
-              (res: any) => {
-                this.truckData = res.data;
-                this.updateInfoWindow();
-                this.startInterval();
-              },
-              error => {}
-            );
-          }
-        },
-        error => {}
-      );
+  fetchTruckData(registrationNumber: string, marker: any): void {
+    this.truckService.getTrackers(0, 10, registrationNumber).subscribe(
+      (res: any) => {
+        if (res.data?.content?.length > 0) {
+          this._truckId = res.data.content[0].vehicleId;
+          this.truckService.getTrackerData(this._truckId).subscribe(
+            (res: any) => {
+              this.truckData = res.data;
+              this.updateInfoWindow(marker);
+              this.startInterval(marker);
+            },
+            error => {}
+          );
+        }
+      },
+      error => {}
+    );
   }
 
   calculatedHeight() {
@@ -195,9 +196,9 @@ export class TruckingMapComponent {
     }
   }
 
-  updateInfoWindow(): void {
+  updateInfoWindow(marker: any): void {
     this.infoWindow.setContent(this.getInfoWindowContent());
-    this.infoWindow.open(this.map, this.truckLocationMarker);
+    this.infoWindow.open(this.map, marker);
 
     // Add event listener for the close button
     timer(100).subscribe(() => {
@@ -214,8 +215,7 @@ export class TruckingMapComponent {
     return `
       <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
         <div class="flex flex-col space-y-1">
-          <div style="font-weight: bold; font-size: 16px">${this.truckData.numberPlate}</div>
-          <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.address.split(',')[0]}</div>
+          <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.numberPlate}</div>
           <div style="font-size: 12px; color: #777777">${this.truckData.address}</div>
         </div>
         <button id="closeBtn" style="background: transparent; border: none; cursor: pointer;">
@@ -243,9 +243,9 @@ export class TruckingMapComponent {
     `;
   }
 
-  private startInterval() {
+  private startInterval(marker: any) {
     this.intervalData = setInterval(() => {
-      this.updateTruckDataOnly();
+      this.updateTruckDataOnly(marker);
       this.stopInterval();
     }, 3900);
   }
@@ -254,12 +254,12 @@ export class TruckingMapComponent {
     clearInterval(this.intervalData);
   }
 
-  private updateTruckDataOnly() {
+  private updateTruckDataOnly(marker: any) {
     this.truckService.getTrackerData(this._truckId).subscribe(
       (res: any) => {
         this.truckData = res.data;
-        this.startInterval();
-        this.updateInfoWindow();
+        this.startInterval(marker);
+        this.updateInfoWindow(marker);
       },
       error => {}
     );

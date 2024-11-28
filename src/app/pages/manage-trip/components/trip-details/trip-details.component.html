@@ -56,11 +56,15 @@
       <div class="grid grid-cols-4 place-items-center text-xs font-semibold py-4 bg-input rounded-t-lg">
         <span>Created</span>
         <span
-          [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 2}">{{ tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 2 ? 'Cancelled' : 'Booked' }}</span>
-        <span [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 3}"
-              [hidden]="tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length < 3">{{ tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 3 ? 'Cancelled' : 'Running' }}</span>
-        <span [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 4}"
-              [hidden]="tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length < 4"> {{ tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 4 ? 'Cancelled' : 'Completed' }}</span>
+          [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' &&
+          onlyStatusTripEvents?.length == 2}">{{ tripDetails?.status === 'Cancelled' &&
+        onlyStatusTripEvents?.length == 2 ? 'Cancelled' : 'Booked' }}</span>
+        <span [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 3}"
+              [hidden]="tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length < 3">{{
+            tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 3 ? 'Cancelled' : 'Running' }}</span>
+        <span [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 4}"
+              [hidden]="tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length < 4"> {{
+            tripDetails?.status === 'Cancelled' && onlyStatusTripEvents?.length == 4 ? 'Cancelled' : 'Completed' }}</span>
       </div>
       <div class="border border-input border-t-0 grid grid-cols-4 place-items-center py-6 mb-4 rounded-b-lg">
         <div class="flex flex-col space-y-3 w-full items-center justify-center"
@@ -69,7 +73,7 @@
                src="assets/svg/truckImg.svg"
                alt="truckImg">
           <div class="relative w-full h-4 flex items-center justify-center">
-            <div [hidden]="tripDetails.status === 'Cancelled' && tripDetails.tripEvents.length < i+2"
+            <div [hidden]="tripDetails.status === 'Cancelled' && onlyStatusTripEvents?.length < i+2"
                  class="w-[0.5rem] h-[0.5rem] rounded-full relative ring ring-[#1DBF73] z-20 {{timeline.active ? 'bg-green': 'bg-white'}}"></div>
             <div class="text-2xl z-20 relative text-red"
                  *ngIf="timeline.cancelled && tripDetails.status == 'Cancelled' && !timeline.active">

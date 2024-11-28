@@ -50,7 +50,7 @@
             <mat-autocomplete #transporter="matAutocomplete">
               @for (option of transporterSuggestions; track option) {
                 <mat-option (click)="onClickTransporterSearchSuggestion(option)"
-                            [value]="option.name">{{ option.name }}
+                            [value]="option.name">{{ option.name ? option.name : option}}
                 </mat-option>
               }
             </mat-autocomplete>
@@ -70,7 +70,8 @@
             <mat-autocomplete #truck="matAutocomplete">
               @for (option of truckRegSuggestions; track option) {
                 <mat-option (click)="onClickTruckSearchSuggestion(option)"
-                            [value]="option.fullRegistrationNumber">{{ option.fullRegistrationNumber }}
+                            [value]="option.fullRegistrationNumber">{{
+                    option.fullRegistrationNumber ? option.fullRegistrationNumber : option}}
                 </mat-option>
               }
             </mat-autocomplete>

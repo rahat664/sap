@@ -155,13 +155,33 @@ export class VehicleTrackingComponent {
     this.truckFilterCount = 0;
   }
 
-  onKeyUpTransporterSearch($event: KeyboardEvent) {}
+  onKeyUpTransporterSearch($event: any) {
+    const value = $event.target.value;
+    this.transporterSearchSubject.next(value);
+  }
 
-  onClickTransporterSearchSuggestion(option: any) {}
+  onClickTransporterSearchSuggestion(option: any) {
+    this.transporterName = option.name;
+    this.truckLocationPosition = [];
+    this.transporterSuggestions = [];
+    this.transporterFilterCount = 1;
+    this.trackerEnabledTrucks = [];
+    this.getTruckList();
+  }
 
-  onKeyUpTruckSearch($event: KeyboardEvent) {}
+  onKeyUpTruckSearch($event: any) {
+    const value = $event.target.value;
+    this.truckSearchSubject.next(value);
+  }
 
-  onClickTruckSearchSuggestion(option: any) {}
+  onClickTruckSearchSuggestion(option: any) {
+    this.truckRegistrationId = option.fullRegistrationNumber;
+    this.truckLocationPosition = [];
+    this.truckRegSuggestions = [];
+    this.truckFilterCount = 1;
+    this.trackerEnabledTrucks = [];
+    this.getTruckList();
+  }
 
   private performTruckSearch(searchText: string) {
     if (searchText?.length > 0) {
@@ -181,6 +201,9 @@ export class VehicleTrackingComponent {
     this.truckRegSuggestions = [];
     this.truckRegSuggestions.push('No truck found');
     this.truckFilterCount = 0;
+    this.trackerEnabledTrucks = [];
+    this.truckLocationPosition = [];
+    this.getTruckList();
   }
 
   private performTransporterSearch(searchText: string) {
@@ -203,6 +226,9 @@ export class VehicleTrackingComponent {
     this.truckRegSuggestions = [];
     this.truckRegSuggestions.push('No trip found');
     this.transporterFilterCount = 0;
+    this.truckLocationPosition = [];
+    this.trackerEnabledTrucks = [];
+    this.getTruckList();
   }
 
   private getTruckList() {
@@ -211,7 +237,7 @@ export class VehicleTrackingComponent {
       .getTruckList(
         0,
         1000,
-        this.truckId,
+        this.truckRegistrationId,
         '',
         true,
         this.transporterName,

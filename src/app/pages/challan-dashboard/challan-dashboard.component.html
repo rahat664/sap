@@ -332,9 +332,9 @@
             </div>
           </td>
           <td class="text-center whitespace-nowrap">
-            <a *ngIf="chalanStatus != 'Pending'" (click)="onClickSoftCopyView(trip.tripId)"
+            <a *ngIf="trip.challanStatus != 'Pending'" (click)="onClickSoftCopyView(trip.tripId)"
                class="cursor-pointer text-link text-center underline">View</a>
-            <ng-container *ngIf="chalanStatus == 'Pending'">
+            <ng-container *ngIf="trip.challanStatus == 'Pending'">
               <label for="file-upload"
                      class="flex space-x-2 px-4 py-2 rounded-lg items-center cursor-pointer bg-[#EEF7FD]">
                 <span class="text-h2_regular leading-h2_regular text-link">Upload</span>
@@ -360,8 +360,8 @@
                 class="px-2 py-1 {{getBgColor(trip.challanStatus)}} bg-opacity-[30%] rounded-full">{{ trip.challanStatus }}</p>
             </div>
           </td>
-          <td *ngIf="chalanStatus != 'Approved' &&
-            chalanStatus != 'Pending'"
+          <td *ngIf="trip.challanStatus != 'Approved' &&
+            trip.challanStatus != 'Pending'"
               class="sticky right-0 bg-white w-[5rem]">
             <button
               class="{{trip.challanStatus==='Approved' ? 'invisible' : 'visible' }}"
