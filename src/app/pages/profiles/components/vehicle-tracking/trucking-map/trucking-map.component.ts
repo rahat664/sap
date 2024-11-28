@@ -151,7 +151,10 @@ export class TruckingMapComponent {
         maxWidth: 400,
       });
       marker.addListener('click', (registrationNumber: string) => {
-        this.stopInterval();
+        if (this.intervalData) {
+          this.infoWindow.close();
+          this.stopInterval();
+        }
         this.showLoadingSpinner(marker);
         this.fetchTruckData(
           truckPosition[index].fullRegistrationNumber,
