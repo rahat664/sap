@@ -15,14 +15,8 @@ import {
 import {
   MAT_DIALOG_DATA,
   MatDialog,
-  MatDialogClose,
-  MatDialogContent,
   MatDialogRef,
-  MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
-import { MatSelect } from '@angular/material/select';
 import { registrationZoneList } from '../../../profiles/components/truck/models/registration-zone';
 import { registrationCategoryList } from '../../../profiles/components/truck/models/registration-category';
 import { TransporterPopupComponent } from '../transporter-popup/transporter-popup.component';
@@ -46,12 +40,6 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
     MatAutocompleteTrigger,
     MatInput,
     ReactiveFormsModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatIcon,
-    MatIconButton,
-    MatDialogClose,
-    MatSelect,
     NgIf,
     MatError,
   ],
@@ -383,7 +371,7 @@ export class DialogDataComponent {
           // body.status = 'Running';
           body.tripStartedAt = this.datePipe.transform(
             new Date(),
-            'yyyy-MM-dd Hh:mm:ss'
+            'yyyy-MM-ddTHH:mm:ss'
           );
           this.trip.updateTrip(body, this.data.trip?.tripId).subscribe(
             (res: any) => {

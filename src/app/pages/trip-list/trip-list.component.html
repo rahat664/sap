@@ -10,11 +10,10 @@
     <!--  filter section-->
     <div class="w-full bg-white rounded-lg">
       <button
-        (click)="onClickFilterOpened()"
         class="flex px-2 py-1 space-x-4 items-center w-full"
         [ngClass]="{ 'border-b border-[#A1D5DE]': filterOpened }">
-        <i *ngIf="!filterOpened" class="fas fa-caret-down text-input-hint text-xl"></i>
-        <i *ngIf="filterOpened" class="fas fa-caret-up text-input-hint text-xl"></i>
+        <i (click)="onClickFilterOpened()" *ngIf="!filterOpened" class="fas fa-caret-down text-input-hint text-xl"></i>
+        <i (click)="onClickFilterOpened()" *ngIf="filterOpened" class="fas fa-caret-up text-input-hint text-xl"></i>
         <span class="text-not-black text-h2_medium font-semibold"
         >Filter
           <span *ngIf="getFilterLength() > 0"
@@ -88,19 +87,19 @@
     </div>
     <!--  summary section-->
     <div class="flex space-x-3 w-full">
-<!--      <div *ngIf="!isAdmin()"-->
-<!--           class="bg-white rounded-lg min-h-[11.75rem] flex justify-center items-center text-body_title leading-body_title px-4 py-8 whitespace-nowrap w-[23.75rem]">-->
-<!--        <div class="flex flex-col space-y-[1.375rem] text-center">-->
-<!--          <h1 class="font-bold text-[2.5rem]">-->
-<!--            {{ summary.crs | number }} ৳-->
-<!--          </h1>-->
-<!--          <div-->
-<!--            class="flex items-center space-x-3 text-web-text-secondary text-body_title  leading-body_title font-semibold">-->
-<!--            <img src="assets/svg/trip-fare.svg" class="notPreview" alt="">-->
-<!--            <span>Total trip fare for {{ summary.trips }} {{ summary.trips > 1 ? 'trips' : 'trip' }}</span>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div *ngIf="!isAdmin()"-->
+      <!--           class="bg-white rounded-lg min-h-[11.75rem] flex justify-center items-center text-body_title leading-body_title px-4 py-8 whitespace-nowrap w-[23.75rem]">-->
+      <!--        <div class="flex flex-col space-y-[1.375rem] text-center">-->
+      <!--          <h1 class="font-bold text-[2.5rem]">-->
+      <!--            {{ summary.crs | number }} ৳-->
+      <!--          </h1>-->
+      <!--          <div-->
+      <!--            class="flex items-center space-x-3 text-web-text-secondary text-body_title  leading-body_title font-semibold">-->
+      <!--            <img src="assets/svg/trip-fare.svg" class="notPreview" alt="">-->
+      <!--            <span>Total trip fare for {{ summary.trips }} {{ summary.trips > 1 ? 'trips' : 'trip' }}</span>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
       <div *ngIf="isAdmin()"
            class="bg-white rounded-lg text-body_title leading-body_title pt-4 px-3 whitespace-nowrap w-96">
         <h1 class="font-semibold px-3 "><span class="text-not-black text-body_title">
@@ -142,10 +141,10 @@
             </ng-container>
           </div>
         </div>
-<!--        <p class="absolute left-4 top-4"><span class="text-body_title font-semibold text-not-black">Total </span><span-->
-<!--          class="text-web-text-secondary text-body_title">-->
-<!--          ({{ statusButtons[0].count ? statusButtons[0].count : '0' }} trips)-->
-<!--        </span></p>-->
+        <!--        <p class="absolute left-4 top-4"><span class="text-body_title font-semibold text-not-black">Total </span><span-->
+        <!--          class="text-web-text-secondary text-body_title">-->
+        <!--          ({{ statusButtons[0].count ? statusButtons[0].count : '0' }} trips)-->
+        <!--        </span></p>-->
         <div
           *ngIf="scrollable"
           class="absolute top-4 right-4 flex space-x-1 items-center">
@@ -190,7 +189,7 @@
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
         <th class="text-left">Status</th>
-<!--        <th class="text-left" *ngIf="!isAdmin()">Trip Fare</th>-->
+        <!--        <th class="text-left" *ngIf="!isAdmin()">Trip Fare</th>-->
         <th class="text-left" *ngIf="isAdmin()">CR(৳)</th>
         <th class="text-left" *ngIf="isAdmin()">TR(৳)</th>
         <th class="text-left" *ngIf="isAdmin()">GP(৳)</th>
@@ -203,7 +202,7 @@
       <ng-container *ngIf="!loading">
         <tr *ngFor="let trip of tripList; index as i">
           <td class="whitespace-nowrap">
-            <a class="text-blue cursor-pointer"
+            <a class="text-link cursor-pointer"
                (click)="onClickTripNumber(trip.tripId)">
               {{ trip.tripId }}
             </a>
@@ -211,17 +210,26 @@
           <td class="whitespace-nowrap">
             {{ trip.tripStartDatetime | date: 'd MMM yyyy' }}
           </td>
-          <td *ngIf="isAdmin()">{{ trip.customerName }}</td>
-          <td>
-            {{ trip.tripPoints[0]?.pointName }}
+          <td class="whitespace-nowrap" *ngIf="isAdmin()">{{ trip.customerName }}</td>
+          <td class="whitespace-nowrap">
+            <p>{{ getLoadingPointsName(trip.tripPoints)[0]?.pointName }} <span
+              class="bg-not-black inline-block py-0.5 px-2 rounded-lg  text-white"
+              *ngIf="getLoadingPointsName(trip.tripPoints)?.length > 1">
+              +{{ getLoadingPointsName(trip.tripPoints)?.length - 1 }}</span></p>
           </td>
-          <td>
-            {{ trip.tripPoints[1]?.pointName }}
+          <td class="whitespace-nowrap">
+            <p>{{ getUnloadingPointsName(trip.tripPoints)[0]?.pointName }} <span
+              class="bg-not-black inline-block py-0.5 px-2 rounded-lg  text-white"
+              *ngIf="getUnloadingPointsName(trip.tripPoints)?.length > 1">
+              +{{ getUnloadingPointsName(trip.tripPoints)?.length - 1 }}</span></p>
           </td>
           <td>{{ trip.status }}</td>
           <td *ngIf="isAdmin()">{{ (trip.customerRate ? trip.customerRate : 0) | number }}</td>
-          <td *ngIf="isAdmin()">{{ (trip.transporterRate ? trip.transporterRate : 0) | number }}</td>
-          <td *ngIf="isAdmin()">{{ getCountOfGp(trip) == 'N/A' ? 'N/A' : (getCountOfGp(trip) | number) }}</td>
+          <td *ngIf="isAdmin()">{{ (trip.transporterRate ? trip.transporterRate : 0) | number }}
+          </td>
+          <td
+            *ngIf="isAdmin()">{{ getCountOfGp(trip) == 'N/A' ? 'N/A' : (getCountOfGp(trip) | number) }}
+          </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
@@ -229,7 +237,8 @@
           <td class="text-center" [colSpan]="isAdmin() ? 9: 6">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
               <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-              <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+              <p class="text-body_title leading-body_title text-secondary font-semibold">No Data
+                Found</p>
             </div>
           </td>
         </tr>

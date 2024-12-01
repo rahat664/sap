@@ -7,7 +7,6 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
-import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import {
   MatDatepicker,
   MatDatepickerInput,
@@ -19,8 +18,7 @@ import { MatInput } from '@angular/material/input';
 import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
-import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -28,7 +26,6 @@ import { ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [
     CustomInputComponent,
-    GetClickEventDirective,
     MatDatepicker,
     MatDatepickerInput,
     MatDatepickerToggle,
@@ -37,8 +34,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     NgForOf,
     NgIf,
     CommonModule,
-    MatOption,
-    MatSelect,
     ReactiveFormsModule,
     MatDatepickerModule,
     MatSuffix,
@@ -186,7 +181,7 @@ export class FileUploadComponent {
   onDateChange($event: Event, i: number) {
     this.fileArray[i].registrationExpireDate = this.datePipe.transform(
       ($event.target as HTMLInputElement).value,
-      'yyyy-MM-dd Hh:mm:ss'
+      'yyyy-MM-ddTHH:mm:ss'
     );
     if (!this.callFromModal) {
       this.fileInput.emit(this.fileArray);

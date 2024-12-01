@@ -16,24 +16,24 @@
         <div class="circle">
           <img src="assets/svg/start.svg" alt="loading">
         </div>
-        <div class="flex items-center justify-between"><p class="w-full">
-          {{ loadingPoint[0]?.pointName }}
+        <p class="w-full">
+          {{ loadingPoint[0]?.pointName }} <span
+          class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+                                                 *ngIf="loadingPoint.length > 1" >
+          +{{
+            loadingPoint.length - 1 }}</span>
         </p>
-          <p *ngIf="loadingPoint.length > 1" class="h-5 w-5 flex items-center justify-center  rounded-full  text-white bg-blue text-[0.625rem]">
-            <span>+{{ loadingPoint.length - 1 }}</span>
-          </p>
-        </div>
+
       </div>
       <div class="step">
         <div class="circle">
           <img src="assets/svg/end.svg" alt="loading"></div>
-        <div class="flex items-center justify-between"><p class="w-full">
-          {{ unloadingPoint[unloadingPoint.length - 1]?.pointName }}
-        </p>
-          <p *ngIf="unloadingPoint.length > 1" class="h-5 w-5 flex items-center justify-center  rounded-full  text-white bg-blue text-[0.625rem]">
-            <span>+{{ unloadingPoint.length - 1 }}</span>
-          </p>
-        </div>
+        <p class="w-full">
+          {{ unloadingPoint[0]?.pointName }} <span
+          class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+          *ngIf="unloadingPoint.length > 1" >
+          +{{
+            unloadingPoint.length - 1 }}</span>
       </div>
     </div>
     <span class="text-secondary text-start">{{ truckId }} | {{ truckType }} | {{ goodsName }}</span>

@@ -85,7 +85,7 @@ export class GMapComponent implements OnInit, OnChanges {
     });
 
     if (this.starting.length > 0 && this.destination.length > 0) {
-      this.clearPolylines()
+      this.clearPolylines();
       this.updateRoute();
     }
 
@@ -145,12 +145,23 @@ export class GMapComponent implements OnInit, OnChanges {
     this.initialMarker = {};
 
     this.connectSequentialPoints(startPoints, 'loading');
-    this.connectPoints(startPoints[startPoints.length - 1], endPoints[0], 'loading');
-    this.connectPoints(startPoints[startPoints.length - 1], endPoints[0], 'unloading');
+    this.connectPoints(
+      startPoints[startPoints.length - 1],
+      endPoints[0],
+      'loading'
+    );
+    this.connectPoints(
+      startPoints[startPoints.length - 1],
+      endPoints[0],
+      'unloading'
+    );
     this.connectSequentialPoints(endPoints, 'unloading');
   }
 
-  private connectSequentialPoints(points: google.maps.LatLngLiteral[], pointType: string) {
+  private connectSequentialPoints(
+    points: google.maps.LatLngLiteral[],
+    pointType: string
+  ) {
     for (let i = 0; i < points.length - 1; i++) {
       this.connectPoints(points[i], points[i + 1], pointType);
     }
@@ -198,29 +209,25 @@ export class GMapComponent implements OnInit, OnChanges {
 
   private setLoadingMarker(position: google.maps.LatLngLiteral) {
     this.initialMarker = {};
-    this.startMarker.push(
-      {
-        position: position,
-        icon: {
-          url: '/assets/svg/start.svg', // Replace with your custom loading marker icon
-          scaledSize: new google.maps.Size(30, 30),
-        },
-        title: 'Loading Point',
-      }
-    );
+    this.startMarker.push({
+      position: position,
+      icon: {
+        url: '/assets/svg/start.svg', // Replace with your custom loading marker icon
+        scaledSize: new google.maps.Size(30, 30),
+      },
+      title: 'Loading Point',
+    });
   }
 
   private setUnloadingMarker(position: google.maps.LatLngLiteral) {
-    this.endMarker.push(
-      {
-        position: position,
-        icon: {
-          url: '/assets/svg/end.svg', // Replace with your custom loading marker icon
-          scaledSize: new google.maps.Size(30, 30),
-        },
-        title: 'Unloading Point',
-      }
-    );
+    this.endMarker.push({
+      position: position,
+      icon: {
+        url: '/assets/svg/end.svg', // Replace with your custom loading marker icon
+        scaledSize: new google.maps.Size(30, 30),
+      },
+      title: 'Unloading Point',
+    });
   }
 
   private updateTruckLocation() {
@@ -301,7 +308,7 @@ export class GMapComponent implements OnInit, OnChanges {
             strokeColor: '#11484F', // Polyline color
             strokeOpacity: 1,
             strokeWeight: 4,
-          })
+          });
           // Store the polyline for management
         });
       });
@@ -327,13 +334,11 @@ export class GMapComponent implements OnInit, OnChanges {
                 this.updateInfoWindow();
                 this.startInterval();
               },
-              error => {
-              }
+              error => {}
             );
           }
         },
-        error => {
-        }
+        error => {}
       );
   }
 
@@ -366,8 +371,7 @@ export class GMapComponent implements OnInit, OnChanges {
     return `
       <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
         <div class="flex flex-col space-y-1">
-          <div style="font-weight: bold; font-size: 16px">${this.truckData.numberPlate}</div>
-          <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.address.split(',')[0]}</div>
+          <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.numberPlate}</div>
           <div style="font-size: 12px; color: #777777">${this.truckData.address}</div>
         </div>
         <button id="closeBtn" style="background: transparent; border: none; cursor: pointer;">
@@ -413,8 +417,7 @@ export class GMapComponent implements OnInit, OnChanges {
         this.startInterval();
         this.updateInfoWindow();
       },
-      error => {
-      }
+      error => {}
     );
   }
 }

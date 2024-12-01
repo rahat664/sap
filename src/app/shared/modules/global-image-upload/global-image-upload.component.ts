@@ -8,17 +8,21 @@ import {
   ViewChild,
 } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { MatFormField } from '@angular/material/form-field';
-import { MatOption } from '@angular/material/core';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+import { MatCalendar, MatDatepickerToggle } from '@angular/material/datepicker';
+import { MatCard } from '@angular/material/card';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { TimePickerComponent } from '../time-picker/time-picker.component';
 
 @Component({
   selector: 'app-global-image-upload',
   standalone: true,
   imports: [
-    DatePipe,
     MatFormField,
     MatOption,
     MatSelect,
@@ -28,7 +32,16 @@ import { MatInput } from '@angular/material/input';
     NgForOf,
     NgClass,
     FormsModule,
+    MatButton,
+    MatCalendar,
+    MatCard,
+    MatDatepickerToggle,
+    MatMenu,
+    MatSuffix,
+    TimePickerComponent,
+    MatMenuTrigger,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './global-image-upload.component.html',
   styleUrl: './global-image-upload.component.scss',
 })
@@ -69,6 +82,10 @@ export class GlobalImageUploadComponent {
   activatedImageType: any;
   @Output() forwardedNote: EventEmitter<string> = new EventEmitter();
   @Output() forwardedImageType: EventEmitter<string> = new EventEmitter();
+  @Output() forwardedDateType: EventEmitter<string> = new EventEmitter();
+  @Output() isBackButtonClick: EventEmitter<boolean> = new EventEmitter();
+
+  constructor(private datePipe: DatePipe) {}
 
   onChangeImageType($event: any) {
     this.activatedImageType = $event.value;
@@ -221,6 +238,10 @@ export class GlobalImageUploadComponent {
 
   zoomInAvailable: boolean = true;
   zoomOutAvailable: boolean = false;
+  @Input() isLoading: boolean = false;
+
+  returnToInputDate: Date;
+  selectedDate: Date = new Date();
 
   onClickClose() {
     // remove the activated document from the documents array
@@ -232,5 +253,38 @@ export class GlobalImageUploadComponent {
   onClickSave() {
     this.forwardedNote.emit(this.note);
     this.saveButtonClicked.emit(true);
+  }
+
+  onSelectTimeAndDate() {
+    // convert time to 24-hour format
+    const time = this.time.split(' ')[0];
+    const hour = parseInt(time.split(':')[0]);
+    const minute = parseInt(time.split(':')[1]);
+    const amOrPm = this.time.split(' ')[1];
+    const timeIn24HourFormat = amOrPm === 'PM' ? hour + 12 : hour;
+    const selectedDate = this.selectedDate;
+    selectedDate.setHours(timeIn24HourFormat, hour);
+    selectedDate.setMinutes(minute);
+    this.forwardedDateType.emit(
+      this.datePipe.transform(selectedDate, 'yyyy-MM-ddTHH:mm:ss')
+    );
+  }
+
+  onSelect($event: any) {
+    this.selectedDate = $event;
+    this.returnToInputDate = $event;
+  }
+  private time: any;
+  @Input() tripId: string;
+  onTimeChange($event: any) {
+    this.time = $event;
+  }
+
+  getSelectedDate() {
+    return this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd h:mm a');
+  }
+
+  onCLickBack() {
+    this.isBackButtonClick.emit(true);
   }
 }

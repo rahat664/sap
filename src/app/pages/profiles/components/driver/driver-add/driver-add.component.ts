@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
-import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
 import {
   FormBuilder,
   FormGroup,
@@ -20,18 +19,14 @@ import { UserService } from '../../../services/user.service';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
-import { FileUploadComponent } from '../../truck/file-upload/file-upload.component';
 import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
-import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import {
   MatDatepicker,
   MatDatepickerInput,
   MatDatepickerToggle,
 } from '@angular/material/datepicker';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
-import { PreHireChecklistComponent } from '../../truck/pre-hire-checklist/pre-hire-checklist.component';
 import {
   DriverFileType,
   driverFileTypeModel,
@@ -53,22 +48,17 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
     CommonModule,
     NgIf,
     UploadButtonComponent,
-    FileUploadPopupComponent,
     ReactiveFormsModule,
     FormsModule,
     AlphabetOnlyDirective,
-    FileUploadComponent,
     MatFormField,
     MatInput,
-    CustomInputComponent,
-    GetClickEventDirective,
     MatDatepicker,
     MatDatepickerInput,
     MatDatepickerToggle,
     MatMenu,
     MatSuffix,
     NgForOf,
-    PreHireChecklistComponent,
     MatMenuTrigger,
     NgxMaterialIntlTelInputComponent,
   ],
@@ -391,7 +381,7 @@ export class DriverAddComponent implements OnInit {
 
   onDateChange($event: Event, expiryFormControlName: string) {
     let date = ($event.target as HTMLInputElement).value;
-    date = this.datePipe.transform(date, 'yyyy-MM-dd Hh:mm:ss');
+    date = this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss');
     this.driverAddForm.patchValue({
       [expiryFormControlName]: date,
     });

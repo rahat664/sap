@@ -130,6 +130,7 @@ export class EditTrackerComponent {
     this.singleTrackerDetails = history.state.tracker;
     if (this.singleTrackerDetails) {
       this.trackerAddForm.patchValue({
+        truckRegNo: this.singleTrackerDetails.vehicleRegistrationNumber,
         vendorId: this.singleTrackerDetails.vendor.id,
         trackerType: this.singleTrackerDetails.trackerType,
         trackerId: this.singleTrackerDetails.trackerId,

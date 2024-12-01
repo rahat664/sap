@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { authGuard } from './pages/auth/guards/auth.guard';
 import { isAlreadyLoggedInGuard } from './pages/auth/guards/is-already-logged-in.guard';
 import { roleGuard } from './pages/auth/guards/role.guard';
-import { customerGuard } from './pages/auth/guards/customer.guard';
 
 export const routes: Routes = [
   {
@@ -22,7 +21,8 @@ export const routes: Routes = [
         c => c.DashboardComponent
       ),
     canActivate: [authGuard, roleGuard],
-  },{
+  },
+  {
     path: 'challan-management',
     title: 'Challan Dashboard',
     loadComponent: () =>
@@ -35,18 +35,18 @@ export const routes: Routes = [
     path: 'challan-management/:id/details',
     title: 'Challan Details',
     loadComponent: () =>
-      import('./pages/challan-dashboard/components/challan-details/challan-details.component').then(
-        c => c.ChallanDetailsComponent
-      ),
+      import(
+        './pages/challan-dashboard/components/challan-details/challan-details.component'
+      ).then(c => c.ChallanDetailsComponent),
     canActivate: [authGuard],
   },
   {
     path: 'challan-management/:id/image-upload',
     title: 'Challan Image Upload',
     loadComponent: () =>
-      import('./pages/challan-dashboard/components/challan-image-upload/challan-image-upload.component').then(
-        c => c.ChallanImageUploadComponent
-      ),
+      import(
+        './pages/challan-dashboard/components/challan-image-upload/challan-image-upload.component'
+      ).then(c => c.ChallanImageUploadComponent),
     canActivate: [authGuard],
   },
   {
@@ -57,7 +57,8 @@ export const routes: Routes = [
         c => c.TripListComponent
       ),
     canActivate: [authGuard],
-  },{
+  },
+  {
     path: 'dashboard',
     title: 'Dashboard',
     loadComponent: () =>
@@ -159,25 +160,36 @@ export const routes: Routes = [
     path: 'image-upload',
     title: 'Image Upload',
     loadComponent: () =>
-      import('./shared/modules/global-image-upload/global-image-upload.component').then(
-        m => m.GlobalImageUploadComponent
-      ),
+      import(
+        './shared/modules/global-image-upload/global-image-upload.component'
+      ).then(m => m.GlobalImageUploadComponent),
     canActivate: [authGuard],
   },
   {
     path: 'image-details',
     title: 'Image Details',
     loadComponent: () =>
-      import('./shared/modules/global-image-gallery/global-image-gallery.component').then(
-        m => m.GlobalImageGalleryComponent
-      ),
+      import(
+        './shared/modules/global-image-gallery/global-image-gallery.component'
+      ).then(m => m.GlobalImageGalleryComponent),
     canActivate: [authGuard],
   },
   {
     path: 'about-us',
     title: 'About Us',
     loadComponent: () =>
-      import('./pages/about-us/about-us.component').then(c => c.AboutUsComponent),
+      import('./pages/about-us/about-us.component').then(
+        c => c.AboutUsComponent
+      ),
+  },
+  {
+    path: 'vehicle-tracking',
+    title: 'Vehicle Tracking',
+    loadComponent: () =>
+      import(
+        './pages/profiles/components/vehicle-tracking/vehicle-tracking.component'
+      ).then(c => c.VehicleTrackingComponent),
+    canActivate: [authGuard],
   },
   {
     path: '',
