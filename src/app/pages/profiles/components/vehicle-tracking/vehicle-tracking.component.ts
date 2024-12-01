@@ -153,6 +153,9 @@ export class VehicleTrackingComponent {
     this.truckId = '';
     this.transporterFilterCount = 0;
     this.truckFilterCount = 0;
+    this.truckLocationPosition = [];
+    this.trackerEnabledTrucks = [];
+    this.getTruckList();
   }
 
   onKeyUpTransporterSearch($event: any) {

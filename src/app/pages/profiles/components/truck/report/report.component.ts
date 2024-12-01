@@ -1,27 +1,16 @@
 import { Component, inject } from '@angular/core';
-import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { statusButtons } from '../../../../trip-list/models/status-buttons';
-import { ButtonChipsComponent } from '../../../../trip-list/modules/button-chips/button-chips.component';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
-import { GetElementHeightDirective } from '../../../../../shared/directive/get-element-height.directive';
-import {
-  MatAutocomplete,
-  MatAutocompleteTrigger,
-  MatOption,
-} from '@angular/material/autocomplete';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { ScrollByButtonDirective } from '../../../../../shared/directive/scroll-by-button.directive';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { DateEnum } from '../../../../trip-list/Enum/date.enum';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { LoadingComponent } from '../../../../../shared/modules/loading/loading.component';
 import { VehicleTracker } from '../../driver/models/tracker.model';
-import { RouterLink } from '@angular/router';
 import { GiveMaxHeightDirective } from '../../../../../shared/directive/give-max-height.directive';
 import { TrackerService } from '../../../services/tracker.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
@@ -38,21 +27,9 @@ import { MatTooltip } from '@angular/material/tooltip';
     NgIf,
     NgSelectModule,
     FormsModule,
-    DatePipe,
-    NgClass,
-    ButtonChipsComponent,
     CustomInputComponent,
-    DecimalPipe,
     GetClickEventDirective,
-    GetElementHeightDirective,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
-    MatFormField,
-    MatInput,
-    MatOption,
-    ScrollByButtonDirective,
     LoadingComponent,
-    RouterLink,
     GiveMaxHeightDirective,
     MatTooltip,
   ],
@@ -247,12 +224,16 @@ export class ReportComponent {
     } else {
       this.dialog
         .open(ReportDownloadPopupComponent, {
-          minWidth: '30vw',
+          minWidth: '50vw',
           maxHeight: '80vh',
           maxWidth: '50vw',
           minHeight: '60vh',
           data: {
-            heading: `${this.selectedTruckName.join('_')}`,
+            // heading will selected date and time range
+            heading: `Generated report from ${this.datePipe.transform(
+              this.fromDate,
+              'd MMM,yyyy'
+            )} to ${this.datePipe.transform(this.toDate, 'd MMM,yyyy')}`,
           },
         })
         .afterClosed()
@@ -271,7 +252,11 @@ export class ReportComponent {
                   document.body.appendChild(a);
                   a.style.display = 'none';
                   a.href = url;
-                  a.download = `Report_${this.fromDate}_${this.toDate}_${this.selectedTruckName}.pdf`;
+                  // download link with formated timestamp
+                  a.download = `${this.selectedTruckName.join('_')}_${this.datePipe.transform(
+                    new Date(),
+                    'yyyy-MM-dd_HH-mm-ss'
+                  )}.pdf`;
                   a.click();
                   window.URL.revokeObjectURL(url);
                   document.body.removeChild(a);
@@ -295,7 +280,9 @@ export class ReportComponent {
   }
 
   private formateToData(toDate: string) {
-    // return to date with datetime format 23:59
-    return this.datePipe.transform(toDate, 'yyyy-MM-dd') + ' 23:59';
+    // return next day from today with datetime format 00:00
+    const date = new Date(toDate);
+    date.setDate(date.getDate() + 1);
+    return this.datePipe.transform(date, 'yyyy-MM-dd') + ' 00:00';
   }
 }
