@@ -470,7 +470,7 @@ export class ChallanDashboardComponent {
   getBgColor(challanStatus: string) {
     switch (challanStatus) {
       case 'Pending':
-        return 'bg-another';
+        return 'bg-[#005577]';
       case 'Approved':
         return 'bg-green';
       case 'Rejected':

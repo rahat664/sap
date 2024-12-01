@@ -360,6 +360,10 @@
                 class="px-2 py-1 {{getBgColor(trip.challanStatus)}} bg-opacity-[30%] rounded-full">{{ trip.challanStatus }}</p>
             </div>
           </td>
+          <td class="sticky right-0 bg-white w-[5rem]" *ngIf="(trip.challanStatus == 'Approved' ||
+           trip.challanStatus == 'Pending') && status == 'Completed'">
+            <a class="invisible">Hidden</a>
+          </td>
           <td *ngIf="trip.challanStatus != 'Approved' &&
             trip.challanStatus != 'Pending'"
               class="sticky right-0 bg-white w-[5rem]">
