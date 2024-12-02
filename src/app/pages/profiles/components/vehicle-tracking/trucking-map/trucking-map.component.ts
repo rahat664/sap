@@ -96,7 +96,6 @@ export class TruckingMapComponent {
   ngOnChanges(changes: SimpleChanges): void {
     setTimeout(() => {
       if (changes['truckLocationPosition']?.currentValue) {
-        console.log(this.truckLocationPosition.length);
         this.updateTruckLocation(this.truckLocationPosition);
       }
     }, 2000);
@@ -140,8 +139,6 @@ export class TruckingMapComponent {
         // Add a click event listener to the marker to show info when clicked
       });
     } else {
-      // If no truck location data is available, you can clear markers here if needed
-      console.log('No truck location data available');
     }
     this.truckLocationMarker.forEach((marker, index) => {
       this.infoWindow = new google.maps.InfoWindow({
