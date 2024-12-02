@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
@@ -141,7 +141,8 @@ export class ChallanDashboardComponent {
     private transporter: UserService,
     private truck: TruckService,
     private router: Router,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
+    private cd: ChangeDetectorRef
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -282,6 +283,10 @@ export class ChallanDashboardComponent {
     this.anotherStatusCalled = false;
     this.generateDateOptionsArray();
     this.getTripList();
+  }
+
+  ngAfterViewInit() {
+    this.cd.detectChanges();
   }
   private getFromDateAndToDate() {
     // fromdate will be the first day of the current month

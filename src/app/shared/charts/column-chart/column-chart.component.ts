@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -49,7 +49,7 @@ export class ColumnChartComponent {
     'Sun',
   ];
 
-  constructor() {}
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnChanges() {
     const colors = ['#E5EAEB', '#0CD5F0'];
@@ -57,12 +57,12 @@ export class ColumnChartComponent {
       series: [
         {
           name: 'Trip Created',
-          data: this.createdValue,
+          data: this.createdValue || [0, 0, 0, 0, 0, 0, 0],
           color: colors[0],
         },
         {
           name: 'Trip Completed',
-          data: this.completedValue,
+          data: this.completedValue || [0, 0, 0, 0, 0, 0, 0],
           color: colors[1],
         },
       ],
@@ -102,7 +102,7 @@ export class ColumnChartComponent {
         colors: ['transparent'],
       },
       xaxis: {
-        categories: this.categories,
+        categories: this.categories || [],
         labels: {
           style: {
             colors: '#777777',
@@ -129,5 +129,9 @@ export class ColumnChartComponent {
         },
       },
     };
+  }
+
+  ngAfterViewInit() {
+    this.cd.detectChanges();
   }
 }

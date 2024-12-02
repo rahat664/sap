@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import {
   FormBuilder,
@@ -109,7 +109,8 @@ export class TripListComponent implements OnInit {
     private datePipe: DatePipe,
     private customer: CustomerService,
     private shared: DriverEditSharedService,
-    private router: Router
+    private router: Router,
+    private cd: ChangeDetectorRef
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -122,6 +123,10 @@ export class TripListComponent implements OnInit {
     this.customerSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
       this.performCustomerSearch(searchText);
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cd.detectChanges();
   }
 
   ngOnInit(): void {

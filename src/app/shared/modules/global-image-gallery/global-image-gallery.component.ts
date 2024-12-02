@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -46,7 +47,8 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router,
-    private trip: TripService
+    private trip: TripService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -172,7 +174,9 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
     this.showRightArrow = cursorX > containerWidth * 0.5;
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.cd.detectChanges();
+  }
 
   @ViewChild('documentContainer') documentContainer: ElementRef;
 

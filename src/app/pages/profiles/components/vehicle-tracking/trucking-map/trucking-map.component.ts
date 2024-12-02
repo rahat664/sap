@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -68,7 +69,8 @@ export class TruckingMapComponent {
   constructor(
     private geoLocationService: GeolocationService,
     private trip: TripService,
-    private truckService: TrackerService
+    private truckService: TrackerService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -82,11 +84,7 @@ export class TruckingMapComponent {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (this.truckLocationPosition.length > 0) {
-        this.updateTruckLocation(this.truckLocationPosition);
-      }
-    }, 2000);
+    this.cd.detectChanges();
   }
 
   showLoadingSpinner(marker: google.maps.Marker): void {
@@ -206,7 +204,7 @@ export class TruckingMapComponent {
     // Add event listener for the close button
     timer(100).subscribe(() => {
       const closeBtn = document.getElementById('closeBtn');
-      closeBtn.addEventListener('click', () => {
+      closeBtn?.addEventListener('click', () => {
         this.infoWindow.close();
         this.stopInterval();
       });
