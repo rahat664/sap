@@ -54,7 +54,8 @@
            [totalPage]="totalPages"
            [anotherItemsHeight]="customizedHeight(height, filterHeight)">
         <app-trip-card
-          (click)="onclickTripCard(trip.tripId, getTruckRegistrationNumber(trip.truck), trip.status)"
+          (click)="onclickTripCard(trip.tripId, getTruckRegistrationNumber(trip.truck),
+          trip.status, trip.truckSize)"
           [isActivated]="trip.tripId === activatedId"
           *ngFor="let trip of tripList"
           [tripNumber]="trip.tripId"
@@ -172,7 +173,9 @@
     </div>
   </div>
   <div class="w-full h-[calc(100vh-4.5rem)] flex-1 relative">
-    <app-g-map (clearInput)="onClearInput($event)" [truckFullRegistrationNumber]="truckRegistrationNumbers" [truckLocationPosition]="truckLocationPosition" [starting]="startingPosition"
+    <app-g-map [singleTripData]="singleTripDetails" [truckSizeInFeet]="activatedTruckSizeInFeet"
+               (clearInput)="onClearInput($event)"
+                [truckFullRegistrationNumber]="truckRegistrationNumbers" [truckLocationPosition]="truckLocationPosition" [starting]="startingPosition"
                [destination]="destinationPosition" [tripStatus]="tripStatus"></app-g-map>
     <app-map-buttons [triggeredButtonName]="triggerFromParentName" [triggerFromParent]="isTriggerFromParent"
                      [statusButtons]="statusButtons" (buttonClickEmitter)="onClickButton($event)"

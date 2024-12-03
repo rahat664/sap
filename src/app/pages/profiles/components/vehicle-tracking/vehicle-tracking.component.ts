@@ -105,7 +105,7 @@ export class VehicleTrackingComponent {
     {
       id: 5,
       value: 'Unavailable',
-      viewValue: 'No data',
+      viewValue: 'Unavailable',
       backgroundColor: 'bg-[#5D5D5D]',
       color: 'text-white',
       count: 0,

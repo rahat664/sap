@@ -173,8 +173,11 @@ export class TimePickerComponent {
   toggleTimeState(value: string) {
     if (value === 'AM') {
       this.currentHour = this.currentHour - 12;
+      this.inputTime = this.currentHourShow + ':' + this.currentMinute + ' AM';
+      this.timeChange.emit(this.inputTime);
     } else {
       this.currentHour = this.currentHour + 12;
+      this.inputTime = this.currentHourShow + ':' + this.currentMinute + ' PM';
     }
   }
 

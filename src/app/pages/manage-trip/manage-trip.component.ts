@@ -28,7 +28,6 @@ import { MatInput } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomerService } from '../profiles/services/customer.service';
 import { MatSelect } from '@angular/material/select';
-import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 import { CustomerModel } from '../profiles/components/customer/model/customer.model';
 
 @Component({
@@ -55,7 +54,6 @@ import { CustomerModel } from '../profiles/components/customer/model/customer.mo
     ReactiveFormsModule,
     MatSelect,
     FormsModule,
-    LoadingComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
@@ -112,6 +110,7 @@ export class ManageTripComponent implements OnInit {
   customerCodes: string[] = [];
   customerNames: string[] = [];
   truckRegistrationNumbers: string;
+  activatedTruckSizeInFeet: number = 0;
 
   constructor(
     private tripService: TripService,
@@ -218,13 +217,15 @@ export class ManageTripComponent implements OnInit {
   onclickTripCard(
     tripId: string,
     truckRegistrationNumber: string,
-    status: string
+    status: string,
+    truckSizeInFeet: string
   ) {
     if (localStorage.getItem('expanded')) {
       localStorage.setItem('expanded', 'false');
     }
     this.tripStatus = status;
     this.activatedId = tripId;
+    this.activatedTruckSizeInFeet = Number(truckSizeInFeet);
     this.getTripDetails(tripId);
     this.getTruckTrackers(truckRegistrationNumber);
   }
@@ -702,6 +703,5 @@ export class ManageTripComponent implements OnInit {
     }
   }
 
-  onClearInput($event: boolean) {
-  }
+  onClearInput($event: boolean) {}
 }
