@@ -438,7 +438,11 @@ export class GMapComponent implements OnInit, OnChanges {
     this.handleInfoWindow(
       $event.latLng,
       index,
-      this.truckLocationPosition ? this.getEtaData.bind(this) : null,
+      this.truckLocationPosition &&
+        this.truckLocationPosition?.lat &&
+        this.truckLocationPosition?.lng
+        ? this.getEtaData.bind(this)
+        : null,
       this.getNoTruckerAvailableContent.bind(this)
     );
   }
@@ -447,7 +451,11 @@ export class GMapComponent implements OnInit, OnChanges {
     this.handleInfoWindow(
       $event.latLng,
       index,
-      this.truckLocationPosition ? this.getUnloadingEtaData.bind(this) : null,
+      this.truckLocationPosition &&
+        this.truckLocationPosition?.lat &&
+        this.truckLocationPosition?.lng
+        ? this.getUnloadingEtaData.bind(this)
+        : null,
       this.getNoTruckerAvailableContentUnloading.bind(this)
     );
   }
@@ -606,7 +614,7 @@ export class GMapComponent implements OnInit, OnChanges {
     return `
     <div style="display: flex; justify-content: space-between; min-width: 20rem; align-items: start; padding: 1rem 0;">
       <div class="flex flex-col space-y-1">
-        <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.singleTripData?.truck?.fullRegistrationNumber}</div>
+        <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.singleTripData?.truck?.fullRegistrationNumber ? this.singleTripData?.truck?.fullRegistrationNumber : 'Truck Not Assigned'}</div>
         <div style="font-size: 12px; color: #777777">${address}</div>
       </div>
       <button id="closeBtn" style="background: transparent; border: none; cursor: pointer;">
