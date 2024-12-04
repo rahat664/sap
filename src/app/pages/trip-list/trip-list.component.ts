@@ -32,6 +32,8 @@ import {
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { debounceTime, Subject } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-trip-list',
@@ -51,9 +53,6 @@ import { debounceTime, Subject } from 'rxjs';
     GiveMaxHeightDirective,
     GetClickEventDirective,
     LoadingComponent,
-    GetOutsideModalClickDirective,
-    CheckTheHeightCrossMaxHeightOrNotDirective,
-    RouterLink,
     DecimalPipe,
     MatAutocompleteTrigger,
     MatAutocomplete,
@@ -148,27 +147,30 @@ export class TripListComponent implements OnInit {
   }
 
   private getTripList() {
-    this.service
-      .getTrips(
-        this.page,
-        this.size,
-        this.customerCode,
-        this.from,
-        this.to,
-        this.status,
-        this.searchValue,
-        this.truckType,
-        this.tripId
-      )
-      .subscribe(
-        (trip: any) => {
-          this.updateTripList(trip);
-        },
-        error => {
-          this.loading = false;
-        }
-      );
+    const tripParams = {
+      page: this.page,
+      size: this.size,
+      customerCode: this.customerCode,
+      from: this.from,
+      to: this.to,
+      status: this.status,
+      searchValue: this.searchValue,
+      truckType: this.truckType,
+      tripId: this.tripId
+    };
+
+    this.service.getTrips(tripParams).pipe(
+      finalize(() => this.loading = false) // Ensure loading is set to false after the request finishes
+    ).subscribe(
+      (trip: any) => {
+        this.updateTripList(trip); // Update the trip list with the response data
+      },
+      (error) => { // Show error message
+        this.loading = false; // Ensure loading is set to false if there's an error
+      }
+    );
   }
+
 
   onSelectDate($event: number) {
     this.dateFilter = 1;
@@ -432,3 +434,5 @@ export class TripListComponent implements OnInit {
     this.tripFilter = 0;
   }
 }
+
+
