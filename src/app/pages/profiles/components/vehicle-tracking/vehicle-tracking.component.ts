@@ -150,7 +150,7 @@ export class VehicleTrackingComponent {
 
   onClearFilter() {
     this.transporterName = '';
-    this.truckId = '';
+    this.truckRegistrationId = '';
     this.transporterFilterCount = 0;
     this.truckFilterCount = 0;
     this.truckLocationPosition = [];
