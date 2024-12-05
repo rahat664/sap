@@ -36,3 +36,29 @@
   visibility: visible;
   transition: opacity 1s ease, visibility 0s 0s, transform 1s ease;
 }
+
+.customButton {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 56px;
+  border-radius: 8px;
+}
+
+::ng-deep .mat-mdc-menu-panel {
+  max-width: 25rem !important;
+}
+
+::ng-deep .mat-mdc-menu-content {
+  padding: 8px 8px !important;
+}
+
+
+::ng-deep .error .mat-mdc-text-field-wrapper {
+  width: 100%;
+  border-radius: 0.5rem !important;
+  background-color: #FFFAFB !important;
+  height: 3.3rem !important;
+}
+

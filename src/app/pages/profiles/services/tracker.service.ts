@@ -60,4 +60,22 @@ export class TrackerService {
   getTrackerData(truckId: any) {
     return this.http.get(`${this.trackerUrl}/sensor-data?deviceId=${truckId}`);
   }
+
+  getEtaData(
+    startingLat: number,
+    startingLng: number,
+    endingLat: number,
+    endingLng: Number,
+    truckLengthInFeet?: number
+  ) {
+    if (truckLengthInFeet) {
+      return this.http.get(
+        `${this.trackerUrl}/eta?startingLat=${startingLat}&startingLng=${startingLng}&endingLat=${endingLat}&endingLng=${endingLng}&truckLengthInFeet=${truckLengthInFeet}`
+      );
+    } else {
+      return this.http.get(
+        `${this.trackerUrl}/eta?startingLat=${startingLat}&startingLng=${startingLng}&endingLat=${endingLat}&endingLng=${endingLng}`
+      );
+    }
+  }
 }

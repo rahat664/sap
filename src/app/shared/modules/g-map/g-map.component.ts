@@ -11,11 +11,15 @@ import {
 import { GeolocationService } from '../../services/location/geolocation.service';
 import { mapStyles } from '../../models/map-options';
 import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
-import { NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { TripService } from '../../../pages/trip-list/services/trip.service';
 import { TruckData } from '../../models/truck-data.model';
 import { TrackerService } from '../../../pages/profiles/services/tracker.service';
 import { timer } from 'rxjs';
+import {
+  TripData,
+  TripPoint,
+} from '../../../pages/manage-trip/model/trip.details.model';
 
 @Component({
   selector: 'app-g-map',
@@ -37,11 +41,13 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   @Input() tripStatus: string;
+  @Input() truckSizeInFeet: number;
   @Input() lat: number;
   @Input() lng: number;
   @Input() starting: google.maps.LatLngLiteral[] = [];
   @Input() destination: google.maps.LatLngLiteral[] = [];
   @Input() truckLocationPosition: google.maps.LatLngLiteral;
+  @Input() singleTripData: TripData;
 
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
 
@@ -76,16 +82,20 @@ export class GMapComponent implements OnInit, OnChanges {
   constructor(
     private geoLocationService: GeolocationService,
     private trip: TripService,
-    private truckService: TrackerService
+    private truckService: TrackerService,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit(): void {
+    if (this.infoWindow) {
+      this.infoWindow.close();
+    }
     this.trip.bottomHeight.subscribe(height => {
       this.bottomHeight = height;
     });
 
     if (this.starting.length > 0 && this.destination.length > 0) {
-      this.clearPolylines()
+      this.clearPolylines();
       this.updateRoute();
     }
 
@@ -123,6 +133,9 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.infoWindow) {
+      this.infoWindow.close();
+    }
     if (changes) {
       if (this.starting.length > 0 && this.destination.length > 0) {
         this.updateRoute();
@@ -145,12 +158,23 @@ export class GMapComponent implements OnInit, OnChanges {
     this.initialMarker = {};
 
     this.connectSequentialPoints(startPoints, 'loading');
-    this.connectPoints(startPoints[startPoints.length - 1], endPoints[0], 'loading');
-    this.connectPoints(startPoints[startPoints.length - 1], endPoints[0], 'unloading');
+    this.connectPoints(
+      startPoints[startPoints.length - 1],
+      endPoints[0],
+      'loading'
+    );
+    this.connectPoints(
+      startPoints[startPoints.length - 1],
+      endPoints[0],
+      'unloading'
+    );
     this.connectSequentialPoints(endPoints, 'unloading');
   }
 
-  private connectSequentialPoints(points: google.maps.LatLngLiteral[], pointType: string) {
+  private connectSequentialPoints(
+    points: google.maps.LatLngLiteral[],
+    pointType: string
+  ) {
     for (let i = 0; i < points.length - 1; i++) {
       this.connectPoints(points[i], points[i + 1], pointType);
     }
@@ -198,29 +222,25 @@ export class GMapComponent implements OnInit, OnChanges {
 
   private setLoadingMarker(position: google.maps.LatLngLiteral) {
     this.initialMarker = {};
-    this.startMarker.push(
-      {
-        position: position,
-        icon: {
-          url: '/assets/svg/start.svg', // Replace with your custom loading marker icon
-          scaledSize: new google.maps.Size(30, 30),
-        },
-        title: 'Loading Point',
-      }
-    );
+    this.startMarker.push({
+      position: position,
+      icon: {
+        url: '/assets/svg/start.svg', // Replace with your custom loading marker icon
+        scaledSize: new google.maps.Size(30, 30),
+      },
+      title: 'Loading Point',
+    });
   }
 
   private setUnloadingMarker(position: google.maps.LatLngLiteral) {
-    this.endMarker.push(
-      {
-        position: position,
-        icon: {
-          url: '/assets/svg/end.svg', // Replace with your custom loading marker icon
-          scaledSize: new google.maps.Size(30, 30),
-        },
-        title: 'Unloading Point',
-      }
-    );
+    this.endMarker.push({
+      position: position,
+      icon: {
+        url: '/assets/svg/end.svg', // Replace with your custom loading marker icon
+        scaledSize: new google.maps.Size(30, 30),
+      },
+      title: 'Unloading Point',
+    });
   }
 
   private updateTruckLocation() {
@@ -301,7 +321,7 @@ export class GMapComponent implements OnInit, OnChanges {
             strokeColor: '#11484F', // Polyline color
             strokeOpacity: 1,
             strokeWeight: 4,
-          })
+          });
           // Store the polyline for management
         });
       });
@@ -327,13 +347,11 @@ export class GMapComponent implements OnInit, OnChanges {
                 this.updateInfoWindow();
                 this.startInterval();
               },
-              error => {
-              }
+              error => {}
             );
           }
         },
-        error => {
-        }
+        error => {}
       );
   }
 
@@ -366,8 +384,7 @@ export class GMapComponent implements OnInit, OnChanges {
     return `
       <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
         <div class="flex flex-col space-y-1">
-          <div style="font-weight: bold; font-size: 16px">${this.truckData.numberPlate}</div>
-          <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.address.split(',')[0]}</div>
+          <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.numberPlate}</div>
           <div style="font-size: 12px; color: #777777">${this.truckData.address}</div>
         </div>
         <button id="closeBtn" style="background: transparent; border: none; cursor: pointer;">
@@ -413,8 +430,229 @@ export class GMapComponent implements OnInit, OnChanges {
         this.startInterval();
         this.updateInfoWindow();
       },
-      error => {
-      }
+      error => {}
     );
+  }
+
+  onClickMap($event: google.maps.MapMouseEvent, index: number): void {
+    this.handleInfoWindow(
+      $event.latLng,
+      index,
+      this.truckLocationPosition &&
+        this.truckLocationPosition?.lat &&
+        this.truckLocationPosition?.lng
+        ? this.getEtaData.bind(this)
+        : null,
+      this.getNoTruckerAvailableContent.bind(this)
+    );
+  }
+
+  onClickUnloading($event: google.maps.MapMouseEvent, index: number): void {
+    this.handleInfoWindow(
+      $event.latLng,
+      index,
+      this.truckLocationPosition &&
+        this.truckLocationPosition?.lat &&
+        this.truckLocationPosition?.lng
+        ? this.getUnloadingEtaData.bind(this)
+        : null,
+      this.getNoTruckerAvailableContentUnloading.bind(this)
+    );
+  }
+
+  // Generalized info window handler
+  private handleInfoWindow(
+    latLng: google.maps.LatLng | null,
+    index: number,
+    fetchDataCallback:
+      | ((latLngLiteral: google.maps.LatLngLiteral, index: number) => void)
+      | null,
+    noDataCallback: (index: number) => string
+  ): void {
+    if (this.infoWindow) {
+      this.infoWindow.close();
+    }
+
+    if (fetchDataCallback && latLng) {
+      this.infoWindow = this.createInfoWindow(this.getLoadingSpinnerContent());
+      this.infoWindow.setPosition(latLng);
+      this.infoWindow.open(this.map.googleMap);
+      fetchDataCallback(latLng.toJSON(), index);
+    } else {
+      this.infoWindow = this.createInfoWindow(noDataCallback(index));
+      this.infoWindow.setPosition(latLng);
+      this.infoWindow.open(this.map.googleMap);
+    }
+  }
+
+  // Creates an info window with given content
+  private createInfoWindow(content: string): google.maps.InfoWindow {
+    return new google.maps.InfoWindow({ content });
+  }
+
+  // Fetch ETA data
+  private getEtaData(
+    destination: google.maps.LatLngLiteral,
+    index: number
+  ): void {
+    this.fetchEtaData(
+      destination,
+      index,
+      this.getEtaContent.bind(this),
+      this.getEtaErrorContent.bind(this)
+    );
+  }
+
+  private getUnloadingEtaData(
+    destination: google.maps.LatLngLiteral,
+    index: number
+  ): void {
+    this.fetchEtaData(
+      destination,
+      index,
+      this.getUnloadingEtaContent.bind(this),
+      this.getUnloadingEtaErrorContent.bind(this)
+    );
+  }
+
+  // Generalized ETA data fetcher
+  private fetchEtaData(
+    destination: google.maps.LatLngLiteral,
+    index: number,
+    successCallback: (data: any, index: number) => string,
+    errorCallback: (index: number) => string
+  ): void {
+    this.truckService
+      .getEtaData(
+        this.truckLocationPosition?.lat,
+        this.truckLocationPosition?.lng,
+        destination.lat,
+        destination.lng,
+        this.truckSizeInFeet
+      )
+      .subscribe(
+        (res: any) =>
+          this.infoWindow.setContent(successCallback(res.data, index)),
+        () => this.infoWindow.setContent(errorCallback(index))
+      );
+  }
+
+  // Generate content with close button
+  private generateContent(content: string): string {
+    timer(100).subscribe(() => this.attachCloseButton());
+    return content;
+  }
+
+  private attachCloseButton(): void {
+    const closeBtn = document.getElementById('closeBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.infoWindow.close();
+      });
+    }
+  }
+
+  // Info window content generation
+  private getEtaContent(data: any, index: number): string {
+    return this.generateContent(
+      this.createInfoWindowHtml(data?.etaDateTime, index, 'ETA')
+    );
+  }
+
+  private getEtaErrorContent(index: number): string {
+    return this.generateContent(
+      this.createInfoWindowHtml(null, index, 'Failed to get ETA')
+    );
+  }
+
+  private getNoTruckerAvailableContent(index: number): string {
+    return this.generateContent(
+      this.createInfoWindowHtml(
+        null,
+        index,
+        'No Tracker is available for this trip'
+      )
+    );
+  }
+
+  private getUnloadingEtaContent(data: any, index: number): string {
+    return this.generateContent(
+      this.createInfoWindowHtml(data?.etaDateTime, index, 'ETA')
+    );
+  }
+
+  private getUnloadingEtaErrorContent(index: number): string {
+    return this.generateContent(
+      this.createInfoWindowHtml(null, index, 'Failed to get ETA')
+    );
+  }
+
+  private getNoTruckerAvailableContentUnloading(index: number): string {
+    return this.generateContent(
+      this.createInfoWindowHtml(
+        null,
+        index,
+        'No Tracker is available for this trip'
+      )
+    );
+  }
+
+  // Creates the HTML for the info window
+  private createInfoWindowHtml(
+    etaDateTime: string | null,
+    index: number,
+    message: string
+  ): string {
+    const address = etaDateTime
+      ? this.getTripLoadingAddress(this.singleTripData?.tripPoints, index)
+      : this.getTripUnloadingAddress(this.singleTripData?.tripPoints, index);
+
+    const dateTimeDisplay = etaDateTime
+      ? `ETA: ${this.datePipe.transform(etaDateTime, 'd MMM yyyy, h:mm a')}`
+      : `<span class="text-red">${message}</span>`;
+
+    return `
+    <div style="display: flex; justify-content: space-between; min-width: 20rem; align-items: start; padding: 1rem 0;">
+      <div class="flex flex-col space-y-1">
+        <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.singleTripData?.truck?.fullRegistrationNumber ? this.singleTripData?.truck?.fullRegistrationNumber : 'Truck Not Assigned'}</div>
+        <div style="font-size: 12px; color: #777777">${address}</div>
+      </div>
+      <button id="closeBtn" style="background: transparent; border: none; cursor: pointer;">
+        <i class="far fa-times cursor-pointer"></i>
+      </button>
+    </div>
+    <div id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
+      <p class="text-body_title text-not-black font-bold">${dateTimeDisplay}</p>
+    </div>
+  `;
+  }
+
+  // Address helpers
+  private getTripLoadingAddress(
+    tripPoints: TripPoint[] | undefined,
+    index: number
+  ): string {
+    return this.getTripAddress(tripPoints, 'Loading', index);
+  }
+
+  private getTripUnloadingAddress(
+    tripPoints: TripPoint[] | undefined,
+    index: number
+  ): string {
+    return this.getTripAddress(tripPoints, 'Unloading', index);
+  }
+
+  private getTripAddress(
+    tripPoints: TripPoint[] | undefined,
+    pointType: string,
+    index: number
+  ): string {
+    if (tripPoints && tripPoints.length > 0) {
+      const filteredPoints = tripPoints.filter(
+        point => point.pointType === pointType
+      );
+      return filteredPoints[index]?.pointName || 'No address found';
+    }
+    return 'No address found';
   }
 }

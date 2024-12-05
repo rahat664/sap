@@ -1,9 +1,12 @@
 <div class="grid grid-cols-3">
   <div class="col-span-2 flex flex-col w-full bg-black h-[calc(100vh-4.125rem)]">
     <div class="px-7 py-[1.375rem] flex justify-between bg-[#302F2F]">
-      <div class="flex space-x-3 items-center text-white">
+      <div (click)="onCLickBack()" class="flex space-x-3 items-center cursor-pointer text-white">
         <i class="fas fa-chevron-left text-white"></i>
-        <span class="text-h3 leading-h3 font-bold">{{ activatedImageType }}</span>
+        <span
+          class="text-h3 leading-h3 font-bold">{{ activatedImageType ? activatedImageType :
+          'Please select image type'
+          }}</span>
       </div>
       <div class="flex space-x-4 text-white items-center">
         <button [disabled]="zoomLevel >= maxZoom" [ngClass]="{'text-secondary': zoomLevel >= maxZoom}" (click)="zoomIn()" class="flex items-center justify-center">
@@ -70,12 +73,42 @@
   <div class="mx-6">
     <div class="px-10 py-5 flex justify-between items-center border-b border-b-line">
       <span class="text-h3 leading-h3 text-not-black font-bold">Image details</span>
-      <button (click)="onClickSave()" class="bg-primary py-2 text-white rounded-lg px-8 text-center text-h2_medium">Save</button>
+      <button [disabled]="isLoading" (click)="onClickSave()"
+               class="bg-primary py-2 text-white rounded-lg px-8 text-center text-h2_medium">
+        <i *ngIf="isLoading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+        Save
+      </button>
     </div>
     <div class="px-10 py-5 flex flex-col space-y-5">
       <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Trip ID</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black">{{ tripId }}</span>
+      </div>
+      <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Upload time</span>
-        <span class="text-h2 leading-h2 font-semibold text-not-black">{{ currentDate | date: 'd MMM yyyy' }}</span>
+        <button type="button" class="customButton" mat-button [matMenuTriggerFor]="dateAndTime">
+          <mat-form-field appearance="outline" id="date" class="example-full-width w-full">
+            <input [value]="getSelectedDate()" placeholder="Select date time" matInput />
+            <mat-datepicker-toggle matIconSuffix></mat-datepicker-toggle>
+          </mat-form-field>
+        </button>
+        <mat-menu #dateAndTime="matMenu">
+          <mat-card class="w-96" (click)="$event.stopPropagation()">
+            <mat-calendar
+              [(selected)]="selectedDate"
+              (selectedChange)="onSelect($event)"></mat-calendar>
+          </mat-card>
+          <mat-card class="w-96 mt-3 flex items-center justify-center">
+            <app-time-picker [fromModal]="true" [selectedDate]="returnToInputDate"
+                             (timeChange)="onTimeChange($event)"
+                             (click)="$event.stopPropagation()"></app-time-picker>
+          </mat-card>
+          <button
+            (click)="onSelectTimeAndDate()"
+            class="py-3 mt-3 w-full px-6 text-white bg-primary rounded-lg font-semibold">
+            <span class="w-full">Set date & time</span>
+          </button>
+        </mat-menu>
       </div>
       <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Image type</span>
@@ -88,7 +121,7 @@
           </mat-select>
         </mat-form-field>
         <span class="text-h2 leading-h2 font-semibold text-not-black"
-              *ngIf="imageTypes.length === 1">{{ imageTypes[0]?.viewValue }}</span>
+              *ngIf="imageTypes?.length === 1">{{ imageTypes[0]?.viewValue }}</span>
       </div>
       <div class="flex flex-col space-y-1" *ngIf="expiryAvailable">
         <span class="text-body text-secondary">Expire date</span>

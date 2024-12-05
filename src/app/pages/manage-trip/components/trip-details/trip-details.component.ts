@@ -41,6 +41,7 @@ import { Router } from '@angular/router';
 export class TripDetailsComponent {
   readonly dialog = inject(MatDialog);
   buttonAvailable: boolean;
+  onlyStatusTripEvents: any[];
 
   constructor(
     private mobileToggleService: ToggleResponsiveService,
@@ -145,23 +146,28 @@ export class TripDetailsComponent {
     let onlyStatusTripEvents = [];
     if (currentValue.tripEvents) {
       currentValue.tripEvents.forEach(event => {
-        if (event.name === 'Cancelled') {
-          onlyStatusTripEvents.push(event);
-        } else if (
-          event.name === 'Trip booked' ||
-          event.name === 'Trip started' ||
-          event.name === 'Trip completed' || event.name === 'Trip created'
-        ) {
-          onlyStatusTripEvents.push(event);
+        if (event.name) {
+          if (event.name === 'Trip cancelled' || event.name == 'Cancelled') {
+            onlyStatusTripEvents.push(event);
+          } else if (
+            event.name === 'Trip booked' ||
+            event.name === 'Trip started' ||
+            event.name === 'Trip completed' ||
+            event.name === 'Trip created'
+          ) {
+            onlyStatusTripEvents.push(event);
+          }
         }
       });
+      this.onlyStatusTripEvents = onlyStatusTripEvents;
       onlyStatusTripEvents?.forEach((event, index) => {
-        if (event.name != 'Cancelled') {
+        if (event.name != 'Trip cancelled' && event.name != 'Cancelled') {
           this.tripTimeline[index].dateTime = event.createdAt;
           this.tripTimeline[index].dateTimeAvailable = true;
           this.tripTimeline[index].active = true;
           this.tripTimeline[index].truckInThisPoint = true;
-          this.tripTimeline[index].className = 'border border-green border-solid';
+          this.tripTimeline[index].className =
+            'border border-green border-solid';
           this.makeOtherTruckInActive(index);
         } else {
           this.tripTimeline[index].dateTime = event.createdAt;
@@ -172,12 +178,12 @@ export class TripDetailsComponent {
           }
           this.tripTimeline[index].cancelled = true;
           this.makeOtherClosePointDisabled(index);
-          this.tripTimeline[index].className = 'border border-red border-dashed';
+          this.tripTimeline[index].className =
+            'border border-red border-dashed';
         }
       });
-
     }
-   }
+  }
 
   private resetTripTimeline() {
     this.tripTimeline.forEach(event => {

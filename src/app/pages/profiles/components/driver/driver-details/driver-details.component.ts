@@ -5,20 +5,15 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
-import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
 import { UserModel } from '../../../../user-management/models/user.model';
 import {
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
-import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
@@ -46,12 +41,6 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 import { ConfirmApproveComponent } from '../../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-reject/confirm-reject.component';
-import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
-import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
-import { PreHireChecklistComponent } from '../../truck/pre-hire-checklist/pre-hire-checklist.component';
-import {
-  PreHireChecklistDetailsComponent
-} from '../../truck/pre-hire-checklist-details/pre-hire-checklist-details.component';
 
 @Component({
   selector: 'app-driver-details',
@@ -59,17 +48,9 @@ import {
   imports: [
     NgIf,
     UploadButtonComponent,
-    CustomInputComponent,
-    GetClickEventDirective,
     NgClass,
     NgForOf,
-    DatePipe,
     ReactiveFormsModule,
-    CreatePopupComponent,
-    FileUploadPopupComponent,
-    ImageGalleryComponent,
-    CheckListPopupComponent,
-    PreHireChecklistComponent,
     MatFormField,
     MatInput,
     MatDatepicker,
@@ -77,7 +58,6 @@ import {
     MatMenuTrigger,
     MatDatepickerToggle,
     MatDatepickerInput,
-    PreHireChecklistDetailsComponent,
     MatSuffix,
     NgxMaterialIntlTelInputComponent,
   ],
@@ -125,7 +105,7 @@ export class DriverDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.deletedFileUrls = [];
     if (JSON.parse(localStorage.getItem('directEdit')) === true) {
-      this.driverEditSharedService.validateInterNationalPhoneNumber()
+      this.driverEditSharedService.validateInterNationalPhoneNumber();
       this.isInEditMode = true;
       localStorage.removeItem('directEdit');
     } else {
@@ -567,7 +547,7 @@ export class DriverDetailsComponent implements OnInit {
     // Transform the date input using datePipe
     const formattedDate = this.datePipe.transform(
       dateInput,
-      'yyyy-MM-dd Hh:mm:ss'
+      'yyyy-MM-ddTHH:mm:ss'
     );
 
     // Patch the form with the formatted date if it's valid
@@ -633,8 +613,7 @@ export class DriverDetailsComponent implements OnInit {
     if (this.deletedFileUrls.length > 0) {
       this.deletedFileUrls.forEach(url => {
         this.service.deleteDriverFiles(url, this.driverDetails.id).subscribe(
-          (res: any) => {
-          },
+          (res: any) => {},
           error => {
             console.error('Error deleting file:', error);
           }

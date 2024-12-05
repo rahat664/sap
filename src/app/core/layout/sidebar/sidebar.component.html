@@ -92,7 +92,7 @@
                 loading="lazy"
                 class="notPreview"
                 src="assets/svg/user-management-{{isActive('/user-management') ? 'select': 'deselect'}}.svg"
-                alt="" height="" width="" />
+                alt="" height="24" width="24" />
               <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
             </a>
           </li>
@@ -105,7 +105,7 @@
               <img
                 loading="lazy"
                 class="notPreview" src="assets/svg/user-management-{{isActive('/user-management-customer') ? 'select': 'deselect'}}.svg"
-                alt="" height="24" width="24" />
+                alt="" height="" width="" />
               <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
             </a>
           </li>
@@ -175,6 +175,20 @@
                 >
               </li>
             </ul>
+          </li>
+          <li *ngIf="isAdmin()">
+            <a
+              routerLink="/vehicle-tracking"
+              routerLinkActive="active"
+              class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/vehicle-tracking-{{isActive('/vehicle-tracking') ? 'select':
+                'deselect'}}.svg"
+                alt="" height="24" width="24" />
+              <span class="ml-3 font-semibold">Vehicle Tracking</span>
+            </a>
           </li>
         </ul>
       </div>

@@ -1,13 +1,14 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
-  HostListener, inject,
+  HostListener,
+  inject,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { navigation } from '@ngrx/router-store/data-persistence';
 import { Router } from '@angular/router';
 import { TripService } from '../../../pages/trip-list/services/trip.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -44,7 +45,11 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
 
   readonly dialog = inject(MatDialog);
 
-  constructor(private router: Router, private trip: TripService) {}
+  constructor(
+    private router: Router,
+    private trip: TripService,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.resetNavigationInformation();
@@ -74,10 +79,13 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
       this.expiryDate = navigation.expiryAvailable
         ? navigation.expiryDate
         : null;
-      this.documents = navigation.tripDocuments ? navigation.tripDocuments : navigation.documents;
+      this.documents = navigation.tripDocuments
+        ? navigation.tripDocuments
+        : navigation.documents;
       this.imageType = navigation.imageType;
       this.activatedDocument = navigation.activatedDocument;
       this.returnUrl = navigation.returnUrl;
+      this.tripId = navigation.tripId;
       this.tripPointId = navigation.tripPointId;
       this.eventTypeId = navigation.eventTypeId;
       this.updateActiveDocumentIndex();
@@ -166,7 +174,9 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
     this.showRightArrow = cursorX > containerWidth * 0.5;
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.cd.detectChanges();
+  }
 
   @ViewChild('documentContainer') documentContainer: ElementRef;
 
@@ -195,6 +205,7 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   }
 
   // Zoom out
+  tripId: string;
   zoomOut() {
     if (this.zoomLevel > this.minZoom) {
       this.zoomLevel -= 0.1;
@@ -228,32 +239,41 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
     // apply delete functionalities to activeDocument
     if (this.documents?.length > 0) {
       if (this.activatedDocument) {
-        this.dialog.open(ConfirmDeleteComponent, {
-          data: {
-            title: 'Attention',
-            text: 'Are you sure you want to delete this document?',
-            buttonText: 'Delete',
-          }
-        }).afterClosed().subscribe((res) => {
-          const tripPointId = this.tripPointId ? this.tripPointId : this.activatedDocument?.event?.tripPointId;
-          const eventTypeId = this.eventTypeId ? this.eventTypeId : this.activatedDocument?.event?.eventTypeId;
-          const documentId = this.activatedDocument?.id ? this.activatedDocument?.id : this.activatedDocument?.document.id;
-          if (res === 'deleted') {
-            this.trip
-              .deleteTripDocument(tripPointId,eventTypeId, documentId)
-              .subscribe(() => {
-                this.documents = this.documents.filter(
-                  doc => doc !== this.activatedDocument
-                );
-                this.activatedDocument = this.documents[0];
-                this.activeDocumentIndex = 0;
-                this.scrollToActiveDocument();
-                if (this.documents.length === 0) {
-                  this.router.navigate([this.returnUrl]);
-                }
-              });
-          }
-        });
+        this.dialog
+          .open(ConfirmDeleteComponent, {
+            data: {
+              title: 'Attention',
+              text: 'Are you sure you want to delete this document?',
+              buttonText: 'Delete',
+            },
+          })
+          .afterClosed()
+          .subscribe(res => {
+            const tripPointId = this.tripPointId
+              ? this.tripPointId
+              : this.activatedDocument?.event?.tripPointId;
+            const eventTypeId = this.eventTypeId
+              ? this.eventTypeId
+              : this.activatedDocument?.event?.eventTypeId;
+            const documentId = this.activatedDocument?.id
+              ? this.activatedDocument?.id
+              : this.activatedDocument?.document.id;
+            if (res === 'deleted') {
+              this.trip
+                .deleteTripDocument(tripPointId, eventTypeId, documentId)
+                .subscribe(() => {
+                  this.documents = this.documents.filter(
+                    doc => doc !== this.activatedDocument
+                  );
+                  this.activatedDocument = this.documents[0];
+                  this.activeDocumentIndex = 0;
+                  this.scrollToActiveDocument();
+                  if (this.documents.length === 0) {
+                    this.router.navigate([this.returnUrl]);
+                  }
+                });
+            }
+          });
       }
     }
   }
@@ -272,6 +292,7 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   }
 
   onClickBack() {
+    console.log('returnUrl', this.returnUrl);
     this.router.navigate([this.returnUrl]);
   }
 }

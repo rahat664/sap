@@ -19,8 +19,8 @@
         <div class="grid grid-cols-2 gap-3">
           <div class="flex flex-col space-y-1 col-span-2 py-4">
             <label class="text-not-black font-semibold">Vendor Name</label>
-            <mat-form-field appearance="outline">
-              <mat-select #disableVendorSelect
+            <mat-form-field #disableVendorSelect appearance="outline">
+              <mat-select
                 formControlName="vendorId"
                 (selectionChange)="onChangeVendorType($event)" placeholder="Select Vendor">
                 @for (vendor of vendorList; track vendor) {

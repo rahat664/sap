@@ -1,14 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
-import {
-  DatePipe,
-  DecimalPipe,
-  NgClass,
-  NgForOf,
-  NgIf,
-  NgOptimizedImage,
-} from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
@@ -21,7 +13,6 @@ import {
 } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
 import { ChallanDashboardService } from './challan-dashboard.service';
 import { TripService } from '../trip-list/services/trip.service';
 import { Trip, Truck } from '../auth/models/response/trip';
@@ -41,13 +32,13 @@ import { UserService } from '../profiles/services/user.service';
 import { TruckService } from '../profiles/components/truck/services/truck.service';
 import { mergeMap } from 'rxjs/operators';
 import { TruckDocumentType } from '../../shared/Enums/registration_type';
-import { UploadButtonComponent } from '../../shared/modules/upload-button/upload-button.component';
+import { TripPoint } from '../manage-trip/model/trip.details.model';
+import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-challan-dashboard',
   standalone: true,
   imports: [
-    ButtonChipsComponent,
     CustomInputComponent,
     DatePipe,
     DecimalPipe,
@@ -63,15 +54,12 @@ import { UploadButtonComponent } from '../../shared/modules/upload-button/upload
     MatOption,
     NgForOf,
     NgIf,
-    ScrollByButtonDirective,
     NgClass,
-    NgOptimizedImage,
     MatButton,
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
     RouterLink,
-    UploadButtonComponent,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
@@ -124,7 +112,7 @@ export class ChallanDashboardComponent {
   protected tripList: Trip[] = [];
   protected totalPages: any = 0;
   private anotherStatusCalled: boolean;
-  activatedChallanStatus: string = 'Pending';
+  activatedChallanStatus: string = 'Completed';
   chalanStatus: string;
   status: string;
   challanHardCopyReceived: boolean;
@@ -152,7 +140,9 @@ export class ChallanDashboardComponent {
     private shared: DriverEditSharedService,
     private transporter: UserService,
     private truck: TruckService,
-    private router: Router
+    private router: Router,
+    private toastr: HandleToastrService,
+    private cd: ChangeDetectorRef
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -191,7 +181,7 @@ export class ChallanDashboardComponent {
     if (searchText?.length > 0) {
       this.truck.getTruckList(0, 100, searchText).subscribe((truck: any) => {
         this.truckRegSuggestions = truck.data.responses;
-        if (this.tripIdSuggestions.length === 0) {
+        if (this.truckRegSuggestions.length === 0) {
           this.truckRegSuggestions.push('No trip found');
         }
       });
@@ -231,7 +221,7 @@ export class ChallanDashboardComponent {
     this.page = 0;
     this.size = 30;
     this.truckRegSuggestions = [];
-    this.truckRegSuggestions.push('No trip found');
+    this.truckRegSuggestions.push('No truck found');
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
     this.truckFilter = 0;
@@ -284,8 +274,8 @@ export class ChallanDashboardComponent {
   }
 
   ngOnInit() {
-    this.activatedChallanStatus = 'Pending';
-    this.chalanStatus = 'Pending';
+    this.activatedChallanStatus = 'Completed';
+    this.chalanStatus = '';
     this.status = 'Completed';
     this.getFromDateAndToDate();
     this.getChallanStatus();
@@ -293,6 +283,10 @@ export class ChallanDashboardComponent {
     this.anotherStatusCalled = false;
     this.generateDateOptionsArray();
     this.getTripList();
+  }
+
+  ngAfterViewInit() {
+    this.cd.detectChanges();
   }
   private getFromDateAndToDate() {
     // fromdate will be the first day of the current month
@@ -365,14 +359,15 @@ export class ChallanDashboardComponent {
     this.loading = false;
     this.completedTrips = trip.data?.statusCount?.Completed || 0;
     this.totalPages = trip.data.totalPages;
-    this.pendingChallanText = `Pending challan value for ${this.number.transform(trip.data?.challanStat?.pending) || 0} ${trip.data?.challanStat?.pending === 1 ? 'trip' : 'trips'}`;
-    this.receivedAmount = trip.data?.challanStat?.received || 0;
-    this.pendingAmount = trip.data?.challanStat.inProgress || 0;
-    this.approvedAmount = trip.data?.challanStat?.approved || 0;
-    this.rejectedAmount = trip.data?.challanStat?.rejected || 0;
+    this.pendingChallanText = `Pending challan value for ${this.number.transform(trip.data?.challanStatusCount?.Pending) || 0} ${trip.data?.challanStatusCount?.Pending === 1 ? 'trip' : 'trips'}`;
+    this.receivedAmount = trip.data?.challanStatusCount?.Received || 0;
+    this.pendingAmount = trip.data?.challanStatusCount['In-progress'] || 0;
+    this.approvedAmount = trip.data?.challanStatusCount?.Approved || 0;
+    this.rejectedAmount = trip.data?.challanStatusCount?.Rejected || 0;
     this.pendingChallanAmount =
-      trip.data?.challanStat?.totalCustomerRateForPendingChallans || 0;
-    this.hardCopyReceived = trip.data?.challanStat?.totalHardCopyReceived || 0;
+      trip.data?.challanStatusCount?.totalCustomerRateForPendingChallans || 0;
+    this.hardCopyReceived =
+      trip.data?.challanStatusCount?.HardCopyReceived || 0;
     if (this.page === 0) {
       this.tripList = trip.data.responses;
     } else {
@@ -407,6 +402,7 @@ export class ChallanDashboardComponent {
   }
 
   onClickStatusButtons(status: any) {
+    this.loading = true;
     this.challanHardCopyReceived = false;
     this.activatedChallanStatus = status;
     this.chalanStatus = status;
@@ -434,7 +430,7 @@ export class ChallanDashboardComponent {
         .open(ConfirmApproveComponent, {
           data: {
             title: 'Attention',
-            textPrefix: 'the challan for tripId ',
+            textPrefix: 'the challan for trip ID ',
             text: `${name}?`,
             buttonText: 'Approve',
           },
@@ -445,6 +441,7 @@ export class ChallanDashboardComponent {
             this.service.updateChallanStatus(id, body).subscribe((res: any) => {
               this.page = 0;
               this.getChallanStatus();
+              this.toastr.showSuccess('Challan approved successfully');
               this.getTripList();
             });
           }
@@ -454,7 +451,7 @@ export class ChallanDashboardComponent {
         .open(ConfirmRejectComponent, {
           data: {
             title: 'Attention',
-            textPrefix: 'the challan for tripId ',
+            textPrefix: 'the challan for trip ID ',
             text: `${name}?`,
             buttonText: 'Reject',
             reasonAvailable: false,
@@ -466,6 +463,7 @@ export class ChallanDashboardComponent {
             this.service.updateChallanStatus(id, body).subscribe((res: any) => {
               this.page = 0;
               this.getChallanStatus();
+              this.toastr.showSuccess('Challan rejected successfully');
               this.getTripList();
             });
           }
@@ -484,7 +482,7 @@ export class ChallanDashboardComponent {
   getBgColor(challanStatus: string) {
     switch (challanStatus) {
       case 'Pending':
-        return 'bg-another';
+        return 'bg-[#005577]';
       case 'Approved':
         return 'bg-green';
       case 'Rejected':
@@ -500,7 +498,10 @@ export class ChallanDashboardComponent {
     const tripCompletedDate = new Date(trip.tripEndedAt);
     if (trip.challanStatusUpdatedAt) {
       const challanStatusUpdatedDate = new Date(trip.challanStatusUpdatedAt);
-      return this.datePipe.transform(challanStatusUpdatedDate, 'dd MMM,yyyy');
+      return this.datePipe.transform(
+        challanStatusUpdatedDate,
+        'dd MMM,yyyy h:mm a'
+      );
     } else {
       // return due days from trip end date
       const currentDate = new Date();
@@ -535,6 +536,7 @@ export class ChallanDashboardComponent {
           this.service
             .updateChallanStatus(tripId, body)
             .subscribe((res: any) => {
+              this.toastr.showSuccess('Challan received successfully');
               this.page = 0;
               this.getChallanStatus();
               this.getTripList();
@@ -544,7 +546,13 @@ export class ChallanDashboardComponent {
   }
 
   getFilterLength() {
-    return this.dateFilter + this.searchFilter + this.tripFilter;
+    return (
+      this.dateFilter +
+      this.searchFilter +
+      this.tripFilter +
+      this.truckFilter +
+      this.transporterFilter
+    );
   }
 
   onClearFilter() {
@@ -567,6 +575,9 @@ export class ChallanDashboardComponent {
     this.inputPlaceholder = '';
     this.tripSuggestions = [];
     this.loading = true;
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
   }
@@ -588,6 +599,9 @@ export class ChallanDashboardComponent {
   }
 
   onSelectDate($event: number) {
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.dateFilter = 1;
     if ($event === DateEnum.Custom) {
       this.shared.closeInputSelect.next(true);
@@ -637,6 +651,9 @@ export class ChallanDashboardComponent {
   }
 
   onClickSearchSuggestion(result: any) {
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.searchFilter = 1;
     this.loading = true;
     this.page = 0;
@@ -663,6 +680,9 @@ export class ChallanDashboardComponent {
   }
 
   onClickTripSearchSuggestion(result: any) {
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.tripFilter = 1;
     this.page = 0;
     this.tripId = result.tripId;
@@ -673,6 +693,9 @@ export class ChallanDashboardComponent {
     this.getTripList();
   }
   onClickTruckSearchSuggestion(result: any) {
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.truckFilter = 1;
     this.page = 0;
     this.truckRegistrationId = result.fullRegistrationNumber;
@@ -683,6 +706,9 @@ export class ChallanDashboardComponent {
     this.getTripList();
   }
   onClickTransporterSearchSuggestion(result: any) {
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.activatedChallanStatus = 'Completed';
     this.transporterFilter = 1;
     this.page = 0;
     this.transporterName = result.name;
@@ -737,6 +763,8 @@ export class ChallanDashboardComponent {
             state: {
               tripDocuments: documents,
               activatedDocument: documents[0],
+              returnUrl: '/challan-management',
+              tripId: tripId,
             },
           });
         }
@@ -796,10 +824,19 @@ export class ChallanDashboardComponent {
           ],
           expiryAvailable: false,
           noteAvailable: true,
-          type: 'Unloading',
-          returnUrl: `/challan-management`,
+          returnUrl: '/challan-management',
         },
       });
     }
   }
+
+  getLoadingPointsName(tripPoints: TripPoint[]) {
+    return tripPoints.filter(point => point.pointType === 'Loading');
+  }
+
+  getUnloadingPointsName(tripPoints: TripPoint[]) {
+    return tripPoints.filter(point => point.pointType === 'Unloading');
+  }
+
+  protected readonly localStorage = localStorage;
 }

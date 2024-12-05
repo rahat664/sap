@@ -28,8 +28,7 @@ export class TimePickerComponent {
   @Input() fromModal: boolean = false;
 
   ngOnInit() {
-      this.currentHourShow = this.currentHourShowWithSixHourPlus();
-
+    this.currentHourShow = this.currentHourShowWithSixHourPlus();
 
     this.currentHourShow =
       this.currentHourShow.length === 1
@@ -153,7 +152,7 @@ export class TimePickerComponent {
       this.currentHour > 12 ? this.currentHour - 12 : this.currentHour;
     if (
       currentHourIn12 === parseInt(this.currentHourShow) &&
-      this.currentDate.getDate() === this.selectedDate.getDate() &&
+      this.currentDate.getDate() === this.selectedDate?.getDate() &&
       this.getTimeStateAmOrPm() === 'PM'
     ) {
       const currentMinute = this.currentMinuteCheck.toString();
@@ -174,8 +173,11 @@ export class TimePickerComponent {
   toggleTimeState(value: string) {
     if (value === 'AM') {
       this.currentHour = this.currentHour - 12;
+      this.inputTime = this.currentHourShow + ':' + this.currentMinute + ' AM';
+      this.timeChange.emit(this.inputTime);
     } else {
       this.currentHour = this.currentHour + 12;
+      this.inputTime = this.currentHourShow + ':' + this.currentMinute + ' PM';
     }
   }
 
@@ -200,10 +202,14 @@ export class TimePickerComponent {
   }
 
   checkCanSwithToAm() {
-    return !(
-      this.currentHour > 12 &&
-      this.selectedDate?.getDate() !== new Date().getDate()
-    );
+    if (!this.fromModal) {
+      return !(
+        this.currentHour > 12 &&
+        this.selectedDate?.getDate() !== new Date().getDate()
+      );
+    } else {
+      return false;
+    }
   }
 
   onFocusOut() {
@@ -246,7 +252,7 @@ export class TimePickerComponent {
     // 6 hour plus to show in the time picker
     let currentHour = 0;
     if (!this.fromModal) {
-       currentHour = this.currentHour + 6;
+      currentHour = this.currentHour + 6;
     } else {
       currentHour = this.currentHour;
     }

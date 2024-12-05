@@ -17,13 +17,26 @@ export class TruckService {
     page: number,
     size: number,
     search?: string,
-    status?: string
+    status?: string,
+    isTrackerEnabled?: boolean,
+    transporterName?: string,
+    condition?: string
   ): Observable<any> {
     let apiUrl = `${this.url}?page=${page}&size=${size}`;
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
-    } else if (status) {
+    }
+    if (status) {
       apiUrl += `&status=${status}`;
+    }
+    if (isTrackerEnabled) {
+      apiUrl += `&isTrackerEnabled=${isTrackerEnabled}`;
+    }
+    if (transporterName) {
+      apiUrl += `&transporterName=${transporterName}`;
+    }
+    if (condition) {
+      apiUrl += `&condition=${condition}`;
     }
 
     return this.http.get(apiUrl);
@@ -59,7 +72,5 @@ export class TruckService {
     return this.http.get(`${this.url}/${id}`);
   }
 
-  getTruckData() {
-
-  }
+  getTruckData() {}
 }
