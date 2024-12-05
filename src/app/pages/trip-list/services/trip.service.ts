@@ -72,20 +72,18 @@ export class TripService {
     return this.http.get(this.url, { params: httpParams });
   }
 
-
   getTripDetailsByTripId(tripId: string): Observable<any> {
     return this.http.get(`${this.url}/${tripId}`);
   }
 
-  getTripSuggestions(search: string): Observable<any> {
-    return this.http.get<ApiResponse>(`${this.url}?search=${search}`).pipe(
-      debounceTime(300),  // Adjust debounce time to optimize user experience
+  getTripSuggestions(tripId: string): Observable<any> {
+    return this.http.get<ApiResponse>(`${this.url}?tripId=${tripId}`).pipe(
+      debounceTime(300), // Adjust debounce time to optimize user experience
       distinctUntilChanged(),
       map(response => response.data),
       catchError(this.handleError)
     );
   }
-
 
   private handleError(error: HttpErrorResponse) {
     let message = 'An unexpected error occurred.';
@@ -102,14 +100,13 @@ export class TripService {
     return throwError(() => new Error(message));
   }
 
-
   getTripTemplate(userId) {
     return this.http.get(`${this.tripTemplateUrl}?customerCode=${userId}`);
   }
 
   getVehicleTypeList() {
     if (this.vehicleTypeCache.value.length) {
-      return of(this.vehicleTypeCache.value);  // Return cached data
+      return of(this.vehicleTypeCache.value); // Return cached data
     }
     return this.http.get(`${this.vehicleTypeUrl}`).pipe(
       tap((data: any) => this.vehicleTypeCache.next(data)),
@@ -136,12 +133,11 @@ export class TripService {
   getTruckName(truck_id: any): Observable<string> {
     return this.getVehicleTypeList().pipe(
       map((res: any) => {
-        const truck = res.data.find((truck) => truck.id === truck_id);
+        const truck = res.data.find(truck => truck.id === truck_id);
         return truck ? truck.name : '';
       })
     );
   }
-
 
   createTrip(tripData: any) {
     return this.http.post(this.url, tripData);
@@ -188,17 +184,22 @@ export class TripService {
   }
 
   getSensorData(vehicleRegNum?: string) {
-    return this.http.get(`${environment.locationUrl}/api/tracker/sensor-data?vehicleRegNum=${vehicleRegNum}`);
+    return this.http.get(
+      `${environment.locationUrl}/api/tracker/sensor-data?vehicleRegNum=${vehicleRegNum}`
+    );
   }
 
   manageLoadingUnloading(body: any): Observable<any> {
     return this.http.post(`${this.tripPointEventsUrl}`, body);
   }
 
-  deleteTripDocument(tripPointId: string, tripPointEventId: string, documentId: string): Observable<any> {
-    return this.http.delete(`${this.tripPointDeleteUrl}/${tripPointId}/eventTypes/${tripPointEventId}/documents/${documentId}`);
+  deleteTripDocument(
+    tripPointId: string,
+    tripPointEventId: string,
+    documentId: string
+  ): Observable<any> {
+    return this.http.delete(
+      `${this.tripPointDeleteUrl}/${tripPointId}/eventTypes/${tripPointEventId}/documents/${documentId}`
+    );
   }
-
-
-
 }

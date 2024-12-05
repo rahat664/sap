@@ -149,26 +149,29 @@ export class TripListComponent implements OnInit {
   }
 
   private getTripList() {
-    this.service
-      .getTrips(
-        this.page,
-        this.size,
-        this.customerCode,
-        this.from,
-        this.to,
-        this.status,
-        this.searchValue,
-        this.truckType,
-        this.tripId
-      )
-      .subscribe(
-        (trip: any) => {
-          this.updateTripList(trip);
-        },
-        error => {
-          this.loading = false;
-        }
-      );
+    const params = {
+      page: this.page,
+      size: this.size,
+      search: this.searchValue,
+      startDate: this.from,
+      endDate: this.to,
+      status: this.status,
+      tripId: this.tripId,
+      truckType: this.truckType,
+    };
+
+    this.service.getTrips(params).subscribe({
+      next: (trips: any) => {
+        this.updateTripList(trips);
+      },
+      error: err => {
+        console.error('Error fetching trips:', err);
+        this.loading = false;
+      },
+      complete: () => {
+        this.loading = false;
+      },
+    });
   }
 
   onSelectDate($event: number) {
