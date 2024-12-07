@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -85,7 +86,10 @@ export class GlobalImageUploadComponent {
   @Output() forwardedDateType: EventEmitter<string> = new EventEmitter();
   @Output() isBackButtonClick: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private datePipe: DatePipe) {}
+  constructor(
+    private datePipe: DatePipe,
+    private cd: ChangeDetectorRef
+  ) {}
 
   onChangeImageType($event: any) {
     this.activatedImageType = $event.value;
@@ -225,7 +229,9 @@ export class GlobalImageUploadComponent {
     this.showRightArrow = cursorX > containerWidth * 0.5;
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.cd.detectChanges();
+  }
 
   @ViewChild('documentContainer') documentContainer: ElementRef;
 

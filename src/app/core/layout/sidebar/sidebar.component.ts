@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -6,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ToggleResponsiveService } from '../../../shared/services/toggle-responsive-services/toggle-responsive.service';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { GetOutsideModalClickDirective } from '../../../shared/directive/get-outside-modal-click.directive';
@@ -19,7 +20,6 @@ import { GetOutsideModalClickDirective } from '../../../shared/directive/get-out
     RouterLink,
     RouterLinkActive,
     GetOutsideModalClickDirective,
-    NgOptimizedImage,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
@@ -32,17 +32,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   constructor(
     private mobileViewService: ToggleResponsiveService,
-    private router: Router
+    private router: Router,
+    private cd: ChangeDetectorRef
   ) {}
 
   @ViewChild('sideBar') myDiv!: ElementRef;
 
-  ngOnInit(): void {}
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.myDiv.nativeElement.classList.remove('slide-right');
-    }, 1);
+  ngOnInit(): void {
+    this.myDiv?.nativeElement?.classList?.remove('slide-right');
     this.subs = this.mobileViewService.isSidebarOpen.subscribe(value => {
       if (value) {
         this.myDiv.nativeElement.classList.remove('slide-right');
@@ -60,6 +57,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit() {
+    this.cd.detectChanges();
+  }
+
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
@@ -70,7 +71,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   isActive(route: string): boolean {
-    return this.router.isActive(route, false);
+    return this.router.url.includes(route);
   }
 
   clearSelectedTemplate() {

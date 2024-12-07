@@ -17,11 +17,14 @@ import {
 } from 'rxjs';
 import { ApiResponse } from '../../auth/models/response/api-response';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TripService {
+  private vehicleTypeCache: BehaviorSubject<any[]> = new BehaviorSubject([]);
+
   url = `${environment.backendUrl}/api/trips`;
   tripTemplateUrl = `${environment.backendUrl}/api/trip_templates`;
   tripPointUrl = `${environment.backendUrl}/api/tripPointEvents`;
@@ -43,88 +46,57 @@ export class TripService {
     private toaster: HandleToastrService
   ) {}
 
-  getTrips(
-    page: number,
-    size?: number,
-    search?: string,
-    startDate?: string,
-    endDate?: string,
-    status?: string,
-    tripId?: string,
-    truckType?: string,
-    onlyTripId?: string,
-    chalanStatus?: string,
-    challanHardCopyReceived?: boolean,
-    challanFrom?: string,
-    challanTo?: string,
-    truckRegId?: string,
-    transporterNameOrPhone?: string
-  ): Observable<any> {
-    let params = new HttpParams().set('page', page.toString());
-    if (size) {
-      params = params.set('size', size.toString());
+  getTrips(params: {
+    page: number;
+    size?: number;
+    search?: string;
+    startDate?: string;
+    endDate?: string;
+    status?: string;
+    tripId?: string;
+    truckType?: string;
+    onlyTripId?: string;
+    chalanStatus?: string;
+    challanHardCopyReceived?: boolean;
+    challanFrom?: string;
+    challanTo?: string;
+    truckRegId?: string;
+    transporterNameOrPhone?: string;
+  }): Observable<any> {
+    let httpParams = new HttpParams().set('page', params.page.toString());
+    for (const [key, value] of Object.entries(params)) {
+      if (value) {
+        httpParams = httpParams.set(key, value.toString());
+      }
     }
-    if (search) {
-      params = params.set('customerCode', search);
-    }
-    if (startDate) {
-      params = params.set('from', startDate);
-    }
-    if (endDate) {
-      params = params.set('to', endDate);
-    }
-    if (status) {
-      params = params.set('status', status);
-    }
-    if (tripId) {
-      params = params.set('search', tripId);
-    }
-    if (truckType) {
-      params = params.set('truckType', truckType);
-    }
-    if (onlyTripId) {
-      params = params.set('tripId', onlyTripId);
-    } if (chalanStatus) {
-      params = params.set('chalanStatus', chalanStatus);
-    } if (challanHardCopyReceived) {
-      params = params.set('challanHardCopyReceived', challanHardCopyReceived.toString());
-    } if (challanFrom) {
-      params = params.set('challanFrom', challanFrom);
-    } if (challanTo) {
-      params = params.set('challanTo', challanTo);
-    } if (truckRegId) {
-      params = params.set('truckRegId', truckRegId);
-    } if (transporterNameOrPhone) {
-      params = params.set('transporterNameOrPhone', transporterNameOrPhone);
-    }
-
-    return this.http.get(`${this.url}`, { params });
+    return this.http.get(this.url, { params: httpParams });
   }
 
   getTripDetailsByTripId(tripId: string): Observable<any> {
     return this.http.get(`${this.url}/${tripId}`);
   }
 
-  getTripSuggestions(search: string): Observable<any> {
-    return this.http.get<ApiResponse>(this.url + '?search=' + search).pipe(
-      debounceTime(1000),
+  getTripSuggestions(tripId: string): Observable<any> {
+    return this.http.get<ApiResponse>(`${this.url}?tripId=${tripId}`).pipe(
+      debounceTime(300), // Adjust debounce time to optimize user experience
       distinctUntilChanged(),
-      map(response => {
-        return response.data;
-      }),
+      map(response => response.data),
       catchError(this.handleError)
     );
   }
 
   private handleError(error: HttpErrorResponse) {
-    let message = '';
-
+    let message = 'An unexpected error occurred.';
     if (error.status === 0) {
       message = 'Network connection problem!';
+    } else if (error.status === 404) {
+      message = 'Requested resource not found!';
+    } else if (error.status === 500) {
+      message = 'Internal server error occurred.';
     } else {
-      message = error.message;
+      message = error.message || message;
     }
-
+    this.toaster.showError(message);
     return throwError(() => new Error(message));
   }
 
@@ -133,7 +105,13 @@ export class TripService {
   }
 
   getVehicleTypeList() {
-    return this.http.get(`${this.vehicleTypeUrl}`);
+    if (this.vehicleTypeCache.value.length) {
+      return of(this.vehicleTypeCache.value); // Return cached data
+    }
+    return this.http.get(`${this.vehicleTypeUrl}`).pipe(
+      tap((data: any) => this.vehicleTypeCache.next(data)),
+      catchError(this.handleError)
+    );
   }
 
   getGoodsOptions() {
@@ -152,11 +130,13 @@ export class TripService {
     return this.http.get(this.locationSuggestionsUrl, { params });
   }
 
-  getTruckName(truck_id: any) {
-    this.getVehicleTypeList().subscribe((res: any) => {
-      const truck = res.data.find(truck => truck.id === truck_id);
-      return truck ? truck.name : '';
-    });
+  getTruckName(truck_id: any): Observable<string> {
+    return this.getVehicleTypeList().pipe(
+      map((res: any) => {
+        const truck = res.data.find(truck => truck.id === truck_id);
+        return truck ? truck.name : '';
+      })
+    );
   }
 
   createTrip(tripData: any) {
@@ -203,32 +183,23 @@ export class TripService {
     this.toaster.showInfo(`${createdByPhone} copied to clipboard`);
   }
 
-  // bind suggestive search
-  tripIdSearch(search: string): Observable<any> {
-    if (!search) {
-      return of([]);
-    }
-    const page = 0;
-    const size = 100;
-    return this.http
-      .get(`${this.url}?search=${search}&page=${page}&size=${size}`)
-      .pipe(
-        map((trip: any) => {
-          return trip.data.responses;
-        })
-      );
-  }
-
   getSensorData(vehicleRegNum?: string) {
-    return this.http.get(`${environment.locationUrl}/api/tracker/sensor-data?vehicleRegNum=${vehicleRegNum}`);
+    return this.http.get(
+      `${environment.locationUrl}/api/tracker/sensor-data?vehicleRegNum=${vehicleRegNum}`
+    );
   }
 
   manageLoadingUnloading(body: any): Observable<any> {
     return this.http.post(`${this.tripPointEventsUrl}`, body);
   }
 
-  deleteTripDocument(tripPointId: string, tripPointEventId: string, documentId: string): Observable<any> {
-    return this.http.delete(`${this.tripPointDeleteUrl}/${tripPointId}/eventTypes/${tripPointEventId}/documents/${documentId}`);
+  deleteTripDocument(
+    tripPointId: string,
+    tripPointEventId: string,
+    documentId: string
+  ): Observable<any> {
+    return this.http.delete(
+      `${this.tripPointDeleteUrl}/${tripPointId}/eventTypes/${tripPointEventId}/documents/${documentId}`
+    );
   }
-
 }

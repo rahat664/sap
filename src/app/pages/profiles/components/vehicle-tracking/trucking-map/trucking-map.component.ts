@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -68,7 +69,8 @@ export class TruckingMapComponent {
   constructor(
     private geoLocationService: GeolocationService,
     private trip: TripService,
-    private truckService: TrackerService
+    private truckService: TrackerService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -82,11 +84,7 @@ export class TruckingMapComponent {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (this.truckLocationPosition.length > 0) {
-        this.updateTruckLocation(this.truckLocationPosition);
-      }
-    }, 2000);
+    this.cd.detectChanges();
   }
 
   showLoadingSpinner(marker: google.maps.Marker): void {
@@ -98,7 +96,6 @@ export class TruckingMapComponent {
   ngOnChanges(changes: SimpleChanges): void {
     setTimeout(() => {
       if (changes['truckLocationPosition']?.currentValue) {
-        console.log(this.truckLocationPosition.length);
         this.updateTruckLocation(this.truckLocationPosition);
       }
     }, 2000);
@@ -142,8 +139,6 @@ export class TruckingMapComponent {
         // Add a click event listener to the marker to show info when clicked
       });
     } else {
-      // If no truck location data is available, you can clear markers here if needed
-      console.log('No truck location data available');
     }
     this.truckLocationMarker.forEach((marker, index) => {
       this.infoWindow = new google.maps.InfoWindow({
@@ -206,7 +201,7 @@ export class TruckingMapComponent {
     // Add event listener for the close button
     timer(100).subscribe(() => {
       const closeBtn = document.getElementById('closeBtn');
-      closeBtn.addEventListener('click', () => {
+      closeBtn?.addEventListener('click', () => {
         this.infoWindow.close();
         this.stopInterval();
       });

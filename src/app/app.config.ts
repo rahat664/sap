@@ -8,7 +8,13 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './pages/auth/interceptors/auth.interceptor';
-import { CommonModule, DatePipe, DecimalPipe, NgOptimizedImage, SlicePipe } from '@angular/common';
+import {
+  CommonModule,
+  DatePipe,
+  DecimalPipe,
+  NgOptimizedImage,
+  SlicePipe,
+} from '@angular/common';
 import { provideHotToastConfig } from '@ngneat/hot-toast';
 import { provideStore } from '@ngrx/store';
 import { authReducer } from './pages/auth/ngrx/auth.reducer';
@@ -21,7 +27,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    importProvidersFrom(BrowserAnimationsModule),
+    importProvidersFrom(BrowserAnimationsModule, CommonModule),
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideHotToastConfig({}),

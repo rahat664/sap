@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import {
   MatAutocomplete,
   MatAutocompleteTrigger,
@@ -46,7 +46,8 @@ export class EditTrackerComponent {
     private fb: FormBuilder,
     private toast: HandleToastrService,
     private router: Router,
-    private truck: TruckService
+    private truck: TruckService,
+    private cd: ChangeDetectorRef
   ) {
     this.trackerAddForm = this.fb.group({
       vendorId: [''],
@@ -85,12 +86,13 @@ export class EditTrackerComponent {
     this.getAllVendors();
     this.clearNavigationState();
     this.getNavigationState();
-  }
-
-  ngAfterViewInit() {
     this.disableSelect._elementRef.nativeElement.style.pointerEvents = 'none';
     this.disableVendorSelect._elementRef.nativeElement.style.pointerEvents =
       'none';
+  }
+
+  ngAfterViewInit() {
+    this.cd.detectChanges();
   }
 
   onChangeVendorType($event: any) {}

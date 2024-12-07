@@ -168,8 +168,10 @@ export class ChallanImageUploadComponent {
   onSelectImageType($event: string) {
     if ($event === 'Loading Challan') {
       this.eventTypeId = 6;
+      this.type = 'Loading';
     } else if ($event === 'Unloading Challan') {
       this.eventTypeId = 11;
+      this.type = 'Unloading';
     }
   }
 

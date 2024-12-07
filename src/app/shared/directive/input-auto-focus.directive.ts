@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input } from '@angular/core';
+import { ChangeDetectorRef, Directive, ElementRef, Input } from '@angular/core';
 
 @Directive({
   selector: '[appInputAutoFocus]',
@@ -7,12 +7,13 @@ import { Directive, ElementRef, Input } from '@angular/core';
 export class InputAutoFocusDirective {
   @Input() idName: string;
 
-  constructor(private el: ElementRef<any>) {}
+  constructor(
+    private el: ElementRef<any>,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngAfterViewInit() {
-    if (this.el.nativeElement.id === this.idName) {
-      this.el.nativeElement.focus();
-    }
+    this.cd.detectChanges();
   }
 
   ngOnChanges() {

@@ -74,7 +74,9 @@ export class AuthEffects {
                 JSON.stringify(permissions.data)
               );
               this.toaster.showSuccess('Login Successful', '');
-              this.isAdmin() ? this.router.navigate(['/dashboard']) : this.router.navigate(['/trip-list']);
+              this.isAdmin()
+                ? this.router.navigate(['/dashboard'])
+                : this.router.navigate(['/trip-list']);
             } else {
               this.toaster.showError(permissions.message, '');
             }
@@ -90,7 +92,6 @@ export class AuthEffects {
         ofType(logout),
         tap(() => {
           localStorage.clear();
-          this.router.navigateByUrl('/auth/login');
         })
       ),
     { dispatch: false }

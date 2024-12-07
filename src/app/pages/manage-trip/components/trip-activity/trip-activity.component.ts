@@ -1,14 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { CommonModule } from '@angular/common';
 import { EventData } from '../../model/trip-events.model';
-import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 
 @Component({
   selector: 'app-trip-activity',
   standalone: true,
-  imports: [CommonModule, GiveMaxHeightDirective, GetElementHeightDirective],
+  imports: [CommonModule, GetElementHeightDirective],
   templateUrl: './trip-activity.component.html',
   styleUrl: './trip-activity.component.scss',
 })
@@ -29,7 +28,10 @@ export class TripActivityComponent {
   loadingHeight: string = '0px';
   unloadingHeight: string = '0px';
 
-  constructor(private trip: TripService) {}
+  constructor(
+    private trip: TripService,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.index = 0;
@@ -158,5 +160,7 @@ export class TripActivityComponent {
     }
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    this.cd.detectChanges();
+  }
 }
