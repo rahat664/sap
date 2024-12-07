@@ -175,8 +175,8 @@ export class ManageTripComponent implements OnInit {
       page: this.page,
       size: this.size,
       customerCodes: this.customerCodes.toString(),
-      startDate: this.startDate,
-      endDate: this.endDate,
+      from: this.startDate,
+      to: this.endDate,
       status: this.status,
       searchValue: this.searchValue,
       truckType: this.truckType
