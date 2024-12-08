@@ -107,6 +107,7 @@ export class ChallanImageUploadComponent {
   onClickSave($event: boolean) {
     this.loading = true;
     if ($event) {
+      console.log(this.currentDate, this.eventTypeId);
       if (this.currentDate && this.eventTypeId) {
         const request = {
           tripPointNo: this.tripId,
@@ -129,7 +130,7 @@ export class ChallanImageUploadComponent {
 
         // convert the request and files into formData
         const formData = new FormData();
-
+        console.log(request);
         formData.append(
           'request',
           new Blob([JSON.stringify(request)], { type: 'application/json' })
@@ -167,11 +168,37 @@ export class ChallanImageUploadComponent {
 
   onSelectImageType($event: string) {
     if ($event === 'Loading Challan') {
-      this.eventTypeId = 6;
-      this.type = 'Loading';
+      this.trip.getAllTripEvent(this.tripId, 'Loading').subscribe(
+        (response: any) => {
+          if (response.status === 'OK') {
+            this.eventTypeId = response.data?.filter(
+              data => data.eventName === 'Upload loading challan'
+            )[0]?.eventTypeId;
+            this.type = 'Loading';
+          } else {
+            this.toastr.showError(response.message);
+          }
+        },
+        error => {
+          this.toastr.showError(error.message);
+        }
+      );
     } else if ($event === 'Unloading Challan') {
-      this.eventTypeId = 11;
-      this.type = 'Unloading';
+      this.trip.getAllTripEvent(this.tripId, 'Unloading').subscribe(
+        (response: any) => {
+          if (response.status === 'OK') {
+            this.eventTypeId = response.data?.filter(
+              data => data.eventName === 'Upload unloading challan'
+            )[0]?.eventTypeId;
+            this.type = 'Unloading';
+          } else {
+            this.toastr.showError(response.message);
+          }
+        },
+        error => {
+          this.toastr.showError(error.message);
+        }
+      );
     }
   }
 

@@ -171,28 +171,27 @@ export class ManageTripComponent implements OnInit {
   }
 
   private getTripList() {
-    const tripParams = {
-      page: this.page,
-      size: this.size,
-      customerCodes: this.customerCodes.toString(),
-      from: this.startDate,
-      to: this.endDate,
-      status: this.status,
-      searchValue: this.searchValue,
-      truckType: this.truckType
-    };
-
-    this.tripService.getTrips(tripParams).pipe(
-      finalize(() => (this.loading = false))
-    ).subscribe(
-      (trip: any) => {
-        this.updateTripList(trip);
-      },
-      error => {
-        this.loading = false;
-      }
-    );
-
+    this.page == 0 ? (this.loading = true) : (this.loading = false);
+    this.tripService
+      .getTrips(
+        this.page,
+        this.size,
+        this.customerCodes.toString(),
+        this.startDate,
+        this.endDate,
+        this.status,
+        this.searchValue,
+        this.truckType
+      )
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe(
+        (trip: any) => {
+          this.updateTripList(trip);
+        },
+        error => {
+          this.loading = false;
+        }
+      );
   }
 
   onKeyUpSearch(event: KeyboardEvent) {

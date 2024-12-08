@@ -218,6 +218,7 @@ export class ChallanDetailsComponent {
         tripPointId: this.unloadingEvents[0].tripPointId,
         eventTypeId: this.unloadingEvents[0].eventTypeId,
         returnUrl: `/challan-management/${this.singleTrip?.tripId}/details`,
+        tripId: this.singleTrip?.tripId,
       },
     });
   }
@@ -404,5 +405,18 @@ export class ChallanDetailsComponent {
             });
         }
       });
+  }
+
+  getTimeByChallanStatus(challanStatus: string | undefined) {
+    switch (challanStatus) {
+      case 'Approved':
+        return 'Approval Time';
+      case 'Rejected':
+        return 'Rejection Time';
+      case 'Received':
+        return 'Receiving Time';
+      default:
+        return 'Approval Time';
+    }
   }
 }

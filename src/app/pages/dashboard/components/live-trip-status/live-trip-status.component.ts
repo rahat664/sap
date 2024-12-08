@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormField } from '@angular/material/form-field';
-import { MatOption } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
 import { GMapComponent } from '../../../../shared/modules/g-map/g-map.component';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { NgForOf } from '@angular/common';
@@ -10,21 +7,13 @@ import { NgForOf } from '@angular/common';
 @Component({
   selector: 'app-live-trip-status',
   standalone: true,
-  imports: [
-    FormsModule,
-    MatFormField,
-    MatOption,
-    MatSelect,
-    ReactiveFormsModule,
-    GMapComponent,
-    NgForOf,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, GMapComponent, NgForOf],
   templateUrl: './live-trip-status.component.html',
   styleUrl: './live-trip-status.component.scss',
 })
 export class LiveTripStatusComponent {
-  startingPosition: any[] = []
-  destinationPosition: any[] = []
+  startingPosition: any[] = [];
+  destinationPosition: any[] = [];
   tripStatus: string = 'In Progress';
   tripStatuses: { count: unknown; status: string }[];
 
@@ -36,12 +25,12 @@ export class LiveTripStatusComponent {
 
   private getTripList() {
     const tripParams = {
-      page: 0,              // Starting page
+      page: 0, // Starting page
       size: 200,
     };
 
     // Calling the getTrips method with the object as parameter
-    this.service.getTrips(tripParams).subscribe(
+    this.service.getTrips(0, 200).subscribe(
       (res: any) => {
         // Destructure the response to access tripPoints and statusCount
         const { tripPoints, statusCount } = res.data?.responses[0] || {};
@@ -70,13 +59,12 @@ export class LiveTripStatusComponent {
           this.makeArrayFromThisObject(statusCount);
         }
       },
-      (error) => {
+      error => {
         console.error('Error fetching trip list:', error);
         // Optionally show an error message via toaster or other UI feedback
       }
     );
   }
-
 
   private makeArrayFromThisObject(statusCount: any) {
     const status = Object.keys(statusCount);

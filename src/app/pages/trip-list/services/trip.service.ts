@@ -46,30 +46,71 @@ export class TripService {
     private toaster: HandleToastrService
   ) {}
 
-  getTrips(params: {
-    page: number;
-    size?: number;
-    search?: string;
-    startDate?: string;
-    endDate?: string;
-    status?: string;
-    tripId?: string;
-    truckType?: string;
-    onlyTripId?: string;
-    chalanStatus?: string;
-    challanHardCopyReceived?: boolean;
-    challanFrom?: string;
-    challanTo?: string;
-    truckRegId?: string;
-    transporterNameOrPhone?: string;
-  }): Observable<any> {
-    let httpParams = new HttpParams().set('page', params.page.toString());
-    for (const [key, value] of Object.entries(params)) {
-      if (value) {
-        httpParams = httpParams.set(key, value.toString());
-      }
+  getTrips(
+    page: number,
+    size?: number,
+    search?: string,
+    startDate?: string,
+    endDate?: string,
+    status?: string,
+    tripId?: string,
+    truckType?: string,
+    onlyTripId?: string,
+    chalanStatus?: string,
+    challanHardCopyReceived?: boolean,
+    challanFrom?: string,
+    challanTo?: string,
+    truckRegId?: string,
+    transporterNameOrPhone?: string
+  ): Observable<any> {
+    let params = new HttpParams().set('page', page.toString());
+    if (size) {
+      params = params.set('size', size.toString());
     }
-    return this.http.get(this.url, { params: httpParams });
+    if (search) {
+      params = params.set('customerCode', search);
+    }
+    if (startDate) {
+      params = params.set('from', startDate);
+    }
+    if (endDate) {
+      params = params.set('to', endDate);
+    }
+    if (status) {
+      params = params.set('status', status);
+    }
+    if (tripId) {
+      params = params.set('search', tripId);
+    }
+    if (truckType) {
+      params = params.set('truckType', truckType);
+    }
+    if (onlyTripId) {
+      params = params.set('tripId', onlyTripId);
+    }
+    if (chalanStatus) {
+      params = params.set('chalanStatus', chalanStatus);
+    }
+    if (challanHardCopyReceived) {
+      params = params.set(
+        'challanHardCopyReceived',
+        challanHardCopyReceived.toString()
+      );
+    }
+    if (challanFrom) {
+      params = params.set('challanFrom', challanFrom);
+    }
+    if (challanTo) {
+      params = params.set('challanTo', challanTo);
+    }
+    if (truckRegId) {
+      params = params.set('truckRegId', truckRegId);
+    }
+    if (transporterNameOrPhone) {
+      params = params.set('transporterNameOrPhone', transporterNameOrPhone);
+    }
+
+    return this.http.get(`${this.url}`, { params });
   }
 
   getTripDetailsByTripId(tripId: string): Observable<any> {

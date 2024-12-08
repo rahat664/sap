@@ -50,7 +50,7 @@
         <div class="flex flex-col space-y-1 w-full">
           <label class="text-body  text-web-text-secondary px-2">Company
             Name</label>
-          <mat-form-field appearance="outline" class="example-full-width ">
+          <mat-form-field appearance="outline" class="example-full-width relative">
             <input
               id="customerName"
               type="text"
@@ -66,6 +66,11 @@
                 </mat-option>
               }
             </mat-autocomplete>
+<!--            // implement  a custom clear button-->
+<!--            <button type="button" (click)="onClickClear('customer')" *ngIf="searchName"-->
+<!--                    class="absolute inset-y-0 right-0  flex items-center">-->
+<!--              <i class="far fa-times text-gray-500 text-xs"></i>-->
+<!--            </button>-->
           </mat-form-field>
         </div>
         <div class="flex flex-col space-y-1 w-full">

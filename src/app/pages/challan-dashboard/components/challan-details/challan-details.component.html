@@ -18,7 +18,6 @@
       singleTrip?.challanStatus != 'Pending'"
               (click)="changeStatus(singleTrip?.tripId, singleTrip?.tripId,'Approved')"
               class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
-        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
         <span>Approve</span>
       </button>
       <button
@@ -27,7 +26,6 @@
         singleTrip?.challanStatus != 'Pending'"
         (click)="changeStatus(singleTrip?.tripId, singleTrip?.tripId,'Rejected')"
         class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
-        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
         <span>Reject</span>
       </button>
       <button
@@ -126,9 +124,7 @@
             </div>
             <div class="flex flex-col space-y-1 text-center">
               <span class="text-body text-secondary"
-                    *ngIf="singleTrip?.challanStatus === 'Approved'">Approval time</span>
-              <span class="text-body text-secondary"
-                    *ngIf="singleTrip?.challanStatus === 'Rejected'">Rejection time</span>
+                    >{{getTimeByChallanStatus(singleTrip?.challanStatus)}}</span>
               <span class="text-body_title leading-body_title text-not-black font-semibold">{{
                   singleTrip?.challanStatusUpdatedAt ? (singleTrip?.challanStatusUpdatedAt |
                       date: 'd MMM yyyy, h:mm a') :

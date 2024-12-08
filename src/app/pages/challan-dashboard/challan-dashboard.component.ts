@@ -320,39 +320,32 @@ export class ChallanDashboardComponent {
   }
 
   private getTripList() {
-    const tripParams = {
-      page: this.page,
-      size: this.size,
-      customerCode: this.customerCode,
-      status: this.status,
-      tripId: this.tripId,
-      chalanStatus: this.chalanStatus,
-      challanHardCopyReceived: this.challanHardCopyReceived,
-      from: this.from,
-      to: this.to,
-      truckRegistrationId: this.truckRegistrationId,
-      transporterName: this.transporterName
-    };
-
-    // Initiate loading state
-    this.loading = true;
-
-    // Call the getTrips method with the object
-    this.trip.getTrips(tripParams).subscribe(
-      (trip: any) => {
-        // Update the trip list with the response
-        this.updateTripList(trip);
-      },
-      (error) => {
-        // Handle errors
-        console.error('Error fetching trip list:', error);
-        this.loading = false; // Stop loading on error
-      },
-      () => {
-        // Ensure loading is stopped after the request completes (success or error)
-        this.loading = false;
-      }
-    );
+    this.trip
+      .getTrips(
+        this.page,
+        this.size,
+        this.customerCode,
+        null,
+        null,
+        this.status,
+        this.tripId,
+        null,
+        null,
+        this.chalanStatus,
+        this.challanHardCopyReceived,
+        this.from,
+        this.to,
+        this.truckRegistrationId,
+        this.transporterName
+      )
+      .subscribe(
+        (trip: any) => {
+          this.updateTripList(trip);
+        },
+        error => {
+          this.loading = false;
+        }
+      );
   }
 
   private updateTripList(trip: any) {
@@ -839,4 +832,31 @@ export class ChallanDashboardComponent {
   }
 
   protected readonly localStorage = localStorage;
+
+  onClickClear(field: string) {
+    switch (field) {
+      case 'customer':
+        this.customerCode = '';
+        this.searchValue = '';
+        this.searchName = '';
+        break;
+      case 'tripId':
+        this.tripId = '';
+        break;
+      case 'truck':
+        this.truckRegistrationId = '';
+        break;
+      case 'transporter':
+        this.transporterName = '';
+        break;
+      case 'date':
+        this.from = '';
+        this.to = '';
+        break;
+    }
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+  }
 }
