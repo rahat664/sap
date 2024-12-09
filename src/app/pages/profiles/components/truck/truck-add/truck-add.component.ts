@@ -9,7 +9,6 @@ import { CustomInputComponent } from '../../../../../shared/modules/custom-input
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
-import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup.component';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { registrationZoneList } from '../models/registration-zone';
 import { registrationCategoryList } from '../models/registration-category';
@@ -21,13 +20,10 @@ import {
 } from '@angular/forms';
 import { TruckService } from '../services/truck.service';
 import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checklist.component';
-import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
 import { Router } from '@angular/router';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { fileUpload } from '../models/file-upload';
-import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
-import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -51,12 +47,8 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
     NgIf,
     UploadButtonComponent,
     NgClass,
-    FileUploadPopupComponent,
     ReactiveFormsModule,
     PreHireChecklistComponent,
-    CreatePopupComponent,
-    CheckListPopupComponent,
-    FileUploadComponent,
     MatFormField,
     MatInput,
     MatDatepicker,
@@ -622,12 +614,15 @@ export class TruckAddComponent implements OnInit {
     expiredControl?: any
   ) {
     Array.from(files).forEach((file: File) => {
+      console.log(file);
       // handle if file is a pdf
       if (file.type === 'application/pdf') {
+        const fileURL = URL.createObjectURL(file);
         targetArray.push({
-          preview: 'assets/svg/pdf.svg',
+          preview: fileURL,
           file: file,
         });
+        console.log(targetArray);
         return;
       } else {
         const reader = new FileReader();
@@ -775,4 +770,18 @@ export class TruckAddComponent implements OnInit {
       return '';
     }
   }
+
+  onClickPdfDocument(file: any) {
+    this.imageGalleryService.setCurrentImage(file);
+    this.dialog.open(ImageGalleryComponent, {
+      minHeight: '90vh',
+      minWidth: '90%',
+      // center the position
+      data: {
+        images: file.preview,
+      },
+    });
+  }
+
+  protected readonly event = event;
 }

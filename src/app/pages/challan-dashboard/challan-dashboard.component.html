@@ -340,7 +340,7 @@
             <a *ngIf="trip.challanStatus != 'Pending'" (click)="onClickSoftCopyView(trip.tripId)"
                class="cursor-pointer text-link text-center underline">View</a>
             <ng-container *ngIf="trip.challanStatus == 'Pending'">
-              <label for="file-upload"
+              <label (click)="uploadAbleTripId = trip.tripId" for="file-upload"
                      class="flex space-x-2 px-4 py-2 rounded-lg items-center cursor-pointer bg-[#EEF7FD]">
                 <span class="text-h2_regular leading-h2_regular text-link">Upload</span>
               </label>

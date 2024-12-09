@@ -807,19 +807,22 @@ export class ChallanDashboardComponent {
     const input = $event.target as HTMLInputElement;
     const files = input.files;
     if (files && files.length > 0) {
-      this.router.navigate([`challan-management/${tripId}/image-upload`], {
-        state: {
-          tripId: tripId,
-          addedTripDocument: files,
-          imageType: [
-            { value: '1', viewValue: 'Unloading Challan' },
-            { value: '2', viewValue: 'Loading Challan' },
-          ],
-          expiryAvailable: false,
-          noteAvailable: true,
-          returnUrl: '/challan-management',
-        },
-      });
+      this.router.navigate(
+        [`challan-management/${this.uploadAbleTripId}/image-upload`],
+        {
+          state: {
+            tripId: this.uploadAbleTripId,
+            addedTripDocument: files,
+            imageType: [
+              { value: '1', viewValue: 'Unloading Challan' },
+              { value: '2', viewValue: 'Loading Challan' },
+            ],
+            expiryAvailable: false,
+            noteAvailable: true,
+            returnUrl: '/challan-management',
+          },
+        }
+      );
     }
   }
 
@@ -832,6 +835,7 @@ export class ChallanDashboardComponent {
   }
 
   protected readonly localStorage = localStorage;
+  uploadAbleTripId: any;
 
   onClickClear(field: string) {
     switch (field) {

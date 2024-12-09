@@ -509,11 +509,19 @@ export class TruckDetailsComponent implements OnInit {
     }
   }
 
-  onClickImage(preview: any) {
-    this.imageGalleryService.setCurrentImage(preview);
+  onClickImage(file: any, type: string) {
+    // if the file is a PDF file, then convert it to blob of a PDF document file is just
+    if (type === 'pdf') {
+      window.open(file.preSignedFileUrl);
+      return;
+    }
+
+    this.imageGalleryService.setCurrentImage(
+      type === 'pdf' ? file : file.preSignedFileUrl
+    );
     this.dialog.open(ImageGalleryComponent, {
       data: {
-        images: preview,
+        images: type === 'pdf' ? file : file.preSignedFileUrl,
       },
     });
   }
@@ -1132,5 +1140,9 @@ export class TruckDetailsComponent implements OnInit {
     this.othersImages = [];
     this.getTruckDetailsByTruckId();
     this.updateFormValues(this.truckDetails);
+  }
+
+  checkThatFileIsImageOrPdf(file: any) {
+    return file.fileUrl.endsWith('.pdf') ? 'pdf' : 'image';
   }
 }

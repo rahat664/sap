@@ -416,7 +416,7 @@ export class ChallanDetailsComponent {
       case 'Received':
         return 'Receiving Time';
       default:
-        return 'Approval Time';
+        return 'Receiving Time';
     }
   }
 }

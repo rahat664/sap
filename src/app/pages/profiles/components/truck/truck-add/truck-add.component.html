@@ -131,7 +131,17 @@
                     <div class="flex space-x-3 relative">
                       <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
                            *ngFor="let file of getSpecificFiles(option?.formControlName)">
-                        <img class="h-full w-full" [src]="file.preview" alt="">
+                        <ng-container *ngIf="file.file.type === 'application/pdf'; else imagePreview">
+                          <!-- Display PDF Preview -->
+                          <img (click)="$event.stopPropagation();onClickPdfDocument(file)"
+                               class="h-full w-full"
+                               src="assets/svg/pdf.svg"
+                               alt="" />
+                        </ng-container>
+                        <ng-template #imagePreview>
+                          <!-- Display Image Preview -->
+                          <img class="h-full w-full" [src]="file.preview" alt="" />
+                        </ng-template>
                         <button (click)="onCloseImage(option?.formControlName, file, option?.expiryFormControlName)"
                                 class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
                           <i class="far fa-times"></i>
