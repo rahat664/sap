@@ -1,5 +1,5 @@
 <div
-  *ngIf="showGallery && checkImageOrDocument(galleryImages) && !showNotPreviewAbleDialog"
+  *ngIf="showGallery && checkImageOrDocument(galleryImages)"
   class="h-[90vh] flex items-center object-center object-contain justify-center">
   <img *ngIf="checkImageOrDocument(galleryImages)" loading="lazy" class="h-full"
        [src]="previewUrl"  alt=""/>
@@ -9,7 +9,7 @@
     <i class="fal fa-times text-lg"></i>
   </button>
 </div>
-<div class="relative" *ngIf="showGallery && !checkImageOrDocument(galleryImages) && !showNotPreviewAbleDialog">
+<div class="relative" *ngIf="showGallery">
   <iframe
           [src]="previewUrl"
           type="application/pdf"
@@ -22,28 +22,4 @@
     class="absolute top-4 right-32 p-1 h-6 z-50 w-6 shadow-lg text-white rounded-full flex items-center justify-center">
     <i class="fal fa-times text-lg"></i>
   </button>
-</div>
-<div class="relative" *ngIf="showNotPreviewAbleDialog">
-  <div class="flex h-[60vh] flex-col space-y-8">
-    <div class="flex justify-between gap-8 items-center px-4 py-2 border-b border-line">
-      <h1 class="text-h1 font-semibold lowercase">{{ data?.fileName }}</h1>
-      <button type="button" (click)="closeModal()"
-              class="p-1 h-4 w-4 flex border-none items-center justify-center">
-        <i class="fal fa-times"></i>
-      </button>
-    </div>
-    <div class="h-full w-full flex items-center justify-center">
-      <div class="flex flex-col justify-center space-y-4 items-center">
-        <img class="w-[152px] h-[152px]" src="./assets/svg/pdf.svg">
-        <p
-          class="text-body_title text-center leading-body_title text-secondary font-semibold w-2/3">Cannot preview this document. You can download it now.</p>
-        <button type="button" (click)="downloadReport(data?.images)"
-                class="px-16 py-4 bg-primary text-white rounded-lg">
-          <i class="fas fa-download mr-2"></i>
-          <span>Download</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
 </div>
