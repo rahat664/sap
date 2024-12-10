@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImageGalleryService } from '../../services/image-gallery/image-gallery.service';
 import { Subscription } from 'rxjs';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -17,17 +17,20 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
   showGallery = false;
   private subs: Subscription;
   protected previewUrl: any;
+  showNotPreviewAbleDialog: boolean;
 
   constructor(
     private imageGalleryService: ImageGalleryService,
     public dialogRef: MatDialogRef<ImageGalleryComponent>,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
   ngOnInit(): void {
     this.subs = this.imageGalleryService.currentImage$.subscribe(imageUrl => {
       if (imageUrl) {
         this.galleryImages = imageUrl;
+        console.log(imageUrl);
         this.showGallery = true;
         if (this.checkImageOrDocument(this.galleryImages)) {
           this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -36,14 +39,21 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
         } else {
           this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
             this.galleryImages.preview
-              ? this.galleryImages.preview
-              : this.galleryImages.preSignedFileUrl
           );
         }
       } else {
         this.showGallery = false;
       }
     });
+    if (this.data) {
+      if (this.data.fileType === 'pdf') {
+        this.showGallery = false;
+        this.showNotPreviewAbleDialog = true;
+      } else {
+        this.showNotPreviewAbleDialog = false;
+        this.showGallery = true;
+      }
+    }
     this.dialogRef.afterClosed().subscribe(() => {
       this.subs.unsubscribe();
       this.showGallery = false;
@@ -61,5 +71,14 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
 
   checkImageOrDocument(galleryImages: any) {
     return typeof galleryImages === 'string';
+  }
+
+  downloadReport(images: any) {
+    const a = document.createElement('a');
+    a.href = images;
+    a.download = images;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }

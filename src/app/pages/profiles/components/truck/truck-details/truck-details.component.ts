@@ -512,18 +512,23 @@ export class TruckDetailsComponent implements OnInit {
   onClickImage(file: any, type: string) {
     // if the file is a PDF file, then convert it to blob of a PDF document file is just
     if (type === 'pdf') {
-      window.open(file.preSignedFileUrl);
-      return;
+      // this is a blob of the file
+      this.imageGalleryService.setCurrentImage(file.preSignedFileUrl);
+      this.dialog.open(ImageGalleryComponent, {
+        data: {
+          images: file.preSignedFileUrl,
+          fileType: 'pdf',
+          fileName: `${file.documentType}.pdf`,
+        },
+      });
+    } else {
+      this.imageGalleryService.setCurrentImage(file.preSignedFileUrl);
+      this.dialog.open(ImageGalleryComponent, {
+        data: {
+          images: file.preSignedFileUrl,
+        },
+      });
     }
-
-    this.imageGalleryService.setCurrentImage(
-      type === 'pdf' ? file : file.preSignedFileUrl
-    );
-    this.dialog.open(ImageGalleryComponent, {
-      data: {
-        images: type === 'pdf' ? file : file.preSignedFileUrl,
-      },
-    });
   }
 
   onClickClosePopUp() {

@@ -48,6 +48,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "flowbite": "^2.3.0",
+    "jspdf": "^2.5.2",
     "ng-apexcharts": "^1.13.0",
     "ngx-material-intl-tel-input": "^18.2.0",
     "ngx-toastr": "^19.0.0",

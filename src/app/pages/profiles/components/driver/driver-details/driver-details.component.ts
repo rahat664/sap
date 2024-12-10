@@ -175,13 +175,26 @@ export class DriverDetailsComponent implements OnInit {
     this.matMenuTrigger.closeMenu();
   }
 
-  onClickImage(preview: any) {
-    this.imageGalleryService.setCurrentImage(preview);
-    this.dialog.open(ImageGalleryComponent, {
-      data: {
-        images: preview,
-      },
-    });
+  onClickImage(file: any, type?: string) {
+    // if the file is a PDF file, then convert it to blob of a PDF document file is just
+    if (type === 'pdf') {
+      // this is a blob of the file
+      this.imageGalleryService.setCurrentImage(file.preSignedFileUrl);
+      this.dialog.open(ImageGalleryComponent, {
+        data: {
+          images: file.preSignedFileUrl,
+          fileType: 'pdf',
+          fileName: `${file.documentType}.pdf`,
+        },
+      });
+    } else {
+      this.imageGalleryService.setCurrentImage(file.preSignedFileUrl);
+      this.dialog.open(ImageGalleryComponent, {
+        data: {
+          images: file.preSignedFileUrl,
+        },
+      });
+    }
   }
 
   onCloseImageSavedImage(formControlName: string | undefined, file: any) {
@@ -929,5 +942,9 @@ export class DriverDetailsComponent implements OnInit {
     } else {
       return '';
     }
+  }
+
+  checkThatFileIsImageOrPdf(file: any) {
+    return file.fileUrl.endsWith('.pdf') ? 'pdf' : 'image';
   }
 }

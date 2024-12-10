@@ -148,7 +148,13 @@
                       <ng-container *ngIf="isInEditMode && checkThatFileIsAvailableOrNot(option.name)?.length < 3">
                         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
                              *ngFor="let file of getSpecificFiles(option?.formControlName, checkThatFileIsAvailableOrNot(option.name).length)">
-                          <img class="h-full w-full" [src]="file.preview" alt="">
+                          <img *ngIf="checkThatFileIsImageOrPdf(file) == 'image'"
+                               (click)="$event.stopPropagation(); onClickImage(file, 'image')"
+                               class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+                          <img *ngIf="checkThatFileIsImageOrPdf(file) == 'pdf'"
+                               (click)="$event.stopPropagation();
+                        onClickImage(file, 'pdf')"
+                               class="h-full w-full" src="assets/svg/pdf.svg" alt="">
                           <button (click)="onCloseImage(option?.formControlName, file, option?.expiryFormControlName)"
                                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
                             <i class="far fa-times"></i>
@@ -157,7 +163,13 @@
                       </ng-container>
                       <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
                            *ngFor="let file of checkThatFileIsAvailableOrNot(option.name)">
-                        <img class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+                        <img *ngIf="checkThatFileIsImageOrPdf(file) == 'image'"
+                             (click)="$event.stopPropagation(); onClickImage(file, 'image')"
+                             class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+                        <img *ngIf="checkThatFileIsImageOrPdf(file) == 'pdf'"
+                             (click)="$event.stopPropagation();
+                        onClickImage(file, 'pdf')"
+                             class="h-full w-full" src="assets/svg/pdf.svg" alt="">
                         <button *ngIf="isInEditMode" (click)="onCloseImageSavedImage(option?.formControlName, file)"
                                 class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
                           <i class="far fa-times"></i>
@@ -232,8 +244,13 @@
       <ng-container *ngFor="let file of getSavedFileArray(viewMoreFormControlName)">
         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
         >
-          <img (click)="onClickImage(file.preSignedFileUrl)" class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
-          <button *ngIf="isInEditMode" (click)="onCloseImageSavedImage(viewMoreFormControlName, file)"
+          <img *ngIf="checkThatFileIsImageOrPdf(file) == 'image'"
+               (click)="$event.stopPropagation(); onClickImage(file, 'image')"
+               class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+          <img *ngIf="checkThatFileIsImageOrPdf(file) == 'pdf'"
+               (click)="$event.stopPropagation();
+                        onClickImage(file, 'pdf')"
+               class="h-full w-full" src="assets/svg/pdf.svg" alt=""><button *ngIf="isInEditMode" (click)="onCloseImageSavedImage(viewMoreFormControlName, file)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>
           </button>
@@ -242,7 +259,13 @@
       <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
         >
-          <img (click)="onClickImage(file.preview)" class="h-full w-full" [src]="file.preview" alt="">
+          <img *ngIf="checkThatFileIsImageOrPdf(file) == 'image'"
+               (click)="$event.stopPropagation(); onClickImage(file, 'image')"
+               class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+          <img *ngIf="checkThatFileIsImageOrPdf(file) == 'pdf'"
+               (click)="$event.stopPropagation();
+                        onClickImage(file, 'pdf')"
+               class="h-full w-full" src="assets/svg/pdf.svg" alt="">
           <button *ngIf="isInEditMode" (click)="onCloseImage(viewMoreFormControlName, file, viewMoreExpiryControlName)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>
