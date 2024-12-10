@@ -5,12 +5,12 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class ImageGalleryService {
-  private imageSubject = new BehaviorSubject<string>(null);
+  private imageSubject = new BehaviorSubject<any>(null);
   currentImage$ = this.imageSubject.asObservable();
 
   constructor() {}
 
-  setCurrentImage(image: string) {
+  setCurrentImage(image: any) {
     this.imageSubject.next(image);
   }
 }

@@ -210,10 +210,12 @@ export class DriverAddComponent implements OnInit {
       console.log(file.type);
       // handle if file is a pdf
       if (file.type === 'application/pdf') {
+        const fileURL = URL.createObjectURL(file);
         targetArray.push({
-          preview: 'assets/svg/pdf.svg',
+          preview: fileURL,
           file: file,
         });
+        console.log(targetArray);
         return;
       } else {
         const reader = new FileReader();
@@ -556,5 +558,17 @@ export class DriverAddComponent implements OnInit {
   onClickImage(preview: any) {
     this.imageGalleryService.setCurrentImage(preview);
     this.dialog.open(ImageGalleryComponent, {});
+  }
+
+  onClickPdfDocument(file: any) {
+    this.imageGalleryService.setCurrentImage(file);
+    this.dialog.open(ImageGalleryComponent, {
+      minHeight: '90vh',
+      minWidth: '90%',
+      // center the position
+      data: {
+        images: file.preview,
+      },
+    });
   }
 }

@@ -148,17 +148,13 @@
                       <ng-container *ngIf="isInEditMode && checkThatFileIsAvailableOrNot(option.name)?.length < 3">
                         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
                              *ngFor="let file of getSpecificFiles(option?.formControlName, checkThatFileIsAvailableOrNot(option.name).length)">
-                          <ng-container *ngIf="file.file.type === 'application/pdf'; else imagePreview">
-                            <!-- Display PDF Preview -->
-                            <img (click)="$event.stopPropagation();onClickPdfDocument(file)"
-                                 class="h-full w-full"
-                                 src="assets/svg/pdf.svg"
-                                 alt="" />
-                          </ng-container>
-                          <ng-template #imagePreview>
-                            <!-- Display Image Preview -->
-                            <img class="h-full w-full" [src]="file.preview" alt="" />
-                          </ng-template>
+                          <img *ngIf="checkThatFileIsImageOrPdf(file) == 'image'"
+                               (click)="$event.stopPropagation(); onClickImage(file, 'image')"
+                               class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+                          <img *ngIf="checkThatFileIsImageOrPdf(file) == 'pdf'"
+                               (click)="$event.stopPropagation();
+                        onClickImage(file, 'pdf')"
+                               class="h-full w-full" src="assets/svg/pdf.svg" alt="">
                           <button (click)="onCloseImage(option?.formControlName, file, option?.expiryFormControlName)"
                                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
                             <i class="far fa-times"></i>
@@ -254,7 +250,6 @@
           <img *ngIf="checkThatFileIsImageOrPdf(file) == 'pdf'"
                (click)="$event.stopPropagation();
                         onClickImage(file, 'pdf')"
-               class="h-full w-full" src="assets/svg/pdf.svg" alt="">
                class="h-full w-full" src="assets/svg/pdf.svg" alt=""><button *ngIf="isInEditMode" (click)="onCloseImageSavedImage(viewMoreFormControlName, file)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>
@@ -264,17 +259,13 @@
       <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
         >
-          <ng-container *ngIf="file.file.type === 'application/pdf'; else imagePreview">
-            <!-- Display PDF Preview -->
-            <img (click)="$event.stopPropagation();onClickPdfDocument(file)"
-                 class="h-full w-full"
-                 src="assets/svg/pdf.svg"
-                 alt="" />
-          </ng-container>
-          <ng-template #imagePreview>
-            <!-- Display Image Preview -->
-            <img class="h-full w-full" [src]="file.preview" alt="" />
-          </ng-template>
+          <img *ngIf="checkThatFileIsImageOrPdf(file) == 'image'"
+               (click)="$event.stopPropagation(); onClickImage(file, 'image')"
+               class="h-full w-full" [src]="file.preSignedFileUrl" alt="">
+          <img *ngIf="checkThatFileIsImageOrPdf(file) == 'pdf'"
+               (click)="$event.stopPropagation();
+                        onClickImage(file, 'pdf')"
+               class="h-full w-full" src="assets/svg/pdf.svg" alt="">
           <button *ngIf="isInEditMode" (click)="onCloseImage(viewMoreFormControlName, file, viewMoreExpiryControlName)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>
