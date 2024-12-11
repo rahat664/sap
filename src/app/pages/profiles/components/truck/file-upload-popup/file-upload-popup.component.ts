@@ -24,6 +24,7 @@ import { MatInput } from '@angular/material/input';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
+import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
 
 @Component({
   selector: 'app-file-upload-popup',
@@ -284,5 +285,15 @@ export class FileUploadPopupComponent implements OnChanges {
     );
   }
 
-  onClickPdfDocument(file: File) {}
+  onClickPdfDocument(file: any) {
+    this.imageGalleryService.setCurrentImage(file);
+    this.dialog.open(ImageGalleryComponent, {
+      minHeight: '90vh',
+      minWidth: '90%',
+      // center the position
+      data: {
+        images: file.preview,
+      },
+    });
+  }
 }
