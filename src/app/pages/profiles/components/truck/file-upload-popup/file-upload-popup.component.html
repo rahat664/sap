@@ -62,10 +62,17 @@
       <div class="flex py-2 space-x-3 items-center">
         <div class="w-full flex justify-between gap-3 flex-1 items-center">
           <div class="h-12 w-12 overflow-hidden">
-            <img
-              class="h-full w-full"
-              [src]="file.preview ? file.preview : 'assets/svg/fileupload.svg'"
-              alt="" />
+            <ng-container *ngIf="file.file.type === 'application/pdf'; else imagePreview">
+              <!-- Display PDF Preview -->
+              <img (click)="$event.stopPropagation();onClickPdfDocument(file)"
+                   class="h-full w-full"
+                   src="assets/svg/pdf.svg"
+                   alt="" />
+            </ng-container>
+            <ng-template #imagePreview>
+              <!-- Display Image Preview -->
+              <img class="h-full w-full" [src]="file.preview" alt="" />
+            </ng-template>
           </div>
           <div class="w-full grid gap-4"
                [ngClass]="{

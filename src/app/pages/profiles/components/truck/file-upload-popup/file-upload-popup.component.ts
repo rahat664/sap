@@ -11,25 +11,18 @@ import {
 } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
-import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
-  MatCalendar,
   MatDatepicker,
   MatDatepickerInput,
   MatDatepickerToggle,
-  MatDateRangeInput,
-  MatDateRangePicker,
 } from '@angular/material/datepicker';
 import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
@@ -37,24 +30,15 @@ import { HandleToastrService } from '../../../../../shared/services/handle-toast
   standalone: true,
   imports: [
     CustomInputComponent,
-    GetClickEventDirective,
     CommonModule,
-    MatCalendar,
     MatFormField,
     MatDatepickerToggle,
     MatDatepicker,
     MatDatepickerInput,
     MatInput,
-    MatOption,
-    MatSelect,
     ReactiveFormsModule,
     FormsModule,
-    MatDateRangeInput,
-    MatDateRangePicker,
     MatSuffix,
-    MatButton,
-    MatMenuTrigger,
-    MatMenu,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './file-upload-popup.component.html',
@@ -197,9 +181,37 @@ export class FileUploadPopupComponent implements OnChanges {
   }
 
   previewFile(file: File) {
+    if (file.type === 'application/pdf') {
+      const fileURL = URL.createObjectURL(file);
+      this.fileArray.push({
+        preview: fileURL,
+        file: file,
+        registrationType: null,
+        registrationExpireDate: null,
+        fileOpened: false,
+        registrationOptions: this.newFileType,
+        expiryAvailable: false,
+      });
+      return;
+    } else {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.fileArray.push({
+          file: file,
+          preview: reader.result,
+          registrationType: null,
+          registrationExpireDate: null,
+          fileOpened: false,
+          registrationOptions: this.newFileType,
+          expiryAvailable: false,
+        });
+      };
+    }
     let reader = new FileReader();
 
     // Read the file as Data URL (preview)
+
     reader.readAsDataURL(file);
     reader.onload = () => {
       this.fileArray.push({
@@ -271,4 +283,6 @@ export class FileUploadPopupComponent implements OnChanges {
         file.registrationType === 'Driving License Back'
     );
   }
+
+  onClickPdfDocument(file: File) {}
 }

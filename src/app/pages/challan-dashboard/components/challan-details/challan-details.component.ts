@@ -123,7 +123,7 @@ export class ChallanDetailsComponent {
       );
       return this.datePipe.transform(
         challanStatusUpdatedDate,
-        'dd MMM,yyyy h:mm a'
+        'dd MMM yyyy, h:mm a'
       );
     } else {
       // return due days from trip end date

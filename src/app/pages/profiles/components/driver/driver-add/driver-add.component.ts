@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   inject,
@@ -88,7 +89,8 @@ export class DriverAddComponent implements OnInit {
     private toastr: HandleToastrService,
     private shared: DriverEditSharedService,
     private datePipe: DatePipe,
-    private imageGalleryService: ImageGalleryService
+    private imageGalleryService: ImageGalleryService,
+    private cdr: ChangeDetectorRef
   ) {
     this.driverAddForm = this.fb.group({
       driverName: [
@@ -107,6 +109,10 @@ export class DriverAddComponent implements OnInit {
       other: [null],
       drivingLicenseExpiryDate: [null],
     });
+  }
+
+  ngAfterViewInit() {
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
@@ -216,6 +222,7 @@ export class DriverAddComponent implements OnInit {
         .get(expiredControl)
         ?.setValidators([Validators.required]);
       this.driverAddForm.get(expiredControl)?.updateValueAndValidity();
+      this.fileInput.nativeElement.value = '';
     }
   }
 
