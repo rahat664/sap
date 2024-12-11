@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   inject,
@@ -122,8 +123,13 @@ export class TruckDetailsComponent implements OnInit {
     private toastr: HandleToastrService,
     private router: Router,
     private validation: ValidationService,
-    private imageGalleryService: ImageGalleryService
+    private imageGalleryService: ImageGalleryService,
+    private cd: ChangeDetectorRef
   ) {}
+
+  ngAfterViewInit() {
+    this.cd.detectChanges();
+  }
 
   onSelectRegistrationType($event: number) {
     // Find the selected type based on the event id
@@ -923,6 +929,7 @@ export class TruckDetailsComponent implements OnInit {
       if (control) {
         control.setValidators([Validators.required]);
         control.updateValueAndValidity();
+        this.fileInput.nativeElement.value = '';
       }
     }
   }

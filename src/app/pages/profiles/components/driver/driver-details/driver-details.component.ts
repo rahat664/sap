@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   inject,
@@ -99,8 +100,13 @@ export class DriverDetailsComponent implements OnInit {
     private datePipe: DatePipe,
     private toastr: HandleToastrService,
     private router: Router,
-    private imageGalleryService: ImageGalleryService
+    private imageGalleryService: ImageGalleryService,
+    private cd: ChangeDetectorRef
   ) {}
+
+  ngAfterViewInit() {
+    this.cd.detectChanges();
+  }
 
   ngOnInit(): void {
     this.deletedFileUrls = [];
@@ -527,6 +533,7 @@ export class DriverDetailsComponent implements OnInit {
       if (control) {
         control.setValidators([Validators.required]);
         control.updateValueAndValidity();
+        this.fileInput.nativeElement.value = '';
       }
     }
   }
