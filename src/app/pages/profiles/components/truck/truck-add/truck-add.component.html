@@ -209,8 +209,18 @@
       <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
         <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
         >
-          <img (click)="onClickImage(file.preview);" class="h-full w-full" [src]="file.preview"
-               alt="">
+          <ng-container *ngIf="file.file.type === 'application/pdf'; else imagePreview">
+            <!-- Display PDF Preview -->
+            <img (click)="$event.stopPropagation();onClickPdfDocument(file)"
+                 class="h-full w-full"
+                 src="assets/svg/pdf.svg"
+                 alt="" />
+          </ng-container>
+          <ng-template #imagePreview>
+            <!-- Display Image Preview -->
+            <img (click)="onClickImage(file.preview)" class="h-full w-full" [src]="file.preview"
+                 alt="" />
+          </ng-template>
           <button (click)="onCloseImage(viewMoreFormControlName, file, viewMoreExpiryControlName)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>
