@@ -13,7 +13,11 @@ import { CustomInputComponent } from '../../../../../shared/modules/custom-input
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import {
   MatDatepicker,
   MatDatepickerInput,
@@ -25,6 +29,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
+import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 
 @Component({
   selector: 'app-file-upload-popup',
@@ -47,6 +52,7 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
 })
 export class FileUploadPopupComponent implements OnChanges {
   readonly dialogRef = inject(MatDialogRef<FileUploadPopupComponent>);
+  readonly dialog = inject(MatDialog);
   file: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
   @Input() fileTypeOptions: CustomInputSelectModel[] | null = [];
@@ -69,7 +75,8 @@ export class FileUploadPopupComponent implements OnChanges {
     private cdr: ChangeDetectorRef,
     private datePipe: DatePipe,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
+    private imageGalleryService: ImageGalleryService
   ) {}
 
   ngOnInit() {
