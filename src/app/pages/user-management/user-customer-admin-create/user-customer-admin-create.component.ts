@@ -88,8 +88,8 @@ export class UserCustomerAdminCreateComponent {
         // remove space and - from phone number
         this.userModel.phone = this.userModel.phone.replace(/[\s-]/g, '');
         this.userModel.email = this.userForm.get('email').value;
-        this.userModel.sendEmail = this.SendEmails;
         this.userModel.designation = this.userForm.get('designation').value;
+        this.userModel.sendEmail = this.SendEmails;
         this.userModel.role =
           this.roleInputPlaceholder === 'Admin'
             ? 'ROLE_CUSTOMER_ADMIN'

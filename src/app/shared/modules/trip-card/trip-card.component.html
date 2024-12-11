@@ -13,12 +13,27 @@
     <span class="text-secondary">{{ tripStartDateTime | date : 'd MMM,yyyy, h:mm a' }}</span>
     <div class="flex flex-col space-y-3 text-not-black text-start">
       <div class="step">
-        <div class="circle"></div>
-        <p>{{ loadingPoint }}</p>
+        <div class="circle">
+          <img src="assets/svg/start.svg" alt="loading">
+        </div>
+        <p class="w-full">
+          {{ loadingPoint[0]?.pointName }} <span
+          class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+                                                 *ngIf="loadingPoint.length > 1" >
+          +{{
+            loadingPoint.length - 1 }}</span>
+        </p>
+
       </div>
       <div class="step">
-        <div class="circle"></div>
-        <p>{{ unloadingPoint }}</p>
+        <div class="circle">
+          <img src="assets/svg/end.svg" alt="loading"></div>
+        <p class="w-full">
+          {{ unloadingPoint[0]?.pointName }} <span
+          class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+          *ngIf="unloadingPoint.length > 1" >
+          +{{
+            unloadingPoint.length - 1 }}</span>
       </div>
     </div>
     <span class="text-secondary text-start">{{ truckId }} | {{ truckType }} | {{ goodsName }}</span>

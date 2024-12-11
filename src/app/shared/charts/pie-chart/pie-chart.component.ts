@@ -1,4 +1,11 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  ViewChild,
+} from '@angular/core';
 import {
   ApexChart,
   ApexDataLabels,
@@ -8,6 +15,7 @@ import {
   ApexPlotOptions,
   ApexResponsive,
   ApexStates,
+  ApexTooltip,
   ChartComponent,
   NgApexchartsModule,
 } from 'ng-apexcharts';
@@ -23,6 +31,7 @@ export type ChartOptions = {
   markers: ApexMarkers;
   plotOptions: ApexPlotOptions;
   states: ApexStates;
+  tooltip: ApexTooltip;
 };
 
 @Component({
@@ -32,23 +41,26 @@ export type ChartOptions = {
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.scss'],
 })
-export class PieChartComponent implements OnChanges {
+export class PieChartComponent implements OnChanges, AfterViewInit {
   @ViewChild('chart') chart: ChartComponent;
   @Input() value: number[] = [0, 0];
   public chartOptions: Partial<ChartOptions>;
 
-  constructor() {}
+  constructor(private cd: ChangeDetectorRef) {}
 
+  ngAfterViewInit() {
+    this.cd.detectChanges();
+  }
   ngOnChanges() {
     const colors = ['#0CD5F0', '#CCF3FB'];
     let index = -1;
     const labels = ['Received', 'Pending'];
     const customLegendItems = labels.map(
-      (label, i) => `${label} - ${this.value[i]}`
+      (label, i) => `${label} - ${this.value ? this.value[i] : 0}`
     );
 
     this.chartOptions = {
-      series: this.value,
+      series: this.value || [0, 0],
       chart: {
         width: 350,
         type: 'pie',
@@ -80,15 +92,20 @@ export class PieChartComponent implements OnChanges {
       states: {
         hover: {
           filter: {
-            type: 'darken',
-            value: 0.5,
+            type: 'lighten',
           },
         },
       },
       plotOptions: {
         pie: {
-          customScale: 0.8,
+          customScale: 1,
+          expandOnClick: true,
         },
+      },
+      tooltip: {
+        enabled: true,
+        fillSeriesColor: false,
+        cssClass: 'apexcharts-tooltip',
       },
       responsive: [
         {

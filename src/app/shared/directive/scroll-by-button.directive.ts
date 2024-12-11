@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Directive,
   ElementRef,
   EventEmitter,
@@ -23,7 +24,10 @@ export class ScrollByButtonDirective
   @Input() leftButtonClicked = false;
   @Output() isVisible: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
-  constructor(private el: ElementRef) {}
+  constructor(
+    private el: ElementRef,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     setTimeout(() => {
@@ -65,6 +69,6 @@ export class ScrollByButtonDirective
   }
 
   ngAfterViewInit(): void {
-    this.detectThatElementIsScrollableOrNot();
+    this.cd.detectChanges();
   }
 }

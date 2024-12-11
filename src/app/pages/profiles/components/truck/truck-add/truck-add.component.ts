@@ -620,7 +620,6 @@ export class TruckAddComponent implements OnInit {
     expiredControl?: any
   ) {
     Array.from(files).forEach((file: File) => {
-      console.log(file);
       // handle if file is a pdf
       if (file.type === 'application/pdf') {
         const fileURL = URL.createObjectURL(file);

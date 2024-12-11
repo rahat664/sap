@@ -49,7 +49,7 @@
         <th class="text-left">Truck Stand</th>
         <th class="text-left">Preferred Payment Method</th>
         <th class="text-left">No Of Trips</th>
-        <th class="text-left">Gross Profit</th>
+        <th class="text-left">Gross Profit (৳)</th>
         <th class="text-left">Rank</th>
         <!--        <th style="width: 5%"></th>-->
       </tr>
@@ -84,7 +84,7 @@
             }}
           </td>
           <td>{{transporter.numberOfTrips != null ? transporter.numberOfTrips : '0'}}</td>
-          <td>{{transporter.grossProfit != null ? transporter.grossProfit : '0'}}</td>
+          <td>{{transporter.grossProfit != null ? (transporter.grossProfit | number) : '0'}}</td>
           <td>{{transporter.rank != null && transporter.rank > 0 ? transporter.rank : 'N/A'}}</td>
           <!--          <td>-->
           <!--            <i class="fas fa-ellipsis-v"></i>-->

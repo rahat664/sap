@@ -22,7 +22,6 @@
                         [ngClass]="{'error': transporterForm.get('name').invalid && transporterForm.get('name').touched}"
         >
           <input
-            appAlphabetOnly
             id="name"
             [minLength]="2"
             [maxLength]="50"

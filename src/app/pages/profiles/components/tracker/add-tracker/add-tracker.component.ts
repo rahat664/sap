@@ -6,6 +6,7 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { MatFormField } from '@angular/material/form-field';
@@ -57,12 +58,12 @@ export class AddTrackerComponent {
     private truck: TruckService
   ) {
     this.trackerAddForm = this.fb.group({
-      vendorId: [''],
-      trackerType: [''],
-      username: [''],
-      password: [''],
-      trackerId: [''],
-      truckRegNo: [''],
+      vendorId: ['', Validators.required],
+      trackerType: ['', Validators.required],
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+      trackerId: ['', Validators.required],
+      truckRegNo: ['', Validators.required],
     });
   }
 
@@ -80,16 +81,18 @@ export class AddTrackerComponent {
         (res: any) => {
           if (res.status == 'OK') {
             this.router.navigate(['/profile/tracker']);
-            this.toast.showSuccess('Tracker added successfully');
+            this.toast.showSuccess(res.message);
             this.trackerAddForm.reset();
           } else {
-            this.toast.showError('Failed to add tracker');
+            this.toast.showError(res.message);
           }
         },
         err => {
-          this.toast.showError('Failed to add tracker');
+          this.toast.showError(err.message);
         }
       );
+    } else {
+      this.toast.showError('Please fill all the fields');
     }
   }
 

@@ -15,14 +15,8 @@ import {
 import {
   MAT_DIALOG_DATA,
   MatDialog,
-  MatDialogClose,
-  MatDialogContent,
   MatDialogRef,
-  MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
-import { MatSelect } from '@angular/material/select';
 import { registrationZoneList } from '../../../profiles/components/truck/models/registration-zone';
 import { registrationCategoryList } from '../../../profiles/components/truck/models/registration-category';
 import { TransporterPopupComponent } from '../transporter-popup/transporter-popup.component';
@@ -46,12 +40,6 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
     MatAutocompleteTrigger,
     MatInput,
     ReactiveFormsModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatIcon,
-    MatIconButton,
-    MatDialogClose,
-    MatSelect,
     NgIf,
     MatError,
   ],
@@ -383,7 +371,7 @@ export class DialogDataComponent {
           // body.status = 'Running';
           body.tripStartedAt = this.datePipe.transform(
             new Date(),
-            'yyyy-MM-dd hh:mm:ss'
+            'yyyy-MM-ddTHH:mm:ss'
           );
           this.trip.updateTrip(body, this.data.trip?.tripId).subscribe(
             (res: any) => {
@@ -723,24 +711,27 @@ export class DialogDataComponent {
   }
 
   private getAssignedText(res) {
-    let text = '';
-    if (res.driverCode && res.truck?.id && res.helperCode) {
-      text += ` Truck: ${res.truck?.fullRegistrationNumber}, Driver: ${res.driverName}, Helper: ${res.helperName} have been assigned to trip ${res.tripId}`;
-    } else if (res.driverCode && res.truck?.id && !res.helperCode) {
-      text += ` Truck: ${res.truck?.fullRegistrationNumber}, Driver: ${res.driverName} have been assigned to trip ${res.tripId}`;
-    } else if (res.driverCode && res.helperCode && !res.truck?.id) {
-      text += ` Driver: ${res.driverName}, Helper: ${res.helperName} have been assigned to trip ${res.tripId}`;
-    } else if (res.truck?.id && res.helperCode && !res.driverCode) {
-      text += ` Truck: ${res.truck?.fullRegistrationNumber}, Helper: ${res.helperName} have been assigned to trip ${res.tripId}`;
-    } else if (res.truck?.id && !res.driverCode && !res.helperCode) {
-      text += ` Truck: ${res.truck?.fullRegistrationNumber} have been assigned to trip ${res.tripId}`;
-    } else if (res.driverCode && !res.truck?.id && !res.helperCode) {
-      text += ` Driver: ${res.driverName} have been assigned to trip ${res.tripId}`;
-    } else if (res.helperCode && !res.truck?.id && !res.driverCode) {
-      text += ` Helper: ${res.helperName} have been assigned to trip ${res.tripId}`;
-    } else {
-      text += ` Truck: ${res.truck?.fullRegistrationNumber}, Driver: ${res.driverName}, Helper: ${res.helperName} have been assigned to trip ${res.tripId}`;
+    const parts = [];
+
+    if (
+      res.truck?.id &&
+      (this.getButtonName() === 'Assign Truck & Driver' ||
+        this.getButtonName() === 'Assign Truck')
+    ) {
+      parts.push(`Truck: ${res.truck.fullRegistrationNumber}`);
     }
+    if (
+      res.driverCode &&
+      (this.getButtonName() === 'Assign Truck & Driver' ||
+        this.getButtonName() === 'Assign Driver')
+    ) {
+      parts.push(`Driver: ${res.driverName}`);
+    }
+    if (res.helperCode) {
+      parts.push(`Helper: ${res.helperName}`);
+    }
+
+    const text = parts.join(', ') + ` have been assigned to trip ${res.tripId}`;
     return text;
   }
 }

@@ -1,5 +1,11 @@
 import { Component, HostListener } from '@angular/core';
-import { CurrencyPipe, DatePipe, DecimalPipe, NgIf } from '@angular/common';
+import {
+  CurrencyPipe,
+  DatePipe,
+  DecimalPipe,
+  NgForOf,
+  NgIf,
+} from '@angular/common';
 import { TripService } from '../../services/trip.service';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { Router } from '@angular/router';
@@ -12,17 +18,18 @@ import { ErrorModalComponent } from '../../../../shared/modules/error-modal/erro
 @Component({
   selector: 'app-trip-create-overview',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, CurrencyPipe, NgIf],
+  imports: [DatePipe, DecimalPipe, CurrencyPipe, NgForOf, NgIf],
   templateUrl: './trip-create-overview.component.html',
   styleUrl: './trip-create-overview.component.scss',
 })
 export class TripCreateOverviewComponent {
   protected tripData: TripCreate;
   customerName: string;
-  loadingPointName: string;
-  unloadPointName: string;
+  loadingPointNames: any[] = [];
+  unloadPointNames: any[] = [];
   vehicleType: any;
   tripTemplateName: string;
+  loading: boolean;
 
   constructor(
     private service: TripService,
@@ -37,8 +44,16 @@ export class TripCreateOverviewComponent {
       localStorage.getItem('selectedCustomer')
     ).name;
     if (this.tripData) {
-      this.loadingPointName = this.tripData.points[0].pointName;
-      this.unloadPointName = this.tripData.points[1].pointName;
+      this.loadingPointNames = [];
+      this.unloadPointNames = [];
+
+      this.loadingPointNames = this.tripData.points.filter(
+        point => point.pointType === 'Loading'
+      );
+
+      this.unloadPointNames = this.tripData.points.filter(
+        point => point.pointType === 'Unloading'
+      );
     }
 
     this.service.getVehicleTypeList().subscribe((res: any) => {
@@ -50,6 +65,7 @@ export class TripCreateOverviewComponent {
   }
 
   onCreateTrip() {
+    this.loading = true;
     this.service.createTrip(this.tripData).subscribe(
       (res: any) => {
         if (res.status === 'OK') {
@@ -101,6 +117,7 @@ export class TripCreateOverviewComponent {
                     })
                     .afterClosed()
                     .subscribe(() => {
+                      this.loading = false;
                       this.router.navigate(['/trip-list']);
                     });
                 } else {

@@ -5,7 +5,7 @@ import {
   MatOption,
 } from '@angular/material/autocomplete';
 import { MatError, MatFormField } from '@angular/material/form-field';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { TripTemplate } from '../../models/trip-template.model';
 import { TripService } from '../../services/trip.service';
@@ -99,30 +99,38 @@ export class TemplateUpdateComponent {
         .get('customerRate')
         .setValue(template.customerRate);
       this.templateUpdateForm.get('note').setValue(template.note);
-      this.templateUpdateForm
-        .get('loadingPointDistrict')
-        .setValue(template.points[0].pointDistrict);
-      this.templateUpdateForm
-        .get('loadingPointName')
-        .setValue(template.points[0].pointName);
-      this.templateUpdateForm
-        .get('unloadingPointDistrict')
-        .setValue(template.points[1].pointDistrict);
-      this.templateUpdateForm
-        .get('unloadingPointName')
-        .setValue(template.points[1].pointName);
-      this.templateUpdateForm
-        .get('loadingPointLatitude')
-        .setValue(template.points[0].pointLat);
-      this.templateUpdateForm
-        .get('loadingPointLongitude')
-        .setValue(template.points[0].pointLon);
-      this.templateUpdateForm
-        .get('unloadingPointLatitude')
-        .setValue(template.points[1].pointLat);
-      this.templateUpdateForm
-        .get('unloadingPointLongitude')
-        .setValue(template.points[1].pointLon);
+      const loadingPoints = template.points.filter(
+        (point: any) => point.pointType === 'Loading'
+      )
+      const unloadingPoints = template.points.filter(
+        (point: any) => point.pointType === 'Unloading'
+      )
+
+
+      loadingPoints?.forEach((point: any, index: number) => {
+        if (index > 0) {
+          this.addLoadingPoint();
+        }
+        if (point.id) {
+          this.loadingPoints.controls[index].get('id').setValue(point.id);
+        }
+        this.loadingPoints.controls[index].get('pointName').setValue(point.pointName);
+        this.loadingPoints.controls[index].get('pointDistrict').setValue(point.pointDistrict);
+        this.loadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
+        this.loadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+      });
+      unloadingPoints?.forEach((point: any, index: number) => {
+        if (index > 0) {
+          this.addUnloadingPoint();
+        }
+        if (point.id && point.id !== '') {
+          this.unloadingPoints.controls[index].get('id').setValue(point.id);
+        }
+        this.unloadingPoints.controls[index].get('pointName').setValue(point.pointName);
+        this.unloadingPoints.controls[index].get('pointDistrict').setValue(point.pointDistrict);
+        this.unloadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
+        this.unloadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+      });
     }
   }
 
@@ -163,30 +171,8 @@ export class TemplateUpdateComponent {
         this.templateUpdateForm.get('customerRate').value;
       this.tripTemplateData.note = this.templateUpdateForm.get('note').value;
       this.tripTemplateData.points = [
-        {
-          pointDistrict: this.templateUpdateForm.get('loadingPointDistrict')
-            .value,
-          pointName: this.templateUpdateForm.get('loadingPointName').value,
-          pointLat: Number(
-            this.templateUpdateForm.get('loadingPointLatitude').value
-          ),
-          pointLon: Number(
-            this.templateUpdateForm.get('loadingPointLongitude').value
-          ),
-          pointType: 'loading',
-        },
-        {
-          pointDistrict: this.templateUpdateForm.get('unloadingPointDistrict')
-            .value,
-          pointName: this.templateUpdateForm.get('unloadingPointName').value,
-          pointLat: Number(
-            this.templateUpdateForm.get('unloadingPointLatitude').value
-          ),
-          pointLon: Number(
-            this.templateUpdateForm.get('unloadingPointLongitude').value
-          ),
-          pointType: 'unloading',
-        },
+        ...this.templateUpdateForm.get('loadingPoints').value,
+        ...this.templateUpdateForm.get('unloadingPoints').value,
       ];
       this.checkCacheDataAndUpdate(
         this.tripTemplateData.numOfTrucks,
@@ -206,7 +192,7 @@ export class TemplateUpdateComponent {
     }
   }
 
-  onKeyUpLoadingPoint($event: KeyboardEvent) {
+  onKeyUpLoadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.service
@@ -216,100 +202,110 @@ export class TemplateUpdateComponent {
         });
     } else {
       this.loadingSuggestions = [];
-      this.templateUpdateForm.get('loadingPointDistrict').enable();
-      this.templateUpdateForm.get('loadingPointDistrict').setValue('');
-      this.templateUpdateForm.get('loadingPointLatitude').setValue('');
-      this.templateUpdateForm.get('loadingPointLongitude').setValue('');
+      this.loadingPoints?.controls[i]?.get('pointDistrict').enable();
+      this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
+      this.loadingPoints?.controls[i]?.get('pointLat').setValue('');
+      this.loadingPoints?.controls[i]?.get('pointLon').setValue('');
     }
   }
 
-  onClickLoadingSuggestion(option: any) {
-    option.locationPointName
-      ? this.templateUpdateForm
-          .get('loadingPointName')
-          .setValue(option.locationPointName)
-      : this.templateUpdateForm
-          .get('loadingPointName')
-          .setValue(option.addressText);
+  onClickLoadingSuggestion(option: any, i: number) {
+    // update above functionality with form array
+    option?.locationPointName
+      ? this.loadingPoints?.controls[i]
+        ?.get('pointName')
+        .setValue(option.locationPointName)
+      : this.loadingPoints?.controls[i]
+        ?.get('pointName')
+        .setValue(option.addressText);
     if (option.district) {
-      this.templateUpdateForm
-        .get('loadingPointDistrict')
+      this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
+      this.loadingPoints?.controls[i]
+        ?.get('pointDistrict')
         .setValue(option.district);
     } else {
-      for (let i = 0; i < this.district.length; i++) {
-        if (option.addressText.includes(this.district[i].name)) {
-          this.templateUpdateForm
-            .get('loadingPointDistrict')
-            .setValue(this.district[i].name);
+      for (
+        let singleDistrict = 0;
+        singleDistrict < this.district.length;
+        singleDistrict++
+      ) {
+        if (option.addressText.includes(this.district[singleDistrict].name)) {
+          this.loadingPoints?.controls[i]
+            ?.get('pointDistrict')
+            .setValue(this.district[singleDistrict].name);
           break;
         } else {
-          this.templateUpdateForm.get('loadingPointDistrict').enable();
+          this.loadingPoints?.controls[i]?.get('pointDistrict').enable();
         }
       }
     }
 
     if (option.latitude > 0 && option.longitude > 0) {
-      this.templateUpdateForm
-        .get('loadingPointLatitude')
+      this.loadingPoints?.controls[i]
+        ?.get('pointLat')
         .setValue(option.latitude);
-      this.templateUpdateForm
-        .get('loadingPointLongitude')
+      this.loadingPoints?.controls[i]
+        ?.get('pointLon')
         .setValue(option.longitude);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         const lat = res.location.latitude;
         const lng = res.location.longitude;
-        this.templateUpdateForm.get('loadingPointLatitude').setValue(lat);
-        this.templateUpdateForm.get('loadingPointLongitude').setValue(lng);
+        this.loadingPoints?.controls[i]?.get('pointLat').setValue(lat);
+        this.loadingPoints?.controls[i]?.get('pointLon').setValue(lng);
       });
     }
     this.loadingSuggestions = [];
   }
 
-  onClickUnloadingSuggestion(option: any) {
-    this.templateUpdateForm
-      .get('unloadingPointName')
+  onClickUnloadingSuggestion(option: any, i: number) {
+    this.unloadingPoints?.controls[i]
+      ?.get('pointName')
       .setValue(
         option.locationPointName ? option.locationPointName : option.addressText
       );
     if (option.district) {
-      this.templateUpdateForm.get('unloadingPointDistrict').setValue('');
-      this.templateUpdateForm
-        .get('unloadingPointDistrict')
+      this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue('');
+      this.unloadingPoints?.controls[i]
+        ?.get('pointDistrict')
         .setValue(option.district);
     } else {
-      for (let i = 0; i < this.district.length; i++) {
-        if (option.addressText.includes(this.district[i].name)) {
-          this.templateUpdateForm
-            .get('unloadingPointDistrict')
-            .setValue(this.district[i].name);
+      for (
+        let singleDistrict = 0;
+        singleDistrict < this.district.length;
+        singleDistrict++
+      ) {
+        if (option.addressText.includes(this.district[singleDistrict].name)) {
+          this.unloadingPoints?.controls[i]
+            ?.get('pointDistrict')
+            .setValue(this.district[singleDistrict].name);
           break;
         } else {
-          this.templateUpdateForm.get('unloadingPointDistrict').enable();
+          this.unloadingPoints?.controls[i]?.get('pointDistrict').enable();
         }
       }
     }
     if (option.latitude > 0 && option.longitude > 0) {
-      this.templateUpdateForm
-        .get('unloadingPointLatitude')
+      this.unloadingPoints?.controls[i]
+        ?.get('pointLat')
         .setValue(option.latitude);
-      this.templateUpdateForm
-        .get('unloadingPointLongitude')
+      this.unloadingPoints?.controls[i]
+        ?.get('pointLon')
         .setValue(option.longitude);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
-        this.templateUpdateForm
-          .get('unloadingPointLatitude')
+        this.unloadingPoints?.controls[i]
+          ?.get('pointLat')
           .setValue(res?.location?.latitude);
-        this.templateUpdateForm
-          .get('unloadingPointLongitude')
+        this.unloadingPoints?.controls[i]
+          ?.get('pointLon')
           .setValue(res?.location?.longitude);
       });
     }
     this.unloadingSuggestions = [];
   }
 
-  onKeyUpUnloadingPoint($event: KeyboardEvent) {
+  onKeyUpUnloadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.service
@@ -319,14 +315,15 @@ export class TemplateUpdateComponent {
         });
     } else {
       this.unloadingSuggestions = [];
-      this.templateUpdateForm.get('unloadingPointDistrict').enable();
-      this.templateUpdateForm.get('unloadingPointDistrict').setValue('');
-      this.templateUpdateForm.get('unloadingPointLatitude').setValue('');
-      this.templateUpdateForm.get('unloadingPointLongitude').setValue('');
+
+      this.unloadingPoints?.controls[i]?.get('pointDistrict').enable();
+      this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue('');
+      this.unloadingPoints?.controls[i]?.get('pointLat').setValue('');
+      this.unloadingPoints?.controls[i]?.get('pointLon').setValue('');
     }
   }
 
-  onKeyUpLoadingDistrict($event: KeyboardEvent) {
+  onKeyUpLoadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
@@ -338,31 +335,32 @@ export class TemplateUpdateComponent {
     }
   }
 
-  onSelectLoadingDistrict(option: any) {
-    this.templateUpdateForm.get('loadingPointDistrict').setValue(option.name);
+
+  onSelectLoadingDistrict(option: any, i: number) {
+    this.loadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
     if (
-      this.templateUpdateForm.get('loadingPointLatitude').value === '' ||
-      this.templateUpdateForm.get('loadingPointLongitude').value === ''
+      this.loadingPoints?.controls[i]?.get('pointLat').value === '' ||
+      this.loadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.templateUpdateForm
-        .get('loadingPointLatitude')
+      this.loadingPoints?.controls[i]
+        ?.get('pointLat')
         .setValue(
-          this.templateUpdateForm.get('loadingPointLatitude').value
-            ? this.templateUpdateForm.get('loadingPointLatitude').value
+          this.loadingPoints?.controls[i]?.get('pointLat').value
+            ? this.loadingPoints?.controls[i]?.get('pointLat').value
             : option.lat
         );
-      this.templateUpdateForm
-        .get('loadingPointLongitude')
+      this.loadingPoints?.controls[i]
+        ?.get('pointLon')
         .setValue(
-          this.templateUpdateForm.get('loadingPointLongitude').value
-            ? this.templateUpdateForm.get('loadingPointLongitude').value
+          this.loadingPoints?.controls[i]?.get('pointLon').value
+            ? this.loadingPoints?.controls[i]?.get('pointLon').value
             : option.lon
         );
     }
     this.loadingDistrictSuggestions = [];
   }
 
-  onKeyUpUnloadingDistrict($event: KeyboardEvent) {
+  onKeyUpUnloadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
@@ -374,29 +372,29 @@ export class TemplateUpdateComponent {
     }
   }
 
-  onSelectUnloadingDistrict(option: any) {
-    this.templateUpdateForm.get('unloadingPointDistrict').setValue(option.name);
+
+  onSelectUnloadingDistrict(option: any, i: number) {
+    this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
     if (
-      this.templateUpdateForm.get('unloadingPointLatitude').value === '' ||
-      this.templateUpdateForm.get('unloadingPointLongitude').value === ''
+      this.unloadingPoints?.controls[i]?.get('pointLat').value === '' ||
+      this.unloadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.templateUpdateForm
-        .get('unloadingPointLatitude')
+      this.unloadingPoints?.controls[i]
         .setValue(
-          this.templateUpdateForm.get('unloadingPointLatitude').value
-            ? this.templateUpdateForm.get('unloadingPointLatitude').value
+          this.unloadingPoints?.controls[i]?.get('pointLat').value
+            ? this.unloadingPoints?.controls[i]?.get('pointLat').value
             : option.lat
         );
-      this.templateUpdateForm
-        .get('unloadingPointLongitude')
+      this.unloadingPoints?.controls[i]
         .setValue(
-          this.templateUpdateForm.get('unloadingPointLongitude').value
-            ? this.templateUpdateForm.get('unloadingPointLongitude').value
+          this.unloadingPoints?.controls[i]?.get('pointLon').value
+            ? this.unloadingPoints?.controls[i]?.get('pointLon').value
             : option.lon
         );
     }
     this.unloadingDistrictSuggestions = [];
   }
+
 
   onClickLeftButton() {
     this.leftButtonClicked = true;
@@ -463,14 +461,8 @@ export class TemplateUpdateComponent {
       goodsName: [''],
       customerRate: [null],
       note: [''],
-      loadingPointDistrict: [''],
-      loadingPointName: [''],
-      unloadingPointDistrict: [''],
-      unloadingPointName: [''],
-      loadingPointLatitude: [''],
-      loadingPointLongitude: [''],
-      unloadingPointLatitude: [''],
-      unloadingPointLongitude: [''],
+      loadingPoints: this.fb.array([this.createLoadingPoint()]),
+      unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
       tripTemplateName: [''],
     });
   }
@@ -558,9 +550,53 @@ export class TemplateUpdateComponent {
     });
   }
 
+  private createLoadingPoint() {
+    return this.fb.group({
+      id: [''],
+      pointDistrict: [''],
+      pointName: [''],
+      pointLat: [''],
+      pointLon: [''],
+      pointType: ['Loading'],
+    });
+  }
+
+  private createUnloadingPoint() {
+    return this.fb.group({
+      id: [''],
+      pointDistrict: [''],
+      pointName: [''],
+      pointLat: [''],
+      pointLon: [''],
+      pointType: ['Unloading'],
+    });
+  }
+
+  addLoadingPoint() {
+    this.loadingPoints.push(this.createLoadingPoint());
+  }
+
+  get loadingPoints() {
+    return this.templateUpdateForm.get('loadingPoints') as FormArray;
+  }
+
+  addUnloadingPoint() {
+    this.unloadingPoints.push(this.createUnloadingPoint());
+  }
+
+  get unloadingPoints() {
+    return this.templateUpdateForm.get('unloadingPoints') as FormArray;
+  }
+
+  removeLoadingPoint(index: number) {
+    this.loadingPoints.removeAt(index);
+  }
+
+  removeUnloadingPoint(index: number) {
+    this.unloadingPoints.removeAt(index);
+  }
   isAdmin() {
     const role = localStorage.getItem('role');
     return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
   }
-
 }

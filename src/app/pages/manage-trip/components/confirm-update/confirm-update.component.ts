@@ -4,7 +4,7 @@ import {
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { DatePipe, NgForOf } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
@@ -14,7 +14,7 @@ class DialogData {}
 @Component({
   selector: 'app-confirm-update',
   standalone: true,
-  imports: [NgForOf],
+  imports: [],
   templateUrl: './confirm-update.component.html',
   styleUrl: './confirm-update.component.scss',
 })
@@ -45,12 +45,12 @@ export class ConfirmUpdateComponent {
       if (this.data?.trip?.status == 'Booked') {
         body['tripStartedAt'] = this.datePipe.transform(
           new Date(),
-          'yyyy-MM-dd hh:mm:ss'
+          'yyyy-MM-ddTHH:mm:ss'
         );
       } else {
         body['tripEndedAt'] = this.datePipe.transform(
           new Date(),
-          'yyyy-MM-dd hh:mm:ss'
+          'yyyy-MM-ddTHH:mm:ss'
         );
       }
       this.trip.updateTrip(body, this.data.trip.tripId).subscribe(

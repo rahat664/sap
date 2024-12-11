@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -31,17 +32,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   constructor(
     private mobileViewService: ToggleResponsiveService,
-    private router: Router
+    private router: Router,
+    private cd: ChangeDetectorRef
   ) {}
 
   @ViewChild('sideBar') myDiv!: ElementRef;
 
-  ngOnInit(): void {}
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.myDiv.nativeElement.classList.remove('slide-right');
-    }, 1);
+  ngOnInit(): void {
+    this.myDiv?.nativeElement?.classList?.remove('slide-right');
     this.subs = this.mobileViewService.isSidebarOpen.subscribe(value => {
       if (value) {
         this.myDiv.nativeElement.classList.remove('slide-right');
@@ -59,6 +57,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit() {
+    this.cd.detectChanges();
+  }
+
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
@@ -69,11 +71,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   isActive(route: string): boolean {
-    return this.router.isActive(route, false);
+    return this.router.url.includes(route);
   }
 
   clearSelectedTemplate() {
-    if(this.isAdmin()) {
+    if (this.isAdmin()) {
       localStorage.removeItem('customerCode');
       localStorage.removeItem('selectedTemplate');
       localStorage.removeItem('backFromTemplateEditOrUpdate');

@@ -51,6 +51,7 @@ export class AuthService {
   }
 
   logout() {
+    this.router.navigate(['/auth/login']);
     this.store.dispatch({ type: '[Auth] Logout' });
   }
 

@@ -518,18 +518,23 @@ export class TruckDetailsComponent implements OnInit {
   onClickImage(file: any, type: string) {
     // if the file is a PDF file, then convert it to blob of a PDF document file is just
     if (type === 'pdf') {
-      window.open(file.preSignedFileUrl);
-      return;
+      // this is a blob of the file
+      this.imageGalleryService.setCurrentImage(file.preSignedFileUrl);
+      this.dialog.open(ImageGalleryComponent, {
+        data: {
+          images: file.preSignedFileUrl,
+          fileType: 'pdf',
+          fileName: `${file.documentType}.pdf`,
+        },
+      });
+    } else {
+      this.imageGalleryService.setCurrentImage(file.preSignedFileUrl);
+      this.dialog.open(ImageGalleryComponent, {
+        data: {
+          images: file.preSignedFileUrl,
+        },
+      });
     }
-
-    this.imageGalleryService.setCurrentImage(
-      type === 'pdf' ? file : file.preSignedFileUrl
-    );
-    this.dialog.open(ImageGalleryComponent, {
-      data: {
-        images: type === 'pdf' ? file : file.preSignedFileUrl,
-      },
-    });
   }
 
   onClickClosePopUp() {
@@ -903,24 +908,24 @@ export class TruckDetailsComponent implements OnInit {
     expiredControl?: string // Changed to string to reflect form control name
   ): void {
     Array.from(files).forEach((file: File) => {
-      const reader = new FileReader();
-
-      // Event listener for file reading completion
-      reader.onload = () => {
+      if (file.type === 'application/pdf') {
+        const fileURL = URL.createObjectURL(file);
         targetArray.push({
-          preview: reader.result,
+          preview: fileURL,
           file: file,
         });
-      };
-
-      // Event listener for error handling
-      reader.onerror = () => {
-        console.error(`Error reading file: ${file.name}`);
-        this.toastr.showError(`Failed to load ${file.name}`);
-      };
-
-      // Start reading the file
-      reader.readAsDataURL(file);
+        console.log(targetArray);
+        return;
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          targetArray.push({
+            preview: reader.result,
+            file: file,
+          });
+        };
+      }
     });
 
     // Handle form control validation if specified
@@ -1151,5 +1156,17 @@ export class TruckDetailsComponent implements OnInit {
 
   checkThatFileIsImageOrPdf(file: any) {
     return file.fileUrl.endsWith('.pdf') ? 'pdf' : 'image';
+  }
+
+  onClickPdfDocument(file: any) {
+    this.imageGalleryService.setCurrentImage(file);
+    this.dialog.open(ImageGalleryComponent, {
+      minHeight: '90vh',
+      minWidth: '90%',
+      // center the position
+      data: {
+        images: file.preview,
+      },
+    });
   }
 }

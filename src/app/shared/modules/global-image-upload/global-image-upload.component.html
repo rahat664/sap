@@ -1,0 +1,161 @@
+<div class="grid grid-cols-3">
+  <div class="col-span-2 flex flex-col w-full bg-black h-[calc(100vh-4.125rem)]">
+    <div class="px-7 py-[1.375rem] flex justify-between bg-[#302F2F]">
+      <div (click)="onCLickBack()" class="flex space-x-3 items-center cursor-pointer text-white">
+        <i class="fas fa-chevron-left text-white"></i>
+        <span
+          class="text-h3 leading-h3 font-bold">{{ activatedImageType ? activatedImageType :
+          'Please select image type'
+          }}</span>
+      </div>
+      <div class="flex space-x-4 text-white items-center">
+        <button [disabled]="zoomLevel >= maxZoom" [ngClass]="{'text-secondary': zoomLevel >= maxZoom}" (click)="zoomIn()" class="flex items-center justify-center">
+          <i class="fal  text-[2rem] fa-search-plus"></i>
+        </button>
+        <button [disabled]="zoomLevel <= minZoom" (click)="zoomOut()" [ngClass]="{'text-secondary': zoomLevel <= minZoom}" class="flex items-center justify-center">
+          <i class="fal  text-[2rem] fa-search-minus"></i>
+        </button>
+        <button type="button" (click)="onClickClose()">
+          <i class="fal fa-times text-[2rem] text-red"></i>
+        </button>
+
+      </div>
+    </div>
+    <div
+      (wheel)="onZoom($event)"
+      class="h-[calc(100vh-16.5rem)] py-[1.125rem] flex relative justify-center items-center overflow-hidden"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()"
+      (mousemove)="onMouseMove($event)"
+    >
+      <button
+        (click)="onClickLeftButton()"
+        [ngClass]="{'show': activeDocumentIndex > 0 && showLeftArrow}"
+        class="arrow absolute left-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]"
+      >
+        <i class="fas fa-chevron-left font-bold text-white text-xxl"></i>
+      </button>
+
+      <div
+        #containerElement
+        class=" w-[90%] h-[calc(100vh-18.75rem)] overflow-hidden rounded-lg flex items-center justify-center transition-transform duration-300 transform origin-center relative"
+      >
+        <div #imageElement class="transition-transform rounded-lg overflow-hidden duration-300 transform origin-center relative" [style.transform]="'scale(' + zoomLevel + ')'">
+          <img
+            [src]="activatedDocument"
+            alt="activeDocument"
+            class="notPreview h-full w-full"
+          />
+
+        </div>
+      </div>
+
+      <button
+        (click)="onClickRightButton()"
+        [ngClass]="{'show': activeDocumentIndex < documents.length - 1 && showRightArrow && documents.length > 1}"
+        class="arrow absolute right-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]"
+      >
+        <i class="fas fa-chevron-right font-bold text-white text-xxl"></i>
+      </button>
+    </div>
+
+    <div class="min-h-32 bg-[#302F2F] flex items-center w-full justify-center customScrollbar">
+      <div class="flex space-x-4 w-2/3 overflow-x-auto " #documentContainer *ngIf="documents?.length > 1">
+        <ng-container *ngFor="let doc of documents; index as i">
+          <div (click)="onClickDocument(doc, i)" [ngClass]="{'scaled': doc === activatedDocument}"
+               class=" document-item w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden  rounded-lg">
+            <img [src]="doc" alt="document" class="h-full w-full notPreview">
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="mx-6">
+    <div class="px-10 py-5 flex justify-between items-center border-b border-b-line">
+      <span class="text-h3 leading-h3 text-not-black font-bold">Image details</span>
+      <button [disabled]="isLoading" (click)="onClickSave()"
+               class="bg-primary py-2 text-white rounded-lg px-8 text-center text-h2_medium">
+        <i *ngIf="isLoading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+        Save
+      </button>
+    </div>
+    <div class="px-10 py-5 flex flex-col space-y-5">
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Trip ID</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black">{{ tripId }}</span>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Upload time</span>
+        <button type="button" class="customButton" mat-button [matMenuTriggerFor]="dateAndTime">
+          <mat-form-field appearance="outline" id="date" class="example-full-width w-full">
+            <input [value]="getSelectedDate()" placeholder="Select date time" matInput />
+            <mat-datepicker-toggle matIconSuffix></mat-datepicker-toggle>
+          </mat-form-field>
+        </button>
+        <mat-menu #dateAndTime="matMenu">
+          <mat-card class="w-96" (click)="$event.stopPropagation()">
+            <mat-calendar
+              [(selected)]="selectedDate"
+              (selectedChange)="onSelect($event)"></mat-calendar>
+          </mat-card>
+          <mat-card class="w-96 mt-3 flex items-center justify-center">
+            <app-time-picker [fromModal]="true" [selectedDate]="returnToInputDate"
+                             (timeChange)="onTimeChange($event)"
+                             (click)="$event.stopPropagation()"></app-time-picker>
+          </mat-card>
+          <button
+            (click)="onSelectTimeAndDate()"
+            class="py-3 mt-3 w-full px-6 text-white bg-primary rounded-lg font-semibold">
+            <span class="w-full">Set date & time</span>
+          </button>
+        </mat-menu>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Image type</span>
+        <mat-form-field appearance="outline" class="w-2/3" *ngIf="imageTypes?.length > 1">
+          <mat-select
+            (selectionChange)="onChangeImageType($event)" placeholder="Select image type">
+            @for (imageType of imageTypes; track imageType) {
+              <mat-option [value]="imageType.viewValue">{{ imageType?.viewValue }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <span class="text-h2 leading-h2 font-semibold text-not-black"
+              *ngIf="imageTypes?.length === 1">{{ imageTypes[0]?.viewValue }}</span>
+      </div>
+      <div class="flex flex-col space-y-1" *ngIf="expiryAvailable">
+        <span class="text-body text-secondary">Expire date</span>
+        <div class="grid grid-cols-8 w-4/5 gap-3">
+          <mat-form-field appearance="outline" class="col-span-3">
+            <mat-select
+              (selectionChange)="onChangeImageType($event)" placeholder="Month">
+              @for (month of months; track month) {
+                <mat-option [value]="month.id">{{ month.viewValue }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="col-span-2">
+            <input
+              matInput
+              placeholder="Day"
+              class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="col-span-2">
+            <input
+              matInput
+              placeholder="Year"
+              class="w-full p-4 rounded-lg outline-none ring-none border-none bg-input" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-1" *ngIf="notesAvailable">
+        <span class="text-h2 leading-h2 font-semibold text-not-black">Note</span>
+        <textarea
+          [(ngModel)]="note"
+          placeholder="Enter Note"
+          class="bg-input rounded-lg  p-4 border border-disabled"
+          id="note"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
