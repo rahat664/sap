@@ -11,50 +11,40 @@ import {
 } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
-import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
-  MatCalendar,
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import {
   MatDatepicker,
   MatDatepickerInput,
   MatDatepickerToggle,
-  MatDateRangeInput,
-  MatDateRangePicker,
 } from '@angular/material/datepicker';
 import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
+import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
+import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 
 @Component({
   selector: 'app-file-upload-popup',
   standalone: true,
   imports: [
     CustomInputComponent,
-    GetClickEventDirective,
     CommonModule,
-    MatCalendar,
     MatFormField,
     MatDatepickerToggle,
     MatDatepicker,
     MatDatepickerInput,
     MatInput,
-    MatOption,
-    MatSelect,
     ReactiveFormsModule,
     FormsModule,
-    MatDateRangeInput,
-    MatDateRangePicker,
     MatSuffix,
-    MatButton,
-    MatMenuTrigger,
-    MatMenu,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './file-upload-popup.component.html',
@@ -62,6 +52,7 @@ import { HandleToastrService } from '../../../../../shared/services/handle-toast
 })
 export class FileUploadPopupComponent implements OnChanges {
   readonly dialogRef = inject(MatDialogRef<FileUploadPopupComponent>);
+  readonly dialog = inject(MatDialog);
   file: File | null = null;
   filePreview: string | ArrayBuffer | null = null;
   @Input() fileTypeOptions: CustomInputSelectModel[] | null = [];
@@ -84,7 +75,8 @@ export class FileUploadPopupComponent implements OnChanges {
     private cdr: ChangeDetectorRef,
     private datePipe: DatePipe,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
+    private imageGalleryService: ImageGalleryService
   ) {}
 
   ngOnInit() {
@@ -93,9 +85,7 @@ export class FileUploadPopupComponent implements OnChanges {
     this.fileTypeOptions = this.data?.filetype;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-
-  }
+  ngOnChanges(changes: SimpleChanges) {}
 
   onFileDropped(event: DragEvent) {
     event.preventDefault();
@@ -142,7 +132,8 @@ export class FileUploadPopupComponent implements OnChanges {
         file.registrationType !== 'Driving License Back' &&
         file.registrationType !== 'Registration Paper'
     );
-    console.log(newFileArray)
+
+    console.log(newFileArray);
 
     const isExpiryFilled = newFileArray.every(
       (file: { registrationExpireDate: null }) =>
@@ -169,7 +160,7 @@ export class FileUploadPopupComponent implements OnChanges {
         this.data?.value?.name,
         this.data?.value?.phone
       );
-      this.sharedDriverEditService.completeUpload.subscribe((res) => {
+      this.sharedDriverEditService.completeUpload.subscribe(res => {
         if (res) {
           this.fileArray = [];
         }
@@ -187,7 +178,7 @@ export class FileUploadPopupComponent implements OnChanges {
       this.sharedDriverEditService.bindTruckValueWithForm(this.data?.value);
       this.sharedDriverEditService.onChangeTruckFile(this.fileArray);
       this.sharedDriverEditService.onTruckUpdate();
-      this.sharedDriverEditService.completeUpload.subscribe((res) => {
+      this.sharedDriverEditService.completeUpload.subscribe(res => {
         if (res) {
           this.fileArray = [];
         }
@@ -198,16 +189,42 @@ export class FileUploadPopupComponent implements OnChanges {
   }
 
   previewFile(file: File) {
+    if (file.type === 'application/pdf') {
+      const fileURL = URL.createObjectURL(file);
+      this.fileArray.push({
+        preview: fileURL,
+        file: file,
+        registrationType: null,
+        registrationExpireDate: null,
+        fileOpened: false,
+        registrationOptions: this.newFileType,
+        expiryAvailable: false,
+      });
+      return;
+    } else {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.fileArray.push({
+          file: file,
+          preview: reader.result,
+          registrationType: null,
+          registrationExpireDate: null,
+          fileOpened: false,
+          registrationOptions: this.newFileType,
+          expiryAvailable: false,
+        });
+      };
+    }
     let reader = new FileReader();
 
     // Read the file as Data URL (preview)
-    reader.readAsDataURL(file);
 
+    reader.readAsDataURL(file);
     reader.onload = () => {
-      // Add file and preview data to the array
       this.fileArray.push({
         file: file,
-        preview: reader.result, // This will hold the image or file preview
+        preview: reader.result,
         registrationType: null,
         registrationExpireDate: null,
         fileOpened: false,
@@ -217,13 +234,13 @@ export class FileUploadPopupComponent implements OnChanges {
       this.fileInput.emit(this.fileArray);
     };
 
-    reader.onerror = (error) => {
-      console.error("Error reading file:", error);
+    reader.onerror = error => {
+      console.error('Error reading file:', error);
       // Handle error if needed
     };
   }
 
-// This function will clear the file data from memory (useful after uploading or previewing)
+  // This function will clear the file data from memory (useful after uploading or previewing)
   clearFileData(index: number) {
     const fileItem = this.fileArray[index];
     if (fileItem) {
@@ -251,7 +268,7 @@ export class FileUploadPopupComponent implements OnChanges {
     this.selectedDate = $event.target.value;
     this.fileArray[i].registrationExpireDate = this.datePipe.transform(
       this.selectedDate,
-      'yyyy-MM-ddThh:mm:ss'
+      'yyyy-MM-ddTHH:mm:ss'
     );
   }
 
@@ -264,8 +281,26 @@ export class FileUploadPopupComponent implements OnChanges {
     this.dialogRef.close('close');
   }
 
-
   private excludeExpiryField(fileArray: any[]) {
-    return fileArray.every((file) => file.registrationType === 'Other' || file.registrationType === 'NID Front' || file.registrationType === 'NID Back'  || file.registrationType === 'Registration Paper' || file.registrationType === 'Driving License Back' );
+    return fileArray.every(
+      file =>
+        file.registrationType === 'Other' ||
+        file.registrationType === 'NID Front' ||
+        file.registrationType === 'NID Back' ||
+        file.registrationType === 'Registration Paper' ||
+        file.registrationType === 'Driving License Back'
+    );
+  }
+
+  onClickPdfDocument(file: any) {
+    this.imageGalleryService.setCurrentImage(file);
+    this.dialog.open(ImageGalleryComponent, {
+      minHeight: '90vh',
+      minWidth: '90%',
+      // center the position
+      data: {
+        images: file.preview,
+      },
+    });
   }
 }
