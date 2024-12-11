@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   inject,
@@ -111,7 +112,8 @@ export class TruckAddComponent implements OnInit {
     private router: Router,
     private validation: ValidationService,
     private datePipe: DatePipe,
-    private imageGalleryService: ImageGalleryService
+    private imageGalleryService: ImageGalleryService,
+    private cd: ChangeDetectorRef
   ) {
     this.truckAddForm = this.fb.group({
       registration_zone: [null, Validators.required],
@@ -149,6 +151,10 @@ export class TruckAddComponent implements OnInit {
       truckImages: [null],
       insuranceExpDate: [null],
     });
+  }
+
+  ngAfterViewInit() {
+    this.cd.detectChanges();
   }
 
   onClickRegistrationZone($event: boolean) {
@@ -646,6 +652,7 @@ export class TruckAddComponent implements OnInit {
         .get(expiredControl)
         ?.setValidators([Validators.required]);
       this.truckAddForm.get(expiredControl)?.updateValueAndValidity();
+      this.fileInput.nativeElement.value = '';
     }
   }
 
