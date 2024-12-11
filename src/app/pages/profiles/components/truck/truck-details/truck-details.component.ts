@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
   inject,
@@ -19,10 +18,7 @@ import {
 } from '@angular/forms';
 import { registrationCategoryList } from '../models/registration-category';
 import { registrationZoneList } from '../models/registration-zone';
-import { CreatePopupComponent } from '../../../../../shared/modal/create-popup/create-popup.component';
-import { FileUploadPopupComponent } from '../file-upload-popup/file-upload-popup.component';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
-import { CheckListPopupComponent } from '../../../../../shared/modal/check-list-popup/check-list-popup.component';
 import { PreHireChecklistComponent } from '../pre-hire-checklist/pre-hire-checklist.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField, MatSuffix } from '@angular/material/form-field';
@@ -56,12 +52,7 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
     GetClickEventDirective,
     NgClass,
     NgForOf,
-    DatePipe,
     ReactiveFormsModule,
-    CreatePopupComponent,
-    FileUploadPopupComponent,
-    ImageGalleryComponent,
-    CheckListPopupComponent,
     PreHireChecklistComponent,
     MatFormField,
     MatInput,
@@ -131,13 +122,8 @@ export class TruckDetailsComponent implements OnInit {
     private toastr: HandleToastrService,
     private router: Router,
     private validation: ValidationService,
-    private imageGalleryService: ImageGalleryService,
-    private cd: ChangeDetectorRef
+    private imageGalleryService: ImageGalleryService
   ) {}
-
-  ngAfterViewInit() {
-    this.cd.detectChanges();
-  }
 
   onSelectRegistrationType($event: number) {
     // Find the selected type based on the event id
@@ -210,9 +196,7 @@ export class TruckDetailsComponent implements OnInit {
     if (this.deletedFileUrls.length > 0) {
       this.deletedFileUrls.forEach(url => {
         this.service.deleteTruckFiles(url, this.truckDetails.id).subscribe(
-          (res: any) => {
-            console.log(res);
-          },
+          (res: any) => {},
           error => {
             console.error('Error deleting file:', error);
           }
@@ -341,13 +325,11 @@ export class TruckDetailsComponent implements OnInit {
       );
   }
 
-
   triggerFileUpload(formControlName: string, max: number) {
     this.selectedFormControlName = formControlName;
 
     // Calculate the number of files that can still be uploaded
-    const currentFilesCount =
-      this.getSavedFileArray(formControlName)?.length;
+    const currentFilesCount = this.getSavedFileArray(formControlName)?.length;
     this.maxUploadAble = Math.max(0, max - currentFilesCount); // Ensure it doesn't go negative
 
     // Trigger the file input click if it exists
@@ -527,13 +509,26 @@ export class TruckDetailsComponent implements OnInit {
     }
   }
 
-  onClickImage(preview: any) {
-    this.imageGalleryService.setCurrentImage(preview);
-    this.dialog.open(ImageGalleryComponent, {
-      data: {
-        images: preview,
-      },
-    });
+  onClickImage(file: any, type: string) {
+    // if the file is a PDF file, then convert it to blob of a PDF document file is just
+    if (type === 'pdf') {
+      // this is a blob of the file
+      this.imageGalleryService.setCurrentImage(file.preSignedFileUrl);
+      this.dialog.open(ImageGalleryComponent, {
+        data: {
+          images: file.preSignedFileUrl,
+          fileType: 'pdf',
+          fileName: `${file.documentType}.pdf`,
+        },
+      });
+    } else {
+      this.imageGalleryService.setCurrentImage(file.preSignedFileUrl);
+      this.dialog.open(ImageGalleryComponent, {
+        data: {
+          images: file.preSignedFileUrl,
+        },
+      });
+    }
   }
 
   onClickClosePopUp() {
@@ -713,7 +708,6 @@ export class TruckDetailsComponent implements OnInit {
     };
 
     const selectedField = validationMap[this.selectedFormControlName];
-    console.log(selectedField);
 
     if (selectedField) {
       this.previewFile(files, selectedField.imagesArray);
@@ -729,7 +723,6 @@ export class TruckDetailsComponent implements OnInit {
           .get(selectedField.expiryField)
           ?.updateValueAndValidity();
       }
-      console.log(this.truckUpdateForm.get(selectedField.expiryField));
     } else if (
       this.selectedFormControlName === 'truckImages' ||
       this.selectedFormControlName === 'others'
@@ -750,7 +743,6 @@ export class TruckDetailsComponent implements OnInit {
       const currentFiles = Array.from(
         this.truckUpdateForm.get(this.selectedFormControlName)?.value
       );
-      console.log(currentFiles);
       if (currentFiles.length + files.length > this.maxUploadAble) {
         this.toastr.showError(
           `You can upload maximum of ${this.maxUploadAble + this.getSavedFileArray(this.selectedFormControlName)?.length} files`
@@ -834,6 +826,7 @@ export class TruckDetailsComponent implements OnInit {
           textPrefix: 'the truck with registration number ',
           text: `${this.truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Reject',
+          reasonAvailable: true,
         },
       })
       .afterClosed()
@@ -909,24 +902,24 @@ export class TruckDetailsComponent implements OnInit {
     expiredControl?: string // Changed to string to reflect form control name
   ): void {
     Array.from(files).forEach((file: File) => {
-      const reader = new FileReader();
-
-      // Event listener for file reading completion
-      reader.onload = () => {
+      if (file.type === 'application/pdf') {
+        const fileURL = URL.createObjectURL(file);
         targetArray.push({
-          preview: reader.result,
+          preview: fileURL,
           file: file,
         });
-      };
-
-      // Event listener for error handling
-      reader.onerror = () => {
-        console.error(`Error reading file: ${file.name}`);
-        this.toastr.showError(`Failed to load ${file.name}`);
-      };
-
-      // Start reading the file
-      reader.readAsDataURL(file);
+        console.log(targetArray);
+        return;
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          targetArray.push({
+            preview: reader.result,
+            file: file,
+          });
+        };
+      }
     });
 
     // Handle form control validation if specified
@@ -935,7 +928,6 @@ export class TruckDetailsComponent implements OnInit {
       if (control) {
         control.setValidators([Validators.required]);
         control.updateValueAndValidity();
-        this.fileInput.nativeElement.value = '';
       }
     }
   }
@@ -1012,7 +1004,6 @@ export class TruckDetailsComponent implements OnInit {
           };
 
           if (formControlName && savedImagesMap[formControlName]) {
-            console.log(savedImagesMap[formControlName], formControlName);
             const updatedImages = savedImagesMap[formControlName].filter(
               item => item.preSignedFileUrl !== file.preSignedFileUrl
             );
@@ -1095,7 +1086,6 @@ export class TruckDetailsComponent implements OnInit {
     documents.forEach(doc => {
       // split by truck document type
       const documentType = doc.documentType;
-      console.log(documentType);
       switch (documentType) {
         case 'REG_PAPER_FILE':
           this.savedRegistrationPaper.push(doc);
@@ -1155,5 +1145,21 @@ export class TruckDetailsComponent implements OnInit {
     this.othersImages = [];
     this.getTruckDetailsByTruckId();
     this.updateFormValues(this.truckDetails);
+  }
+
+  checkThatFileIsImageOrPdf(file: any) {
+    return file.fileUrl.endsWith('.pdf') ? 'pdf' : 'image';
+  }
+
+  onClickPdfDocument(file: any) {
+    this.imageGalleryService.setCurrentImage(file);
+    this.dialog.open(ImageGalleryComponent, {
+      minHeight: '90vh',
+      minWidth: '90%',
+      // center the position
+      data: {
+        images: file.preview,
+      },
+    });
   }
 }
