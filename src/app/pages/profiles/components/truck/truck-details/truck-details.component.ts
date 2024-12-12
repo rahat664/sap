@@ -684,9 +684,14 @@ export class TruckDetailsComponent implements OnInit {
   }
 
   private onAddFile(files: FileList) {
-    // Update the form with the selected files
+
+    // Update the form with the selected files and if previously updated dont delete the previous files
+    // merge previous files with the new files
     this.truckUpdateForm.patchValue({
-      [this.selectedFormControlName]: files,
+      [this.selectedFormControlName]: [
+        ...(this.truckUpdateForm.get(this.selectedFormControlName)?.value || []),
+        ...Array.from(files),
+      ],
     });
 
     // Handle file preview and validation based on the selected form control
@@ -739,6 +744,8 @@ export class TruckDetailsComponent implements OnInit {
           ? this.truckImages
           : this.othersImages
       );
+    } else {
+      this.previewFile(files, this.regPaperImages);
     }
   }
 
