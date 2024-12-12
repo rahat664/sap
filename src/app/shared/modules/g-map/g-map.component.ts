@@ -15,7 +15,7 @@ import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { TripService } from '../../../pages/trip-list/services/trip.service';
 import { TruckData } from '../../models/truck-data.model';
 import { TrackerService } from '../../../pages/profiles/services/tracker.service';
-import { timer } from 'rxjs';
+import {Subscription, timer} from 'rxjs';
 import {
   TripData,
   TripPoint,
@@ -32,6 +32,8 @@ export class GMapComponent implements OnInit, OnChanges {
   @Output() clearInput: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
+  private subs: Subscription;
+  initInterval: any;
   get truckId(): string {
     return this._truckId;
   }
@@ -86,7 +88,28 @@ export class GMapComponent implements OnInit, OnChanges {
     private datePipe: DatePipe
   ) {}
 
+  ngOnDestroy(): void {
+    if (this.initInterval) {
+      clearInterval(this.initInterval);
+    }
+    if (this.infoWindow) {
+      this.infoWindow.close();
+    }
+    if (this.truckLocationMarker) {
+      this.truckLocationMarker.setMap(null);
+    }
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
+    this.clearPolylines();
+    this.directionsRenderer.setMap(null);
+    this.trip.bottomHeight.next('0px');
+  }
+
   ngOnInit(): void {
+    if (this.initInterval) {
+      clearInterval(this.initInterval);
+    }
     if (this.infoWindow) {
       this.infoWindow.close();
     }
@@ -143,6 +166,7 @@ export class GMapComponent implements OnInit, OnChanges {
     }
     if (changes['truckLocationPosition']) {
       this.updateTruckLocation();
+      this.updateTruckDataOnly();
     }
   }
 
@@ -335,7 +359,7 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   fetchTruckData(): void {
-    this.truckService
+    this.subs = this.truckService
       .getTrackers(0, 10, this.truckFullRegistrationNumber)
       .subscribe(
         (res: any) => {
@@ -344,6 +368,10 @@ export class GMapComponent implements OnInit, OnChanges {
             this.truckService.getTrackerData(this._truckId).subscribe(
               (res: any) => {
                 this.truckData = res.data;
+                this.truckLocationPosition = {
+                  lat: res.data?.lat,
+                  lng: res.data?.lng,
+                }
                 this.updateInfoWindow();
                 this.startInterval();
               },
@@ -366,6 +394,7 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   updateInfoWindow(): void {
+    this.truckLocationMarker.setPosition(this.truckLocationPosition);
     this.infoWindow.setContent(this.getInfoWindowContent());
     this.infoWindow.open(this.map, this.truckLocationMarker);
 
@@ -414,19 +443,24 @@ export class GMapComponent implements OnInit, OnChanges {
 
   private startInterval() {
     this.intervalData = setInterval(() => {
-      this.updateTruckDataOnly();
       this.stopInterval();
+      this.updateTruckDataOnly();
     }, 3900);
   }
 
   private stopInterval() {
     clearInterval(this.intervalData);
+    this.subs.unsubscribe();
   }
 
   private updateTruckDataOnly() {
-    this.truckService.getTrackerData(this._truckId).subscribe(
+    this.subs = this.truckService.getTrackerData(this._truckId).subscribe(
       (res: any) => {
         this.truckData = res.data;
+        this.truckLocationPosition = {
+          lat: res.data?.lat,
+          lng: res.data?.lng,
+        }
         this.startInterval();
         this.updateInfoWindow();
       },
@@ -471,6 +505,7 @@ export class GMapComponent implements OnInit, OnChanges {
   ): void {
     if (this.infoWindow) {
       this.infoWindow.close();
+      this.subs.unsubscribe();
     }
 
     if (fetchDataCallback && latLng) {
@@ -548,6 +583,7 @@ export class GMapComponent implements OnInit, OnChanges {
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
         this.infoWindow.close();
+        this.stopInterval();
       });
     }
   }
