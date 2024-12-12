@@ -216,28 +216,6 @@ export class FileUploadPopupComponent implements OnChanges {
         });
       };
     }
-    let reader = new FileReader();
-
-    // Read the file as Data URL (preview)
-
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      this.fileArray.push({
-        file: file,
-        preview: reader.result,
-        registrationType: null,
-        registrationExpireDate: null,
-        fileOpened: false,
-        registrationOptions: this.newFileType,
-        expiryAvailable: false,
-      });
-      this.fileInput.emit(this.fileArray);
-    };
-
-    reader.onerror = error => {
-      console.error('Error reading file:', error);
-      // Handle error if needed
-    };
   }
 
   // This function will clear the file data from memory (useful after uploading or previewing)
