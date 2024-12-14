@@ -136,11 +136,10 @@ export class DriverAddComponent implements OnInit {
   }
 
   private onAddFile(files: FileList) {
-    if (this.driverAddForm.get(this.selectedFormControlName)?.value) {
+    const selectedFormControl = this.driverAddForm.get(this.selectedFormControlName);
+    if (selectedFormControl?.value) {
       // concat new files with existing files
-      const currentFiles = Array.from(
-        this.driverAddForm.get(this.selectedFormControlName)?.value
-      );
+      const currentFiles: File[] = Array.from(selectedFormControl.value);
       Array.from(files).forEach((file: File) => {
         currentFiles.push(file);
       });
@@ -149,7 +148,7 @@ export class DriverAddComponent implements OnInit {
       });
     } else {
       this.driverAddForm.patchValue({
-        [this.selectedFormControlName]: files,
+        [this.selectedFormControlName]: Array.from(files),
       });
     }
     switch (this.selectedFormControlName) {

@@ -493,22 +493,12 @@ export class TruckAddComponent implements OnInit {
   }
 
   private onAddFile(files: FileList) {
-    if (this.truckAddForm.get(this.selectedFormControlName)?.value) {
-      // concat new files with existing files
-      const currentFiles = Array.from(
-        this.truckAddForm.get(this.selectedFormControlName)?.value
-      );
-      Array.from(files).forEach((file: File) => {
-        currentFiles.push(file);
-      });
-      this.truckAddForm.patchValue({
-        [this.selectedFormControlName]: currentFiles,
-      });
-    } else {
-      this.truckAddForm.patchValue({
-        [this.selectedFormControlName]: files,
-      });
-    }
+    this.truckAddForm.patchValue({
+      [this.selectedFormControlName]: [
+        ...(this.truckAddForm.get(this.selectedFormControlName)?.value || []),
+        ...Array.from(files),
+      ],
+    });
     switch (this.selectedFormControlName) {
       case 'truckImages':
         this.previewFile(files, this.truckImages);
@@ -527,6 +517,10 @@ export class TruckAddComponent implements OnInit {
         break;
       case 'taxFile':
         this.previewFile(files, this.taxImages, 'taxExpDate');
+        if (this.taxImages.length > 0) {
+          this.truckAddForm.get('taxExpDate')?.setValidators([Validators.required]);
+          this.truckAddForm.get('taxExpDate')?.updateValueAndValidity();
+        }
         break;
       case 'fitnessCertificateFile':
         this.previewFile(files, this.fitnessImages, 'fitnessCertExpDate');
@@ -541,16 +535,16 @@ export class TruckAddComponent implements OnInit {
         this.previewFile(files, this.routePermitImages, 'routePermitExpDate');
         if (this.routePermitImages.length > 0) {
           this.truckAddForm
-            .get('caseExpDate')
+            .get('routePermitExpDate')
             ?.setValidators([Validators.required]);
-          this.truckAddForm.get('caseExpDate')?.updateValueAndValidity();
+          this.truckAddForm.get('routePermitExpDate')?.updateValueAndValidity();
         }
         break;
       case 'casePaperFile':
         this.previewFile(files, this.casePaperImages, 'caseExpDate');
         if (this.casePaperImages.length > 0) {
-          this.truckAddForm.get('others')?.setValidators([Validators.required]);
-          this.truckAddForm.get('others')?.updateValueAndValidity();
+          this.truckAddForm.get('caseExpDate')?.setValidators([Validators.required]);
+          this.truckAddForm.get('caseExpDate')?.updateValueAndValidity();
         }
         break;
       case 'others':
