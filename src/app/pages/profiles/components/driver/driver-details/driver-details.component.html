@@ -255,7 +255,7 @@
                (click)="$event.stopPropagation();
                         onClickImage(file, 'pdf')"
                class="h-full w-full" src="assets/svg/pdf.svg" alt="">
-               class="h-full w-full" src="assets/svg/pdf.svg" alt=""><button *ngIf="isInEditMode" (click)="onCloseImageSavedImage(viewMoreFormControlName, file)"
+               <button *ngIf="isInEditMode" (click)="onCloseImageSavedImage(viewMoreFormControlName, file)"
                   class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
             <i class="far fa-times"></i>
           </button>
