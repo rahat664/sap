@@ -90,7 +90,7 @@ export class GMapComponent implements OnInit, OnChanges {
 
   ngOnDestroy(): void {
     if (this.initInterval) {
-      clearInterval(this.initInterval);
+      this.stopInterval();
     }
     if (this.infoWindow) {
       this.infoWindow.close();
@@ -166,7 +166,6 @@ export class GMapComponent implements OnInit, OnChanges {
     }
     if (changes['truckLocationPosition']) {
       this.updateTruckLocation();
-      this.updateTruckDataOnly();
     }
   }
 
@@ -274,6 +273,7 @@ export class GMapComponent implements OnInit, OnChanges {
       this.tripStatus != 'Completed' &&
       'Cancelled'
     ) {
+      this.fetchTruckData('direct');
       if (this.truckLocationMarker) {
         // Update existing marker position
         this.truckLocationMarker.setPosition(this.truckLocationPosition);
@@ -300,7 +300,7 @@ export class GMapComponent implements OnInit, OnChanges {
       // Add marker click listener to open InfoWindow and fetch data
       this.truckLocationMarker.addListener('click', () => {
         this.showLoadingSpinner(); // Show loading spinner
-        this.fetchTruckData(); // Fetch data from API
+        this.fetchTruckData('click'); // Fetch data from API
       });
     } else {
       if (this.truckLocationMarker) {
@@ -358,7 +358,7 @@ export class GMapComponent implements OnInit, OnChanges {
     this.destination = [];
   }
 
-  fetchTruckData(): void {
+  fetchTruckData(useCase: string): void {
     this.subs = this.truckService
       .getTrackers(0, 10, this.truckFullRegistrationNumber)
       .subscribe(
@@ -372,7 +372,10 @@ export class GMapComponent implements OnInit, OnChanges {
                   lat: res.data?.lat,
                   lng: res.data?.lng,
                 }
-                this.updateInfoWindow();
+                if (useCase === 'click') {
+                  this.stopInterval();
+                  this.updateInfoWindow();
+                }
                 this.startInterval();
               },
               error => {}
@@ -404,6 +407,7 @@ export class GMapComponent implements OnInit, OnChanges {
       closeBtn.addEventListener('click', () => {
         this.infoWindow.close();
         this.stopInterval();
+        this.fetchTruckData('close');
       });
     });
     // Delay to allow the DOM to render

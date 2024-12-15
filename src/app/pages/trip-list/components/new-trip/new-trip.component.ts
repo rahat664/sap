@@ -143,6 +143,8 @@ export class NewTripComponent implements OnInit {
   onCreateTrip() {
     this.customerSelectMenuOpened = false;
     this.isTemplateEnabled = false;
+    localStorage.removeItem('selectedTemplate');
+    localStorage.removeItem('isFromTemplate');
     this.selectedTemplate = null;
     this.router.navigate(['/trip-create/create']);
     this.dontClearLocalStorage = true;
