@@ -1,14 +1,14 @@
-<div class="flex 2xl:grid-cols-3 h-screen bg-white">
+<div class="grid lg:grid-cols-4 h-[calc(100vh-3.5rem)] lg:h-screen bg-white">
   <div
-    class="hidden lg:block border-r border-line w-full  bg-loginBg flex-1 bg-center bg-cover bg-no-repeat h-full">
+    class="hidden lg:block col-span-3 border-r border-line w-full  bg-loginBg flex-1 bg-center bg-cover bg-no-repeat h-full">
     <div
       class="w-full h-full flex items-center justify-center  object-center object-cover">
       <img loading="lazy" class="notPreview" src="assets/logo/login-logo.png" alt="loginLogo" />
     </div>
   </div>
-  <div class="h-screen w-[32rem]">
+  <div class="h-[calc(100vh-3.5rem)] flex flex-col lg:h-screen ">
     <div
-      class="flex flex-col h-[calc(100vh-2.5rem)] w-full pb-12 justify-center px-12 items-start text-center md:text-left">
+      class="flex flex-col h-[calc(100vh-2.5rem)] text-left w-full pb-12 justify-center px-12 items-start md:text-left">
       <h1 *ngIf="!otpScreen" class="text-h1 leading-h1 font-semibold pb-10">User login</h1>
       <div *ngIf="otpScreen" class="flex flex-col pb-12">
         <h1 class="text-h1 leading-h1 font-semibold pb-4">OTP verification</h1>
@@ -20,7 +20,7 @@
           </button>
         </div>
       </div>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-[23.5rem]">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full">
         <div *ngIf="usingEmail" class="mb-4 flex flex-col space-y-2 text-secondary w-full">
           <label for="email" class="form-label">User Email</label>
           <mat-form-field appearance="outline" class="example-full-width ">

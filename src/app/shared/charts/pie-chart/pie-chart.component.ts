@@ -112,10 +112,17 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
           breakpoint: 480,
           options: {
             chart: {
-              width: 200,
+              width: 350,
             },
             legend: {
               position: 'bottom',
+              markers: {
+                fillColors: colors,
+                customHTML: function () {
+                  index++;
+                  return `<span style="display:inline-block; width:13px; height:13px; border-radius: 2px; background-color: ${colors[index]};"></span>`;
+                },
+              },
             },
           },
         },

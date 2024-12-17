@@ -3,20 +3,16 @@
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
       Top Customer
     </h2>
-    <!--    <mat-form-field appearance="outline" class="w-[12rem]">-->
-    <!--      <mat-select-->
-    <!--        formControlName="vendorId"-->
-    <!--        placeholder="Select date">-->
-    <!--        <mat-option value="all">All time</mat-option>-->
-    <!--        <mat-option value="today">Today</mat-option>-->
-    <!--        <mat-option value="all">Yesterday</mat-option>-->
-    <!--        <mat-option value="all">Last 7 days</mat-option>-->
-    <!--        <mat-option value="all">Last 15 days</mat-option>-->
-    <!--        <mat-option value="all">Last 30 days</mat-option>-->
-    <!--      </mat-select>-->
-    <!--    </mat-form-field>-->
+    <mat-form-field appearance="outline" class="w-[12rem]">
+      <mat-select (click)="$event.preventDefault()" [(ngModel)]="selectedColumn"
+                  placeholder="Show">
+        <mat-option value="GP">GP</mat-option>
+        <mat-option value="NOT">Number of trip</mat-option>
+        <mat-option value="CR">CR</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
-  <div class="border w-full border-[#A1D5DE] rounded-lg">
+  <div routerLink="/profile/customer" class="border w-full border-[#A1D5DE] rounded-lg hidden lg:block">
     <div
       class="grid grid-cols-7 w-full  text-body_title leading-body_title font-semibold text-not-black px-2 py-5 border-b border-[#A1D5DE]">
       <span class="col-span-4">Customer</span>
@@ -30,10 +26,36 @@
           class="grid grid-cols-7  text-body_title leading-body_title border-b last:border-none border-[#A1D5DE] font-semibold text-secondary px-2 py-5 ">
           <span class="col-span-4">{{ customer.customerName }}</span>
           <span>{{ customer.noOfTrip }}</span>
-          <span>{{ customer.totalCustomerRate | number }} </span>
+          <span>{{ customer.totalCustomerRate | number }} </span>3
           <span>{{ customer.totalGrossProfit | number }} </span>
         </div>
       </ng-container>
     </div>
+  </div>
+  <div routerLink="/profile/customer" class="lg:hidden">
+    <div class="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+      <!-- Header Row -->
+      <div
+        class="flex justify-between items-center px-4 py-4 bg-gray-100 border-b">
+        <span class="text-lg font-semibold text-gray-700">Customer</span>
+        <span class="text-lg font-semibold text-gray-700" *ngIf="selectedColumn === 'NOT'">No of Trip</span>
+        <span class="text-lg font-semibold text-gray-700" *ngIf="selectedColumn === 'CR'">CR (৳)</span>
+        <span class="text-lg font-semibold text-gray-700" *ngIf="selectedColumn === 'GP'">GP (৳)</span>
+      </div>
+
+      <!-- Content Rows -->
+      <div class="flex flex-col space-y-4 p-4">
+        <ng-container *ngFor="let customer of topCustomer">
+          <div
+            class="flex justify-between items-center text-gray-600 hover:bg-gray-50">
+            <span class="col-span-4">{{ customer.customerName }}</span>
+            <span *ngIf="selectedColumn === 'NOT'">{{ customer.noOfTrip }}</span>
+            <span *ngIf="selectedColumn === 'CR'">{{ customer.totalCustomerRate | number }}</span>
+            <span *ngIf="selectedColumn === 'GP'">{{ customer.totalGrossProfit | number }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
   </div>
 </div>

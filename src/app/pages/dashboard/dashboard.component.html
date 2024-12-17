@@ -1,33 +1,33 @@
-<div class="flex flex-col space-y-3 mx-2 pb-4">
+<div class="flex flex-col space-y-3 lg:mx-2 lg:pb-4">
   <div
     appGetElementHeight
     (height)="height = $event"
     class="flex flex-col space-y-3 sticky top-16 z-50 bg-white py-4 px-2">
     <div
-      class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem]  space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      class="flex flex-col py-[1rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem]  space-y-3 lg:space-y-0 lg:flex-row justify-between">
       <h1 class="text-h1 leading-h1 font-semibold">Dashboard</h1>
     </div>
   </div>
-  <div class="grid grid-cols-4 gap-3">
-    <div class="col-span-2 h-full rounded-lg">
+  <div class="lg:grid lg:grid-cols-4 gap-3">
+    <div class="lg:col-span-2 h-full rounded-lg">
       <app-status-heighlight></app-status-heighlight>
     </div>
-    <div class="h-full  bg-white  rounded-lg">
+    <div class="h-full bg-white mt-3 lg:mt-0  rounded-lg">
       <app-challan-status></app-challan-status>
     </div>
-    <div routerLink="/profile/transporter" class="h-full cursor-pointer bg-white rounded-lg">
+    <div routerLink="/profile/transporter" class="h-full mt-3 lg:mt-0 cursor-pointer bg-white rounded-lg">
       <app-top-transporter></app-top-transporter>
     </div>
     <div class="flex flex-col col-span-2 w-full cursor-pointer space-y-3">
       <button routerLink="/trip-list" class="w-full">
         <app-month-wise-revenue></app-month-wise-revenue>
       </button>
-      <button routerLink="/manage-trip" class="w-full">
+      <button routerLink="/manage-trip" class="w-full mt-3 lg:mt-0">
         <app-live-trip-status></app-live-trip-status>
       </button>
     </div>
-    <div routerLink="/profile/customer"
-         class="h-full w-full flex cursor-pointer items-start bg-white col-span-2 rounded-lg">
+    <div
+         class="h-full w-full flex cursor-pointer items-start bg-white mt-3 lg:mt-0 col-span-2 rounded-lg">
       <app-top-customer class="w-full"></app-top-customer>
     </div>
   </div>

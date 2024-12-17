@@ -16,7 +16,7 @@
     <!--      </mat-select>-->
     <!--    </mat-form-field>-->
   </div>
-  <div>
+  <div class="hidden lg:block">
     <div class="flex justify-between items-center py-4 text-body text-input-hint">
       <span>Name</span>
       <span>Total Gross Profit (GP)</span>
@@ -28,6 +28,22 @@
           <span>{{ transporter.totalProfit | number }} ৳</span>
         </div>
       </ng-container>
+    </div>
+  </div>
+  <div class="lg:hidden">
+    <div class="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+      <div class="flex justify-between items-center px-4 py-4 bg-gray-100 border-b">
+        <span class="text-lg font-semibold text-gray-700">Name</span>
+        <span class="text-lg font-semibold text-gray-700">Total Gross Profit (GP)</span>
+      </div>
+      <div class="flex flex-col space-y-4 p-4">
+        <ng-container *ngFor="let transporter of topTransporter">
+          <div class="flex justify-between items-center text-gray-600">
+            <span class="font-medium">{{ transporter.transporterName }}</span>
+            <span class="font-medium">{{ transporter.totalProfit | number }} ৳</span>
+          </div>
+        </ng-container>
+      </div>
     </div>
   </div>
 </div>

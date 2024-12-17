@@ -34,6 +34,7 @@ import { mergeMap } from 'rxjs/operators';
 import { TruckDocumentType } from '../../shared/Enums/registration_type';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
+import {ToggleResponsiveService} from "../../shared/services/toggle-responsive-services/toggle-responsive.service";
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -138,6 +139,7 @@ export class ChallanDashboardComponent {
     private formBuilder: FormBuilder,
     private customer: CustomerService,
     private shared: DriverEditSharedService,
+    private mobileViewService: ToggleResponsiveService,
     private transporter: UserService,
     private truck: TruckService,
     private router: Router,
@@ -283,6 +285,9 @@ export class ChallanDashboardComponent {
     this.anotherStatusCalled = false;
     this.generateDateOptionsArray();
     this.getTripList();
+    this.mobileViewService.isSidebarOpen.subscribe((res) => {
+      this.filterOpened = !res;
+    });
   }
 
   ngAfterViewInit() {

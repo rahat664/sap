@@ -16,7 +16,7 @@
     <!--      </mat-select>-->
     <!--    </mat-form-field>-->
   </div>
-  <div class="grid grid-cols-2 gap-3 cursor-pointer">
+  <div class="grid lg:grid-cols-2 gap-3 cursor-pointer">
     <app-status-card routerLink="/trip-list" icon="revenue" title="Total revenue (GP)"
                      [value]="dashboardStats?.grossProfitStat?.totalGrossProfit"
                      text="{{dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange ? (dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange |number) : 0}} ৳ this month"

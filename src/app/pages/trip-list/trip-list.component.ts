@@ -31,6 +31,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { debounceTime, Subject } from 'rxjs';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
+import {ToggleResponsiveService} from "../../shared/services/toggle-responsive-services/toggle-responsive.service";
 
 @Component({
   selector: 'app-trip-list',
@@ -110,7 +111,8 @@ export class TripListComponent implements OnInit {
     private customer: CustomerService,
     private shared: DriverEditSharedService,
     private router: Router,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private responsive: ToggleResponsiveService
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -146,6 +148,9 @@ export class TripListComponent implements OnInit {
       this.anotherStatusCalled = value;
     });
     this.generateDateOptionsArray();
+    this.responsive.isSidebarOpen.subscribe((value) => {
+      this.filterOpened = !value;
+    });
   }
 
   private getTripList() {

@@ -6,6 +6,7 @@ import { MatSelect } from '@angular/material/select';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { TopCustomers } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-top-customer',
@@ -18,6 +19,7 @@ import { DashboardService } from '../../services/dashboard.service';
     ReactiveFormsModule,
     DecimalPipe,
     CommonModule,
+    RouterLink,
   ],
   templateUrl: './top-customer.component.html',
   styleUrl: './top-customer.component.scss',
@@ -26,6 +28,7 @@ export class TopCustomerComponent {
   topCustomer: TopCustomers[] = [];
   fromDate: string;
   toDate: string;
+  selectedColumn = 'GP';
 
   constructor(
     private datePipe: DatePipe,
