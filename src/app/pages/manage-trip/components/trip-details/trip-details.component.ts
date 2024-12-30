@@ -268,11 +268,13 @@ export class TripDetailsComponent {
 
   onClickTripCancel() {
     const dialogRef = this.dialog.open(ConfirmCancelComponent, {
-      width: '21.375rem',
       data: {
-        title: 'Cancel Trip?',
-        text: `Do you want to cancel the trip ${this.tripDetails.tripId}?`,
+        title: 'Attention?',
+        textPrefix: 'Do you want to cancel the trip ',
+        text: `${this.tripDetails.tripId}?`,
         trip: this.tripDetails,
+        reasonAvailable: true,
+        buttonText: 'Cancel Trip',
       },
     });
   }

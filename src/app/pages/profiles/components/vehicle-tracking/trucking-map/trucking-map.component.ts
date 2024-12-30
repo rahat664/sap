@@ -5,7 +5,7 @@ import {
   Input,
   Output,
   SimpleChanges,
-  ViewChild,
+  ViewChild, AfterViewInit,
 } from '@angular/core';
 import { mapStyles } from '../../../../../shared/models/map-options';
 import { GoogleMap } from '@angular/google-maps';
@@ -23,7 +23,7 @@ import { timer } from 'rxjs';
   templateUrl: './trucking-map.component.html',
   styleUrl: './trucking-map.component.scss',
 })
-export class TruckingMapComponent {
+export class TruckingMapComponent implements AfterViewInit {
   @Output() clearInput: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
@@ -250,7 +250,9 @@ export class TruckingMapComponent {
   }
 
   private stopInterval() {
-    clearInterval(this.intervalData);
+    if (this.intervalData) {
+      clearInterval(this.intervalData);
+    }
   }
 
   private updateTruckDataOnly(marker: any) {

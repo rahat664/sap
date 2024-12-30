@@ -5,19 +5,23 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { TripService } from '../../../trip-list/services/trip.service';
-import { DatePipe } from '@angular/common';
+import {DatePipe, NgClass, NgIf} from '@angular/common';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
+import {FormsModule} from "@angular/forms";
+import {MatCheckbox, MatCheckboxChange} from "@angular/material/checkbox";
 
 @Component({
   selector: 'app-confirm-cancel',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, NgClass, NgIf, MatCheckbox],
   templateUrl: './confirm-cancel.component.html',
   styleUrl: './confirm-cancel.component.scss',
 })
 export class ConfirmCancelComponent {
   readonly dialog = inject(MatDialog);
+  reason: string | undefined;
+   reasonTextArea: boolean;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -35,6 +39,7 @@ export class ConfirmCancelComponent {
   confirmUpdate() {
     const body = {};
     body['status'] = 'Cancelled';
+    body['tripCancellationReason'] = this.reason;
     this.trip.updateTrip(body, this.data.trip.tripId).subscribe((res: any) => {
       this.dialogRef.close('updated');
       if (res.status == 'OK') {
@@ -62,5 +67,15 @@ export class ConfirmCancelComponent {
         });
       }
     });
+  }
+
+  onChangeReason($event: MatCheckboxChange) {
+    this.reason = $event?.source?.value
+    if (this.reason == 'Others') {
+      this.reason = '';
+      this.reasonTextArea = true;
+    } else {
+      this.reasonTextArea = false;
+    }
   }
 }

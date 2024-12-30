@@ -65,6 +65,17 @@
   </div>
   <div class="flex flex-1 mx-16 py-4 items-start">
     <div class="flex flex-col w-1/2 space-y-4">
+      <div class="flex flex-col space-y-2" *ngIf="tripDetails?.status === 'Cancelled'">
+        <div class="flex space-x-3 items-center">
+          <div class=" w-6 h-6 bg-red flex items-center justify-center rounded-full">
+            <i class="fas fa-times text-white"></i>
+          </div>
+          <h1 class="text-body_title leading-body_title text-not-black font-semibold">Reason behind cancellation</h1>
+        </div>
+        <h1
+          class="text-body flex-1  text-wrap text-web-text-secondary">{{ tripDetails.tripCancellationReason }}
+        </h1>
+      </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
           <img loading="lazy" class="w-6 h-6" src="assets/svg/loading.svg">

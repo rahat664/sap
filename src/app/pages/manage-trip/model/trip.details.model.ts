@@ -77,6 +77,7 @@ export interface TripData {
   good: Good;
   truck: Truck;
   driverCode: string;
+  tripCancellationReason: string | null;
   driverName: string;
   driverPhone: string;
   helperCode: string | null;
