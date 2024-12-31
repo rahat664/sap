@@ -17,27 +17,30 @@
       class="font-semibold text-body_title leading-body_title">{{ data?.text }}</span></p>
     <h1 class="text-h3 leading-h3 font-bold text-not-black self-start">Cause of trip Cancellation</h1>
     <div class="flex flex-col space-y-1 self-start">
-      <mat-checkbox [checked]="reason === 'Rate mismatched'" value="Rate mismatched" (change)="onChangeReason($event)">
+      <mat-checkbox [checked]="checkThatValueIsAvailableOrNot('Rate mismatched')" value="Rate mismatched" (change)="onChangeReason($event)">
         Rate mismatched
       </mat-checkbox>
-      <mat-checkbox [checked]="reason === 'Delayed reaching of truck'" value="Delayed reaching of truck" (change)="onChangeReason($event)">
+      <mat-checkbox [checked]="checkThatValueIsAvailableOrNot('Delayed reaching of truck')"
+                    value="Delayed reaching of truck" (change)="onChangeReason($event)">
         Delayed reaching of truck
       </mat-checkbox>
-      <mat-checkbox [checked]="reason === 'Trip cancelled by customer'" value="Trip cancelled by customer" (change)="onChangeReason($event)">
+      <mat-checkbox [checked]="checkThatValueIsAvailableOrNot('Trip cancelled by customer')"
+                    value="Trip cancelled by customer" (change)="onChangeReason($event)">
         Trip cancelled by customer
       </mat-checkbox >
-      <mat-checkbox [checked]="reason === 'Trip cancelled by transporter'" value="Trip cancelled by transporter" (change)="onChangeReason($event)">
+      <mat-checkbox [checked]="reason === 'Trip cancelled by transporter'"
+                    value="Trip cancelled by transporter" (change)="onChangeReason($event)">
         Trip cancelled by transporter
       </mat-checkbox>
-      <mat-checkbox [checked]="reason === 'Others'" value="Others" (change)="onChangeReason($event)">
+      <mat-checkbox [checked]="reasonTextArea" value="Others" (change)="onChangeReason($event)">
         Others
       </mat-checkbox>
     </div>
     <textarea *ngIf="data?.reasonAvailable && reasonTextArea" class="w-full h-32 border border-gray-300 rounded-lg p-4 mt-4" placeholder="Write Cause"
-              [(ngModel)]="reason"></textarea>
-    <button [ngClass]="{'bg-opacity-[30%]': data?.reasonAvailable && (reason == null || reason == '')}" [disabled]="data?.reasonAvailable && (reason == null || reason == '')"
+              [(ngModel)]="textareaReasons"></textarea>
+    <button [ngClass]="{'bg-opacity-[30%]': reason === '' || (reasonTextArea && textareaReasons === '') }" [disabled]="reason === '' || (reasonTextArea && textareaReasons === '')"
             class="bg-red w-full text-white rounded-lg p-4 mt-4"
-            (click)="confirmUpdate()">{{ data?.buttonText }}
+            (click)="confirmUpdate()">{{ data?.buttonText}}
     </button>
   </div>
 </div>

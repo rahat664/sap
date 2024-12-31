@@ -70,11 +70,15 @@
           <div class=" w-6 h-6 bg-red flex items-center justify-center rounded-full">
             <i class="fas fa-times text-white"></i>
           </div>
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">Reason behind cancellation</h1>
+          <h1 class="text-body_title leading-body_title text-not-black font-semibold">Reasons behind cancellation</h1>
         </div>
-        <h1
-          class="text-body flex-1  text-wrap text-web-text-secondary">{{ tripDetails.tripCancellationReason }}
-        </h1>
+        <div class="ml-2 " *ngFor="let reason of tripDetails.tripCancellationReason.split('\n')"
+          >
+          <div class="flex items-center space-x-2">
+            <img src="assets/svg/circle.svg" alt="loading">
+            <span class="text-body_title leading-body_title text-web-text-secondary">{{ reason.trim() }}</span>
+          </div>
+        </div>
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">

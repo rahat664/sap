@@ -20,8 +20,9 @@ import {MatCheckbox, MatCheckboxChange} from "@angular/material/checkbox";
 })
 export class ConfirmCancelComponent {
   readonly dialog = inject(MatDialog);
-  reason: string | undefined;
+  reason: string = '';
    reasonTextArea: boolean;
+   textareaReasons: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -34,9 +35,16 @@ export class ConfirmCancelComponent {
     this.dialogRef.close('');
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.reason = '';
+    this.reasonTextArea = false;
+    this.textareaReasons = '';
+  }
 
   confirmUpdate() {
+    if (this.reasonTextArea) {
+      this.reason = this.reason + 'Others : '+ this.textareaReasons;
+    }
     const body = {};
     body['status'] = 'Cancelled';
     body['tripCancellationReason'] = this.reason;
@@ -70,12 +78,31 @@ export class ConfirmCancelComponent {
   }
 
   onChangeReason($event: MatCheckboxChange) {
-    this.reason = $event?.source?.value
-    if (this.reason == 'Others') {
-      this.reason = '';
-      this.reasonTextArea = true;
+    let reason: string[] = this.reason ? this.reason.split('\n') : [];
+    if ($event.checked) {
+      if ($event.source.value !== 'Others') {
+        reason.push($event.source.value);
+        this.reasonTextArea = false;
+      } else {
+        reason.push(this.textareaReasons);
+        this.reasonTextArea = true;
+      }
     } else {
-      this.reasonTextArea = false;
+      reason = reason.filter((item) => item !== $event.source.value);
+      if ($event.source.value === 'Others') {
+        this.reasonTextArea = false;
+      }
     }
+    this.reason = reason.join('\n');
+  }
+
+  ngOnDestory() {
+    this.reason = '';
+    this.reasonTextArea = false;
+    this.textareaReasons = '';
+  }
+
+  checkThatValueIsAvailableOrNot(reason: string) {
+    return this.reason.includes(reason);
   }
 }

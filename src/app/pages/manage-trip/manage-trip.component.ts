@@ -311,6 +311,7 @@ export class ManageTripComponent implements OnInit {
       this.getTripDetails(this.tripList[0].tripId);
       this.activatedId = this.tripList[0].tripId;
       this.tripStatus = this.tripList[0].status;
+      this.activatedTruckSizeInFeet = Number(this.tripList[0].truckSize);
     } else {
       this.tripList.push(...trip.data.responses);
     }

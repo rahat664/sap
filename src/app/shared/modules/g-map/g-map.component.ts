@@ -15,7 +15,7 @@ import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { TripService } from '../../../pages/trip-list/services/trip.service';
 import { TruckData } from '../../models/truck-data.model';
 import { TrackerService } from '../../../pages/profiles/services/tracker.service';
-import {Subscription, timer} from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import {
   TripData,
   TripPoint,
@@ -36,6 +36,7 @@ export class GMapComponent implements OnInit, OnChanges {
   initInterval: any;
   etaData: any;
   private endPoints: google.maps.LatLngLiteral[];
+
   get truckId(): string {
     return this._truckId;
   }
@@ -72,8 +73,8 @@ export class GMapComponent implements OnInit, OnChanges {
 
   initialMarker: google.maps.MarkerOptions = {};
   truckLocationMarker: google.maps.Marker = null; // Change to google.maps.Marker
-  startMarker: google.maps.MarkerOptions[] = [];
-  endMarker: google.maps.MarkerOptions[] = [];
+  startMarker: google.maps.Marker[] = [];
+  endMarker: google.maps.Marker[] = [];
   polylines: google.maps.PolylineOptions[] = [];
   bottomHeight: string = '0px';
   infoWindow: any;
@@ -91,6 +92,18 @@ export class GMapComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnDestroy(): void {
+    if (this.startMarker) {
+      this.startMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+    }
+    if (this.endMarker) {
+      this.endMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+    }
+    this.startMarker = [];
+    this.endMarker = [];
     if (this.initInterval) {
       this.stopInterval();
     }
@@ -109,6 +122,18 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    if (this.startMarker) {
+      this.startMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+    }
+    if (this.endMarker) {
+      this.endMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+    }
+    this.startMarker = [];
+    this.endMarker = [];
     if (this.initInterval) {
       clearInterval(this.initInterval);
     }
@@ -163,6 +188,18 @@ export class GMapComponent implements OnInit, OnChanges {
     }
     if (changes) {
       if (this.starting.length > 0 && this.destination.length > 0) {
+        if (this.startMarker) {
+          this.startMarker.forEach(marker => {
+            marker.setMap(null);
+          });
+        }
+        if (this.endMarker) {
+          this.endMarker.forEach(marker => {
+            marker.setMap(null);
+          });
+        }
+        this.startMarker = [];
+        this.endMarker = [];
         this.updateRoute();
       }
     }
@@ -177,7 +214,7 @@ export class GMapComponent implements OnInit, OnChanges {
 
     startPoints = this.starting;
     endPoints = this.destination;
-    this.endPoints = this.destination
+    this.endPoints = this.destination;
 
     this.clearInput.emit(true);
 
@@ -187,12 +224,14 @@ export class GMapComponent implements OnInit, OnChanges {
     this.connectPoints(
       startPoints[startPoints.length - 1],
       endPoints[0],
-      'loading'
+      'loading',
+      startPoints.length - 1
     );
     this.connectPoints(
       startPoints[startPoints.length - 1],
       endPoints[0],
-      'unloading'
+      'unloading',
+      0
     );
     this.connectSequentialPoints(endPoints, 'unloading');
   }
@@ -202,7 +241,11 @@ export class GMapComponent implements OnInit, OnChanges {
     pointType: string
   ) {
     for (let i = 0; i < points.length - 1; i++) {
-      this.connectPoints(points[i], points[i + 1], pointType);
+      if (pointType === 'loading') {
+        this.connectPoints(points[i], points[i + 1], pointType, i);
+      } else {
+        this.connectPoints(points[i], points[i + 1], pointType, i + 1);
+      }
     }
   }
 
@@ -210,7 +253,8 @@ export class GMapComponent implements OnInit, OnChanges {
   private connectPoints(
     start: google.maps.LatLngLiteral,
     end: google.maps.LatLngLiteral,
-    pointType: string
+    pointType: string,
+    index: number
   ) {
     if (start && end) {
       // clear previous markers and polylines
@@ -229,9 +273,9 @@ export class GMapComponent implements OnInit, OnChanges {
       this.directionsService.route(request, (result, status) => {
         if (status === 'OK') {
           if (pointType === 'loading') {
-            this.setLoadingMarker(start);
+            this.setLoadingMarker(start, index);
           } else if (pointType === 'unloading') {
-            this.setUnloadingMarker(end);
+            this.setUnloadingMarker(end, index);
           }
           const bound = new google.maps.LatLngBounds();
           bound.extend(start);
@@ -246,27 +290,44 @@ export class GMapComponent implements OnInit, OnChanges {
     }
   }
 
-  private setLoadingMarker(position: google.maps.LatLngLiteral) {
-    this.initialMarker = {};
-    this.startMarker.push({
+  private setLoadingMarker(position: google.maps.LatLngLiteral, index: number) {
+    const marker = new google.maps.Marker({
       position: position,
       icon: {
         url: '/assets/svg/start.svg', // Replace with your custom loading marker icon
         scaledSize: new google.maps.Size(30, 30),
       },
       title: 'Loading Point',
+      map: this.map.googleMap,
     });
+
+    if (this.tripStatus === 'Running') {
+      marker.addListener('click', () => {
+        this.onClickMap({ latLng: position }, index);
+      });
+    }
+
+    this.startMarker.push(marker);
   }
 
-  private setUnloadingMarker(position: google.maps.LatLngLiteral) {
-    this.endMarker.push({
+  private setUnloadingMarker(position: google.maps.LatLngLiteral, index) {
+    const marker = new google.maps.Marker({
       position: position,
       icon: {
         url: '/assets/svg/end.svg', // Replace with your custom loading marker icon
         scaledSize: new google.maps.Size(30, 30),
       },
       title: 'Unloading Point',
+      map: this.map.googleMap,
     });
+
+    if (this.tripStatus === 'Running') {
+      marker.addListener('click', () => {
+        this.onClickUnloading({ latLng: position }, index);
+      });
+    }
+
+    this.endMarker.push(marker);
   }
 
   private updateTruckLocation() {
@@ -372,34 +433,47 @@ export class GMapComponent implements OnInit, OnChanges {
               (res: any) => {
                 this.truckData = res.data;
                 if (this.tripStatus === 'Running') {
-                  this.truckService.getEtaData(
-                    this.truckLocationPosition?.lat,
-                    this.truckLocationPosition?.lng,
-                    this.endPoints[this.endPoints?.length - 1]?.lat,
-                    this.endPoints[this.endPoints?.length - 1]?.lng,
-                    this.truckSizeInFeet
-                  ).subscribe((response: any)=> {
-                    this.etaData = response.data;
-                    this.truckLocationPosition = {
-                      lat: res.data?.lat,
-                      lng: res.data?.lng,
-                    };
-                    if (useCase === 'click') {
-                      this.stopInterval();
+                  console.log(this.truckSizeInFeet);
+                  this.truckService
+                    .getEtaData(
+                      this.truckLocationPosition?.lat,
+                      this.truckLocationPosition?.lng,
+                      this.endPoints[this.endPoints?.length - 1]?.lat,
+                      this.endPoints[this.endPoints?.length - 1]?.lng,
+                      this.truckSizeInFeet
+                    )
+                    .subscribe((response: any) => {
+                      this.etaData = response.data;
+                      this.truckLocationPosition = {
+                        lat: res.data?.lat,
+                        lng: res.data?.lng,
+                      };
+                      if (useCase === 'click') {
+                        if (this.intervalData) {
+                          this.stopInterval();
+                        }
+                        this.startInterval(useCase);
+                        this.updateInfoWindow();
+                      }
+                      if (this.intervalData) {
+                        this.stopInterval();
+                      }
                       this.startInterval(useCase);
-                      this.updateInfoWindow();
-                    }
-                    this.startInterval(useCase);
-                  })
+                    });
                 } else {
                   this.truckLocationPosition = {
                     lat: res.data?.lat,
                     lng: res.data?.lng,
                   };
                   if (useCase === 'click') {
-                    this.stopInterval();
+                    if (this.intervalData) {
+                      this.stopInterval();
+                    }
                     this.startInterval(useCase);
                     this.updateInfoWindow();
+                  }
+                  if (this.intervalData) {
+                    this.stopInterval();
                   }
                   this.startInterval(useCase);
                 }
@@ -442,8 +516,8 @@ export class GMapComponent implements OnInit, OnChanges {
   getInfoWindowContent(): string {
     let dateTimeDisplay = '';
     if (this.tripStatus === 'Running') {
-       dateTimeDisplay = this.etaData?.etaDateTime
-        ? `ETA${this.endPoints?.length > 1 ? ' (Last unloading point)': ' '}: ${this.datePipe.transform(this.etaData?.etaDateTime, 'd MMM yyyy, h:mm a')}`
+      dateTimeDisplay = this.etaData?.etaDateTime
+        ? `ETA${this.endPoints?.length > 1 ? ' (Last unloading point)' : ' '}: ${this.datePipe.transform(this.etaData?.etaDateTime, 'd MMM yyyy, h:mm a')}`
         : `<span class="text-red">No eta data available</span>`;
     }
     return `
@@ -456,9 +530,13 @@ export class GMapComponent implements OnInit, OnChanges {
           <i class="far fa-times cursor-pointer"></i>
         </button>
       </div>
-      ${this.etaData && this.tripStatus === 'Running' ? `<div id="info-body" style="background: #F5FBFC; padding: 0.5rem; padding-bottom: 0; font-size: 12px; color: #242424">
+      ${
+        this.etaData && this.tripStatus === 'Running'
+          ? `<div id="info-body" style="background: #F5FBFC; padding: 0.5rem; padding-bottom: 0; font-size: 12px; color: #242424">
       <p class="text-body_title text-not-black font-bold">${dateTimeDisplay}</p>
-       </div>` : ''}
+       </div>`
+          : ''
+      }
       <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
         <table id="info-table" style="width: 100%;">
           <tr class="grid grid-cols-8 "><td class="col-span-3">Time</td><td>:</td><td class="col-span-4">${this.truckData.time ? this.truckData.time : 'N/A'}</td></tr>
@@ -482,7 +560,6 @@ export class GMapComponent implements OnInit, OnChanges {
 
   private startInterval(useCase: string) {
     this.intervalData = setInterval(() => {
-      this.stopInterval();
       this.updateTruckDataOnly(useCase);
     }, 3900);
   }
@@ -500,6 +577,7 @@ export class GMapComponent implements OnInit, OnChanges {
           lat: res.data?.lat,
           lng: res.data?.lng,
         };
+        this.stopInterval();
         this.startInterval(useCase);
         if (useCase === 'click') {
           this.updateInfoWindow();
@@ -509,28 +587,32 @@ export class GMapComponent implements OnInit, OnChanges {
     );
   }
 
-  onClickMap($event: google.maps.MapMouseEvent, index: number): void {
+  onClickMap($event: any, index: number): void {
+    this.stopInterval();
     this.startInterval('eta');
     this.handleInfoWindow(
       $event.latLng,
       index,
       this.truckLocationPosition &&
         this.truckLocationPosition?.lat &&
-        this.truckLocationPosition?.lng && this.tripStatus === 'Running'
+        this.truckLocationPosition?.lng &&
+        this.tripStatus === 'Running'
         ? this.getEtaData.bind(this)
         : null,
       this.getNoTruckerAvailableContent.bind(this)
     );
   }
 
-  onClickUnloading($event: google.maps.MapMouseEvent, index: number): void {
-    this.startInterval('eta')
+  onClickUnloading($event: any, index: number): void {
+    this.stopInterval();
+    this.startInterval('eta');
     this.handleInfoWindow(
       $event.latLng,
       index,
       this.truckLocationPosition &&
         this.truckLocationPosition?.lat &&
-        this.truckLocationPosition?.lng && this.tripStatus === 'Running'
+        this.truckLocationPosition?.lng &&
+        this.tripStatus === 'Running'
         ? this.getUnloadingEtaData.bind(this)
         : null,
       this.getNoTruckerAvailableContentUnloading.bind(this)
@@ -542,7 +624,7 @@ export class GMapComponent implements OnInit, OnChanges {
     latLng: google.maps.LatLng | null,
     index: number,
     fetchDataCallback:
-      | ((latLngLiteral: google.maps.LatLngLiteral, index: number) => void)
+      | ((latLngLiteral: google.maps.LatLng, index: number) => void)
       | null,
     noDataCallback: (index: number) => string
   ): void {
@@ -555,7 +637,7 @@ export class GMapComponent implements OnInit, OnChanges {
       this.infoWindow = this.createInfoWindow(this.getLoadingSpinnerContent());
       this.infoWindow.setPosition(latLng);
       this.infoWindow.open(this.map.googleMap);
-      fetchDataCallback(latLng.toJSON(), index);
+      fetchDataCallback(latLng, index);
     } else {
       this.infoWindow = this.createInfoWindow(noDataCallback(index));
       this.infoWindow.setPosition(latLng);
@@ -574,7 +656,8 @@ export class GMapComponent implements OnInit, OnChanges {
     index: number
   ): void {
     if (this.tripStatus === 'Running') {
-      this.startInterval('eta')
+      this.stopInterval();
+      this.startInterval('eta');
       this.fetchEtaData(
         destination,
         index,
@@ -589,7 +672,8 @@ export class GMapComponent implements OnInit, OnChanges {
     index: number
   ): void {
     if (this.tripStatus === 'Running') {
-      this.startInterval('eta')
+      this.stopInterval();
+      this.startInterval('eta');
       this.fetchEtaData(
         destination,
         index,
@@ -691,11 +775,12 @@ export class GMapComponent implements OnInit, OnChanges {
     etaDateTime: string | null,
     index: number,
     message: string,
-    type: string ,
+    type: string
   ): string {
-    const address = etaDateTime && type === 'Loading'
-      ? this.getTripLoadingAddress(this.singleTripData?.tripPoints, index)
-      : this.getTripUnloadingAddress(this.singleTripData?.tripPoints, index);
+    const address =
+      etaDateTime && type === 'Loading'
+        ? this.getTripLoadingAddress(this.singleTripData?.tripPoints, index)
+        : this.getTripUnloadingAddress(this.singleTripData?.tripPoints, index);
 
     const dateTimeDisplay = etaDateTime
       ? `ETA: ${this.datePipe.transform(etaDateTime, 'd MMM yyyy, h:mm a')}`
