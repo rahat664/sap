@@ -70,7 +70,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "optimization": true,
+              "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
               "fileReplacements": [
@@ -81,7 +81,7 @@
               ]
             },
             "qa": {
-              "optimization": true,
+              "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
               "fileReplacements": [
