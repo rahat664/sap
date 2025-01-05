@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../../environments/environment';
 import { HttpBackend, HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import {environment} from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,7 @@ export class GeolocationService {
   private httpClient: HttpClient;
   googleMapUrl = `https://places.googleapis.com/v1/places`;
   setSidebarClosed: BehaviorSubject<any> = new BehaviorSubject<any>(false);
-
+  historyApi = `${environment.backendUrl}/api/locations/histories`;
   constructor(private httpBackend: HttpBackend) {
     this.httpClient = new HttpClient(this.httpBackend);
   }
@@ -57,5 +57,9 @@ export class GeolocationService {
       };
       document.body.appendChild(script);
     });
+  }
+
+  getTripHistory(from: any, to: any, vehicleRegId: any) {
+      this.httpClient.get(`${this.historyApi}?from=${from}&to=${to}&vehicleRegId=${vehicleRegId}`);
   }
 }

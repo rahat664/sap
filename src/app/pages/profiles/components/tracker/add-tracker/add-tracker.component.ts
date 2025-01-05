@@ -88,7 +88,7 @@ export class AddTrackerComponent {
           }
         },
         err => {
-          this.toast.showError(err.message);
+          this.toast.showError(err.error?.message);
         }
       );
     } else {

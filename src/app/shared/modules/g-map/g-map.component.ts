@@ -146,7 +146,12 @@ export class GMapComponent implements OnInit, OnChanges {
 
     if (this.starting.length > 0 && this.destination.length > 0) {
       this.clearPolylines();
-      this.updateRoute();
+      if (this.tripStatus === 'Completed' && this.truckLocationPosition && this.truckLocationPosition?.lat && this.truckLocationPosition?.lng) {
+        this.clearPolylines();
+        this.updateHistoryRoute();
+      } else {
+        this.updateRoute();
+      }
     }
 
     const currentLocation = localStorage.getItem('currentLocation');
@@ -200,7 +205,12 @@ export class GMapComponent implements OnInit, OnChanges {
         }
         this.startMarker = [];
         this.endMarker = [];
-        this.updateRoute();
+        if (this.tripStatus === 'Completed' && this.truckLocationPosition && this.truckLocationPosition?.lat && this.truckLocationPosition?.lng) {
+          this.clearPolylines();
+          this.updateHistoryRoute();
+        } else {
+          this.updateRoute();
+        }
       }
     }
     if (changes['truckLocationPosition']) {
@@ -829,5 +839,9 @@ export class GMapComponent implements OnInit, OnChanges {
       return filteredPoints[index]?.pointName || 'No address found';
     }
     return 'No address found';
+  }
+
+  private updateHistoryRoute() {
+
   }
 }

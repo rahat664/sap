@@ -41,6 +41,8 @@ export class TripService {
   bottomHeight: BehaviorSubject<string> = new BehaviorSubject('0px');
   anotherStatusCalled: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+
+
   constructor(
     private http: HttpClient,
     private toaster: HandleToastrService
