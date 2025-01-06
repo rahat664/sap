@@ -36,6 +36,7 @@ export class GMapComponent implements OnInit, OnChanges {
   initInterval: any;
   etaData: any;
   private endPoints: google.maps.LatLngLiteral[];
+  private lines: google.maps.Polyline[] = [];
 
   get truckId(): string {
     return this._truckId;
@@ -145,8 +146,43 @@ export class GMapComponent implements OnInit, OnChanges {
     });
 
     if (this.starting.length > 0 && this.destination.length > 0) {
-      this.clearPolylines();
-      this.updateRoute();
+      if (this.tripStatus === 'Completed') {
+        // 24 hours before trip started at time
+        const tripStartedAt = new Date(this.singleTripData?.tripStartedAt);
+        const oneDayBeforeTripStartedAt = new Date(
+          tripStartedAt.getTime() - 24 * 60 * 60 * 1000
+        );
+
+        const tripEndedAt = new Date(this.singleTripData?.tripEndedAt);
+        const oneDayAfterTripEndedAt = new Date(
+          tripEndedAt.getTime() + 24 * 60 * 60 * 1000
+        );
+        this.getTripHistory(
+          'previous',
+          this.datePipe.transform(
+            oneDayBeforeTripStartedAt,
+            'yyyy-MM-ddTHH:mm:ss'
+          ),
+          this.singleTripData?.tripStartedAt
+        );
+        this.getTripHistory(
+          'current',
+          this.singleTripData?.tripStartedAt,
+          this.singleTripData?.tripEndedAt
+        );
+        this.getTripHistory(
+          'next',
+          this.singleTripData?.tripEndedAt,
+          this.datePipe.transform(oneDayAfterTripEndedAt, 'yyyy-MM-ddTHH:mm:ss')
+        );
+      } else {
+        if (this.lines) {
+          this.lines.forEach(line => {
+            line.setMap(null);
+          });
+        }
+        this.updateRoute();
+      }
     }
 
     const currentLocation = localStorage.getItem('currentLocation');
@@ -200,7 +236,46 @@ export class GMapComponent implements OnInit, OnChanges {
         }
         this.startMarker = [];
         this.endMarker = [];
-        this.updateRoute();
+        if (this.tripStatus === 'Completed') {
+          // 24 hours before trip started at time
+          const tripStartedAt = new Date(this.singleTripData?.tripStartedAt);
+          const oneDayBeforeTripStartedAt = new Date(
+            tripStartedAt.getTime() - 24 * 60 * 60 * 1000
+          );
+
+          const tripEndedAt = new Date(this.singleTripData?.tripEndedAt);
+          const oneDayAfterTripEndedAt = new Date(
+            tripEndedAt.getTime() + 24 * 60 * 60 * 1000
+          );
+          this.getTripHistory(
+            'previous',
+            this.datePipe.transform(
+              oneDayBeforeTripStartedAt,
+              'yyyy-MM-ddTHH:mm:ss'
+            ),
+            this.singleTripData?.tripStartedAt
+          );
+          this.getTripHistory(
+            'current',
+            this.singleTripData?.tripStartedAt,
+            this.singleTripData?.tripEndedAt
+          );
+          this.getTripHistory(
+            'next',
+            this.singleTripData?.tripEndedAt,
+            this.datePipe.transform(
+              oneDayAfterTripEndedAt,
+              'yyyy-MM-ddTHH:mm:ss'
+            )
+          );
+        } else {
+          if (this.lines) {
+            this.lines.forEach(line => {
+              line.setMap(null);
+            });
+          }
+          this.updateRoute();
+        }
       }
     }
     if (changes['truckLocationPosition']) {
@@ -220,31 +295,34 @@ export class GMapComponent implements OnInit, OnChanges {
 
     this.initialMarker = {};
 
-    this.connectSequentialPoints(startPoints, 'loading');
+    this.connectSequentialPoints(startPoints, 'loading', 'main');
     this.connectPoints(
       startPoints[startPoints.length - 1],
       endPoints[0],
       'loading',
-      startPoints.length - 1
+      startPoints.length - 1,
+      'main'
     );
     this.connectPoints(
       startPoints[startPoints.length - 1],
       endPoints[0],
       'unloading',
-      0
+      0,
+      'main'
     );
-    this.connectSequentialPoints(endPoints, 'unloading');
+    this.connectSequentialPoints(endPoints, 'unloading', 'main');
   }
 
   private connectSequentialPoints(
     points: google.maps.LatLngLiteral[],
-    pointType: string
+    pointType: string,
+    type
   ) {
     for (let i = 0; i < points.length - 1; i++) {
       if (pointType === 'loading') {
-        this.connectPoints(points[i], points[i + 1], pointType, i);
+        this.connectPoints(points[i], points[i + 1], pointType, i, type);
       } else {
-        this.connectPoints(points[i], points[i + 1], pointType, i + 1);
+        this.connectPoints(points[i], points[i + 1], pointType, i + 1, type);
       }
     }
   }
@@ -254,7 +332,8 @@ export class GMapComponent implements OnInit, OnChanges {
     start: google.maps.LatLngLiteral,
     end: google.maps.LatLngLiteral,
     pointType: string,
-    index: number
+    index: number,
+    type: string
   ) {
     if (start && end) {
       // clear previous markers and polylines
@@ -272,6 +351,7 @@ export class GMapComponent implements OnInit, OnChanges {
 
       this.directionsService.route(request, (result, status) => {
         if (status === 'OK') {
+          console.log(type);
           if (pointType === 'loading') {
             this.setLoadingMarker(start, index);
           } else if (pointType === 'unloading') {
@@ -281,8 +361,11 @@ export class GMapComponent implements OnInit, OnChanges {
           bound.extend(start);
           bound.extend(end);
           this.map.googleMap.fitBounds(bound);
-
-          this.updatePolylineWithTraffic(result);
+          if (type === 'main') {
+            this.updatePolylineWithTraffic(result);
+          } else {
+            this.clearPolylines();
+          }
         } else {
           console.error('Error fetching directions', status);
         }
@@ -829,5 +912,173 @@ export class GMapComponent implements OnInit, OnChanges {
       return filteredPoints[index]?.pointName || 'No address found';
     }
     return 'No address found';
+  }
+
+  private connectHistoryRoute(data, type) {
+    for (let i = 0; i < data.length; i++) {
+      const startLat = data[i].latitude;
+      const startLng = data[i].longitude;
+      const endLat = data[i + 1]?.latitude;
+      const endLng = data[i + 1]?.longitude;
+      const start = { lat: startLat, lng: startLng };
+      const end = { lat: endLat, lng: endLng };
+      if (type === 'previous') {
+        this.connect24HoursBeforeHistoryRoute(start, end);
+      } else if (type === 'current') {
+        this.connectHistoryPoint(start, end);
+      } else if (type === 'next') {
+        this.connect24HoursAfterHistoryRoute(start, end);
+      }
+    }
+  }
+
+  private connectHistoryPoint(start, end: any) {
+    if (start && end) {
+      // const arrowSymbol = {
+      //   path: google.maps.SymbolPath.BACKWARD_OPEN_ARROW, // Arrow symbol
+      //   scale: 2, // Size of the arrow
+      //   strokeColor: "#11484F", // Arrow color
+      //   strokeWeight: 2, // Arrow weight
+      // };
+      const lineCoordinates = [start, end];
+      const line = new google.maps.Polyline({
+        path: lineCoordinates,
+        geodesic: true,
+        strokeOpacity: 1,
+        strokeColor: '#11484F',
+        strokeWeight: 4,
+        // icons: [
+        //   {
+        //     icon: arrowSymbol,
+        //     offset: '100%',
+        //   },
+        // ],
+      });
+      line.setMap(this.map.googleMap);
+      this.lines.push(line);
+      const bound = new google.maps.LatLngBounds();
+      bound.extend(start);
+      bound.extend(end);
+      this.map.googleMap.fitBounds(bound);
+    }
+  }
+
+  getTripHistory(type, from, to) {
+    this.startMarker = [];
+    this.endMarker = [];
+    let startPoints: google.maps.LatLngLiteral[] = [];
+    let endPoints: google.maps.LatLngLiteral[] = [];
+
+    startPoints = this.starting;
+    endPoints = this.destination;
+    this.endPoints = this.destination;
+    this.trip
+      .getTripHistory(
+        from,
+        to,
+        this.singleTripData?.truck?.fullRegistrationNumber
+      )
+      .subscribe(
+        (res: any) => {
+          this.clearInput.emit(true);
+
+          this.initialMarker = {};
+
+          this.connectSequentialPoints(
+            startPoints,
+            'loading',
+            res.data?.length > 0 ? 'history' : 'main'
+          );
+          this.connectPoints(
+            startPoints[startPoints.length - 1],
+            endPoints[0],
+            'loading',
+            startPoints.length - 1,
+            res.data?.length > 0 ? 'history' : 'main'
+          );
+          this.connectPoints(
+            startPoints[startPoints.length - 1],
+            endPoints[0],
+            'unloading',
+            0,
+            res.data?.length > 0 ? 'history' : 'main'
+          );
+          this.connectSequentialPoints(
+            endPoints,
+            'unloading',
+            res.data?.length > 0 ? 'history' : 'main'
+          );
+          if (res.data?.length > 0) {
+            this.connectHistoryRoute(res.data, type);
+          } else {
+            if (this.lines) {
+              this.lines.forEach(line => {
+                line.setMap(null);
+              });
+            }
+          }
+        },
+        error => {
+          if (this.lines) {
+            this.lines.forEach(line => {
+              line.setMap(null);
+            });
+          }
+          this.connectSequentialPoints(startPoints, 'loading', 'main');
+          this.connectPoints(
+            startPoints[startPoints.length - 1],
+            endPoints[0],
+            'loading',
+            startPoints.length - 1,
+            'main'
+          );
+          this.connectPoints(
+            startPoints[startPoints.length - 1],
+            endPoints[0],
+            'unloading',
+            0,
+            'main'
+          );
+          this.connectSequentialPoints(endPoints, 'unloading', 'main');
+        }
+      );
+  }
+
+  private connect24HoursBeforeHistoryRoute(start, end: any) {
+    const dottedSymbol = {
+      path: google.maps.SymbolPath.CIRCLE, // Use a circle to create dots
+      scale: 2, // Size of the dots
+      strokeOpacity: 1, // Opacity of the dots
+      strokeColor: '#A5B8BB', // Color of the dots
+    };
+  }
+
+  private connect24HoursAfterHistoryRoute(start, end: any) {
+    const dottedSymbol = {
+      path: google.maps.SymbolPath.CIRCLE, // Use a circle to create dots
+      scale: 2, // Size of the dots
+      strokeOpacity: 1, // Opacity of the dots
+      strokeColor: '#A5B8BB', // Color of the dots
+    };
+
+    const lineCoordinates = [start, end];
+    const line = new google.maps.Polyline({
+      path: lineCoordinates,
+      geodesic: true,
+      strokeOpacity: 0,
+      icons: [
+        {
+          icon: dottedSymbol,
+          offset: '0',
+          repeat: '10px',
+        },
+      ],
+    });
+    line.setMap(this.map.googleMap);
+    this.lines.push(line);
+    const bound = new google.maps.LatLngBounds();
+    bound.extend(start);
+    bound.extend(end);
+    this.map.googleMap.fitBounds(bound);
   }
 }
