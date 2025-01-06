@@ -52,7 +52,7 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
     this.cd.detectChanges();
   }
   ngOnChanges() {
-    const colors = ['#0CD5F0', '#CCF3FB'];
+    const colors = ['#85DAE5', '#208B99'];
     let index = -1;
     const labels = ['Received', 'Pending'];
     const customLegendItems = labels.map(

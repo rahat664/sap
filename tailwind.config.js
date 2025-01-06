@@ -7,6 +7,7 @@ module.exports = {
     extend: {
       placeholderColor: {
         primary: '#11484F',
+        'not-primary': '#208B99',
         secondary: '#777777',
         'not-black': '#242424',
         'web-text-secondary': '#5D5D5D',
@@ -26,6 +27,7 @@ module.exports = {
       },
       textColor: {
         primary: '#11484F',
+        'not-primary': '#208B99',
         secondary: '#777777',
         'not-black': '#242424',
         'web-text-secondary': '#5D5D5D',
@@ -45,6 +47,7 @@ module.exports = {
       },
       backgroundColor: {
         primary: '#11484F',
+        'not-primary': '#208B99',
         'not-black': '#242424',
         danger: '#777777',
         'web-text-secondary': '#5D5D5D',
@@ -65,6 +68,7 @@ module.exports = {
       },
       borderColor: {
         primary: '#11484F',
+        'not-primary': '#208B99',
         'not-black': '#242424',
         dangers: '#777777',
         'web-text-secondary': '#5D5D5D',
@@ -86,6 +90,7 @@ module.exports = {
       },
       outlineColor: {
         primary: '#11484F',
+        'not-primary': '#208B99',
         'not-black': '#242424',
         dangers: '#777777',
         'web-text-secondary': '#5D5D5D',
@@ -107,6 +112,7 @@ module.exports = {
       },
       ringColor: {
         primary: '#11484F',
+        'not-primary': '#208B99',
         'not-black': '#242424',
         dangers: '#777777',
         'web-text-secondary': '#5D5D5D',

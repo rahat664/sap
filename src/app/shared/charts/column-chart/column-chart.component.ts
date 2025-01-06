@@ -52,7 +52,8 @@ export class ColumnChartComponent {
   constructor(private cd: ChangeDetectorRef) {}
 
   ngOnChanges() {
-    const colors = ['#E5EAEB', '#0CD5F0'];
+
+    const colors = ['#85DAE5', '#208B99'];
     this.chartOptions = {
       series: [
         {
@@ -77,6 +78,7 @@ export class ColumnChartComponent {
         bar: {
           horizontal: false,
           columnWidth: '60%',
+          borderRadius: 4,
         },
       },
       dataLabels: {
