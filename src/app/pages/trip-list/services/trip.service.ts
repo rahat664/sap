@@ -40,6 +40,8 @@ export class TripService {
   reloadManageTripPage: BehaviorSubject<boolean> = new BehaviorSubject(false);
   bottomHeight: BehaviorSubject<string> = new BehaviorSubject('0px');
   anotherStatusCalled: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  historyApi = `${environment.locationUrl}/api/locations/histories`;
+
 
 
 
@@ -244,5 +246,9 @@ export class TripService {
     return this.http.delete(
       `${this.tripPointDeleteUrl}/${tripPointId}/eventTypes/${tripPointEventId}/documents/${documentId}`
     );
+  }
+
+  getTripHistory(from: any, to: any, vehicleRegId: any) {
+    return this.http.get(`${this.historyApi}?from=${from}&to=${to}&vehicleRegId=${vehicleRegId}`);
   }
 }

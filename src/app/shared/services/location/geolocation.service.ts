@@ -12,7 +12,6 @@ export class GeolocationService {
   private httpClient: HttpClient;
   googleMapUrl = `https://places.googleapis.com/v1/places`;
   setSidebarClosed: BehaviorSubject<any> = new BehaviorSubject<any>(false);
-  historyApi = `${environment.backendUrl}/api/locations/histories`;
   constructor(private httpBackend: HttpBackend) {
     this.httpClient = new HttpClient(this.httpBackend);
   }
@@ -59,7 +58,5 @@ export class GeolocationService {
     });
   }
 
-  getTripHistory(from: any, to: any, vehicleRegId: any) {
-      this.httpClient.get(`${this.historyApi}?from=${from}&to=${to}&vehicleRegId=${vehicleRegId}`);
-  }
+
 }
