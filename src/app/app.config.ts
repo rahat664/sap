@@ -1,6 +1,6 @@
 import {
   ApplicationConfig,
-  importProvidersFrom,
+  importProvidersFrom, LOCALE_ID,
   provideZoneChangeDetection,
 } from '@angular/core';
 import { PreloadAllModules, provideRouter, withPreloading } from '@angular/router';

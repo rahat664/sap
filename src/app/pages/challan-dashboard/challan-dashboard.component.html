@@ -149,7 +149,7 @@
             </div>
             <div class="flex flex-col text-left space-y-1">
               <h1
-                class="font-bold text-h1 leading-h1 text-not-black">{{ pendingChallanAmount | number }}
+                class="font-bold text-h1 leading-h1 text-not-black">{{ pendingChallanAmount | numberSeperator }}
                 ৳</h1>
               <p
                 class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ pendingChallanText }}</p>
@@ -169,7 +169,7 @@
               </div>
               <div class="flex text-left flex-col">
                 <h1
-                  class="font-bold text-h1 leading-h1 text-not-black">{{ receivedAmount | number }}</h1>
+                  class="font-bold text-h1 leading-h1 text-not-black">{{ receivedAmount | numberSeperator }}</h1>
                 <p
                   class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ receivedText }}</p>
               </div>
@@ -185,7 +185,7 @@
               </div>
               <div class="flex text-left flex-col space-y-1">
                 <h1
-                  class="font-bold text-h1 leading-h1 text-not-black">{{ pendingAmount | number }}</h1>
+                  class="font-bold text-h1 leading-h1 text-not-black">{{ pendingAmount | numberSeperator }}</h1>
                 <p
                   class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ pendingText }}</p>
               </div>
@@ -201,7 +201,7 @@
               </div>
               <div class="flex text-left flex-col space-y-1">
                 <h1
-                  class="font-bold text-h1 leading-h1 text-not-black">{{ approvedAmount | number }}</h1>
+                  class="font-bold text-h1 leading-h1 text-not-black">{{ approvedAmount | numberSeperator }}</h1>
                 <p
                   class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ approvedText }}</p>
               </div>
@@ -217,7 +217,7 @@
               </div>
               <div class="flex text-left flex-col space-y-1">
                 <h1
-                  class="font-bold text-h1 leading-h1 text-not-black">{{ rejectedAmount | number }}</h1>
+                  class="font-bold text-h1 leading-h1 text-not-black">{{ rejectedAmount | numberSeperator }}</h1>
                 <p
                   class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ rejectedText }}</p>
               </div>
@@ -237,7 +237,7 @@
               </div>
               <div class="flex text-left flex-col space-y-1">
                 <h1
-                  class="font-bold text-h1 leading-h1 text-not-black">{{ completedTrips | number }}</h1>
+                  class="font-bold text-h1 leading-h1 text-not-black">{{ completedTrips | numberSeperator }}</h1>
                 <p
                   class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ completedTripsText }}</p>
               </div>
@@ -253,7 +253,7 @@
               </div>
               <div class="flex text-left flex-col space-y-1">
                 <h1
-                  class="font-bold text-h1 leading-h1 text-not-black">{{ hardCopyReceived | number }}</h1>
+                  class="font-bold text-h1 leading-h1 text-not-black">{{ hardCopyReceived | numberSeperator }}</h1>
                 <p
                   class="font-semibold text-body_title leading-body_title text-web-text-secondary">{{ hardCopyReceivedText }}</p>
               </div>

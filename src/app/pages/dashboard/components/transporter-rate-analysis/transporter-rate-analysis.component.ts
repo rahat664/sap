@@ -5,8 +5,7 @@ import {MatOption, MatSelect, MatSelectChange} from "@angular/material/select";
 import {FormsModule} from "@angular/forms";
 import {TripService} from "../../../trip-list/services/trip.service";
 import {VehicleCategory} from "../../../auth/models/response/trip";
-import {NgForOf} from "@angular/common";
-import {District} from "../../../../shared/models/ditrict-with-latlng.model";
+import {NgForOf, NgIf} from "@angular/common";
 import {UserService} from "../../../profiles/services/user.service";
 import {UserModel} from "../../../user-management/models/user.model";
 import {DashboardService} from "../../services/dashboard.service";
@@ -23,6 +22,7 @@ import {RouterLink} from "@angular/router";
     FormsModule,
     NgForOf,
     RouterLink,
+    NgIf,
   ],
   templateUrl: './transporter-rate-analysis.component.html',
   styleUrl: './transporter-rate-analysis.component.scss',
@@ -65,7 +65,6 @@ export class TransporterRateAnalysisComponent {
   seriesdata = [];
   colors = [];
   categories = [];
-
   constructor(
     private trip: TripService,
     private user: UserService,
@@ -101,6 +100,16 @@ export class TransporterRateAnalysisComponent {
   private getTransporterList() {
     this.user.getTransporter(0, 1000).subscribe((res: any) => {
       this.transporterLists = res.data.responses;
+      // sort the transporter list by name
+      this.transporterLists.sort((a, b) => {
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      });
     });
   }
 
@@ -176,9 +185,9 @@ export class TransporterRateAnalysisComponent {
       this.seriesdata.push({
         name: 'Highest Rate',
         data: singleSeriesData,
-        color: '#208B99',
+        color: '#1DBF73',
       });
-      this.colors.push('#208B99');
+      this.colors.push('#1DBF73');
     } else if (this.chartType === 'low') {
       const singleSeriesData = Array(this.categories.length).fill(0);
       data.forEach((item: any) => {
@@ -204,9 +213,9 @@ export class TransporterRateAnalysisComponent {
       this.seriesdata.push({
         name: 'Average Rate',
         data: singleSeriesData,
-        color: '#85DAE5',
+        color: '#208B99',
       });
-      this.colors.push('#85DAE5');
+      this.colors.push('#208B99');
     } else {
       const singleSeriesDataHigh = Array(this.categories.length).fill(0);
       const singleSeriesDataLow = Array(this.categories.length).fill(0);
@@ -222,20 +231,20 @@ export class TransporterRateAnalysisComponent {
       this.seriesdata.push({
         name: 'Highest Rate',
         data: singleSeriesDataHigh,
-        color: '#208B99',
+        color: '#1DBF73',
       });
       this.seriesdata.push({
         name: 'Average Rate',
         data: singleSeriesDataAverage,
-        color: '#85DAE5',
+        color: '#208B99',
       });
       this.seriesdata.push({
         name: 'Lowest Rate',
         data: singleSeriesDataLow,
         color: '#F0614E',
       });
+      this.colors.push('#1DBF73');
       this.colors.push('#208B99');
-      this.colors.push('#85DAE5');
       this.colors.push('#F0614E');
     }
   }
@@ -248,7 +257,7 @@ export class TransporterRateAnalysisComponent {
     // this.categories = Array.from({ length: daysInMonth }, (_, i) => i + 1);
     // // concat year and month as dd-mm-yyyy
     //
-    this.colors = ['#208B99', '#85DAE5', '#F0614E'];
+    this.colors = ['#1DBF73', '#208B99', '#F0614E'];
     // this.seriesdata = [
     //   {
     //     name: 'Maximum Rate',
@@ -263,5 +272,14 @@ export class TransporterRateAnalysisComponent {
     //     data: Array(daysInMonth).fill(0)
     //   },
     // ];
+  }
+
+  clearAll() {
+    this.transporter = '';
+    this.vehicleType = '';
+    this.loadingDistrict = '';
+    this.unloadingDistrict = '';
+    this.resetColorsAndSeriesData();
+    this.getTransporterRateAnalysisData();
   }
 }

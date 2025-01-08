@@ -5,11 +5,12 @@ import { TripService } from '../../../trip-list/services/trip.service';
 import { DialogDataComponent } from '../dialog-data/dialog-data.component';
 import { ConfirmUpdateComponent } from '../confirm-update/confirm-update.component';
 import { MatDialog } from '@angular/material/dialog';
+import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
 
 @Component({
   selector: 'app-trip-info',
   standalone: true,
-  imports: [DatePipe, CommonModule],
+  imports: [DatePipe, CommonModule, NumberSeperatorPipe],
   templateUrl: './trip-info.component.html',
   styleUrl: './trip-info.component.scss',
 })
@@ -138,10 +139,10 @@ export class TripInfoComponent {
   }
 
   getLoadingPoint(tripPoints: TripPoint[]) {
-    return tripPoints.filter((point) => point.pointType === 'Loading');
+    return tripPoints.filter(point => point.pointType === 'Loading');
   }
 
   getUnloadingPoint(tripPoints: TripPoint[]) {
-    return tripPoints.filter((point) => point.pointType === 'Unloading');
+    return tripPoints.filter(point => point.pointType === 'Unloading');
   }
 }

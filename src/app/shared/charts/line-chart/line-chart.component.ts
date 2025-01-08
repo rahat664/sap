@@ -41,8 +41,8 @@ export class LineChartComponent {
   public chartOptions: Partial<ChartOptions>;
   @Input() seriesData: any = [];
   @Input() colors: string[] = [
+    '#1DBF73',
     '#208B99',
-    '#85DAE5',
     '#F0614E'
   ];
   @Input() categories: any = [];

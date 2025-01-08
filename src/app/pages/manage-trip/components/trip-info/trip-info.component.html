@@ -155,7 +155,7 @@
         </div>
         <h1
           class="text-body w-1/2 text-wrap text-web-text-secondary">{{
-            Number(tripDetails.customerRate) | number
+            Number(tripDetails.customerRate) | numberSeperator
           }} ৳</h1>
       </div>
       <div class="flex flex-col space-y-2">
@@ -184,7 +184,7 @@
           >| <a class="cursor-pointer"
                 (click)="copyNumber($event, tripDetails.transporterPhone)">{{ tripDetails.transporterPhone }}</a></span>
           <span
-            *ngIf="tripDetails.transporterRate && isAdmin()"> | {{ tripDetails.transporterRate | number }}
+            *ngIf="tripDetails.transporterRate && isAdmin()"> | {{ tripDetails.transporterRate | numberSeperator }}
             ৳</span></h1>
       </div>
 

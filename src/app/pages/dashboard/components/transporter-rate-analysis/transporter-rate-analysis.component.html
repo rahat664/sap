@@ -2,6 +2,7 @@
   <div class="flex justify-between items-end z-0">
     <h2 class="text-h2 leading-h2 font-semibold text-not-black pt-5">
       Transporter Rate Analysis
+        <a *ngIf="transporter || vehicleType || loadingDistrict || unloadingDistrict" (click)="clearAll()" class="font-semibold ml-2 text-red cursor-pointer text-body_title">Clear all</a>
     </h2>
     <!--    <div class="absolute top-5 right-6">-->
     <!--      <mat-form-field appearance="outline" class="w-[12rem]">-->

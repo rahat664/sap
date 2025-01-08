@@ -84,7 +84,7 @@
             }}
           </td>
           <td>{{transporter.numberOfTrips != null ? transporter.numberOfTrips : '0'}}</td>
-          <td>{{transporter.grossProfit != null ? (transporter.grossProfit | number) : '0'}}</td>
+          <td>{{transporter.grossProfit != null ? (transporter.grossProfit | numberSeperator) : '0'}}</td>
           <td>{{transporter.rank != null && transporter.rank > 0 ? transporter.rank : 'N/A'}}</td>
           <!--          <td>-->
           <!--            <i class="fas fa-ellipsis-v"></i>-->

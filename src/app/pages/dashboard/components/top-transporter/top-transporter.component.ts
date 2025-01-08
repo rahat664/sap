@@ -7,6 +7,7 @@ import { TopTransporters } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import {RouterLink} from "@angular/router";
+import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
 
 @Component({
   selector: 'app-top-transporter',
@@ -19,6 +20,7 @@ import {RouterLink} from "@angular/router";
     ReactiveFormsModule,
     CommonModule,
     RouterLink,
+    NumberSeperatorPipe,
   ],
   templateUrl: './top-transporter.component.html',
   styleUrl: './top-transporter.component.scss',

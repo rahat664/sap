@@ -11,6 +11,7 @@ import {
   DashboardStatsModel, userStats,
 } from '../../models/dashboard-stats.model';
 import { RouterLink } from '@angular/router';
+import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
 
 @Component({
   selector: 'app-status-heighlight',
@@ -23,6 +24,7 @@ import { RouterLink } from '@angular/router';
     StatusCardComponent,
     RouterLink,
     DecimalPipe,
+    NumberSeperatorPipe,
   ],
   templateUrl: './status-heighlight.component.html',
   styleUrl: './status-heighlight.component.scss',
@@ -63,12 +65,11 @@ export class StatusHeighlightComponent {
         if (res.status === 'OK') {
           this.customerStatistics = res.data;
           this.transporterStatistics = res.data.totalUsers.find(
-            (user) => user.roleName === 'ROLE_TRANSPORTER'
+            user => user.roleName === 'ROLE_TRANSPORTER'
           );
           this.driverStatistics = res.data.totalUsers.find(
-            (user) => user.roleName === 'ROLE_DRIVER'
-          )
-
+            user => user.roleName === 'ROLE_DRIVER'
+          );
         }
       });
   }

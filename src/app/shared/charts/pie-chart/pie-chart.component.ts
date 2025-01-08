@@ -74,6 +74,9 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
             return `<span style="display:inline-block; width:13px; height:13px; border-radius: 2px; background-color: ${colors[index]};"></span>`;
           },
         },
+        onItemHover: {
+          highlightDataSeries: false
+        },
         fontSize: '12px',
         fontFamily: 'Inter',
         fontWeight: 400,
