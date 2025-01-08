@@ -41,13 +41,6 @@ export class ColumnChartComponent {
   @Input() createdValue: number[] = [];
   @Input() completedValue: number[] = [];
   @Input() categories: string[] = [
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
-    'Sun',
   ];
 
   constructor(private cd: ChangeDetectorRef) {

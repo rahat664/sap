@@ -63,7 +63,7 @@ export class MonthWiseRevenueComponent {
     let year = d.getFullYear();
     const lastSixMonths = [];
     for (let i = 0; i < 6; i++) {
-      lastSixMonths.push(monthNames[month]);
+      lastSixMonths.push(monthNames[month] + '-' + year);
       if (month === 0) {
         month = 11;
         year--;

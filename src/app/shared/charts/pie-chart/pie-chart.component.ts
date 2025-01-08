@@ -122,7 +122,7 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
     this.cd.detectChanges();
   }
   ngOnChanges() {
-    const colors = ['#85DAE5', '#208B99'];
+    const colors = [ '#208B99', '#D8EFF9'];
     let index = -1;
     const labels = ['Received', 'Pending'];
     const customLegendItems = labels.map(
@@ -148,6 +148,9 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
             index++;
             return `<span style="display:inline-block; width:13px; height:13px; border-radius: 2px; background-color: ${colors[index]};"></span>`;
           },
+        },
+        onItemHover: {
+          highlightDataSeries: false
         },
         fontSize: '12px',
         fontFamily: 'Inter',
