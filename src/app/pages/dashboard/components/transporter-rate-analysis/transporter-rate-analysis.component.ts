@@ -176,6 +176,7 @@ export class TransporterRateAnalysisComponent {
       this.seriesdata.push({
         name: 'Highest Rate',
         data: singleSeriesData,
+        color: '#208B99',
       });
       this.colors.push('#208B99');
     } else if (this.chartType === 'low') {
@@ -189,6 +190,7 @@ export class TransporterRateAnalysisComponent {
       this.seriesdata.push({
         name: 'Lowest Rate',
         data: singleSeriesData,
+        color: '#F0614E',
       });
       this.colors.push('#F0614E');
     } else if (this.chartType === 'average') {
@@ -202,6 +204,7 @@ export class TransporterRateAnalysisComponent {
       this.seriesdata.push({
         name: 'Average Rate',
         data: singleSeriesData,
+        color: '#85DAE5',
       });
       this.colors.push('#85DAE5');
     } else {
@@ -219,14 +222,17 @@ export class TransporterRateAnalysisComponent {
       this.seriesdata.push({
         name: 'Highest Rate',
         data: singleSeriesDataHigh,
+        color: '#208B99',
       });
       this.seriesdata.push({
         name: 'Average Rate',
         data: singleSeriesDataAverage,
+        color: '#85DAE5',
       });
       this.seriesdata.push({
         name: 'Lowest Rate',
         data: singleSeriesDataLow,
+        color: '#F0614E',
       });
       this.colors.push('#208B99');
       this.colors.push('#85DAE5');
