@@ -8,7 +8,7 @@ import { DashboardService } from '../../services/dashboard.service';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   customerStats,
-  DashboardStatsModel,
+  DashboardStatsModel, userStats,
 } from '../../models/dashboard-stats.model';
 import { RouterLink } from '@angular/router';
 
@@ -32,6 +32,8 @@ export class StatusHeighlightComponent {
   toDate: string;
   dashboardStats: DashboardStatsModel;
   customerStatistics: customerStats;
+  transporterStatistics: userStats;
+  driverStatistics: userStats;
 
   constructor(
     private service: DashboardService,
@@ -60,6 +62,13 @@ export class StatusHeighlightComponent {
       .subscribe((res: any) => {
         if (res.status === 'OK') {
           this.customerStatistics = res.data;
+          this.transporterStatistics = res.data.totalUsers.find(
+            (user) => user.roleName === 'ROLE_TRANSPORTER'
+          );
+          this.driverStatistics = res.data.totalUsers.find(
+            (user) => user.roleName === 'ROLE_DRIVER'
+          )
+
         }
       });
   }

@@ -16,16 +16,24 @@
     <!--      </mat-select>-->
     <!--    </mat-form-field>-->
   </div>
-  <div>
-    <div class="flex justify-between items-center py-4 text-body text-input-hint">
-      <span>Name</span>
-      <span>Total Gross Profit (GP)</span>
+  <div routerLink="/profile/transporter" class="cursor-pointer flex flex-col space-y-4">
+    <div class="grid grid-cols-3 w-full py-1.5 text-body_title  border-b border-link
+     text-not-black font-semibold">
+      <span>Transporter</span>
+      <span class="text-center w-full">No. of Trips</span>
+      <span class="text-center">GP(৳)</span>
     </div>
-    <div class="flex flex-col space-y-4">
+    <div class="flex flex-col space-y-5">
       <ng-container *ngFor="let transporter of topTransporter">
-        <div class="flex justify-between items-center text-body text-not-black">
-          <span>{{ transporter.transporterName }}</span>
-          <span>{{ transporter.totalProfit | number }} ৳</span>
+        <div class="grid grid-cols-3 w-full text-body text-not-black">
+          <div class="flex space-x-3 items-center">
+            <div class="text-body_title text-white flex justify-center items-center h-[1.75rem] w-[1.75rem] rounded-full {{getBackgroundColor(transporter.transporterName[0].toLocaleLowerCase())}} font-semibold">
+              <span>{{transporter.transporterName[0].toLocaleUpperCase()}}</span>
+            </div>
+            <span>{{ transporter.transporterName }}</span>
+          </div>
+          <span class="text-center w-full">{{transporter.noOfTrips}}</span>
+          <span class="text-center">{{ transporter.totalProfit | number }}</span>
         </div>
       </ng-container>
     </div>

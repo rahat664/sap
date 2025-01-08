@@ -40,6 +40,7 @@ export interface challanReceivedFromDTOList {
 }
 
 export interface VehicleCategory {
+  id: number;
   name: string;
   imageUrl: string;
 }

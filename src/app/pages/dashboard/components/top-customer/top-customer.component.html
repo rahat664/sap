@@ -1,4 +1,4 @@
-<div class="px-6 py-5 bg-white rounded-lg flex flex-col w-full space-y-[0.875rem]">
+<div class="px-6 py-5 bg-white rounded-lg flex flex-col space-y-[0.875rem]">
   <div class="flex justify-between items-center">
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
       Top Customer
@@ -16,24 +16,29 @@
     <!--      </mat-select>-->
     <!--    </mat-form-field>-->
   </div>
-  <div class="border w-full border-[#A1D5DE] rounded-lg">
-    <div
-      class="grid grid-cols-7 w-full  text-body_title leading-body_title font-semibold text-not-black px-2 py-5 border-b border-[#A1D5DE]">
-      <span class="col-span-4">Customer</span>
-      <span>No of trip</span>
-      <span>CR(৳)</span>
-      <span>GP(৳)</span>
+  <div routerLink="/profile/customer" class="cursor-pointer flex flex-col space-y-4">
+    <div class="grid grid-cols-4 gap-3 w-full py-1.5 text-body_title  border-b border-link
+     text-not-black font-semibold">
+      <span>Customer</span>
+      <span class="text-center">No of trip</span>
+      <span class="text-center">CR(৳)</span>
+      <span class="text-center">GP(৳)</span>
     </div>
-    <div class="flex flex-col">
+    <div class="flex flex-col space-y-5">
       <ng-container *ngFor="let customer of topCustomer">
-        <div
-          class="grid grid-cols-7  text-body_title leading-body_title border-b last:border-none border-[#A1D5DE] font-semibold text-secondary px-2 py-5 ">
-          <span class="col-span-4">{{ customer.customerName }}</span>
-          <span>{{ customer.noOfTrip }}</span>
-          <span>{{ customer.totalCustomerRate | number }} </span>
-          <span>{{ customer.totalGrossProfit | number }} </span>
+        <div class="grid grid-cols-4 items-center w-full text-body text-not-black">
+          <div class="flex space-x-3 items-center">
+            <div class="text-body_title text-white flex justify-center items-center h-[1.75rem] w-[1.75rem] rounded-full {{getBackgroundColor(customer.customerName[0].toLocaleLowerCase())}} font-semibold">
+              <span>{{customer.customerName[0].toLocaleUpperCase()}}</span>
+            </div>
+            <span class="flex-1">{{ customer.customerName }}</span>
+          </div>
+          <span class="text-center">{{ customer.noOfTrip }}</span>
+          <span class="text-center">{{ customer.totalCustomerRate | number }} </span>
+          <span class="text-center">{{ customer.totalGrossProfit | number }} </span>
         </div>
       </ng-container>
     </div>
   </div>
 </div>
+

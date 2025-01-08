@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 export class DashboardService {
   private _dashboardUrl = `${environment.backendUrl}/api/v1/dashboard`;
   private _customerStatsUrl = `${environment.userUrl}/api/customers`;
+  private _transporterRateAnalysisUrl = `${environment.backendUrl}/api/trips/transporter-rate-stats`;
 
   constructor(private http: HttpClient) {}
 
@@ -43,7 +44,31 @@ export class DashboardService {
 
   getTopCustomers(from: string, to: string) {
     return this.http.get(
-      `${this._dashboardUrl}/top-customers?from=${from}&to=${to}&size=10`
+      `${this._dashboardUrl}/top-customers?from=${from}&to=${to}&size=5`
     );
+  }
+
+  getTransporterRateAnalysisData(type?: string, value?: string, transporterCode?: string, truckType?: string, loadingPointDistrictName?:string, unloadingPointDistrictName?:string) {
+    const params = new URLSearchParams();
+    if (type) {
+      params.set('type', type);
+    }
+    if (value) {
+      params.set('value', value);
+    }
+    if (transporterCode) {
+      params.set('transporterCode', transporterCode);
+    }
+    if (truckType) {
+      params.set('truckType', truckType);
+    }
+    if (loadingPointDistrictName) {
+      params.set('loadingPointDistrictName', loadingPointDistrictName);
+    }
+    if (unloadingPointDistrictName) {
+      params.set('unloadingPointDistrictName', unloadingPointDistrictName);
+    }
+
+    return this.http.get(`${this._transporterRateAnalysisUrl}?${params.toString()}`);
   }
 }

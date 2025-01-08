@@ -6,6 +6,7 @@ import { MatSelect } from '@angular/material/select';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { TopCustomers } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-top-customer',
@@ -18,6 +19,7 @@ import { DashboardService } from '../../services/dashboard.service';
     ReactiveFormsModule,
     DecimalPipe,
     CommonModule,
+    RouterLink,
   ],
   templateUrl: './top-customer.component.html',
   styleUrl: './top-customer.component.scss',
@@ -59,5 +61,23 @@ export class TopCustomerComponent {
         console.error(error);
       }
     );
+  }
+
+  getBackgroundColor(alphabet: string) {
+    if ('agmsy'.includes(alphabet)) {
+      return 'bg-agmsy';
+    } else if ('bhntz'.includes(alphabet)) {
+      return 'bg-bhntz';
+    } else if ('ciou'.includes(alphabet)) {
+      return 'bg-ciou';
+    } else if ('djpv'.includes(alphabet)) {
+      return 'bg-djpv';
+    } else if ('ekqw'.includes(alphabet)) {
+      return 'bg-ekqw';
+    } else if ('flrx'.includes(alphabet)) {
+      return 'bg-flrx';
+    } else {
+      return 'bg-another';
+    }
   }
 }
