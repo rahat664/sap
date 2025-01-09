@@ -67,15 +67,15 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
       },
       legend: {
         position: 'bottom',
+        onItemHover: {
+          highlightDataSeries: false,
+        },
         markers: {
           fillColors: colors,
           customHTML: function () {
             index++;
             return `<span style="display:inline-block; width:13px; height:13px; border-radius: 2px; background-color: ${colors[index]};"></span>`;
           },
-        },
-        onItemHover: {
-          highlightDataSeries: false
         },
         fontSize: '12px',
         fontFamily: 'Inter',
@@ -105,19 +105,6 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
         fillSeriesColor: false,
         cssClass: 'apexcharts-tooltip',
       },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200,
-            },
-            legend: {
-              position: 'bottom',
-            },
-          },
-        },
-      ],
     };
   }
 
@@ -153,7 +140,7 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
           },
         },
         onItemHover: {
-          highlightDataSeries: false
+          highlightDataSeries: false,
         },
         fontSize: '12px',
         fontFamily: 'Inter',
@@ -183,19 +170,6 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
         fillSeriesColor: false,
         cssClass: 'apexcharts-tooltip',
       },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200,
-            },
-            legend: {
-              position: 'bottom',
-            },
-          },
-        },
-      ],
     };
   }
 }
