@@ -6,6 +6,8 @@ import { MatSelect } from '@angular/material/select';
 import { TopTransporters } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
 import { CommonModule, DatePipe } from '@angular/common';
+import {RouterLink} from "@angular/router";
+import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
 
 @Component({
   selector: 'app-top-transporter',
@@ -17,6 +19,8 @@ import { CommonModule, DatePipe } from '@angular/common';
     MatSelect,
     ReactiveFormsModule,
     CommonModule,
+    RouterLink,
+    NumberSeperatorPipe,
   ],
   templateUrl: './top-transporter.component.html',
   styleUrl: './top-transporter.component.scss',
@@ -58,5 +62,23 @@ export class TopTransporterComponent {
       new Date(currentYear, d.getMonth() + 1, 0),
       'yyyy-MM-dd'
     );
+  }
+
+  getBackgroundColor(alphabet: string) {
+    if ('agmsy'.includes(alphabet)) {
+      return 'bg-agmsy';
+    } else if ('bhntz'.includes(alphabet)) {
+      return 'bg-bhntz';
+    } else if ('ciou'.includes(alphabet)) {
+      return 'bg-ciou';
+    } else if ('djpv'.includes(alphabet)) {
+      return 'bg-djpv';
+    } else if ('ekqw'.includes(alphabet)) {
+      return 'bg-ekqw';
+    } else if ('flrx'.includes(alphabet)) {
+      return 'bg-flrx';
+    } else {
+      return 'bg-another';
+    }
   }
 }

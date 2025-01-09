@@ -46,12 +46,7 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
   @Input() value: number[] = [0, 0];
   public chartOptions: Partial<ChartOptions>;
 
-  constructor(private cd: ChangeDetectorRef) {}
-
-  ngAfterViewInit() {
-    this.cd.detectChanges();
-  }
-  ngOnChanges() {
+  constructor(private cd: ChangeDetectorRef) {
     const colors = ['#85DAE5', '#208B99'];
     let index = -1;
     const labels = ['Received', 'Pending'];
@@ -72,6 +67,9 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
       },
       legend: {
         position: 'bottom',
+        onItemHover: {
+          highlightDataSeries: false,
+        },
         markers: {
           fillColors: colors,
           customHTML: function () {
@@ -107,19 +105,71 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
         fillSeriesColor: false,
         cssClass: 'apexcharts-tooltip',
       },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200,
-            },
-            legend: {
-              position: 'bottom',
-            },
+    };
+  }
+
+  ngAfterViewInit() {
+    this.cd.detectChanges();
+  }
+  ngOnChanges() {
+    const colors = [ '#208B99', '#D8EFF9'];
+    let index = -1;
+    const labels = ['Received', 'Pending'];
+    const customLegendItems = labels.map(
+      (label, i) => `${label} - ${this.value ? this.value[i] : 0}`
+    );
+
+    this.chartOptions = {
+      series: this.value || [0, 0],
+      chart: {
+        width: 350,
+        type: 'pie',
+      },
+      labels,
+      colors,
+      dataLabels: {
+        enabled: false,
+      },
+      legend: {
+        position: 'bottom',
+        markers: {
+          fillColors: colors,
+          customHTML: function () {
+            index++;
+            return `<span style="display:inline-block; width:13px; height:13px; border-radius: 2px; background-color: ${colors[index]};"></span>`;
           },
         },
-      ],
+        onItemHover: {
+          highlightDataSeries: false,
+        },
+        fontSize: '12px',
+        fontFamily: 'Inter',
+        fontWeight: 400,
+        formatter: function (seriesName, opts) {
+          return customLegendItems[opts.seriesIndex];
+        },
+        labels: {
+          colors: ['#5D5D5D', '#5D5D5D', '#5D5D5D'],
+        },
+      },
+      states: {
+        hover: {
+          filter: {
+            type: 'lighten',
+          },
+        },
+      },
+      plotOptions: {
+        pie: {
+          customScale: 1,
+          expandOnClick: true,
+        },
+      },
+      tooltip: {
+        enabled: true,
+        fillSeriesColor: false,
+        cssClass: 'apexcharts-tooltip',
+      },
     };
   }
 }

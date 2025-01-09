@@ -51,6 +51,9 @@
               "node_modules/@ngneat/hot-toast/src/styles/styles.css"
             ],
             "scripts": [
+            ],
+            "allowedCommonJsDependencies": [
+              "ng-apexcharts"
             ]
           },
           "configurations": {

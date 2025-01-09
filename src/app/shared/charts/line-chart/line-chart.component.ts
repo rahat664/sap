@@ -1,21 +1,32 @@
-import {ChangeDetectorRef, Component, Input, ViewChild} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
   ApexDataLabels,
-   ApexStroke, ApexXAxis,
-  ChartComponent
-} from "ng-apexcharts";
+  ApexStroke,
+  ApexXAxis,
+  ChartComponent,
+} from 'ng-apexcharts';
+import {timer} from "rxjs";
 
 export interface ChartOptions {
   series: ApexAxisChartSeries;
   chart: ApexChart;
   xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
   dataLabels: ApexDataLabels;
   grid: ApexGrid;
   stroke: ApexStroke;
   title: ApexTitleSubtitle;
+  legend: ApexLegend;
   colors: string[];
+  tooltip: ApexTooltip;
 }
 
 @Component({
@@ -25,101 +36,147 @@ export interface ChartOptions {
   templateUrl: './line-chart.component.html',
   styleUrl: './line-chart.component.scss',
 })
-
-
 export class LineChartComponent {
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
-  @Input() seriesData : any;
+  @Input() seriesData: any = [];
+  @Input() colors: string[] = [
+    '#1DBF73',
+    '#208B99',
+    '#F0614E'
+  ];
+  @Input() categories: any = [];
+  @Input() selectedYear: any = '';
+  @Input() selectedMonth: any = '';
 
   constructor(private cd: ChangeDetectorRef) {
-    this.chartOptions = {
-      series: [
-        {
-          name: "High - 2013",
-          data: [28, 29, 33, 36, 32, 32, 33]
-        },
-        {
-          name: "Low - 2013",
-          data: [12, 11, 14, 18, 17, 13, 13]
-        }
-      ],
-      chart: {
-        height: 350,
-        type: "line",
-        zoom: {
-          enabled: false
-        },
-      },
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        curve: "smooth",
-        lineCap: "round"
-      },
-      xaxis: {
-        categories: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep"
-        ]
-      }
-    };
+
   }
 
-  ngOnChanges() {
-    this.chartOptions = {
-      series: [
-        {
-          name: "Desktops",
-          data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+  ngOnChanges(changes: SimpleChanges) {
+    timer(1200).subscribe(() => {
+      const selectedYear = this.selectedYear;
+      const selectedMonth = this.selectedMonth;
+      const colors = this.colors;
+      let index = -1;
+      this.chartOptions = {
+        series: changes['seriesData'].currentValue,
+        chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false,
+          },
+          toolbar: {
+            show: false,
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          curve: 'smooth',
+          lineCap: 'round',
+          colors: colors,
+        },
+        legend: {
+          position: 'bottom',
+          markers: {
+            fillColors: colors,
+            customHTML: function () {
+              index++;
+              return `<span style="display:inline-block; width:13px; height:13px; border-radius: 2px; background-color: ${colors[index]};"></span>`;
+            },
+          },
+        },
+        tooltip: {
+          x: {
+            formatter: function (value) {
+              return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear}`;
+            },
+          }
+        },
+        xaxis: {
+          categories: changes['categories'].currentValue,
+          floating: false,
+          decimalsInFloat: 0,
+          tooltip: {
+            enabled: false,
+          }
+        },
+        yaxis: {
+          labels: {
+            formatter: function (value) {
+              return value.toFixed(0);
+            },
+          },
+        },
+      };
+    });
+  }
+
+  ngOnInit() {
+    timer(1200).subscribe(() => {
+      const selectedYear = this.selectedYear;
+      const selectedMonth = this.selectedMonth;
+      const colors = this.colors;
+      console.log(colors)
+      let index = -1;
+      this.chartOptions = {
+        series: this.seriesData,
+        chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false,
+          },
+          toolbar: {
+            show: false,
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          curve: 'smooth',
+          lineCap: 'round',
+          colors: colors,
+        },
+        legend: {
+          position: 'bottom',
+          markers: {
+            fillColors: colors,
+            customHTML: function () {
+              index++;
+              return `<span style="display:inline-block; width:13px; height:13px; border-radius: 2px; background-color: ${colors[index]};"></span>`;
+            },
+          },
+        },
+        xaxis: {
+          categories: this.categories,
+          floating: false,
+          decimalsInFloat: 0,
+          tooltip: {
+            enabled: false,
+          }
+        },
+        tooltip: {
+          x: {
+            formatter: function (value) {
+              return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear}`;
+            },
+          },
+        },
+        yaxis: {
+          labels: {
+            formatter: function (value) {
+              console.log(value)
+              return value.toFixed(0);
+            },
+          }
         }
-      ],
-      chart: {
-        height: 350,
-        type: "line",
-        zoom: {
-          enabled: false
-        }
-      },
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        curve: "straight",
-        lineCap: "round"
-      },
-      title: {
-        text: "Product Trends by Month",
-        align: "left"
-      },
-      grid: {
-        row: {
-          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-          opacity: 0.5
-        }
-      },
-      xaxis: {
-        categories: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep"
-        ]
-      }
-    };
+      };
+    });
   }
 
   ngAfterViewInit() {

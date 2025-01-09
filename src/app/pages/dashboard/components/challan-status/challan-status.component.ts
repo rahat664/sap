@@ -8,6 +8,7 @@ import { PieChartComponent } from '../../../../shared/charts/pie-chart/pie-chart
 import { DashboardService } from '../../services/dashboard.service';
 import { challanStatus } from '../../models/dashboard-stats.model';
 import { DatePipe } from '@angular/common';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-challan-status',
@@ -19,6 +20,7 @@ import { DatePipe } from '@angular/common';
     ReactiveFormsModule,
     StatusCardComponent,
     PieChartComponent,
+    RouterLink,
   ],
   templateUrl: './challan-status.component.html',
   styleUrl: './challan-status.component.scss',
@@ -49,7 +51,7 @@ export class ChallanStatusComponent {
     // todate should be the current date
     const toDate = new Date();
     // to date will be the last day of the current month
-    this.toDate =this.datePipe.transform(
+    this.toDate = this.datePipe.transform(
       new Date(toDate.getFullYear(), toDate.getMonth() + 1, 0),
       'yyyy-MM-dd'
     );

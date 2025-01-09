@@ -31,6 +31,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { debounceTime, Subject } from 'rxjs';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
+import {NumberSeperatorPipe} from "../../shared/pipes/number-seperator.pipe";
 
 @Component({
   selector: 'app-trip-list',
@@ -56,6 +57,7 @@ import { TripPoint } from '../manage-trip/model/trip.details.model';
     MatOption,
     MatFormField,
     MatInput,
+    NumberSeperatorPipe,
   ],
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.scss'],

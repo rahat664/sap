@@ -37,9 +37,11 @@
 
       <div
         #containerElement
-        class=" w-[90%] h-[calc(100vh-18.75rem)] overflow-hidden rounded-lg flex items-center justify-center transition-transform duration-300 transform origin-center relative"
+        class=" w-[90%] h-[calc(100vh-18.75rem)] overflow-hidden rounded-lg border border-gray-800 flex items-center justify-center transition-transform duration-300 transform origin-center relative"
       >
-        <div #imageElement class="transition-transform rounded-lg overflow-hidden duration-300 transform origin-center relative" [style.transform]="'scale(' + zoomLevel + ')'">
+        <div #imageElement
+             class="transition-transform h-full rounded-lg overflow-hidden duration-300 transform origin-center relative"
+             [style.transform]="'scale(' + zoomLevel + ')'">
           <img
             [src]="activatedDocument.url ? activatedDocument.url : activatedDocument?.document?.url"
             alt="activeDocument"

@@ -2,6 +2,8 @@ export interface DashboardStatsModel {
   customerRateStat: customerRateStats;
   grossProfitStat: grossProfitStats;
   tripCountStat: tripCountStats;
+  truckCountStat: truckCountStats;
+  transporterRateStats: transporterRateStats;
 }
 
 export interface customerRateStats {
@@ -19,9 +21,27 @@ export interface tripCountStats {
   totalTripsCompletedWithinTheDateRange: number;
 }
 
+
 export interface customerStats {
   totalCustomers: number;
   totalCustomersOnboardedWithinGivenDateRange: number;
+  totalUsers: userStats[];
+}
+
+export interface userStats {
+  roleName: string;
+  totalCount: number;
+  dateFilteredCount: number;
+}
+
+export interface truckCountStats {
+  totalCount: number;
+  dateFilteredCount: number;
+}
+
+export interface transporterRateStats {
+  totalRate: number;
+  dateFilteredRate: number;
 }
 
 export interface challanStatus {
