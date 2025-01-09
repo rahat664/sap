@@ -60,7 +60,7 @@ export class DashboardService {
       params.set('transporterCode', transporterCode);
     }
     if (truckType) {
-      params.set('truckType', truckType);
+      params.set('categoryId', truckType);
     }
     if (loadingPointDistrictName) {
       params.set('loadingPointDistrictName', loadingPointDistrictName);
