@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  inject,
   OnInit,
   Output,
 } from '@angular/core';
@@ -18,18 +17,23 @@ import { UserService } from '../../../services/user.service';
 import { UserModel } from '../../../../user-management/models/user.model';
 import { bkashPaymentMethod, paymentMethod } from '../models/payment-method';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ValidationService } from '../../../../../shared/services/validation/validation.service';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import {
   CountryISO,
   NgxMaterialIntlTelInputComponent,
 } from 'ngx-material-intl-tel-input';
+import { driverFileTypeModel } from '../../truck/models/driver-file-type';
+import { MatDatepicker } from '@angular/material/datepicker';
+import { transporterFileTypeModel } from '../../truck/models/transporter-file-type';
+import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-transporter-add',
@@ -45,6 +49,10 @@ import {
     MatInput,
     NgxMaterialIntlTelInputComponent,
     NgClass,
+    MatDatepicker,
+    NgForOf,
+    UploadButtonComponent,
+    MatMenuTrigger,
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',
@@ -58,7 +66,6 @@ export class TransporterAddComponent implements OnInit {
   paymentInputPlaceholder: string;
   @Output() formCreated = new EventEmitter<boolean>();
   bkashPaymentTypePlaceholder: string;
-  readonly dialogRef = inject(MatDialogRef<TransporterAddComponent>);
 
   constructor(
     private service: UserService,
@@ -160,7 +167,6 @@ export class TransporterAddComponent implements OnInit {
           if (res.status == 'OK') {
             this.toastr.showSuccess('Transporter created successfully');
             this.transporterForm.reset();
-            this.dialogRef.close(true);
           } else {
             this.toastr.showError(res.message);
           }
@@ -238,10 +244,6 @@ export class TransporterAddComponent implements OnInit {
     return this.validation.getErrorMessageWithTouch(this.transporterForm);
   }
 
-  onClickClose() {
-    this.dialogRef.close(false);
-  }
-
   protected readonly CountryISO = CountryISO;
 
   get phoneNumber() {
@@ -258,4 +260,35 @@ export class TransporterAddComponent implements OnInit {
     invalidNumberError: '',
     requiredError: 'This field is required',
   };
+  protected readonly transporterFileType = transporterFileTypeModel;
+  everyThingDisabled: boolean;
+
+  getSpecificFiles(formControlName: string | undefined) {
+    return [
+      {
+        file: {
+          type: 'image',
+        },
+        length: 2,
+      },
+    ];
+  }
+
+  onClickPdfDocument(file: any) {}
+
+  onCloseImage(
+    formControlName: string | undefined,
+    file: any,
+    expiryFormControlName: string | undefined
+  ) {}
+
+  getFileArray(formControlName: string | undefined) {
+    return {
+      length: 2,
+    };
+  }
+
+  triggerFileUpload(formControlName: string | undefined, max: number) {}
+
+  onFileSelected($event: Event) {}
 }
