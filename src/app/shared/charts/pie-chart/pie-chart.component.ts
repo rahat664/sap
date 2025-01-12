@@ -71,6 +71,13 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
         dataLabels: {
           enabled: false,
         },
+        states: {
+          hover: {
+            filter: {
+              type: 'none',
+            },
+          },
+        },
         legend: {
           position: 'bottom',
           onItemHover: {
@@ -100,9 +107,8 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
           },
         },
         tooltip: {
-          enabled: false,
+          enabled: true,
           fillSeriesColor: false,
-          cssClass: 'apexcharts-tooltip',
           onDatasetHover: {
             highlightDataSeries: false,
           },
@@ -157,6 +163,13 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
             colors: ['#5D5D5D', '#5D5D5D', '#5D5D5D'],
           },
         },
+        states: {
+          hover: {
+            filter: {
+              type: 'none',
+            },
+          },
+        },
 
         plotOptions: {
           pie: {
@@ -165,9 +178,8 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
           },
         },
         tooltip: {
-          enabled: false,
+          enabled: true,
           fillSeriesColor: false,
-          cssClass: 'apexcharts-tooltip',
           onDatasetHover: {
             highlightDataSeries: false,
           },
