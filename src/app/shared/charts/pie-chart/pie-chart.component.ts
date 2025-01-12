@@ -103,6 +103,9 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
           enabled: true,
           fillSeriesColor: false,
           cssClass: 'apexcharts-tooltip',
+          onDatasetHover: {
+            highlightDataSeries: false,
+          },
         },
       };
 
@@ -165,6 +168,9 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
           enabled: true,
           fillSeriesColor: false,
           cssClass: 'apexcharts-tooltip',
+          onDatasetHover: {
+            highlightDataSeries: false,
+          },
         },
       };
     });
