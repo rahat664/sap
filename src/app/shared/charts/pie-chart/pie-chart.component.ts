@@ -93,13 +93,6 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
             colors: ['#5D5D5D', '#5D5D5D', '#5D5D5D'],
           },
         },
-        states: {
-          hover: {
-            filter: {
-              type: 'lighten',
-            },
-          },
-        },
         plotOptions: {
           pie: {
             customScale: 1,
@@ -161,13 +154,7 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
             colors: ['#5D5D5D', '#5D5D5D', '#5D5D5D'],
           },
         },
-        states: {
-          hover: {
-            filter: {
-              type: 'lighten',
-            },
-          },
-        },
+
         plotOptions: {
           pie: {
             customScale: 1,
