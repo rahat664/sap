@@ -197,8 +197,10 @@
         <ng-container *ngFor="let option of transporterFileType; index as i">
           <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
             <div class="flex space-x-4 items-center">
-              <img src="assets/svg/not-available.svg" class="notPreview" alt="">
-              <img src="assets/svg/available.svg" alt="" class="notPreview">
+              <img src="assets/svg/not-available.svg" class="notPreview" alt=""
+                   *ngIf="getFileArray(option?.formControlName)?.length <= 0 || (option.expiryAvailable == true)">
+              <img src="assets/svg/available.svg" alt="" class="notPreview"
+                   *ngIf="getFileArray(option?.formControlName).length > 0 &&  (option.expiryAvailable == false )">
               <div class="flex flex-col space-y-0.5">
                     <span
                       class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
@@ -218,9 +220,11 @@
                     </ng-container>
                     <ng-template #imagePreview>
                       <!-- Display Image Preview -->
-                      <img class="h-full w-full" [src]="file" alt=""/>
+                      <img
+                        (click)="$event.stopPropagation();onClickImageDocument(getSpecificFiles(option?.formControlName), file, option?.formControlName)"
+                        class="h-full w-full" [src]="file.preview" alt=""/>
                     </ng-template>
-                    <button (click)="onCloseImage(option?.formControlName, file, option?.expiryFormControlName)"
+                    <button (click)="onCloseImage(option?.formControlName, file)"
                             class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white ">
                       <i class="far fa-times"></i>
                     </button>

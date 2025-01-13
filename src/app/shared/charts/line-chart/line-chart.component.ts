@@ -120,7 +120,6 @@ export class LineChartComponent {
       const selectedYear = this.selectedYear;
       const selectedMonth = this.selectedMonth;
       const colors = this.colors;
-      console.log(colors)
       let index = -1;
       this.chartOptions = {
         series: this.seriesData,
@@ -170,7 +169,6 @@ export class LineChartComponent {
         yaxis: {
           labels: {
             formatter: function (value) {
-              console.log(value)
               return value.toFixed(0);
             },
           }

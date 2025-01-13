@@ -5,6 +5,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
@@ -67,7 +68,7 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
   templateUrl: './driver-add.component.html',
   styleUrl: './driver-add.component.scss',
 })
-export class DriverAddComponent implements OnInit {
+export class DriverAddComponent implements OnInit, AfterViewInit {
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
   readonly dialog = inject(MatDialog);
@@ -78,8 +79,8 @@ export class DriverAddComponent implements OnInit {
   drivingLicenseFrontImages: any[] = [];
   drivingLicenseBackImages: any[] = [];
   othersImages: any[] = [];
-  selectedFormControlName: string = '';
-  maxUploadAble: number = 0;
+  selectedFormControlName = '';
+  maxUploadAble = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -136,7 +137,9 @@ export class DriverAddComponent implements OnInit {
   }
 
   private onAddFile(files: FileList) {
-    const selectedFormControl = this.driverAddForm.get(this.selectedFormControlName);
+    const selectedFormControl = this.driverAddForm.get(
+      this.selectedFormControlName
+    );
     if (selectedFormControl?.value) {
       // concat new files with existing files
       const currentFiles: File[] = Array.from(selectedFormControl.value);
@@ -203,7 +206,6 @@ export class DriverAddComponent implements OnInit {
           preview: fileURL,
           file: file,
         });
-        console.log(targetArray);
         return;
       } else {
         const reader = new FileReader();

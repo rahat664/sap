@@ -93,7 +93,6 @@ export class TransporterRateAnalysisComponent {
   private getDistrictList() {
     this.trip.getDistricts().subscribe((res: any) => {
       this.districts = res.data;
-      console.log(this.districts);
     });
   }
 

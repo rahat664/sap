@@ -281,7 +281,9 @@ export class GlobalImageUploadComponent {
     this.returnToInputDate = $event;
   }
   private time: any;
-  @Input() tripId: string;
+  @Input() id: string;
+  @Input() uploadTimeAvailable: boolean = true;
+  @Input() idText: string;
   onTimeChange($event: any) {
     this.time = $event;
   }

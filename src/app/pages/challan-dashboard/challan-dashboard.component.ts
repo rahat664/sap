@@ -759,7 +759,9 @@ export class ChallanDashboardComponent {
               tripDocuments: documents,
               activatedDocument: documents[0],
               returnUrl: '/challan-management',
-              tripId: tripId,
+              id: tripId,
+              uploadTimeAvailable: true,
+              gallaryText: 'Trip ID',
             },
           });
         }

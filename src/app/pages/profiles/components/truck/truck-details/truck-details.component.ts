@@ -921,7 +921,6 @@ export class TruckDetailsComponent implements OnInit {
           preview: fileURL,
           file: file,
         });
-        console.log(targetArray);
         return;
       } else {
         const reader = new FileReader();

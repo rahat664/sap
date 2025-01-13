@@ -351,7 +351,6 @@ export class GMapComponent implements OnInit, OnChanges {
 
       this.directionsService.route(request, (result, status) => {
         if (status === 'OK') {
-          console.log(type);
           if (pointType === 'loading') {
             this.setLoadingMarker(start, index);
           } else if (pointType === 'unloading') {
@@ -516,7 +515,6 @@ export class GMapComponent implements OnInit, OnChanges {
               (res: any) => {
                 this.truckData = res.data;
                 if (this.tripStatus === 'Running') {
-                  console.log(this.truckSizeInFeet);
                   this.truckService
                     .getEtaData(
                       this.truckLocationPosition?.lat,

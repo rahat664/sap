@@ -85,7 +85,9 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
       this.imageType = navigation.imageType;
       this.activatedDocument = navigation.activatedDocument;
       this.returnUrl = navigation.returnUrl;
-      this.tripId = navigation.tripId;
+      this.id = navigation.tripId;
+      this.uploadTimeAvailable = navigation.uploadTimeAvailable;
+      this.gallaryText = navigation.gallaryText;
       this.tripPointId = navigation.tripPointId;
       this.eventTypeId = navigation.eventTypeId;
       this.updateActiveDocumentIndex();
@@ -206,6 +208,9 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
 
   // Zoom out
   tripId: string;
+  uploadTimeAvailable: any;
+  gallaryText: string;
+  id: string;
   zoomOut() {
     if (this.zoomLevel > this.minZoom) {
       this.zoomLevel -= 0.1;
@@ -283,7 +288,9 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
     if (this.documents?.length > 0) {
       if (this.activatedDocument) {
         const link = document.createElement('a');
-        link.href = this.activatedDocument.url ? this.activatedDocument.url : this.activatedDocument?.document?.url;
+        link.href = this.activatedDocument.url
+          ? this.activatedDocument.url
+          : this.activatedDocument?.document?.url;
         link.download = `${this.imageType}`;
         document.body.appendChild(link);
         link.click();
@@ -292,7 +299,19 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   }
 
   onClickBack() {
-    console.log('returnUrl', this.returnUrl);
-    this.router.navigate([this.returnUrl]);
+    this.router.navigate([this.returnUrl], {
+      state: {
+        backFromGallery: true,
+      },
+    });
+  }
+
+  // listen browser back button
+  @HostListener('window:popstate', ['$event']) onPopState(event) {
+    this.router.navigate([this.returnUrl], {
+      state: {
+        backFromGallery: true,
+      },
+    });
   }
 }
