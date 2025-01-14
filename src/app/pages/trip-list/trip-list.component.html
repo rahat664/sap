@@ -44,9 +44,9 @@
                             [options]="dateOptionArray"
                             (selectedId)="onSelectDate($event)"></app-custom-input>
         </div>
-        <div class="flex flex-col space-y-1 w-[14.375rem]">
+        <div class="flex flex-col space-y-1 w-[14.375rem] ">
           <label class="text-body  text-web-text-secondary px-2">Company name</label>
-          <mat-form-field appearance="outline" class="example-full-width ">
+          <mat-form-field appearance="outline" class="example-full-width relative">
             <input
               id="customerName"
               type="text"
@@ -62,16 +62,20 @@
                 </mat-option>
               }
             </mat-autocomplete>
+            <button type="button" (click)="onClickClearCompany()" *ngIf="searchValue"
+                    class="absolute inset-y-0 right-0  flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
           </mat-form-field>
         </div>
         <div class="flex flex-col space-y-1 w-[14.375rem]">
           <label class="text-body  text-web-text-secondary px-2">Trip ID</label>
-          <mat-form-field appearance="outline" class="example-full-width ">
+          <mat-form-field appearance="outline" class="example-full-width relative">
             <input
               type="text"
               matInput
               (keyup)="onKeyUpTripSearch($event)"
-              [(ngModel)]="tripId"
+              [(ngModel)]="searchId"
               placeholder="Enter Trip Number"
               [matAutocomplete]="trip">
             <mat-autocomplete #trip="matAutocomplete">
@@ -81,6 +85,10 @@
                 </mat-option>
               }
             </mat-autocomplete>
+            <button type="button" (click)="onClickClearTripId()" *ngIf="tripId"
+                    class="absolute inset-y-0 right-0  flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
           </mat-form-field>
         </div>
       </div>

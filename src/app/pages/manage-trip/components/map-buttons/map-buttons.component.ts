@@ -13,6 +13,7 @@ export class MapButtonsComponent {
   @Output() buttonClickEmitter: EventEmitter<any> = new EventEmitter();
   @Input() triggerFromParent: boolean = false;
   @Input() triggeredButtonName: string = '';
+  @Input() isButtonDisabled: boolean = false;
 
   getButtonColor(button: any) {
     switch (button.name) {

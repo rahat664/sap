@@ -104,6 +104,7 @@ export class TripListComponent implements OnInit {
   truckType: string;
   searchSubject: Subject<string> = new Subject();
   customerSearchSubject: Subject<string> = new Subject();
+  searchId: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -281,6 +282,7 @@ export class TripListComponent implements OnInit {
     this.page = 0;
     this.customerCode = result.customerCode;
     this.searchName = result.name;
+    this.searchValue = result.name;
     this.tripSuggestions = [];
     this.isSearchedMenuOpened = false;
     this.size = 30;
@@ -393,6 +395,7 @@ export class TripListComponent implements OnInit {
     this.tripFilter = 1;
     this.page = 0;
     this.tripId = result.tripId;
+    this.searchId = result.tripId;
     this.tripIdSuggestions = [];
     this.isTripSearchedMenuOpened = false;
     this.loading = true;
@@ -441,5 +444,26 @@ export class TripListComponent implements OnInit {
 
   getUnloadingPointsName(tripPoints: TripPoint[]) {
     return tripPoints.filter(trip => trip.pointType === 'Unloading');
+  }
+
+  onClickClearCompany() {
+    this.searchName = '';
+    this.searchValue = '';
+    this.customerCode = '';
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.service.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onClickClearTripId() {
+    this.searchId = '';
+    this.tripId = '';
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.service.anotherStatusCalled.next(true);
+    this.getTripList();
   }
 }
