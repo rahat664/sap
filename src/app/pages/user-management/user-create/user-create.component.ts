@@ -96,7 +96,10 @@ export class UserCreateComponent implements OnInit {
         } else {
           this.toastr.showError(res.message);
         }
-      });
+      },
+        error => {
+          this.toastr.showError(error.error.message);
+        };);
     } else {
       this.userForm.markAllAsTouched();
     }
