@@ -283,7 +283,7 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
     if (this.documents?.length > 0) {
       if (this.activatedDocument) {
         const link = document.createElement('a');
-        link.href = this.activatedDocument.url ? this.activatedDocument.url : this.activatedDocument?.document?.url;
+        link.href = this.activatedDocument.url;
         link.download = `${this.imageType}`;
         document.body.appendChild(link);
         link.click();

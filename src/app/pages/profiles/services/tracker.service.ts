@@ -65,7 +65,7 @@ export class TrackerService {
     startingLat: number,
     startingLng: number,
     endingLat: number,
-    endingLng: number,
+    endingLng: Number,
     truckLengthInFeet?: number
   ) {
     if (truckLengthInFeet) {
