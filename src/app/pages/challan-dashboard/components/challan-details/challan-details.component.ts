@@ -218,9 +218,7 @@ export class ChallanDetailsComponent {
         tripPointId: this.unloadingEvents[0].tripPointId,
         eventTypeId: this.unloadingEvents[0].eventTypeId,
         returnUrl: `/challan-management/${this.singleTrip?.tripId}/details`,
-        id: this.singleTrip?.tripId,
-        galleryText: 'Trip ID',
-        uploadTimeAvailable: true,
+        tripId: this.singleTrip?.tripId,
       },
     });
   }

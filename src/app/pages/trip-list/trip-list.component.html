@@ -44,6 +44,7 @@
                             [options]="dateOptionArray"
                             (selectedId)="onSelectDate($event)"></app-custom-input>
         </div>
+
         <div class="flex flex-col space-y-1 w-[14.375rem] ">
           <label class="text-body  text-web-text-secondary px-2">Company name</label>
           <mat-form-field appearance="outline" class="example-full-width relative">
@@ -63,6 +64,31 @@
               }
             </mat-autocomplete>
             <button type="button" (click)="onClickClearCompany()" *ngIf="searchValue"
+                    class="absolute inset-y-0 right-0  flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-col space-y-1 w-[14.375rem]">
+          <label class="text-body  text-web-text-secondary px-2">Transporter
+            Name
+          </label>
+          <mat-form-field appearance="outline" class="example-full-width ">
+            <input
+              type="text"
+              matInput
+              (keyup)="onKeyUpTransporterSearch($event)"
+              [(ngModel)]="searchTransporter"
+              placeholder="Enter Transporter Name"
+              [matAutocomplete]="transporter">
+            <mat-autocomplete #transporter="matAutocomplete">
+              @for (option of transporterSuggestions; track option) {
+                <mat-option (click)="onClickTransporterSearchSuggestion(option)"
+                            [value]="option.name">{{ option.name }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+            <button type="button" (click)="onClickClearTransporter()" *ngIf="transporterName"
                     class="absolute inset-y-0 right-0  flex items-center">
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>

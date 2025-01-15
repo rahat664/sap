@@ -23,30 +23,6 @@ export const profileRoutes: Routes = [
       ),
   },
   {
-    path: 'transporter/add',
-    title: 'Add Transporter',
-    loadComponent: () =>
-      import(
-        './components/transporter/transporter-add/transporter-add.component'
-      ).then(c => c.TransporterAddComponent),
-  },
-  {
-    path: 'transporter/:id/details',
-    title: 'Transporter Details',
-    loadComponent: () =>
-      import(
-        './components/transporter/transporter-details/transporter-details.component'
-      ).then(c => c.TransporterDetailsComponent),
-  },
-  {
-    path: 'transporter/image-upload',
-    title: 'Transporter Image Upload',
-    loadComponent: () =>
-      import(
-        './components/transporter/transporter-nid-upload/transporter-nid-upload.component'
-      ).then(c => c.TransporterNidUploadComponent),
-  },
-  {
     path: 'truck',
     title: 'Truck',
     loadComponent: () =>

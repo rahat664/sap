@@ -31,7 +31,8 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { debounceTime, Subject } from 'rxjs';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
-import {NumberSeperatorPipe} from "../../shared/pipes/number-seperator.pipe";
+import { NumberSeperatorPipe } from '../../shared/pipes/number-seperator.pipe';
+import { UserService } from '../profiles/services/user.service';
 
 @Component({
   selector: 'app-trip-list',
@@ -63,6 +64,10 @@ import {NumberSeperatorPipe} from "../../shared/pipes/number-seperator.pipe";
   styleUrls: ['./trip-list.component.scss'],
 })
 export class TripListComponent implements OnInit {
+  private transporterFilter: number = 0;
+  protected transporterName: string;
+  protected transporterSuggestions: any[];
+  transporterSearchSubject: Subject<string> = new Subject();
   filterOpened = true;
   filterForm: FormGroup;
   isDateOpened = false;
@@ -105,6 +110,7 @@ export class TripListComponent implements OnInit {
   searchSubject: Subject<string> = new Subject();
   customerSearchSubject: Subject<string> = new Subject();
   searchId: any;
+  searchTransporter: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -113,6 +119,7 @@ export class TripListComponent implements OnInit {
     private customer: CustomerService,
     private shared: DriverEditSharedService,
     private router: Router,
+    private transporter: UserService,
     private cd: ChangeDetectorRef
   ) {
     this.filterForm = this.formBuilder.group({
@@ -126,6 +133,11 @@ export class TripListComponent implements OnInit {
     this.customerSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
       this.performCustomerSearch(searchText);
     });
+    this.transporterSearchSubject
+      .pipe(debounceTime(300))
+      .subscribe(searchText => {
+        this.performTransporterSearch(searchText);
+      });
   }
 
   ngAfterViewInit(): void {
@@ -151,6 +163,33 @@ export class TripListComponent implements OnInit {
     this.generateDateOptionsArray();
   }
 
+  private performTransporterSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.transporter
+        .getTransporter(0, 100, searchText)
+        .subscribe((transporter: any) => {
+          this.transporterSuggestions = transporter.data.responses;
+          if (this.transporterSuggestions.length === 0) {
+            this.transporterSuggestions.push('No transporter found');
+          }
+        });
+    } else {
+      this.resetTransporterSearch();
+    }
+  }
+
+  private resetTransporterSearch() {
+    this.isTripSearchedMenuOpened = false;
+    this.transporterName = '';
+    this.page = 0;
+    this.size = 30;
+    this.transporterSuggestions = [];
+    this.transporterSuggestions.push('No transporter found');
+    this.service.anotherStatusCalled.next(true);
+    this.getTripList();
+    this.transporterFilter = 0;
+  }
+
   private getTripList() {
     this.service
       .getTrips(
@@ -162,7 +201,13 @@ export class TripListComponent implements OnInit {
         this.status,
         this.searchValue,
         this.truckType,
-        this.tripId
+        this.tripId,
+        null,
+        null,
+        null,
+        null,
+        null,
+        this.transporterName
       )
       .subscribe(
         (trip: any) => {
@@ -291,7 +336,12 @@ export class TripListComponent implements OnInit {
   }
 
   getFilterLength() {
-    return this.dateFilter + this.searchFilter + this.tripFilter;
+    return (
+      this.dateFilter +
+      this.searchFilter +
+      this.tripFilter +
+      this.transporterFilter
+    );
   }
 
   onClearFilter() {
@@ -303,6 +353,8 @@ export class TripListComponent implements OnInit {
     this.dateFilter = 0;
     this.tripFilter = 0;
     this.searchValue = '';
+    this.transporterName = '';
+    this.transporterFilter = 0;
     this.searchName = '';
     this.from = '';
     this.to = '';
@@ -320,6 +372,35 @@ export class TripListComponent implements OnInit {
     this.size = 30;
     this.status = tripStatus !== 'All' ? tripStatus : '';
     this.statusButtons.forEach(x => (x.isActive = x.name === tripStatus));
+    this.service.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onKeyUpTransporterSearch($event: any) {
+    const value = $event.target.value;
+    this.transporterSearchSubject.next(value); // Trigger the Subject when input changes
+  }
+
+  onClickTransporterSearchSuggestion(result: any) {
+    this.transporterFilter = 1;
+    this.page = 0;
+    this.transporterName = result.name;
+    this.searchTransporter = result.name;
+    this.transporterSuggestions = [];
+    this.isTripSearchedMenuOpened = false;
+    this.loading = true;
+    this.service.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onClickClearTransporter() {
+    this.transporterName = '';
+    this.searchTransporter = '';
+    this.transporterFilter = 0;
+    this.transporterSuggestions = [];
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
     this.service.anotherStatusCalled.next(true);
     this.getTripList();
   }
@@ -450,8 +531,10 @@ export class TripListComponent implements OnInit {
     this.searchName = '';
     this.searchValue = '';
     this.customerCode = '';
+    this.searchFilter = 0;
     this.page = 0;
     this.size = 30;
+    this.tripSuggestions = [];
     this.loading = true;
     this.service.anotherStatusCalled.next(true);
     this.getTripList();
@@ -461,6 +544,7 @@ export class TripListComponent implements OnInit {
     this.searchId = '';
     this.tripId = '';
     this.page = 0;
+    this.tripIdSuggestions = [];
     this.size = 30;
     this.loading = true;
     this.service.anotherStatusCalled.next(true);

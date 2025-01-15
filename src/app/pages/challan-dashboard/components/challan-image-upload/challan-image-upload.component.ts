@@ -107,6 +107,7 @@ export class ChallanImageUploadComponent {
   onClickSave($event: boolean) {
     this.loading = true;
     if ($event) {
+      console.log(this.currentDate, this.eventTypeId);
       if (this.currentDate && this.eventTypeId) {
         const request = {
           tripPointNo: this.tripId,
@@ -129,6 +130,7 @@ export class ChallanImageUploadComponent {
 
         // convert the request and files into formData
         const formData = new FormData();
+        console.log(request);
         formData.append(
           'request',
           new Blob([JSON.stringify(request)], { type: 'application/json' })
@@ -203,6 +205,7 @@ export class ChallanImageUploadComponent {
   onSelectDateAndTime($event: string) {
     if ($event) {
       this.currentDate = new Date($event);
+      console.log(this.currentDate);
     }
   }
 

@@ -15,9 +15,6 @@ import { debounceTime } from 'rxjs';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { MatDialog } from '@angular/material/dialog';
 import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
-import { MatButton } from '@angular/material/button';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-transporter',
@@ -40,11 +37,6 @@ import { RouterLink } from '@angular/router';
     DatePipe,
     DecimalPipe,
     NumberSeperatorPipe,
-    MatButton,
-    MatMenu,
-    MatMenuItem,
-    RouterLink,
-    MatMenuTrigger,
   ],
   templateUrl: './transporter.component.html',
   styleUrl: './transporter.component.scss',
@@ -61,6 +53,20 @@ export class TransporterComponent implements OnInit {
   size: number = 20;
 
   constructor(private service: UserService) {}
+
+  onClickAddTransporter() {
+    const dialogRef = this.dialog
+      .open(TransporterAddComponent, {
+        minWidth: '50vw',
+      })
+      .afterClosed()
+      .subscribe(res => {
+        if (res) {
+          this.transporterList = [];
+          this.getTransporterList();
+        }
+      });
+  }
 
   onKeyUpSearch($event: KeyboardEvent) {
     this.page = 0;
@@ -140,6 +146,4 @@ export class TransporterComponent implements OnInit {
     $event.stopPropagation();
     this.service.copyToClipboard(phone);
   }
-
-  protected readonly localStorage = localStorage;
 }

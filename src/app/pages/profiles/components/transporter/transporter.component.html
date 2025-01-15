@@ -26,7 +26,7 @@
             placeholder="Search  name, mobile"/>
         </div>
         <button
-          routerLink="/profile/transporter/add"
+          (click)="onClickAddTransporter()"
           class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
           <i class="fas fa-plus-circle"></i>
           <span class="hidden lg:block">Add Transporter</span>
@@ -51,10 +51,10 @@
         <th class="text-left">No Of Trips</th>
         <th class="text-left">Gross Profit (৳)</th>
         <th class="text-left">Rank</th>
-        <th class="bg-white sticky left-0" style="width: 5%"></th>
+        <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
-        <th class="border" colspan="9"></th>
+        <th class="border" colspan="8"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -86,27 +86,14 @@
           <td>{{ transporter.numberOfTrips != null ? transporter.numberOfTrips : '0' }}</td>
           <td>{{ transporter.grossProfit != null ? (transporter.grossProfit | numberSeperator) : '0' }}</td>
           <td>{{ transporter.rank != null && transporter.rank > 0 ? transporter.rank : 'N/A' }}</td>
-          <td class="bg-white sticky left-0">
-            <button mat-button
-                    [matMenuTriggerFor]="menu"><i
-              class="fas fa-ellipsis-v"></i></button>
-            <mat-menu #menu="matMenu">
-              <button (click)="localStorage.setItem('directTransporterEdit', 'true')"
-                      mat-menu-item>
-                <div class="flex space-x-2 items-center">
-                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
-                    <i class="fas fa-pen-alt"></i>
-                  </div>
-                  <span>Edit</span>
-                </div>
-              </button>
-            </mat-menu>
-          </td>
+          <!--          <td>-->
+          <!--            <i class="fas fa-ellipsis-v"></i>-->
+          <!--          </td>-->
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="transporterList?.length === 0">
-          <td class="text-center" colspan="9">
+          <td class="text-center" colspan="8">
             <div class="w-full flex flex-col space-y-3 justify-center items-center">
               <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
               <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
@@ -116,7 +103,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" colspan="9">
+          <td class="h-full" colspan="8">
             <app-loading></app-loading>
           </td>
         </tr>
