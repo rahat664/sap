@@ -201,12 +201,15 @@ export class DriverComponent implements OnInit {
   }
 
   onBottom($event: boolean) {
-    // if ($event && this.page < this.totalPages - 1) {
-    //   this.page++;
-    //   this.user.getDriver(this.page, this.size).subscribe((res: any) => {
-    //     this.driverList.push(...res.data.responses);
-    //   });
-    // }
+    if ($event && this.page < this.totalPages - 1) {
+      this.page++;
+      this.user.getDriver(this.page, this.size, null,
+        this.statusInputPlaceholder === 'All'
+          ? ''
+          : this.statusInputPlaceholder).subscribe((res: any) => {
+        this.driverList.push(...res.data.responses);
+      });
+    }
   }
 
   onMaxHeightCross($event: boolean) {
