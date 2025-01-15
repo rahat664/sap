@@ -30,7 +30,6 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
     this.subs = this.imageGalleryService.currentImage$.subscribe(imageUrl => {
       if (imageUrl) {
         this.galleryImages = imageUrl;
-        console.log(imageUrl);
         this.showGallery = true;
         if (this.checkImageOrDocument(this.galleryImages)) {
           this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(

@@ -88,15 +88,20 @@ export class UserCreateComponent implements OnInit {
       this.userModel.role = 'ROLE_ADMIN';
       this.userModel.department = this.userForm.get('role').value;
       this.userModel.designation = this.userForm.get('designation').value;
-      this.service.addUser(this.userModel).subscribe((res: any) => {
-        if (res.status === 'OK') {
-          this.dialogRef.close(true);
-          this.userForm.reset();
-          this.toastr.showSuccess('User created successfully');
-        } else {
-          this.toastr.showError(res.message);
+      this.service.addUser(this.userModel).subscribe(
+        (res: any) => {
+          if (res.status === 'OK') {
+            this.dialogRef.close(true);
+            this.userForm.reset();
+            this.toastr.showSuccess('User created successfully');
+          } else {
+            this.toastr.showError(res.message);
+          }
+        },
+        error => {
+          this.toastr.showError(error.error.message);
         }
-      });
+      );
     } else {
       this.userForm.markAllAsTouched();
     }

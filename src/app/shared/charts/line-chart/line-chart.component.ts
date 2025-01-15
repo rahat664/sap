@@ -75,7 +75,7 @@ export class LineChartComponent {
           enabled: false,
         },
         stroke: {
-          curve: 'smooth',
+          curve: 'straight',
           lineCap: 'round',
           colors: colors,
         },
@@ -94,7 +94,7 @@ export class LineChartComponent {
             formatter: function (value) {
               return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear}`;
             },
-          }
+          },
         },
         xaxis: {
           categories: changes['categories'].currentValue,
@@ -102,7 +102,7 @@ export class LineChartComponent {
           decimalsInFloat: 0,
           tooltip: {
             enabled: false,
-          }
+          },
         },
         yaxis: {
           labels: {
@@ -120,7 +120,6 @@ export class LineChartComponent {
       const selectedYear = this.selectedYear;
       const selectedMonth = this.selectedMonth;
       const colors = this.colors;
-      console.log(colors)
       let index = -1;
       this.chartOptions = {
         series: this.seriesData,
@@ -138,7 +137,7 @@ export class LineChartComponent {
           enabled: false,
         },
         stroke: {
-          curve: 'smooth',
+          curve: 'straight',
           lineCap: 'round',
           colors: colors,
         },
@@ -158,7 +157,7 @@ export class LineChartComponent {
           decimalsInFloat: 0,
           tooltip: {
             enabled: false,
-          }
+          },
         },
         tooltip: {
           x: {
@@ -170,11 +169,10 @@ export class LineChartComponent {
         yaxis: {
           labels: {
             formatter: function (value) {
-              console.log(value)
               return value.toFixed(0);
             },
-          }
-        }
+          },
+        },
       };
     });
   }

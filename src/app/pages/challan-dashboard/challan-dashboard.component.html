@@ -66,22 +66,21 @@
                 </mat-option>
               }
             </mat-autocomplete>
-<!--            // implement  a custom clear button-->
-<!--            <button type="button" (click)="onClickClear('customer')" *ngIf="searchName"-->
-<!--                    class="absolute inset-y-0 right-0  flex items-center">-->
-<!--              <i class="far fa-times text-gray-500 text-xs"></i>-->
-<!--            </button>-->
+            <button type="button" (click)="onClickClearCompany()" *ngIf="searchValue"
+                    class="absolute inset-y-0 right-0  flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
           </mat-form-field>
         </div>
         <div class="flex flex-col space-y-1 w-full">
           <label class="text-body  text-web-text-secondary px-2">Truck
           </label>
-          <mat-form-field appearance="outline" class="example-full-width ">
+          <mat-form-field appearance="outline" class="example-full-width relative">
             <input
               type="text"
               matInput
               (keyup)="onKeyUpTruckSearch($event)"
-              [(ngModel)]="truckRegistrationId"
+              [(ngModel)]="searchRegistationId"
               placeholder="Enter Truck ID"
               [matAutocomplete]="truck">
             <mat-autocomplete #truck="matAutocomplete">
@@ -91,6 +90,10 @@
                 </mat-option>
               }
             </mat-autocomplete>
+            <button type="button" (click)="onClickClearTruck()" *ngIf="truckRegistrationId"
+                    class="absolute inset-y-0 right-0  flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
           </mat-form-field>
         </div>
         <div class="flex flex-col space-y-1 w-full">
@@ -102,7 +105,7 @@
               type="text"
               matInput
               (keyup)="onKeyUpTransporterSearch($event)"
-              [(ngModel)]="transporterName"
+              [(ngModel)]="searchTransporter"
               placeholder="Enter Transporter Name"
               [matAutocomplete]="transporter">
             <mat-autocomplete #transporter="matAutocomplete">
@@ -112,6 +115,10 @@
                 </mat-option>
               }
             </mat-autocomplete>
+            <button type="button" (click)="onClickClearTransporter()" *ngIf="transporterName"
+                    class="absolute inset-y-0 right-0  flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
           </mat-form-field>
         </div>
         <div class="flex flex-col space-y-1 w-full">
@@ -121,7 +128,7 @@
               type="text"
               matInput
               (keyup)="onKeyUpTripSearch($event)"
-              [(ngModel)]="tripId"
+              [(ngModel)]="searchId"
               placeholder="Enter Trip Number"
               [matAutocomplete]="trip">
             <mat-autocomplete #trip="matAutocomplete">
@@ -131,6 +138,10 @@
                 </mat-option>
               }
             </mat-autocomplete>
+            <button type="button" (click)="onClickClearTripId()" *ngIf="tripId"
+                    class="absolute inset-y-0 right-0  flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
           </mat-form-field>
         </div>
       </div>

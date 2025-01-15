@@ -73,7 +73,7 @@ export class ChallanDashboardComponent {
   private customerCode: string;
   private to: string;
   private from: string;
-  private searchValue: string;
+  searchValue: string;
   filterForm: FormGroup;
   private isSearchedMenuOpened: boolean;
   private isTripSearchedMenuOpened: boolean;
@@ -84,6 +84,9 @@ export class ChallanDashboardComponent {
   private truckFilter: number = 0;
   protected truckRegSuggestions: any[] = [];
   protected transporterSuggestions: any[];
+  searchRegistationId: any;
+  searchTransporter: any;
+  searchId: any;
   get tripSuggestions(): any {
     return this._tripSuggestions;
   }
@@ -654,6 +657,7 @@ export class ChallanDashboardComponent {
     this.page = 0;
     this.customerCode = result.customerCode;
     this.searchName = result.name;
+    this.searchValue = result.name;
     this.tripSuggestions = [];
     this.isSearchedMenuOpened = false;
     this.size = 30;
@@ -681,6 +685,7 @@ export class ChallanDashboardComponent {
     this.tripFilter = 1;
     this.page = 0;
     this.tripId = result.tripId;
+    this.searchId = result.tripId;
     this.tripIdSuggestions = [];
     this.isTripSearchedMenuOpened = false;
     this.loading = true;
@@ -694,6 +699,7 @@ export class ChallanDashboardComponent {
     this.truckFilter = 1;
     this.page = 0;
     this.truckRegistrationId = result.fullRegistrationNumber;
+    this.searchRegistationId = result.fullRegistrationNumber;
     this.truckRegSuggestions = [];
     this.isTripSearchedMenuOpened = false;
     this.loading = true;
@@ -707,6 +713,7 @@ export class ChallanDashboardComponent {
     this.transporterFilter = 1;
     this.page = 0;
     this.transporterName = result.name;
+    this.searchTransporter = result.name;
     this.transporterSuggestions = [];
     this.isTripSearchedMenuOpened = false;
     this.loading = true;
@@ -759,7 +766,9 @@ export class ChallanDashboardComponent {
               tripDocuments: documents,
               activatedDocument: documents[0],
               returnUrl: '/challan-management',
-              tripId: tripId,
+              id: tripId,
+              uploadTimeAvailable: true,
+              gallaryText: 'Trip ID',
             },
           });
         }
@@ -839,30 +848,51 @@ export class ChallanDashboardComponent {
   protected readonly localStorage = localStorage;
   uploadAbleTripId: any;
 
-  onClickClear(field: string) {
-    switch (field) {
-      case 'customer':
-        this.customerCode = '';
-        this.searchValue = '';
-        this.searchName = '';
-        break;
-      case 'tripId':
-        this.tripId = '';
-        break;
-      case 'truck':
-        this.truckRegistrationId = '';
-        break;
-      case 'transporter':
-        this.transporterName = '';
-        break;
-      case 'date':
-        this.from = '';
-        this.to = '';
-        break;
-    }
+  onClickClearCompany() {
+    this.customerCode = '';
+    this.searchValue = '';
+    this.searchName = '';
+    this.page = 0;
+    this.size = 30;
+    this.searchFilter = 0;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onClickClearTruck() {
+    this.truckRegistrationId = '';
+    this.searchRegistationId = '';
+    this.truckRegSuggestions = [];
+    this.truckFilter = 0;
     this.page = 0;
     this.size = 30;
     this.loading = true;
     this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onClickClearTransporter() {
+    this.transporterName = '';
+    this.searchTransporter = '';
+    this.transporterFilter = 0;
+    this.transporterSuggestions = [];
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onClickClearTripId() {
+    this.tripId = '';
+    this.searchId = '';
+    this.tripIdSuggestions = [];
+    this.tripFilter = 0;
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
   }
 }

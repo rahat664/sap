@@ -1,0 +1,8 @@
+<app-global-image-upload
+  [isLoading]="loading"
+  (isBackButtonClick)="onBackButtonClick($event)"
+  (saveButtonClicked)="onClickSave($event)" (closedDocument)="onDocumentClose($event)"
+  [activatedDocument]="transporterDocuments[0]" [documents]="transporterDocuments"
+  [uploadTimeAvailable]="false"
+  [notesAvailable]="notesAvailable" [expiryAvailable]="expiryAvailable"
+  [imageTypes]="imageTypes"></app-global-image-upload>

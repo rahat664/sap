@@ -20,6 +20,7 @@
             <i class="far fa-times text-gray-500 text-xs"></i>
           </button>
           <input
+            [disabled]="loading"
             [(ngModel)]="searchValue"
             (keyup)="onKeyUpSearch($event)"
             type="text"
@@ -27,7 +28,8 @@
             class="border-none text-not-black text-h2 leading-h2 placeholder-input-hint w-full bg-white  rounded-lg focus:ring-blue focus:border-blue block pl-10 py-[.875rem]"
             placeholder="Search by trip ID, customer code" />
         </div>
-        <button (click)="onClickFilterOpen()" class="p-3 rounded-lg bg-white flex items-center justify-center">
+        <button [disabled]="loading" (click)="onClickFilterOpen()"
+                class="p-3 rounded-lg bg-white flex items-center justify-center">
           <div class="relative">
             <img loading="lazy" class="notPreview" src="assets/svg/filter.svg" alt="filter">
             <span *ngIf="filterValues.length > 0"
@@ -177,7 +179,8 @@
                (clearInput)="onClearInput($event)"
                 [truckFullRegistrationNumber]="truckRegistrationNumbers" [truckLocationPosition]="truckLocationPosition" [starting]="startingPosition"
                [destination]="destinationPosition" [tripStatus]="tripStatus"></app-g-map>
-    <app-map-buttons [triggeredButtonName]="triggerFromParentName" [triggerFromParent]="isTriggerFromParent"
+    <app-map-buttons [isButtonDisabled]="loading" [triggeredButtonName]="triggerFromParentName"
+                     [triggerFromParent]="isTriggerFromParent"
                      [statusButtons]="statusButtons" (buttonClickEmitter)="onClickButton($event)"
                      class="absolute top-0 right-1/2 transform translate-x-1/2">
     </app-map-buttons>

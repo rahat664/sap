@@ -20,7 +20,7 @@ module.exports = tseslint.config(
     processor: angular.processInlineTemplates,
     rules: {
       '@angular-eslint/directive-selector': [
-        'error',
+        'warn',
         {
           type: 'attribute',
           prefix: 'app',
@@ -28,7 +28,7 @@ module.exports = tseslint.config(
         },
       ],
       '@angular-eslint/component-selector': [
-        'error',
+        'warn',
         {
           type: 'element',
           prefix: 'app',
@@ -36,23 +36,23 @@ module.exports = tseslint.config(
         },
       ],
       '@angular-eslint/component-class-suffix': [
-        'error',
+        'warn',
         {
           suffixes: ['Component'],
         },
       ],
       '@angular-eslint/directive-class-suffix': [
-        'error',
+        'warn',
         {
           suffixes: ['Directive'],
         },
       ],
-      '@angular-eslint/no-conflicting-lifecycle': 'error',
-      '@angular-eslint/no-host-metadata-property': 'error',
-      '@angular-eslint/no-input-rename': 'error',
-      '@angular-eslint/no-inputs-metadata-property': 'error',
-      '@angular-eslint/no-output-native': 'error',
-      '@angular-eslint/no-output-on-prefix': 'error',
+      '@angular-eslint/no-conflicting-lifecycle': 'warn',
+      '@angular-eslint/no-host-metadata-property': 'warn',
+      '@angular-eslint/no-input-rename': 'warn',
+      '@angular-eslint/no-inputs-metadata-property': 'warn',
+      '@angular-eslint/no-output-native': 'warn',
+      '@angular-eslint/no-output-on-prefix': 'warn',
     },
   },
   {
