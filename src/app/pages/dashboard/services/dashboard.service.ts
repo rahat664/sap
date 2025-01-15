@@ -69,10 +69,6 @@ export class DashboardService {
       params.set('unloadingPointDistrictName', unloadingPointDistrictName);
     }
 
-    return this.http.get(
-      `${this._transporterRateAnalysisUrl}?${params.toString()}`
-    );
+    return this.http.get(`${this._transporterRateAnalysisUrl}?${params.toString()}`);
   }
-
-
 }
