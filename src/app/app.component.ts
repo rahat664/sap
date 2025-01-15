@@ -5,7 +5,14 @@ import {
   OnInit,
   Renderer2,
 } from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { LayoutComponent } from './core/layout/layout.component';
 import { initFlowbite } from 'flowbite';
 import { TopbarComponent } from './core/layout/topbar/topbar.component';
@@ -19,6 +26,7 @@ import { GeolocationService } from './shared/services/location/geolocation.servi
 import { filter } from 'rxjs';
 import { DriverEditSharedService } from './pages/profiles/services/driver-edit-shared.service';
 import { MatDialog } from '@angular/material/dialog';
+import { LoadingService } from './shared/services/loading/loading.service';
 
 @Component({
   selector: 'app-root',
@@ -40,6 +48,7 @@ export class AppComponent implements OnInit {
   title = 'snz-web';
   isOpen: boolean;
   map: google.maps.Map;
+  isLoading = this.loadingService.loading$;
 
   constructor(
     private router: Router,
@@ -48,8 +57,21 @@ export class AppComponent implements OnInit {
     private handleToaster: HandleToastrService,
     private geoLocation: GeolocationService,
     private shared: DriverEditSharedService,
-    private renderer: Renderer2
-  ) {}
+    private renderer: Renderer2,
+    private loadingService: LoadingService
+  ) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this.loadingService.show();
+      } else if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
+        this.loadingService.hide();
+      }
+    });
+  }
 
   @HostListener('click', ['$event'])
   onDocumentClick(event: MouseEvent) {

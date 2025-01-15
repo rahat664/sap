@@ -1,8 +1,14 @@
 <ng-container *ngIf="!isLoginPage() && !isAboutPage() && !isSupportPage()">
   <app-layout>
+    <div *ngIf="isLoading | async" class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
     <router-outlet></router-outlet>
   </app-layout>
 </ng-container>
 <ng-container *ngIf="isLoginPage() || isAboutPage() || isSupportPage()">
+  <div *ngIf="isLoading | async" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
   <router-outlet></router-outlet>
 </ng-container>

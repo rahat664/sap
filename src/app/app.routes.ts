@@ -2,6 +2,9 @@ import { Routes } from '@angular/router';
 import { authGuard } from './pages/auth/guards/auth.guard';
 import { isAlreadyLoggedInGuard } from './pages/auth/guards/is-already-logged-in.guard';
 import { roleGuard } from './pages/auth/guards/role.guard';
+import { dashboardDataResolver } from './core/resolver/dashboard-data.resolver';
+import { challanDataResolver } from './core/resolver/challan-data.resolver';
+import { challanDetailsDataResolver } from './core/resolver/challan-details-data.resolver';
 
 export const routes: Routes = [
   {
@@ -21,6 +24,9 @@ export const routes: Routes = [
         c => c.DashboardComponent
       ),
     canActivate: [authGuard, roleGuard],
+    resolve: {
+      dashboardData: dashboardDataResolver,
+    },
   },
   {
     path: 'challan-management',
@@ -30,6 +36,9 @@ export const routes: Routes = [
         c => c.ChallanDashboardComponent
       ),
     canActivate: [authGuard],
+    resolve: {
+      challanData: challanDataResolver,
+    },
   },
   {
     path: 'challan-management/:id/details',
@@ -39,6 +48,9 @@ export const routes: Routes = [
         './pages/challan-dashboard/components/challan-details/challan-details.component'
       ).then(c => c.ChallanDetailsComponent),
     canActivate: [authGuard],
+    resolve: {
+      challanDetailsData: challanDetailsDataResolver,
+    },
   },
   {
     path: 'challan-management/:id/image-upload',
