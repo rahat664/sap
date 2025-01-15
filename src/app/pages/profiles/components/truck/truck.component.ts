@@ -188,14 +188,22 @@ export class TruckComponent implements OnInit {
       this.page++;
       if (this.searchValue) {
         this.service
-          .getTruckList(this.page, this.size, this.searchValue)
+          .getTruckList(
+            this.page,
+            this.size,
+            this.searchValue,
+            this.statusInputPlaceholder == 'All'
+              ? ''
+              : this.statusInputPlaceholder
+          )
           .pipe(debounceTime(500))
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
           });
       } else {
         this.service
-          .getTruckList(this.page, this.size)
+          .getTruckList(this.page, this.size, null,
+            this.statusInputPlaceholder == 'All' ? '' : this.statusInputPlaceholder)
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
           });
