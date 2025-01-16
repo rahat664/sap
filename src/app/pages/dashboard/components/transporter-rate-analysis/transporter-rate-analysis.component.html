@@ -88,6 +88,7 @@
         </mat-form-field>
 
     </div>
-    <app-line-chart class="cursor-pointer" routerLink="/trip-list" [seriesData]="seriesdata" [categories]="categories"
+  <app-line-chart [numberOfTrips]="numberOfTrips" class="cursor-pointer" routerLink="/trip-list"
+                  [seriesData]="seriesdata" [categories]="categories"
                     [colors]="colors" [selectedYear]="selectedYear" [selectedMonth]="selectedMonth"></app-line-chart>
 </div>

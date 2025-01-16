@@ -63,6 +63,7 @@ export class TransporterRateAnalysisComponent {
   vehicleType = '';
   transporter = '';
   seriesdata = [];
+  numberOfTrips = [];
   colors = [];
   categories = [];
   constructor(
@@ -174,26 +175,33 @@ export class TransporterRateAnalysisComponent {
 
   private parseSeriesDataAndColorsFromResponse(data) {
     if (this.chartType === 'high') {
-      const singleSeriesData = Array(this.categories.length).fill(0);
+      const singleSeriesData = Array(this.categories.length).fill(null);
+      this.numberOfTrips = Array(this.categories.length).fill(null);
       data.forEach((item: any) => {
         const splitedDate = item.period?.split('-');
         const date = parseInt(splitedDate[2]);
         // if date starting from 0 then remove the 0
-        singleSeriesData[date - 1] = item.minRate ? item.maxRate : 0;
+        singleSeriesData[date - 1] =
+          item.minRate != null ? item.maxRate : item.totalTrips ? 0 : null;
+        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
       });
       this.seriesdata.push({
         name: 'Highest Rate',
         data: singleSeriesData,
         color: '#1DBF73',
       });
+
       this.colors.push('#1DBF73');
     } else if (this.chartType === 'low') {
-      const singleSeriesData = Array(this.categories.length).fill(0);
+      const singleSeriesData = Array(this.categories.length).fill(null);
+      this.numberOfTrips = Array(this.categories.length).fill(null);
       data.forEach((item: any) => {
         const splitedDate = item.period?.split('-');
         const date = parseInt(splitedDate[2]);
         // if date starting from 0 then remove the 0
-        singleSeriesData[date - 1] = item.minRate ? item.minRate : 0;
+        singleSeriesData[date - 1] =
+          item.minRate != null ? item.minRate : item.totalTrips ? 0 : null;
+        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
       });
       this.seriesdata.push({
         name: 'Lowest Rate',
@@ -202,12 +210,15 @@ export class TransporterRateAnalysisComponent {
       });
       this.colors.push('#F0614E');
     } else if (this.chartType === 'average') {
-      const singleSeriesData = Array(this.categories.length).fill(0);
+      const singleSeriesData = Array(this.categories.length).fill(null);
+      this.numberOfTrips = Array(this.categories.length).fill(null);
       data.forEach((item: any) => {
         const splitedDate = item.period?.split('-');
         const date = parseInt(splitedDate[2]);
         // if date starting from 0 then remove the 0
-        singleSeriesData[date - 1] = item.avgRate ? item.avgRate : 0;
+        singleSeriesData[date - 1] =
+          item.avgRate != null ? item.avgRate : item.totalTrips ? 0 : null;
+        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
       });
       this.seriesdata.push({
         name: 'Average Rate',
@@ -216,16 +227,21 @@ export class TransporterRateAnalysisComponent {
       });
       this.colors.push('#208B99');
     } else {
-      const singleSeriesDataHigh = Array(this.categories.length).fill(0);
-      const singleSeriesDataLow = Array(this.categories.length).fill(0);
-      const singleSeriesDataAverage = Array(this.categories.length).fill(0);
+      const singleSeriesDataHigh = Array(this.categories.length).fill(null);
+      const singleSeriesDataLow = Array(this.categories.length).fill(null);
+      const singleSeriesDataAverage = Array(this.categories.length).fill(null);
+      this.numberOfTrips = Array(this.categories.length).fill(null);
       data.forEach((item: any) => {
         const splitedDate = item.period?.split('-');
         const date = parseInt(splitedDate[2]);
         // if date starting from 0 then remove the 0
-        singleSeriesDataHigh[date - 1] = item.maxRate ? item.maxRate : 0;
-        singleSeriesDataLow[date - 1] = item.minRate ? item.minRate : 0;
-        singleSeriesDataAverage[date - 1] = item.avgRate ? item.avgRate : 0;
+        singleSeriesDataHigh[date - 1] =
+          item.maxRate != null ? item.maxRate : item.totalTrips ? 0 : null;
+        singleSeriesDataLow[date - 1] =
+          item.minRate != null ? item.minRate : item.totalTrips ? 0 : null;
+        singleSeriesDataAverage[date - 1] =
+          item.avgRate != null ? item.avgRate : item.totalTrips ? 0 : null;
+        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
       });
       this.seriesdata.push({
         name: 'Highest Rate',
@@ -251,6 +267,7 @@ export class TransporterRateAnalysisComponent {
   resetColorsAndSeriesData() {
     this.seriesdata = [];
     this.categories = [];
+    this.numberOfTrips = [];
 
     // const daysInMonth = new Date(this.selectedYear, parseInt(this.selectedMonth), 0).getDate();
     // this.categories = Array.from({ length: daysInMonth }, (_, i) => i + 1);
@@ -260,15 +277,15 @@ export class TransporterRateAnalysisComponent {
     // this.seriesdata = [
     //   {
     //     name: 'Maximum Rate',
-    //     data: Array(daysInMonth).fill(0)
+    //     data: Array(daysInMonth).fill(null)
     //   },
     //   {
     //     name: 'Average Rate',
-    //     data: Array(daysInMonth).fill(0)
+    //     data: Array(daysInMonth).fill(null)
     //   },
     //   {
     //     name: 'Lowest Rate',
-    //     data: Array(daysInMonth).fill(0)
+    //     data: Array(daysInMonth).fill(null)
     //   },
     // ];
   }

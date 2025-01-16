@@ -40,24 +40,20 @@ export class LineChartComponent {
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
   @Input() seriesData: any = [];
-  @Input() colors: string[] = [
-    '#1DBF73',
-    '#208B99',
-    '#F0614E'
-  ];
+  @Input() colors: string[] = ['#1DBF73', '#208B99', '#F0614E'];
   @Input() categories: any = [];
   @Input() selectedYear: any = '';
   @Input() selectedMonth: any = '';
+  @Input() numberOfTrips = [];
 
-  constructor(private cd: ChangeDetectorRef) {
-
-  }
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges) {
     timer(1200).subscribe(() => {
       const selectedYear = this.selectedYear;
       const selectedMonth = this.selectedMonth;
       const colors = this.colors;
+      const numberOfTrips = this.numberOfTrips;
       let index = -1;
       this.chartOptions = {
         series: changes['seriesData'].currentValue,
@@ -92,8 +88,11 @@ export class LineChartComponent {
         tooltip: {
           x: {
             formatter: function (value) {
-              return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear}`;
+              return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear} <b>(${numberOfTrips[value - 1] ? numberOfTrips[value - 1] : 'No'} Trips)</b>`;
             },
+          },
+          marker: {
+            show: false,
           },
         },
         xaxis: {
@@ -107,7 +106,7 @@ export class LineChartComponent {
         yaxis: {
           labels: {
             formatter: function (value) {
-              return value.toFixed(0);
+              return value == null ? 'N/A' : value.toFixed(0);
             },
           },
         },
@@ -120,6 +119,8 @@ export class LineChartComponent {
       const selectedYear = this.selectedYear;
       const selectedMonth = this.selectedMonth;
       const colors = this.colors;
+      const numberOfTrips = this.numberOfTrips;
+      console.log(numberOfTrips);
       let index = -1;
       this.chartOptions = {
         series: this.seriesData,
@@ -162,14 +163,17 @@ export class LineChartComponent {
         tooltip: {
           x: {
             formatter: function (value) {
-              return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear}`;
+              return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear} <b>(${numberOfTrips[value - 1] ? numberOfTrips[value - 1] : 'No'} Trips)</b>`;
             },
+          },
+          marker: {
+            show: false,
           },
         },
         yaxis: {
           labels: {
             formatter: function (value) {
-              return value.toFixed(0);
+              return value == null ? 'N/A' : value.toFixed(0);
             },
           },
         },

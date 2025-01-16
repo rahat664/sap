@@ -235,7 +235,7 @@
                     Please select a valid unloading point
                   </mat-error>
                   <mat-error class="invisible"
-                             *ngIf="unloadingPoint.get('pointDistrict').invalid && unloadingPoint.get('pointDistrict').touched && (unloadingPoint.get('pointName').valid || !unloadingPoint.get('pointDistrict').touched)">
+                             *ngIf="unloadingPoint.get('pointDistrict').invalid && unloadingPoint.get('pointDistrict').touched && (unloadingPoint.get('pointName').valid || !unloadingPoint.get('pointName').touched)">
                     Please select a valid loading point
                   </mat-error
                   >
@@ -244,7 +244,7 @@
                   <div class="flex  flex-col space-y-1 w-full">
                     <label for="unLoadingDistrict" class="form-label text-body">Unloading District</label>
                     <mat-form-field appearance="outline" class="example-full-width"
-                                    [ngClass]="{'error': unloadingPoint.get('pointDistrict').invalid && unloadingPoint.get('pointDistrict').touched}"
+                                    [ngClass]="{'error': unloadingPoint.get('pointDistrict').invalid && (unloadingPoint.get('pointDistrict').touched )}"
                     >
                       <input
                         id="unloadingDistrict"
@@ -269,7 +269,7 @@
                       Please select a valid unloading district
                     </mat-error>
                     <mat-error class="invisible"
-                               *ngIf="unloadingPoint.get('pointName').invalid && unloadingPoint.get('pointName').touched && unloadingPoint.get('pointDistrict').valid">
+                               *ngIf="unloadingPoint.get('pointName').invalid && unloadingPoint.get('pointName').touched && (unloadingPoint.get('pointDistrict').valid || !unloadingPoint.get('pointDistrict').touched)">
                       Please select a valid loading point
                     </mat-error
                     >
@@ -380,7 +380,7 @@
               Please select a valid number of vehicle
             </mat-error>
             <mat-error class="invisible"
-                       *ngIf="((tripForm.get('truckSize').invalid && tripForm.get('truckSize').touched) || tripForm.get('truckCapacityInTon').invalid && tripForm.get('truckCapacityInTon').touched) && tripForm.get('numOfTrucks').valid">
+                       *ngIf="((tripForm.get('truckSize').invalid && tripForm.get('truckSize').touched) || tripForm.get('truckCapacityInTon').invalid && tripForm.get('truckCapacityInTon').touched) && (tripForm.get('numOfTrucks').valid || !tripForm.get('numOfTrucks').touched)">
               Please select a valid number of vehicle
             </mat-error>
             <div class="w-full h-full flex space-x-2 items-center">
@@ -404,7 +404,7 @@
               Please select a valid truck size
             </mat-error>
             <mat-error class="invisible"
-                       *ngIf="((tripForm.get('numOfTrucks').invalid && tripForm.get('numOfTrucks').touched) || tripForm.get('truckCapacityInTon').invalid && tripForm.get('truckCapacityInTon').touched) && tripForm.get('truckSize').valid">
+                       *ngIf="((tripForm.get('numOfTrucks').invalid && tripForm.get('numOfTrucks').touched) || tripForm.get('truckCapacityInTon').invalid && tripForm.get('truckCapacityInTon').touched) && (tripForm.get('truckSize').valid || !tripForm.get('truckSize').touched)">
               Please select a valid number of vehicle
             </mat-error>
             <div class="w-full flex space-x-2 items-center">
@@ -428,7 +428,7 @@
               Please select a valid truck capacity
             </mat-error>
             <mat-error class="invisible"
-                       *ngIf="((tripForm.get('truckSize').invalid && tripForm.get('truckSize').touched) || tripForm.get('numOfTrucks').invalid && tripForm.get('numOfTrucks').touched) && tripForm.get('truckCapacityInTon').valid">
+                       *ngIf="((tripForm.get('truckSize').invalid && tripForm.get('truckSize').touched) || tripForm.get('numOfTrucks').invalid && tripForm.get('numOfTrucks').touched) && (tripForm.get('truckCapacityInTon').valid || !tripForm.get('truckCapacityInTon').touched)">
               Please select a valid number of vehicle
             </mat-error>
             <div class="w-full flex space-x-2 items-center">
