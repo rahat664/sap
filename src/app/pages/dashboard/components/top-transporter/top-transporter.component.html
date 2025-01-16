@@ -17,21 +17,21 @@
     <!--    </mat-form-field>-->
   </div>
   <div routerLink="/profile/transporter" class="cursor-pointer flex flex-col space-y-4">
-    <div class="grid grid-cols-4 w-full py-1.5 text-body_title  border-b border-link
+    <div class="grid grid-cols-4 gap-3 w-full py-1.5 text-body_title  border-b border-link
      text-not-black font-semibold">
       <span>Transporter</span>
       <span class="text-center w-full">No. of Trips</span>
-      <span class="text-center">CR(৳)</span>
+      <span class="text-center">TR(৳)</span>
       <span class="text-center">GP(৳)</span>
     </div>
     <div class="flex flex-col space-y-5">
       <ng-container *ngFor="let transporter of topTransporter">
-        <div class="grid grid-cols-4 w-full text-body text-not-black">
+        <div class="grid grid-cols-4 items-center w-full text-body text-not-black">
           <div class="flex space-x-3 items-center">
             <div class="text-body_title text-white flex justify-center items-center h-[1.75rem] w-[1.75rem] rounded-full {{getBackgroundColor(transporter.transporterName[0].toLocaleLowerCase())}} font-semibold">
               <span>{{transporter.transporterName[0].toLocaleUpperCase()}}</span>
             </div>
-            <span>{{ transporter.transporterName }}</span>
+            <span class="flex-1">{{ transporter.transporterName }}</span>
           </div>
           <span class="text-center w-full">{{transporter.noOfTrips}}</span>
           <span class="text-center">{{ transporter.totalTR | numberSeperator }}</span>

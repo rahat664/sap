@@ -142,7 +142,7 @@
                       Please select a valid loading district
                     </mat-error>
                     <mat-error class="invisible"
-                               *ngIf="loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched && loadingPoint.get('pointDistrict').valid">
+                               *ngIf="loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched && (loadingPoint.get('pointDistrict').valid || !loadingPoint.get('pointDistrict').touched)">
                       Please select a valid loading point
                     </mat-error
                     >
@@ -235,7 +235,7 @@
                     Please select a valid unloading point
                   </mat-error>
                   <mat-error class="invisible"
-                             *ngIf="unloadingPoint.get('pointDistrict').invalid && unloadingPoint.get('pointDistrict').touched && unloadingPoint.get('pointName').valid">
+                             *ngIf="unloadingPoint.get('pointDistrict').invalid && unloadingPoint.get('pointDistrict').touched && (unloadingPoint.get('pointName').valid || !unloadingPoint.get('pointDistrict').touched)">
                     Please select a valid loading point
                   </mat-error
                   >
