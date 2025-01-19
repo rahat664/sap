@@ -11,8 +11,12 @@ import { TripService } from '../../services/trip.service';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
 import { Router } from '@angular/router';
-import { MatError, MatFormField } from '@angular/material/form-field';
-import { MatMenuTrigger } from '@angular/material/menu';
+import {
+  MatError,
+  MatFormField,
+  MatSuffix,
+} from '@angular/material/form-field';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import { ScrollByButtonDirective } from '../../../../shared/directive/scroll-by-button.directive';
@@ -25,6 +29,11 @@ import { UserService } from '../../../profiles/services/user.service';
 import { ConfirmUpdateComponent } from '../../../manage-trip/components/confirm-update/confirm-update.component';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
+import { MatCalendar, MatDatepickerToggle } from '@angular/material/datepicker';
+import { MatCard } from '@angular/material/card';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TimePickerComponent } from '../../../../shared/modules/time-picker/time-picker.component';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-trip-update',
@@ -43,7 +52,15 @@ import { ErrorModalComponent } from '../../../../shared/modules/error-modal/erro
     NgForOf,
     NgIf,
     MatError,
+    MatCalendar,
+    MatCard,
+    MatDatepickerToggle,
+    MatMenu,
+    MatSuffix,
+    MatTooltip,
+    TimePickerComponent,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './trip-update.component.html',
   styleUrl: './trip-update.component.scss',
 })
@@ -92,6 +109,10 @@ export class TripUpdateComponent {
         .subscribe((res: boolean) => {
           if (res) {
             const body = {
+              tripStartDatetime: this.datePipe.transform(
+                new Date(this.tripUpdateForm.get('tripStartDatetime').value),
+                'yyyy-MM-ddTHH:mm:ss'
+              ),
               categoryId: this.tripUpdateForm.get('categoryId').value,
               numOfTrucks: this.tripUpdateForm.get('numOfTrucks').value,
               truckSize: this.tripUpdateForm.get('truckSize').value,
@@ -227,6 +248,10 @@ export class TripUpdateComponent {
   unloadingDistrictSuggestions: any;
   selectedCustomer: any;
   helperSuggestion: any;
+  readonly minDate = new Date();
+  selectedDate: Date = new Date();
+  returnToInputDate: Date;
+  isDisabled: boolean = false;
 
   private getGoodsOptions() {
     this.service.getGoodsOptions().subscribe((res: any) => {
@@ -352,6 +377,7 @@ export class TripUpdateComponent {
 
   private initializeForm() {
     this.tripUpdateForm = this.fb.group({
+      tripStartDatetime: [''],
       categoryId: [''],
       numOfTrucks: [''],
       truckSize: [''],
@@ -457,11 +483,11 @@ export class TripUpdateComponent {
     // update above functionality with form array
     option?.locationPointName
       ? this.loadingPoints?.controls[i]
-        ?.get('pointName')
-        .setValue(option.locationPointName)
+          ?.get('pointName')
+          .setValue(option.locationPointName)
       : this.loadingPoints?.controls[i]
-        ?.get('pointName')
-        .setValue(option.addressText);
+          ?.get('pointName')
+          .setValue(option.addressText);
     if (option.district) {
       this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
       this.loadingPoints?.controls[i]
@@ -549,7 +575,7 @@ export class TripUpdateComponent {
     this.unloadingSuggestions = [];
   }
 
-  onKeyUpUnloadingPoint($event: KeyboardEvent, i:number) {
+  onKeyUpUnloadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.service
@@ -578,7 +604,6 @@ export class TripUpdateComponent {
       this.loadingDistrictSuggestions = [];
     }
   }
-
 
   onSelectLoadingDistrict(option: any, i: number) {
     this.loadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
@@ -616,29 +641,27 @@ export class TripUpdateComponent {
     }
   }
 
-
   onSelectUnloadingDistrict(option: any, i: number) {
-    this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
+    this.unloadingPoints?.controls[i]
+      ?.get('pointDistrict')
+      .setValue(option.name);
     if (
       this.unloadingPoints?.controls[i]?.get('pointLat').value === '' ||
       this.unloadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.unloadingPoints?.controls[i]
-        .setValue(
-          this.unloadingPoints?.controls[i]?.get('pointLat').value
-            ? this.unloadingPoints?.controls[i]?.get('pointLat').value
-            : option.lat
-        );
-      this.unloadingPoints?.controls[i]
-        .setValue(
-          this.unloadingPoints?.controls[i]?.get('pointLon').value
-            ? this.unloadingPoints?.controls[i]?.get('pointLon').value
-            : option.lon
-        );
+      this.unloadingPoints?.controls[i].setValue(
+        this.unloadingPoints?.controls[i]?.get('pointLat').value
+          ? this.unloadingPoints?.controls[i]?.get('pointLat').value
+          : option.lat
+      );
+      this.unloadingPoints?.controls[i].setValue(
+        this.unloadingPoints?.controls[i]?.get('pointLon').value
+          ? this.unloadingPoints?.controls[i]?.get('pointLon').value
+          : option.lon
+      );
     }
     this.unloadingDistrictSuggestions = [];
   }
-
 
   onClickGoodsSuggestion(option: CustomInputSelectModel) {
     this.tripUpdateForm.get('goodsId').setValue(option.id);
@@ -820,6 +843,16 @@ export class TripUpdateComponent {
   private getValueFromTripDetails() {
     const tripData = JSON.parse(localStorage.getItem('updateTripDetails'));
     if (tripData) {
+      this.tripStatus = tripData.status;
+      this.customerName = tripData.customerName;
+      this.tripUpdateForm
+        .get('tripStartDatetime')
+        .setValue(
+          this.datePipe.transform(
+            tripData.tripStartDatetime,
+            'd MMM yyyy, hh:mm a'
+          )
+        );
       this.tripUpdateForm
         .get('categoryId')
         .setValue(tripData.vehicleCategory.id);
@@ -877,10 +910,18 @@ export class TripUpdateComponent {
         if (point.id !== null && point.id !== undefined && point.id !== '') {
           this.loadingPoints.controls[index].get('id').setValue(point.id);
         }
-        this.loadingPoints.controls[index].get('pointDistrict').setValue(point.pointDistrict);
-        this.loadingPoints.controls[index].get('pointName').setValue(point.pointName);
-        this.loadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
-        this.loadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+        this.loadingPoints.controls[index]
+          .get('pointDistrict')
+          .setValue(point.pointDistrict);
+        this.loadingPoints.controls[index]
+          .get('pointName')
+          .setValue(point.pointName);
+        this.loadingPoints.controls[index]
+          .get('pointLat')
+          .setValue(point.pointLat);
+        this.loadingPoints.controls[index]
+          .get('pointLon')
+          .setValue(point.pointLon);
       });
       unloadingPoints?.forEach((point: any, index: number) => {
         if (index > 0) {
@@ -889,10 +930,18 @@ export class TripUpdateComponent {
         if (point.id !== null && point.id !== undefined && point.id !== '') {
           this.unloadingPoints.controls[index].get('id').setValue(point.id);
         }
-        this.unloadingPoints.controls[index].get('pointDistrict').setValue(point.pointDistrict);
-        this.unloadingPoints.controls[index].get('pointName').setValue(point.pointName);
-        this.unloadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
-        this.unloadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+        this.unloadingPoints.controls[index]
+          .get('pointDistrict')
+          .setValue(point.pointDistrict);
+        this.unloadingPoints.controls[index]
+          .get('pointName')
+          .setValue(point.pointName);
+        this.unloadingPoints.controls[index]
+          .get('pointLat')
+          .setValue(point.pointLat);
+        this.unloadingPoints.controls[index]
+          .get('pointLon')
+          .setValue(point.pointLon);
       });
     }
   }
@@ -938,5 +987,38 @@ export class TripUpdateComponent {
           this.tripUpdateForm.get('helperPhone').setValue('');
         }
       });
+  }
+
+  onSelect($event: any) {
+    this.selectedDate = $event;
+    this.returnToInputDate = $event;
+  }
+
+  isButtonDisabled($event: boolean) {
+    this.isDisabled = $event;
+  }
+
+  onTimeChange($event: any) {
+    this.time = $event;
+  }
+
+  private time: any;
+  tripStatus: string;
+
+  onSelectTimeAndDate() {
+    // convert time to 24-hour format
+    const time = this.time.split(' ')[0];
+    const hour = parseInt(time.split(':')[0]);
+    const minute = parseInt(time.split(':')[1]);
+    const amOrPm = this.time.split(' ')[1];
+    const timeIn24HourFormat = amOrPm === 'PM' ? hour + 12 : hour;
+    const selectedDate = this.selectedDate;
+    selectedDate.setHours(timeIn24HourFormat, hour);
+    selectedDate.setMinutes(minute);
+    this.tripUpdateForm
+      .get('tripStartDatetime')
+      .setValue(
+        this.datePipe.transform(this.selectedDate, 'd MMM yyyy, hh:mm a')
+      );
   }
 }

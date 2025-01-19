@@ -220,6 +220,7 @@
         <th class="text-left">Trip Number</th>
         <th class="text-left whitespace-nowrap">Trip Date</th>
         <th class="text-left" *ngIf="isAdmin()">Company</th>
+        <th class="text-left" *ngIf="isAdmin()">Transporter</th>
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
         <th class="text-left">Status</th>
@@ -245,6 +246,7 @@
             {{ trip.tripStartDatetime | date: 'd MMM yyyy' }}
           </td>
           <td class="whitespace-nowrap" *ngIf="isAdmin()">{{ trip.customerName }}</td>
+          <td class="whitespace-nowrap" *ngIf="isAdmin()">{{ trip.transporterName }}</td>
           <td class="whitespace-nowrap">
             <p>{{ getLoadingPointsName(trip.tripPoints)[0]?.pointName }} <span
               class="bg-not-black inline-block py-0.5 px-2 rounded-lg  text-white"

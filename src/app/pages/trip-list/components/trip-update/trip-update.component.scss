@@ -30,3 +30,66 @@
 .p {
   margin: 0;
 }
+
+.customButton {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 56px;
+  border-radius: 8px;
+}
+
+::ng-deep .mat-mdc-menu-panel {
+  max-width: 25rem !important;
+}
+
+::ng-deep .mat-mdc-menu-content {
+  padding: 8px 8px !important;
+}
+
+
+::ng-deep .error .mat-mdc-text-field-wrapper {
+  width: 100%;
+  border-radius: 0.5rem !important;
+  background-color: #FFFAFB !important;
+  height: 3.3rem !important;
+}
+
+
+.step {
+  display: flex;
+  align-items: center;
+  position: relative;
+  @apply space-x-6
+  /* Space between steps */
+}
+
+::ng-deep .step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 4px; /* Adjust based on circle size and spacing */
+  top: 53%;
+  height: calc(100% + 16px);
+  width: 1px; /* Width of the dashed line */
+  border-left: 1px dashed #E5EAEB; /* Dashed border style */
+  z-index: 0; /* Ensure the line is behind the circles */
+}
+
+
+.circle {
+  margin-top: 1.5rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%; /* Color of the circle */
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+
+.p {
+  margin: 0;
+}
+
+
+
