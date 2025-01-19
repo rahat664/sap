@@ -5,7 +5,8 @@ import {
   Input,
   Output,
   SimpleChanges,
-  ViewChild, AfterViewInit,
+  ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { mapStyles } from '../../../../../shared/models/map-options';
 import { GoogleMap } from '@angular/google-maps';
@@ -15,6 +16,7 @@ import { GeolocationService } from '../../../../../shared/services/location/geol
 import { TripService } from '../../../../trip-list/services/trip.service';
 import { TrackerService } from '../../../services/tracker.service';
 import { timer } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trucking-map',
@@ -27,6 +29,7 @@ export class TruckingMapComponent implements AfterViewInit {
   @Output() clearInput: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
+
   get truckId(): string {
     return this._truckId;
   }
@@ -43,6 +46,8 @@ export class TruckingMapComponent implements AfterViewInit {
   @Input() destination: google.maps.LatLngLiteral[] = [];
   @Input() truckLocationPosition: any[] = [];
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
+  fromlist: boolean = false;
+  fromMarker: boolean = false;
 
   center: google.maps.LatLngLiteral;
   zoom = 12;
@@ -63,14 +68,15 @@ export class TruckingMapComponent implements AfterViewInit {
   truckData: TruckData = {} as TruckData;
   loading: boolean;
   @Input() truckFullRegistrationNumber: string;
+  @Input() selectedTruck = '';
   private intervalData: number;
   private _truckId: string;
 
   constructor(
-    private geoLocationService: GeolocationService,
     private trip: TripService,
     private truckService: TrackerService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -94,9 +100,24 @@ export class TruckingMapComponent implements AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.stopInterval();
+    this.infoWindow?.close();
     setTimeout(() => {
+      this.stopInterval();
+      this.infoWindow?.close();
       if (changes['truckLocationPosition']?.currentValue) {
         this.updateTruckLocation(this.truckLocationPosition);
+      }
+      if (changes['selectedTruck']?.currentValue) {
+        this.truckLocationPosition?.forEach((truck, index) => {
+          if (this.selectedTruck === truck.fullRegistrationNumber) {
+            this.showLoadingSpinner(this.truckLocationMarker[index]);
+            this.fetchTruckData(
+              this.selectedTruck,
+              this.truckLocationMarker[index]
+            );
+          }
+        });
       }
     }, 2000);
   }
@@ -133,7 +154,6 @@ export class TruckingMapComponent implements AfterViewInit {
           map: this.map.googleMap, // Ensure the map is set
         });
         this.truckLocationMarker.push(truckLocationMarker);
-
         // Create an InfoWindow for this marker
 
         // Add a click event listener to the marker to show info when clicked
@@ -145,11 +165,11 @@ export class TruckingMapComponent implements AfterViewInit {
         content: this.getLoadingSpinnerContent(), // Initially show loading spinner
         maxWidth: 400,
       });
+
       marker.addListener('click', (registrationNumber: string) => {
-        if (this.intervalData) {
-          this.infoWindow.close();
-          this.stopInterval();
-        }
+        this.fromMarker = true;
+        this.stopInterval(); // Clear the info window
+        this.infoWindow.close();
         this.showLoadingSpinner(marker);
         this.fetchTruckData(
           truckPosition[index].fullRegistrationNumber,
@@ -210,6 +230,18 @@ export class TruckingMapComponent implements AfterViewInit {
   }
 
   getInfoWindowContent(): string {
+    timer(100).subscribe(() => {
+      const tripId = document.getElementById('tripId');
+      if (this.truckData?.associatedRunningTripId) {
+        tripId?.addEventListener('click', () => {
+          localStorage.setItem(
+            'fromTripListTripId',
+            this.truckData.associatedRunningTripId
+          );
+          this.router.navigateByUrl('/manage-trip');
+        });
+      }
+    });
     return `
       <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
         <div class="flex flex-col space-y-1">
@@ -222,7 +254,7 @@ export class TruckingMapComponent implements AfterViewInit {
       </div>
       <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
         <table id="info-table" style="width: 100%;">
-          <tr class="grid grid-cols-8 "><td class="col-span-3">Trip</td><td>:</td><td class="col-span-4">${this.truckData.associatedRunningTripId ? this.truckData.associatedRunningTripId : 'N/A'}</td></tr>
+          <tr id="tripId"  class="grid grid-cols-8 "><td class="col-span-3">Trip</td><td>:</td><td class="col-span-4 text-link cursor-pointer">${this.truckData.associatedRunningTripId ? this.truckData.associatedRunningTripId : 'N/A'}</td></tr>
           <tr class="grid grid-cols-8 "><td class="col-span-3">Time</td><td>:</td><td class="col-span-4">${this.truckData.time ? this.truckData.time : 'N/A'}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${this.truckData.stopDuration ? this.truckData.stopDuration : 'N/A'}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Engine<td>:</td></td><td class="col-span-4">${this.truckData.engineStatus ? this.truckData.engineStatus : 'N/A'}</td></tr>

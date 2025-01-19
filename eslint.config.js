@@ -53,6 +53,8 @@ module.exports = tseslint.config(
       '@angular-eslint/no-inputs-metadata-property': 'warn',
       '@angular-eslint/no-output-native': 'warn',
       '@angular-eslint/no-output-on-prefix': 'warn',
+      // no explicit any
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
   {

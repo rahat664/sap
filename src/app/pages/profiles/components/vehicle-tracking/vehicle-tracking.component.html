@@ -56,33 +56,34 @@
             </mat-autocomplete>
           </mat-form-field>
         </div>
-        <div class="flex flex-col space-y-1 w-1/3">
-          <label class="text-body  text-web-text-secondary px-2">Truck
-          </label>
-          <mat-form-field appearance="outline" class="example-full-width">
-            <input
-              type="text"
-              matInput
-              (keyup)="onKeyUpTruckSearch($event)"
-              [(ngModel)]="truckRegistrationId"
-              placeholder="Enter Truck ID"
-              [matAutocomplete]="truck">
-            <mat-autocomplete #truck="matAutocomplete">
-              @for (option of truckRegSuggestions; track option) {
-                <mat-option (click)="onClickTruckSearchSuggestion(option)"
-                            [value]="option.fullRegistrationNumber">{{
-                    option.fullRegistrationNumber ? option.fullRegistrationNumber : option}}
-                </mat-option>
-              }
-            </mat-autocomplete>
-          </mat-form-field>
-        </div>
+        <!--        <div class="flex flex-col space-y-1 w-1/3">-->
+        <!--          <label class="text-body  text-web-text-secondary px-2">Truck-->
+        <!--          </label>-->
+        <!--          <mat-form-field appearance="outline" class="example-full-width">-->
+        <!--            <input-->
+        <!--              type="text"-->
+        <!--              matInput-->
+        <!--              (keyup)="onKeyUpTruckSearch($event)"-->
+        <!--              [(ngModel)]="truckRegistrationId"-->
+        <!--              placeholder="Enter Truck ID"-->
+        <!--              [matAutocomplete]="truck">-->
+        <!--            <mat-autocomplete #truck="matAutocomplete">-->
+        <!--              @for (option of truckRegSuggestions; track option) {-->
+        <!--                <mat-option (click)="onClickTruckSearchSuggestion(option)"-->
+        <!--                            [value]="option.fullRegistrationNumber">{{-->
+        <!--                    option.fullRegistrationNumber ? option.fullRegistrationNumber : option}}-->
+        <!--                </mat-option>-->
+        <!--              }-->
+        <!--            </mat-autocomplete>-->
+        <!--          </mat-form-field>-->
+        <!--        </div>-->
       </div>
     </div>
   </div>
   <div
     class="h-[calc(100vh-18.5rem)] bg-transparent rounded-lg overflow-hidden border border-line relative">
-    <app-trucking-map [truckLocationPosition]="truckLocationPosition"></app-trucking-map>
+    <app-trucking-map [selectedTruck]="selectedTruckNumber"
+                      [truckLocationPosition]="truckLocationPosition"></app-trucking-map>
     <div class="absolute top-4 left-4 flex space-x-3">
       <ng-container *ngFor="let conditions of conditionList">
         <button
@@ -92,6 +93,72 @@
             conditions?.viewValue }}
           <span>({{ conditions?.count }})</span></button>
       </ng-container>
+    </div>
+    <div class="absolute right-12 top-4  min-w-36 bg-white rounded-lg">
+      <button *ngIf="!trucklistOpened" class="flex w-full justify-between items-center  px-4 py-2 rounded-lg">
+        <img (click)="onClickTruckList()" src="assets/svg/slide-left.svg" class="notPreview">
+        <h1 class="text-h2 leading-h2 text-not-black font-semibold">Truck list</h1>
+      </button>
+      <div class="w-full px-4 py-2 rounded-lg" *ngIf="trucklistOpened">
+        <div class=" w-full justify-between flex items-center">
+          <h1 class="text-h2 leading-h2 text-not-black font-semibold">Truck list</h1>
+          <img (click)="onHideTruckList()" src="assets/svg/slide-right.svg" class="notPreview">
+        </div>
+        <div class="relative w-full my-4">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <img src="assets/svg/search.svg" class="notPreview" alt="search">
+          </div>
+          <button (click)="onClickClear()" *ngIf="searchTruckValue"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <i class="far fa-times text-gray-500 text-xs"></i>
+          </button>
+          <input
+            (keyup)="onKeyUpAllTruckSearch($event)"
+            type="text"
+            name="email"
+            [(ngModel)]="searchTruckValue"
+
+            class="border-line bg-input text-input-hint w-[24rem]  sm:text-sm rounded-lg focus:ring-link focus:border-link block pl-10 p-2.5"
+            placeholder="Enter truck registration number"/>
+        </div>
+        <div appGiveMaxHeight
+             anotherItemsHeight="448px"
+             [totalPage]="totalPages"
+             (inBottomEnd)="onScrollEnd($event)" *ngIf="allTruckList?.length > 0 && !truckListLoading"
+             class="max-h-[calc(100vh-28rem)] min-h-[calc(100vh-28rem)] overflow-y-auto">
+          <ng-container
+            *ngFor="let truck of allTruckList; index as i">
+            <button [disabled]="singleTruckButtonDisable" (click)="onClickSingleTruck(truck?.fullRegistrationNumber)"
+                    class="{{i === allTruckList.length -1 ? '' : 'border-b border-line'}} w-full  py-3 flex justify-between items-center">
+              <div class="flex space-x-3 items-center">
+                <div
+                  class="w-[1.875rem] h-[1.875rem] flex items-center justify-center rounded-full bg-another text-white font-bold">
+                  {{ truck?.fullRegistrationNumber?.charAt(0) }}
+                </div>
+                <div class="flex flex-1 flex-col space-y-1">
+                  <h1>{{ truck?.fullRegistrationNumber }}</h1>
+                </div>
+              </div>
+              <div
+                class="px-4 py-0.5 rounded-full text-center border {{getColorByConditon(truck?.currentCondition, 'border')}} {{getColorByConditon(truck?.currentCondition, 'text')}}">
+                <h1>{{ truck?.currentCondition == 'Running' ? 'Moving' : truck?.currentCondition }}</h1>
+              </div>
+            </button>
+          </ng-container>
+        </div>
+        <div *ngIf="allTruckList?.length <=0 && !truckListLoading"
+             class="max-h-[calc(100vh-28rem)] min-h-[calc(100vh-28rem)] flex items-center justify-center overflow-y-auto">
+          <div class="w-full h-full flex flex-col space-y-3 justify-center items-center">
+            <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
+            <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+          </div>
+        </div>
+        <div *ngIf="truckListLoading"
+             class="max-h-[calc(100vh-28rem)] min-h-[calc(100vh-28rem)] flex items-center justify-center overflow-y-auto">
+          <app-loading></app-loading>
+        </div>
+      </div>
     </div>
   </div>
 </div>
