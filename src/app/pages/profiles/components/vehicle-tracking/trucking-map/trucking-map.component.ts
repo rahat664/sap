@@ -58,6 +58,9 @@ export class TruckingMapComponent implements AfterViewInit {
     mapTypeControl: false,
     fullscreenControl: true,
     disableDefaultUI: true,
+    fullscreenControlOptions: {
+      position: google.maps.ControlPosition.LEFT_BOTTOM,
+    },
   };
 
   truckLocationMarker: google.maps.Marker[] = [];
