@@ -1,5 +1,4 @@
 
-
 <div class="sticky top-0 flex items-start justify-between bg-white z-50">
   <h1 class="text-h3 leading-h3  font-semibold text-not-black px-6 py-4"></h1>
   <button class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
@@ -13,7 +12,7 @@
       <img src="assets/svg/warning-red.svg" alt="warning" loading="lazy" class="notPreview">
       <h1 class="text-h1_mobile leading-h1_mobile text-center text-not-black font-bold">{{ data?.title }}</h1>
     </div>
-    <p class="w-2/3 text-body text-center text-secondary">Do you want to reject <span>{{data?.textPrefix}}</span> <span
+      <p class="w-2/3 text-body text-center text-secondary"><span>{{ data?.textPrefix }}</span> <span
       class="font-semibold text-body_title leading-body_title">{{ data?.text }}</span></p>
     <h1 class="text-h3 leading-h3 font-bold text-not-black self-start">Cause of trip Cancellation</h1>
     <div class="flex flex-col space-y-1 self-start">
@@ -38,7 +37,8 @@
     </div>
     <textarea *ngIf="data?.reasonAvailable && reasonTextArea" class="w-full h-32 border border-gray-300 rounded-lg p-4 mt-4" placeholder="Write Cause"
               [(ngModel)]="textareaReasons"></textarea>
-    <button [ngClass]="{'bg-opacity-[30%]': reason === '' || (reasonTextArea && textareaReasons === '') }" [disabled]="reason === '' || (reasonTextArea && textareaReasons === '')"
+      <button [ngClass]="{'bg-opacity-[30%]': reason === '' && (!reasonTextArea && textareaReasons === '') }"
+              [disabled]="reason === '' && (!reasonTextArea && textareaReasons === '')"
             class="bg-red w-full text-white rounded-lg p-4 mt-4"
             (click)="confirmUpdate()">{{ data?.buttonText}}
     </button>
