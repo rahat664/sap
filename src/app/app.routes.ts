@@ -2,6 +2,11 @@ import { Routes } from '@angular/router';
 import { authGuard } from './pages/auth/guards/auth.guard';
 import { isAlreadyLoggedInGuard } from './pages/auth/guards/is-already-logged-in.guard';
 import { roleGuard } from './pages/auth/guards/role.guard';
+import { dashboardDataResolver } from './core/resolver/dashboard-data.resolver';
+import { challanDataResolver } from './core/resolver/challan-data.resolver';
+import { tripListResolver } from './core/resolver/trip-list.resolver';
+import { userResolver } from './core/resolver/user.resolver';
+import { truckResolver } from './core/resolver/truck.resolver';
 
 export const routes: Routes = [
   {
@@ -21,6 +26,9 @@ export const routes: Routes = [
         c => c.DashboardComponent
       ),
     canActivate: [authGuard, roleGuard],
+    resolve: {
+      dashboardData: dashboardDataResolver,
+    },
   },
   {
     path: 'challan-management',
@@ -30,6 +38,9 @@ export const routes: Routes = [
         c => c.ChallanDashboardComponent
       ),
     canActivate: [authGuard],
+    resolve: {
+      challanData: challanDataResolver,
+    },
   },
   {
     path: 'challan-management/:id/details',
@@ -57,6 +68,9 @@ export const routes: Routes = [
         c => c.TripListComponent
       ),
     canActivate: [authGuard],
+    resolve: {
+      tripList: tripListResolver,
+    },
   },
   {
     path: 'dashboard',
@@ -84,6 +98,9 @@ export const routes: Routes = [
         c => c.ManageTripComponent
       ),
     canActivate: [authGuard],
+    resolve: {
+      tripList: tripListResolver,
+    },
   },
   // create trip with query params not id with scenerio
   {
@@ -139,6 +156,9 @@ export const routes: Routes = [
         c => c.UserManagementComponent
       ),
     canActivate: [authGuard],
+    resolve: {
+      users: userResolver,
+    },
   },
   {
     path: 'user-management-customer',
@@ -190,6 +210,9 @@ export const routes: Routes = [
         './pages/profiles/components/vehicle-tracking/vehicle-tracking.component'
       ).then(c => c.VehicleTrackingComponent),
     canActivate: [authGuard],
+    resolve: {
+      vehicleTracking: truckResolver,
+    },
   },
   {
     path: 'support',

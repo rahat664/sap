@@ -1,4 +1,9 @@
 import { Routes } from '@angular/router';
+import { transporterResolver } from '../../core/resolver/transporter.resolver';
+import { customerResolver } from '../../core/resolver/customer.resolver';
+import { truckResolver } from '../../core/resolver/truck.resolver';
+import { driverResolver } from '../../core/resolver/driver.resolver';
+import { trackerResolver } from '../../core/resolver/tracker.resolver';
 
 export const profileRoutes: Routes = [
   {
@@ -13,6 +18,9 @@ export const profileRoutes: Routes = [
       import('./components/customer/customer.component').then(
         c => c.CustomerComponent
       ),
+    resolve: {
+      customer: customerResolver,
+    },
   },
   {
     path: 'transporter',
@@ -21,12 +29,18 @@ export const profileRoutes: Routes = [
       import('./components/transporter/transporter.component').then(
         c => c.TransporterComponent
       ),
+    resolve: {
+      transporter: transporterResolver,
+    },
   },
   {
     path: 'truck',
     title: 'Truck',
     loadComponent: () =>
       import('./components/truck/truck.component').then(c => c.TruckComponent),
+    resolve: {
+      truck: truckResolver,
+    },
   },
   {
     path: 'truck/add',
@@ -67,6 +81,9 @@ export const profileRoutes: Routes = [
       import('./components/driver/driver.component').then(
         c => c.DriverComponent
       ),
+    resolve: {
+      driver: driverResolver,
+    },
   },
   {
     path: 'driver/add',
@@ -91,6 +108,9 @@ export const profileRoutes: Routes = [
       import('./components/tracker/tracker.component').then(
         c => c.TrackerComponent
       ),
+    resolve: {
+      tracker: trackerResolver,
+    },
   },
   {
     path: 'tracker/add',
