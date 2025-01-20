@@ -5,6 +5,8 @@ import { roleGuard } from './pages/auth/guards/role.guard';
 import { dashboardDataResolver } from './core/resolver/dashboard-data.resolver';
 import { challanDataResolver } from './core/resolver/challan-data.resolver';
 import { challanDetailsDataResolver } from './core/resolver/challan-details-data.resolver';
+import { tripListResolver } from './core/resolver/trip-list.resolver';
+import { userResolver } from './core/resolver/user.resolver';
 
 export const routes: Routes = [
   {
@@ -69,6 +71,9 @@ export const routes: Routes = [
         c => c.TripListComponent
       ),
     canActivate: [authGuard],
+    resolve: {
+      tripList: tripListResolver,
+    },
   },
   {
     path: 'dashboard',
@@ -96,6 +101,9 @@ export const routes: Routes = [
         c => c.ManageTripComponent
       ),
     canActivate: [authGuard],
+    resolve: {
+      tripList: tripListResolver,
+    },
   },
   // create trip with query params not id with scenerio
   {
@@ -151,6 +159,9 @@ export const routes: Routes = [
         c => c.UserManagementComponent
       ),
     canActivate: [authGuard],
+    resolve: {
+      users: userResolver,
+    },
   },
   {
     path: 'user-management-customer',

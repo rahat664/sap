@@ -74,9 +74,11 @@ export class AuthEffects {
                 JSON.stringify(permissions.data)
               );
               this.toaster.showSuccess('Login Successful', '');
-              this.isAdmin()
-                ? this.router.navigate(['/dashboard'])
-                : this.router.navigate(['/trip-list']);
+              if (this.isAdmin()) {
+                this.router.navigateByUrl('/dashboard').then(r => {});
+              } else {
+                this.router.navigateByUrl('/trip-list').then(r => {});
+              }
             } else {
               this.toaster.showError(permissions.message, '');
             }
