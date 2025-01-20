@@ -154,7 +154,7 @@ export class VehicleTrackingComponent {
   ngOnInit() {
     this.truckLocationPosition = [];
     this.getTruckList();
-    this.onClickFilterOpened()
+    this.onClickTruckList();
   }
 
   onClickFilterOpened() {
