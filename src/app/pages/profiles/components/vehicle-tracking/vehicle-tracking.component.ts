@@ -117,7 +117,7 @@ export class VehicleTrackingComponent {
     },
   ];
   truckLocationPosition: any[] = [];
-  trucklistOpened: boolean = false;
+  trucklistOpened: boolean = true;
   searchTruckValue: any;
   allTruckList: TruckModel[] = [];
   page: number = 0;
