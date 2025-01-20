@@ -342,18 +342,18 @@
                  class="w-full flex items-center justify-center">
               <button (click)="onClickHardCopyReceive(trip.tripId)"
                       type="button"
-                      class="px-[0.875rem] py-[0.375rem] text-green bg-green bg-opacity-[5%] rounded-lg">
-                Receive
+                      class="px-[0.875rem] py-[0.375rem] text-primary  border border-primary rounded">
+                <span class="text-body">Recieve</span>
               </button>
             </div>
           </td>
           <td class="text-center whitespace-nowrap">
             <a *ngIf="trip.challanStatus != 'Pending'" (click)="onClickSoftCopyView(trip.tripId)"
-               class="cursor-pointer text-link text-center underline">View</a>
+               class="cursor-pointer text-link text-center">View</a>
             <ng-container *ngIf="trip.challanStatus == 'Pending'">
               <label (click)="uploadAbleTripId = trip.tripId" for="file-upload"
-                     class="flex space-x-2 px-4 py-2 rounded-lg items-center cursor-pointer bg-[#EEF7FD]">
-                <span class="text-h2_regular leading-h2_regular text-link">Upload</span>
+                     class="px-[0.875rem] py-[0.375rem] text-primary  cursor-pointer border border-primary rounded">
+                <span class="text-body  text-primary">Upload</span>
               </label>
               <input
                 type="file"
@@ -373,7 +373,7 @@
             '0'}} w-full bg-white z-20">
             <div class="w-full flex justify-center items-center">
               <p
-                class="px-2 py-1 {{getBgColor(trip.challanStatus)}} bg-opacity-[30%] rounded-full">{{ trip.challanStatus }}</p>
+                class="px-4 py-1 {{getBgColor(trip.challanStatus, 'bg')}} {{getBgColor(trip.challanStatus, 'text')}} rounded-full">{{ trip.challanStatus }}</p>
             </div>
           </td>
           <td class="sticky right-0 bg-white w-[5rem]" *ngIf="(trip.challanStatus == 'Approved' ||

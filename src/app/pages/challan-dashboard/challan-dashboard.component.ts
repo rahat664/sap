@@ -485,18 +485,18 @@ export class ChallanDashboardComponent {
     }
   }
 
-  getBgColor(challanStatus: string) {
+  getBgColor(challanStatus: string, type: string) {
     switch (challanStatus) {
       case 'Pending':
-        return 'bg-[#005577]';
+        return type === 'bg' ? 'bg-[#F0F3F3]' : 'text-[#066A78]';
       case 'Approved':
-        return 'bg-green';
+        return type === 'bg' ? 'bg-[#E4F3EC]' : 'text-[#087D46]';
       case 'Rejected':
-        return 'bg-red';
+        return type === 'bg' ? 'bg-[#F9EBE9]' : 'text-[#961801]';
       case 'In-Progress':
-        return 'bg-yellow';
+        return type === 'bg' ? 'bg-[#FCF5E9]' : 'text-[#D38704]';
       default:
-        return 'bg-another';
+        return type === 'bg' ? 'bg-[#FCF5E9]' : 'text-[#D38704]';
     }
   }
 

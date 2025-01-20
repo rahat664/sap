@@ -54,6 +54,7 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
   ngOnInit() {
     timer(1000).subscribe(() => {
       const colors = ['#85DAE5', '#208B99'];
+      const total = this.value ? this.value.reduce((a, b) => a + b, 0) : 0;
       let index = -1;
       const labels = ['Received', 'Pending'];
       const customLegendItems = labels.map(
@@ -182,6 +183,12 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
           fillSeriesColor: false,
           onDatasetHover: {
             highlightDataSeries: false,
+          },
+          y: {
+            formatter(val: number, opts?: any): string {
+              console.log(opts.globals?.series);
+              return `${((val / opts.globals?.series?.reduce((a, b) => a + b, 0)) * 100).toFixed(2)}%`;
+            },
           },
         },
       };

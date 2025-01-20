@@ -37,7 +37,7 @@
     <textarea *ngIf="data?.reasonAvailable && reasonTextArea" class="w-full h-32 border border-gray-300 rounded-lg p-4 mt-4" placeholder="Write Cause"
               [(ngModel)]="textareaReasons"></textarea>
     <button [ngClass]="{'bg-opacity-[30%]': reason === '' && (!reasonTextArea || textareaReasons === '') }"
-              [disabled]="reason === '' && (!reasonTextArea && textareaReasons === '')"
+            [disabled]="reason === '' && (!reasonTextArea || textareaReasons === '')"
             class="bg-red w-full text-white rounded-lg p-4 mt-4"
             (click)="confirmUpdate()">{{ data?.buttonText}}
     </button>
