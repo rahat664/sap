@@ -75,14 +75,14 @@
         <div class="ml-2 " *ngFor="let reason of tripDetails.tripCancellationReason.split('\n')"
           >
           <div class="flex items-center space-x-2">
-            <img src="assets/svg/circle.svg" alt="loading">
+            <img class="notPreview" src="assets/svg/circle.svg" alt="loading">
             <span class="text-body_title leading-body_title text-web-text-secondary">{{ reason.trim() }}</span>
           </div>
         </div>
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6" src="assets/svg/loading.svg">
+          <img loading="lazy" class="w-6 notPreview h-6" src="assets/svg/loading.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">
             Loading Point{{ getLoadingPoint(tripDetails.tripPoints)?.length > 1 ? 's' : '' }}
             <span
@@ -94,7 +94,7 @@
           <ng-container *ngFor="let point of getLoadingPoint(tripDetails.tripPoints)">
             <div class="step">
               <div class="circle">
-                <img src="assets/svg/circle.svg" alt="loading">
+                <img src="assets/svg/circle.svg" class="notPreview" alt="loading">
               </div>
               <div class="flex items-center justify-between text-body text-not-black"><p
                 class="w-full">
@@ -107,7 +107,7 @@
       </div>
       <div class="flex flex-col  space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6" src="assets/svg/locinfo.svg">
+          <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/locinfo.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">
             Unloading Point{{ getUnloadingPoint(tripDetails.tripPoints)?.length > 1 ? 's' : '' }}
             <span
@@ -117,7 +117,7 @@
           <ng-container *ngFor="let point of getUnloadingPoint(tripDetails.tripPoints)">
             <div class="step">
               <div class="circle">
-                <img src="assets/svg/circle.svg" alt="loading">
+                <img src="assets/svg/circle.svg" class="notPreview" alt="loading">
               </div>
               <div class="flex items-center justify-between text-body text-not-black"><p
                 class="w-full">
@@ -130,7 +130,7 @@
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6" src="assets/svg/truckinfo.svg">
+          <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/truckinfo.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">Truck</h1>
         </div>
         <h1
@@ -142,7 +142,7 @@
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6" src="assets/svg/goodsinfo.svg">
+          <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/goodsinfo.svg">
           <h1 class="text-body_title leading-body_title text-not-black font-semibold">Goods</h1>
         </div>
         <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.good.name }}</h1>

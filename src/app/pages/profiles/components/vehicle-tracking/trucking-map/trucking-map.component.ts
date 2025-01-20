@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import { GeolocationService } from '../../../../../shared/services/location/geolocation.service';
 import { TripService } from '../../../../trip-list/services/trip.service';
 import { TrackerService } from '../../../services/tracker.service';
-import { timer } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -29,6 +29,7 @@ export class TruckingMapComponent implements AfterViewInit {
   @Output() clearInput: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
+  subs: Subscription;
 
   get truckId(): string {
     return this._truckId;
@@ -114,11 +115,19 @@ export class TruckingMapComponent implements AfterViewInit {
       if (changes['selectedTruck']?.currentValue) {
         this.truckLocationPosition?.forEach((truck, index) => {
           if (this.selectedTruck === truck.fullRegistrationNumber) {
+            this.clearSubs();
             this.showLoadingSpinner(this.truckLocationMarker[index]);
             this.fetchTruckData(
               this.selectedTruck,
               this.truckLocationMarker[index]
             );
+            // fit the map to the bounds of the marker
+            this.map.googleMap?.fitBounds({
+              north: truck.position.lat + 1.2,
+              south: truck.position.lat - 1.2,
+              east: truck.position.lng + 1.2,
+              west: truck.position.lng - 1.2,
+            });
           }
         });
       }
@@ -170,6 +179,7 @@ export class TruckingMapComponent implements AfterViewInit {
       });
 
       marker.addListener('click', (registrationNumber: string) => {
+        this.clearSubs();
         this.fromMarker = true;
         this.stopInterval(); // Clear the info window
         this.infoWindow.close();
@@ -178,6 +188,13 @@ export class TruckingMapComponent implements AfterViewInit {
           truckPosition[index].fullRegistrationNumber,
           marker
         );
+        // fit the map to the bounds of the marker
+        this.map.googleMap?.fitBounds({
+          north: truckPosition[index].position.lat + 1.2,
+          south: truckPosition[index].position.lat - 1.2,
+          east: truckPosition[index].position.lng + 1.2,
+          west: truckPosition[index].position.lng - 1.2,
+        });
       });
     });
   }
@@ -189,22 +206,24 @@ export class TruckingMapComponent implements AfterViewInit {
   }
 
   fetchTruckData(registrationNumber: string, marker: any): void {
-    this.truckService.getTrackers(0, 10, registrationNumber).subscribe(
-      (res: any) => {
-        if (res.data?.content?.length > 0) {
-          this._truckId = res.data.content[0].vehicleId;
-          this.truckService.getTrackerData(this._truckId).subscribe(
-            (res: any) => {
-              this.truckData = res.data;
-              this.updateInfoWindow(marker);
-              this.startInterval(marker);
-            },
-            error => {}
-          );
-        }
-      },
-      error => {}
-    );
+    this.subs = this.truckService
+      .getTrackers(0, 10, registrationNumber)
+      .subscribe(
+        (res: any) => {
+          if (res.data?.content?.length > 0) {
+            this._truckId = res.data.content[0].vehicleId;
+            this.truckService.getTrackerData(this._truckId).subscribe(
+              (res: any) => {
+                this.truckData = res.data;
+                this.updateInfoWindow(marker);
+                this.startInterval(marker);
+              },
+              error => {}
+            );
+          }
+        },
+        error => {}
+      );
   }
 
   calculatedHeight() {
@@ -290,14 +309,22 @@ export class TruckingMapComponent implements AfterViewInit {
     }
   }
 
+  private clearSubs() {
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
+  }
+
   private updateTruckDataOnly(marker: any) {
-    this.truckService.getTrackerData(this._truckId).subscribe(
+    this.subs = this.truckService.getTrackerData(this._truckId).subscribe(
       (res: any) => {
         this.truckData = res.data;
         this.startInterval(marker);
         this.updateInfoWindow(marker);
       },
-      error => {}
+      error => {
+        this.stopInterval();
+      }
     );
   }
 }

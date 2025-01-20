@@ -47,11 +47,8 @@ export class TopCustomerComponent {
     const d = new Date();
     const currentYear = d.getFullYear();
     this.fromDate = '2024-01-01';
-    // last day of the current month
-    this.toDate = this.datePipe.transform(
-      new Date(currentYear, d.getMonth() + 1, 0),
-      'yyyy-MM-dd'
-    );
+    // current day of current month
+    this.toDate = this.datePipe.transform(d, 'yyyy-MM-dd');
   }
 
   private getTopCustomers() {
