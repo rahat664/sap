@@ -20,9 +20,9 @@ import {MatCheckbox, MatCheckboxChange} from "@angular/material/checkbox";
 })
 export class ConfirmCancelComponent {
   readonly dialog = inject(MatDialog);
-  reason: string = '';
-   reasonTextArea: boolean;
-   textareaReasons: string;
+  reason = '';
+  reasonTextArea = false;
+  textareaReasons: string = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -43,7 +43,7 @@ export class ConfirmCancelComponent {
 
   confirmUpdate() {
     if (this.reasonTextArea) {
-      this.reason = this.reason + 'Others: '+ this.textareaReasons;
+      this.reason = this.reason + 'Others: ' + this.textareaReasons;
     }
     const body = {};
     body['status'] = 'Cancelled';
@@ -88,7 +88,7 @@ export class ConfirmCancelComponent {
         this.reasonTextArea = true;
       }
     } else {
-      reason = reason.filter((item) => item !== $event.source.value);
+      reason = reason.filter(item => item !== $event.source.value);
       if ($event.source.value === 'Others') {
         this.reasonTextArea = false;
       }
