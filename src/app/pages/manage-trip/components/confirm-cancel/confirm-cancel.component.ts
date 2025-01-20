@@ -5,19 +5,24 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { TripService } from '../../../trip-list/services/trip.service';
-import { DatePipe } from '@angular/common';
+import {DatePipe, NgClass, NgIf} from '@angular/common';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
+import {FormsModule} from "@angular/forms";
+import {MatCheckbox, MatCheckboxChange} from "@angular/material/checkbox";
 
 @Component({
   selector: 'app-confirm-cancel',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, NgClass, NgIf, MatCheckbox],
   templateUrl: './confirm-cancel.component.html',
   styleUrl: './confirm-cancel.component.scss',
 })
 export class ConfirmCancelComponent {
   readonly dialog = inject(MatDialog);
+  reason: string = '';
+   reasonTextArea: boolean;
+   textareaReasons: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -30,11 +35,19 @@ export class ConfirmCancelComponent {
     this.dialogRef.close('');
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.reason = '';
+    this.reasonTextArea = false;
+    this.textareaReasons = '';
+  }
 
   confirmUpdate() {
+    if (this.reasonTextArea) {
+      this.reason = this.reason + 'Others: '+ this.textareaReasons;
+    }
     const body = {};
     body['status'] = 'Cancelled';
+    body['tripCancellationReason'] = this.reason;
     this.trip.updateTrip(body, this.data.trip.tripId).subscribe((res: any) => {
       this.dialogRef.close('updated');
       if (res.status == 'OK') {
@@ -62,5 +75,34 @@ export class ConfirmCancelComponent {
         });
       }
     });
+  }
+
+  onChangeReason($event: MatCheckboxChange) {
+    let reason: string[] = this.reason ? this.reason.split('\n') : [];
+    if ($event.checked) {
+      if ($event.source.value !== 'Others') {
+        reason.push($event.source.value);
+        this.reasonTextArea = false;
+      } else {
+        reason.push(this.textareaReasons);
+        this.reasonTextArea = true;
+      }
+    } else {
+      reason = reason.filter((item) => item !== $event.source.value);
+      if ($event.source.value === 'Others') {
+        this.reasonTextArea = false;
+      }
+    }
+    this.reason = reason.join('\n');
+  }
+
+  ngOnDestory() {
+    this.reason = '';
+    this.reasonTextArea = false;
+    this.textareaReasons = '';
+  }
+
+  checkThatValueIsAvailableOrNot(reason: string) {
+    return this.reason.includes(reason);
   }
 }

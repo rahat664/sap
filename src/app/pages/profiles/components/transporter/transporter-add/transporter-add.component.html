@@ -5,7 +5,7 @@
   <div
     class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
     <div>
-      <img loading="lazy" class="notPreview" src="assets/images/customer-create.png" alt="" />
+      <img loading="lazy" class="notPreview" src="assets/images/customer-create.png" alt=""/>
     </div>
   </div>
   <div class="p-8 max-h-[90vh] overflow-y-auto overflow-x-hidden">
@@ -44,7 +44,8 @@
                                      [preferredCountries]="[CountryISO.Bangladesh]"
                                      [fieldControl]="phoneNumber"
                                      [numberValidation]="true" [hidePhoneIcon]="true"
-                                     [required]="true" [autoIpLookup]="false"  [ngClass]="{ 'customError' : transporterForm.get('phone').invalid && transporterForm.get('phone').touched }"
+                                     [required]="true" [autoIpLookup]="false"
+                                     [ngClass]="{ 'customError' : transporterForm.get('phone').invalid && transporterForm.get('phone').touched }"
         ></ngx-material-intl-tel-input>
         <!--        error-message-->
         <div>

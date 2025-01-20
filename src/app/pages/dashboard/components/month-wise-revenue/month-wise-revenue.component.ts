@@ -7,6 +7,7 @@ import { ColumnChartComponent } from '../../../../shared/charts/column-chart/col
 import { DashboardService } from '../../services/dashboard.service';
 import { DatePipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
+import {LineChartComponent} from "../../../../shared/charts/line-chart/line-chart.component";
 
 @Component({
   selector: 'app-month-wise-revenue',
@@ -18,6 +19,7 @@ import { forkJoin } from 'rxjs';
     MatSelect,
     ReactiveFormsModule,
     ColumnChartComponent,
+    LineChartComponent,
   ],
   templateUrl: './month-wise-revenue.component.html',
   styleUrl: './month-wise-revenue.component.scss',
@@ -61,7 +63,7 @@ export class MonthWiseRevenueComponent {
     let year = d.getFullYear();
     const lastSixMonths = [];
     for (let i = 0; i < 6; i++) {
-      lastSixMonths.push(monthNames[month]);
+      lastSixMonths.push(monthNames[month] + '-' + year);
       if (month === 0) {
         month = 11;
         year--;
@@ -119,7 +121,10 @@ export class MonthWiseRevenueComponent {
     this.toDate = this.toDate.map(date => {
       const d = new Date(date);
       // last day of the month
-      return this.datePipe.transform(new Date(d.getFullYear(), d.getMonth() + 1, 0), 'yyyy-MM-dd');
+      return this.datePipe.transform(
+        new Date(d.getFullYear(), d.getMonth() + 1, 0),
+        'yyyy-MM-dd'
+      );
     });
     const observables = this.fromDate.map((fromDate, index) =>
       this.service.getTripCountByStatus(fromDate, this.toDate[index])

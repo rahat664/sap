@@ -19,7 +19,7 @@
       [formGroup]="customerForm"
       class="w-full px-8 flex flex-col h-full space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
       <div class="flex flex-col space-y-2 w-full lg:col-span-2">
-        <label for="name">Customer Name</label>
+          <label for="name">Customer/Company Name</label>
         <mat-form-field appearance="outline" class="example-full-width "
                         [ngClass]="{'error':  customerForm.get('name').invalid && customerForm.get('name').touched}"
         >
@@ -32,7 +32,7 @@
             (input)="onNameKeyPress($event)"
             matInput
             formControlName="name"
-            placeholder="Enter Customer Name">
+            placeholder="Enter Customer/Company Name">
         </mat-form-field>
         <!--        error-message-->
         <div
@@ -49,7 +49,6 @@
                         [ngClass]="{'error':  customerForm.get('code').invalid && customerForm.get('code').touched}"
         >
           <input
-            appAlphabetOnly
             (input)="onCodeKeyPress($event)"
             [minLength]="4"
             [maxLength]="4"

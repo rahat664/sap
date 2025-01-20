@@ -13,6 +13,7 @@ import {
   ChartComponent,
   NgApexchartsModule,
 } from 'ng-apexcharts';
+import {timer} from "rxjs";
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -40,19 +41,14 @@ export class ColumnChartComponent {
   @Input() createdValue: number[] = [];
   @Input() completedValue: number[] = [];
   @Input() categories: string[] = [
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
-    'Sun',
   ];
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef) {
 
-  ngOnChanges() {
-    const colors = ['#E5EAEB', '#0CD5F0'];
+  }
+
+  ngOnInit() {
+    const colors = ['#85DAE5', '#208B99'];
     this.chartOptions = {
       series: [
         {
@@ -77,6 +73,7 @@ export class ColumnChartComponent {
         bar: {
           horizontal: false,
           columnWidth: '60%',
+          borderRadius: 4,
         },
       },
       dataLabels: {
@@ -129,6 +126,89 @@ export class ColumnChartComponent {
         },
       },
     };
+  }
+
+  ngOnChanges() {
+    timer(500).subscribe(() => {
+      const colors = ['#85DAE5', '#208B99'];
+      this.chartOptions = {
+        series: [
+          {
+            name: 'Trip Created',
+            data: this.createdValue || [0, 0, 0, 0, 0, 0, 0],
+            color: colors[0],
+          },
+          {
+            name: 'Trip Completed',
+            data: this.completedValue || [0, 0, 0, 0, 0, 0, 0],
+            color: colors[1],
+          },
+        ],
+        chart: {
+          type: 'bar',
+          height: 350,
+          toolbar: {
+            show: false,
+          },
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '60%',
+            borderRadius: 4,
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'left',
+          offsetX: -42,
+          offsetY: -1,
+          fontSize: '12px',
+          customLegendItems: ['Trip created', 'Trip Completed'],
+          itemMargin: {
+            horizontal: 10,
+          },
+          markers: {
+            fillColors: colors,
+          },
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent'],
+        },
+        xaxis: {
+          categories: this.categories || [],
+          labels: {
+            style: {
+              colors: '#777777',
+              fontSize: '12px',
+            },
+          },
+        },
+        yaxis: {
+          labels: {
+            style: {
+              colors: '#777777',
+              fontSize: '12px',
+            },
+          },
+        },
+        fill: {
+          opacity: 1,
+        },
+        tooltip: {
+          y: {
+            formatter: function (val) {
+              return val + `${val > 1 ? ' trips' : ' trip'}`;
+            },
+          },
+        },
+      };
+    });
   }
 
   ngAfterViewInit() {

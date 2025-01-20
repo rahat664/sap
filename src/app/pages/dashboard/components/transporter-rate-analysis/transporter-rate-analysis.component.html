@@ -1,0 +1,94 @@
+<div class="px-6 pb-5 bg-white rounded-lg flex flex-col space-y-3 relative">
+    <div class="flex justify-between items-end z-0">
+        <h2 class="text-h2 leading-h2 font-semibold text-not-black pt-5">
+            Transporter Rate Analysis
+            <a *ngIf="transporter || vehicleType || loadingDistrict || unloadingDistrict" (click)="clearAll()"
+               class="font-semibold ml-2 text-red cursor-pointer text-body_title">Clear all</a>
+        </h2>
+        <!--    <div class="absolute top-5 right-6">-->
+        <!--      <mat-form-field appearance="outline" class="w-[12rem]">-->
+        <!--        <mat-select-->
+        <!--          formControlName="vendorId"-->
+        <!--          placeholder="Select date">-->
+        <!--          <mat-option value="all">All time</mat-option>-->
+        <!--          <mat-option value="today">Today</mat-option>-->
+        <!--          <mat-option value="all">Yesterday</mat-option>-->
+        <!--          <mat-option value="all">Last 7 days</mat-option>-->
+        <!--          <mat-option value="all">Last 15 days</mat-option>-->
+        <!--          <mat-option value="all">Last 30 days</mat-option>-->
+        <!--        </mat-select>-->
+        <!--      </mat-form-field>-->
+        <!--    </div>-->
+    </div>
+    <div class="flex space-x-3 items-center">
+        <mat-form-field appearance="outline" class="w-[12rem]">
+            <mat-select [(ngModel)]="chartType"
+                        placeholder="Chart"
+                        (selectionChange)="changeChartType($event)">
+                <mat-option value="all">All</mat-option>
+                <mat-option value="high">Highest rate</mat-option>
+                <mat-option value="average">Average rate</mat-option>
+                <mat-option value="low">Lowest rate</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-[12rem]">
+            <mat-select
+                    [(ngModel)]="vehicleType"
+                    (selectionChange)="onVehicleTypeChange($event)"
+                    placeholder="Vehicle Type">
+                <mat-option *ngFor="let vehicle of vehicleTypeLists" [value]="vehicle?.id">{{ vehicle?.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-[12rem]">
+            <mat-select
+                    [(ngModel)]="transporter"
+                    (selectionChange)="onTransporterChange($event)"
+                    placeholder="Transporter">
+                <mat-option *ngFor="let transporter of transporterLists"
+                            [value]="transporter?.userId">{{ transporter?.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-[12rem]">
+            <mat-select
+                    [(ngModel)]="loadingDistrict"
+                    (selectionChange)="onLoadingDistrictChange($event)"
+                    placeholder="Loading District">
+                <mat-option *ngFor="let district of districts" [value]="district?.name">{{ district?.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-[13rem]">
+            <mat-select
+                    [(ngModel)]="unloadingDistrict"
+                    (selectionChange)="onUnloadingDistrictChange($event)"
+                    placeholder="Unloading District">
+                <mat-option *ngFor="let district of districts" [value]="district?.name">{{ district?.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-[12rem]">
+            <mat-select
+                    [(ngModel)]="selectedYear"
+                    (selectionChange)="onYearChange($event)"
+                    placeholder="Year">
+                <mat-option *ngFor="let year of yearList" [value]="year">{{ year }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-[12rem]">
+            <mat-select
+                    [(ngModel)]="selectedMonth"
+                    (selectionChange)="onMonthChange($event)"
+                    placeholder="Month">
+                <!--        default value-->
+                <mat-option *ngFor="let month of monthList" [value]="month?.value">{{ month?.viewValue }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+    </div>
+  <app-line-chart [numberOfTrips]="numberOfTrips" class="cursor-pointer" routerLink="/trip-list"
+                  [seriesData]="seriesdata" [categories]="categories"
+                    [colors]="colors" [selectedYear]="selectedYear" [selectedMonth]="selectedMonth"></app-line-chart>
+</div>

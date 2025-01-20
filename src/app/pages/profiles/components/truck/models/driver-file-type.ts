@@ -59,6 +59,17 @@ export interface DriverFileType {
   expiryFormControlName?: string;
 }
 
+export interface TransporterFileType {
+  multiple: any;
+  id: number;
+  name: string;
+  max: number;
+  expiryAvailable: boolean;
+  uploaded: boolean;
+  formControlName?: string;
+  expiryFormControlName?: string;
+}
+
 export class driverFilesArray {
   truckImages: any[];
   nidFrontFile: any[];

@@ -11,6 +11,7 @@ import { GetClickEventDirective } from '../../../../shared/directive/get-click-e
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
 
 @Component({
   selector: 'app-customer',
@@ -25,6 +26,7 @@ import { MatDialog } from '@angular/material/dialog';
     GetClickEventDirective,
     LoadingComponent,
     FormsModule,
+    NumberSeperatorPipe,
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss',

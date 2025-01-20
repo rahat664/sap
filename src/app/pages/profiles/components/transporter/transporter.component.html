@@ -23,7 +23,7 @@
             name="email"
 
             class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
-            placeholder="Search  name, mobile" />
+            placeholder="Search  name, mobile"/>
         </div>
         <button
           (click)="onClickAddTransporter()"
@@ -83,9 +83,9 @@
                 : 'Cash'
             }}
           </td>
-          <td>{{transporter.numberOfTrips != null ? transporter.numberOfTrips : '0'}}</td>
-          <td>{{transporter.grossProfit != null ? (transporter.grossProfit | number) : '0'}}</td>
-          <td>{{transporter.rank != null && transporter.rank > 0 ? transporter.rank : 'N/A'}}</td>
+          <td>{{ transporter.numberOfTrips != null ? transporter.numberOfTrips : '0' }}</td>
+          <td>{{ transporter.grossProfit != null ? (transporter.grossProfit | numberSeperator) : '0' }}</td>
+          <td>{{ transporter.rank != null && transporter.rank > 0 ? transporter.rank : 'N/A' }}</td>
           <!--          <td>-->
           <!--            <i class="fas fa-ellipsis-v"></i>-->
           <!--          </td>-->

@@ -9,12 +9,14 @@ import {
 } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Subject, timer } from 'rxjs';
 import { TruckService } from '../truck/services/truck.service';
 import { UserService } from '../../services/user.service';
 import { TruckingMapComponent } from './trucking-map/trucking-map.component';
 import { TruckModel } from '../truck/models/truck.model';
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
+import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
+import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 
 @Component({
   selector: 'app-vehicle-tracking',
@@ -30,6 +32,8 @@ import { GeolocationService } from '../../../../shared/services/location/geoloca
     MatInput,
     MatOption,
     TruckingMapComponent,
+    LoadingComponent,
+    GiveMaxHeightDirective,
   ],
   templateUrl: './vehicle-tracking.component.html',
   styleUrl: './vehicle-tracking.component.scss',
@@ -58,6 +62,7 @@ export class VehicleTrackingComponent {
   truckRegistrationId: any = '';
   truckRegSuggestions: any = [];
   truckSearchSubject: Subject<string> = new Subject();
+  allTruckSearchSubject: Subject<string> = new Subject();
   transporterSearchSubject: Subject<string> = new Subject();
   condition: string = '';
   trackerEnabledTrucks: TruckModel[] = [];
@@ -73,7 +78,7 @@ export class VehicleTrackingComponent {
     {
       id: 2,
       value: 'Running',
-      viewValue: 'Running',
+      viewValue: 'Moving',
       backgroundColor: 'bg-[#1DBF73]',
       color: 'text-white',
       count: 0,
@@ -112,6 +117,14 @@ export class VehicleTrackingComponent {
     },
   ];
   truckLocationPosition: any[] = [];
+  trucklistOpened: boolean = false;
+  searchTruckValue: any;
+  allTruckList: TruckModel[] = [];
+  page: number = 0;
+  size: number = 10;
+  truckListLoading: boolean = false;
+  selectedTruckNumber: string = '';
+  singleTruckButtonDisable: boolean;
 
   constructor(
     private truck: TruckService,
@@ -126,6 +139,9 @@ export class VehicleTrackingComponent {
       .subscribe(searchText => {
         this.performTransporterSearch(searchText);
       });
+    this.allTruckSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+      this.performAllTruckSearch(searchText);
+    });
     this.loadGoogleMapsScript();
   }
 
@@ -145,7 +161,7 @@ export class VehicleTrackingComponent {
   }
 
   getFilterLength() {
-    return this.transporterFilterCount + this.truckFilterCount;
+    return this.transporterFilterCount;
   }
 
   onClearFilter() {
@@ -177,6 +193,11 @@ export class VehicleTrackingComponent {
     this.truckSearchSubject.next(value);
   }
 
+  onKeyUpAllTruckSearch($event: any) {
+    const value = $event.target.value;
+    this.allTruckSearchSubject.next(value);
+  }
+
   onClickTruckSearchSuggestion(option: any) {
     this.truckRegistrationId = option.fullRegistrationNumber;
     this.truckLocationPosition = [];
@@ -188,14 +209,33 @@ export class VehicleTrackingComponent {
 
   private performTruckSearch(searchText: string) {
     if (searchText?.length > 0) {
-      this.truck.getTruckList(0, 100, searchText).subscribe((truck: any) => {
-        this.truckRegSuggestions = truck.data.responses;
-        if (this.truckRegSuggestions.length === 0) {
-          this.truckRegSuggestions.push('No trip found');
-        }
-      });
+      this.truck
+        .getTruckList(0, 100, searchText, null, true)
+        .subscribe((truck: any) => {
+          this.truckRegSuggestions = truck.data.responses;
+          if (this.truckRegSuggestions.length === 0) {
+            this.truckRegSuggestions.push('No trip found');
+          }
+        });
     } else {
       this.resetTruckSearch();
+    }
+  }
+
+  private performAllTruckSearch(searchText: string) {
+    this.truckListLoading = true;
+    if (searchText?.length > 0) {
+      this.truck
+        .getTruckList(this.page, this.size, searchText, null, true)
+        .subscribe((truck: any) => {
+          this.allTruckList = [];
+          this.allTruckList = truck.data.responses;
+          this.totalPages = truck.data.totalPages;
+          this.truckListLoading = false;
+        });
+    } else {
+      this.onClickTruckList();
+      this.truckListLoading = false;
     }
   }
 
@@ -303,5 +343,74 @@ export class VehicleTrackingComponent {
       default:
         return 'nodata';
     }
+  }
+
+  onClickTruckList() {
+    this.truckListLoading = true;
+    this.trucklistOpened = true;
+    this.allTruckList = [];
+    this.truck
+      .getTruckList(this.page, this.size, '', null, true)
+      .subscribe((truck: any) => {
+        this.allTruckList = truck.data.responses;
+        this.totalPages = truck.data.totalPages;
+        this.truckListLoading = false;
+      });
+  }
+
+  onClickClear() {
+    this.searchTruckValue = '';
+    this.allTruckSearchSubject.next('');
+  }
+
+  getColorByConditon(currentCondition: string | undefined, type: string) {
+    switch (currentCondition) {
+      case 'Running':
+        return type === 'border' ? 'border-[#1DBF73]' : 'text-[#1DBF73]';
+      case 'Booked':
+        return type === 'border' ? 'border-[#FFA50B]' : 'text-[#FFA50B]';
+      case 'Stopped':
+        return type === 'border' ? 'border-[#F0614E]' : 'text-[#F0614E]';
+      case 'Idle':
+        return type === 'border' ? 'border-[#721707]' : 'text-[#721707]';
+      case 'Unavailable':
+        return type === 'border' ? 'border-[#5D5D5D]' : 'text-[#5D5D5D]';
+      default:
+        return type === 'border' ? 'border-[#F9F9F9]' : 'text-[#5D5D5D]';
+    }
+  }
+
+  onScrollEnd($event: boolean) {
+    if ($event && this.page < this.totalPages - 1) {
+      this.page++;
+      if (this.searchTruckValue) {
+        this.truck
+          .getTruckList(this.page, this.size, this.searchTruckValue, null, true)
+          .pipe(debounceTime(500))
+          .subscribe((res: any) => {
+            this.allTruckList.push(...res.data.responses);
+          });
+      } else {
+        this.truck
+          .getTruckList(this.page, this.size, null, null, true)
+          .subscribe((res: any) => {
+            this.allTruckList.push(...res.data.responses);
+          });
+      }
+    }
+  }
+
+  onClickSingleTruck(fullRegistrationNumber: string | undefined) {
+    this.selectedTruckNumber = fullRegistrationNumber;
+    this.singleTruckButtonDisable = true;
+    timer(2100).subscribe(() => {
+      this.singleTruckButtonDisable = false;
+    });
+  }
+
+  onHideTruckList() {
+    this.trucklistOpened = false;
+    this.allTruckList = [];
+    this.searchTruckValue = '';
   }
 }

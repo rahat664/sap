@@ -15,7 +15,7 @@ import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { TripService } from '../../../pages/trip-list/services/trip.service';
 import { TruckData } from '../../models/truck-data.model';
 import { TrackerService } from '../../../pages/profiles/services/tracker.service';
-import {Subscription, timer} from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import {
   TripData,
   TripPoint,
@@ -34,6 +34,10 @@ export class GMapComponent implements OnInit, OnChanges {
   );
   private subs: Subscription;
   initInterval: any;
+  etaData: any;
+  private endPoints: google.maps.LatLngLiteral[];
+  private lines: google.maps.Polyline[] = [];
+
   get truckId(): string {
     return this._truckId;
   }
@@ -70,8 +74,8 @@ export class GMapComponent implements OnInit, OnChanges {
 
   initialMarker: google.maps.MarkerOptions = {};
   truckLocationMarker: google.maps.Marker = null; // Change to google.maps.Marker
-  startMarker: google.maps.MarkerOptions[] = [];
-  endMarker: google.maps.MarkerOptions[] = [];
+  startMarker: google.maps.Marker[] = [];
+  endMarker: google.maps.Marker[] = [];
   polylines: google.maps.PolylineOptions[] = [];
   bottomHeight: string = '0px';
   infoWindow: any;
@@ -89,6 +93,18 @@ export class GMapComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnDestroy(): void {
+    if (this.startMarker) {
+      this.startMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+    }
+    if (this.endMarker) {
+      this.endMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+    }
+    this.startMarker = [];
+    this.endMarker = [];
     if (this.initInterval) {
       this.stopInterval();
     }
@@ -107,6 +123,18 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    if (this.startMarker) {
+      this.startMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+    }
+    if (this.endMarker) {
+      this.endMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+    }
+    this.startMarker = [];
+    this.endMarker = [];
     if (this.initInterval) {
       clearInterval(this.initInterval);
     }
@@ -118,8 +146,43 @@ export class GMapComponent implements OnInit, OnChanges {
     });
 
     if (this.starting.length > 0 && this.destination.length > 0) {
-      this.clearPolylines();
-      this.updateRoute();
+      if (this.tripStatus === 'Completed') {
+        // 24 hours before trip started at time
+        const tripStartedAt = new Date(this.singleTripData?.tripStartedAt);
+        const oneDayBeforeTripStartedAt = new Date(
+          tripStartedAt.getTime() - 24 * 60 * 60 * 1000
+        );
+
+        const tripEndedAt = new Date(this.singleTripData?.tripEndedAt);
+        const oneDayAfterTripEndedAt = new Date(
+          tripEndedAt.getTime() + 24 * 60 * 60 * 1000
+        );
+        this.getTripHistory(
+          'previous',
+          this.datePipe.transform(
+            oneDayBeforeTripStartedAt,
+            'yyyy-MM-ddTHH:mm:ss'
+          ),
+          this.singleTripData?.tripStartedAt
+        );
+        this.getTripHistory(
+          'current',
+          this.singleTripData?.tripStartedAt,
+          this.singleTripData?.tripEndedAt
+        );
+        this.getTripHistory(
+          'next',
+          this.singleTripData?.tripEndedAt,
+          this.datePipe.transform(oneDayAfterTripEndedAt, 'yyyy-MM-ddTHH:mm:ss')
+        );
+      } else {
+        if (this.lines) {
+          this.lines.forEach(line => {
+            line.setMap(null);
+          });
+        }
+        this.updateRoute();
+      }
     }
 
     const currentLocation = localStorage.getItem('currentLocation');
@@ -161,7 +224,58 @@ export class GMapComponent implements OnInit, OnChanges {
     }
     if (changes) {
       if (this.starting.length > 0 && this.destination.length > 0) {
-        this.updateRoute();
+        if (this.startMarker) {
+          this.startMarker.forEach(marker => {
+            marker.setMap(null);
+          });
+        }
+        if (this.endMarker) {
+          this.endMarker.forEach(marker => {
+            marker.setMap(null);
+          });
+        }
+        this.startMarker = [];
+        this.endMarker = [];
+        if (this.tripStatus === 'Completed') {
+          // 24 hours before trip started at time
+          const tripStartedAt = new Date(this.singleTripData?.tripStartedAt);
+          const oneDayBeforeTripStartedAt = new Date(
+            tripStartedAt.getTime() - 24 * 60 * 60 * 1000
+          );
+
+          const tripEndedAt = new Date(this.singleTripData?.tripEndedAt);
+          const oneDayAfterTripEndedAt = new Date(
+            tripEndedAt.getTime() + 24 * 60 * 60 * 1000
+          );
+          this.getTripHistory(
+            'previous',
+            this.datePipe.transform(
+              oneDayBeforeTripStartedAt,
+              'yyyy-MM-ddTHH:mm:ss'
+            ),
+            this.singleTripData?.tripStartedAt
+          );
+          this.getTripHistory(
+            'current',
+            this.singleTripData?.tripStartedAt,
+            this.singleTripData?.tripEndedAt
+          );
+          this.getTripHistory(
+            'next',
+            this.singleTripData?.tripEndedAt,
+            this.datePipe.transform(
+              oneDayAfterTripEndedAt,
+              'yyyy-MM-ddTHH:mm:ss'
+            )
+          );
+        } else {
+          if (this.lines) {
+            this.lines.forEach(line => {
+              line.setMap(null);
+            });
+          }
+          this.updateRoute();
+        }
       }
     }
     if (changes['truckLocationPosition']) {
@@ -175,31 +289,41 @@ export class GMapComponent implements OnInit, OnChanges {
 
     startPoints = this.starting;
     endPoints = this.destination;
+    this.endPoints = this.destination;
 
     this.clearInput.emit(true);
 
     this.initialMarker = {};
 
-    this.connectSequentialPoints(startPoints, 'loading');
+    this.connectSequentialPoints(startPoints, 'loading', 'main');
     this.connectPoints(
       startPoints[startPoints.length - 1],
       endPoints[0],
-      'loading'
+      'loading',
+      startPoints.length - 1,
+      'main'
     );
     this.connectPoints(
       startPoints[startPoints.length - 1],
       endPoints[0],
-      'unloading'
+      'unloading',
+      0,
+      'main'
     );
-    this.connectSequentialPoints(endPoints, 'unloading');
+    this.connectSequentialPoints(endPoints, 'unloading', 'main');
   }
 
   private connectSequentialPoints(
     points: google.maps.LatLngLiteral[],
-    pointType: string
+    pointType: string,
+    type
   ) {
     for (let i = 0; i < points.length - 1; i++) {
-      this.connectPoints(points[i], points[i + 1], pointType);
+      if (pointType === 'loading') {
+        this.connectPoints(points[i], points[i + 1], pointType, i, type);
+      } else {
+        this.connectPoints(points[i], points[i + 1], pointType, i + 1, type);
+      }
     }
   }
 
@@ -207,7 +331,9 @@ export class GMapComponent implements OnInit, OnChanges {
   private connectPoints(
     start: google.maps.LatLngLiteral,
     end: google.maps.LatLngLiteral,
-    pointType: string
+    pointType: string,
+    index: number,
+    type: string
   ) {
     if (start && end) {
       // clear previous markers and polylines
@@ -226,16 +352,19 @@ export class GMapComponent implements OnInit, OnChanges {
       this.directionsService.route(request, (result, status) => {
         if (status === 'OK') {
           if (pointType === 'loading') {
-            this.setLoadingMarker(start);
+            this.setLoadingMarker(start, index);
           } else if (pointType === 'unloading') {
-            this.setUnloadingMarker(end);
+            this.setUnloadingMarker(end, index);
           }
           const bound = new google.maps.LatLngBounds();
           bound.extend(start);
           bound.extend(end);
           this.map.googleMap.fitBounds(bound);
-
-          this.updatePolylineWithTraffic(result);
+          if (type === 'main') {
+            this.updatePolylineWithTraffic(result);
+          } else {
+            this.clearPolylines();
+          }
         } else {
           console.error('Error fetching directions', status);
         }
@@ -243,27 +372,44 @@ export class GMapComponent implements OnInit, OnChanges {
     }
   }
 
-  private setLoadingMarker(position: google.maps.LatLngLiteral) {
-    this.initialMarker = {};
-    this.startMarker.push({
+  private setLoadingMarker(position: google.maps.LatLngLiteral, index: number) {
+    const marker = new google.maps.Marker({
       position: position,
       icon: {
         url: '/assets/svg/start.svg', // Replace with your custom loading marker icon
         scaledSize: new google.maps.Size(30, 30),
       },
       title: 'Loading Point',
+      map: this.map.googleMap,
     });
+
+    if (this.tripStatus === 'Running') {
+      marker.addListener('click', () => {
+        this.onClickMap({ latLng: position }, index);
+      });
+    }
+
+    this.startMarker.push(marker);
   }
 
-  private setUnloadingMarker(position: google.maps.LatLngLiteral) {
-    this.endMarker.push({
+  private setUnloadingMarker(position: google.maps.LatLngLiteral, index) {
+    const marker = new google.maps.Marker({
       position: position,
       icon: {
         url: '/assets/svg/end.svg', // Replace with your custom loading marker icon
         scaledSize: new google.maps.Size(30, 30),
       },
       title: 'Unloading Point',
+      map: this.map.googleMap,
     });
+
+    if (this.tripStatus === 'Running') {
+      marker.addListener('click', () => {
+        this.onClickUnloading({ latLng: position }, index);
+      });
+    }
+
+    this.endMarker.push(marker);
   }
 
   private updateTruckLocation() {
@@ -368,15 +514,50 @@ export class GMapComponent implements OnInit, OnChanges {
             this.truckService.getTrackerData(this._truckId).subscribe(
               (res: any) => {
                 this.truckData = res.data;
-                this.truckLocationPosition = {
-                  lat: res.data?.lat,
-                  lng: res.data?.lng,
+                if (this.tripStatus === 'Running') {
+                  this.truckService
+                    .getEtaData(
+                      this.truckLocationPosition?.lat,
+                      this.truckLocationPosition?.lng,
+                      this.endPoints[this.endPoints?.length - 1]?.lat,
+                      this.endPoints[this.endPoints?.length - 1]?.lng,
+                      this.truckSizeInFeet
+                    )
+                    .subscribe((response: any) => {
+                      this.etaData = response.data;
+                      this.truckLocationPosition = {
+                        lat: res.data?.lat,
+                        lng: res.data?.lng,
+                      };
+                      if (useCase === 'click') {
+                        if (this.intervalData) {
+                          this.stopInterval();
+                        }
+                        this.startInterval(useCase);
+                        this.updateInfoWindow();
+                      }
+                      if (this.intervalData) {
+                        this.stopInterval();
+                      }
+                      this.startInterval(useCase);
+                    });
+                } else {
+                  this.truckLocationPosition = {
+                    lat: res.data?.lat,
+                    lng: res.data?.lng,
+                  };
+                  if (useCase === 'click') {
+                    if (this.intervalData) {
+                      this.stopInterval();
+                    }
+                    this.startInterval(useCase);
+                    this.updateInfoWindow();
+                  }
+                  if (this.intervalData) {
+                    this.stopInterval();
+                  }
+                  this.startInterval(useCase);
                 }
-                if (useCase === 'click') {
-                  this.stopInterval();
-                  this.updateInfoWindow();
-                }
-                this.startInterval();
               },
               error => {}
             );
@@ -414,6 +595,12 @@ export class GMapComponent implements OnInit, OnChanges {
   }
 
   getInfoWindowContent(): string {
+    let dateTimeDisplay = '';
+    if (this.tripStatus === 'Running') {
+      dateTimeDisplay = this.etaData?.etaDateTime
+        ? `ETA${this.endPoints?.length > 1 ? ' (Last unloading point)' : ' '}: ${this.datePipe.transform(this.etaData?.etaDateTime, 'd MMM yyyy, h:mm a')}`
+        : `<span class="text-red">No eta data available</span>`;
+    }
     return `
       <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
         <div class="flex flex-col space-y-1">
@@ -424,6 +611,13 @@ export class GMapComponent implements OnInit, OnChanges {
           <i class="far fa-times cursor-pointer"></i>
         </button>
       </div>
+      ${
+        this.etaData && this.tripStatus === 'Running'
+          ? `<div id="info-body" style="background: #F5FBFC; padding: 0.5rem; padding-bottom: 0; font-size: 12px; color: #242424">
+      <p class="text-body_title text-not-black font-bold">${dateTimeDisplay}</p>
+       </div>`
+          : ''
+      }
       <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
         <table id="info-table" style="width: 100%;">
           <tr class="grid grid-cols-8 "><td class="col-span-3">Time</td><td>:</td><td class="col-span-4">${this.truckData.time ? this.truckData.time : 'N/A'}</td></tr>
@@ -445,10 +639,9 @@ export class GMapComponent implements OnInit, OnChanges {
     `;
   }
 
-  private startInterval() {
+  private startInterval(useCase: string) {
     this.intervalData = setInterval(() => {
-      this.stopInterval();
-      this.updateTruckDataOnly();
+      this.updateTruckDataOnly(useCase);
     }, 3900);
   }
 
@@ -457,41 +650,50 @@ export class GMapComponent implements OnInit, OnChanges {
     this.subs.unsubscribe();
   }
 
-  private updateTruckDataOnly() {
+  private updateTruckDataOnly(useCase: string) {
     this.subs = this.truckService.getTrackerData(this._truckId).subscribe(
       (res: any) => {
         this.truckData = res.data;
         this.truckLocationPosition = {
           lat: res.data?.lat,
           lng: res.data?.lng,
+        };
+        this.stopInterval();
+        this.startInterval(useCase);
+        if (useCase === 'click') {
+          this.updateInfoWindow();
         }
-        this.startInterval();
-        this.updateInfoWindow();
       },
       error => {}
     );
   }
 
-  onClickMap($event: google.maps.MapMouseEvent, index: number): void {
+  onClickMap($event: any, index: number): void {
+    this.stopInterval();
+    this.startInterval('eta');
     this.handleInfoWindow(
       $event.latLng,
       index,
       this.truckLocationPosition &&
         this.truckLocationPosition?.lat &&
-        this.truckLocationPosition?.lng
+        this.truckLocationPosition?.lng &&
+        this.tripStatus === 'Running'
         ? this.getEtaData.bind(this)
         : null,
       this.getNoTruckerAvailableContent.bind(this)
     );
   }
 
-  onClickUnloading($event: google.maps.MapMouseEvent, index: number): void {
+  onClickUnloading($event: any, index: number): void {
+    this.stopInterval();
+    this.startInterval('eta');
     this.handleInfoWindow(
       $event.latLng,
       index,
       this.truckLocationPosition &&
         this.truckLocationPosition?.lat &&
-        this.truckLocationPosition?.lng
+        this.truckLocationPosition?.lng &&
+        this.tripStatus === 'Running'
         ? this.getUnloadingEtaData.bind(this)
         : null,
       this.getNoTruckerAvailableContentUnloading.bind(this)
@@ -503,7 +705,7 @@ export class GMapComponent implements OnInit, OnChanges {
     latLng: google.maps.LatLng | null,
     index: number,
     fetchDataCallback:
-      | ((latLngLiteral: google.maps.LatLngLiteral, index: number) => void)
+      | ((latLngLiteral: google.maps.LatLng, index: number) => void)
       | null,
     noDataCallback: (index: number) => string
   ): void {
@@ -516,7 +718,7 @@ export class GMapComponent implements OnInit, OnChanges {
       this.infoWindow = this.createInfoWindow(this.getLoadingSpinnerContent());
       this.infoWindow.setPosition(latLng);
       this.infoWindow.open(this.map.googleMap);
-      fetchDataCallback(latLng.toJSON(), index);
+      fetchDataCallback(latLng, index);
     } else {
       this.infoWindow = this.createInfoWindow(noDataCallback(index));
       this.infoWindow.setPosition(latLng);
@@ -534,24 +736,32 @@ export class GMapComponent implements OnInit, OnChanges {
     destination: google.maps.LatLngLiteral,
     index: number
   ): void {
-    this.fetchEtaData(
-      destination,
-      index,
-      this.getEtaContent.bind(this),
-      this.getEtaErrorContent.bind(this)
-    );
+    if (this.tripStatus === 'Running') {
+      this.stopInterval();
+      this.startInterval('eta');
+      this.fetchEtaData(
+        destination,
+        index,
+        this.getEtaContent.bind(this),
+        this.getEtaErrorContent.bind(this)
+      );
+    }
   }
 
   private getUnloadingEtaData(
     destination: google.maps.LatLngLiteral,
     index: number
   ): void {
-    this.fetchEtaData(
-      destination,
-      index,
-      this.getUnloadingEtaContent.bind(this),
-      this.getUnloadingEtaErrorContent.bind(this)
-    );
+    if (this.tripStatus === 'Running') {
+      this.stopInterval();
+      this.startInterval('eta');
+      this.fetchEtaData(
+        destination,
+        index,
+        this.getUnloadingEtaContent.bind(this),
+        this.getUnloadingEtaErrorContent.bind(this)
+      );
+    }
   }
 
   // Generalized ETA data fetcher
@@ -570,8 +780,9 @@ export class GMapComponent implements OnInit, OnChanges {
         this.truckSizeInFeet
       )
       .subscribe(
-        (res: any) =>
-          this.infoWindow.setContent(successCallback(res.data, index)),
+        (res: any) => {
+          this.infoWindow.setContent(successCallback(res.data, index));
+        },
         () => this.infoWindow.setContent(errorCallback(index))
       );
   }
@@ -588,6 +799,7 @@ export class GMapComponent implements OnInit, OnChanges {
       closeBtn.addEventListener('click', () => {
         this.infoWindow.close();
         this.stopInterval();
+        this.fetchTruckData('close');
       });
     }
   }
@@ -595,13 +807,13 @@ export class GMapComponent implements OnInit, OnChanges {
   // Info window content generation
   private getEtaContent(data: any, index: number): string {
     return this.generateContent(
-      this.createInfoWindowHtml(data?.etaDateTime, index, 'ETA')
+      this.createInfoWindowHtml(data?.etaDateTime, index, 'ETA', 'Loading')
     );
   }
 
   private getEtaErrorContent(index: number): string {
     return this.generateContent(
-      this.createInfoWindowHtml(null, index, 'Failed to get ETA')
+      this.createInfoWindowHtml(null, index, 'Failed to get ETA', 'Loading')
     );
   }
 
@@ -610,20 +822,21 @@ export class GMapComponent implements OnInit, OnChanges {
       this.createInfoWindowHtml(
         null,
         index,
-        'No Tracker is available for this trip'
+        'No Eta data is available for this trip or this is not a running trip',
+        'Loading'
       )
     );
   }
 
   private getUnloadingEtaContent(data: any, index: number): string {
     return this.generateContent(
-      this.createInfoWindowHtml(data?.etaDateTime, index, 'ETA')
+      this.createInfoWindowHtml(data?.etaDateTime, index, 'ETA', 'Unloading')
     );
   }
 
   private getUnloadingEtaErrorContent(index: number): string {
     return this.generateContent(
-      this.createInfoWindowHtml(null, index, 'Failed to get ETA')
+      this.createInfoWindowHtml(null, index, 'Failed to get ETA', 'Unloading')
     );
   }
 
@@ -632,7 +845,8 @@ export class GMapComponent implements OnInit, OnChanges {
       this.createInfoWindowHtml(
         null,
         index,
-        'No Tracker is available for this trip'
+        'No Tracker is available for this trip',
+        'Unloading'
       )
     );
   }
@@ -641,11 +855,13 @@ export class GMapComponent implements OnInit, OnChanges {
   private createInfoWindowHtml(
     etaDateTime: string | null,
     index: number,
-    message: string
+    message: string,
+    type: string
   ): string {
-    const address = etaDateTime
-      ? this.getTripLoadingAddress(this.singleTripData?.tripPoints, index)
-      : this.getTripUnloadingAddress(this.singleTripData?.tripPoints, index);
+    const address =
+      etaDateTime && type === 'Loading'
+        ? this.getTripLoadingAddress(this.singleTripData?.tripPoints, index)
+        : this.getTripUnloadingAddress(this.singleTripData?.tripPoints, index);
 
     const dateTimeDisplay = etaDateTime
       ? `ETA: ${this.datePipe.transform(etaDateTime, 'd MMM yyyy, h:mm a')}`
@@ -694,5 +910,173 @@ export class GMapComponent implements OnInit, OnChanges {
       return filteredPoints[index]?.pointName || 'No address found';
     }
     return 'No address found';
+  }
+
+  private connectHistoryRoute(data, type) {
+    for (let i = 0; i < data.length; i++) {
+      const startLat = data[i].latitude;
+      const startLng = data[i].longitude;
+      const endLat = data[i + 1]?.latitude;
+      const endLng = data[i + 1]?.longitude;
+      const start = { lat: startLat, lng: startLng };
+      const end = { lat: endLat, lng: endLng };
+      if (type === 'previous') {
+        this.connect24HoursBeforeHistoryRoute(start, end);
+      } else if (type === 'current') {
+        this.connectHistoryPoint(start, end);
+      } else if (type === 'next') {
+        this.connect24HoursAfterHistoryRoute(start, end);
+      }
+    }
+  }
+
+  private connectHistoryPoint(start, end: any) {
+    if (start && end) {
+      // const arrowSymbol = {
+      //   path: google.maps.SymbolPath.BACKWARD_OPEN_ARROW, // Arrow symbol
+      //   scale: 2, // Size of the arrow
+      //   strokeColor: "#11484F", // Arrow color
+      //   strokeWeight: 2, // Arrow weight
+      // };
+      const lineCoordinates = [start, end];
+      const line = new google.maps.Polyline({
+        path: lineCoordinates,
+        geodesic: true,
+        strokeOpacity: 1,
+        strokeColor: '#11484F',
+        strokeWeight: 4,
+        // icons: [
+        //   {
+        //     icon: arrowSymbol,
+        //     offset: '100%',
+        //   },
+        // ],
+      });
+      line.setMap(this.map.googleMap);
+      this.lines.push(line);
+      const bound = new google.maps.LatLngBounds();
+      bound.extend(start);
+      bound.extend(end);
+      this.map.googleMap.fitBounds(bound);
+    }
+  }
+
+  getTripHistory(type, from, to) {
+    this.startMarker = [];
+    this.endMarker = [];
+    let startPoints: google.maps.LatLngLiteral[] = [];
+    let endPoints: google.maps.LatLngLiteral[] = [];
+
+    startPoints = this.starting;
+    endPoints = this.destination;
+    this.endPoints = this.destination;
+    this.trip
+      .getTripHistory(
+        from,
+        to,
+        this.singleTripData?.truck?.fullRegistrationNumber
+      )
+      .subscribe(
+        (res: any) => {
+          this.clearInput.emit(true);
+
+          this.initialMarker = {};
+
+          this.connectSequentialPoints(
+            startPoints,
+            'loading',
+            res.data?.length > 0 ? 'history' : 'main'
+          );
+          this.connectPoints(
+            startPoints[startPoints.length - 1],
+            endPoints[0],
+            'loading',
+            startPoints.length - 1,
+            res.data?.length > 0 ? 'history' : 'main'
+          );
+          this.connectPoints(
+            startPoints[startPoints.length - 1],
+            endPoints[0],
+            'unloading',
+            0,
+            res.data?.length > 0 ? 'history' : 'main'
+          );
+          this.connectSequentialPoints(
+            endPoints,
+            'unloading',
+            res.data?.length > 0 ? 'history' : 'main'
+          );
+          if (res.data?.length > 0) {
+            this.connectHistoryRoute(res.data, type);
+          } else {
+            if (this.lines) {
+              this.lines.forEach(line => {
+                line.setMap(null);
+              });
+            }
+          }
+        },
+        error => {
+          if (this.lines) {
+            this.lines.forEach(line => {
+              line.setMap(null);
+            });
+          }
+          this.connectSequentialPoints(startPoints, 'loading', 'main');
+          this.connectPoints(
+            startPoints[startPoints.length - 1],
+            endPoints[0],
+            'loading',
+            startPoints.length - 1,
+            'main'
+          );
+          this.connectPoints(
+            startPoints[startPoints.length - 1],
+            endPoints[0],
+            'unloading',
+            0,
+            'main'
+          );
+          this.connectSequentialPoints(endPoints, 'unloading', 'main');
+        }
+      );
+  }
+
+  private connect24HoursBeforeHistoryRoute(start, end: any) {
+    const dottedSymbol = {
+      path: google.maps.SymbolPath.CIRCLE, // Use a circle to create dots
+      scale: 2, // Size of the dots
+      strokeOpacity: 1, // Opacity of the dots
+      strokeColor: '#A5B8BB', // Color of the dots
+    };
+  }
+
+  private connect24HoursAfterHistoryRoute(start, end: any) {
+    const dottedSymbol = {
+      path: google.maps.SymbolPath.CIRCLE, // Use a circle to create dots
+      scale: 2, // Size of the dots
+      strokeOpacity: 1, // Opacity of the dots
+      strokeColor: '#A5B8BB', // Color of the dots
+    };
+
+    const lineCoordinates = [start, end];
+    const line = new google.maps.Polyline({
+      path: lineCoordinates,
+      geodesic: true,
+      strokeOpacity: 0,
+      icons: [
+        {
+          icon: dottedSymbol,
+          offset: '0',
+          repeat: '10px',
+        },
+      ],
+    });
+    line.setMap(this.map.googleMap);
+    this.lines.push(line);
+    const bound = new google.maps.LatLngBounds();
+    bound.extend(start);
+    bound.extend(end);
+    this.map.googleMap.fitBounds(bound);
   }
 }

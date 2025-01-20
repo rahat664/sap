@@ -8,9 +8,10 @@ import { DashboardService } from '../../services/dashboard.service';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   customerStats,
-  DashboardStatsModel,
+  DashboardStatsModel, userStats,
 } from '../../models/dashboard-stats.model';
 import { RouterLink } from '@angular/router';
+import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
 
 @Component({
   selector: 'app-status-heighlight',
@@ -23,6 +24,7 @@ import { RouterLink } from '@angular/router';
     StatusCardComponent,
     RouterLink,
     DecimalPipe,
+    NumberSeperatorPipe,
   ],
   templateUrl: './status-heighlight.component.html',
   styleUrl: './status-heighlight.component.scss',
@@ -32,6 +34,8 @@ export class StatusHeighlightComponent {
   toDate: string;
   dashboardStats: DashboardStatsModel;
   customerStatistics: customerStats;
+  transporterStatistics: userStats;
+  driverStatistics: userStats;
 
   constructor(
     private service: DashboardService,
@@ -60,6 +64,12 @@ export class StatusHeighlightComponent {
       .subscribe((res: any) => {
         if (res.status === 'OK') {
           this.customerStatistics = res.data;
+          this.transporterStatistics = res.data.totalUsers.find(
+            user => user.roleName === 'ROLE_TRANSPORTER'
+          );
+          this.driverStatistics = res.data.totalUsers.find(
+            user => user.roleName === 'ROLE_DRIVER'
+          );
         }
       });
   }

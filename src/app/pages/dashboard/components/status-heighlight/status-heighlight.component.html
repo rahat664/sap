@@ -1,4 +1,4 @@
-<div class="px-6 py-5 bg-white rounded-lg flex flex-col h-full space-y-[0.875rem]">
+<div class=" rounded-lg flex flex-col h-full space-y-3">
   <div class="flex justify-between items-center">
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
       Status Highlight
@@ -16,27 +16,49 @@
     <!--      </mat-select>-->
     <!--    </mat-form-field>-->
   </div>
-  <div class="grid grid-cols-2 gap-3 cursor-pointer">
-    <app-status-card routerLink="/trip-list" icon="revenue" title="Total revenue (GP)"
+  <div class="grid grid-cols-4 gap-3 cursor-pointer">
+    <app-status-card routerLink="/trip-list" icon="revenue" title="Total Gross Profit (GP)"
                      [value]="dashboardStats?.grossProfitStat?.totalGrossProfit"
-                     text="{{dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange ? (dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange |number) : 0}} ৳ this month"
+                     text="{{dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange ? (dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange |numberSeperator) : 0}} ৳ this month"
                      backgroundColor="bg-[#1DBF73]"
                      textColor="text-[#009D54]"></app-status-card>
-    <app-status-card routerLink="/profile/customer" icon="customers" title="Total customer"
-                     [value]="customerStatistics?.totalCustomers"
-                     text="{{customerStatistics?.totalCustomersOnboardedWithinGivenDateRange ? (customerStatistics?.totalCustomersOnboardedWithinGivenDateRange |number) : 0}} new onboarded this month"
+    <app-status-card routerLink="/trip-list" icon="cr-d" title="Total Transporter Rate"
+                     [value]="dashboardStats?.transporterRateStats?.totalRate"
+                     text="{{dashboardStats?.transporterRateStats?.dateFilteredRate ? (dashboardStats?.transporterRateStats?.dateFilteredRate |numberSeperator) : 0}} ৳ this month"
                      backgroundColor="bg-[#FFA711]"
                      textColor="text-[#CD8304]"></app-status-card>
-    <app-status-card routerLink="/trip-list" icon="cr-d" title="Total customer rate"
-                     [value]="dashboardStats?.customerRateStat?.totalCustomerRate"
-                     text="{{dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange ? (dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange | number) : 0}} ৳ this month"
+    <app-status-card routerLink="/profile/customer" icon="customers" title="Total Customer"
+                     [value]="customerStatistics?.totalCustomers"
+                     text="{{customerStatistics?.totalCustomersOnboardedWithinGivenDateRange ? (customerStatistics?.totalCustomersOnboardedWithinGivenDateRange |numberSeperator) : 0}} new onboarded this month"
                      backgroundColor="bg-[#F0614E]"
                      textColor="text-[#F0614E]"></app-status-card>
-    <app-status-card (click)="localStorage.setItem('filter', 'Completed')" routerLink="/trip-list" icon="totaltrip"
-                     title="Total trip completed"
-                     [value]="dashboardStats?.tripCountStat?.totalTripsCompleted"
-                     text="{{dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange ? (dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange | number) : 0}} trip this month"
+    <app-status-card routerLink="/profile/transporter" icon="transporter"
+                     title="Total Transporter"
+                     [value]="transporterStatistics?.totalCount"
+                     text="{{transporterStatistics?.dateFilteredCount ? (transporterStatistics?.dateFilteredCount | numberSeperator) : 0}} new onboarded this month"
                      backgroundColor="bg-[#0CD5F0]"
                      textColor="text-[#049FB4]"></app-status-card>
+      <app-status-card routerLink="/trip-list" icon="cr-d" title="Total Customer Rate"
+                       [value]="dashboardStats?.customerRateStat?.totalCustomerRate"
+                       text="{{dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange ? (dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange |numberSeperator) : 0}} ৳ this month"
+                       backgroundColor="bg-[#1DBF73]"
+                       textColor="text-[#009D54]"></app-status-card>
+      <app-status-card (click)="localStorage.setItem('filter', 'Completed')" routerLink="/trip-list"  icon="totaltrip" title="Total Trip Completed"
+                       [value]="dashboardStats?.tripCountStat?.totalTripsCompleted"
+                       text="{{dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange ? (dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange | numberSeperator) : 0}} trip this month"
+                       backgroundColor="bg-[#FFA711]"
+                       textColor="text-[#CD8304]"></app-status-card>
+      <app-status-card routerLink="/profile/truck" icon="total-truck" title="Total Truck"
+                       [value]="dashboardStats?.truckCountStat?.totalCount"
+                       text="{{dashboardStats?.truckCountStat?.dateFilteredCount ? (dashboardStats?.truckCountStat?.dateFilteredCount | numberSeperator) : 0}} new onboarded this month"
+                       backgroundColor="bg-[#F0614E]"
+                       textColor="text-[#F0614E]"></app-status-card>
+      <app-status-card  icon="driver"
+                        routerLink="/profile/driver"
+                       title="Total Driver"
+                       [value]="driverStatistics?.totalCount"
+                       text="{{driverStatistics?.dateFilteredCount ? (driverStatistics?.dateFilteredCount | numberSeperator) : 0}} new onboarded this month"
+                       backgroundColor="bg-[#0CD5F0]"
+                       textColor="text-[#049FB4]"></app-status-card>
   </div>
 </div>

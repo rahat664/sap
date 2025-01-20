@@ -14,11 +14,19 @@ import { TripTemplate } from '../../models/trip-template.model';
 import { MatDialog } from '@angular/material/dialog';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
+import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
 
 @Component({
   selector: 'app-trip-create-overview',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, CurrencyPipe, NgForOf, NgIf],
+  imports: [
+    DatePipe,
+    DecimalPipe,
+    CurrencyPipe,
+    NgForOf,
+    NgIf,
+    NumberSeperatorPipe,
+  ],
   templateUrl: './trip-create-overview.component.html',
   styleUrl: './trip-create-overview.component.scss',
 })

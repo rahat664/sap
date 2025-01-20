@@ -70,7 +70,7 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
 
     this.debounceTimer = setTimeout(() => {
       this.checkScrollPosition(event);
-    }, 100); // Adjust the delay as needed
+    }, 10); // Adjust the delay as needed
   }
 
   @HostListener('window:popstate', ['$event'])

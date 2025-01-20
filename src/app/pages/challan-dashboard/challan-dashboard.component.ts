@@ -34,6 +34,7 @@ import { mergeMap } from 'rxjs/operators';
 import { TruckDocumentType } from '../../shared/Enums/registration_type';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
+import { NumberSeperatorPipe } from '../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -41,7 +42,6 @@ import { HandleToastrService } from '../../shared/services/handle-toastr/handle-
   imports: [
     CustomInputComponent,
     DatePipe,
-    DecimalPipe,
     FormsModule,
     GetClickEventDirective,
     GetElementHeightDirective,
@@ -60,6 +60,7 @@ import { HandleToastrService } from '../../shared/services/handle-toastr/handle-
     MatMenuItem,
     MatMenuTrigger,
     RouterLink,
+    NumberSeperatorPipe,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
@@ -71,7 +72,7 @@ export class ChallanDashboardComponent {
   private customerCode: string;
   private to: string;
   private from: string;
-  private searchValue: string;
+  searchValue: string;
   filterForm: FormGroup;
   private isSearchedMenuOpened: boolean;
   private isTripSearchedMenuOpened: boolean;
@@ -82,6 +83,10 @@ export class ChallanDashboardComponent {
   private truckFilter: number = 0;
   protected truckRegSuggestions: any[] = [];
   protected transporterSuggestions: any[];
+  searchRegistationId: any;
+  searchTransporter: any;
+  searchId: any;
+
   get tripSuggestions(): any {
     return this._tripSuggestions;
   }
@@ -89,6 +94,7 @@ export class ChallanDashboardComponent {
   set tripSuggestions(value: any) {
     this._tripSuggestions = value;
   }
+
   height: any = '0px';
   pendingChallanAmount: number = 0;
   pendingChallanText: string = '';
@@ -177,6 +183,7 @@ export class ChallanDashboardComponent {
       this.resetTripIdSearch();
     }
   }
+
   private performTruckSearch(searchText: string) {
     if (searchText?.length > 0) {
       this.truck.getTruckList(0, 100, searchText).subscribe((truck: any) => {
@@ -189,6 +196,7 @@ export class ChallanDashboardComponent {
       this.resetTruckSearch();
     }
   }
+
   private performTransporterSearch(searchText: string) {
     if (searchText?.length > 0) {
       this.transporter
@@ -215,6 +223,7 @@ export class ChallanDashboardComponent {
     this.getTripList();
     this.tripFilter = 0;
   }
+
   private resetTruckSearch() {
     this.isTripSearchedMenuOpened = false;
     this.truckRegistrationId = '';
@@ -226,17 +235,19 @@ export class ChallanDashboardComponent {
     this.getTripList();
     this.truckFilter = 0;
   }
+
   private resetTransporterSearch() {
     this.isTripSearchedMenuOpened = false;
     this.transporterName = '';
     this.page = 0;
     this.size = 30;
-    this.truckRegSuggestions = [];
-    this.truckRegSuggestions.push('No trip found');
+    this.transporterSuggestions = [];
+    this.transporterSuggestions.push('No trip found');
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
     this.transporterFilter = 0;
   }
+
   private generateDateOptionsArray() {
     this.dateOptionArray = [
       { id: DateEnum.Today, value: 'Today', selected: false },
@@ -288,6 +299,7 @@ export class ChallanDashboardComponent {
   ngAfterViewInit() {
     this.cd.detectChanges();
   }
+
   private getFromDateAndToDate() {
     // fromdate will be the first day of the current month
     // fromDate will be 1st january 2024
@@ -367,6 +379,7 @@ export class ChallanDashboardComponent {
       this.tripList.push(...trip.data.responses);
     }
   }
+
   onBottom($event: boolean) {
     if (!$event) {
       this.trip.anotherStatusCalled.next(false);
@@ -611,6 +624,7 @@ export class ChallanDashboardComponent {
       this.getTripList();
     }
   }
+
   private setDateRange(dateEnum: DateEnum) {
     let fromDate = new Date();
     // to date should be yesterday
@@ -652,6 +666,7 @@ export class ChallanDashboardComponent {
     this.page = 0;
     this.customerCode = result.customerCode;
     this.searchName = result.name;
+    this.searchValue = result.name;
     this.tripSuggestions = [];
     this.isSearchedMenuOpened = false;
     this.size = 30;
@@ -663,10 +678,12 @@ export class ChallanDashboardComponent {
     const value = $event.target.value;
     this.customerSearchSubject.next(value); // Trigger the Subject when input changes
   }
+
   onKeyUpTruckSearch($event: any) {
     const value = $event.target.value;
     this.truckSearchSubject.next(value); // Trigger the Subject when input changes
   }
+
   onKeyUpTransporterSearch($event: any) {
     const value = $event.target.value;
     this.transporterSearchSubject.next(value); // Trigger the Subject when input changes
@@ -679,12 +696,14 @@ export class ChallanDashboardComponent {
     this.tripFilter = 1;
     this.page = 0;
     this.tripId = result.tripId;
+    this.searchId = result.tripId;
     this.tripIdSuggestions = [];
     this.isTripSearchedMenuOpened = false;
     this.loading = true;
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
   }
+
   onClickTruckSearchSuggestion(result: any) {
     this.chalanStatus = '';
     this.status = 'Completed';
@@ -692,12 +711,14 @@ export class ChallanDashboardComponent {
     this.truckFilter = 1;
     this.page = 0;
     this.truckRegistrationId = result.fullRegistrationNumber;
+    this.searchRegistationId = result.fullRegistrationNumber;
     this.truckRegSuggestions = [];
     this.isTripSearchedMenuOpened = false;
     this.loading = true;
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
   }
+
   onClickTransporterSearchSuggestion(result: any) {
     this.chalanStatus = '';
     this.status = 'Completed';
@@ -705,6 +726,7 @@ export class ChallanDashboardComponent {
     this.transporterFilter = 1;
     this.page = 0;
     this.transporterName = result.name;
+    this.searchTransporter = result.name;
     this.transporterSuggestions = [];
     this.isTripSearchedMenuOpened = false;
     this.loading = true;
@@ -837,30 +859,51 @@ export class ChallanDashboardComponent {
   protected readonly localStorage = localStorage;
   uploadAbleTripId: any;
 
-  onClickClear(field: string) {
-    switch (field) {
-      case 'customer':
-        this.customerCode = '';
-        this.searchValue = '';
-        this.searchName = '';
-        break;
-      case 'tripId':
-        this.tripId = '';
-        break;
-      case 'truck':
-        this.truckRegistrationId = '';
-        break;
-      case 'transporter':
-        this.transporterName = '';
-        break;
-      case 'date':
-        this.from = '';
-        this.to = '';
-        break;
-    }
+  onClickClearCompany() {
+    this.customerCode = '';
+    this.searchValue = '';
+    this.searchName = '';
+    this.page = 0;
+    this.size = 30;
+    this.searchFilter = 0;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onClickClearTruck() {
+    this.truckRegistrationId = '';
+    this.searchRegistationId = '';
+    this.truckRegSuggestions = [];
+    this.truckFilter = 0;
     this.page = 0;
     this.size = 30;
     this.loading = true;
     this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onClickClearTransporter() {
+    this.transporterName = '';
+    this.searchTransporter = '';
+    this.transporterFilter = 0;
+    this.transporterSuggestions = [];
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onClickClearTripId() {
+    this.tripId = '';
+    this.searchId = '';
+    this.tripIdSuggestions = [];
+    this.tripFilter = 0;
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
   }
 }

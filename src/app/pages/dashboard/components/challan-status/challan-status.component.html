@@ -16,7 +16,7 @@
     <!--      </mat-select>-->
     <!--    </mat-form-field>-->
   </div>
-  <div class="flex w-full items-center justify-center">
+  <div routerLink="/challan-management" class="cursor-pointer flex w-full h-full items-center justify-center">
     <app-pie-chart [value]="[challanStatus?.received, challanStatus?.pending]"></app-pie-chart>
   </div>
 </div>
