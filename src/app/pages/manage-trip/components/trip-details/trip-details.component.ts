@@ -268,6 +268,8 @@ export class TripDetailsComponent {
 
   onClickTripCancel() {
     const dialogRef = this.dialog.open(ConfirmCancelComponent, {
+      minWidth: '30rem',
+      maxHeight: '90vw',
       data: {
         title: 'Attention?',
         textPrefix: 'Do you want to cancel the trip ',
