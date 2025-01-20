@@ -8,6 +8,11 @@ import { tripListResolver } from './core/resolver/trip-list.resolver';
 import { userResolver } from './core/resolver/user.resolver';
 import { truckResolver } from './core/resolver/truck.resolver';
 
+function isAdmin() {
+  const role = localStorage.getItem('role');
+  return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+}
+
 export const routes: Routes = [
   {
     path: 'auth/login',
@@ -222,12 +227,12 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: isAdmin() ? 'dashboard' : 'trip-list',
     pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: 'dashboard',
+    redirectTo: isAdmin() ? 'dashboard' : 'trip-list',
     pathMatch: 'full',
   },
 ];
