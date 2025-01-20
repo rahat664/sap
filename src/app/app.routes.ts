@@ -4,9 +4,9 @@ import { isAlreadyLoggedInGuard } from './pages/auth/guards/is-already-logged-in
 import { roleGuard } from './pages/auth/guards/role.guard';
 import { dashboardDataResolver } from './core/resolver/dashboard-data.resolver';
 import { challanDataResolver } from './core/resolver/challan-data.resolver';
-import { challanDetailsDataResolver } from './core/resolver/challan-details-data.resolver';
 import { tripListResolver } from './core/resolver/trip-list.resolver';
 import { userResolver } from './core/resolver/user.resolver';
+import { truckResolver } from './core/resolver/truck.resolver';
 
 export const routes: Routes = [
   {
@@ -50,9 +50,6 @@ export const routes: Routes = [
         './pages/challan-dashboard/components/challan-details/challan-details.component'
       ).then(c => c.ChallanDetailsComponent),
     canActivate: [authGuard],
-    resolve: {
-      challanDetailsData: challanDetailsDataResolver,
-    },
   },
   {
     path: 'challan-management/:id/image-upload',
@@ -213,6 +210,9 @@ export const routes: Routes = [
         './pages/profiles/components/vehicle-tracking/vehicle-tracking.component'
       ).then(c => c.VehicleTrackingComponent),
     canActivate: [authGuard],
+    resolve: {
+      vehicleTracking: truckResolver,
+    },
   },
   {
     path: 'support',
