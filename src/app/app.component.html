@@ -1,24 +1,20 @@
-<ng-container *ngIf="!isLoginPage() && !isAboutPage() && !isSupportPage()">
-  <app-layout>
-    <div *ngIf="isLoading | async" class="loading-overlay">
-      <div class="flip-container">
-        <div class="flip-inner">
-          <div class="flip-front">
-            <img src="assets/logo/logo.gif" alt="Front Image"/>
-          </div>
-          <div class="flip-back">
-            <img src="assets/logo/logo.gif" alt="Back Image"/>
-          </div>
-        </div>
+<div *ngIf="isLoading | async" class="loading-overlay">
+  <div class="flip-container">
+    <div class="flip-inner">
+      <div class="flip-front">
+        <img src="assets/logo/logo.gif" alt="Front Image"/>
+      </div>
+      <div class="flip-back">
+        <img src="assets/logo/logo.gif" alt="Back Image"/>
       </div>
     </div>
-
+  </div>
+</div>
+<ng-container *ngIf="!isLoginPage() && !isAboutPage() && !isSupportPage()">
+  <app-layout>
     <router-outlet></router-outlet>
   </app-layout>
 </ng-container>
 <ng-container *ngIf="isLoginPage() || isAboutPage() || isSupportPage()">
-  <div *ngIf="isLoading | async" class="loading-overlay">
-    <div class="spinner"></div>
-  </div>
   <router-outlet></router-outlet>
 </ng-container>
