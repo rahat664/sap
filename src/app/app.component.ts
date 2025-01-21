@@ -34,14 +34,7 @@ import { LoadingService } from './shared/services/loading/loading.service';
  */
 @Component({
   selector: 'app-root',
-  imports: [
-    RouterOutlet,
-    LayoutComponent,
-    TopbarComponent,
-    CommonModule,
-    ImageGalleryComponent,
-    ImagePopupComponent,
-  ],
+  imports: [RouterOutlet, LayoutComponent, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

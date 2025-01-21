@@ -22,7 +22,6 @@ import { MatSelect } from '@angular/material/select';
   imports: [
     CommonModule,
     FormsModule,
-    GetOutsideModalClickDirective,
     NgSelectModule,
     MatFormField,
     MatOption,

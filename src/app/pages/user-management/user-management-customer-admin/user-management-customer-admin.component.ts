@@ -28,7 +28,6 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-user-management-customer-admin',
   imports: [
-    CreatePopupComponent,
     CustomInputComponent,
     DatePipe,
     GetClickEventDirective,
@@ -40,10 +39,8 @@ import { MatDialog } from '@angular/material/dialog';
     MatMenuItem,
     NgForOf,
     NgIf,
-    UserCreateComponent,
     CommonModule,
     MatMenuTrigger,
-    UserCustomerAdminCreateComponent,
   ],
   templateUrl: './user-management-customer-admin.component.html',
   styleUrl: './user-management-customer-admin.component.scss',

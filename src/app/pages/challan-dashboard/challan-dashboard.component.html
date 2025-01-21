@@ -178,7 +178,7 @@
         <button
           (click)="onClickStatusButtons('Pending')"
           [ngClass]="{
-            'border border-[#0005577]': activatedChallanStatus === 'Pending',
+            'border border-[#11484F]': activatedChallanStatus === 'Pending',
           }"
           class="bg-[#005577] h-full w-full flex items-center justify-center rounded-lg bg-opacity-[5%]">
           <div class="flex space-x-4 items-center">
@@ -378,7 +378,7 @@
         <th class="text-center whitespace-nowrap">Due Days</th>
         <th
           class="text-center sticky  bg-white right-{{
-              chalanStatus != 'Pending' && chalanStatus != 'Approved'
+              chalanStatus !== 'Pending' && chalanStatus !== 'Approved'
                 ? '[5rem]'
                 : '0'
             }}">
@@ -387,7 +387,7 @@
         <th
           class="text-left w-[5rem] z-50 sticky right-0 bg-white"
           *ngIf="
-              chalanStatus != 'Approved' && chalanStatus != 'Pending'
+              chalanStatus !== 'Approved' && chalanStatus !== 'Pending'
             "></th>
       </tr>
       <tr>
@@ -451,12 +451,12 @@
           </td>
           <td class="text-center whitespace-nowrap">
             <a
-              *ngIf="trip.challanStatus != 'Pending'"
+              *ngIf="trip.challanStatus !== 'Pending'"
               (click)="onClickSoftCopyView(trip.tripId)"
               class="cursor-pointer text-link text-center"
             >View</a
             >
-            <ng-container *ngIf="trip.challanStatus == 'Pending'">
+            <ng-container *ngIf="trip.challanStatus === 'Pending'">
               <label
                 (click)="uploadAbleTripId = trip.tripId"
                 for="file-upload"
@@ -477,7 +477,7 @@
           </td>
           <td
             class="whitespace-nowrap sticky right-{{
-                chalanStatus != 'Approved' && chalanStatus != 'Pending'
+                chalanStatus !== 'Approved' && chalanStatus !== 'Pending'
                   ? '[5rem]'
                   : '0'
               }} w-full bg-white z-20">
@@ -493,16 +493,16 @@
           <td
             class="sticky right-0 bg-white w-[5rem]"
             *ngIf="
-                (trip.challanStatus == 'Approved' ||
-                  trip.challanStatus == 'Pending') &&
-                status == 'Completed'
+                (trip.challanStatus === 'Approved' ||
+                  trip.challanStatus === 'Pending') &&
+                status === 'Completed'
               ">
             <a class="invisible">Hidden</a>
           </td>
           <td
             *ngIf="
-                trip.challanStatus != 'Approved' &&
-                trip.challanStatus != 'Pending'
+                trip.challanStatus !== 'Approved' &&
+                trip.challanStatus !== 'Pending'
               "
               class="sticky right-0 bg-white w-[5rem]">
             <button

@@ -4,7 +4,7 @@ import { NumberSeperatorPipe } from '../../../../../shared/pipes/number-seperato
 
 @Component({
   selector: 'app-status-card',
-  imports: [NgIf, DecimalPipe, NumberSeperatorPipe],
+  imports: [NumberSeperatorPipe, NgIf],
   templateUrl: './status-card.component.html',
   styleUrl: './status-card.component.scss',
 })

@@ -12,8 +12,13 @@ import {
   ApexAxisChartSeries,
   ApexChart,
   ApexDataLabels,
+  ApexGrid,
+  ApexLegend,
   ApexStroke,
+  ApexTitleSubtitle,
+  ApexTooltip,
   ApexXAxis,
+  ApexYAxis,
   ChartComponent,
 } from 'ng-apexcharts';
 import { timer } from 'rxjs';
@@ -58,7 +63,9 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
       const numberOfTrips = this.numberOfTrips;
       let index = -1;
       this.chartOptions = {
-        series: changes['seriesData']?.currentValue,
+        series: changes['seriesData'].currentValue
+          ? changes['seriesData'].currentValue
+          : this.seriesData,
         chart: {
           height: 350,
           type: 'line',
@@ -100,7 +107,9 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
           hideEmptySeries: false,
         },
         xaxis: {
-          categories: changes['categories']?.currentValue,
+          categories: changes['categories']?.currentValue
+            ? changes['categories']?.currentValue
+            : this.categories,
           floating: false,
           decimalsInFloat: 0,
           tooltip: {

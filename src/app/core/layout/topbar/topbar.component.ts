@@ -15,13 +15,10 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-topbar',
   imports: [
-    NgOptimizedImage,
     CommonModule,
     ImagePipe,
     RouterLink,
-    GetOutsideModalClickDirective,
     MatTooltip,
-    MatButton,
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,

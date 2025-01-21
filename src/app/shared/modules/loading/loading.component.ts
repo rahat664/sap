@@ -3,7 +3,7 @@ import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-loading',
-  imports: [NgIf],
+  imports: [],
   templateUrl: './loading.component.html',
   styleUrl: './loading.component.scss',
 })

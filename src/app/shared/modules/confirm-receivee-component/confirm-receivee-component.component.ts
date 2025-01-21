@@ -1,11 +1,10 @@
 import { Component, Inject } from '@angular/core';
-import { DatePipe, NgIf } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatCalendar, MatDatepickerToggle } from '@angular/material/datepicker';
 import { MatCard } from '@angular/material/card';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
-import { MatTooltip } from '@angular/material/tooltip';
 import { TimePickerComponent } from '../time-picker/time-picker.component';
 import { MatButton } from '@angular/material/button';
 import { MatFormField, MatSuffix } from '@angular/material/form-field';
@@ -15,12 +14,10 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 @Component({
   selector: 'app-confirm-receivee-component',
   imports: [
-    NgIf,
     ReactiveFormsModule,
     MatCalendar,
     MatCard,
     MatMenu,
-    MatTooltip,
     TimePickerComponent,
     MatButton,
     MatDatepickerToggle,
@@ -29,7 +26,6 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatSuffix,
     MatMenuTrigger,
     FormsModule,
-    DatePipe,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './confirm-receivee-component.component.html',

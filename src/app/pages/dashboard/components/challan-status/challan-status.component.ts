@@ -12,15 +12,7 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-challan-status',
-  imports: [
-    MatFormField,
-    MatOption,
-    MatSelect,
-    ReactiveFormsModule,
-    StatusCardComponent,
-    PieChartComponent,
-    RouterLink,
-  ],
+  imports: [ReactiveFormsModule, PieChartComponent, RouterLink],
   templateUrl: './challan-status.component.html',
   styleUrl: './challan-status.component.scss',
 })

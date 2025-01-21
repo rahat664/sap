@@ -31,9 +31,7 @@ import {
 @Component({
   selector: 'app-driver',
   imports: [
-    CreatePopupComponent,
     CustomInputComponent,
-    FileUploadPopupComponent,
     GetClickEventDirective,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
@@ -42,7 +40,6 @@ import {
     RouterLink,
     UploadButtonComponent,
     LoadingComponent,
-    CheckTheHeightCrossMaxHeightOrNotDirective,
     DatePipe,
     FormsModule,
     NgClass,

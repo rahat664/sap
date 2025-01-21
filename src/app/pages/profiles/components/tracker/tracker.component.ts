@@ -32,9 +32,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 @Component({
   selector: 'app-tracker',
   imports: [
-    CreatePopupComponent,
     DatePipe,
-    FileUploadPopupComponent,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
     LoadingComponent,

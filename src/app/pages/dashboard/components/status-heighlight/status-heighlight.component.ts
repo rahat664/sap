@@ -17,13 +17,9 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
 @Component({
   selector: 'app-status-heighlight',
   imports: [
-    MatFormField,
-    MatOption,
-    MatSelect,
     ReactiveFormsModule,
     StatusCardComponent,
     RouterLink,
-    DecimalPipe,
     NumberSeperatorPipe,
   ],
   templateUrl: './status-heighlight.component.html',

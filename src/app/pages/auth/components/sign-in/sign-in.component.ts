@@ -40,10 +40,9 @@ import { DriverEditSharedService } from '../../../profiles/services/driver-edit-
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    InputAutoFocusDirective,
-    MatAutocomplete,
     MatFormField,
     MatInput,
+    InputAutoFocusDirective,
     NgxMaterialIntlTelInputComponent,
   ],
   templateUrl: './sign-in.component.html',

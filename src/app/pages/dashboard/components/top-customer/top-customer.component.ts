@@ -13,13 +13,8 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
   selector: 'app-top-customer',
   imports: [
     FormsModule,
-    MatFormField,
-    MatOption,
-    MatSelect,
     ReactiveFormsModule,
-    DecimalPipe,
     CommonModule,
-    RouterLink,
     NumberSeperatorPipe,
   ],
   templateUrl: './top-customer.component.html',

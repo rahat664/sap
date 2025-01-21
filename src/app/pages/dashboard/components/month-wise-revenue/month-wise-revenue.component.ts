@@ -11,15 +11,7 @@ import { LineChartComponent } from '../../../../shared/charts/line-chart/line-ch
 
 @Component({
   selector: 'app-month-wise-revenue',
-  imports: [
-    FormsModule,
-    MatFormField,
-    MatOption,
-    MatSelect,
-    ReactiveFormsModule,
-    ColumnChartComponent,
-    LineChartComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, ColumnChartComponent],
   templateUrl: './month-wise-revenue.component.html',
   styleUrl: './month-wise-revenue.component.scss',
 })

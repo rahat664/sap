@@ -17,12 +17,8 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
   selector: 'app-customer',
   imports: [
     CommonModule,
-    CreatePopupComponent,
-    CustomerCreateComponent,
     GiveMaxHeightDirective,
     GetElementHeightDirective,
-    CustomInputComponent,
-    GetClickEventDirective,
     LoadingComponent,
     FormsModule,
     NumberSeperatorPipe,

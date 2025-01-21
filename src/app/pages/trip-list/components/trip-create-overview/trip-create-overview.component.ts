@@ -18,14 +18,7 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
 
 @Component({
   selector: 'app-trip-create-overview',
-  imports: [
-    DatePipe,
-    DecimalPipe,
-    CurrencyPipe,
-    NgForOf,
-    NgIf,
-    NumberSeperatorPipe,
-  ],
+  imports: [DatePipe, NgForOf, NgIf, NumberSeperatorPipe],
   templateUrl: './trip-create-overview.component.html',
   styleUrl: './trip-create-overview.component.scss',
 })

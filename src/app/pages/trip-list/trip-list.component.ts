@@ -56,7 +56,6 @@ import { UserService } from '../profiles/services/user.service';
     GiveMaxHeightDirective,
     GetClickEventDirective,
     LoadingComponent,
-    DecimalPipe,
     MatAutocompleteTrigger,
     MatAutocomplete,
     MatOption,

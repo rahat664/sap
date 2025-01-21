@@ -13,9 +13,6 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
   selector: 'app-top-transporter',
   imports: [
     FormsModule,
-    MatFormField,
-    MatOption,
-    MatSelect,
     ReactiveFormsModule,
     CommonModule,
     RouterLink,

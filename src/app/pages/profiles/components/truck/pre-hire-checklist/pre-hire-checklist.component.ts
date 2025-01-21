@@ -13,7 +13,7 @@ import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 
 @Component({
   selector: 'app-pre-hire-checklist',
-  imports: [NgForOf, NgIf, MatRadioButton, MatRadioGroup],
+  imports: [MatRadioButton, MatRadioGroup, NgForOf],
   templateUrl: './pre-hire-checklist.component.html',
   styleUrl: './pre-hire-checklist.component.scss',
 })

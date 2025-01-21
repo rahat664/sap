@@ -53,7 +53,8 @@
             "scripts": [
             ],
             "allowedCommonJsDependencies": [
-              "ng-apexcharts"
+              "ng-apexcharts",
+              "apexcharts"
             ]
           },
           "configurations": {

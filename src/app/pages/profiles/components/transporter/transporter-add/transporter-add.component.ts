@@ -38,7 +38,6 @@ import {
     GetClickEventDirective,
     ReactiveFormsModule,
     NgIf,
-    AlphabetOnlyDirective,
     MatDialogModule,
     MatFormField,
     MatInput,

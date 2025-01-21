@@ -286,6 +286,7 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
         },
         error => {
           // Handle error
+          this.loading = false;
           this.toastr.showError(error.error.message);
         }
       );

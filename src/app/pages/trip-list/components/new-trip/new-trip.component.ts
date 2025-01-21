@@ -31,17 +31,12 @@ import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-he
 @Component({
   selector: 'app-new-trip',
   imports: [
-    CustomDatePickerComponent,
-    GMapComponent,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    GetOutsideModalClickDirective,
-    CreateTripPageComponent,
     RouterLink,
     MatFormField,
     MatInput,
-    MatCard,
     MatButton,
     MatMenuTrigger,
     MatMenuModule,
