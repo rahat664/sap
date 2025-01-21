@@ -1,15 +1,14 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { TripPoint } from '../../../pages/manage-trip/model/trip.details.model';
 
 @Component({
   selector: 'app-trip-card',
-  standalone: true,
   imports: [NgClass, DatePipe, NgIf],
   templateUrl: './trip-card.component.html',
   styleUrl: './trip-card.component.scss',
 })
-export class TripCardComponent {
+export class TripCardComponent implements OnChanges {
   @Input() tripNumber: string;
   @Input() companyName: string;
   @Input() tripStatus: string;

@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ViewChild,
+  OnInit,
+  AfterViewInit,
+} from '@angular/core';
 import {
   MatAutocomplete,
   MatAutocompleteTrigger,
@@ -18,7 +24,6 @@ import { VehicleTracker } from '../../driver/models/tracker.model';
 
 @Component({
   selector: 'app-edit-tracker',
-  standalone: true,
   imports: [
     MatAutocomplete,
     MatAutocompleteTrigger,
@@ -31,7 +36,7 @@ import { VehicleTracker } from '../../driver/models/tracker.model';
   templateUrl: './edit-tracker.component.html',
   styleUrl: './edit-tracker.component.scss',
 })
-export class EditTrackerComponent {
+export class EditTrackerComponent implements OnInit, AfterViewInit {
   @ViewChild('disableSelect') disableSelect: any;
   @ViewChild('disableVendorSelect') disableVendorSelect: any;
   trackerAddForm: FormGroup;
@@ -39,7 +44,7 @@ export class EditTrackerComponent {
   trackAddModel: TrackerRequestModel = new TrackerRequestModel();
   truckSuggestion: TruckModel[] = [];
   private singleTrackerDetails: VehicleTracker = null;
-  isDisabled: boolean = true;
+  isDisabled = true;
 
   constructor(
     private service: TrackerService,

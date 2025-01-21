@@ -1,4 +1,4 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -13,16 +13,15 @@ import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-confirm-cancel',
-  standalone: true,
   imports: [FormsModule, NgClass, NgIf, MatCheckbox],
   templateUrl: './confirm-cancel.component.html',
   styleUrl: './confirm-cancel.component.scss',
 })
-export class ConfirmCancelComponent {
+export class ConfirmCancelComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   reason = '';
   reasonTextArea = false;
-  textareaReasons: string = '';
+  textareaReasons = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,

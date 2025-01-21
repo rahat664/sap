@@ -14,7 +14,6 @@ import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-topbar',
-  standalone: true,
   imports: [
     NgOptimizedImage,
     CommonModule,

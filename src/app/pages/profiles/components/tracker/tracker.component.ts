@@ -1,4 +1,4 @@
-import { Component, inject, TemplateRef } from '@angular/core';
+import { Component, inject, TemplateRef, OnInit } from '@angular/core';
 import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { FileUploadPopupComponent } from '../truck/file-upload-popup/file-upload-popup.component';
@@ -31,7 +31,6 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-tracker',
-  standalone: true,
   imports: [
     CreatePopupComponent,
     DatePipe,
@@ -58,15 +57,15 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
   templateUrl: './tracker.component.html',
   styleUrl: './tracker.component.scss',
 })
-export class TrackerComponent {
+export class TrackerComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
   loading: boolean;
   trackerList: VehicleTracker[] = [];
   totalPages: number;
   height: string;
-  page: number = 0;
-  size: number = 20;
+  page = 0;
+  size = 20;
   searchValue: string;
   trackerUpdateForm: FormGroup;
   truckSuggestion: TruckModel[] = [];

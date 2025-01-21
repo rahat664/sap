@@ -16,29 +16,28 @@ import { ConfirmDeleteComponent } from '../../../pages/manage-trip/components/co
 
 @Component({
   selector: 'app-global-image-gallery',
-  standalone: true,
   imports: [DatePipe, NgIf, NgForOf, NgClass],
   templateUrl: './global-image-gallery.component.html',
   styleUrl: './global-image-gallery.component.scss',
 })
 export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
-  expiryAvailable: boolean = false;
-  notesAvailable: boolean = false;
-  notes: string = '';
-  expiryDate: string = '';
+  expiryAvailable = false;
+  notesAvailable = false;
+  notes = '';
+  expiryDate = '';
   documents: any[] = [];
-  imageType: string = 'image';
+  imageType = 'image';
   activatedDocument: any;
-  activeDocumentIndex: number = -1;
-  showRightArrow: boolean = false;
-  showLeftArrow: boolean = false;
+  activeDocumentIndex = -1;
+  showRightArrow = false;
+  showLeftArrow = false;
   @ViewChild('containerElement') containerElement!: ElementRef<HTMLDivElement>;
   @ViewChild('imageElement') imageElement!: ElementRef<HTMLImageElement>;
-  zoomLevel: number = 1; // Default zoom level
-  maxZoom: number = 3; // Maximum zoom level
-  minZoom: number = 1; // Minimum zoom level
-  translateX: number = 0; // Horizontal translation
-  translateY: number = 0; // Vertical translation
+  zoomLevel = 1; // Default zoom level
+  maxZoom = 3; // Maximum zoom level
+  minZoom = 1; // Minimum zoom level
+  translateX = 0; // Horizontal translation
+  translateY = 0; // Vertical translation
   returnUrl: any;
   tripPointId: any;
   eventTypeId: any;

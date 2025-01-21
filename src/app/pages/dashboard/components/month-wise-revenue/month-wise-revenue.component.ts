@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
@@ -11,7 +11,6 @@ import { LineChartComponent } from '../../../../shared/charts/line-chart/line-ch
 
 @Component({
   selector: 'app-month-wise-revenue',
-  standalone: true,
   imports: [
     FormsModule,
     MatFormField,
@@ -24,7 +23,7 @@ import { LineChartComponent } from '../../../../shared/charts/line-chart/line-ch
   templateUrl: './month-wise-revenue.component.html',
   styleUrl: './month-wise-revenue.component.scss',
 })
-export class MonthWiseRevenueComponent {
+export class MonthWiseRevenueComponent implements OnInit {
   months: any[];
   fromDate: string[];
   toDate: string[];

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -53,7 +53,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 @Component({
   selector: 'app-template-create',
-  standalone: true,
   imports: [
     FormsModule,
     MatAutocomplete,
@@ -77,7 +76,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: './template-create.component.html',
   styleUrl: './template-create.component.scss',
 })
-export class TemplateCreateComponent {
+export class TemplateCreateComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
   templateForm: FormGroup;
   loadingSuggestions: any;

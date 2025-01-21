@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { ToggleResponsiveService } from '../../../shared/services/toggle-responsive-services/toggle-responsive.service';
 import { CommonModule } from '@angular/common';
@@ -14,7 +15,6 @@ import { GetOutsideModalClickDirective } from '../../../shared/directive/get-out
 
 @Component({
   selector: 'app-sidebar',
-  standalone: true,
   imports: [
     CommonModule,
     RouterLink,
@@ -24,7 +24,7 @@ import { GetOutsideModalClickDirective } from '../../../shared/directive/get-out
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
   willShow = false;
   dropdownOpen = false;
   private subs: Subscription;

@@ -40,7 +40,6 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 
 @Component({
   selector: 'app-create-trip-page',
-  standalone: true,
   imports: [
     CommonModule,
     ScrollByButtonDirective,
@@ -75,7 +74,7 @@ export class CreateTripPageComponent implements OnInit {
   district: any;
   @Input() template: any;
   @Input() customerName: string;
-  @Input() templateEnabled: boolean = false;
+  @Input() templateEnabled = false;
   vehicleTypeList: any;
   truckCapacitySuggestions: any[];
   truckSizeSuggestions: any[];
@@ -91,7 +90,7 @@ export class CreateTripPageComponent implements OnInit {
   isDisabled: boolean;
   tripDataModel: TripCreate = new TripCreate();
   numberOfTrucksSuggestions: any;
-  isFromTemplate: boolean = false;
+  isFromTemplate = false;
 
   constructor(
     private service: TripService,
@@ -219,9 +218,9 @@ export class CreateTripPageComponent implements OnInit {
     }
   }
 
-  scrollable: boolean = false;
-  rightButtonClicked: boolean = false;
-  leftButtonClicked: boolean = false;
+  scrollable = false;
+  rightButtonClicked = false;
+  leftButtonClicked = false;
 
   onClickLeftButton() {
     this.leftButtonClicked = true;

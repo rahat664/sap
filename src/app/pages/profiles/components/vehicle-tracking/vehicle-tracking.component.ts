@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
@@ -20,7 +20,6 @@ import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-he
 
 @Component({
   selector: 'app-vehicle-tracking',
-  standalone: true,
   imports: [
     FormsModule,
     GetElementHeightDirective,
@@ -38,14 +37,14 @@ import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-he
   templateUrl: './vehicle-tracking.component.html',
   styleUrl: './vehicle-tracking.component.scss',
 })
-export class VehicleTrackingComponent {
+export class VehicleTrackingComponent implements OnInit {
   height: string;
-  totalPages: number = 0;
-  filterOpened: boolean = true;
-  transporterFilterCount: number = 0;
-  truckFilterCount: number = 0;
-  transporterName: string = '';
-  truckId: string = '';
+  totalPages = 0;
+  filterOpened = true;
+  transporterFilterCount = 0;
+  truckFilterCount = 0;
+  transporterName = '';
+  truckId = '';
   destination: google.maps.LatLngLiteral[] = [
     {
       lat: 12.9716,
@@ -61,10 +60,10 @@ export class VehicleTrackingComponent {
   transporterSuggestions: any = [];
   truckRegistrationId: any = '';
   truckRegSuggestions: any = [];
-  truckSearchSubject: Subject<string> = new Subject();
-  allTruckSearchSubject: Subject<string> = new Subject();
-  transporterSearchSubject: Subject<string> = new Subject();
-  condition: string = '';
+  truckSearchSubject = new Subject<string>();
+  allTruckSearchSubject = new Subject<string>();
+  transporterSearchSubject = new Subject<string>();
+  condition = '';
   trackerEnabledTrucks: TruckModel[] = [];
   conditionList: any = [
     {
@@ -117,13 +116,13 @@ export class VehicleTrackingComponent {
     },
   ];
   truckLocationPosition: any[] = [];
-  trucklistOpened: boolean = true;
+  trucklistOpened = true;
   searchTruckValue: any;
   allTruckList: TruckModel[] = [];
-  page: number = 0;
-  size: number = 10;
-  truckListLoading: boolean = false;
-  selectedTruckNumber: string = '';
+  page = 0;
+  size = 10;
+  truckListLoading = false;
+  selectedTruckNumber = '';
   singleTruckButtonDisable: boolean;
 
   constructor(

@@ -3,7 +3,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-report-download-popup',
-  standalone: true,
   imports: [],
   templateUrl: './report-download-popup.component.html',
   styleUrl: './report-download-popup.component.scss',

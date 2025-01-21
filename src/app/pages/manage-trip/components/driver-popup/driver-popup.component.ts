@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from '../../../profiles/services/user.service';
 import { debounceTime } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -8,7 +8,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-driver-popup',
-  standalone: true,
   imports: [
     CommonModule,
     GiveMaxHeightDirective,
@@ -18,7 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './driver-popup.component.html',
   styleUrl: './driver-popup.component.scss',
 })
-export class DriverPopupComponent {
+export class DriverPopupComponent implements OnInit, OnDestroy {
   private totalPages: number;
 
   constructor(

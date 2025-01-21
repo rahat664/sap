@@ -3,7 +3,6 @@ import { NgClass, NgIf, NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-upload-button',
-  standalone: true,
   imports: [NgIf, NgClass, NgOptimizedImage],
   templateUrl: './upload-button.component.html',
   styleUrl: './upload-button.component.scss',

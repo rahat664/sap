@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  OnChanges,
 } from '@angular/core';
 import { CustomInputSelectModel } from './custom-input-select.model';
 import { CommonModule } from '@angular/common';
@@ -18,7 +19,6 @@ import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-custom-input',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -31,13 +31,13 @@ import { MatSelect } from '@angular/material/select';
   templateUrl: './custom-input.component.html',
   styleUrl: './custom-input.component.scss',
 })
-export class CustomInputComponent implements OnInit {
+export class CustomInputComponent implements OnInit, OnChanges {
   @Input() inputPlaceholder: string;
   @Output() selectedId = new EventEmitter<number>();
   @Output() isItemsOpened = new EventEmitter<boolean>();
   @Input() options: CustomInputSelectModel[] = [];
   itemsOpened = false;
-  @Input() customOpened: boolean = false;
+  @Input() customOpened = false;
   @Input() isError = false;
   months: string[] = [
     'January',

@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import {
   CurrencyPipe,
   DatePipe,
@@ -18,7 +18,6 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
 
 @Component({
   selector: 'app-trip-create-overview',
-  standalone: true,
   imports: [
     DatePipe,
     DecimalPipe,
@@ -30,7 +29,7 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
   templateUrl: './trip-create-overview.component.html',
   styleUrl: './trip-create-overview.component.scss',
 })
-export class TripCreateOverviewComponent {
+export class TripCreateOverviewComponent implements OnInit {
   protected tripData: TripCreate;
   customerName: string;
   loadingPointNames: any[] = [];
@@ -77,9 +76,9 @@ export class TripCreateOverviewComponent {
     this.service.createTrip(this.tripData).subscribe(
       (res: any) => {
         if (res.status === 'OK') {
-          let tripOrTrips = res.data.length > 1 ? 'trips' : 'trip';
+          const tripOrTrips = res.data.length > 1 ? 'trips' : 'trip';
           let startText = `Your ${tripOrTrips}`;
-          let tripMessage = `been created successfully.
+          const tripMessage = `been created successfully.
               ${
                 res.data.length > 1
                   ? 'Your trip numbers are ' +

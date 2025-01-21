@@ -1,19 +1,24 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-map-buttons',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './map-buttons.component.html',
   styleUrl: './map-buttons.component.scss',
 })
-export class MapButtonsComponent {
+export class MapButtonsComponent implements OnChanges {
   @Input() statusButtons!: any[];
-  @Output() buttonClickEmitter: EventEmitter<any> = new EventEmitter();
-  @Input() triggerFromParent: boolean = false;
-  @Input() triggeredButtonName: string = '';
-  @Input() isButtonDisabled: boolean = false;
+  @Output() buttonClickEmitter = new EventEmitter<any>();
+  @Input() triggerFromParent = false;
+  @Input() triggeredButtonName = '';
+  @Input() isButtonDisabled = false;
 
   getButtonColor(button: any) {
     switch (button.name) {

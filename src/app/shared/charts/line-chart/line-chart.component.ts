@@ -4,6 +4,9 @@ import {
   Input,
   SimpleChanges,
   ViewChild,
+  OnChanges,
+  OnInit,
+  AfterViewInit,
 } from '@angular/core';
 import {
   ApexAxisChartSeries,
@@ -31,12 +34,11 @@ export interface ChartOptions {
 
 @Component({
   selector: 'app-line-chart',
-  standalone: true,
   imports: [ChartComponent],
   templateUrl: './line-chart.component.html',
   styleUrl: './line-chart.component.scss',
 })
-export class LineChartComponent {
+export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
   @Input() seriesData: any = [];

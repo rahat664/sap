@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  AfterViewInit,
+} from '@angular/core';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { CommonModule } from '@angular/common';
 import { EventData } from '../../model/trip-events.model';
@@ -6,12 +13,11 @@ import { GetElementHeightDirective } from '../../../../shared/directive/get-elem
 
 @Component({
   selector: 'app-trip-activity',
-  standalone: true,
   imports: [CommonModule, GetElementHeightDirective],
   templateUrl: './trip-activity.component.html',
   styleUrl: './trip-activity.component.scss',
 })
-export class TripActivityComponent {
+export class TripActivityComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() tripId: string;
   loadingEvents: EventData[] = [];
   unloadEvents: EventData[] = [];
@@ -21,12 +27,12 @@ export class TripActivityComponent {
   selectedUnloadingEvent: EventData;
   imageToShow: any[] = [];
   unloadImageToShow: any[] = [];
-  index: number = 0;
-  unloadingIndex: number = 0;
-  loadingEventsLoaded: boolean = false;
-  unloadingEventsLoaded: boolean = false;
-  loadingHeight: string = '0px';
-  unloadingHeight: string = '0px';
+  index = 0;
+  unloadingIndex = 0;
+  loadingEventsLoaded = false;
+  unloadingEventsLoaded = false;
+  loadingHeight = '0px';
+  unloadingHeight = '0px';
 
   constructor(
     private trip: TripService,

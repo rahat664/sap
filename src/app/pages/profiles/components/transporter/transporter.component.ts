@@ -18,7 +18,6 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
 
 @Component({
   selector: 'app-transporter',
-  standalone: true,
   imports: [
     CreatePopupComponent,
     CustomerCreateComponent,
@@ -48,9 +47,9 @@ export class TransporterComponent implements OnInit {
   transporterList: UserModel[] = [];
   loading: boolean;
   searchValue: string;
-  page: number = 0;
+  page = 0;
   totalPages: number;
-  size: number = 20;
+  size = 20;
 
   constructor(private service: UserService) {}
 

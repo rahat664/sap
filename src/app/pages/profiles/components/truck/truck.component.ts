@@ -36,7 +36,6 @@ import { PreHireChecklistPopupComponent } from './pre-hire-checklist-popup/pre-h
 
 @Component({
   selector: 'app-truck',
-  standalone: true,
   imports: [
     CreatePopupComponent,
     CustomInputComponent,
@@ -77,12 +76,12 @@ export class TruckComponent implements OnInit {
   private page = 0;
   totalPages: number;
   searchValue: string;
-  isCheckListOpened: boolean = false;
+  isCheckListOpened = false;
   singleTruckId: number;
-  size: number = 30;
+  size = 30;
   truckEnum = TruckDocumentType;
   firstColumnHeight: any;
-  filterOpened: boolean = true;
+  filterOpened = true;
   statusInputPlaceholder: string;
   statusOptionsArray: CustomInputSelectModel[] = [
     { id: 0, value: 'All', selected: false },

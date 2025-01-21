@@ -15,7 +15,6 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
 
 @Component({
   selector: 'app-customer',
-  standalone: true,
   imports: [
     CommonModule,
     CreatePopupComponent,
@@ -36,8 +35,8 @@ export class CustomerComponent implements OnInit {
   isOpen = false;
   height: any;
   loading: boolean;
-  size: number = 30;
-  page: number = 0;
+  size = 30;
+  page = 0;
   totalPages: number;
   searchValue: any;
   readonly dialog = inject(MatDialog);

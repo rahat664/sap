@@ -7,6 +7,8 @@ import {
   Input,
   Output,
   ViewChild,
+  OnChanges,
+  AfterViewInit,
 } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { MatFormField, MatSuffix } from '@angular/material/form-field';
@@ -22,7 +24,6 @@ import { TimePickerComponent } from '../time-picker/time-picker.component';
 
 @Component({
   selector: 'app-global-image-upload',
-  standalone: true,
   imports: [
     MatFormField,
     MatOption,
@@ -46,16 +47,16 @@ import { TimePickerComponent } from '../time-picker/time-picker.component';
   templateUrl: './global-image-upload.component.html',
   styleUrl: './global-image-upload.component.scss',
 })
-export class GlobalImageUploadComponent {
+export class GlobalImageUploadComponent implements OnChanges, AfterViewInit {
   currentDate: Date = new Date();
   @ViewChild('containerElement') containerElement!: ElementRef<HTMLDivElement>;
   @ViewChild('imageElement') imageElement!: ElementRef<HTMLImageElement>;
-  zoomLevel: number = 1; // Default zoom level
-  maxZoom: number = 3; // Maximum zoom level
-  minZoom: number = 1; // Minimum zoom level
-  translateX: number = 0; // Horizontal translation
-  translateY: number = 0; // Vertical translation
-  note: string = '';
+  zoomLevel = 1; // Default zoom level
+  maxZoom = 3; // Maximum zoom level
+  minZoom = 1; // Minimum zoom level
+  translateX = 0; // Horizontal translation
+  translateY = 0; // Vertical translation
+  note = '';
   @Input() imageTypes: any[] = [];
   months: any[] = [
     { value: '1', viewValue: 'January' },
@@ -71,20 +72,20 @@ export class GlobalImageUploadComponent {
     { value: '11', viewValue: 'November' },
     { value: '12', viewValue: 'December' },
   ];
-  @Input() expiryAvailable: boolean = false;
-  @Input() notesAvailable: boolean = false;
+  @Input() expiryAvailable = false;
+  @Input() notesAvailable = false;
   @Input() documents: any[] = [];
-  @Input() activeDocumentIndex: number = -1;
+  @Input() activeDocumentIndex = -1;
   @Input() activatedDocument: any;
-  @Output() closedDocument: EventEmitter<any> = new EventEmitter();
-  @Output() saveButtonClicked: EventEmitter<boolean> = new EventEmitter();
+  @Output() closedDocument = new EventEmitter<any>();
+  @Output() saveButtonClicked = new EventEmitter<boolean>();
   showLeftArrow: boolean;
   showRightArrow: boolean;
   activatedImageType: any;
-  @Output() forwardedNote: EventEmitter<string> = new EventEmitter();
-  @Output() forwardedImageType: EventEmitter<string> = new EventEmitter();
-  @Output() forwardedDateType: EventEmitter<string> = new EventEmitter();
-  @Output() isBackButtonClick: EventEmitter<boolean> = new EventEmitter();
+  @Output() forwardedNote = new EventEmitter<string>();
+  @Output() forwardedImageType = new EventEmitter<string>();
+  @Output() forwardedDateType = new EventEmitter<string>();
+  @Output() isBackButtonClick = new EventEmitter<boolean>();
 
   constructor(
     private datePipe: DatePipe,
@@ -242,9 +243,9 @@ export class GlobalImageUploadComponent {
     this.changeActiveDocument(1);
   }
 
-  zoomInAvailable: boolean = true;
-  zoomOutAvailable: boolean = false;
-  @Input() isLoading: boolean = false;
+  zoomInAvailable = true;
+  zoomOutAvailable = false;
+  @Input() isLoading = false;
 
   returnToInputDate: Date;
   selectedDate: Date = new Date();

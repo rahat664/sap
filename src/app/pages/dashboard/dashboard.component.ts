@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { StatusHeighlightComponent } from './components/status-heighlight/status-heighlight.component';
 import { MonthWiseRevenueComponent } from './components/month-wise-revenue/month-wise-revenue.component';
@@ -12,7 +12,6 @@ import { TransporterRateAnalysisComponent } from './components/transporter-rate-
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
     GetElementHeightDirective,
     StatusHeighlightComponent,
@@ -28,7 +27,7 @@ import { TransporterRateAnalysisComponent } from './components/transporter-rate-
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   height: any;
 
   ngOnInit() {}

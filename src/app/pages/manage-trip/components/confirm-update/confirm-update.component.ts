@@ -1,4 +1,4 @@
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -13,12 +13,11 @@ class DialogData {}
 
 @Component({
   selector: 'app-confirm-update',
-  standalone: true,
   imports: [],
   templateUrl: './confirm-update.component.html',
   styleUrl: './confirm-update.component.scss',
 })
-export class ConfirmUpdateComponent {
+export class ConfirmUpdateComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
   constructor(

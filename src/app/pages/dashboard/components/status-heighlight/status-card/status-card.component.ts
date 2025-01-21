@@ -4,17 +4,16 @@ import { NumberSeperatorPipe } from '../../../../../shared/pipes/number-seperato
 
 @Component({
   selector: 'app-status-card',
-  standalone: true,
   imports: [NgIf, DecimalPipe, NumberSeperatorPipe],
   templateUrl: './status-card.component.html',
   styleUrl: './status-card.component.scss',
 })
 export class StatusCardComponent {
-  @Input() backgroundColor: string = '#1DBF73';
-  @Input() title: string = 'Title';
-  @Input() value: number = 0;
-  @Input() icon: string = 'icon';
-  @Input() textColor: string = '#009D54';
+  @Input() backgroundColor = '#1DBF73';
+  @Input() title = 'Title';
+  @Input() value = 0;
+  @Input() icon = 'icon';
+  @Input() textColor = '#009D54';
   @Input() text: string;
   protected readonly String = String;
 }

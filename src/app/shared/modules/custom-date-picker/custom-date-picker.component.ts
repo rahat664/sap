@@ -6,7 +6,6 @@ import { GetOutsideModalClickDirective } from '../../directive/get-outside-modal
 
 @Component({
   selector: 'app-custom-date-picker',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,

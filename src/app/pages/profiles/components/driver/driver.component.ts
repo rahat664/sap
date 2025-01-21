@@ -30,7 +30,6 @@ import {
 
 @Component({
   selector: 'app-driver',
-  standalone: true,
   imports: [
     CreatePopupComponent,
     CustomInputComponent,
@@ -65,7 +64,7 @@ export class DriverComponent implements OnInit {
   private page: number;
   totalPages: number;
   searchValue: string;
-  private size: number = 30;
+  private size = 30;
 
   constructor(
     private user: UserService,
@@ -131,7 +130,7 @@ export class DriverComponent implements OnInit {
   isNewOpen: any;
   singleDriver: any;
   statusInputPlaceholder: any;
-  filterOpened: boolean = true;
+  filterOpened = true;
   statusOptionsArray: CustomInputSelectModel[] = [
     { id: 0, value: 'All', selected: false },
     { id: 1, value: 'Approved', selected: false },

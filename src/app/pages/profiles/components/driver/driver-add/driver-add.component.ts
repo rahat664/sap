@@ -45,7 +45,6 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
 
 @Component({
   selector: 'app-driver-add',
-  standalone: true,
   imports: [
     CommonModule,
     NgIf,

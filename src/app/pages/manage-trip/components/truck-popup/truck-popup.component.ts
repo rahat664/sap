@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TruckModel } from '../../../profiles/components/truck/models/truck.model';
 import { TruckService } from '../../../profiles/components/truck/services/truck.service';
 import { CommonModule } from '@angular/common';
@@ -8,12 +8,11 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-truck-popup',
-  standalone: true,
   imports: [CommonModule, GiveMaxHeightDirective, FormsModule],
   templateUrl: './truck-popup.component.html',
   styleUrl: './truck-popup.component.scss',
 })
-export class TruckPopupComponent {
+export class TruckPopupComponent implements OnInit, OnDestroy {
   private totalPages: number;
 
   constructor(

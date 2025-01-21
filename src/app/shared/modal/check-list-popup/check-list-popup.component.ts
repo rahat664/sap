@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import { GetOutsideModalClickDirective } from '../../directive/get-outside-modal-click.directive';
 import { NgIf } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -6,12 +14,11 @@ import { DriverEditSharedService } from '../../../pages/profiles/services/driver
 
 @Component({
   selector: 'app-check-list-popup',
-  standalone: true,
   imports: [GetOutsideModalClickDirective, NgIf],
   templateUrl: './check-list-popup.component.html',
   styleUrl: './check-list-popup.component.scss',
 })
-export class CheckListPopupComponent {
+export class CheckListPopupComponent implements OnChanges, OnInit, OnDestroy {
   @Input() isOpen = false;
   @Output() isModalClosed: EventEmitter<boolean> = new EventEmitter<boolean>(
     false

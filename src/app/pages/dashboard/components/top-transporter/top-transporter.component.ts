@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
@@ -11,7 +11,6 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
 
 @Component({
   selector: 'app-top-transporter',
-  standalone: true,
   imports: [
     FormsModule,
     MatFormField,
@@ -25,7 +24,7 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
   templateUrl: './top-transporter.component.html',
   styleUrl: './top-transporter.component.scss',
 })
-export class TopTransporterComponent {
+export class TopTransporterComponent implements OnInit {
   topTransporter: TopTransporters[] = [];
   fromDate: string;
   toDate: string;

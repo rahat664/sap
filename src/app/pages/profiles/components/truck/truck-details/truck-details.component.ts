@@ -5,6 +5,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
@@ -45,7 +46,6 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
 
 @Component({
   selector: 'app-truck-details',
-  standalone: true,
   imports: [
     NgIf,
     UploadButtonComponent,
@@ -69,10 +69,10 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
   templateUrl: './truck-details.component.html',
   styleUrl: './truck-details.component.scss',
 })
-export class TruckDetailsComponent implements OnInit {
+export class TruckDetailsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
   readonly dialog = inject(MatDialog);
-  registrationTypePlaceholder: string = '';
+  registrationTypePlaceholder = '';
   registrationOpenedType: boolean;
   registrationListType: CustomInputSelectModel[] = registrationCategoryList;
   registrationZoneList: CustomInputSelectModel[] = registrationZoneList;
@@ -86,7 +86,7 @@ export class TruckDetailsComponent implements OnInit {
   isInEditMode: boolean;
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   registrationZoneOpened: boolean;
-  registrationZonePlaceholder: string = '';
+  registrationZonePlaceholder = '';
   documents: TruckDocument[] = [];
   truckUpdateForm: FormGroup;
   protected loading: boolean;
@@ -110,7 +110,7 @@ export class TruckDetailsComponent implements OnInit {
   fitnessImages: any[] = [];
   routePermitImages: any[] = [];
   othersImages: any[] = [];
-  countPassCheckList: number = 0;
+  countPassCheckList = 0;
   singleChecklist: any;
   viewMoreExpiryControlName: string;
   deletedFileUrls: any[] = [];
@@ -638,7 +638,7 @@ export class TruckDetailsComponent implements OnInit {
     this.singleChecklist = $event;
     this.truckUpdateForm.patchValue({ checklist: $event });
 
-    let newCheckList = JSON.parse(JSON.stringify(this.preHiredCheckList));
+    const newCheckList = JSON.parse(JSON.stringify(this.preHiredCheckList));
     newCheckList.forEach((category: any) => {
       Object.keys($event).forEach((key: any) => {
         if (category.checklistId == key) {
@@ -1005,7 +1005,7 @@ export class TruckDetailsComponent implements OnInit {
           } else {
             this.deletedFileUrls = [file.fileUrl];
           }
-          const savedImagesMap: { [key: string]: any[] } = {
+          const savedImagesMap: Record<string, any[]> = {
             regPaperFile: this.savedRegistrationPaper,
             taxFile: this.savedTaxPaper,
             fitnessCertificateFile: this.savedFitnessCertificate,

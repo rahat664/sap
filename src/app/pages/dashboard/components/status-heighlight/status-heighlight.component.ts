@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
@@ -16,7 +16,6 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
 
 @Component({
   selector: 'app-status-heighlight',
-  standalone: true,
   imports: [
     MatFormField,
     MatOption,
@@ -30,7 +29,7 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
   templateUrl: './status-heighlight.component.html',
   styleUrl: './status-heighlight.component.scss',
 })
-export class StatusHeighlightComponent {
+export class StatusHeighlightComponent implements OnInit {
   fromDate: string;
   toDate: string;
   dashboardStats: DashboardStatsModel;

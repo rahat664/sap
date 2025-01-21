@@ -30,7 +30,6 @@ import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-customer-create',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     NgIf,
@@ -51,7 +50,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   @Output() formCreated: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
-  sendEmail: boolean = false;
+  sendEmail = false;
 
   constructor(
     private fb: FormBuilder,

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GlobalImageUploadComponent } from '../../../../shared/modules/global-image-upload/global-image-upload.component';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -7,12 +7,11 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 
 @Component({
   selector: 'app-challan-image-upload',
-  standalone: true,
   imports: [GlobalImageUploadComponent],
   templateUrl: './challan-image-upload.component.html',
   styleUrl: './challan-image-upload.component.scss',
 })
-export class ChallanImageUploadComponent {
+export class ChallanImageUploadComponent implements OnInit {
   currentDate: Date = new Date();
   imageTypes: any[] = [];
   months: any[] = [
@@ -32,8 +31,8 @@ export class ChallanImageUploadComponent {
   tripId: any;
   protected tripDocuments: any[] = [];
   protected tripDocumentFiles: any[] = [];
-  expiryAvailable: boolean = false;
-  notesAvailable: boolean = false;
+  expiryAvailable = false;
+  notesAvailable = false;
   returnUrl: string;
   private notes: string;
   private eventTypeId: number;

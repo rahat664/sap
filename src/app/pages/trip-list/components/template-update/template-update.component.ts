@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   MatAutocomplete,
   MatAutocompleteTrigger,
@@ -25,7 +25,6 @@ import { ScrollByButtonDirective } from '../../../../shared/directive/scroll-by-
 
 @Component({
   selector: 'app-template-update',
-  standalone: true,
   imports: [
     MatAutocomplete,
     MatError,
@@ -42,7 +41,7 @@ import { ScrollByButtonDirective } from '../../../../shared/directive/scroll-by-
   templateUrl: './template-update.component.html',
   styleUrl: './template-update.component.scss',
 })
-export class TemplateUpdateComponent {
+export class TemplateUpdateComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
   templateUpdateForm: FormGroup;
   loadingSuggestions: any;

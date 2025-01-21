@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   Renderer2,
+  OnDestroy,
 } from '@angular/core';
 import {
   NavigationCancel,
@@ -33,7 +34,6 @@ import { LoadingService } from './shared/services/loading/loading.service';
  */
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [
     RouterOutlet,
     LayoutComponent,
@@ -45,7 +45,7 @@ import { LoadingService } from './shared/services/loading/loading.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   readonly dialog = inject(MatDialog);
   private focusListener: () => void;
   title = 'snz-web';

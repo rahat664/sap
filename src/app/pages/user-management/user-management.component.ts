@@ -30,7 +30,6 @@ import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-user-management',
-  standalone: true,
   imports: [
     MatButtonModule,
     MatMenuModule,

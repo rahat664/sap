@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GMapComponent } from '../../../../shared/modules/g-map/g-map.component';
 import { TripService } from '../../../trip-list/services/trip.service';
@@ -6,15 +6,14 @@ import { NgForOf } from '@angular/common';
 
 @Component({
   selector: 'app-live-trip-status',
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, GMapComponent, NgForOf],
   templateUrl: './live-trip-status.component.html',
   styleUrl: './live-trip-status.component.scss',
 })
-export class LiveTripStatusComponent {
+export class LiveTripStatusComponent implements OnInit {
   startingPosition: any[] = [];
   destinationPosition: any[] = [];
-  tripStatus: string = 'In Progress';
+  tripStatus = 'In Progress';
   tripStatuses: { count: unknown; status: string }[];
 
   constructor(private service: TripService) {}

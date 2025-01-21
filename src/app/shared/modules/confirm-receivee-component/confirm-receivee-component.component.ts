@@ -14,7 +14,6 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-confirm-receivee-component',
-  standalone: true,
   imports: [
     NgIf,
     ReactiveFormsModule,

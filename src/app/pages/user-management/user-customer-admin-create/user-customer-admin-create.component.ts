@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { AlphabetOnlyDirective } from '../../../shared/directive/alphabet-only.directive';
 import { CustomInputComponent } from '../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../shared/directive/get-click-event.directive';
@@ -26,7 +26,6 @@ import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-user-customer-admin-create',
-  standalone: true,
   imports: [
     AlphabetOnlyDirective,
     CustomInputComponent,
@@ -42,7 +41,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
   templateUrl: './user-customer-admin-create.component.html',
   styleUrl: './user-customer-admin-create.component.scss',
 })
-export class UserCustomerAdminCreateComponent {
+export class UserCustomerAdminCreateComponent implements OnInit {
   userForm: FormGroup;
   roleOptionsArray: CustomInputSelectModel[] = [];
 
@@ -54,7 +53,7 @@ export class UserCustomerAdminCreateComponent {
   roleInputPlaceholder = '';
   roleOpened = false;
   userModel: CustomerAdminModel = new CustomerAdminModel();
-  SendEmails: boolean = false;
+  SendEmails = false;
 
   constructor(
     public dialogRef: MatDialogRef<UserCustomerAdminCreateComponent>,

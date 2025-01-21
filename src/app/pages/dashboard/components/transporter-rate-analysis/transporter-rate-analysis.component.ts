@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LineChartComponent } from '../../../../shared/charts/line-chart/line-chart.component';
 import { MatFormField } from '@angular/material/form-field';
 import {
@@ -17,7 +17,6 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-transporter-rate-analysis',
-  standalone: true,
   imports: [
     LineChartComponent,
     MatFormField,
@@ -31,7 +30,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './transporter-rate-analysis.component.html',
   styleUrl: './transporter-rate-analysis.component.scss',
 })
-export class TransporterRateAnalysisComponent {
+export class TransporterRateAnalysisComponent implements OnInit {
   chartType = 'all';
   vehicleTypeLists: VehicleCategory[] = [];
   districts = [];
@@ -118,7 +117,7 @@ export class TransporterRateAnalysisComponent {
   }
 
   private getTransporterRateAnalysisData() {
-    let dataType: string = '';
+    let dataType = '';
     if (this.selectedMonth && this.selectedYear) {
       dataType = 'daily';
     } else {

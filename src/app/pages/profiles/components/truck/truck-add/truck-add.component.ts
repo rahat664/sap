@@ -5,6 +5,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
@@ -41,7 +42,6 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
 
 @Component({
   selector: 'app-truck-add',
-  standalone: true,
   imports: [
     CustomInputComponent,
     GetClickEventDirective,
@@ -64,7 +64,7 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
   templateUrl: './truck-add.component.html',
   styleUrl: './truck-add.component.scss',
 })
-export class TruckAddComponent implements OnInit {
+export class TruckAddComponent implements OnInit, AfterViewInit {
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
   readonly dialog = inject(MatDialog);
@@ -76,16 +76,16 @@ export class TruckAddComponent implements OnInit {
   registrationTypePlaceholder: string;
   truckAddForm: FormGroup;
   singleChecklist: any = {};
-  prehireCheckListOpened: boolean = false;
+  prehireCheckListOpened = false;
   registrationErrorMessage = '';
   registrationCategoryErrorMessage = '';
   registrationSerialErrorMessage = '';
   registrationNumErrorMessage = '';
-  countPassCheckList: number = 0;
+  countPassCheckList = 0;
   preHireCheckList: any;
   registrationInput: string;
-  everyThingDisabled: boolean = true;
-  loading: boolean = false;
+  everyThingDisabled = true;
+  loading = false;
   truckImages: any[] = [];
   insuranceImages: any[] = [];
   casePaperImages: any[] = [];
@@ -95,7 +95,7 @@ export class TruckAddComponent implements OnInit {
   routePermitImages: any[] = [];
   othersImages: any[] = [];
   selectedFormControlName: any = '';
-  maxUploadAble: number = 0;
+  maxUploadAble = 0;
 
   constructor(
     private fb: FormBuilder,

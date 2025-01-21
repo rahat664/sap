@@ -32,7 +32,6 @@ import { CustomerModel } from '../profiles/components/customer/model/customer.mo
 
 @Component({
   selector: 'app-manage-trip',
-  standalone: true,
   imports: [
     TripCardComponent,
     GMapComponent,
@@ -65,17 +64,17 @@ export class ManageTripComponent implements OnInit {
   destinationPosition: { lng: number; lat: number }[] = [];
   statusButtons = statusButtons;
   totalPages: number;
-  page: number = 0;
-  size: number = 30;
-  status: string = '';
-  loading: boolean = true;
+  page = 0;
+  size = 30;
+  status = '';
+  loading = true;
   tripId: string;
-  searchValue: string = '';
+  searchValue = '';
   singleTripDetails: TripData;
   activatedId: string;
   sidebarClosed: boolean;
-  filterOpen: boolean = false;
-  filterLength: number = 0;
+  filterOpen = false;
+  filterLength = 0;
   companySuggestions: any;
   customerCode: any = '';
   vehicleTypeList: any[];
@@ -86,7 +85,7 @@ export class ManageTripComponent implements OnInit {
   triggerFromParentName: string;
   truckLocationPosition: { lng: number; lat: number } = {} as any;
   anotherStatusCalled: boolean;
-  previousFilterLength: number = 0;
+  previousFilterLength = 0;
   customerName: any;
   height: any;
   customerSelected: boolean;
@@ -110,7 +109,7 @@ export class ManageTripComponent implements OnInit {
   customerCodes: string[] = [];
   customerNames: string[] = [];
   truckRegistrationNumbers: string;
-  activatedTruckSizeInFeet: number = 0;
+  activatedTruckSizeInFeet = 0;
 
   constructor(
     private tripService: TripService,
