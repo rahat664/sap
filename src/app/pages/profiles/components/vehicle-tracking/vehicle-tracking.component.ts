@@ -409,6 +409,8 @@ export class VehicleTrackingComponent implements OnInit {
   }
 
   onHideTruckList() {
+    this.page = 0;
+    this.size = 10;
     this.trucklistOpened = false;
     this.allTruckList = [];
     this.searchTruckValue = '';

@@ -171,12 +171,12 @@
                 </div>
               </div>
               <div
-                class="px-4 py-0.5 rounded-full text-center border {{
+                class="px-4 py-0.5 rounded-full text-center  {{
                   getColorByConditon(truck?.currentCondition, 'border')
                 }} {{ getColorByConditon(truck?.currentCondition, 'text') }}">
                 <h1>
                   {{
-                    truck?.currentCondition == 'Running'
+                    truck?.currentCondition === 'Running'
                       ? 'Moving'
                       : truck?.currentCondition
                   }}

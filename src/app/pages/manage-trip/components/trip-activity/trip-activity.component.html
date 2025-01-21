@@ -91,6 +91,13 @@
                   class="w-[7.5rem] h-[5.375rem] flex-shrink-0 rounded-lg border border-disabled overflow-hidden"
                   *ngFor="let item of imageToShow[index]">
                   <img
+                    *ngIf="checkThatFileIsImageOrPdf(item.url) === 'pdf'"
+                    (click)="$event.stopPropagation(); onClickImage(item.url, 'pdf', 'loading')"
+                    class="h-full w-full"
+                    src="assets/svg/pdf.svg"
+                    alt=""/>
+                  <img
+                    *ngIf="checkThatFileIsImageOrPdf(item.url) !== 'pdf'"
                     loading="lazy"
                     class="w-full h-full"
                     [src]="item.url ? item.url : 'assets/images/dummy.jpg'"
@@ -225,6 +232,13 @@
                   class="w-[7.5rem] h-[5.375rem] flex-shrink-0 rounded-lg border border-disabled overflow-hidden"
                   *ngFor="let item of unloadImageToShow[unloadingIndex]">
                   <img
+                    *ngIf="checkThatFileIsImageOrPdf(item.url) === 'pdf'"
+                    (click)="$event.stopPropagation(); onClickImage(item.url, 'pdf', 'unloading')"
+                    class="h-full w-full"
+                    src="assets/svg/pdf.svg"
+                    alt=""/>
+                  <img
+                    *ngIf="checkThatFileIsImageOrPdf(item.url) !== 'pdf'"
                     loading="lazy"
                     class="w-full h-full"
                     [src]="item.url ? item.url : 'assets/images/dummy.jpg'"

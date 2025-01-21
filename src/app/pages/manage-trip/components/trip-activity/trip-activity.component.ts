@@ -5,11 +5,15 @@ import {
   OnInit,
   OnChanges,
   AfterViewInit,
+  inject,
 } from '@angular/core';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { CommonModule } from '@angular/common';
 import { EventData } from '../../model/trip-events.model';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
+import { ImageGalleryComponent } from '../../../../shared/modules/image-gallery/image-gallery.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ImageGalleryService } from '../../../../shared/services/image-gallery/image-gallery.service';
 
 @Component({
   selector: 'app-trip-activity',
@@ -18,6 +22,7 @@ import { GetElementHeightDirective } from '../../../../shared/directive/get-elem
   styleUrl: './trip-activity.component.scss',
 })
 export class TripActivityComponent implements OnInit, OnChanges, AfterViewInit {
+  readonly dialog = inject(MatDialog);
   @Input() tripId: string;
   loadingEvents: EventData[] = [];
   unloadEvents: EventData[] = [];
@@ -36,7 +41,8 @@ export class TripActivityComponent implements OnInit, OnChanges, AfterViewInit {
 
   constructor(
     private trip: TripService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private imageGalleryService: ImageGalleryService
   ) {}
 
   ngOnInit() {
@@ -168,5 +174,29 @@ export class TripActivityComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngAfterViewInit() {
     this.cd.detectChanges();
+  }
+
+  checkThatFileIsImageOrPdf(file: any) {
+    // check if the file is an image or a pdf file
+    if (file.includes('pdf')) {
+      return 'pdf';
+    } else {
+      return 'image';
+    }
+  }
+
+  onClickImage(file: any, type: string, docType: string) {
+    // if the file is a PDF file, then convert it to blob of a PDF document file is just
+    if (type === 'pdf') {
+      // this is a blob of the file
+      this.imageGalleryService.setCurrentImage(file);
+      this.dialog.open(ImageGalleryComponent, {
+        data: {
+          images: file,
+          fileType: 'pdf',
+          fileName: `${docType === 'loading' ? this.selectedEventNameLoading : this.selectedEventNameUnloading}.pdf`,
+        },
+      });
+    }
   }
 }
