@@ -4,7 +4,13 @@ import { CustomInputComponent } from '../../../../shared/modules/custom-input/cu
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { DatePipe, NgClass, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
+import {
+  DatePipe,
+  NgClass,
+  NgForOf,
+  NgIf,
+  NgOptimizedImage,
+} from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
 import { TruckService } from './services/truck.service';
@@ -161,16 +167,15 @@ export class TruckComponent implements OnInit {
       this.newDriverFileType = [{ id: 7, value: 'Insurance', selected: false }];
     }
 
-    this.dialog
-      .open(FileUploadPopupComponent, {
-        width: '40%',
-        data: {
-          filetype: this.newDriverFileType,
-          fromPopup: true,
-          from: 'truck',
-          value: truck,
-        },
-      })
+    this.dialog.open(FileUploadPopupComponent, {
+      width: '40%',
+      data: {
+        filetype: this.newDriverFileType,
+        fromPopup: true,
+        from: 'truck',
+        value: truck,
+      },
+    });
   }
 
   private makeSureUploadCompletedOrNot() {
@@ -202,8 +207,14 @@ export class TruckComponent implements OnInit {
           });
       } else {
         this.service
-          .getTruckList(this.page, this.size, null,
-            this.statusInputPlaceholder == 'All' ? '' : this.statusInputPlaceholder)
+          .getTruckList(
+            this.page,
+            this.size,
+            null,
+            this.statusInputPlaceholder == 'All'
+              ? ''
+              : this.statusInputPlaceholder
+          )
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
           });
@@ -349,7 +360,6 @@ export class TruckComponent implements OnInit {
           text: `${truckDetails.fullRegistrationNumber}?`,
           buttonText: 'Reject',
           reasonAvailable: true,
-
         },
       })
       .afterClosed()

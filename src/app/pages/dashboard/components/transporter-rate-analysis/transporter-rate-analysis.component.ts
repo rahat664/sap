@@ -1,15 +1,19 @@
 import { Component } from '@angular/core';
-import {LineChartComponent} from "../../../../shared/charts/line-chart/line-chart.component";
-import {MatFormField} from "@angular/material/form-field";
-import {MatOption, MatSelect, MatSelectChange} from "@angular/material/select";
-import {FormsModule} from "@angular/forms";
-import {TripService} from "../../../trip-list/services/trip.service";
-import {VehicleCategory} from "../../../auth/models/response/trip";
-import {NgForOf, NgIf} from "@angular/common";
-import {UserService} from "../../../profiles/services/user.service";
-import {UserModel} from "../../../user-management/models/user.model";
-import {DashboardService} from "../../services/dashboard.service";
-import {RouterLink} from "@angular/router";
+import { LineChartComponent } from '../../../../shared/charts/line-chart/line-chart.component';
+import { MatFormField } from '@angular/material/form-field';
+import {
+  MatOption,
+  MatSelect,
+  MatSelectChange,
+} from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { TripService } from '../../../trip-list/services/trip.service';
+import { VehicleCategory } from '../../../auth/models/response/trip';
+import { NgForOf, NgIf } from '@angular/common';
+import { UserService } from '../../../profiles/services/user.service';
+import { UserModel } from '../../../user-management/models/user.model';
+import { DashboardService } from '../../services/dashboard.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-transporter-rate-analysis',

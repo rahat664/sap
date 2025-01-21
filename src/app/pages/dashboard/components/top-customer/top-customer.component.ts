@@ -6,8 +6,8 @@ import { MatSelect } from '@angular/material/select';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { TopCustomers } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
-import {RouterLink} from "@angular/router";
-import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
+import { RouterLink } from '@angular/router';
+import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-top-customer',

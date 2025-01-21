@@ -6,19 +6,17 @@ export const selectAuthState = createFeatureSelector<AuthState>('auth');
 
 export const selectUser = createSelector(
   selectAuthState,
-  (state: AuthState) => state.user,
+  (state: AuthState) => state.user
 );
 
 export const selectAuthError = createSelector(
   selectAuthState,
-  (state: AuthState) => state.error,
+  (state: AuthState) => state.error
 );
-
 
 export const selectAuthLoading = createSelector(
   selectAuthState,
-  (state: AuthState) => state.loading,
+  (state: AuthState) => state.loading
 );
-
 
 // src/app/store/reducers/auth.reducer.ts

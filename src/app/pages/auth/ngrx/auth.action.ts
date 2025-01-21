@@ -11,17 +11,17 @@ export const login = createAction(
 
 export const loginUsingPhoneNumber = createAction(
   '[Auth] Login Using Phone Number',
-  props<{ payload: LoginRequestUsingPhonePayload }>(),
+  props<{ payload: LoginRequestUsingPhonePayload }>()
 );
 
 export const loginSuccess = createAction(
   '[Auth] Login Success',
-  props<{ response: ApiResponse }>(),
+  props<{ response: ApiResponse }>()
 );
 
 export const loginFailure = createAction(
   '[Auth] Login Failure',
-  props<{ error: any }>(),
+  props<{ error: any }>()
 );
 
 export const logout = createAction('[Auth] Logout');

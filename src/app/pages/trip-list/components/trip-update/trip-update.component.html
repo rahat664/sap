@@ -3,44 +3,68 @@
     <h1 class="text-h1 leading-h1 font-semibold">Update Trip</h1>
     <button
       class="bg-primary text-white rounded-lg px-16 py-3"
-      (click)="onUpdateTrip()">Update
+      (click)="onUpdateTrip()">
+      Update
     </button>
   </div>
-  <div class="px-4 h-[calc(100vh-9rem)] overflow-y-auto
-">
+  <div class="px-4 h-[calc(100vh-9rem)] overflow-y-auto">
     <form [formGroup]="tripUpdateForm" class="rounded-lg bg-white w-full">
-
-      <div class="mx-8 flex flex-col space-y-3 py-8  border-b-2 border-input"
-           *ngIf="tripStatus === 'Booked' || tripStatus === 'Unassigned'">
+      <div
+        class="mx-8 flex flex-col space-y-3 py-8 border-b-2 border-input"
+        *ngIf="tripStatus === 'Booked' || tripStatus === 'Unassigned'">
         <div class="flex items-center space-x-3">
-          <img loading="lazy" class="notPreview" src="assets/svg/candt.svg" alt="candt">
-          <span class="text-h2 leading-h2 font-semibold">Customer and Schedule</span>
+          <img
+            loading="lazy"
+            class="notPreview"
+            src="assets/svg/candt.svg"
+            alt="candt"/>
+          <span class="text-h2 leading-h2 font-semibold"
+          >Customer and Schedule</span
+          >
         </div>
-        <div class="grid lg:grid-cols-2 gap-4 w-full ">
+        <div class="grid lg:grid-cols-2 gap-4 w-full">
           <div class="flex flex-col space-y-1 w-full">
-            <label for="customerName" class="form-label text-body">Customer Name</label>
+            <label for="customerName" class="form-label text-body"
+            >Customer Name</label
+            >
             <mat-form-field appearance="outline" id="customerName">
-              <input readonly matInput placeholder="Enter Customer Name" [value]="this.customerName">
+              <input
+                readonly
+                matInput
+                placeholder="Enter Customer Name"
+                [value]="this.customerName"/>
             </mat-form-field>
           </div>
           <div class="flex flex-col space-y-1 w-full">
             <label for="date" class="form-label text-body">Date & time</label>
-            <button class="customButton" mat-button [matMenuTriggerFor]="dateAndTime">
-              <mat-form-field appearance="outline" id="date" class="example-full-width w-full">
-                <input formControlName="tripStartDatetime" placeholder="Select date time" matInput/>
+            <button
+              class="customButton"
+              mat-button
+              [matMenuTriggerFor]="dateAndTime">
+              <mat-form-field
+                appearance="outline"
+                id="date"
+                class="example-full-width w-full">
+                <input
+                  formControlName="tripStartDatetime"
+                  placeholder="Select date time"
+                  matInput/>
                 <mat-datepicker-toggle matIconSuffix></mat-datepicker-toggle>
               </mat-form-field>
             </button>
             <mat-menu #dateAndTime="matMenu">
               <mat-card class="w-96" (click)="$event.stopPropagation()">
-                <mat-calendar [minDate]="minDate"
-                              [(selected)]="selectedDate"
-                              (selectedChange)="onSelect($event)"></mat-calendar>
+                <mat-calendar
+                  [minDate]="minDate"
+                  [(selected)]="selectedDate"
+                  (selectedChange)="onSelect($event)"></mat-calendar>
               </mat-card>
               <mat-card class="w-96 mt-3 flex items-center justify-center">
-                <app-time-picker (buttonDisabled)="isButtonDisabled($event)" [selectedDate]="returnToInputDate"
-                                 (timeChange)="onTimeChange($event)"
-                                 (click)="$event.stopPropagation()"></app-time-picker>
+                <app-time-picker
+                  (buttonDisabled)="isButtonDisabled($event)"
+                  [selectedDate]="returnToInputDate"
+                  (timeChange)="onTimeChange($event)"
+                  (click)="$event.stopPropagation()"></app-time-picker>
               </mat-card>
               <button
                 matTooltip="Can't set past time, please enter valid time"
@@ -55,23 +79,40 @@
           </div>
         </div>
       </div>
-      <div class="mx-8 flex flex-col space-y-4 py-8  border-b-2 border-input">
+      <div class="mx-8 flex flex-col space-y-4 py-8 border-b-2 border-input">
         <div class="flex items-center space-x-3">
-          <img loading="lazy" class="notPreview" src="assets/svg/loading.svg" alt="candt">
+          <img
+            loading="lazy"
+            class="notPreview"
+            src="assets/svg/loading.svg"
+            alt="candt"/>
           <span class="text-h2 leading-h2 font-semibold">Loading Point</span>
         </div>
         <div formArrayName="loadingPoints" class="flex flex-col space-y-3 ml-2">
-          <ng-container *ngFor="let loadingPoint of loadingPoints.controls; index as i" [formGroupName]="i"
-                        class="flex flex-col space-y-3">
+          <ng-container
+            *ngFor="let loadingPoint of loadingPoints.controls; index as i"
+            [formGroupName]="i"
+            class="flex flex-col space-y-3">
             <div class="step">
               <div class="circle">
-                <img class="notPreview" src="assets/svg/circle.svg" alt="loading">
+                <img
+                  class="notPreview"
+                  src="assets/svg/circle.svg"
+                  alt="loading"/>
               </div>
-              <div class="grid lg:grid-cols-2 gap-4 w-full ">
+              <div class="grid lg:grid-cols-2 gap-4 w-full">
                 <div class="flex flex-col space-y-1 w-full">
-                  <label for="loadingPoint" class="form-label text-body">Loading Point</label>
-                  <mat-form-field appearance="outline" class="example-full-width "
-                                  [ngClass]="{'error': loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched}">
+                  <label for="loadingPoint" class="form-label text-body"
+                  >Loading Point</label
+                  >
+                  <mat-form-field
+                    appearance="outline"
+                    class="example-full-width"
+                    [ngClass]="{
+                      error:
+                        loadingPoint.get('pointName').invalid &&
+                        loadingPoint.get('pointName').touched,
+                    }">
                     <input
                       id="loadingPoint"
                       type="text"
@@ -79,48 +120,78 @@
                       placeholder="Address"
                       formControlName="pointName"
                       (keyup)="onKeyUpLoadingPoint($event, i)"
-                      [matAutocomplete]="auto">
+                      [matAutocomplete]="auto"/>
                     <mat-autocomplete #auto="matAutocomplete">
                       @for (option of loadingSuggestions; track option) {
                         <mat-option
-                          *ngIf="option.locationPointName !== null || option.doesBelongToGoogleMapApi === false"
-                          (click)="onClickLoadingSuggestion(option, i)" [value]="option.locationPointName">
+                          *ngIf="
+                            option.locationPointName !== null ||
+                            option.doesBelongToGoogleMapApi === false
+                          "
+                          (click)="onClickLoadingSuggestion(option, i)"
+                          [value]="option.locationPointName">
                           <div class="w-full flex flex-col space-y-2 p-2">
                             <div class="flex space-x-2 w-full">
-                              <img loading="lazy" src="assets/svg/star.svg" alt="star">
+                              <img
+                                loading="lazy"
+                                src="assets/svg/star.svg"
+                                alt="star"/>
                               <span
-                                class="text-body_title leading-body_title text-not-black">{{ option.locationPointName }}</span>
+                                class="text-body_title leading-body_title text-not-black"
+                              >{{ option.locationPointName }}</span
+                              >
                             </div>
                             <span
-                              class="text-body_title leading-body_title text-web-text-secondary">{{ option.addressText }}</span>
+                              class="text-body_title leading-body_title text-web-text-secondary"
+                            >{{ option.addressText }}</span
+                            >
                           </div>
                         </mat-option>
                         <mat-option
-                          *ngIf="option.locationPointName === null && option.doesBelongToGoogleMapApi === true"
-                          (click)="onClickLoadingSuggestion(option,i)" [value]="option.addressText">
+                          *ngIf="
+                            option.locationPointName === null &&
+                            option.doesBelongToGoogleMapApi === true
+                          "
+                          (click)="onClickLoadingSuggestion(option, i)"
+                          [value]="option.addressText">
                           <div
-                            class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.addressText }}
+                            class="p-2 w-full text-body_title leading-body_title text-not-black">
+                            {{ option.addressText }}
                           </div>
                         </mat-option>
                       }
                     </mat-autocomplete>
                   </mat-form-field>
-                  <mat-error *ngIf="loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched">
+                  <mat-error
+                    *ngIf="
+                      loadingPoint.get('pointName').invalid &&
+                      loadingPoint.get('pointName').touched
+                    ">
                     Please select a valid loading point
-                  </mat-error
-                  >
-                  <mat-error class="invisible"
-                             *ngIf="loadingPoint.get('pointDistrict').invalid && loadingPoint.get('pointDistrict').touched && loadingPoint.get('pointName').valid">
+                  </mat-error>
+                  <mat-error
+                    class="invisible"
+                    *ngIf="
+                      loadingPoint.get('pointDistrict').invalid &&
+                      loadingPoint.get('pointDistrict').touched &&
+                      loadingPoint.get('pointName').valid
+                    ">
                     Please select a valid loading point
-                  </mat-error
-                  >
+                  </mat-error>
                 </div>
                 <div class="flex justify-between space-x-2 w-full items-center">
                   <div class="flex flex-col space-y-1 w-full">
-                    <label for="loadingDistrict" class="form-label text-body">Loading District</label>
-                    <mat-form-field appearance="outline" class="example-full-width"
-                                    [ngClass]="{'error': loadingPoint.get('pointDistrict').invalid && loadingPoint.get('pointDistrict').touched}"
+                    <label for="loadingDistrict" class="form-label text-body"
+                    >Loading District</label
                     >
+                    <mat-form-field
+                      appearance="outline"
+                      class="example-full-width"
+                      [ngClass]="{
+                        error:
+                          loadingPoint.get('pointDistrict').invalid &&
+                          loadingPoint.get('pointDistrict').touched,
+                      }">
                       <input
                         id="loadingDistrict"
                         type="text"
@@ -128,49 +199,82 @@
                         placeholder="District Name"
                         formControlName="pointDistrict"
                         (keyup)="onKeyUpLoadingDistrict($event, i)"
-                        [matAutocomplete]="loadingDistrictAuto">
+                        [matAutocomplete]="loadingDistrictAuto"/>
                       <mat-autocomplete #loadingDistrictAuto="matAutocomplete">
-                        @for (option of loadingDistrictSuggestions; track option) {
-                          <mat-option (click)="onSelectLoadingDistrict(option, i)" [value]="option.name">
+                        @for (option of loadingDistrictSuggestions;
+                          track option) {
+                          <mat-option
+                            (click)="onSelectLoadingDistrict(option, i)"
+                            [value]="option.name">
                             <div
-                              class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.name }}
+                              class="p-2 w-full text-body_title leading-body_title text-not-black">
+                              {{ option.name }}
                             </div>
                           </mat-option>
                         }
                       </mat-autocomplete>
                     </mat-form-field>
                     <mat-error
-                      *ngIf="loadingPoint.get('pointDistrict').invalid && loadingPoint.get('pointDistrict').touched">
+                      *ngIf="
+                        loadingPoint.get('pointDistrict').invalid &&
+                        loadingPoint.get('pointDistrict').touched
+                      ">
                       Please select a valid loading district
                     </mat-error>
-                    <mat-error class="invisible"
-                               *ngIf="loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched && (loadingPoint.get('pointDistrict').valid || !loadingPoint.get('pointDistrict').touched)">
+                    <mat-error
+                      class="invisible"
+                      *ngIf="
+                        loadingPoint.get('pointName').invalid &&
+                        loadingPoint.get('pointName').touched &&
+                        (loadingPoint.get('pointDistrict').valid ||
+                          !loadingPoint.get('pointDistrict').touched)
+                      ">
                       Please select a valid loading point
-                    </mat-error
-                    >
+                    </mat-error>
                   </div>
                   <div class="flex space-x-2 items-center">
-                    <div class="flex flex-col  w-full" *ngIf="loadingPoints?.length <= 1">
+                    <div
+                      class="flex flex-col w-full"
+                      *ngIf="loadingPoints?.length <= 1">
                       <h1 class="invisible">height</h1>
-                      <button type="button" (click)="addLoadingPoint()"
-                              [disabled]=" loadingPoints?.length <= 1 && (loadingPoint.get('pointName').value === '' || loadingPoint.get('pointDistrict').value === '')"
-                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
+                      <button
+                        type="button"
+                        (click)="addLoadingPoint()"
+                        [disabled]="
+                          loadingPoints?.length <= 1 &&
+                          (loadingPoint.get('pointName').value === '' ||
+                            loadingPoint.get('pointDistrict').value === '')
+                        "
+                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
-                    <div class="flex flex-col  w-full"
-                         *ngIf="loadingPoint?.get('pointName')?.value != '' && loadingPoint?.get('pointDistrict')?.value != '' && loadingPoints?.length > 1 && i == loadingPoints?.length - 1">
+                    <div
+                      class="flex flex-col w-full"
+                      *ngIf="
+                        loadingPoint?.get('pointName')?.value != '' &&
+                        loadingPoint?.get('pointDistrict')?.value != '' &&
+                        loadingPoints?.length > 1 &&
+                        i == loadingPoints?.length - 1
+                      ">
                       <h1 class="invisible">height</h1>
-                      <button (click)="addLoadingPoint()"
-                              [disabled]="loadingPoint[i]?.get('pointName')?.value === '' || loadingPoints[i]?.get('pointDistrict')?.value === ''"
-                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
+                      <button
+                        (click)="addLoadingPoint()"
+                        [disabled]="
+                          loadingPoint[i]?.get('pointName')?.value === '' ||
+                          loadingPoints[i]?.get('pointDistrict')?.value === ''
+                        "
+                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
-                    <div class="flex flex-col w-full" *ngIf="loadingPoints?.length > 1">
+                    <div
+                      class="flex flex-col w-full"
+                      *ngIf="loadingPoints?.length > 1">
                       <h1 class="invisible">height</h1>
-                      <button (click)="removeLoadingPoint(i)"
-                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                      <button
+                        (click)="removeLoadingPoint(i)"
+                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
                         <i class="fas fa-trash-alt text-red text-lg"></i>
                       </button>
                     </div>
@@ -181,140 +285,230 @@
           </ng-container>
         </div>
       </div>
-      <div class="mx-8 flex flex-col space-y-4 py-8  border-b-2 border-input">
-      <div class="flex items-center space-x-3">
-        <img loading="lazy" class="notPreview" src="assets/svg/loading.svg" alt="candt">
-        <span class="text-h2 leading-h2 font-semibold">Loading Point</span>
-      </div>
-      <div formArrayName="loadingPoints" class="flex flex-col space-y-3 ml-2">
-        <ng-container *ngFor="let loadingPoint of loadingPoints.controls; index as i" [formGroupName]="i"
-                      class="flex flex-col space-y-3">
-          <div class="step">
-            <div class="circle">
-              <img class="notPreview" src="assets/svg/circle.svg" alt="loading">
-            </div>
-            <div class="grid lg:grid-cols-2 gap-4 w-full ">
-              <div class="flex flex-col space-y-1 w-full">
-                <label for="loadingPoint" class="form-label text-body">Loading Point</label>
-                <mat-form-field appearance="outline" class="example-full-width "
-                                [ngClass]="{'error': loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched}">
-                  <input
-                    id="loadingPoint"
-                    type="text"
-                    matInput
-                    placeholder="Address"
-                    formControlName="pointName"
-                    (keyup)="onKeyUpLoadingPoint($event, i)"
-                    [matAutocomplete]="auto">
-                  <mat-autocomplete #auto="matAutocomplete">
-                    @for (option of loadingSuggestions; track option) {
-                      <mat-option
-                        *ngIf="option.locationPointName !== null || option.doesBelongToGoogleMapApi === false"
-                        (click)="onClickLoadingSuggestion(option, i)" [value]="option.locationPointName">
-                        <div class="w-full flex flex-col space-y-2 p-2">
-                          <div class="flex space-x-2 w-full">
-                            <img class="notPreview" loading="lazy" src="assets/svg/star.svg" alt="star">
-                            <span
-                              class="text-body_title leading-body_title text-not-black">{{ option.locationPointName }}</span>
-                          </div>
-                          <span
-                            class="text-body_title leading-body_title text-web-text-secondary">{{ option.addressText }}</span>
-                        </div>
-                      </mat-option>
-                      <mat-option
-                        *ngIf="option.locationPointName === null && option.doesBelongToGoogleMapApi === true"
-                        (click)="onClickLoadingSuggestion(option,i)" [value]="option.addressText">
-                        <div
-                          class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.addressText }}
-                        </div>
-                      </mat-option>
-                    }
-                  </mat-autocomplete>
-                </mat-form-field>
-                <mat-error *ngIf="loadingPoint.get('pointName').invalid && loadingPoint.get('pointName').touched">
-                  Please select a valid loading point
-                </mat-error
-                >
+      <div class="mx-8 flex flex-col space-y-4 py-8 border-b-2 border-input">
+        <div class="flex items-center space-x-3">
+          <img
+            loading="lazy"
+            class="notPreview"
+            src="assets/svg/loading.svg"
+            alt="candt"/>
+          <span class="text-h2 leading-h2 font-semibold">Loading Point</span>
+        </div>
+        <div formArrayName="loadingPoints" class="flex flex-col space-y-3 ml-2">
+          <ng-container
+            *ngFor="let loadingPoint of loadingPoints.controls; index as i"
+            [formGroupName]="i"
+            class="flex flex-col space-y-3">
+            <div class="step">
+              <div class="circle">
+                <img
+                  class="notPreview"
+                  src="assets/svg/circle.svg"
+                  alt="loading"/>
               </div>
-              <div class="flex justify-between space-x-2 w-full items-center">
+              <div class="grid lg:grid-cols-2 gap-4 w-full">
                 <div class="flex flex-col space-y-1 w-full">
-                  <label for="loadingDistrict" class="form-label text-body">Loading District</label>
-                  <mat-form-field appearance="outline" class="example-full-width"
-                                  [ngClass]="{'error': loadingPoint.get('pointDistrict').invalid && loadingPoint.get('pointDistrict').touched}"
+                  <label for="loadingPoint" class="form-label text-body"
+                  >Loading Point</label
                   >
+                  <mat-form-field
+                    appearance="outline"
+                    class="example-full-width"
+                    [ngClass]="{
+                      error:
+                        loadingPoint.get('pointName').invalid &&
+                        loadingPoint.get('pointName').touched,
+                    }">
                     <input
-                      id="loadingDistrict"
+                      id="loadingPoint"
                       type="text"
                       matInput
-                      placeholder="District Name"
-                      formControlName="pointDistrict"
-                      (keyup)="onKeyUpLoadingDistrict($event, i)"
-                      [matAutocomplete]="loadingDistrictAuto">
-                    <mat-autocomplete #loadingDistrictAuto="matAutocomplete">
-                      @for (option of loadingDistrictSuggestions; track option) {
-                        <mat-option (click)="onSelectLoadingDistrict(option, i)" [value]="option.name">
+                      placeholder="Address"
+                      formControlName="pointName"
+                      (keyup)="onKeyUpLoadingPoint($event, i)"
+                      [matAutocomplete]="auto"/>
+                    <mat-autocomplete #auto="matAutocomplete">
+                      @for (option of loadingSuggestions; track option) {
+                        <mat-option
+                          *ngIf="
+                            option.locationPointName !== null ||
+                            option.doesBelongToGoogleMapApi === false
+                          "
+                          (click)="onClickLoadingSuggestion(option, i)"
+                          [value]="option.locationPointName">
+                          <div class="w-full flex flex-col space-y-2 p-2">
+                            <div class="flex space-x-2 w-full">
+                              <img
+                                class="notPreview"
+                                loading="lazy"
+                                src="assets/svg/star.svg"
+                                alt="star"/>
+                              <span
+                                class="text-body_title leading-body_title text-not-black"
+                              >{{ option.locationPointName }}</span
+                              >
+                            </div>
+                            <span
+                              class="text-body_title leading-body_title text-web-text-secondary"
+                            >{{ option.addressText }}</span
+                            >
+                          </div>
+                        </mat-option>
+                        <mat-option
+                          *ngIf="
+                            option.locationPointName === null &&
+                            option.doesBelongToGoogleMapApi === true
+                          "
+                          (click)="onClickLoadingSuggestion(option, i)"
+                          [value]="option.addressText">
                           <div
-                            class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.name }}
+                            class="p-2 w-full text-body_title leading-body_title text-not-black">
+                            {{ option.addressText }}
                           </div>
                         </mat-option>
                       }
                     </mat-autocomplete>
                   </mat-form-field>
                   <mat-error
-                    *ngIf="loadingPoint.get('pointDistrict').invalid && loadingPoint.get('pointDistrict').touched">
-                    Please select a valid loading district
+                    *ngIf="
+                      loadingPoint.get('pointName').invalid &&
+                      loadingPoint.get('pointName').touched
+                    ">
+                    Please select a valid loading point
                   </mat-error>
                 </div>
-                <div class="flex space-x-2 items-center">
-                  <div class="flex flex-col  w-full" *ngIf="loadingPoints?.length <= 1">
-                    <h1 class="invisible">height</h1>
-                    <button type="button" (click)="addLoadingPoint()"
-                            [disabled]=" loadingPoints?.length <= 1 && (loadingPoint.get('pointName').value === '' || loadingPoint.get('pointDistrict').value === '')"
-                            class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
-                      <i class="fas fa-plus text-primary text-lg"></i>
-                    </button>
+                <div class="flex justify-between space-x-2 w-full items-center">
+                  <div class="flex flex-col space-y-1 w-full">
+                    <label for="loadingDistrict" class="form-label text-body"
+                    >Loading District</label
+                    >
+                    <mat-form-field
+                      appearance="outline"
+                      class="example-full-width"
+                      [ngClass]="{
+                        error:
+                          loadingPoint.get('pointDistrict').invalid &&
+                          loadingPoint.get('pointDistrict').touched,
+                      }">
+                      <input
+                        id="loadingDistrict"
+                        type="text"
+                        matInput
+                        placeholder="District Name"
+                        formControlName="pointDistrict"
+                        (keyup)="onKeyUpLoadingDistrict($event, i)"
+                        [matAutocomplete]="loadingDistrictAuto"/>
+                      <mat-autocomplete #loadingDistrictAuto="matAutocomplete">
+                        @for (option of loadingDistrictSuggestions;
+                          track option) {
+                          <mat-option
+                            (click)="onSelectLoadingDistrict(option, i)"
+                            [value]="option.name">
+                            <div
+                              class="p-2 w-full text-body_title leading-body_title text-not-black">
+                              {{ option.name }}
+                            </div>
+                          </mat-option>
+                        }
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    <mat-error
+                      *ngIf="
+                        loadingPoint.get('pointDistrict').invalid &&
+                        loadingPoint.get('pointDistrict').touched
+                      ">
+                      Please select a valid loading district
+                    </mat-error>
                   </div>
-                  <div class="flex flex-col  w-full"
-                       *ngIf="loadingPoint?.get('pointName')?.value != '' && loadingPoint?.get('pointDistrict')?.value != '' && loadingPoints?.length > 1 && i == loadingPoints?.length - 1">
-                    <h1 class="invisible">height</h1>
-                    <button (click)="addLoadingPoint()"
-                            [disabled]="loadingPoint[i]?.get('pointName')?.value === '' || loadingPoints[i]?.get('pointDistrict')?.value === ''"
-                            class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
-                      <i class="fas fa-plus text-primary text-lg"></i>
-                    </button>
-                  </div>
-                  <div class="flex flex-col w-full" *ngIf="loadingPoints?.length > 1">
-                    <h1 class="invisible">height</h1>
-                    <button (click)="removeLoadingPoint(i)"
-                            class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
-                      <i class="fas fa-trash-alt text-red text-lg"></i>
-                    </button>
+                  <div class="flex space-x-2 items-center">
+                    <div
+                      class="flex flex-col w-full"
+                      *ngIf="loadingPoints?.length <= 1">
+                      <h1 class="invisible">height</h1>
+                      <button
+                        type="button"
+                        (click)="addLoadingPoint()"
+                        [disabled]="
+                          loadingPoints?.length <= 1 &&
+                          (loadingPoint.get('pointName').value === '' ||
+                            loadingPoint.get('pointDistrict').value === '')
+                        "
+                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        <i class="fas fa-plus text-primary text-lg"></i>
+                      </button>
+                    </div>
+                    <div
+                      class="flex flex-col w-full"
+                      *ngIf="
+                        loadingPoint?.get('pointName')?.value != '' &&
+                        loadingPoint?.get('pointDistrict')?.value != '' &&
+                        loadingPoints?.length > 1 &&
+                        i == loadingPoints?.length - 1
+                      ">
+                      <h1 class="invisible">height</h1>
+                      <button
+                        (click)="addLoadingPoint()"
+                        [disabled]="
+                          loadingPoint[i]?.get('pointName')?.value === '' ||
+                          loadingPoints[i]?.get('pointDistrict')?.value === ''
+                        "
+                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        <i class="fas fa-plus text-primary text-lg"></i>
+                      </button>
+                    </div>
+                    <div
+                      class="flex flex-col w-full"
+                      *ngIf="loadingPoints?.length > 1">
+                      <h1 class="invisible">height</h1>
+                      <button
+                        (click)="removeLoadingPoint(i)"
+                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                        <i class="fas fa-trash-alt text-red text-lg"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </ng-container>
+          </ng-container>
+        </div>
       </div>
-    </div>
-      <div class="mx-8 flex flex-col space-y-4 py-8  border-b-2 border-input">
-        <div class="flex items-center space-x-3 ">
-          <img loading="lazy" class="notPreview" src="assets/svg/unloading.svg" alt="candt">
+      <div class="mx-8 flex flex-col space-y-4 py-8 border-b-2 border-input">
+        <div class="flex items-center space-x-3">
+          <img
+            loading="lazy"
+            class="notPreview"
+            src="assets/svg/unloading.svg"
+            alt="candt"/>
           <span class="text-h2 leading-h2 font-semibold">Unloading Point</span>
         </div>
-        <div formArrayName="unloadingPoints" class="flex flex-col space-y-3 ml-3">
-          <ng-container *ngFor="let unloadingPoint of unloadingPoints.controls; index as i" [formGroupName]="i">
+        <div
+          formArrayName="unloadingPoints"
+          class="flex flex-col space-y-3 ml-3">
+          <ng-container
+            *ngFor="let unloadingPoint of unloadingPoints.controls; index as i"
+            [formGroupName]="i">
             <div class="step">
               <div class="circle">
-                <img class="notPreview" src="assets/svg/circle.svg" alt="loading">
+                <img
+                  class="notPreview"
+                  src="assets/svg/circle.svg"
+                  alt="loading"/>
               </div>
 
-              <div class="grid lg:grid-cols-2 gap-4 w-full ">
-                <div class="flex  flex-col space-y-1 w-full">
-                  <label for="unLoadingPoint" class="form-label text-body">Unloading Point</label>
-                  <mat-form-field appearance="outline" class="example-full-width"
-                                  [ngClass]="{'error': unloadingPoint.get('pointName').invalid && unloadingPoint.get('pointName').touched}"
+              <div class="grid lg:grid-cols-2 gap-4 w-full">
+                <div class="flex flex-col space-y-1 w-full">
+                  <label for="unLoadingPoint" class="form-label text-body"
+                  >Unloading Point</label
                   >
+                  <mat-form-field
+                    appearance="outline"
+                    class="example-full-width"
+                    [ngClass]="{
+                      error:
+                        unloadingPoint.get('pointName').invalid &&
+                        unloadingPoint.get('pointName').touched,
+                    }">
                     <input
                       id="unLoadingPoint"
                       type="text"
@@ -322,43 +516,70 @@
                       placeholder="Address"
                       formControlName="pointName"
                       (keyup)="onKeyUpUnloadingPoint($event, i)"
-                      [matAutocomplete]="autoUnload">
+                      [matAutocomplete]="autoUnload"/>
                     <mat-autocomplete #autoUnload="matAutocomplete">
                       @for (option of unloadingSuggestions; track option) {
                         <mat-option
-                          *ngIf="option.locationPointName !== null || option.doesBelongToGoogleMapApi === false"
-                          (click)="onClickUnloadingSuggestion(option, i)" [value]="option.locationPointName">
+                          *ngIf="
+                            option.locationPointName !== null ||
+                            option.doesBelongToGoogleMapApi === false
+                          "
+                          (click)="onClickUnloadingSuggestion(option, i)"
+                          [value]="option.locationPointName">
                           <div class="w-full flex flex-col space-y-2 p-2">
                             <div class="flex space-x-2 w-full">
-                              <img class="notPreview" loading="lazy" src="assets/svg/star.svg" alt="star">
+                              <img
+                                class="notPreview"
+                                loading="lazy"
+                                src="assets/svg/star.svg"
+                                alt="star"/>
                               <span
-                                class="text-body_title leading-body_title text-not-black">{{ option.locationPointName }}</span>
+                                class="text-body_title leading-body_title text-not-black"
+                              >{{ option.locationPointName }}</span
+                              >
                             </div>
                             <span
-                              class="text-body_title leading-body_title text-web-text-secondary">{{ option.addressText }}</span>
+                              class="text-body_title leading-body_title text-web-text-secondary"
+                            >{{ option.addressText }}</span
+                            >
                           </div>
                         </mat-option>
                         <mat-option
-                          *ngIf="option.locationPointName === null && option.doesBelongToGoogleMapApi === true"
-                          (click)="onClickUnloadingSuggestion(option,i)" [value]="option.addressText">
+                          *ngIf="
+                            option.locationPointName === null &&
+                            option.doesBelongToGoogleMapApi === true
+                          "
+                          (click)="onClickUnloadingSuggestion(option, i)"
+                          [value]="option.addressText">
                           <div
-                            class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.addressText }}
+                            class="p-2 w-full text-body_title leading-body_title text-not-black">
+                            {{ option.addressText }}
                           </div>
                         </mat-option>
                       }
                     </mat-autocomplete>
                   </mat-form-field>
                   <mat-error
-                    *ngIf="unloadingPoint.get('pointName').invalid && unloadingPoint.get('pointName').touched">
+                    *ngIf="
+                      unloadingPoint.get('pointName').invalid &&
+                      unloadingPoint.get('pointName').touched
+                    ">
                     Please select a valid unloading point
                   </mat-error>
                 </div>
                 <div class="flex justify-between space-x-2 items-center w-full">
-                  <div class="flex  flex-col space-y-1 w-full">
-                    <label for="unLoadingDistrict" class="form-label text-body">Unloading District</label>
-                    <mat-form-field appearance="outline" class="example-full-width"
-                                    [ngClass]="{'error': unloadingPoint.get('pointDistrict').invalid && unloadingPoint.get('pointDistrict').touched}"
+                  <div class="flex flex-col space-y-1 w-full">
+                    <label for="unLoadingDistrict" class="form-label text-body"
+                    >Unloading District</label
                     >
+                    <mat-form-field
+                      appearance="outline"
+                      class="example-full-width"
+                      [ngClass]="{
+                        error:
+                          unloadingPoint.get('pointDistrict').invalid &&
+                          unloadingPoint.get('pointDistrict').touched,
+                      }">
                       <input
                         id="unloadingDistrict"
                         type="text"
@@ -366,44 +587,73 @@
                         placeholder="District Name"
                         formControlName="pointDistrict"
                         (keyup)="onKeyUpUnloadingDistrict($event, i)"
-                        [matAutocomplete]="unloadingDistrictAuto">
-                      <mat-autocomplete #unloadingDistrictAuto="matAutocomplete">
-                        @for (option of unloadingDistrictSuggestions; track option) {
-                          <mat-option (click)="onSelectUnloadingDistrict(option, i)" [value]="option.name">
+                        [matAutocomplete]="unloadingDistrictAuto"/>
+                      <mat-autocomplete
+                        #unloadingDistrictAuto="matAutocomplete">
+                        @for (option of unloadingDistrictSuggestions;
+                          track option) {
+                          <mat-option
+                            (click)="onSelectUnloadingDistrict(option, i)"
+                            [value]="option.name">
                             <div
-                              class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.name }}
+                              class="p-2 w-full text-body_title leading-body_title text-not-black">
+                              {{ option.name }}
                             </div>
                           </mat-option>
                         }
                       </mat-autocomplete>
                     </mat-form-field>
                     <mat-error
-                      *ngIf="unloadingPoint.get('pointDistrict').invalid && unloadingPoint.get('pointDistrict').touched">
+                      *ngIf="
+                        unloadingPoint.get('pointDistrict').invalid &&
+                        unloadingPoint.get('pointDistrict').touched
+                      ">
                       Please select a valid unloading district
                     </mat-error>
                   </div>
                   <div class="flex space-x-2 items-center">
-                    <div class="flex flex-col  w-full" *ngIf="unloadingPoints?.length <= 1">
+                    <div
+                      class="flex flex-col w-full"
+                      *ngIf="unloadingPoints?.length <= 1">
                       <h1 class="invisible">height</h1>
-                      <button type="button" (click)="addUnloadingPoint()"
-                              [disabled]=" unloadingPoints?.length <= 1 && (unloadingPoint.get('pointName').value === '' || unloadingPoint.get('pointDistrict').value === '')"
-                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
+                      <button
+                        type="button"
+                        (click)="addUnloadingPoint()"
+                        [disabled]="
+                          unloadingPoints?.length <= 1 &&
+                          (unloadingPoint.get('pointName').value === '' ||
+                            unloadingPoint.get('pointDistrict').value === '')
+                        "
+                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
-                    <div class="flex flex-col  w-full"
-                         *ngIf="unloadingPoint?.get('pointName')?.value != '' && unloadingPoint?.get('pointDistrict')?.value != '' && unloadingPoints?.length > 1 && i == unloadingPoints?.length - 1">
+                    <div
+                      class="flex flex-col w-full"
+                      *ngIf="
+                        unloadingPoint?.get('pointName')?.value != '' &&
+                        unloadingPoint?.get('pointDistrict')?.value != '' &&
+                        unloadingPoints?.length > 1 &&
+                        i == unloadingPoints?.length - 1
+                      ">
                       <h1 class="invisible">height</h1>
-                      <button (click)="addUnloadingPoint()"
-                              [disabled]="unloadingPoints[i]?.get('pointName')?.value === '' || unloadingPoints[i]?.get('pointDistrict')?.value === ''"
-                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input  flex items-center justify-center">
+                      <button
+                        (click)="addUnloadingPoint()"
+                        [disabled]="
+                          unloadingPoints[i]?.get('pointName')?.value === '' ||
+                          unloadingPoints[i]?.get('pointDistrict')?.value === ''
+                        "
+                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
-                    <div class="flex flex-col w-full" *ngIf="unloadingPoints?.length > 1">
+                    <div
+                      class="flex flex-col w-full"
+                      *ngIf="unloadingPoints?.length > 1">
                       <h1 class="invisible">height</h1>
-                      <button (click)="removeUnloadingPoint(i)"
-                              class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                      <button
+                        (click)="removeUnloadingPoint(i)"
+                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
                         <i class="fas fa-trash-alt text-red text-lg"></i>
                       </button>
                     </div>
@@ -414,25 +664,28 @@
           </ng-container>
         </div>
       </div>
-      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input ">
+      <div
+        class="mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
-            <img loading="lazy" class="notPreview" src="assets/svg/vehicleinfo.svg" alt="candt">
+            <img
+              loading="lazy"
+              class="notPreview"
+              src="assets/svg/vehicleinfo.svg"
+              alt="candt"/>
             <span class="text-h2 leading-h2 font-semibold">Vehicle</span>
           </div>
-          <div
-            *ngIf="scrollable"
-            class="flex space-x-1 items-center">
+          <div *ngIf="scrollable" class="flex space-x-1 items-center">
             <button
               type="button"
               data-direction="left"
               (click)="onClickLeftButton()"
               [disabled]="!rightButtonClicked"
               class="{{
-              rightButtonClicked
-                ? 'text-white bg-primary'
-                : 'text-disabled bg-input-hint'
-            }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
+                rightButtonClicked
+                  ? 'text-white bg-primary'
+                  : 'text-disabled bg-input-hint'
+              }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
               <i class="fal fa-angle-left text-xl"></i>
             </button>
             <button
@@ -441,15 +694,16 @@
               (click)="onClickRightButton()"
               [disabled]="rightButtonClicked"
               class="{{
-              rightButtonClicked
-                ? 'text-disabled bg-input-hint'
-                : 'text-white bg-primary'
-            }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
+                rightButtonClicked
+                  ? 'text-disabled bg-input-hint'
+                  : 'text-white bg-primary'
+              }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
               <i class="fal fa-angle-right text-xl"></i>
             </button>
           </div>
         </div>
-        <div class="overflow-hidden border border-link relative py-1 px-1 w-full rounded-lg bg-white">
+        <div
+          class="overflow-hidden border border-link relative py-1 px-1 w-full rounded-lg bg-white">
           <div
             appScrollByButton
             (isVisible)="scrollable = $event"
@@ -460,13 +714,22 @@
               <ng-container *ngFor="let item of vehicleTypeList">
                 <button
                   type="button"
-                  class="rounded-lg px-4  py-2 {{ item.selected ? 'bg-green text-white' : 'bg-input' }}"
-                  (click)="onVehicleTypeClick(item)"
-                >
-                  <div class="w-[5rem] h-[3rem] flex items-center justify-center">
-                    <img loading="lazy" class="w-full notPreview" [src]="item.imageUrl" [alt]="item.name">
+                  class="rounded-lg px-4  py-2 {{
+                    item.selected ? 'bg-green text-white' : 'bg-input'
+                  }}"
+                  (click)="onVehicleTypeClick(item)">
+                  <div
+                    class="w-[5rem] h-[3rem] flex items-center justify-center">
+                    <img
+                      loading="lazy"
+                      class="w-full notPreview"
+                      [src]="item.imageUrl"
+                      [alt]="item.name"/>
                   </div>
-                  <span class="whitespace-nowrap text-body_title leading-body_title">{{ item.name }}</span>
+                  <span
+                    class="whitespace-nowrap text-body_title leading-body_title"
+                  >{{ item.name }}</span
+                  >
                 </button>
               </ng-container>
             </div>
@@ -474,50 +737,79 @@
         </div>
         <div class="grid lg:grid-cols-3 gap-4 w-full relative">
           <div class="flex flex-col space-y-2 w-full">
-            <label for="numOfVehicle" class="form-label text-body">Number of vehicle</label>
+            <label for="numOfVehicle" class="form-label text-body"
+            >Number of vehicle</label
+            >
             <mat-form-field appearance="outline" id="numOfVehicle">
-              <input [disabled]="true" [readonly]="true" type="number" formControlName="numOfTrucks" matInput
-                     placeholder="Enter Number of vehicle">
+              <input
+                [disabled]="true"
+                [readonly]="true"
+                type="number"
+                formControlName="numOfTrucks"
+                matInput
+                placeholder="Enter Number of vehicle"/>
             </mat-form-field>
           </div>
           <div class="flex flex-col space-y-2 w-full">
-            <label for="size" class="form-label text-body">Truck Size (Feet)</label>
+            <label for="size" class="form-label text-body"
+            >Truck Size (Feet)</label
+            >
             <mat-form-field appearance="outline" id="size">
-              <input type="number" step="0.1" matInput formControlName="truckSize" placeholder="Enter size">
+              <input
+                type="number"
+                step="0.1"
+                matInput
+                formControlName="truckSize"
+                placeholder="Enter size"/>
             </mat-form-field>
             <div class="w-full flex space-x-2 items-center">
               <span>Suggestions:</span>
-              <button type="button" (click)="onClickTruckSizeSuggestions(suggestion)"
-                      class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
-                      [ngClass]="{'bg-green text-white': suggestion.selected}"
-                      *ngFor="let suggestion of truckSizeSuggestions">
+              <button
+                type="button"
+                (click)="onClickTruckSizeSuggestions(suggestion)"
+                class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                [ngClass]="{ 'bg-green text-white': suggestion.selected }"
+                *ngFor="let suggestion of truckSizeSuggestions">
                 {{ suggestion.value }}
               </button>
             </div>
           </div>
           <div class="flex flex-col space-y-2 w-full">
-            <label for="capacity" class="form-label text-body">Truck Capacity (Ton)</label>
+            <label for="capacity" class="form-label text-body"
+            >Truck Capacity (Ton)</label
+            >
             <mat-form-field appearance="outline" id="capacity">
-              <input type="number" step="0.1" formControlName="truckCapacityInTon" matInput
-                     placeholder="Enter Capacity">
+              <input
+                type="number"
+                step="0.1"
+                formControlName="truckCapacityInTon"
+                matInput
+                placeholder="Enter Capacity"/>
             </mat-form-field>
             <div class="w-full flex space-x-2 items-center">
               <span>Suggestions:</span>
-              <button type="button" (click)="onClickTruckCapacitySuggestions(suggestion)"
-                      class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
-                      [ngClass]="{'bg-green text-white': suggestion.selected}"
-                      *ngFor="let suggestion of truckCapacitySuggestions">
+              <button
+                type="button"
+                (click)="onClickTruckCapacitySuggestions(suggestion)"
+                class="px-4 py-1 rounded-full flex items-center justify-center border border-input-hint text-[0.75rem]"
+                [ngClass]="{ 'bg-green text-white': suggestion.selected }"
+                *ngFor="let suggestion of truckCapacitySuggestions">
                 {{ suggestion.value }}
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input ">
+      <div
+        class="mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input">
         <div class="grid lg:grid-cols-2 gap-4 w-full">
           <div class="flex flex-col space-y-3">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="notPreview" src="assets/svg/goodsinfo.svg" alt="candt">
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/goodsinfo.svg"
+                alt="candt"/>
               <h1 class="text-h2 leading-h2 font-semibold">Goods</h1>
             </div>
             <div class="flex flex-col space-y-1 w-full">
@@ -530,11 +822,16 @@
                   formControlName="goodsName"
                   placeholder="Enter Goods Type"
                   (keyup)="onKeyUpGoods($event)"
-                  [matAutocomplete]="goods">
+                  [matAutocomplete]="goods"/>
                 <mat-autocomplete #goods="matAutocomplete">
                   @for (option of loadingGoodsSuggestions; track option) {
-                    <mat-option (click)="onClickGoodsSuggestion(option)" [value]="option.value">
-                      <div class="p-2 w-full text-body_title leading-body_title text-not-black">{{ option.value }}</div>
+                    <mat-option
+                      (click)="onClickGoodsSuggestion(option)"
+                      [value]="option.value">
+                      <div
+                        class="p-2 w-full text-body_title leading-body_title text-not-black">
+                        {{ option.value }}
+                      </div>
                     </mat-option>
                   }
                 </mat-autocomplete>
@@ -543,51 +840,88 @@
           </div>
           <div class="flex flex-col space-y-3" *ngIf="isAdmin()">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="notPreview" src="assets/svg/cr.svg" alt="candt">
-              <h1 class="text-h2 leading-h2 font-semibold">Customer Rate (CR)</h1>
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/cr.svg"
+                alt="candt"/>
+              <h1 class="text-h2 leading-h2 font-semibold">
+                Customer Rate (CR)
+              </h1>
             </div>
             <div class="flex flex-col space-y-1 w-full">
-              <label for="customerRate" class="form-label text-body">Customer rate</label>
+              <label for="customerRate" class="form-label text-body"
+              >Customer rate</label
+              >
               <!--Add a bdt icon at the end of the input-->
               <div class="relative bg-input rounded-lg border-none">
-                <mat-form-field class="w-full" appearance="outline" id="customerRate">
-                  <input type="number" formControlName="customerRate" class="w-full" matInput
-                         placeholder="Enter Customer Rate">
+                <mat-form-field
+                  class="w-full"
+                  appearance="outline"
+                  id="customerRate">
+                  <input
+                    type="number"
+                    formControlName="customerRate"
+                    class="w-full"
+                    matInput
+                    placeholder="Enter Customer Rate"/>
                 </mat-form-field>
                 <img
                   id="icon"
                   class="notPreview absolute right-4 top-4 cursor-pointer"
                   src="assets/svg/bdt.svg"
-                  alt="bdt"
-                >
+                  alt="bdt"/>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input">
+      <div
+        class="mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="notPreview" src="assets/svg/additional.svg" alt="candt">
-          <h1 class="text-h2 leading-h2 font-semibold">Additional instruction</h1>
+          <img
+            loading="lazy"
+            class="notPreview"
+            src="assets/svg/additional.svg"
+            alt="candt"/>
+          <h1 class="text-h2 leading-h2 font-semibold">
+            Additional instruction
+          </h1>
         </div>
-        <textarea formControlName="note" class="w-full h-28 border border-none bg-input rounded-lg p-4"
-                  placeholder="Enter additional instruction"></textarea>
+        <textarea
+          formControlName="note"
+          class="w-full h-28 border border-none bg-input rounded-lg p-4"
+          placeholder="Enter additional instruction"></textarea>
       </div>
 
-      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input" *ngIf="isAdmin()">
+      <div
+        class="mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input"
+        *ngIf="isAdmin()">
         <div class="grid md:grid-cols-2 gap-4">
           <div class="flex justify-between items-center col-span-2 w-1/2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="notPreview" src="assets/svg/transporter-info.svg" alt="candt">
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/transporter-info.svg"
+                alt="candt"/>
               <h1 class="text-h2 leading-h2 font-semibold">Transporter info</h1>
             </div>
 
-            <a class="text-link text-sm cursor-pointer" (click)="getTransporterList()">Select from list</a>
+            <a
+              class="text-link text-sm cursor-pointer"
+              (click)="getTransporterList()"
+            >Select from list</a
+            >
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col space-y-1 col-span-2 w-full">
-              <label for="transporterName" class="text-body text-secondary">Name</label>
-              <mat-form-field appearance="outline" class="example-full-width w-full">
+              <label for="transporterName" class="text-body text-secondary"
+              >Name</label
+              >
+              <mat-form-field
+                appearance="outline"
+                class="example-full-width w-full">
                 <input
                   id="transporterName"
                   type="text"
@@ -595,14 +929,21 @@
                   formControlName="transporterName"
                   (keyup)="onKeyUpTransporterSearch($event)"
                   placeholder="Transporter Name"
-                  [matAutocomplete]="transporter">
+                  [matAutocomplete]="transporter"/>
                 <mat-autocomplete #transporter="matAutocomplete">
                   @for (option of transporterSuggestion; track option) {
-                    <mat-option (click)="onClickTransporterSearchSuggestion(option)" [value]="option.name">
+                    <mat-option
+                      (click)="onClickTransporterSearchSuggestion(option)"
+                      [value]="option.name">
                       <div class="flex flex-col space-y-1">
                         <span
-                          class="text-body_title leading-body_title text-not-black font-semibold">{{ option.name }}</span>
-                        <span class="text-secondary text-body_title leading-body_title">{{ option.phone }}</span>
+                          class="text-body_title leading-body_title text-not-black font-semibold"
+                        >{{ option.name }}</span
+                        >
+                        <span
+                          class="text-secondary text-body_title leading-body_title"
+                        >{{ option.phone }}</span
+                        >
                       </div>
                     </mat-option>
                   }
@@ -610,86 +951,142 @@
               </mat-form-field>
             </div>
             <div class="flex flex-col space-y-1">
-              <label for="transporterMobile" class="text-body text-secondary">Mobile Number</label>
+              <label for="transporterMobile" class="text-body text-secondary"
+              >Mobile Number</label
+              >
               <mat-form-field id="transporterMobile" appearance="outline">
-                <input readonly formControlName="transporterPhone"
-                       [disabled]="true" [readonly]="true" type="text" matInput
-                       placeholder="Transporter Mobile Number"
-                >
+                <input
+                  readonly
+                  formControlName="transporterPhone"
+                  [disabled]="true"
+                  [readonly]="true"
+                  type="text"
+                  matInput
+                  placeholder="Transporter Mobile Number"/>
               </mat-form-field>
             </div>
             <div class="flex flex-col space-y-1 w-full">
-              <label for="transporterRate" class="form-label text-body text-secondary">Transporter Rate (TR)</label>
+              <label
+                for="transporterRate"
+                class="form-label text-body text-secondary"
+              >Transporter Rate (TR)</label
+              >
               <!--Add a bdt icon at the end of the input-->
               <div class="relative bg-input rounded-lg border-none">
-                <mat-form-field class="w-full" appearance="outline" id="transporterRate">
-                  <input formControlName="transporterRate" type="number" class="w-full" matInput
-                         placeholder="Transporter Rate">
+                <mat-form-field
+                  class="w-full"
+                  appearance="outline"
+                  id="transporterRate">
+                  <input
+                    formControlName="transporterRate"
+                    type="number"
+                    class="w-full"
+                    matInput
+                    placeholder="Transporter Rate"/>
                 </mat-form-field>
                 <img
                   class="notPreview absolute right-4 top-4 cursor-pointer"
                   src="assets/svg/bdt.svg"
-                  alt="bdt"
-                >
+                  alt="bdt"/>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input" *ngIf="isAdmin()">
+      <div
+        class="mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input"
+        *ngIf="isAdmin()">
         <div class="grid md:grid-cols-2 gap-4">
           <div class="flex justify-between items-center col-span-2 md:w-1/2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="notPreview" src="assets/svg/truck.svg" alt="candt">
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/truck.svg"
+                alt="candt"/>
               <h1 class="text-h2 leading-h2 font-semibold">Truck info</h1>
             </div>
 
-            <a class="text-link text-sm cursor-pointer" (click)="getTruckList()">Select from list</a>
+            <a class="text-link text-sm cursor-pointer" (click)="getTruckList()"
+            >Select from list</a
+            >
           </div>
 
           <div class="flex flex-col space-y-1 w-full">
-            <label for="truck" class="text-body text-secondary">Registration Number</label>
+            <label for="truck" class="text-body text-secondary"
+            >Registration Number</label
+            >
             <div id="truck" class="grid grid-cols-9 gap-4">
               <mat-form-field class="col-span-3" appearance="outline">
-                <input readonly formControlName="registrationZone"
-                       [disabled]="true" [readonly]="true" matInput
-                       placeholder="Zone"
-                >
+                <input
+                  readonly
+                  formControlName="registrationZone"
+                  [disabled]="true"
+                  [readonly]="true"
+                  matInput
+                  placeholder="Zone"/>
               </mat-form-field>
               <mat-form-field class="col-span-2" appearance="outline">
-                <input readonly formControlName="registrationCategory"
-                       [disabled]="true" [readonly]="true" matInput
-                       placeholder="Category"
-                >
+                <input
+                  readonly
+                  formControlName="registrationCategory"
+                  [disabled]="true"
+                  [readonly]="true"
+                  matInput
+                  placeholder="Category"/>
               </mat-form-field>
               <mat-form-field class="col-span-2" appearance="outline">
-                <input formControlName="registrationSerialNumber" [disabled]="true" [readonly]="true" type="number"
-                       step="0.1" matInput
-                       placeholder="Serial">
+                <input
+                  formControlName="registrationSerialNumber"
+                  [disabled]="true"
+                  [readonly]="true"
+                  type="number"
+                  step="0.1"
+                  matInput
+                  placeholder="Serial"/>
               </mat-form-field>
               <mat-form-field class="col-span-2" appearance="outline">
-                <input formControlName="registrationNumber" [disabled]="true" [readonly]="true" type="number" step="0.1"
-                       matInput
-                       placeholder="Number">
+                <input
+                  formControlName="registrationNumber"
+                  [disabled]="true"
+                  [readonly]="true"
+                  type="number"
+                  step="0.1"
+                  matInput
+                  placeholder="Number"/>
               </mat-form-field>
             </div>
           </div>
         </div>
       </div>
-      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input" *ngIf="isAdmin()">
+      <div
+        class="mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input"
+        *ngIf="isAdmin()">
         <div class="grid md:grid-cols-2 gap-4">
           <div class="flex justify-between col-span-2 md:w-1/2 items-center">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="notPreview" src="assets/svg/driver-info.svg" alt="candt">
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/driver-info.svg"
+                alt="candt"/>
               <h1 class="text-h2 leading-h2 font-semibold">Driver info</h1>
             </div>
-            <a class="text-link text-sm cursor-pointer" (click)="getDriverList()">Select from list</a>
+            <a
+              class="text-link text-sm cursor-pointer"
+              (click)="getDriverList()"
+            >Select from list</a
+            >
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col space-y-1 w-full">
-              <label for="driverName" class="text-body text-secondary">Name</label>
-              <mat-form-field appearance="outline" class="example-full-width w-full">
+              <label for="driverName" class="text-body text-secondary"
+              >Name</label
+              >
+              <mat-form-field
+                appearance="outline"
+                class="example-full-width w-full">
                 <input
                   id="driverName"
                   type="text"
@@ -697,42 +1094,66 @@
                   matInput
                   (keyup)="onKeyUpDriverSearch($event)"
                   placeholder="Driver Name"
-                  [matAutocomplete]="driver">
+                  [matAutocomplete]="driver"/>
                 <mat-autocomplete #driver="matAutocomplete">
                   @for (option of driverSuggestion; track option) {
-                    <mat-option (click)="onClickDriverSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+                    <mat-option
+                      (click)="onClickDriverSearchSuggestion(option)"
+                      [value]="option.name"
+                    >{{ option.name }}
                     </mat-option>
                   }
                 </mat-autocomplete>
               </mat-form-field>
             </div>
             <div class="flex flex-col space-y-1">
-              <label for="driverMobile" class="text-body text-secondary">Mobile Number</label>
+              <label for="driverMobile" class="text-body text-secondary"
+              >Mobile Number</label
+              >
               <mat-form-field disabled id="driverMobile" appearance="outline">
-                <input formControlName="driverPhone"
-                       [disabled]="true" [readonly]="true" type="text"  matInput
-                       placeholder="Driver Mobile Number"
-                >
+                <input
+                  formControlName="driverPhone"
+                  [disabled]="true"
+                  [readonly]="true"
+                  type="text"
+                  matInput
+                  placeholder="Driver Mobile Number"/>
               </mat-form-field>
             </div>
           </div>
         </div>
       </div>
-      <div class="mx-8 flex flex-col space-y-3  py-8 col-span-3 border-b-2 border-input" *ngIf="isAdmin()">
+      <div
+        class="mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input"
+        *ngIf="isAdmin()">
         <div class="grid md:grid-cols-2 gap-4">
           <div class="flex justify-between col-span-2 md:w-1/2 items-center">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="notPreview" src="assets/svg/driver-info.svg" alt="candt">
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/driver-info.svg"
+                alt="candt"/>
               <h1 class="text-h2 leading-h2 font-semibold">Helper info</h1>
             </div>
-            <a class="text-link text-sm cursor-pointer" (click)="getHelperList()">Select from list</a>
+            <a
+              class="text-link text-sm cursor-pointer"
+              (click)="getHelperList()"
+            >Select from list</a
+            >
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col space-y-1 w-full">
-              <label for="helperName" class="text-body text-secondary">Name</label>
-              <mat-form-field appearance="outline" class="example-full-width w-full"
-                              [class.error]="tripUpdateForm.get('helperName').invalid && tripUpdateForm.get('helperName').touched"
+              <label for="helperName" class="text-body text-secondary"
+              >Name</label
               >
+              <mat-form-field
+                appearance="outline"
+                class="example-full-width w-full"
+                [class.error]="
+                  tripUpdateForm.get('helperName').invalid &&
+                  tripUpdateForm.get('helperName').touched
+                ">
                 <input
                   id="helperName"
                   type="text"
@@ -740,25 +1161,37 @@
                   formControlName="helperName"
                   (keyup)="onKeyUpHelperSearch($event)"
                   placeholder="Helper Name"
-                  [matAutocomplete]="helper">
+                  [matAutocomplete]="helper"/>
                 <mat-autocomplete #helper="matAutocomplete">
                   @for (option of helperSuggestion; track option) {
-                    <mat-option (click)="onClickHelperSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+                    <mat-option
+                      (click)="onClickHelperSearchSuggestion(option)"
+                      [value]="option.name"
+                    >{{ option.name }}
                     </mat-option>
                   }
                 </mat-autocomplete>
               </mat-form-field>
-              <mat-error *ngIf="tripUpdateForm.get('helperName').invalid && tripUpdateForm.get('helperName').touched">
+              <mat-error
+                *ngIf="
+                  tripUpdateForm.get('helperName').invalid &&
+                  tripUpdateForm.get('helperName').touched
+                ">
                 Helper Name is required
               </mat-error>
             </div>
             <div class="flex flex-col space-y-1">
-              <label for="driverMobile" class="text-body text-secondary">Mobile Number</label>
+              <label for="driverMobile" class="text-body text-secondary"
+              >Mobile Number</label
+              >
               <mat-form-field disabled id="helperMobile" appearance="outline">
-                <input formControlName="helperPhone"
-                       [disabled]="true" [readonly]="true" type="text" matInput
-                       placeholder="Helper Mobile Number"
-                >
+                <input
+                  formControlName="helperPhone"
+                  [disabled]="true"
+                  [readonly]="true"
+                  type="text"
+                  matInput
+                  placeholder="Helper Mobile Number"/>
               </mat-form-field>
             </div>
           </div>

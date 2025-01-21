@@ -5,11 +5,11 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { TripService } from '../../../trip-list/services/trip.service';
-import {DatePipe, NgClass, NgIf} from '@angular/common';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
-import {FormsModule} from "@angular/forms";
-import {MatCheckbox, MatCheckboxChange} from "@angular/material/checkbox";
+import { FormsModule } from '@angular/forms';
+import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-confirm-cancel',

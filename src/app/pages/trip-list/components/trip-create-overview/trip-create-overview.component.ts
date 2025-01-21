@@ -14,7 +14,7 @@ import { TripTemplate } from '../../models/trip-template.model';
 import { MatDialog } from '@angular/material/dialog';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
-import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
+import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-trip-create-overview',

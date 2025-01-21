@@ -838,5 +838,4 @@ export class CreateTripPageComponent implements OnInit {
   removeUnloadingPoint(index: number) {
     this.unloadingPoints.removeAt(index);
   }
-
 }

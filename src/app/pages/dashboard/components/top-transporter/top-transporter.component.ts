@@ -6,8 +6,8 @@ import { MatSelect } from '@angular/material/select';
 import { TopTransporters } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
 import { CommonModule, DatePipe } from '@angular/common';
-import {RouterLink} from "@angular/router";
-import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
+import { RouterLink } from '@angular/router';
+import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-top-transporter',

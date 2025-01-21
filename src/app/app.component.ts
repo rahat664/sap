@@ -28,6 +28,9 @@ import { DriverEditSharedService } from './pages/profiles/services/driver-edit-s
 import { MatDialog } from '@angular/material/dialog';
 import { LoadingService } from './shared/services/loading/loading.service';
 
+/**
+ * The main application component.
+ */
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -50,6 +53,17 @@ export class AppComponent implements OnInit {
   map: google.maps.Map;
   isLoading = this.loadingService.loading$;
 
+  /**
+   * Constructs the AppComponent.
+   * @param router The Angular Router.
+   * @param auth The AuthService for authentication.
+   * @param imageGalleryService The ImageGalleryService for handling image galleries.
+   * @param handleToaster The HandleToastrService for displaying toast notifications.
+   * @param geoLocation The GeolocationService for handling geolocation.
+   * @param shared The DriverEditSharedService for shared driver edit functionality.
+   * @param renderer The Angular Renderer2 for DOM manipulation.
+   * @param loadingService The LoadingService for handling loading states.
+   */
   constructor(
     private router: Router,
     private auth: AuthService,
@@ -73,6 +87,10 @@ export class AppComponent implements OnInit {
     });
   }
 
+  /**
+   * Handles document click events.
+   * @param event The mouse event.
+   */
   @HostListener('click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
@@ -90,6 +108,9 @@ export class AppComponent implements OnInit {
     }
   }
 
+  /**
+   * Initializes the component.
+   */
   ngOnInit(): void {
     initFlowbite();
     this.handleRouter();
@@ -99,6 +120,10 @@ export class AppComponent implements OnInit {
     this.checkInputListener();
   }
 
+  /**
+   * Checks if the current page is the login page.
+   * @returns True if the current page is the login page, otherwise false.
+   */
   isLoginPage() {
     if (this.auth.isLoggedIn()) {
       return this.router.url === '/auth/login';
@@ -107,10 +132,17 @@ export class AppComponent implements OnInit {
     }
   }
 
+  /**
+   * Checks if the current page is the about page.
+   * @returns True if the current page is the about page, otherwise false.
+   */
   isAboutPage() {
     return this.router.url === '/about-us';
   }
 
+  /**
+   * Handles router events.
+   */
   private handleRouter() {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -119,12 +151,18 @@ export class AppComponent implements OnInit {
       });
   }
 
+  /**
+   * Loads the Google Maps script.
+   */
   private loadGoogleMapsScript() {
     this.geoLocation.loadGoogleMapsScript().then(() => {
       this.geoLocation.getCurrentPosition().then(coords => {});
     });
   }
 
+  /**
+   * Sets the current location in local storage.
+   */
   private setCurrentLocationInStorage() {
     if (localStorage.getItem('currentLocation') === null) {
       this.geoLocation.getCurrentPosition().then(coords => {
@@ -139,12 +177,18 @@ export class AppComponent implements OnInit {
     }
   }
 
+  /**
+   * Cleans up resources when the component is destroyed.
+   */
   ngOnDestroy() {
     if (this.focusListener) {
       this.focusListener();
     }
   }
 
+  /**
+   * Checks input listeners and sets default values for number inputs.
+   */
   private checkInputListener() {
     this.focusListener = this.renderer.listen('document', 'click', event => {
       // if the target is a number type turn off scrolling and add min max
@@ -167,6 +211,10 @@ export class AppComponent implements OnInit {
     });
   }
 
+  /**
+   * Checks if the current page is the support page.
+   * @returns True if the current page is the support page, otherwise false.
+   */
   isSupportPage() {
     return this.router.url === '/support';
   }

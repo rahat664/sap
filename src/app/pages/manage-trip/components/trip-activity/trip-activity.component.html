@@ -2,80 +2,130 @@
   <div class="mx-16 flex flex-col space-y-3">
     <div class="flex-col flex space-y-3">
       <div class="grid grid-cols-2 px-16 pt-4">
-        <h1 class="text-h2 leading-h2 text-not-black font-semibold px-8">Manage Loading</h1>
+        <h1 class="text-h2 leading-h2 text-not-black font-semibold px-8">
+          Manage Loading
+        </h1>
         <h1
-          class="text-body_title leading-body_title text-not-black font-semibold px-8">{{ selectedEventNameLoading }}</h1>
+          class="text-body_title leading-body_title text-not-black font-semibold px-8">
+          {{ selectedEventNameLoading }}
+        </h1>
       </div>
       <div class="px-16 grid grid-cols-2 w-full border-b border-line">
-        <div class="flex flex-col w-full space-y-4 px-8 mb-6 border-r border-line" appGetElementHeight
-             (height)="loadingHeight = $event">
-          <button (click)="changeTripLoadingEvent(event)" *ngFor="let event of loadingEvents"
-                  [ngClass]="{'border border-blue': event.eventName == selectedEventNameLoading}"
-                  class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
-            <img loading="lazy" class="notPreview" *ngIf="event.tripDocuments" src="assets/svg/available.svg" alt="">
-            <img loading="lazy" class="notPreview" *ngIf="!event.tripDocuments" src="assets/svg/not-available.svg"
-                 alt="">
-            <span class="text-body_title leading-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
+        <div
+          class="flex flex-col w-full space-y-4 px-8 mb-6 border-r border-line"
+          appGetElementHeight
+          (height)="loadingHeight = $event">
+          <button
+            (click)="changeTripLoadingEvent(event)"
+            *ngFor="let event of loadingEvents"
+            [ngClass]="{
+              'border border-blue': event.eventName == selectedEventNameLoading,
+            }"
+            class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
+            <img
+              loading="lazy"
+              class="notPreview"
+              *ngIf="event.tripDocuments"
+              src="assets/svg/available.svg"
+              alt=""/>
+            <img
+              loading="lazy"
+              class="notPreview"
+              *ngIf="!event.tripDocuments"
+              src="assets/svg/not-available.svg"
+              alt=""/>
+            <span
+              class="text-body_title leading-body_title text-not-black font-semibold"
+            >{{ event?.eventName }}</span
+            >
           </button>
         </div>
         <div class="px-8 w-full overflow-y-auto">
-          <div *ngIf="imageToShow.length == 0 && loadingEventsLoaded"
-               class="w-full h-full flex items-center justify-center">
+          <div
+            *ngIf="imageToShow.length == 0 && loadingEventsLoaded"
+            class="w-full h-full flex items-center justify-center">
             <div class="flex flex-col space-y-3">
-              <img loading="lazy" src="assets/svg/no-data.svg" alt="">
-              <h1 class="text-body_title leading-body_title text-secondary text-center font-semibold">No Data
-                Available</h1>
+              <img loading="lazy" src="assets/svg/no-data.svg" alt=""/>
+              <h1
+                class="text-body_title leading-body_title text-secondary text-center font-semibold">
+                No Data Available
+              </h1>
             </div>
           </div>
-          <div class="flex flex-col space-y-3 w-full overflow-y-auto"
-               *ngIf="imageToShow.length > 0 && loadingEventsLoaded">
+          <div
+            class="flex flex-col space-y-3 w-full overflow-y-auto"
+            *ngIf="imageToShow.length > 0 && loadingEventsLoaded">
             <div class="flex flex-col space-y-3">
               <div class="flex justify-between items-center">
-                <h1 class="text-not-black text-body_title leading-body_title font-semibold">Image</h1>
-                <div class="flex space-x-3 items-center" *ngIf="imageToShow.length > 1">
+                <h1
+                  class="text-not-black text-body_title leading-body_title font-semibold">
+                  Image
+                </h1>
+                <div
+                  class="flex space-x-3 items-center"
+                  *ngIf="imageToShow.length > 1">
                   <button
                     [disabled]="index === 0"
                     (click)="onClickLeftButton()"
-                    class="{{index === 0  ? 'text-disabled bg-input-hint' : 'text-white bg-primary'}} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
+                    class="{{
+                      index === 0
+                        ? 'text-disabled bg-input-hint'
+                        : 'text-white bg-primary'
+                    }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
                     <i class="fal fa-angle-left text-xl"></i>
                   </button>
                   <button
                     [disabled]="imageToShow.length - 1 === index"
                     (click)="onClickRightButton()"
                     class="{{
-                    index === imageToShow.length - 1 ? 'text-disabled bg-input-hint' : 'text-white bg-primary'
+                      index === imageToShow.length - 1
+                        ? 'text-disabled bg-input-hint'
+                        : 'text-white bg-primary'
                     }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
                     <i class="fal fa-angle-right text-xl"></i>
                   </button>
                 </div>
               </div>
               <div class="w-full grid grid-cols-3 gap-3">
-                <div class="w-[7.5rem] h-[5.375rem] flex-shrink-0 rounded-lg border border-disabled overflow-hidden"
-                     *ngFor="let item of imageToShow[index]">
-                  <img loading="lazy" class="w-full h-full"
-                       [src]="item.url ? item.url : 'assets/images/dummy.jpg'" alt="">
+                <div
+                  class="w-[7.5rem] h-[5.375rem] flex-shrink-0 rounded-lg border border-disabled overflow-hidden"
+                  *ngFor="let item of imageToShow[index]">
+                  <img
+                    loading="lazy"
+                    class="w-full h-full"
+                    [src]="item.url ? item.url : 'assets/images/dummy.jpg'"
+                    alt=""/>
                 </div>
               </div>
             </div>
             <div class="flex flex-col space-y-3">
-              <h1 class="font-semibold text-not-black text-body_title leading-body_title">Time</h1>
-              <span
-                class="text-body text-not-black">{{ selectedEvent?.localDateTime | date : 'd MMM yyyy, h:mm a' }}</span>
+              <h1
+                class="font-semibold text-not-black text-body_title leading-body_title">
+                Time
+              </h1>
+              <span class="text-body text-not-black">{{
+                  selectedEvent?.localDateTime | date: 'd MMM yyyy, h:mm a'
+                }}</span>
             </div>
-            <div *ngIf="selectedEvent.notes?.length > 0" class="flex flex-col space-y-2">
+            <div
+              *ngIf="selectedEvent.notes?.length > 0"
+              class="flex flex-col space-y-2">
               <ng-container *ngFor="let singleNote of selectedEvent.notes">
                 <div class="flex flex-col space-y-1">
-                  <h1 class="text-body_title leading-body_title font-semibold text-not-black">Note
-                    | {{ singleNote.createdAt | date : 'h:mm; d MMM yyyy' }}</h1>
-                  <span class="text-body text-not-black">{{ singleNote?.note }}</span>
+                  <h1
+                    class="text-body_title leading-body_title font-semibold text-not-black">
+                    Note | {{ singleNote.createdAt | date: 'h:mm; d MMM yyyy' }}
+                  </h1>
+                  <span class="text-body text-not-black">{{
+                      singleNote?.note
+                    }}</span>
                 </div>
               </ng-container>
             </div>
           </div>
           <div
             class="flex flex-col items-center justify-center h-full w-full"
-            *ngIf="!loadingEventsLoaded"
-          >
+            *ngIf="!loadingEventsLoaded">
             <!--       make a spinner component-->
             <i class="fas fa-spinner fa-spin text-primary text-4xl"></i>
             <span class="text-center w-full text-secondary">Loading...</span>
@@ -85,79 +135,133 @@
     </div>
     <div class="flex-col flex space-y-3">
       <div class="grid grid-cols-2 px-16 pt-4">
-        <h1 class="text-h2 leading-h2 text-not-black font-semibold px-8">Manage Unloading</h1>
+        <h1 class="text-h2 leading-h2 text-not-black font-semibold px-8">
+          Manage Unloading
+        </h1>
         <h1
-          class="text-body_title leading-body_title text-not-black font-semibold px-8">{{ selectedEventNameUnloading }}</h1>
+          class="text-body_title leading-body_title text-not-black font-semibold px-8">
+          {{ selectedEventNameUnloading }}
+        </h1>
       </div>
       <div class="px-16 grid grid-cols-2 w-full border-b border-line">
-        <div appGetElementHeight (height)="unloadingHeight = $event"
-             class="flex flex-col w-full space-y-4 px-8 mb-6 border-r border-line">
-          <button (click)="changeTripUnloadingEvent(event)" *ngFor="let event of unloadEvents"
-                  [ngClass]="{'border border-blue': event.eventName == selectedEventNameUnloading}"
-                  class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
-            <img loading="lazy" class="notPreview" *ngIf="event.tripDocuments" src="assets/svg/available.svg" alt="">
-            <img loading="lazy" class="notPreview" *ngIf="!event.tripDocuments" src="assets/svg/not-available.svg"
-                 alt="">
-            <span class="text-body_title leading-body_title text-not-black font-semibold">{{ event?.eventName }}</span>
+        <div
+          appGetElementHeight
+          (height)="unloadingHeight = $event"
+          class="flex flex-col w-full space-y-4 px-8 mb-6 border-r border-line">
+          <button
+            (click)="changeTripUnloadingEvent(event)"
+            *ngFor="let event of unloadEvents"
+            [ngClass]="{
+              'border border-blue':
+                event.eventName == selectedEventNameUnloading,
+            }"
+            class="flex items-center space-x-3 bg-[#F9FCFD] px-4 py-4 rounded-xl">
+            <img
+              loading="lazy"
+              class="notPreview"
+              *ngIf="event.tripDocuments"
+              src="assets/svg/available.svg"
+              alt=""/>
+            <img
+              loading="lazy"
+              class="notPreview"
+              *ngIf="!event.tripDocuments"
+              src="assets/svg/not-available.svg"
+              alt=""/>
+            <span
+              class="text-body_title leading-body_title text-not-black font-semibold"
+            >{{ event?.eventName }}</span
+            >
           </button>
         </div>
         <div class="px-8 w-full overflow-y-auto">
-          <div *ngIf="unloadImageToShow.length == 0 && unloadingEventsLoaded"
-               class="w-full h-full flex items-center justify-center">
+          <div
+            *ngIf="unloadImageToShow.length == 0 && unloadingEventsLoaded"
+            class="w-full h-full flex items-center justify-center">
             <div class="flex flex-col space-y-3">
-              <img loading="lazy" src="assets/svg/no-data.svg" alt="">
-              <h1 class="text-body_title leading-body_title text-secondary text-center font-semibold">No Data
-                Available</h1>
+              <img loading="lazy" src="assets/svg/no-data.svg" alt=""/>
+              <h1
+                class="text-body_title leading-body_title text-secondary text-center font-semibold">
+                No Data Available
+              </h1>
             </div>
           </div>
-          <div class="flex flex-col space-y-3" *ngIf="unloadImageToShow.length > 0 && unloadingEventsLoaded">
+          <div
+            class="flex flex-col space-y-3"
+            *ngIf="unloadImageToShow.length > 0 && unloadingEventsLoaded">
             <div class="flex flex-col space-y-3">
               <div class="flex justify-between items-center">
-                <h1 class="text-not-black text-body_title font-semibold leading-body_title">Image</h1>
-                <div class="flex space-x-3 items-center" *ngIf="unloadImageToShow.length > 1">
+                <h1
+                  class="text-not-black text-body_title font-semibold leading-body_title">
+                  Image
+                </h1>
+                <div
+                  class="flex space-x-3 items-center"
+                  *ngIf="unloadImageToShow.length > 1">
                   <button
                     [disabled]="unloadingIndex === 0"
                     (click)="onClickLeftButtonUnloading()"
-                    class="{{unloadingIndex === 0  ? 'text-disabled bg-input-hint' : 'text-white bg-primary'}} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
+                    class="{{
+                      unloadingIndex === 0
+                        ? 'text-disabled bg-input-hint'
+                        : 'text-white bg-primary'
+                    }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
                     <i class="fal fa-angle-left text-xl"></i>
                   </button>
                   <button
                     [disabled]="unloadImageToShow.length - 1 === unloadingIndex"
                     (click)="onClickRightButtonUnloading()"
                     class="{{
-                    unloadingIndex === unloadImageToShow.length - 1 ? 'text-disabled bg-input-hint' : 'text-white bg-primary'
+                      unloadingIndex === unloadImageToShow.length - 1
+                        ? 'text-disabled bg-input-hint'
+                        : 'text-white bg-primary'
                     }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
                     <i class="fal fa-angle-right text-xl"></i>
                   </button>
                 </div>
               </div>
               <div class="w-full grid grid-cols-3 gap-3">
-                <div class="w-[7.5rem] h-[5.375rem] flex-shrink-0 rounded-lg border border-disabled overflow-hidden"
-                     *ngFor="let item of unloadImageToShow[unloadingIndex]">
-                  <img loading="lazy" class="w-full h-full"
-                       [src]="item.url ? item.url : 'assets/images/dummy.jpg'" alt="">
+                <div
+                  class="w-[7.5rem] h-[5.375rem] flex-shrink-0 rounded-lg border border-disabled overflow-hidden"
+                  *ngFor="let item of unloadImageToShow[unloadingIndex]">
+                  <img
+                    loading="lazy"
+                    class="w-full h-full"
+                    [src]="item.url ? item.url : 'assets/images/dummy.jpg'"
+                    alt=""/>
                 </div>
               </div>
             </div>
             <div class="flex flex-col space-y-3">
-              <h1 class="text-body_title leading-body_title font-semibold text-not-black">Time</h1>
-              <span
-                class="text-body text-not-black">{{ selectedUnloadingEvent?.localDateTime | date : 'd MMM yyyy, h:mm a' }}</span>
+              <h1
+                class="text-body_title leading-body_title font-semibold text-not-black">
+                Time
+              </h1>
+              <span class="text-body text-not-black">{{
+                  selectedUnloadingEvent?.localDateTime
+                    | date: 'd MMM yyyy, h:mm a'
+                }}</span>
             </div>
-            <div *ngIf="selectedUnloadingEvent.notes?.length > 0" class="flex flex-col space-y-2">
-              <ng-container *ngFor="let singleNote of selectedUnloadingEvent.notes">
+            <div
+              *ngIf="selectedUnloadingEvent.notes?.length > 0"
+              class="flex flex-col space-y-2">
+              <ng-container
+                *ngFor="let singleNote of selectedUnloadingEvent.notes">
                 <div class="flex flex-col space-y-1">
-                  <h1 class="text-body_title leading-body_title font-semibold text-not-black">Note
-                    | {{ singleNote.createdAt | date : 'h:mm; d MMM yyyy' }}</h1>
-                  <span class="text-body text-not-black">{{ singleNote?.note }}</span>
+                  <h1
+                    class="text-body_title leading-body_title font-semibold text-not-black">
+                    Note | {{ singleNote.createdAt | date: 'h:mm; d MMM yyyy' }}
+                  </h1>
+                  <span class="text-body text-not-black">{{
+                      singleNote?.note
+                    }}</span>
                 </div>
               </ng-container>
             </div>
           </div>
           <div
             class="flex flex-col items-center justify-center h-full w-full"
-            *ngIf="!unloadingEventsLoaded"
-          >
+            *ngIf="!unloadingEventsLoaded">
             <!--       make a spinner component-->
             <i class="fas fa-spinner fa-spin text-primary text-4xl"></i>
             <span class="text-center w-full text-secondary">Loading...</span>

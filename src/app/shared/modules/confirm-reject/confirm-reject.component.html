@@ -1,23 +1,44 @@
 <div class="sticky top-0 flex items-start justify-between bg-white z-50">
-  <h1 class="text-h3 leading-h3  font-semibold text-not-black px-6 py-4"></h1>
-  <button class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
-          (click)="closeDialog()">
+  <h1 class="text-h3 leading-h3 font-semibold text-not-black px-6 py-4"></h1>
+  <button
+    class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
+    (click)="closeDialog()">
     <i class="fal fa-times"></i>
   </button>
 </div>
 <div class="w-full h-full flex flex-col py-4 px-12 pt-0">
   <div class="flex flex-col space-y-4 items-center">
     <div class="mb-4 flex flex-col space-y-2">
-      <img src="assets/svg/warning-red.svg" alt="warning" loading="lazy" class="notPreview">
-      <h1 class="text-h1_mobile leading-h1_mobile text-center text-not-black font-bold">{{ data?.title }}</h1>
+      <img
+        src="assets/svg/warning-red.svg"
+        alt="warning"
+        loading="lazy"
+        class="notPreview"/>
+      <h1
+        class="text-h1_mobile leading-h1_mobile text-center text-not-black font-bold">
+        {{ data?.title }}
+      </h1>
     </div>
-    <p class="w-2/3 text-body text-center text-secondary">Do you want to reject <span>{{data?.textPrefix}}</span> <span
-      class="font-semibold text-body_title leading-body_title">{{ data?.text }}</span></p>
-    <textarea *ngIf="data?.reasonAvailable" class="w-full h-32 border border-gray-300 rounded-lg p-4 mt-4" placeholder="Write Cause"
-              [(ngModel)]="reason"></textarea>
-    <button [ngClass]="{'bg-opacity-[30%]': data?.reasonAvailable && (reason == null || reason == '')}" [disabled]="data?.reasonAvailable && (reason == null || reason == '')"
-            class="bg-red w-full text-white rounded-lg p-4 mt-4"
-            (click)="confirmUpdate()">{{ data?.buttonText }}
+    <p class="w-2/3 text-body text-center text-secondary">
+      Do you want to reject <span>{{ data?.textPrefix }}</span>
+      <span class="font-semibold text-body_title leading-body_title">{{
+          data?.text
+        }}</span>
+    </p>
+    <textarea
+      *ngIf="data?.reasonAvailable"
+      class="w-full h-32 border border-gray-300 rounded-lg p-4 mt-4"
+      placeholder="Write Cause"
+      [(ngModel)]="reason"></textarea>
+    <button
+      [ngClass]="{
+        'bg-opacity-[30%]':
+          data?.reasonAvailable && (reason == null || reason == ''),
+      }"
+      [disabled]="data?.reasonAvailable && (reason == null || reason == '')"
+      class="bg-red w-full text-white rounded-lg p-4 mt-4"
+      (click)="confirmUpdate()">
+      {{ data?.buttonText }}
     </button>
   </div>
 </div>

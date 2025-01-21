@@ -1,93 +1,117 @@
 <div class="flex 2xl:grid-cols-3 h-screen bg-white">
   <div
-    class="hidden lg:block border-r border-line w-full  bg-loginBg flex-1 bg-center bg-cover bg-no-repeat h-full">
+    class="hidden lg:block border-r border-line w-full bg-loginBg flex-1 bg-center bg-cover bg-no-repeat h-full">
     <div
-      class="w-full h-full flex items-center justify-center  object-center object-cover">
-      <img loading="lazy" class="notPreview" src="assets/logo/login-logo.png" alt="loginLogo" />
+      class="w-full h-full flex items-center justify-center object-center object-cover">
+      <img
+        loading="lazy"
+        class="notPreview"
+        src="assets/logo/login-logo.png"
+        alt="loginLogo"/>
     </div>
   </div>
   <div class="h-screen w-[32rem]">
     <div
       class="flex flex-col h-[calc(100vh-2.5rem)] w-full pb-12 justify-center px-12 items-start text-center md:text-left">
-      <h1 *ngIf="!otpScreen" class="text-h1 leading-h1 font-semibold pb-10">User login</h1>
+      <h1 *ngIf="!otpScreen" class="text-h1 leading-h1 font-semibold pb-10">
+        User login
+      </h1>
       <div *ngIf="otpScreen" class="flex flex-col pb-12">
         <h1 class="text-h1 leading-h1 font-semibold pb-4">OTP verification</h1>
-        <p class="text-h2 leading-h2 text-secondary py-3">Please enter the OTP sent to your mobile number- </p>
+        <p class="text-h2 leading-h2 text-secondary py-3">
+          Please enter the OTP sent to your mobile number-
+        </p>
         <div class="flex space-x-[.625rem] items-center">
-          <p class="text-h2 leading-h2  text-not-black font-semibold ">{{ phoneNumber.value }}</p>
+          <p class="text-h2 leading-h2 text-not-black font-semibold">
+            {{ phoneNumber.value }}
+          </p>
           <button (click)="onClickEdit()" type="button">
-            <img alt="" src="assets/svg/edit.svg" class="notPreview">
+            <img alt="" src="assets/svg/edit.svg" class="notPreview"/>
           </button>
         </div>
       </div>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-[23.5rem]">
-        <div *ngIf="usingEmail" class="mb-4 flex flex-col space-y-2 text-secondary w-full">
+        <div
+          *ngIf="usingEmail"
+          class="mb-4 flex flex-col space-y-2 text-secondary w-full">
           <label for="email" class="form-label">User Email</label>
-          <mat-form-field appearance="outline" class="example-full-width ">
+          <mat-form-field appearance="outline" class="example-full-width">
             <input
               id="email"
               type="text"
               matInput
               formControlName="email"
-              placeholder="User email">
-
+              placeholder="User email"/>
           </mat-form-field>
           <!--        error-message-->
-          <div id="emailError"
-               *ngIf="email?.invalid && email?.touched"
-               class="text-red text-xs">
+          <div
+            id="emailError"
+            *ngIf="email?.invalid && email?.touched"
+            class="text-red text-xs">
             {{ getEmailError() }}
           </div>
         </div>
-        <div *ngIf="!usingEmail && !otpScreen" class="mb-4 flex flex-col space-y-2 text-secondary w-full">
-          <ngx-material-intl-tel-input [includeDialCode]="false" #numberInput class="customize" id="phoneNumber"
-                                       [textLabels]="textLabels"
-                                       [autoSelectedCountry]="CountryISO.Bangladesh"
-                                       [preferredCountries]="[CountryISO.Bangladesh]"
-                                       [fieldControl]="phoneNumber"
-                                       [numberValidation]="true" [hidePhoneIcon]="true"
-                                       [required]="true" [autoIpLookup]="false"></ngx-material-intl-tel-input>
+        <div
+          *ngIf="!usingEmail && !otpScreen"
+          class="mb-4 flex flex-col space-y-2 text-secondary w-full">
+          <ngx-material-intl-tel-input
+            [includeDialCode]="false"
+            #numberInput
+            class="customize"
+            id="phoneNumber"
+            [textLabels]="textLabels"
+            [autoSelectedCountry]="CountryISO.Bangladesh"
+            [preferredCountries]="[CountryISO.Bangladesh]"
+            [fieldControl]="phoneNumber"
+            [numberValidation]="true"
+            [hidePhoneIcon]="true"
+            [required]="true"
+            [autoIpLookup]="false"></ngx-material-intl-tel-input>
           <!--        error-message-->
         </div>
-        <div class="w-full flex items-center justify-center mb-6" *ngIf="otpScreen">
+        <div
+          class="w-full flex items-center justify-center mb-6"
+          *ngIf="otpScreen">
           <div class="flex space-x-3 items-center">
             <input
-              id="otp1" appInputAutoFocus idName="{{idName}}"
+              id="otp1"
+              appInputAutoFocus
+              idName="{{ idName }}"
               [autocomplete]="false"
               formControlName="otp1"
               type="email"
-              class="bg-input rounded-lg border-none  h-[5.375rem] w-[5.375rem]  py-4 customInput"
+              class="bg-input rounded-lg border-none h-[5.375rem] w-[5.375rem] py-4 customInput"
               [minlength]="1"
               [maxLength]="1"
-              name="phoneNumber"
-            />
+              name="phoneNumber"/>
             <input
               id="otp2"
-              appInputAutoFocus idName="{{idName}}"
+              appInputAutoFocus
+              idName="{{ idName }}"
               #otp2
               [autocomplete]="false"
               formControlName="otp2"
               type="email"
-              class="bg-input rounded-lg border-none  h-[5.375rem] w-[5.375rem]  py-4 customInput"
+              class="bg-input rounded-lg border-none h-[5.375rem] w-[5.375rem] py-4 customInput"
               [minlength]="1"
               [maxLength]="1"
-              name="phoneNumber"
-            />
+              name="phoneNumber"/>
             <input
               id="otp3"
-              appInputAutoFocus idName="{{idName}}"
+              appInputAutoFocus
+              idName="{{ idName }}"
               #otp3
               [autocomplete]="false"
               formControlName="otp3"
               type="email"
-              class="bg-input rounded-lg border-none  h-[5.375rem] w-[5.375rem]  py-4 customInput"
+              class="bg-input rounded-lg border-none h-[5.375rem] w-[5.375rem] py-4 customInput"
               [minlength]="1"
               [maxLength]="1"
-              name="phoneNumber"
-            />
+              name="phoneNumber"/>
             <input
               id="otp4"
-              appInputAutoFocus idName="{{idName}}"
+              appInputAutoFocus
+              idName="{{ idName }}"
               #otp4
               [autocomplete]="false"
               formControlName="otp4"
@@ -95,24 +119,24 @@
               class="bg-input rounded-lg border-none h-[5.375rem] w-[5.375rem] customInput"
               [minlength]="1"
               [maxLength]="1"
-              name="phoneNumber"
-            />
-
-
+              name="phoneNumber"/>
           </div>
         </div>
-        <div *ngIf="usingEmail" class="mb-6 flex flex-col space-y-2 text-secondary w-full">
+        <div
+          *ngIf="usingEmail"
+          class="mb-6 flex flex-col space-y-2 text-secondary w-full">
           <label for="password" class="form-label">Password</label>
           <!--          password field with eye icon-->
           <div class="relative bg-input rounded-lg border-none">
-            <mat-form-field appearance="outline" class="example-full-width w-full ">
+            <mat-form-field
+              appearance="outline"
+              class="example-full-width w-full">
               <input
                 id="password"
                 type="password"
                 matInput
                 formControlName="password"
-                placeholder="password">
-
+                placeholder="password"/>
             </mat-form-field>
             <i
               id="icon"
@@ -122,43 +146,72 @@
           <!--        error-message-->
           <div
             id="passwordError"
-            *ngIf="password?.invalid &&  password?.touched"
+            *ngIf="password?.invalid && password?.touched"
             class="text-red text-xs">
             <span>{{ getPasswordError() }}</span>
           </div>
         </div>
-        <button [disabled]="$loading" *ngIf="usingEmail"
-                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-[1.125rem] w-full">
-          <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i> Login
+        <button
+          [disabled]="$loading"
+          *ngIf="usingEmail"
+          class="btn bg-primary font-semibold text-white rounded-lg px-4 py-[1.125rem] w-full">
+          <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i>
+          Login
         </button>
-        <button [disabled]="$loading" type="button" (click)="onOtpLogin()" *ngIf="otpScreen"
-                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-[1.125rem] w-full">
-          <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i> Login
+        <button
+          [disabled]="$loading"
+          type="button"
+          (click)="onOtpLogin()"
+          *ngIf="otpScreen"
+          class="btn bg-primary font-semibold text-white rounded-lg px-4 py-[1.125rem] w-full">
+          <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i>
+          Login
         </button>
-        <button [disabled]="$loading" *ngIf="!usingEmail && !otpScreen"
-                class="btn bg-primary font-semibold text-white rounded-lg px-4 py-[1.125rem] w-full">
-          <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i> Send OTP
+        <button
+          [disabled]="$loading"
+          *ngIf="!usingEmail && !otpScreen"
+          class="btn bg-primary font-semibold text-white rounded-lg px-4 py-[1.125rem] w-full">
+          <i *ngIf="$loading" class="fas fa-spinner fa-spin text-white"></i>
+          Send OTP
         </button>
         <!--        or using phone number-->
-        <div *ngIf="!otpScreen" class="flex items-center justify-center space-x-2 py-4">
+        <div
+          *ngIf="!otpScreen"
+          class="flex items-center justify-center space-x-2 py-4">
           <span class="text-not-black font-semibold text-[1.25rem]">or</span>
         </div>
-        <button type="button" *ngIf="usingEmail" (click)="onClickUseMobileNumber()"
-                class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-[1.125rem] w-full">
+        <button
+          type="button"
+          *ngIf="usingEmail"
+          (click)="onClickUseMobileNumber()"
+          class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-[1.125rem] w-full">
           Use mobile number
         </button>
-        <button type="button" (click)="onClickUseEmail()" *ngIf="!usingEmail && !otpScreen"
-                class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-[1.125rem] w-full">
+        <button
+          type="button"
+          (click)="onClickUseEmail()"
+          *ngIf="!usingEmail && !otpScreen"
+          class="btn border border-primary text-primary font-semibold text-[1.125rem] rounded-lg px-4 py-[1.125rem] w-full">
           Use email
         </button>
-        <div class="w-full flex items-center justify-center py-4" *ngIf="otpScreen">
+        <div
+          class="w-full flex items-center justify-center py-4"
+          *ngIf="otpScreen">
           <div class="flex space-x-4">
             <!--            timing-->
             <span
-              class="text-body_title leading-body_title font-semibold text-{{timeDisabled ? 'input-hint': 'primary'}}">{{ time | date : 'm:ss' }}</span>
-            <button type="button" (click)="onClickResend()"
-                    [disabled]="!timeDisabled"
-                    class="text-{{timeDisabled ? 'primary': 'input-hint'}} font-semibold text-body_title leading-body_title cursor-pointer">
+              class="text-body_title leading-body_title font-semibold text-{{
+                timeDisabled ? 'input-hint' : 'primary'
+              }}"
+            >{{ time | date: 'm:ss' }}</span
+            >
+            <button
+              type="button"
+              (click)="onClickResend()"
+              [disabled]="!timeDisabled"
+              class="text-{{
+                timeDisabled ? 'primary' : 'input-hint'
+              }} font-semibold text-body_title leading-body_title cursor-pointer">
               Resend
             </button>
           </div>

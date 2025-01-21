@@ -21,7 +21,6 @@ export interface tripCountStats {
   totalTripsCompletedWithinTheDateRange: number;
 }
 
-
 export interface customerStats {
   totalCustomers: number;
   totalCustomersOnboardedWithinGivenDateRange: number;
@@ -49,7 +48,7 @@ export interface challanStatus {
   inProgress: number;
   approved: number;
   rejected: number;
-  pending:number;
+  pending: number;
   totalHardCopyReceived: number;
   totalCustomerRateForPendingChallans: number;
 }

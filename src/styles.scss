@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import '@ng-select/ng-select/themes/default.theme.css';
-@import "@angular/material/prebuilt-themes/azure-blue.css";
+@import '@angular/material/prebuilt-themes/azure-blue.css';
 
 * {
   --webkit-box-sizing: border-box;
@@ -62,14 +62,14 @@ body {
 /* custom style ng-select */
 .ng-select .ng-select-container .ng-value-container .ng-placeholder {
   font-size: 0.875rem !important;
-  color: #D9EDF0 !important;
+  color: #d9edf0 !important;
 }
 
 .ng-select .ng-select-container {
   font-size: 0.875rem !important;
-  border: 1px solid #E5EAEB !important;
+  border: 1px solid #e5eaeb !important;
   border-radius: 0.25rem !important;
-  background-color: #F5FBFC !important;
+  background-color: #f5fbfc !important;
   color: #111827 !important;
   padding: 0.5rem 0.5rem !important;
 }
@@ -78,12 +78,17 @@ img {
   cursor: pointer;
 }
 
-.fal, .far, .fas, .fad, .fab, .fa {
-  font-family: "Font Awesome 5 Pro", serif !important;
+.fal,
+.far,
+.fas,
+.fad,
+.fab,
+.fa {
+  font-family: 'Font Awesome 5 Pro', serif !important;
 }
 
 .mat-mdc-select-placeholder {
-  color: #A5B8BB !important;
+  color: #a5b8bb !important;
   font-weight: 400 !important;
 }
 
@@ -93,8 +98,8 @@ img {
   font-weight: 500 !important;
   -webkit-font-smoothing: none !important;
   color: #242424 !important;
-  outline: 1px solid #E5EAEB !important;
-  background: #F5FBFC !important;
+  outline: 1px solid #e5eaeb !important;
+  background: #f5fbfc !important;
   border-radius: 0.5rem !important;
 }
 
@@ -102,21 +107,19 @@ img {
   outline: none !important;
 }
 
-
 .mat-mdc-form-field > input::placeholder {
-  color: #A5B8BB !important;
+  color: #a5b8bb !important;
   font-weight: 400 !important;
 }
 
 .mat-mdc-text-field-wrapper {
   width: 100%;
   border-radius: 0.5rem !important;
-  background-color: #F5FBFC !important;
-
+  background-color: #f5fbfc !important;
 }
 
 .mat-mdc-text-field-wrapper:focus-within {
-  border: 1px solid #A5B8BB !important;
+  border: 1px solid #a5b8bb !important;
 }
 
 .mdc-notched-outline {
@@ -130,21 +133,21 @@ img {
 
 .mat-mdc-select {
   padding: 0 !important;
-  background-color: #F5FBFC !important;
+  background-color: #f5fbfc !important;
   border: none !important;
   color: #242424 !important;
   font-weight: 500 !important;
 }
 
 .mdc-text-field__input::placeholder {
-  color: #A5B8BB !important;
+  color: #a5b8bb !important;
   font-weight: 400 !important;
 }
 
 .mat-mdc-select:focus {
   border: none !important;
   outline: none !important;
-  --tw-ring-color: #F5FBFC !important;
+  --tw-ring-color: #f5fbfc !important;
 }
 
 mat-select::ng-deep .mat-select-arrow {
@@ -163,20 +166,23 @@ input::-webkit-outer-spin-button {
   margin: 0;
 }
 
-.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input {
+.mdc-text-field--outlined:not(.mdc-text-field--disabled)
+.mdc-text-field__input {
   caret-color: #111827 !important;
-  --tw-ring-color: #E5EAEB !important;
+  --tw-ring-color: #e5eaeb !important;
   --tw-ring-offset-color: none !important;
   --tw-ring-shadow: none !important;
 }
 
-.mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background, .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background {
-  border-color: #11484F !important;
-  background-color: #11484F !important;
+.mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background,
+.mdc-checkbox__native-control:enabled:indeterminate
+~ .mdc-checkbox__background {
+  border-color: #11484f !important;
+  background-color: #11484f !important;
 }
 
 .mat-mdc-dialog-container {
-  border-radius: .750rem !important;
+  border-radius: 0.75rem !important;
   overflow: hidden !important;
 }
 
@@ -190,21 +196,21 @@ input::-webkit-outer-spin-button {
   color: #242424 !important;
 }
 
-.mat-mdc-form-field-subscript-wrapper, .mat-mdc-form-field-bottom-align::before {
+.mat-mdc-form-field-subscript-wrapper,
+.mat-mdc-form-field-bottom-align::before {
   display: none !important;
 }
 
 .mat-mdc-form-field-error {
-  color: #F0614E !important;
+  color: #f0614e !important;
   font-size: 0.75rem !important;
-
 }
 
 .mat-mdc-autocomplete-panel {
   color: #242424 !important;
-  background-color: #F5FBFC !important;
+  background-color: #f5fbfc !important;
   box-shadow: none !important;
-  border: 1px solid #A5B8BB;
+  border: 1px solid #a5b8bb;
   border-radius: 0.5rem !important;
   font-size: 0.875rem !important;
   padding: 0 !important;
@@ -212,9 +218,9 @@ input::-webkit-outer-spin-button {
 
 .mat-mdc-select-panel {
   color: #242424 !important;
-  background-color: #F5FBFC !important;
+  background-color: #f5fbfc !important;
   box-shadow: none !important;
-  border: 1px solid #A5B8BB;
+  border: 1px solid #a5b8bb;
   border-radius: 0.5rem !important;
   font-size: 0.875rem !important;
   padding: 0 !important;
@@ -223,34 +229,31 @@ input::-webkit-outer-spin-button {
 .error {
   outline: none !important;
   --tw-ring-color: none !important;
-  border: 1px solid #F7CAD0 !important;
+  border: 1px solid #f7cad0 !important;
   border-radius: 0.5rem !important;
 }
-
 
 ::ng-deep .error .mat-mdc-text-field-wrapper {
   width: 100%;
   border-radius: 0.5rem !important;
-  background-color: #FFFAFB !important;
+  background-color: #fffafb !important;
   height: 3.3rem !important;
 }
-
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-
-  -webkit-box-shadow: 0 0 0 30px #F5FBFC inset !important;
+  -webkit-box-shadow: 0 0 0 30px #f5fbfc inset !important;
 }
 
 textarea::placeholder {
   font-size: 0.875rem !important;
-  color: #A5B8BB !important;
+  color: #a5b8bb !important;
 }
 
 textarea:focus {
-  --tw-ring-color: #E5EAEB !important;
+  --tw-ring-color: #e5eaeb !important;
 }
 
 .mat-date-range-input-wrapper input {
@@ -260,12 +263,12 @@ textarea:focus {
 
 .mat-date-range-input-wrapper input::placeholder {
   font-size: 1rem !important;
-  color: #A5B8BB !important;
+  color: #a5b8bb !important;
   font-weight: 400 !important;
 }
 
 .mat-date-range-input-separator {
-  color: #A5B8BB !important;
+  color: #a5b8bb !important;
 }
 
 img:hover {

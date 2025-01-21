@@ -42,9 +42,6 @@ export class TripService {
   anotherStatusCalled: BehaviorSubject<boolean> = new BehaviorSubject(false);
   historyApi = `${environment.locationUrl}/api/locations/histories`;
 
-
-
-
   constructor(
     private http: HttpClient,
     private toaster: HandleToastrService
@@ -249,6 +246,8 @@ export class TripService {
   }
 
   getTripHistory(from: any, to: any, vehicleRegId: any) {
-    return this.http.get(`${this.historyApi}?from=${from}&to=${to}&vehicleRegId=${vehicleRegId}`);
+    return this.http.get(
+      `${this.historyApi}?from=${from}&to=${to}&vehicleRegId=${vehicleRegId}`
+    );
   }
 }

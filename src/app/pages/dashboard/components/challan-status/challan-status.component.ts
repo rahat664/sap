@@ -8,7 +8,7 @@ import { PieChartComponent } from '../../../../shared/charts/pie-chart/pie-chart
 import { DashboardService } from '../../services/dashboard.service';
 import { challanStatus } from '../../models/dashboard-stats.model';
 import { DatePipe } from '@angular/common';
-import {RouterLink} from "@angular/router";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-challan-status',

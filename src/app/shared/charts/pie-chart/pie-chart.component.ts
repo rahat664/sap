@@ -47,9 +47,7 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
   @Input() value: number[] = [0, 0];
   public chartOptions: Partial<ChartOptions>;
 
-  constructor(private cd: ChangeDetectorRef) {
-
-  }
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     timer(1000).subscribe(() => {
@@ -115,7 +113,6 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
           },
         },
       };
-
     });
   }
 

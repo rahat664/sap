@@ -8,10 +8,11 @@ import { DashboardService } from '../../services/dashboard.service';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   customerStats,
-  DashboardStatsModel, userStats,
+  DashboardStatsModel,
+  userStats,
 } from '../../models/dashboard-stats.model';
 import { RouterLink } from '@angular/router';
-import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
+import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-status-heighlight',

@@ -102,7 +102,8 @@ export class UserService {
 
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
-    }  if (approveStatus) {
+    }
+    if (approveStatus) {
       apiUrl += `&approveStatus=${approveStatus}`;
     }
 

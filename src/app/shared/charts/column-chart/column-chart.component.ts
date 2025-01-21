@@ -13,7 +13,7 @@ import {
   ChartComponent,
   NgApexchartsModule,
 } from 'ng-apexcharts';
-import {timer} from "rxjs";
+import { timer } from 'rxjs';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -40,12 +40,9 @@ export class ColumnChartComponent {
   public chartOptions: Partial<ChartOptions>;
   @Input() createdValue: number[] = [];
   @Input() completedValue: number[] = [];
-  @Input() categories: string[] = [
-  ];
+  @Input() categories: string[] = [];
 
-  constructor(private cd: ChangeDetectorRef) {
-
-  }
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     const colors = ['#85DAE5', '#208B99'];

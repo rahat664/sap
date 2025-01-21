@@ -3,17 +3,28 @@
     <div *ngIf="isUploadIconEnabled" class="flex space-x-3 items-center">
       <span
         class="h-6 w-6 rounded-full bg-input flex items-center justify-center">
-        <img loading="lazy" class="notPreview" src="assets/svg/upload.svg" alt="" />
+        <img
+          loading="lazy"
+          class="notPreview"
+          src="assets/svg/upload.svg"
+          alt=""/>
       </span>
       <h1 class="text-body font-bold">Upload documents</h1>
     </div>
     <label
       for="file-upload"
-      class="drop-area {{isUploadDisabled ? 'border-input-hint': 'border-link'}} flex items-center space-y-3 flex-col w-full"
+      class="drop-area {{
+        isUploadDisabled ? 'border-input-hint' : 'border-link'
+      }} flex items-center space-y-3 flex-col w-full"
       (drop)="onFileDropped($event)"
       (dragover)="onDragOver($event)"
       (dragleave)="onDragLeave($event)">
-      <svg width="71" height="52" viewBox="0 0 71 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        width="71"
+        height="52"
+        viewBox="0 0 71 52"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
         <path
           [ngStyle]="{ fill: isUploadDisabled ? '#D1D5DB' : '#56AAFF' }"
           d="M63.8182 0H7.09091C5.21028 0 3.40668 0.747076 2.07688 2.07688C0.747076 3.40668 0 5.21028 0 7.09091V42.5455C0.00124055 43.022 0.146507 43.4871 0.416741 43.8796C0.686975 44.2721 1.06955 44.5738 1.51428 44.7451C1.95901 44.9163 2.44512 44.9491 2.90883 44.8392C3.37254 44.7293 3.79219 44.4817 4.11273 44.1291L23.3764 22.6673L36.6127 41.7891C36.7957 42.0512 37.03 42.2735 37.3013 42.4425C37.5727 42.6115 37.8755 42.7237 38.1915 42.7723C38.5074 42.8209 38.83 42.8049 39.1396 42.7253C39.4492 42.6457 39.7394 42.5041 39.9927 42.3091L54.1745 31.46L66.8909 44.3891C67.2183 44.7106 67.6323 44.9298 68.0822 45.02C68.5321 45.1101 68.9986 45.0674 69.4246 44.897C69.8507 44.7266 70.2179 44.4358 70.4815 44.0602C70.7451 43.6846 70.8937 43.2404 70.9091 42.7818V7.09091C70.9091 5.21028 70.162 3.40668 68.8322 2.07688C67.5024 0.747076 65.6988 0 63.8182 0Z"
@@ -34,11 +45,21 @@
       <div
         *ngIf="filePreview"
         class="h-64 w-64 overflow-hidden object-center object-cover">
-        <img loading="lazy" class="h-full w-full" [src]="filePreview" alt="File Preview" />
+        <img
+          loading="lazy"
+          class="h-full w-full"
+          [src]="filePreview"
+          alt="File Preview"/>
       </div>
-      <span class="text-sm font-medium {{isUploadDisabled ? 'text-input-hint' : 'text-web-text-secondary'}}"
+      <span
+        class="text-sm font-medium {{
+          isUploadDisabled ? 'text-input-hint' : 'text-web-text-secondary'
+        }}"
       >Drop your image here or
-        <a class="{{isUploadDisabled ? 'text-input-hint' : 'text-link'}} cursor-pointer text-decoration-underline"
+        <a
+          class="{{
+            isUploadDisabled ? 'text-input-hint' : 'text-link'
+          }} cursor-pointer text-decoration-underline"
         >browse</a
         ></span
       >
@@ -59,47 +80,58 @@
         <div class="w-full flex justify-between gap-3 flex-1 items-center">
           <div class="h-12 w-12 overflow-hidden">
             <img
-              class="h-full w-full "
+              class="h-full w-full"
               [src]="file.preview ? file.preview : 'assets/svg/fileupload.svg'"
               alt="" />
           </div>
-          <div class="w-full grid gap-4"
-               [ngClass]="{
-            'grid-cols-2': file.registrationType === 'Case' ||
-              file.registrationType === 'Fitness' ||
-              file.registrationType === 'Route Permit' ||
-              file.registrationType === 'Tax' ||
-              file.registrationType === 'Driving License Front' || file.registrationType === 'Insurance',
-            }"
-          >
+          <div
+            class="w-full grid gap-4"
+            [ngClass]="{
+              'grid-cols-2':
+                file.registrationType === 'Case' ||
+                file.registrationType === 'Fitness' ||
+                file.registrationType === 'Route Permit' ||
+                file.registrationType === 'Tax' ||
+                file.registrationType === 'Driving License Front' ||
+                file.registrationType === 'Insurance',
+            }">
             <app-custom-input
               backgroundColor="white"
               inputPlaceholder="Select type"
               [options]="fileTypeOptions"
               (selectedId)="onSelectFileType($event, i)"
-              [inputSearch]="file.registrationType"
-            ></app-custom-input>
+              [inputSearch]="file.registrationType"></app-custom-input>
             <div
               *ngIf="
-              file.registrationType === 'Case' ||
-              file.registrationType === 'Fitness' ||
-              file.registrationType === 'Route Permit' ||
-              file.registrationType === 'Tax' ||
-              file.registrationType === 'Driving License Front' || file.registrationType === 'Insurance'
-            ">
+                file.registrationType === 'Case' ||
+                file.registrationType === 'Fitness' ||
+                file.registrationType === 'Route Permit' ||
+                file.registrationType === 'Tax' ||
+                file.registrationType === 'Driving License Front' ||
+                file.registrationType === 'Insurance'
+              ">
               <!--             Date picker cannot take previous date-->
-              <mat-form-field class="example-full-width flex-1 w-full" appearance="outline"
-                              [ngClass]="{'error': checkError(i)}">
-                <input matInput [matDatepicker]="picker" placeholder="Expiry Date" (focusin)="picker.open()"
-                       (selectionchange)="onDateChange($event, i)">
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-form-field
+                class="example-full-width flex-1 w-full"
+                appearance="outline"
+                [ngClass]="{ error: checkError(i) }">
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  placeholder="Expiry Date"
+                  (focusin)="picker.open()"
+                  (selectionchange)="onDateChange($event, i)"/>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
             </div>
           </div>
         </div>
-        <button (click)="onCloseSelectedFile(i)"
-                class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+        <button
+          (click)="onCloseSelectedFile(i)"
+          class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
           <i class="fal fa-times text-primary"></i>
         </button>
       </div>

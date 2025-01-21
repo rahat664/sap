@@ -133,7 +133,6 @@ export class FileUploadPopupComponent implements OnChanges {
         file.registrationType !== 'Registration Paper'
     );
 
-
     const isExpiryFilled = newFileArray.every(
       (file: { registrationExpireDate: null }) =>
         file.registrationExpireDate !== null

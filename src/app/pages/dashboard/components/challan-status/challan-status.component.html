@@ -1,4 +1,5 @@
-<div class="px-6 py-5 bg-white rounded-lg flex flex-col space-y-[0.875rem] h-full">
+<div
+  class="px-6 py-5 bg-white rounded-lg flex flex-col space-y-[0.875rem] h-full">
   <div class="flex justify-between items-center">
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
       Challan Status
@@ -16,8 +17,13 @@
     <!--      </mat-select>-->
     <!--    </mat-form-field>-->
   </div>
-  <div routerLink="/challan-management" class="cursor-pointer flex w-full h-full items-center justify-center">
-    <app-pie-chart [value]="[challanStatus?.received, challanStatus?.pending]"></app-pie-chart>
+  <div
+    routerLink="/challan-management"
+    class="cursor-pointer flex w-full h-full items-center justify-center">
+    <app-pie-chart
+      [value]="[
+        challanStatus?.received,
+        challanStatus?.pending,
+      ]"></app-pie-chart>
   </div>
 </div>
-

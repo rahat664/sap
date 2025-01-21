@@ -1,22 +1,37 @@
 <div class="sticky top-0 flex items-start justify-between bg-white z-50">
-  <h1 class="text-h3 leading-h3  font-semibold text-not-black px-6 py-4">{{ getButtonName() }}</h1>
-  <button class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
-          (click)="closeDialog()">
+  <h1 class="text-h3 leading-h3 font-semibold text-not-black px-6 py-4">
+    {{ getButtonName() }}
+  </h1>
+  <button
+    class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
+    (click)="closeDialog()">
     <i class="fal fa-times"></i>
   </button>
 </div>
 <form [formGroup]="tripUpdateForm" class="flex flex-col space-y-3 px-6 py-4">
-  <div class="border-b border-input pb-6" *ngIf="data?.trip?.status == 'Unassigned' ">
+  <div
+    class="border-b border-input pb-6"
+    *ngIf="data?.trip?.status == 'Unassigned'">
     <div class="flex justify-between items-center">
-      <h1 class="text-h2 leading-h2 font-semibold text-not-black">Transporter Info<sup>*</sup></h1>
-      <a class="text-link text-sm cursor-pointer" (click)="getTransporterList()">Select from list</a>
+      <h1 class="text-h2 leading-h2 font-semibold text-not-black">
+        Transporter Info<sup>*</sup>
+      </h1>
+      <a class="text-link text-sm cursor-pointer" (click)="getTransporterList()"
+      >Select from list</a
+      >
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div class="flex flex-col space-y-1 col-span-2 w-full">
-        <label for="transporterName" class="text-body text-secondary">Name</label>
-        <mat-form-field appearance="outline" class="example-full-width w-full"
-                        [class.error]="tripUpdateForm.get('transporterName').invalid && tripUpdateForm.get('transporterName').touched"
+        <label for="transporterName" class="text-body text-secondary"
+        >Name</label
         >
+        <mat-form-field
+          appearance="outline"
+          class="example-full-width w-full"
+          [class.error]="
+            tripUpdateForm.get('transporterName').invalid &&
+            tripUpdateForm.get('transporterName').touched
+          ">
           <input
             id="transporterName"
             type="text"
@@ -24,113 +39,195 @@
             formControlName="transporterName"
             (keyup)="onKeyUpTransporterSearch($event)"
             placeholder="Transporter Name"
-            [matAutocomplete]="transporter">
+            [matAutocomplete]="transporter"/>
           <mat-autocomplete #transporter="matAutocomplete">
             @for (option of transporterSuggestion; track option) {
-              <mat-option (click)="onClickTransporterSearchSuggestion(option)" [value]="option.name">
+              <mat-option
+                (click)="onClickTransporterSearchSuggestion(option)"
+                [value]="option.name">
                 <div class="flex flex-col space-y-1">
-                  <span class="text-body_title leading-body_title text-not-black font-semibold">{{ option.name }}</span>
-                  <span class="text-secondary text-body_title leading-body_title">{{ option.phone }}</span>
+                  <span
+                    class="text-body_title leading-body_title text-not-black font-semibold"
+                  >{{ option.name }}</span
+                  >
+                  <span
+                    class="text-secondary text-body_title leading-body_title"
+                  >{{ option.phone }}</span
+                  >
                 </div>
               </mat-option>
             }
           </mat-autocomplete>
         </mat-form-field>
         <mat-error
-          *ngIf="tripUpdateForm.get('transporterName').invalid && tripUpdateForm.get('transporterName').touched">
+          *ngIf="
+            tripUpdateForm.get('transporterName').invalid &&
+            tripUpdateForm.get('transporterName').touched
+          ">
           Transporter Name is required
         </mat-error>
       </div>
       <div class="flex flex-col space-y-1">
-        <label for="transporterMobile" class="text-body text-secondary">Mobile Number</label>
-        <mat-form-field id="transporterMobile" appearance="outline"
-                        [class.error]="tripUpdateForm.get('transporterPhone').invalid && tripUpdateForm.get('transporterPhone').touched"
+        <label for="transporterMobile" class="text-body text-secondary"
+        >Mobile Number</label
         >
-          <input readonly formControlName="transporterPhone"
-                 [disabled]="true" [readonly]="true" type="text" matInput
-                 placeholder="Transporter Mobile Number"
-          >
+        <mat-form-field
+          id="transporterMobile"
+          appearance="outline"
+          [class.error]="
+            tripUpdateForm.get('transporterPhone').invalid &&
+            tripUpdateForm.get('transporterPhone').touched
+          ">
+          <input
+            readonly
+            formControlName="transporterPhone"
+            [disabled]="true"
+            [readonly]="true"
+            type="text"
+            matInput
+            placeholder="Transporter Mobile Number"/>
         </mat-form-field>
         <mat-error
-          *ngIf="tripUpdateForm.get('transporterPhone').invalid && tripUpdateForm.get('transporterPhone').touched">
+          *ngIf="
+            tripUpdateForm.get('transporterPhone').invalid &&
+            tripUpdateForm.get('transporterPhone').touched
+          ">
           Transporter Mobile Number is required
         </mat-error>
       </div>
       <div class="flex flex-col space-y-1 w-full">
-        <label for="customerRate" class="form-label text-body text-secondary">Transporter Rate (TR)</label>
+        <label for="customerRate" class="form-label text-body text-secondary"
+        >Transporter Rate (TR)</label
+        >
         <!--Add a bdt icon at the end of the input-->
         <div class="relative bg-input rounded-lg border-none">
           <mat-form-field class="w-full" appearance="outline" id="customerRate">
-            <input formControlName="transporterRate" type="number" class="w-full" matInput
-                   placeholder="Transporter Rate">
+            <input
+              formControlName="transporterRate"
+              type="number"
+              class="w-full"
+              matInput
+              placeholder="Transporter Rate"/>
           </mat-form-field>
           <img
             id="icon"
             class="notPreview absolute right-4 top-4 cursor-pointer"
             src="assets/svg/bdt.svg"
-            alt="bdt"
-          >
+            alt="bdt"/>
         </div>
       </div>
     </div>
   </div>
   <div class="border-b border-input pb-6" *ngIf="data?.trip?.truck?.id == null">
     <div class="flex justify-between items-center">
-      <h1 class="text-h2 leading-h2 font-semibold text-not-black">Truck Info</h1>
-      <a class="text-link text-sm cursor-pointer" (click)="getTruckList()">Select from list</a>
+      <h1 class="text-h2 leading-h2 font-semibold text-not-black">
+        Truck Info
+      </h1>
+      <a class="text-link text-sm cursor-pointer" (click)="getTruckList()"
+      >Select from list</a
+      >
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div class="flex flex-col space-y-1 col-span-2 w-full">
-        <label for="truck" class="text-body text-secondary">Registration Number</label>
+        <label for="truck" class="text-body text-secondary"
+        >Registration Number</label
+        >
         <div id="truck" class="grid grid-cols-9 gap-4">
-          <mat-form-field class="col-span-3" appearance="outline"
-                          [class.error]="tripUpdateForm.get('truckId').invalid && tripUpdateForm.get('truckId').touched"
-          >
-            <input readonly formControlName="registrationZone"
-                   [disabled]="true" [readonly]="true" matInput
-                   placeholder="Zone"
-            >
+          <mat-form-field
+            class="col-span-3"
+            appearance="outline"
+            [class.error]="
+              tripUpdateForm.get('truckId').invalid &&
+              tripUpdateForm.get('truckId').touched
+            ">
+            <input
+              readonly
+              formControlName="registrationZone"
+              [disabled]="true"
+              [readonly]="true"
+              matInput
+              placeholder="Zone"/>
           </mat-form-field>
-          <mat-form-field class="col-span-2" appearance="outline"
-                          [class.error]="tripUpdateForm.get('truckId').invalid && tripUpdateForm.get('truckId').touched"
-          >
-            <input readonly formControlName="registrationCategory"
-                   [disabled]="true" [readonly]="true" matInput
-                   placeholder="Category"
-            >
+          <mat-form-field
+            class="col-span-2"
+            appearance="outline"
+            [class.error]="
+              tripUpdateForm.get('truckId').invalid &&
+              tripUpdateForm.get('truckId').touched
+            ">
+            <input
+              readonly
+              formControlName="registrationCategory"
+              [disabled]="true"
+              [readonly]="true"
+              matInput
+              placeholder="Category"/>
           </mat-form-field>
-          <mat-form-field class="col-span-2" appearance="outline" id="capacity"
-                          [class.error]="tripUpdateForm.get('truckId').invalid && tripUpdateForm.get('truckId').touched"
-          >
-            <input formControlName="registrationSerialNumber" [disabled]="true" [readonly]="true" type="number"
-                   step="0.1" matInput
-                   placeholder="Serial">
+          <mat-form-field
+            class="col-span-2"
+            appearance="outline"
+            id="capacity"
+            [class.error]="
+              tripUpdateForm.get('truckId').invalid &&
+              tripUpdateForm.get('truckId').touched
+            ">
+            <input
+              formControlName="registrationSerialNumber"
+              [disabled]="true"
+              [readonly]="true"
+              type="number"
+              step="0.1"
+              matInput
+              placeholder="Serial"/>
           </mat-form-field>
-          <mat-form-field class="col-span-2" appearance="outline"
-                          [class.error]="tripUpdateForm.get('truckId').invalid && tripUpdateForm.get('truckId').touched"
-          >
-            <input formControlName="registrationNumber" [disabled]="true" [readonly]="true" type="number" step="0.1"
-                   matInput
-                   placeholder="Number">
+          <mat-form-field
+            class="col-span-2"
+            appearance="outline"
+            [class.error]="
+              tripUpdateForm.get('truckId').invalid &&
+              tripUpdateForm.get('truckId').touched
+            ">
+            <input
+              formControlName="registrationNumber"
+              [disabled]="true"
+              [readonly]="true"
+              type="number"
+              step="0.1"
+              matInput
+              placeholder="Number"/>
           </mat-form-field>
         </div>
-        <mat-error *ngIf="tripUpdateForm.get('truckId').invalid && tripUpdateForm.get('truckId').touched">
+        <mat-error
+          *ngIf="
+            tripUpdateForm.get('truckId').invalid &&
+            tripUpdateForm.get('truckId').touched
+          ">
           Truck is required
         </mat-error>
       </div>
     </div>
   </div>
-  <div class="border-b border-input pb-6" *ngIf="data?.trip?.driverCode == null || data?.trip?.driverCode == ''">
+  <div
+    class="border-b border-input pb-6"
+    *ngIf="data?.trip?.driverCode == null || data?.trip?.driverCode == ''">
     <div class="flex justify-between items-center">
-      <h1 class="text-h2 leading-h2 font-semibold text-not-black">Driver Info</h1>
-      <a class="text-link text-sm cursor-pointer" (click)="getDriverList()">Select from list</a>
+      <h1 class="text-h2 leading-h2 font-semibold text-not-black">
+        Driver Info
+      </h1>
+      <a class="text-link text-sm cursor-pointer" (click)="getDriverList()"
+      >Select from list</a
+      >
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div class="flex flex-col space-y-1 w-full">
         <label for="driverName" class="text-body text-secondary">Name</label>
-        <mat-form-field appearance="outline" class="example-full-width w-full"
-                        [class.error]="tripUpdateForm.get('driverName').invalid && tripUpdateForm.get('driverName').touched"
-        >
+        <mat-form-field
+          appearance="outline"
+          class="example-full-width w-full"
+          [class.error]="
+            tripUpdateForm.get('driverName').invalid &&
+            tripUpdateForm.get('driverName').touched
+          ">
           <input
             id="driverName"
             type="text"
@@ -138,29 +235,50 @@
             matInput
             (keyup)="onKeyUpDriverSearch($event)"
             placeholder="Driver Name"
-            [matAutocomplete]="driver">
+            [matAutocomplete]="driver"/>
           <mat-autocomplete #driver="matAutocomplete">
             @for (option of driverSuggestion; track option) {
-              <mat-option (click)="onClickDriverSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+              <mat-option
+                (click)="onClickDriverSearchSuggestion(option)"
+                [value]="option.name"
+              >{{ option.name }}
               </mat-option>
             }
           </mat-autocomplete>
         </mat-form-field>
-        <mat-error *ngIf="tripUpdateForm.get('driverName').invalid && tripUpdateForm.get('driverName').touched">
+        <mat-error
+          *ngIf="
+            tripUpdateForm.get('driverName').invalid &&
+            tripUpdateForm.get('driverName').touched
+          ">
           Driver Name is required
         </mat-error>
       </div>
       <div class="flex flex-col space-y-1">
-        <label for="driverMobile" class="text-body text-secondary">Mobile Number</label>
-        <mat-form-field disabled id="driverMobile" appearance="outline"
-                        [class.error]="tripUpdateForm.get('driverPhone').invalid && tripUpdateForm.get('driverPhone').touched"
+        <label for="driverMobile" class="text-body text-secondary"
+        >Mobile Number</label
         >
-          <input formControlName="driverPhone"
-                 [disabled]="true" [readonly]="true" type="text"  matInput
-                 placeholder="Driver Mobile Number"
-          >
+        <mat-form-field
+          disabled
+          id="driverMobile"
+          appearance="outline"
+          [class.error]="
+            tripUpdateForm.get('driverPhone').invalid &&
+            tripUpdateForm.get('driverPhone').touched
+          ">
+          <input
+            formControlName="driverPhone"
+            [disabled]="true"
+            [readonly]="true"
+            type="text"
+            matInput
+            placeholder="Driver Mobile Number"/>
         </mat-form-field>
-        <mat-error *ngIf="tripUpdateForm.get('driverPhone').invalid && tripUpdateForm.get('driverPhone').touched">
+        <mat-error
+          *ngIf="
+            tripUpdateForm.get('driverPhone').invalid &&
+            tripUpdateForm.get('driverPhone').touched
+          ">
           Driver Mobile Number is required
         </mat-error>
       </div>
@@ -168,15 +286,23 @@
   </div>
   <div class="pb-6">
     <div class="flex justify-between items-center">
-      <h1 class="text-h2 leading-h2 font-semibold text-not-black">Helper Info</h1>
-      <a class="text-link text-sm cursor-pointer" (click)="getHelperList()">Select from list</a>
+      <h1 class="text-h2 leading-h2 font-semibold text-not-black">
+        Helper Info
+      </h1>
+      <a class="text-link text-sm cursor-pointer" (click)="getHelperList()"
+      >Select from list</a
+      >
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div class="flex flex-col space-y-1 w-full">
         <label for="helperName" class="text-body text-secondary">Name</label>
-        <mat-form-field appearance="outline" class="example-full-width w-full"
-                        [class.error]="tripUpdateForm.get('helperName').invalid && tripUpdateForm.get('helperName').touched"
-        >
+        <mat-form-field
+          appearance="outline"
+          class="example-full-width w-full"
+          [class.error]="
+            tripUpdateForm.get('helperName').invalid &&
+            tripUpdateForm.get('helperName').touched
+          ">
           <input
             id="helperName"
             type="text"
@@ -184,34 +310,47 @@
             formControlName="helperName"
             (keyup)="onKeyUpHelperSearch($event)"
             placeholder="Helper Name"
-            [matAutocomplete]="helper">
+            [matAutocomplete]="helper"/>
           <mat-autocomplete #helper="matAutocomplete">
             @for (option of helperSuggestion; track option) {
-              <mat-option (click)="onClickHelperSearchSuggestion(option)" [value]="option.name">{{ option.name }}
+              <mat-option
+                (click)="onClickHelperSearchSuggestion(option)"
+                [value]="option.name"
+              >{{ option.name }}
               </mat-option>
             }
           </mat-autocomplete>
         </mat-form-field>
-        <mat-error *ngIf="tripUpdateForm.get('helperName').invalid && tripUpdateForm.get('helperName').touched">
+        <mat-error
+          *ngIf="
+            tripUpdateForm.get('helperName').invalid &&
+            tripUpdateForm.get('helperName').touched
+          ">
           Helper Name is required
         </mat-error>
       </div>
       <div class="flex flex-col space-y-1">
-        <label for="helperMobile" class="text-body text-secondary">Mobile Number</label>
+        <label for="helperMobile" class="text-body text-secondary"
+        >Mobile Number</label
+        >
         <mat-form-field disabled id="helperMobile" appearance="outline">
-          <input [readonly]="true" formControlName="helperPhone"
-                 [disabled]="true" type="text"  matInput placeholder="Helper Mobile Number"
-          >
+          <input
+            [readonly]="true"
+            formControlName="helperPhone"
+            [disabled]="true"
+            type="text"
+            matInput
+            placeholder="Helper Mobile Number"/>
         </mat-form-field>
       </div>
     </div>
   </div>
   <div class="flex w-full justify-end">
-    <button (click)="onChangeTripStatus(data.buttonName)" type="button"
-            class="px-8 py-2 text-white font-semibold bg-primary rounded-lg"><i *ngIf="loading"
-                                                                                class="fas fa-spinner fa-spin"></i> Save
+    <button
+      (click)="onChangeTripStatus(data.buttonName)"
+      type="button"
+      class="px-8 py-2 text-white font-semibold bg-primary rounded-lg">
+      <i *ngIf="loading" class="fas fa-spinner fa-spin"></i> Save
     </button>
   </div>
-
 </form>
-

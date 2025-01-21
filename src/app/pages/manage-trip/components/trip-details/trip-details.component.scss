@@ -1,27 +1,24 @@
 ::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
-  color: #11484F !important;
+  color: #11484f !important;
   font-weight: bolder !important;
-  font-size: .875rem !important;
+  font-size: 0.875rem !important;
 }
 
 ::ng-deep .mat-mdc-tab .mdc-tab__text-label {
   color: #777777 !important;
   font-weight: bolder !important;
-  font-size: .875rem !important;
+  font-size: 0.875rem !important;
 }
 
 ::ng-deep .mat-mdc-tab-labels {
-  border-bottom: 1px solid #D3DBDC !important;
+  border-bottom: 1px solid #d3dbdc !important;
 }
 
 ::ng-deep .mat-mdc-tab .mdc-tab-indicator__content--underline {
-  border: 1px solid #11484F !important;
+  border: 1px solid #11484f !important;
   width: 50% !important;
 }
 
 ::ng-deep .mat-mdc-tab-ripple {
   visibility: hidden !important;
 }
-
-
-

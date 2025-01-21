@@ -1,3 +1,7 @@
+<!--
+  This div displays a loading overlay when the `isLoading` observable emits a truthy value.
+  The overlay contains a flipping animation with two images.
+-->
 <div *ngIf="isLoading | async" class="loading-overlay">
   <div class="flip-container">
     <div class="flip-inner">
@@ -10,11 +14,19 @@
     </div>
   </div>
 </div>
+
+<!--
+  This container displays the main layout and router outlet if the current page is not a login, about, or support page.
+-->
 <ng-container *ngIf="!isLoginPage() && !isAboutPage() && !isSupportPage()">
   <app-layout>
     <router-outlet></router-outlet>
   </app-layout>
 </ng-container>
+
+<!--
+  This container displays only the router outlet if the current page is a login, about, or support page.
+-->
 <ng-container *ngIf="isLoginPage() || isAboutPage() || isSupportPage()">
   <router-outlet></router-outlet>
 </ng-container>

@@ -10,10 +10,12 @@
         <div class="relative">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <img src="assets/svg/search.svg" class="notPreview" alt="search">
+            <img src="assets/svg/search.svg" class="notPreview" alt="search"/>
           </div>
-          <button (click)="onClickClear()" *ngIf="searchValue"
-                  class="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <button
+            (click)="onClickClear()"
+            *ngIf="searchValue"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center">
             <i class="far fa-times text-gray-500 text-xs"></i>
           </button>
           <input
@@ -21,7 +23,6 @@
             (keyup)="onKeyUpSearch($event)"
             type="text"
             name="email"
-
             class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
             placeholder="Search name, mobile" />
         </div>
@@ -38,8 +39,14 @@
       <button
         class="flex px-2 py-1 space-x-3 items-center w-full"
         [ngClass]="{ 'border-b-2 border-[#0CD5F0]': filterOpened }">
-        <i (click)="onClickFilterOpened()" *ngIf="!filterOpened" class="fas fa-caret-down text-input-hint text-xl"></i>
-        <i (click)="onClickFilterOpened()" *ngIf="filterOpened" class="fas fa-caret-up text-input-hint text-xl"></i>
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="!filterOpened"
+          class="fas fa-caret-down text-input-hint text-xl"></i>
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="filterOpened"
+          class="fas fa-caret-up text-input-hint text-xl"></i>
         <span class="text-not-black text-body_title leading-body_title"
         >Filter
           <span *ngIf="statusInputPlaceholder"
@@ -83,7 +90,7 @@
         <th class="text-center">National ID</th>
         <th class="text-center">Other Document</th>
         <th class="text-center">Status</th>
-        <th class="text-left" style="width: 5%;"></th>
+        <th class="text-left" style="width: 5%"></th>
       </tr>
       <tr>
         <th class="border" colspan="9"></th>
@@ -109,43 +116,148 @@
             </div>
           </td>
           <td>
-            <a class="cursor-pointer" (click)="copyNumber($event, driver.phone)">{{ driver.phone }}</a>
+            <a
+              class="cursor-pointer"
+              (click)="copyNumber($event, driver.phone)"
+            >{{ driver.phone }}</a
+            >
           </td>
           <td class="whitespace-nowrap">
-            {{ driver.createdOn ? (driver.createdOn | date: 'd MMM yyyy') : '' }}
+            {{
+              driver.createdOn ? (driver.createdOn | date: 'd MMM yyyy') : ''
+            }}
           </td>
-          <td class="text-center">{{ driver.completedTripCountsForDriver }}</td>
+          <td class="text-center">
+            {{ driver.completedTripCountsForDriver }}
+          </td>
           <td class="whitespace-nowrap">
             <div class="flex items-center justify-center h-full">
+                <span
+                  [ngClass]="{
+                    'text-red':
+                      checkExpiryDate(
+                        checkThatFileIsExistOrNot(
+                          driverEnum.DRIVING_LICENSE_FRONT,
+                          driver.documentsList
+                        ).expDate
+                      ) ||
+                      checkExpiryDate(
+                        checkThatFileIsExistOrNot(
+                          driverEnum.DRIVING_LICENSE_BACK,
+                          driver.documentsList
+                        ).expDate
+                      ),
+                  }"
+                  *ngIf="
+                    checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_FRONT,
+                      driver.documentsList
+                    ).isExist &&
+                    !checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_BACK,
+                      driver.documentsList
+                    ).isExist
+                  ">
+                  {{
+                    checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_FRONT,
+                      driver.documentsList
+                    ).expDate
+                      ? (checkThatFileIsExistOrNot(
+                        driverEnum.DRIVING_LICENSE_FRONT,
+                        driver.documentsList
+                      ).expDate | date: 'd MMM yyyy')
+                      : ''
+                  }}
+                </span>
               <span
-                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate) || checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate) }"
+                [ngClass]="{
+                    'text-red':
+                      checkExpiryDate(
+                        checkThatFileIsExistOrNot(
+                          driverEnum.DRIVING_LICENSE_FRONT,
+                          driver.documentsList
+                        ).expDate
+                      ) ||
+                      checkExpiryDate(
+                        checkThatFileIsExistOrNot(
+                          driverEnum.DRIVING_LICENSE_BACK,
+                          driver.documentsList
+                        ).expDate
+                      ),
+                  }"
                 *ngIf="
-                    checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist && !checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
-                  "
+                    !checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_FRONT,
+                      driver.documentsList
+                    ).isExist &&
+                    checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_BACK,
+                      driver.documentsList
+                    ).isExist
+                  ">
+                  {{
+                  checkThatFileIsExistOrNot(
+                    driverEnum.DRIVING_LICENSE_BACK,
+                    driver.documentsList
+                  ).expDate
+                    ? (checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_BACK,
+                      driver.documentsList
+                    ).expDate | date: 'd MMM yyyy')
+                    : ''
+                }}</span
               >
-                {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}
-              </span>
               <span
-                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate) || checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate) }"
+                [ngClass]="{
+                    'text-red':
+                      checkExpiryDate(
+                        checkThatFileIsExistOrNot(
+                          driverEnum.DRIVING_LICENSE_FRONT,
+                          driver.documentsList
+                        ).expDate
+                      ) ||
+                      checkExpiryDate(
+                        checkThatFileIsExistOrNot(
+                          driverEnum.DRIVING_LICENSE_BACK,
+                          driver.documentsList
+                        ).expDate
+                      ),
+                  }"
                 *ngIf="
-                    !checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist && checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
-                  "
-              >
-
-                {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}</span>
-              <span
-                [ngClass]="{ 'text-red': checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate) || checkExpiryDate(checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).expDate) }"
-                *ngIf="
-                    checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist && checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
-                  "
-              >
-                {{ checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate ? (checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).expDate | date: 'd MMM yyyy') : '' }}
-              </span>
+                    checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_FRONT,
+                      driver.documentsList
+                    ).isExist &&
+                    checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_BACK,
+                      driver.documentsList
+                    ).isExist
+                  ">
+                  {{
+                  checkThatFileIsExistOrNot(
+                    driverEnum.DRIVING_LICENSE_FRONT,
+                    driver.documentsList
+                  ).expDate
+                    ? (checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_FRONT,
+                      driver.documentsList
+                    ).expDate | date: 'd MMM yyyy')
+                    : ''
+                }}
+                </span>
 
               <app-upload-button
                 (click)="onClickLicenseUpload(driver)"
                 *ngIf="
-                    !checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_FRONT, driver.documentsList).isExist && !checkThatFileIsExistOrNot(driverEnum.DRIVING_LICENSE_BACK, driver.documentsList).isExist
+                    !checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_FRONT,
+                      driver.documentsList
+                    ).isExist &&
+                    !checkThatFileIsExistOrNot(
+                      driverEnum.DRIVING_LICENSE_BACK,
+                      driver.documentsList
+                    ).isExist
                   "
                 icon="upload"
                 [file]="true"></app-upload-button>
@@ -155,61 +267,93 @@
             <div class="flex items-center justify-center h-full">
               <i
                 *ngIf="
-                    checkThatFileIsExistOrNot(driverEnum.NID_FRONT, driver.documentsList).isExist || checkThatFileIsExistOrNot(driverEnum.NID_BACK, driver.documentsList).isExist
+                    checkThatFileIsExistOrNot(
+                      driverEnum.NID_FRONT,
+                      driver.documentsList
+                    ).isExist ||
+                    checkThatFileIsExistOrNot(
+                      driverEnum.NID_BACK,
+                      driver.documentsList
+                    ).isExist
                   "
                 class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickNidUpload(driver)"
                 *ngIf="
-                    !checkThatFileIsExistOrNot(driverEnum.NID_FRONT, driver.documentsList).isExist && !checkThatFileIsExistOrNot(driverEnum.NID_BACK, driver.documentsList).isExist
+                    !checkThatFileIsExistOrNot(
+                      driverEnum.NID_FRONT,
+                      driver.documentsList
+                    ).isExist &&
+                    !checkThatFileIsExistOrNot(
+                      driverEnum.NID_BACK,
+                      driver.documentsList
+                    ).isExist
                   "
                 icon="upload"
                 [file]="true"></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap">
-            <div  class="flex items-center justify-center h-full">
+            <div class="flex items-center justify-center h-full">
               <i
-                *ngIf="checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, driver.documentsList).isExist"
+                *ngIf="
+                    checkThatFileIsExistOrNot(
+                      truckEnum.OTHER_FILE,
+                      driver.documentsList
+                    ).isExist
+                  "
                 class="fas fa-check text-green"></i>
               <app-upload-button
                 (click)="onClickOther('other', driver)"
-                *ngIf="!checkThatFileIsExistOrNot(truckEnum.OTHER_FILE, driver.documentsList).isExist"
+                *ngIf="
+                    !checkThatFileIsExistOrNot(
+                      truckEnum.OTHER_FILE,
+                      driver.documentsList
+                    ).isExist
+                  "
                 icon="upload"
-                [file]="true"
-              ></app-upload-button>
+                [file]="true"></app-upload-button>
             </div>
           </td>
           <td class="whitespace-nowrap">
-            <div
-              class="flex items-center justify-center">
+            <div class="flex items-center justify-center">
               <div
-                class="{{getBgColor(driver.approveStatus)}} bg-opacity-[30%] z-30 px-2 py-0.5 rounded-full flex items-center">
-                <span class="text-web-text-secondary">{{ driver.approveStatus }}</span>
+                class="{{
+                    getBgColor(driver.approveStatus)
+                  }} bg-opacity-[30%] z-30 px-2 py-0.5 rounded-full flex items-center">
+                  <span class="text-web-text-secondary">{{
+                      driver.approveStatus
+                    }}</span>
               </div>
             </div>
           </td>
           <td class="whitespace-nowrap">
-            <button mat-button
-                    [matMenuTriggerFor]="menu"><i
-              class="fas fa-ellipsis-v"></i></button>
+            <button mat-button [matMenuTriggerFor]="menu">
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
             <mat-menu #menu="matMenu">
-              <button (click)="onClickApprove(driver)"
-                      *ngIf="driver.approveStatus === 'Pending' || driver.approveStatus === 'Rejected'"
-                      mat-menu-item>
+              <button
+                (click)="onClickApprove(driver)"
+                *ngIf="
+                    driver.approveStatus === 'Pending' ||
+                    driver.approveStatus === 'Rejected'
+                  "
+                mat-menu-item>
                 <div class="flex space-x-2 items-center">
-                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
+                  <div
+                    class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
                     <i class="far fa-check text-green"></i>
                   </div>
                   <span class="text-green">Approve</span>
                 </div>
               </button>
-              <button (click)="onClickReject(driver)"
-                      *ngIf="driver.approveStatus === 'Pending'"
-                      mat-menu-item
-              >
+              <button
+                (click)="onClickReject(driver)"
+                *ngIf="driver.approveStatus === 'Pending'"
+                mat-menu-item>
                 <div class="flex space-x-2 items-center">
-                  <div class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
+                  <div
+                    class="w-[1.125rem] h-[1.125rem] flex items-center justify-center">
                     <i class="far fa-times text-red"></i>
                   </div>
                   <span class="text-red">Reject</span>
@@ -219,11 +363,11 @@
                 routerLink="/profile/driver/{{ driver.id }}/details"
                 (click)="localStorage.setItem('directEdit', 'true')"
                 mat-menu-item>
-                <div class="flex  space-x-2 items-center">
+                <div class="flex space-x-2 items-center">
                   <img
                     class="notPreview"
                     src="./assets/svg/edit.svg"
-                    alt="" />
+                    alt=""/>
                   <span>Edit</span>
                 </div>
               </button>
@@ -234,9 +378,17 @@
       <ng-container *ngIf="!loading">
         <tr *ngIf="driverList?.length === 0">
           <td class="text-center" colspan="7">
-            <div class="w-full flex flex-col space-y-3 justify-center items-center">
-              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-              <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+            <div
+              class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img
+                loading="lazy"
+                src="assets/svg/no-data.svg"
+                class="notPreview"
+                alt="nodata"/>
+              <p
+                class="text-body_title leading-body_title text-secondary font-semibold">
+                No Data Found
+              </p>
             </div>
           </td>
         </tr>

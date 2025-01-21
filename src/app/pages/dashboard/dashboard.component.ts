@@ -8,9 +8,7 @@ import { TopTransporterComponent } from './components/top-transporter/top-transp
 import { TopCustomerComponent } from './components/top-customer/top-customer.component';
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
 import { RouterLink } from '@angular/router';
-import {
-  TransporterRateAnalysisComponent
-} from "./components/transporter-rate-analysis/transporter-rate-analysis.component";
+import { TransporterRateAnalysisComponent } from './components/transporter-rate-analysis/transporter-rate-analysis.component';
 
 @Component({
   selector: 'app-dashboard',

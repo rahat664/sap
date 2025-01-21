@@ -7,7 +7,7 @@ import { ColumnChartComponent } from '../../../../shared/charts/column-chart/col
 import { DashboardService } from '../../services/dashboard.service';
 import { DatePipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
-import {LineChartComponent} from "../../../../shared/charts/line-chart/line-chart.component";
+import { LineChartComponent } from '../../../../shared/charts/line-chart/line-chart.component';
 
 @Component({
   selector: 'app-month-wise-revenue',

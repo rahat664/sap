@@ -6,7 +6,13 @@ import {
 } from '@angular/material/autocomplete';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { MyErrorStateMatcher } from '../template-create/template-create.component';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { TripService } from '../../services/trip.service';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';

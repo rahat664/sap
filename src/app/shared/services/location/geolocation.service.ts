@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpBackend, HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import {environment} from "../../../../environments/environment";
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -57,6 +57,4 @@ export class GeolocationService {
       document.body.appendChild(script);
     });
   }
-
-
 }

@@ -96,6 +96,5 @@ export class PreHireChecklistPopupComponent {
     this.dialogRef.close();
   }
 
-  getWidth($event: any) {
-  }
+  getWidth($event: any) {}
 }

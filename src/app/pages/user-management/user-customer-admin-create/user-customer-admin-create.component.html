@@ -1,12 +1,15 @@
 <div class="flex w-full h-full">
-  <button (click)="closeModal()"
-          class="absolute top-0 right-0 p-4">
+  <button (click)="closeModal()" class="absolute top-0 right-0 p-4">
     <i class="fal fa-times text-primary"></i>
   </button>
   <div
     class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
     <div>
-      <img loading="lazy" class="notPreview" src="assets/images/customer-create.png" alt="" />
+      <img
+        loading="lazy"
+        class="notPreview"
+        src="assets/images/customer-create.png"
+        alt=""/>
     </div>
   </div>
   <div class="p-8 max-h-[90vh] overflow-y-auto overflow-x-hidden">
@@ -17,9 +20,12 @@
       class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title leading-body_title text-web-text-secondary">
       <div class="flex flex-col space-y-2 w-full lg:col-span-2">
         <label for="name">Full Name</label>
-        <mat-form-field appearance="outline" class="example-full-width "
-                        [ngClass]="{'error': userForm.get('name').invalid && userForm.get('name').touched}"
-        >
+        <mat-form-field
+          appearance="outline"
+          class="example-full-width"
+          [ngClass]="{
+            error: userForm.get('name').invalid && userForm.get('name').touched,
+          }">
           <input
             appAlphabetOnly
             id="name"
@@ -28,7 +34,7 @@
             type="text"
             matInput
             formControlName="name"
-            placeholder="Enter Name">
+            placeholder="Enter Name"/>
         </mat-form-field>
         <div *ngIf="userForm.get('name').touched" class="text-red text-xs">
           <span>{{ getNameErrorMessage() }}</span>
@@ -36,32 +42,49 @@
         <!--        error-message-->
       </div>
       <div class="flex flex-col space-y-2 w-full">
-        <ngx-material-intl-tel-input [includeDialCode]="false" #numberInput class="customize" id="phoneNumber"
-                                     [textLabels]="textLabels"
-                                     [autoSelectedCountry]="CountryISO.Bangladesh"
-                                     [preferredCountries]="[CountryISO.Bangladesh]"
-                                     [fieldControl]="phoneNumber"
-                                     [numberValidation]="true" [hidePhoneIcon]="true"
-                                     [required]="true" [autoIpLookup]="false"  [ngClass]="{ 'customError' : userForm.get('phone').invalid && userForm.get('phone').touched }"></ngx-material-intl-tel-input>
+        <ngx-material-intl-tel-input
+          [includeDialCode]="false"
+          #numberInput
+          class="customize"
+          id="phoneNumber"
+          [textLabels]="textLabels"
+          [autoSelectedCountry]="CountryISO.Bangladesh"
+          [preferredCountries]="[CountryISO.Bangladesh]"
+          [fieldControl]="phoneNumber"
+          [numberValidation]="true"
+          [hidePhoneIcon]="true"
+          [required]="true"
+          [autoIpLookup]="false"
+          [ngClass]="{
+            customError:
+              userForm.get('phone').invalid && userForm.get('phone').touched,
+          }"></ngx-material-intl-tel-input>
         <!--        error-message-->
         <div>
-          <span *ngIf="userForm.get('phone').touched && userForm.get('phone').invalid"
-                class="text-red text-xs">
+          <span
+            *ngIf="
+              userForm.get('phone').touched && userForm.get('phone').invalid
+            "
+            class="text-red text-xs">
             <span>Phone number is required</span>
           </span>
         </div>
       </div>
       <div class="flex flex-col space-y-2 w-full">
         <label for="email">Email</label>
-        <mat-form-field appearance="outline" class="example-full-width "
-                        [ngClass]="{'error': userForm.get('email').invalid && userForm.get('email').touched}"
-        >
+        <mat-form-field
+          appearance="outline"
+          class="example-full-width"
+          [ngClass]="{
+            error:
+              userForm.get('email').invalid && userForm.get('email').touched,
+          }">
           <input
             id="email"
             type="text"
             matInput
             formControlName="email"
-            placeholder="Enter email">
+            placeholder="Enter email"/>
         </mat-form-field>
         <!--        error-message-->
         <div *ngIf="userForm.get('email').touched" class="text-red text-xs">

@@ -13,7 +13,7 @@ import {
   ApexXAxis,
   ChartComponent,
 } from 'ng-apexcharts';
-import {timer} from "rxjs";
+import { timer } from 'rxjs';
 
 export interface ChartOptions {
   series: ApexAxisChartSeries;
@@ -94,6 +94,7 @@ export class LineChartComponent {
           marker: {
             show: false,
           },
+          hideEmptySeries: false,
         },
         xaxis: {
           categories: changes['categories'].currentValue,
@@ -169,6 +170,7 @@ export class LineChartComponent {
           marker: {
             show: false,
           },
+          hideEmptySeries: false,
         },
         yaxis: {
           labels: {

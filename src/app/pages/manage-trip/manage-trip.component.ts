@@ -391,7 +391,6 @@ export class ManageTripComponent implements OnInit {
     }
   }
 
-
   onClickCustomerSearchSuggestion(option: CustomerModel) {
     this.customers.push(option);
     this.customerCodes.push(option.customerCode);

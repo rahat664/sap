@@ -518,7 +518,9 @@ export class TruckAddComponent implements OnInit {
       case 'taxFile':
         this.previewFile(files, this.taxImages, 'taxExpDate');
         if (this.taxImages.length > 0) {
-          this.truckAddForm.get('taxExpDate')?.setValidators([Validators.required]);
+          this.truckAddForm
+            .get('taxExpDate')
+            ?.setValidators([Validators.required]);
           this.truckAddForm.get('taxExpDate')?.updateValueAndValidity();
         }
         break;
@@ -543,7 +545,9 @@ export class TruckAddComponent implements OnInit {
       case 'casePaperFile':
         this.previewFile(files, this.casePaperImages, 'caseExpDate');
         if (this.casePaperImages.length > 0) {
-          this.truckAddForm.get('caseExpDate')?.setValidators([Validators.required]);
+          this.truckAddForm
+            .get('caseExpDate')
+            ?.setValidators([Validators.required]);
           this.truckAddForm.get('caseExpDate')?.updateValueAndValidity();
         }
         break;

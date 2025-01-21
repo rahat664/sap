@@ -41,9 +41,12 @@ export class TripCardComponent {
 
   ngOnChanges(simplesChanges: SimpleChanges) {
     if (simplesChanges['points']) {
-      this.loadingPoint = this.points.filter((point) => point.pointType === 'Loading');
-      this.unloadingPoint = this.points.filter((point) => point.pointType === 'Unloading');
+      this.loadingPoint = this.points.filter(
+        point => point.pointType === 'Loading'
+      );
+      this.unloadingPoint = this.points.filter(
+        point => point.pointType === 'Unloading'
+      );
     }
-
   }
 }

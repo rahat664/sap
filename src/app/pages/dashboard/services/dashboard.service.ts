@@ -48,7 +48,14 @@ export class DashboardService {
     );
   }
 
-  getTransporterRateAnalysisData(type?: string, value?: string, transporterCode?: string, truckType?: string, loadingPointDistrictName?:string, unloadingPointDistrictName?:string) {
+  getTransporterRateAnalysisData(
+    type?: string,
+    value?: string,
+    transporterCode?: string,
+    truckType?: string,
+    loadingPointDistrictName?: string,
+    unloadingPointDistrictName?: string
+  ) {
     const params = new URLSearchParams();
     if (type) {
       params.set('type', type);
@@ -73,6 +80,4 @@ export class DashboardService {
       `${this._transporterRateAnalysisUrl}?${params.toString()}`
     );
   }
-
-
 }

@@ -1,11 +1,12 @@
 <nav class="bg-white border-b border-app-bg sticky top-0 z-30 w-full">
   <div class="">
     <div class="flex items-center w-full">
-      <div class="flex items-center justify-between w-[22.5rem] px-4  lg:border-r lg:border-app-bg">
+      <div
+        class="flex items-center justify-between w-[22.5rem] px-4 lg:border-r lg:border-app-bg">
         <a
           routerLink="/"
           (click)="onClickLogo()"
-          class="cursor-pointer text-xl font-bold  h-16 object-center object-cover flex items-center lg:justify-center  py-2">
+          class="cursor-pointer text-xl font-bold h-16 object-center object-cover flex items-center lg:justify-center py-2">
           <img
             src="assets/logo/shamolima.png"
             class="notPreview cursor-pointer"
@@ -16,9 +17,11 @@
           (click)="toggleMobileSideBar()"
           id="toggleSidebarMobile"
           aria-expanded="true"
-          aria-controls="sidebar"
-        >
-          <img src="assets/svg/bar.svg" class="notPreview cursor-pointer" alt="bar">
+          aria-controls="sidebar">
+          <img
+            src="assets/svg/bar.svg"
+            class="notPreview cursor-pointer"
+            alt="bar"/>
         </button>
       </div>
       <div class="flex items-center space-x-3 justify-end w-full mr-2">
@@ -32,12 +35,21 @@
           <!-- Search icon -->
           <i class="fas fa-search"></i>
         </button>
-        <button matTooltip="Logout" (click)="onClickLogOut()"
-                class="lg:hidden text-gray-500 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-lg">
-          <img loading="lazy" class="notPreview" src="assets/svg/logout.svg" alt="logout">
+        <button
+          matTooltip="Logout"
+          (click)="onClickLogOut()"
+          class="lg:hidden text-gray-500 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-lg">
+          <img
+            loading="lazy"
+            class="notPreview"
+            src="assets/svg/logout.svg"
+            alt="logout"/>
         </button>
 
-        <button class="flex items-center" [matMenuTriggerFor]="menu" (click)="isProfileOpened = !isProfileOpened">
+        <button
+          class="flex items-center"
+          [matMenuTriggerFor]="menu"
+          (click)="isProfileOpened = !isProfileOpened">
           <div
             id="dropdownDefaultButton"
             class="hidden lg:flex space-x-2 items-center font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600"
@@ -59,8 +71,7 @@
           </div>
         </button>
         <mat-menu #menu="matMenu" xPosition="before" class="w-full">
-          <button
-            (click)="onClickLogOut()" mat-menu-item>
+          <button (click)="onClickLogOut()" mat-menu-item>
             <div class="flex space-x-2 items-center">
               <img
                 class="notPreview"
@@ -69,11 +80,16 @@
               <span>Logout</span>
             </div>
           </button>
-          <div class="flex items-center justify-center text-sm px-4 mt-2"
-               *ngIf="environment.userUrl === 'https://user-service-dev.snztech.world'">
+          <div
+            class="flex items-center justify-center text-sm px-4 mt-2"
+            *ngIf="
+              environment.userUrl === 'https://user-service-dev.snztech.world'
+            ">
             <span class="text-not-black">Version:</span>
             <span
-              class="px-2 py-0.1 rounded-full ml-1 bg-green text-white font-semibold">5.2.9</span>
+              class="px-2 py-0.1 rounded-full ml-1 bg-green text-white font-semibold"
+            >5.2.9</span
+            >
           </div>
         </mat-menu>
       </div>

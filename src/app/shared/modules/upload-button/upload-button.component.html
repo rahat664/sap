@@ -1,7 +1,9 @@
 <button
-  [ngClass]="{'bg-link': !buttonColor}"
+  [ngClass]="{ 'bg-link': !buttonColor }"
   [disabled]="isDisabled"
-  class="py-2 px-4 flex text-link items-center bg-opacity-10 {{buttonColor}} space-x-3 w-full h-full text-body rounded-md">
+  class="py-2 px-4 flex text-link items-center bg-opacity-10 {{
+    buttonColor
+  }} space-x-3 w-full h-full text-body rounded-md">
   <ng-container *ngIf="isIconButton">
     <i *ngIf="!file" class="far fa-{{ icon }}"></i>
     <img
@@ -10,9 +12,10 @@
       src="assets/svg/{{ icon }}.svg"
       alt="" />
   </ng-container>
-  <span *ngIf="buttonText"
-        [ngClass]="{ 'text-link': !textColor }"
-        class="{{textColor}}"
+  <span
+    *ngIf="buttonText"
+    [ngClass]="{ 'text-link': !textColor }"
+    class="{{ textColor }}"
   >{{ buttonText }}</span
   >
 </button>
