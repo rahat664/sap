@@ -56,7 +56,7 @@ export class LineChartComponent {
       const numberOfTrips = this.numberOfTrips;
       let index = -1;
       this.chartOptions = {
-        series: changes['seriesData'].currentValue,
+        series: changes['seriesData']?.currentValue,
         chart: {
           height: 350,
           type: 'line',
@@ -86,6 +86,7 @@ export class LineChartComponent {
           },
         },
         tooltip: {
+          shared: true,
           x: {
             formatter: function (value) {
               return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear} <b>(${numberOfTrips[value - 1] ? numberOfTrips[value - 1] : 'No'} Trips)</b>`;
@@ -97,7 +98,7 @@ export class LineChartComponent {
           hideEmptySeries: false,
         },
         xaxis: {
-          categories: changes['categories'].currentValue,
+          categories: changes['categories']?.currentValue,
           floating: false,
           decimalsInFloat: 0,
           tooltip: {
@@ -162,6 +163,7 @@ export class LineChartComponent {
           },
         },
         tooltip: {
+          shared: true,
           x: {
             formatter: function (value) {
               return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear} <b>(${numberOfTrips[value - 1] ? numberOfTrips[value - 1] : 'No'} Trips)</b>`;
