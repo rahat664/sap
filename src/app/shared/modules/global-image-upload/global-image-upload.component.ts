@@ -21,6 +21,8 @@ import { MatCalendar, MatDatepickerToggle } from '@angular/material/datepicker';
 import { MatCard } from '@angular/material/card';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { TimePickerComponent } from '../time-picker/time-picker.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-global-image-upload',
@@ -89,7 +91,8 @@ export class GlobalImageUploadComponent implements OnChanges, AfterViewInit {
 
   constructor(
     private datePipe: DatePipe,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    public sanitizer: DomSanitizer
   ) {}
 
   onChangeImageType($event: any) {
@@ -115,6 +118,7 @@ export class GlobalImageUploadComponent implements OnChanges, AfterViewInit {
       });
     }
   }
+
   onZoom(event: WheelEvent) {
     event.preventDefault();
     if (event.deltaY < 0) {
@@ -193,14 +197,18 @@ export class GlobalImageUploadComponent implements OnChanges, AfterViewInit {
     if (this.imageTypes) {
       if (this.imageTypes.length === 1) {
         this.activatedImageType = this.imageTypes[0].viewValue;
+        this.updateActiveDocumentIndex();
       }
     }
   }
+
+  ngOnInIt() {}
 
   onMouseEnter() {
     // Show the arrows when mouse enters the container
     this.updateArrows();
   }
+
   private updateArrows() {
     // Show or hide arrows based on the initial mouse position
     // This could be useful if we want to show arrows when the mouse enters the container
@@ -239,6 +247,7 @@ export class GlobalImageUploadComponent implements OnChanges, AfterViewInit {
   onClickLeftButton() {
     this.changeActiveDocument(-1);
   }
+
   onClickRightButton() {
     this.changeActiveDocument(1);
   }
@@ -281,8 +290,11 @@ export class GlobalImageUploadComponent implements OnChanges, AfterViewInit {
     this.selectedDate = $event;
     this.returnToInputDate = $event;
   }
+
   private time: any;
   @Input() tripId: string;
+  @Input() documentFiles!: any[];
+
   onTimeChange($event: any) {
     this.time = $event;
   }
@@ -294,4 +306,6 @@ export class GlobalImageUploadComponent implements OnChanges, AfterViewInit {
   onCLickBack() {
     this.isBackButtonClick.emit(true);
   }
+
+  downloadReport(images: any) {}
 }

@@ -296,4 +296,15 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
     console.log('returnUrl', this.returnUrl);
     this.router.navigate([this.returnUrl]);
   }
+
+  downloadReport(images: any) {
+    if (images) {
+      const a = document.createElement('a');
+      a.href = images;
+      a.download = images;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }
 }

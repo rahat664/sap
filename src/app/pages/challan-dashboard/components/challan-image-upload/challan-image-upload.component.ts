@@ -4,6 +4,7 @@ import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-challan-image-upload',
@@ -43,7 +44,8 @@ export class ChallanImageUploadComponent implements OnInit {
     private router: Router,
     private datePipe: DatePipe,
     private trip: TripService,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -82,7 +84,16 @@ export class ChallanImageUploadComponent implements OnInit {
         const reader = new FileReader();
         reader.readAsDataURL(tripDocuments[i]);
         reader.onload = () => {
-          this.tripDocuments.push(reader.result);
+          // if pdf file push sanitized url
+          if (tripDocuments[i].type === 'application/pdf') {
+            if (typeof reader.result === 'string') {
+              this.tripDocuments.push(
+                this.sanitizer.bypassSecurityTrustResourceUrl(reader.result)
+              );
+            }
+          } else {
+            this.tripDocuments.push(reader.result);
+          }
           this.tripDocumentFiles.push({
             file: tripDocuments[i],
             preview: reader.result,

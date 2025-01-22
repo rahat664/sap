@@ -247,6 +247,7 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
       closeBtn?.addEventListener('click', () => {
         this.infoWindow.close();
         this.stopInterval();
+        this.clearSubs();
       });
     });
     // Delay to allow the DOM to render

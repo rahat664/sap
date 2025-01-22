@@ -50,10 +50,28 @@
           #imageElement
           class="transition-transform h-full rounded-lg overflow-hidden duration-300 transform origin-center relative"
           [style.transform]="'scale(' + zoomLevel + ')'">
-          <img
-            [src]="activatedDocument"
-            alt="activeDocument"
-            class="notPreview h-full w-full"/>
+<!--          <img-->
+<!--            [src]="activatedDocument"-->
+<!--            alt="activeDocument"-->
+<!--            class="notPreview h-full w-full" />-->
+          <ng-container
+            *ngIf="documentFiles[activeDocumentIndex]?.file.type === 'application/pdf';
+                            else imagePreview">
+            <iframe
+              [src]="activatedDocument"
+              type="application/pdf"
+              class="h-full w-full"
+              style="height: 90vh">
+            </iframe>
+            <!-- Display PDF Preview -->
+          </ng-container>
+          <ng-template #imagePreview>
+            <!-- Display Image Preview -->
+            <img
+              class="h-full w-full notPreview"
+              [src]="activatedDocument"
+              alt="" />
+          </ng-template>
         </div>
       </div>
 
@@ -81,7 +99,23 @@
             (click)="onClickDocument(doc, i)"
             [ngClass]="{ scaled: doc === activatedDocument }"
             class="document-item w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden rounded-lg">
-            <img [src]="doc" alt="document" class="h-full w-full notPreview"/>
+            <ng-container
+              *ngIf="documentFiles[i]?.file.type === 'application/pdf';
+                            else imagePreview">
+              <!-- Display PDF Preview -->
+              <img
+                class="h-full w-full notPreview"
+                src="assets/svg/pdf.svg"
+                alt="abc" />
+            </ng-container>
+            <ng-template #imagePreview>
+              <!-- Display Image Preview -->
+              <img
+                class="h-full w-full notPreview"
+                [src]="doc"
+                alt="" />
+            </ng-template>
+            <!--            <img [src]="doc" alt="document" class="h-full w-full notPreview" />-->
           </div>
         </ng-container>
       </div>
@@ -122,7 +156,7 @@
             <input
               [value]="getSelectedDate()"
               placeholder="Select date time"
-              matInput/>
+              matInput />
             <mat-datepicker-toggle matIconSuffix></mat-datepicker-toggle>
           </mat-form-field>
         </button>

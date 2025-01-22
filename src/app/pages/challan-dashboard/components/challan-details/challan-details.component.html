@@ -21,8 +21,8 @@
       <button
         *ngIf="
           !isInEditMode &&
-          singleTrip?.challanStatus != 'Approved' &&
-          singleTrip?.challanStatus != 'Pending'
+          singleTrip?.challanStatus !== 'Approved' &&
+          singleTrip?.challanStatus !== 'Pending'
         "
         (click)="
           changeStatus(singleTrip?.tripId, singleTrip?.tripId, 'Approved')
@@ -33,9 +33,9 @@
       <button
         *ngIf="
           !isInEditMode &&
-          singleTrip?.challanStatus != 'Rejected' &&
-          singleTrip?.challanStatus != 'Approved' &&
-          singleTrip?.challanStatus != 'Pending'
+          singleTrip?.challanStatus !== 'Rejected' &&
+          singleTrip?.challanStatus !== 'Approved' &&
+          singleTrip?.challanStatus !== 'Pending'
         "
         (click)="
           changeStatus(singleTrip?.tripId, singleTrip?.tripId, 'Rejected')
@@ -44,7 +44,7 @@
         <span>Reject</span>
       </button>
       <button
-        *ngIf="!isInEditMode && singleTrip?.challanStatus != 'Approved'"
+        *ngIf="!isInEditMode && singleTrip?.challanStatus !== 'Approved'"
         (click)="onEdit()"
         class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
         <i class="far fa-pen text-primary"></i>
@@ -298,7 +298,7 @@
                     "
                     class="w-[7.5rem] relative h-[7.25rem] rounded-lg overflow-hidden border border-line">
                     <img
-                      [src]="document.url"
+                      [src]="document.url?.includes('pdf') ? 'assets/svg/pdf.svg' : document.url"
                       class="notPreview h-full w-full"
                       alt=""/>
                     <button
@@ -436,7 +436,7 @@
                     "
                     class="w-[7.5rem] relative h-[7.25rem] rounded-lg overflow-hidden border border-line">
                     <img
-                      [src]="document.url"
+                      [src]="document.url.includes('pdf') ? 'assets/svg/pdf.svg' : document.url"
                       class="notPreview h-full w-full"
                       alt=""/>
                     <button

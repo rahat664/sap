@@ -82,13 +82,9 @@ export class ConfirmCancelComponent implements OnInit {
     if ($event.checked) {
       if ($event.source.value !== 'Others') {
         reason.push($event.source.value);
-      }
-      if ($event.source.value === 'Others') {
+      } else if ($event.source.value === 'Others') {
         this.otherReason = true;
         this.reasonTextArea = true;
-      } else {
-        this.otherReason = false;
-        this.reasonTextArea = false;
       }
     } else {
       reason = reason.filter(item => item !== $event.source.value);
