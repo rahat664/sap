@@ -99,6 +99,7 @@ export class TripUpdateComponent implements OnInit {
   ) {}
 
   onUpdateTrip() {
+    const tripData = JSON.parse(localStorage.getItem('updateTripDetails'));
     const tripId = localStorage.getItem('tripId');
     if (this.tripUpdateForm.valid) {
       const dialogRef = this.dialog
@@ -131,30 +132,88 @@ export class TripUpdateComponent implements OnInit {
                 ...this.tripUpdateForm.get('loadingPoints').value,
                 ...this.tripUpdateForm.get('unloadingPoints').value,
               ],
-              transporterCode: this.tripUpdateForm.get('transporterCode').value,
-              transporterName: this.tripUpdateForm.get('transporterName').value,
-              transporterPhone:
-                this.tripUpdateForm.get('transporterPhone').value,
-              transporterRate: this.tripUpdateForm.get('transporterRate').value,
-              truckId: this.tripUpdateForm.get('truckId').value,
             };
-            if (this.tripUpdateForm.get('driverCode').value) {
+            if (
+              this.tripUpdateForm.get('truckId').value &&
+              this.tripUpdateForm.get('truckId').value !== tripData.truck.id
+            ) {
+              body['truckId'] = this.tripUpdateForm.get('truckId').value;
+            }
+            if (
+              this.tripUpdateForm.get('transporterCode').value &&
+              this.tripUpdateForm.get('transporterCode').value !==
+                tripData.transporterCode
+            ) {
+              body['transporterCode'] =
+                this.tripUpdateForm.get('transporterCode').value;
+            }
+            if (
+              this.tripUpdateForm.get('transporterName').value &&
+              this.tripUpdateForm.get('transporterName').value !==
+                tripData.transporterName
+            ) {
+              body['transporterName'] =
+                this.tripUpdateForm.get('transporterName').value;
+            }
+            if (
+              this.tripUpdateForm.get('transporterPhone').value &&
+              this.tripUpdateForm.get('transporterPhone').value !==
+                tripData.transporterPhone
+            ) {
+              body['transporterPhone'] =
+                this.tripUpdateForm.get('transporterPhone').value;
+            }
+
+            if (
+              this.tripUpdateForm.get('transporterRate').value &&
+              this.tripUpdateForm.get('transporterRate').value !==
+                tripData.transporterRate
+            ) {
+              body['transporterRate'] =
+                this.tripUpdateForm.get('transporterRate').value;
+            }
+
+            if (
+              this.tripUpdateForm.get('driverCode').value &&
+              this.tripUpdateForm.get('driverCode').value !==
+                tripData.driverCode
+            ) {
               body['driverCode'] = this.tripUpdateForm.get('driverCode').value;
             }
-            if (this.tripUpdateForm.get('driverName').value) {
+            if (
+              this.tripUpdateForm.get('driverName').value &&
+              this.tripUpdateForm.get('driverName').value !==
+                tripData.driverName
+            ) {
               body['driverName'] = this.tripUpdateForm.get('driverName').value;
             }
-            if (this.tripUpdateForm.get('driverPhone').value) {
+            if (
+              this.tripUpdateForm.get('driverPhone').value &&
+              this.tripUpdateForm.get('driverPhone').value !==
+                tripData.driverPhone
+            ) {
               body['driverPhone'] =
                 this.tripUpdateForm.get('driverPhone').value;
             }
-            if (this.tripUpdateForm.get('helperCode').value) {
+            if (
+              this.tripUpdateForm.get('helperCode').value &&
+              this.tripUpdateForm.get('helperCode').value !==
+                tripData.helperCode
+            ) {
               body['helperCode'] = this.tripUpdateForm.get('helperCode').value;
             }
-            if (this.tripUpdateForm.get('helperName').value) {
+            if (
+              this.tripUpdateForm.get('helperName').value &&
+              this.tripUpdateForm.get('helperName').value !==
+                tripData.helperName
+            ) {
               body['helperName'] = this.tripUpdateForm.get('helperName').value;
             }
-            if (this.tripUpdateForm.get('helperPhone').value) {
+            if (
+              this.tripUpdateForm.get('helperPhone').value &&
+              this.tripUpdateForm.get('helperPhone').value !==
+                tripData.helperPhone
+            ) {
               body['helperPhone'] =
                 this.tripUpdateForm.get('helperPhone').value;
             }

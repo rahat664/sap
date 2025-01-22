@@ -77,7 +77,7 @@ export class GlobalImageUploadComponent implements OnChanges, AfterViewInit {
   @Input() expiryAvailable = false;
   @Input() notesAvailable = false;
   @Input() documents: any[] = [];
-  @Input() activeDocumentIndex = -1;
+  @Input() activeDocumentIndex = 0;
   @Input() activatedDocument: any;
   @Output() closedDocument = new EventEmitter<any>();
   @Output() saveButtonClicked = new EventEmitter<boolean>();
@@ -202,7 +202,9 @@ export class GlobalImageUploadComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  ngOnInIt() {}
+  ngOnInIt() {
+    this.updateActiveDocumentIndex();
+  }
 
   onMouseEnter() {
     // Show the arrows when mouse enters the container

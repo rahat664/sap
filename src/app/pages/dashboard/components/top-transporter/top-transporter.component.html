@@ -3,18 +3,14 @@
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
       Top Transporter
     </h2>
-    <!--    <mat-form-field appearance="outline" class="w-[12rem]">-->
-    <!--      <mat-select-->
-    <!--        formControlName="vendorId"-->
-    <!--        placeholder="Select date">-->
-    <!--        <mat-option value="all">All time</mat-option>-->
-    <!--        <mat-option value="today">Today</mat-option>-->
-    <!--        <mat-option value="all">Yesterday</mat-option>-->
-    <!--        <mat-option value="all">Last 7 days</mat-option>-->
-    <!--        <mat-option value="all">Last 15 days</mat-option>-->
-    <!--        <mat-option value="all">Last 30 days</mat-option>-->
-    <!--      </mat-select>-->
-    <!--    </mat-form-field>-->
+    <mat-form-field appearance="outline" class="w-[12rem]">
+      <mat-select [(ngModel)]="sortBy"
+                  (selectionChange)="changeSorting($event)"
+                  placeholder="Select sorting">
+        <mat-option value="grossProfit">Gross Profit</mat-option>
+        <mat-option value="totalTrip">No. of Trip</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
   <div
     routerLink="/profile/transporter"
@@ -26,13 +22,14 @@
       <span class="text-center">TR(৳)</span>
       <span class="text-center">GP(৳)</span>
     </div>
-    <div class="flex flex-col space-y-5">
-      <ng-container *ngFor="let transporter of topTransporter">
-        <div
-          class="grid grid-cols-4 items-center w-full text-body text-not-black">
-          <div class="flex space-x-3 items-center">
-            <div
-              class="text-body_title text-white flex justify-center items-center h-[1.75rem] w-[1.75rem] rounded-full {{
+    <ng-container *ngIf="!loading">
+      <div class="flex flex-col space-y-5">
+        <ng-container *ngFor="let transporter of topTransporter">
+          <div
+            class="grid grid-cols-4 items-center w-full text-body text-not-black">
+            <div class="flex space-x-3 items-center">
+              <div
+                class="text-body_title text-white flex justify-center items-center h-[1.75rem] w-[1.75rem] rounded-full {{
                 getBackgroundColor(
                   transporter.transporterName[0].toLocaleLowerCase()
                 )
@@ -40,18 +37,24 @@
               <span>{{
                   transporter.transporterName[0].toLocaleUpperCase()
                 }}</span>
+              </div>
+              <span class="flex-1">{{ transporter.transporterName }}</span>
             </div>
-            <span class="flex-1">{{ transporter.transporterName }}</span>
+            <span class="text-center w-full">{{ transporter.noOfTrips }}</span>
+            <span class="text-center">{{
+                transporter.totalTR | numberSeperator
+              }}</span>
+            <span class="text-center">{{
+                transporter.totalProfit | numberSeperator
+              }}</span>
           </div>
-          <span class="text-center w-full">{{ transporter.noOfTrips }}</span>
-          <span class="text-center">{{
-              transporter.totalTR | numberSeperator
-            }}</span>
-          <span class="text-center">{{
-              transporter.totalProfit | numberSeperator
-            }}</span>
+        </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="loading">
+        <div class="min-h-60 flex items-center w-full justify-center">
+          <app-loading></app-loading>
         </div>
-      </ng-container>
-    </div>
+    </ng-container>
   </div>
 </div>

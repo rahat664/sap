@@ -36,15 +36,15 @@ export class DashboardService {
     );
   }
 
-  getTopTransporters(from: string, to: string) {
+  getTopTransporters(from: string, to: string, sortBy: string = 'grossProfit') {
     return this.http.get(
-      `${this._dashboardUrl}/top-transporters?from=${from}&to=${to}&size=5`
+      `${this._dashboardUrl}/top-transporters?from=${from}&to=${to}&size=5&sortBy=${sortBy}`
     );
   }
 
-  getTopCustomers(from: string, to: string) {
+  getTopCustomers(from: string, to: string, sortBy: string = 'grossProfit') {
     return this.http.get(
-      `${this._dashboardUrl}/top-customers?from=${from}&to=${to}&size=5`
+      `${this._dashboardUrl}/top-customers?from=${from}&to=${to}&size=5&sortBy=${sortBy}`
     );
   }
 
