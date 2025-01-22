@@ -4,7 +4,6 @@ import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-button-chips',
-  standalone: true,
   imports: [NgClass],
   templateUrl: './button-chips.component.html',
   styleUrl: './button-chips.component.scss',

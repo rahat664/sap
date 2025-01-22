@@ -8,8 +8,7 @@
 
 .document-item.scaled {
   // increase the height and width of the document item
-  border: 1px solid #0CD5F0;
-
+  border: 1px solid #0cd5f0;
 }
 
 // smaller the document item which is not scaled
@@ -24,15 +23,19 @@
   transform: translateY(-50%);
   width: 2rem; /* Adjust size as necessary */
   height: 4rem; /* Adjust size as necessary */
-  background-color: #302F2F;
+  background-color: #302f2f;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 1s ease, visibility 0s 0.3s, transform 1s ease;
+  transition: opacity 1s ease,
+  visibility 0s 0.3s,
+  transform 1s ease;
   z-index: 10;
 }
 
 .arrow.show {
   opacity: 1;
   visibility: visible;
-  transition: opacity 1s ease, visibility 0s 0s, transform 1s ease;
+  transition: opacity 1s ease,
+  visibility 0s 0s,
+  transform 1s ease;
 }

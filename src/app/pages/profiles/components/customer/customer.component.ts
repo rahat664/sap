@@ -11,19 +11,14 @@ import { GetClickEventDirective } from '../../../../shared/directive/get-click-e
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
+import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-customer',
-  standalone: true,
   imports: [
     CommonModule,
-    CreatePopupComponent,
-    CustomerCreateComponent,
     GiveMaxHeightDirective,
     GetElementHeightDirective,
-    CustomInputComponent,
-    GetClickEventDirective,
     LoadingComponent,
     FormsModule,
     NumberSeperatorPipe,
@@ -36,8 +31,8 @@ export class CustomerComponent implements OnInit {
   isOpen = false;
   height: any;
   loading: boolean;
-  size: number = 30;
-  page: number = 0;
+  size = 30;
+  page = 0;
   totalPages: number;
   searchValue: any;
   readonly dialog = inject(MatDialog);

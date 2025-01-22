@@ -1,7 +1,10 @@
 <div class="sticky top-0 flex items-start justify-between bg-white z-50">
-  <h1 class="text-h3 leading-h3  font-semibold text-not-black px-6 py-4">Driver</h1>
-  <button class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
-          (click)="closeDialog()">
+  <h1 class="text-h3 leading-h3 font-semibold text-not-black px-6 py-4">
+    Driver
+  </h1>
+  <button
+    class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
+    (click)="closeDialog()">
     <i class="fal fa-times"></i>
   </button>
 </div>
@@ -9,10 +12,12 @@
   <div class="relative">
     <div
       class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-      <img src="assets/svg/search.svg" class="notPreview" alt="search">
+      <img src="assets/svg/search.svg" class="notPreview" alt="search"/>
     </div>
-    <button (click)="onClickClear()" *ngIf="searchValue"
-            class="absolute inset-y-0 right-0 pr-3 flex items-center">
+    <button
+      (click)="onClickClear()"
+      *ngIf="searchValue"
+      class="absolute inset-y-0 right-0 pr-3 flex items-center">
       <i class="far fa-times text-gray-500 text-xs"></i>
     </button>
     <input
@@ -20,19 +25,25 @@
       (keyup)="onKeyUpSearch($event)"
       type="text"
       name="email"
-
-      class="border-none text-input-hint w-full  bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
+      class="border-none text-input-hint w-full bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
       placeholder="Search  name, mobile, email" />
   </div>
 </div>
-<div *ngIf="loading" class="w-full h-full flex flex-col justify-center items-center">
+<div
+  *ngIf="loading"
+  class="w-full h-full flex flex-col justify-center items-center">
   <i class="fas fa-spinner fa-spin text-primary text-4xl"></i>
   <span class="text-center w-full text-secondary">Loading...</span>
 </div>
 
-<div appGiveMaxHeight (inBottomEnd)="onBottom($event)" class="px-8 flex flex-col space-y-2">
-  <button (click)="onSelectDriver(driver)" *ngFor="let driver of driverList"
-          class="flex w-full space-x-4 py-4 px-4 rounded-sm hover:bg-input border-b border-input items-center">
+<div
+  appGiveMaxHeight
+  (inBottomEnd)="onBottom($event)"
+  class="px-8 flex flex-col space-y-2">
+  <button
+    (click)="onSelectDriver(driver)"
+    *ngFor="let driver of driverList"
+    class="flex w-full space-x-4 py-4 px-4 rounded-sm hover:bg-input border-b border-input items-center">
     <div
       class="w-[1.875rem] h-[1.875rem] rounded-full bg-green text-white font-semibold flex items-center justify-center">
       <span>{{ driver.name.charAt(0) }}</span>

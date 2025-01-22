@@ -1,43 +1,55 @@
-<button [ngClass]="{'border border-primary': isActivated}"
+<button
+        [ngClass]="{ 'border border-primary': isActivated }"
         class="bg-white p-4 w-full flex flex-col text-left rounded-2xl space-y-3 max-w-96">
   <div class="flex justify-between items-start w-full">
     <div class="flex flex-col space-y-1 items-start">
-      <span class="text-body_title leading-body_title text-not-black font-semibold">{{ tripNumber }}</span>
+      <span
+              class="text-body_title leading-body_title text-not-black font-semibold"
+      >{{ tripNumber }}</span
+      >
       <span class="text-body text-secondary">{{ companyName }}</span>
     </div>
-    <div class="px-2 py-1 {{getTripColorBasedOnStatus(tripStatus)}} text-white rounded-full text-xs">
+      <div
+              class="px-2 py-1 {{
+        getTripColorBasedOnStatus(tripStatus)
+      }} text-white rounded-full text-xs">
       {{ tripStatus }}
     </div>
   </div>
   <div class="flex flex-col space-y-3 items-start text-xs">
-    <span class="text-secondary">{{ tripStartDateTime | date : 'd MMM,yyyy, h:mm a' }}</span>
+    <span class="text-secondary">{{
+        tripStartDateTime | date: 'd MMM,yyyy, h:mm a'
+        }}</span>
     <div class="flex flex-col space-y-3 text-not-black text-start">
       <div class="step">
         <div class="circle">
-          <img src="assets/svg/start.svg" alt="loading">
+            <img src="assets/svg/start.svg" alt="loading"/>
         </div>
         <p class="w-full">
-          {{ loadingPoint[0]?.pointName }} <span
-          class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
-          *ngIf="loadingPoint.length > 1">
-          +{{
-            loadingPoint.length - 1
-          }}</span>
+            {{ loadingPoint[0]?.pointName }}
+            <span
+                    class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+                    *ngIf="loadingPoint.length > 1">
+            +{{ loadingPoint.length - 1 }}</span
+            >
         </p>
-
       </div>
       <div class="step">
         <div class="circle">
-          <img src="assets/svg/end.svg" alt="loading"></div>
+            <img src="assets/svg/end.svg" alt="loading"/>
+        </div>
         <p class="w-full">
-          {{ unloadingPoint[0]?.pointName }} <span
-          class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
-          *ngIf="unloadingPoint.length > 1">
-          +{{
-            unloadingPoint.length - 1
-          }}</span>
+            {{ unloadingPoint[0]?.pointName }}
+            <span
+                    class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+                    *ngIf="unloadingPoint.length > 1">
+            +{{ unloadingPoint.length - 1 }}</span
+            >
+        </p>
       </div>
     </div>
-    <span class="text-secondary text-start">{{ truckId }} | {{ truckType }} | {{ goodsName }}</span>
+      <span class="text-secondary text-start"
+      >{{ truckId }} | {{ truckType }} | {{ goodsName }}</span
+      >
   </div>
 </button>

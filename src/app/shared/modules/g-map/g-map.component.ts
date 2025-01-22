@@ -7,6 +7,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  OnDestroy,
 } from '@angular/core';
 import { GeolocationService } from '../../services/location/geolocation.service';
 import { mapStyles } from '../../models/map-options';
@@ -23,12 +24,11 @@ import {
 
 @Component({
   selector: 'app-g-map',
-  standalone: true,
   imports: [GoogleMapsModule, GoogleMap, NgIf, NgForOf],
   templateUrl: './g-map.component.html',
   styleUrls: ['./g-map.component.scss'],
 })
-export class GMapComponent implements OnInit, OnChanges {
+export class GMapComponent implements OnInit, OnChanges, OnDestroy {
   @Output() clearInput: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
@@ -77,7 +77,7 @@ export class GMapComponent implements OnInit, OnChanges {
   startMarker: google.maps.Marker[] = [];
   endMarker: google.maps.Marker[] = [];
   polylines: google.maps.PolylineOptions[] = [];
-  bottomHeight: string = '0px';
+  bottomHeight = '0px';
   infoWindow: any;
   truckData: TruckData = {} as TruckData;
   loading: boolean;

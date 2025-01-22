@@ -1,4 +1,4 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import {
   MatAutocomplete,
   MatAutocompleteTrigger,
@@ -32,7 +32,6 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 
 @Component({
   selector: 'app-dialog-data',
-  standalone: true,
   imports: [
     MatAutocomplete,
     MatFormField,
@@ -46,7 +45,7 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
   templateUrl: './dialog-data.component.html',
   styleUrl: './dialog-data.component.scss',
 })
-export class DialogDataComponent {
+export class DialogDataComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   driverSuggestion: any;
   helperSuggestion: any;
@@ -133,7 +132,7 @@ export class DialogDataComponent {
   protected readonly registrationZoneList = registrationZoneList;
   protected readonly registrationCategoryList = registrationCategoryList;
   tripUpdateForm: FormGroup;
-  loading: boolean = false;
+  loading = false;
 
   getTransporterList() {
     const dialogRef = this.dialog

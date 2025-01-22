@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -20,7 +20,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-report',
-  standalone: true,
   imports: [
     NgForOf,
     MatCheckbox,
@@ -36,7 +35,7 @@ import { MatTooltip } from '@angular/material/tooltip';
   templateUrl: './report.component.html',
   styleUrl: './report.component.scss',
 })
-export class ReportComponent {
+export class ReportComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   protected readonly statusButtons = statusButtons;
   height: any;
@@ -50,7 +49,7 @@ export class ReportComponent {
   selectedTruckList: number[] = [];
   selectedTruckName: string[] = [];
   partiallyChecked: boolean;
-  isCustomOpened: boolean = false;
+  isCustomOpened = false;
 
   constructor(
     private datePipe: DatePipe,
@@ -90,9 +89,9 @@ export class ReportComponent {
   }
 
   private setDateRange(dateEnum: DateEnum) {
-    let fromDate = new Date();
+    const fromDate = new Date();
     // to date should be yesterday
-    let toDate = new Date();
+    const toDate = new Date();
     switch (dateEnum) {
       case DateEnum.Yesterday:
         this.isCustomOpened = false;

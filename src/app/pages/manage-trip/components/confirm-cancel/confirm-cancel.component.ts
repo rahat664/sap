@@ -1,28 +1,28 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
 import { TripService } from '../../../trip-list/services/trip.service';
-import {DatePipe, NgClass, NgIf} from '@angular/common';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
-import {FormsModule} from "@angular/forms";
-import {MatCheckbox, MatCheckboxChange} from "@angular/material/checkbox";
+import { FormsModule } from '@angular/forms';
+import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-confirm-cancel',
-  standalone: true,
   imports: [FormsModule, NgClass, NgIf, MatCheckbox],
   templateUrl: './confirm-cancel.component.html',
   styleUrl: './confirm-cancel.component.scss',
 })
-export class ConfirmCancelComponent {
+export class ConfirmCancelComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   reason = '';
   reasonTextArea = false;
-  textareaReasons: string = '';
+  textareaReasons = '';
+  otherReason: boolean = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -82,9 +82,8 @@ export class ConfirmCancelComponent {
     if ($event.checked) {
       if ($event.source.value !== 'Others') {
         reason.push($event.source.value);
-        this.reasonTextArea = false;
-      } else {
-        reason.push(this.textareaReasons);
+      } else if ($event.source.value === 'Others') {
+        this.otherReason = true;
         this.reasonTextArea = true;
       }
     } else {

@@ -1,7 +1,9 @@
 import { ActionReducer, MetaReducer } from '@ngrx/store';
 
-export function rehydrateReducer(reducer: ActionReducer<any>): ActionReducer<any> {
-  return function(state, action) {
+export function rehydrateReducer(
+  reducer: ActionReducer<any>
+): ActionReducer<any> {
+  return function (state, action) {
     const newState = reducer(state, action);
     const user = localStorage.getItem('user');
 

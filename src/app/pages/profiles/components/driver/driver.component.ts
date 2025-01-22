@@ -30,11 +30,8 @@ import {
 
 @Component({
   selector: 'app-driver',
-  standalone: true,
   imports: [
-    CreatePopupComponent,
     CustomInputComponent,
-    FileUploadPopupComponent,
     GetClickEventDirective,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
@@ -43,7 +40,6 @@ import {
     RouterLink,
     UploadButtonComponent,
     LoadingComponent,
-    CheckTheHeightCrossMaxHeightOrNotDirective,
     DatePipe,
     FormsModule,
     NgClass,
@@ -65,7 +61,7 @@ export class DriverComponent implements OnInit {
   private page: number;
   totalPages: number;
   searchValue: string;
-  private size: number = 30;
+  private size = 30;
 
   constructor(
     private user: UserService,
@@ -131,7 +127,7 @@ export class DriverComponent implements OnInit {
   isNewOpen: any;
   singleDriver: any;
   statusInputPlaceholder: any;
-  filterOpened: boolean = true;
+  filterOpened = true;
   statusOptionsArray: CustomInputSelectModel[] = [
     { id: 0, value: 'All', selected: false },
     { id: 1, value: 'Approved', selected: false },
@@ -203,12 +199,18 @@ export class DriverComponent implements OnInit {
   onBottom($event: boolean) {
     if ($event && this.page < this.totalPages - 1) {
       this.page++;
-      this.user.getDriver(this.page, this.size, null,
-        this.statusInputPlaceholder === 'All'
-          ? ''
-          : this.statusInputPlaceholder).subscribe((res: any) => {
-        this.driverList.push(...res.data.responses);
-      });
+      this.user
+        .getDriver(
+          this.page,
+          this.size,
+          null,
+          this.statusInputPlaceholder === 'All'
+            ? ''
+            : this.statusInputPlaceholder
+        )
+        .subscribe((res: any) => {
+          this.driverList.push(...res.data.responses);
+        });
     }
   }
 

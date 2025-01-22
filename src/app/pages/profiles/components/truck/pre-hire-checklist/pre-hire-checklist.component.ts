@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  OnChanges,
+} from '@angular/core';
 import { TruckService } from '../services/truck.service';
 import { PreHireChecklistModel } from '../models/pre-hire-checklist.model';
 import { NgForOf, NgIf } from '@angular/common';
@@ -6,12 +13,11 @@ import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 
 @Component({
   selector: 'app-pre-hire-checklist',
-  standalone: true,
-  imports: [NgForOf, NgIf, MatRadioButton, MatRadioGroup],
+  imports: [MatRadioButton, MatRadioGroup, NgForOf],
   templateUrl: './pre-hire-checklist.component.html',
   styleUrl: './pre-hire-checklist.component.scss',
 })
-export class PreHireChecklistComponent implements OnInit {
+export class PreHireChecklistComponent implements OnInit, OnChanges {
   @Input() singleTruckId: number;
   @Input() saveButtonEnabled = false;
   preHireCheckList: PreHireChecklistModel[] = [];
@@ -88,7 +94,7 @@ export class PreHireChecklistComponent implements OnInit {
 
   @Input() object!: any;
   shareObject: any = {};
-  @Input() passedCheckList: string = '0';
+  @Input() passedCheckList = '0';
 
   getChecklistPosition(i: number, j: number) {
     if (i == 0) {

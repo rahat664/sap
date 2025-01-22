@@ -1,25 +1,34 @@
-<div class="flex flex-col max-h-[70vh]  min-h-[70vh]  overflow-y-auto space-y-2
-">
+<div class="flex flex-col max-h-[70vh] min-h-[70vh] overflow-y-auto space-y-2">
   <div class="px-16 flex justify-between items-center py-4">
     <div class="flex flex-col space-y-2">
-      <h1 class="text-body_title leading-body_title text-not-black font-semibold">
+      <h1
+        class="text-body_title leading-body_title text-not-black font-semibold">
         {{ tripDetails?.customerName }}
       </h1>
-      <span class="text-body text-web-text-secondary">{{ tripDetails?.tripId }}</span>
+      <span class="text-body text-web-text-secondary">{{
+          tripDetails?.tripId
+        }}</span>
     </div>
     <div class="flex space-x-3">
-      <button (click)="onClickAssignButton()"
-              *ngIf="tripDetails.status == 'Booked' && getAssignButtonName( tripDetails) != '' && isAdmin()"
-              class="bg-white px-6 py-2 font-semibold text-primary rounded-lg border border-primary">
+      <button
+        (click)="onClickAssignButton()"
+        *ngIf="
+          tripDetails.status == 'Booked' &&
+          getAssignButtonName(tripDetails) != '' &&
+          isAdmin()
+        "
+        class="bg-white px-6 py-2 font-semibold text-primary rounded-lg border border-primary">
         <span>{{ getAssignButtonName(tripDetails) }}</span>
       </button>
       <button
         (click)="onClickButton()"
-        *ngIf="tripDetails?.status != 'Completed' && tripDetails?.status != 'Cancelled' && isAdmin()"
+        *ngIf="
+          tripDetails?.status != 'Completed' &&
+          tripDetails?.status != 'Cancelled' &&
+          isAdmin()
+        "
         class="bg-primary px-6 py-2 font-semibold rounded-lg text-white">
-        <span>{{
-            getButtonName(tripDetails?.status)
-          }}</span>
+        <span>{{ getButtonName(tripDetails?.status) }}</span>
       </button>
     </div>
   </div>
@@ -28,36 +37,96 @@
       class="grid grid-cols-4 place-items-center text-xs font-semibold py-4 bg-input rounded-t-lg">
       <span>Created</span>
       <span
-        [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 2}">{{ tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 2 ? 'Cancelled' : 'Booked' }}</span>
+        [ngClass]="{
+          'text-red':
+            tripDetails?.status === 'Cancelled' &&
+            tripDetails.tripEvents.length == 2,
+        }"
+      >{{
+          tripDetails?.status === 'Cancelled' &&
+          tripDetails.tripEvents.length == 2
+            ? 'Cancelled'
+            : 'Booked'
+        }}</span
+      >
       <span
-        [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 3}"
-        [hidden]="tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length < 3">{{ tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 3 ? 'Cancelled' : 'Running' }}</span>
+        [ngClass]="{
+          'text-red':
+            tripDetails?.status === 'Cancelled' &&
+            tripDetails.tripEvents.length == 3,
+        }"
+        [hidden]="
+          tripDetails?.status === 'Cancelled' &&
+          tripDetails.tripEvents.length < 3
+        "
+      >{{
+          tripDetails?.status === 'Cancelled' &&
+          tripDetails.tripEvents.length == 3
+            ? 'Cancelled'
+            : 'Running'
+        }}</span
+      >
       <span
-        [ngClass]="{'text-red': tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 4}"
-        [hidden]="tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length < 4"> {{ tripDetails?.status === 'Cancelled' && tripDetails.tripEvents.length == 4 ? 'Cancelled' : 'Completed' }}</span>
+        [ngClass]="{
+          'text-red':
+            tripDetails?.status === 'Cancelled' &&
+            tripDetails.tripEvents.length == 4,
+        }"
+        [hidden]="
+          tripDetails?.status === 'Cancelled' &&
+          tripDetails.tripEvents.length < 4
+        ">
+        {{
+          tripDetails?.status === 'Cancelled' &&
+          tripDetails.tripEvents.length == 4
+            ? 'Cancelled'
+            : 'Completed'
+        }}</span
+      >
     </div>
     <div
       class="border border-input border-t-0 grid grid-cols-4 place-items-center py-6 mb-4 rounded-b-lg">
-      <div class="flex flex-col space-y-3 w-full items-center justify-center"
-           *ngFor="let timeline of tripTimeline; index as i">
-        <img loading="lazy" class="notPreview {{timeline.truckInThisPoint ? '': 'invisible'}}"
-             src="assets/svg/truckImg.svg"
-             alt="truckImg">
+      <div
+        class="flex flex-col space-y-3 w-full items-center justify-center"
+        *ngFor="let timeline of tripTimeline; index as i">
+        <img
+          loading="lazy"
+          class="notPreview {{ timeline.truckInThisPoint ? '' : 'invisible' }}"
+          src="assets/svg/truckImg.svg"
+          alt="truckImg"/>
         <div class="relative w-full h-4 flex items-center justify-center">
-          <div [hidden]="tripDetails.status === 'Cancelled' && tripDetails.tripEvents.length < i+2"
-               class="w-[0.5rem] h-[0.5rem] rounded-full relative ring ring-[#1DBF73] z-20 {{timeline.active ? 'bg-green': 'bg-white'}}"></div>
-          <div class="text-2xl z-20 relative text-red"
-               *ngIf="timeline.cancelled && tripDetails.status == 'Cancelled' && !timeline.active">
+          <div
+            [hidden]="
+              tripDetails.status === 'Cancelled' &&
+              tripDetails.tripEvents.length < i + 2
+            "
+            class="w-[0.5rem] h-[0.5rem] rounded-full relative ring ring-[#1DBF73] z-20 {{
+              timeline.active ? 'bg-green' : 'bg-white'
+            }}"></div>
+          <div
+            class="text-2xl z-20 relative text-red"
+            *ngIf="
+              timeline.cancelled &&
+              tripDetails.status == 'Cancelled' &&
+              !timeline.active
+            ">
             <i class="far fa-times"></i>
           </div>
           <div
-            class="{{timeline.className}}  {{i == 0 ? 'w-1/4 left-1/4' : 'w-1/2 right-1/2'}} absolute "></div>
-          <div *ngIf="i < 3"
-               class="{{tripTimeline[i+1].className}}  w-1/2 absolute right-0 "></div>
+            class="{{ timeline.className }}  {{
+              i == 0 ? 'w-1/4 left-1/4' : 'w-1/2 right-1/2'
+            }} absolute "></div>
+          <div
+            *ngIf="i < 3"
+            class="{{
+              tripTimeline[i + 1].className
+            }}  w-1/2 absolute right-0 "></div>
         </div>
         <div
-          class="text-center text-xs text-secondary flex flex-col space-y-[.125rem] {{timeline.dateTimeAvailable ? '': 'invisible'}}">
-          <span>{{ timeline.dateTime | date : 'h:mm a' }}</span>
+          class="text-center text-xs text-secondary flex flex-col space-y-[.125rem] {{
+            timeline.dateTimeAvailable ? '' : 'invisible'
+          }}">
+          <span>{{ timeline.dateTime | date: 'h:mm a' }}</span>
           <span>{{ timeline.dateTime | date: 'd MMM yyyy' }}</span>
         </div>
       </div>
@@ -65,64 +134,62 @@
   </div>
   <div class="flex flex-1 mx-16 py-4 items-start">
     <div class="flex flex-col w-1/2 space-y-4">
-      <div class="flex flex-col space-y-2" *ngIf="tripDetails?.status === 'Cancelled'">
+      <div
+        class="flex flex-col space-y-2"
+        *ngIf="tripDetails?.status === 'Cancelled'">
         <div class="flex space-x-3 items-center">
-          <div class=" w-6 h-6 bg-red flex items-center justify-center rounded-full">
+          <div
+            class="w-6 h-6 bg-red flex items-center justify-center rounded-full">
             <i class="fas fa-times text-white"></i>
           </div>
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">Reasons behind cancellation</h1>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Reasons behind cancellation
+          </h1>
         </div>
-        <div class="ml-2 " *ngFor="let reason of tripDetails.tripCancellationReason.split('\n')"
-          >
+        <div
+          class="ml-2"
+          *ngFor="let reason of tripDetails.tripCancellationReason.split('\n')">
           <div class="flex items-center space-x-2">
-            <img class="notPreview" src="assets/svg/circle.svg" alt="loading">
-            <span class="text-body_title leading-body_title text-web-text-secondary">{{ reason.trim() }}</span>
+            <img class="notPreview" src="assets/svg/circle.svg" alt="loading"/>
+            <span
+              class="text-body_title leading-body_title text-web-text-secondary"
+            >{{ reason.trim() }}</span
+            >
           </div>
         </div>
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 notPreview h-6" src="assets/svg/loading.svg">
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">
-            Loading Point{{ getLoadingPoint(tripDetails.tripPoints)?.length > 1 ? 's' : '' }}
-            <span
-              *ngIf="getLoadingPoint(tripDetails.tripPoints)?.length > 1">
+          <img
+            loading="lazy"
+            class="w-6 notPreview h-6"
+            src="assets/svg/loading.svg"/>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Loading Point{{
+              getLoadingPoint(tripDetails.tripPoints)?.length > 1 ? 's' : ''
+            }}
+            <span *ngIf="getLoadingPoint(tripDetails.tripPoints)?.length > 1">
               ({{ getLoadingPoint(tripDetails.tripPoints)?.length }})
-              </span></h1>
+            </span>
+          </h1>
         </div>
         <div class="ml-2 flex flex-col space-y-4">
-          <ng-container *ngFor="let point of getLoadingPoint(tripDetails.tripPoints)">
+          <ng-container
+            *ngFor="let point of getLoadingPoint(tripDetails.tripPoints)">
             <div class="step">
               <div class="circle">
-                <img src="assets/svg/circle.svg" class="notPreview" alt="loading">
+                <img
+                  src="assets/svg/circle.svg"
+                  class="notPreview"
+                  alt="loading"/>
               </div>
-              <div class="flex items-center justify-between text-body text-not-black"><p
-                class="w-full">
-                {{ point.pointName }}
-              </p>
-              </div>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-      <div class="flex flex-col  space-y-2">
-        <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/locinfo.svg">
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">
-            Unloading Point{{ getUnloadingPoint(tripDetails.tripPoints)?.length > 1 ? 's' : '' }}
-            <span
-              *ngIf="getUnloadingPoint(tripDetails.tripPoints)?.length > 1">({{ getUnloadingPoint(tripDetails.tripPoints)?.length }})</span></h1>
-        </div>
-        <div class="ml-2 flex flex-col space-y-4">
-          <ng-container *ngFor="let point of getUnloadingPoint(tripDetails.tripPoints)">
-            <div class="step">
-              <div class="circle">
-                <img src="assets/svg/circle.svg" class="notPreview" alt="loading">
-              </div>
-              <div class="flex items-center justify-between text-body text-not-black"><p
-                class="w-full">
-                {{ point.pointName }}
-              </p>
+              <div
+                class="flex items-center justify-between text-body text-not-black">
+                <p class="w-full">
+                  {{ point.pointName }}
+                </p>
               </div>
             </div>
           </ng-container>
@@ -130,105 +197,218 @@
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/truckinfo.svg">
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">Truck</h1>
+          <img
+            loading="lazy"
+            class="w-6 h-6 notPreview"
+            src="assets/svg/locinfo.svg"/>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Unloading Point{{
+              getUnloadingPoint(tripDetails.tripPoints)?.length > 1 ? 's' : ''
+            }}
+            <span *ngIf="getUnloadingPoint(tripDetails.tripPoints)?.length > 1"
+            >({{ getUnloadingPoint(tripDetails.tripPoints)?.length }})</span
+            >
+          </h1>
         </div>
-        <h1
-          class="text-body  text-wrap text-web-text-secondary">{{ tripDetails.vehicleCategory.name }}
-          | {{ tripDetails.truckSize }}ft, {{ tripDetails.truckCapacityInTon }} ton
-          <span
-            *ngIf="tripDetails.truck?.id">| {{ tripDetails.truck.fullRegistrationNumber }}</span>
+        <div class="ml-2 flex flex-col space-y-4">
+          <ng-container
+            *ngFor="let point of getUnloadingPoint(tripDetails.tripPoints)">
+            <div class="step">
+              <div class="circle">
+                <img
+                  src="assets/svg/circle.svg"
+                  class="notPreview"
+                  alt="loading"/>
+              </div>
+              <div
+                class="flex items-center justify-between text-body text-not-black">
+                <p class="w-full">
+                  {{ point.pointName }}
+                </p>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-2">
+        <div class="flex space-x-3 items-center">
+          <img
+            loading="lazy"
+            class="w-6 h-6 notPreview"
+            src="assets/svg/truckinfo.svg"/>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Truck
+          </h1>
+        </div>
+        <h1 class="text-body text-wrap text-web-text-secondary">
+          {{ tripDetails.vehicleCategory.name }} |
+          {{ tripDetails.truckSize }}ft,
+          {{ tripDetails.truckCapacityInTon }} ton
+          <span *ngIf="tripDetails.truck?.id"
+          >| {{ tripDetails.truck.fullRegistrationNumber }}</span
+          >
         </h1>
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/goodsinfo.svg">
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">Goods</h1>
+          <img
+            loading="lazy"
+            class="w-6 h-6 notPreview"
+            src="assets/svg/goodsinfo.svg"/>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Goods
+          </h1>
         </div>
-        <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.good.name }}</h1>
+        <h1 class="text-body text-wrap text-web-text-secondary">
+          {{ tripDetails.good.name }}
+        </h1>
       </div>
       <div class="flex flex-col space-y-2" *ngIf="isAdmin()">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="notPreview h-6 w-6" src="assets/svg/cr.svg">
+          <img
+            loading="lazy"
+            class="notPreview h-6 w-6"
+            src="assets/svg/cr.svg"/>
           <h1
-            class="text-body_title leading-body_title text-not-black font-semibold">{{ isAdmin() ? 'Customer Rate' : 'Trip Rate' }}</h1>
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            {{ isAdmin() ? 'Customer Rate' : 'Trip Rate' }}
+          </h1>
         </div>
-        <h1
-          class="text-body w-1/2 text-wrap text-web-text-secondary">{{
-            Number(tripDetails.customerRate) | numberSeperator
-          }} ৳</h1>
+        <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
+          {{ Number(tripDetails.customerRate) | numberSeperator }} ৳
+        </h1>
       </div>
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" class="notPreview h-6 w-6" src="assets/svg/cgm.svg">
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">CGM</h1>
+          <img
+            loading="lazy"
+            class="notPreview h-6 w-6"
+            src="assets/svg/cgm.svg"/>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            CGM
+          </h1>
         </div>
-        <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.createdByName }}
-          <span
-            *ngIf="tripDetails.createdByName">| <a class="cursor-pointer"
-                                                   (click)="copyNumber($event, tripDetails.createdByPhone)">{{ tripDetails.createdByPhone }}</a></span>
+        <h1 class="text-body text-wrap text-web-text-secondary">
+          {{ tripDetails.createdByName }}
+          <span *ngIf="tripDetails.createdByName"
+          >|
+            <a
+              class="cursor-pointer"
+              (click)="copyNumber($event, tripDetails.createdByPhone)"
+            >{{ tripDetails.createdByPhone }}</a
+            ></span
+          >
         </h1>
       </div>
 
-      <div class="flex flex-col space-y-2" *ngIf="tripDetails.transporterCode && isAdmin()">
+      <div
+        class="flex flex-col space-y-2"
+        *ngIf="tripDetails.transporterCode && isAdmin()">
         <div class="flex space-x-3 items-center">
           <div
             class="h-6 w-6 flex rounded-full items-center justify-center bg-another text-white font-bold">
             T
           </div>
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">
-            Transporter</h1>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Transporter
+          </h1>
         </div>
-        <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.transporterName }}
+        <h1 class="text-body text-wrap text-web-text-secondary">
+          {{ tripDetails.transporterName }}
           <span
-          >| <a class="cursor-pointer"
-                (click)="copyNumber($event, tripDetails.transporterPhone)">{{ tripDetails.transporterPhone }}</a></span>
-          <span
-            *ngIf="tripDetails.transporterRate && isAdmin()"> | {{ tripDetails.transporterRate | numberSeperator }}
-            ৳</span></h1>
+          >|
+            <a
+              class="cursor-pointer"
+              (click)="copyNumber($event, tripDetails.transporterPhone)"
+            >{{ tripDetails.transporterPhone }}</a
+            ></span
+          >
+          <span *ngIf="tripDetails.transporterRate && isAdmin()">
+            | {{ tripDetails.transporterRate | numberSeperator }} ৳</span
+          >
+        </h1>
       </div>
 
-      <div class="flex flex-col space-y-2" *ngIf="tripDetails.driverCode && (isAdmin() ||
-      (!isAdmin() && tripDetails?.status != 'Completed' && tripDetails?.status != 'Cancelled')) ">
+      <div
+        class="flex flex-col space-y-2"
+        *ngIf="
+          tripDetails.driverCode &&
+          (isAdmin() ||
+            (!isAdmin() &&
+              tripDetails?.status != 'Completed' &&
+              tripDetails?.status != 'Cancelled'))
+        ">
         <div class="flex space-x-3 items-center">
           <div
             class="h-6 w-6 flex rounded-full items-center justify-center bg-green text-white font-bold">
             D
           </div>
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">Driver</h1>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Driver
+          </h1>
         </div>
-        <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.driverName }} <span
-        >| <a class="cursor-pointer"
-              (click)="copyNumber($event, tripDetails.driverPhone)">{{ tripDetails.driverPhone }}</a></span>
+        <h1 class="text-body text-wrap text-web-text-secondary">
+          {{ tripDetails.driverName }}
+          <span
+          >|
+            <a
+              class="cursor-pointer"
+              (click)="copyNumber($event, tripDetails.driverPhone)"
+            >{{ tripDetails.driverPhone }}</a
+            ></span
+          >
         </h1>
       </div>
 
-      <div class="flex flex-col space-y-2" *ngIf="tripDetails.helperCode && isAdmin()">
+      <div
+        class="flex flex-col space-y-2"
+        *ngIf="tripDetails.helperCode && isAdmin()">
         <div class="flex space-x-3 items-center">
           <div
             class="h-6 w-6 flex rounded-full items-center justify-center text-white font-bold bg-blue">
             H
           </div>
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">Helper</h1>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Helper
+          </h1>
         </div>
-        <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.helperName }} <span
-        >| <a class="cursor-pointer"
-              (click)="copyNumber($event, tripDetails.helperPhone)">{{ tripDetails.helperPhone }}</a></span>
+        <h1 class="text-body text-wrap text-web-text-secondary">
+          {{ tripDetails.helperName }}
+          <span
+          >|
+            <a
+              class="cursor-pointer"
+              (click)="copyNumber($event, tripDetails.helperPhone)"
+            >{{ tripDetails.helperPhone }}</a
+            ></span
+          >
         </h1>
       </div>
 
-
-      <div>
-      </div>
+      <div></div>
     </div>
     <div class="flex flex-col items-end w-1/2 flex-1 space-y-3">
       <div class="flex flex-col space-y-2">
         <div class="flex space-x-3 items-center">
-          <img loading="lazy" src="assets/svg/additional.svg" class="notPreview">
-          <h1 class="text-body_title leading-body_title text-not-black font-semibold">Additional
-            Instruction</h1>
+          <img
+            loading="lazy"
+            src="assets/svg/additional.svg"
+            class="notPreview"/>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Additional Instruction
+          </h1>
         </div>
-        <h1 class="text-body text-wrap text-web-text-secondary">{{ tripDetails.note }}</h1>
+        <h1 class="text-body text-wrap text-web-text-secondary">
+          {{ tripDetails.note }}
+        </h1>
       </div>
     </div>
   </div>

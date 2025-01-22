@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
@@ -7,12 +7,11 @@ import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-time-picker',
-  standalone: true,
   imports: [MatFormField, MatInput, FormsModule, NgClass, MatTooltip],
   templateUrl: './time-picker.component.html',
   styleUrl: './time-picker.component.scss',
 })
-export class TimePickerComponent {
+export class TimePickerComponent implements OnInit {
   inputTime: string;
   currentDate = new Date();
   currentHour = new Date().getHours();
@@ -21,11 +20,11 @@ export class TimePickerComponent {
 
   currentMinuteCheck = new Date().getMinutes();
   currentMinute = new Date().getMinutes().toString();
-  @Output() timeChange: EventEmitter<any> = new EventEmitter();
+  @Output() timeChange = new EventEmitter<any>();
   currentHourError: boolean;
-  @Output() buttonDisabled: EventEmitter<boolean> = new EventEmitter(false);
+  @Output() buttonDisabled = new EventEmitter<boolean>(false);
   currentMinuteError: any;
-  @Input() fromModal: boolean = false;
+  @Input() fromModal = false;
 
   ngOnInit() {
     this.currentHourShow = this.currentHourShowWithSixHourPlus();

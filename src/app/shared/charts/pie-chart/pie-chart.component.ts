@@ -5,6 +5,7 @@ import {
   Input,
   OnChanges,
   ViewChild,
+  OnInit,
 } from '@angular/core';
 import {
   ApexChart,
@@ -21,7 +22,7 @@ import {
 } from 'ng-apexcharts';
 import { timer } from 'rxjs';
 
-export type ChartOptions = {
+export interface ChartOptions {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
   responsive: ApexResponsive[];
@@ -33,23 +34,20 @@ export type ChartOptions = {
   plotOptions: ApexPlotOptions;
   states: ApexStates;
   tooltip: ApexTooltip;
-};
+}
 
 @Component({
   selector: 'app-pie-chart',
-  standalone: true,
   imports: [NgApexchartsModule],
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.scss'],
 })
-export class PieChartComponent implements OnChanges, AfterViewInit {
+export class PieChartComponent implements OnChanges, AfterViewInit, OnInit {
   @ViewChild('chart') chart: ChartComponent;
   @Input() value: number[] = [0, 0];
   public chartOptions: Partial<ChartOptions>;
 
-  constructor(private cd: ChangeDetectorRef) {
-
-  }
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     timer(1000).subscribe(() => {
@@ -115,7 +113,6 @@ export class PieChartComponent implements OnChanges, AfterViewInit {
           },
         },
       };
-
     });
   }
 

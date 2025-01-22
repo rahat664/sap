@@ -14,7 +14,6 @@ import { DriverEditSharedService } from '../../../pages/profiles/services/driver
 
 @Component({
   selector: 'app-image-popup',
-  standalone: true,
   imports: [GetOutsideModalClickDirective, NgIf],
   templateUrl: './image-popup.component.html',
   styleUrl: './image-popup.component.scss',

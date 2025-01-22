@@ -26,7 +26,6 @@ import { DriverEditSharedService } from '../../profiles/services/driver-edit-sha
 
 @Component({
   selector: 'app-user-create',
-  standalone: true,
   imports: [
     NgIf,
     ReactiveFormsModule,

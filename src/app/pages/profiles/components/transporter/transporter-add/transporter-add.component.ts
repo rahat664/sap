@@ -33,13 +33,11 @@ import {
 
 @Component({
   selector: 'app-transporter-add',
-  standalone: true,
   imports: [
     CustomInputComponent,
     GetClickEventDirective,
     ReactiveFormsModule,
     NgIf,
-    AlphabetOnlyDirective,
     MatDialogModule,
     MatFormField,
     MatInput,

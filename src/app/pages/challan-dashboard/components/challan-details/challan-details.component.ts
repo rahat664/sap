@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnChanges, OnInit } from '@angular/core';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
@@ -15,7 +15,6 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
 
 @Component({
   selector: 'app-challan-details',
-  standalone: true,
   imports: [
     NgIf,
     DatePipe,
@@ -27,7 +26,7 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
   templateUrl: './challan-details.component.html',
   styleUrl: './challan-details.component.scss',
 })
-export class ChallanDetailsComponent {
+export class ChallanDetailsComponent implements OnChanges, OnInit {
   protected loadingEvents: any[] = [];
   protected unloadingEvents: any[] = [];
   readonly dialog = inject(MatDialog);
@@ -35,13 +34,13 @@ export class ChallanDetailsComponent {
   singleTrip: Trip = null;
   isInEditMode: boolean;
   addedTripDocuments: any[] = [];
-  newNoteAvailableUnloading: boolean = false;
-  newNoteAvailableLoading: boolean = false;
+  newNoteAvailableUnloading = false;
+  newNoteAvailableLoading = false;
   currenDate: Date = new Date();
-  loadingNote: string = '';
-  unloadingNote: string = '';
-  deleteUnloadingIndex: number = -1;
-  deleteLoadingIndex: number = -1;
+  loadingNote = '';
+  unloadingNote = '';
+  deleteUnloadingIndex = -1;
+  deleteLoadingIndex = -1;
 
   constructor(
     private trip: TripService,

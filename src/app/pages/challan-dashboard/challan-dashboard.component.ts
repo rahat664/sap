@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+  AfterViewInit,
+} from '@angular/core';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
@@ -38,7 +44,6 @@ import { NumberSeperatorPipe } from '../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-challan-dashboard',
-  standalone: true,
   imports: [
     CustomInputComponent,
     DatePipe,
@@ -65,10 +70,10 @@ import { NumberSeperatorPipe } from '../../shared/pipes/number-seperator.pipe';
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
 })
-export class ChallanDashboardComponent {
-  private dateFilter: number = 0;
-  private searchFilter: number = 0;
-  private tripFilter: number = 0;
+export class ChallanDashboardComponent implements OnInit, AfterViewInit {
+  private dateFilter = 0;
+  private searchFilter = 0;
+  private tripFilter = 0;
   private customerCode: string;
   private to: string;
   private from: string;
@@ -79,8 +84,8 @@ export class ChallanDashboardComponent {
   private isDateOpened: boolean;
   protected truckRegistrationId: string;
   protected transporterName: string;
-  private transporterFilter: number = 0;
-  private truckFilter: number = 0;
+  private transporterFilter = 0;
+  private truckFilter = 0;
   protected truckRegSuggestions: any[] = [];
   protected transporterSuggestions: any[];
   searchRegistationId: any;
@@ -96,34 +101,34 @@ export class ChallanDashboardComponent {
   }
 
   height: any = '0px';
-  pendingChallanAmount: number = 0;
-  pendingChallanText: string = '';
-  receivedAmount: number = 0;
-  receivedText: string = 'Received';
-  pendingAmount: number = 0;
-  pendingText: string = 'In-progress';
-  approvedAmount: number = 0;
-  approvedText: string = 'Approved';
-  rejectedAmount: number = 0;
-  rejectedText: string = 'Rejected';
-  completedTrips: number = 0;
-  completedTripsText: string = 'No. of completed trips';
-  hardCopyReceived: number = 0;
-  hardCopyReceivedText: string = 'Hardcopy received';
+  pendingChallanAmount = 0;
+  pendingChallanText = '';
+  receivedAmount = 0;
+  receivedText = 'Received';
+  pendingAmount = 0;
+  pendingText = 'In-progress';
+  approvedAmount = 0;
+  approvedText = 'Approved';
+  rejectedAmount = 0;
+  rejectedText = 'Rejected';
+  completedTrips = 0;
+  completedTripsText = 'No. of completed trips';
+  hardCopyReceived = 0;
+  hardCopyReceivedText = 'Hardcopy received';
   fromDate: string;
   toDate: string;
-  private size: number = 30;
+  private size = 30;
   protected loading: boolean;
-  private page: number = 0;
+  private page = 0;
   protected tripList: Trip[] = [];
   protected totalPages: any = 0;
   private anotherStatusCalled: boolean;
-  activatedChallanStatus: string = 'Completed';
+  activatedChallanStatus = 'Completed';
   chalanStatus: string;
   status: string;
   challanHardCopyReceived: boolean;
   readonly dialog = inject(MatDialog);
-  filterOpened: boolean = true;
+  filterOpened = true;
   dateOpened: boolean;
   inputPlaceholder: string;
   dateOptionArray: CustomInputSelectModel[];
@@ -131,10 +136,10 @@ export class ChallanDashboardComponent {
   private _tripSuggestions: any;
   tripId: any;
   tripIdSuggestions: any;
-  searchSubject: Subject<string> = new Subject();
-  customerSearchSubject: Subject<string> = new Subject();
-  truckSearchSubject: Subject<string> = new Subject();
-  transporterSearchSubject: Subject<string> = new Subject();
+  searchSubject = new Subject<string>();
+  customerSearchSubject = new Subject<string>();
+  truckSearchSubject = new Subject<string>();
+  transporterSearchSubject = new Subject<string>();
 
   constructor(
     private datePipe: DatePipe,
@@ -626,9 +631,9 @@ export class ChallanDashboardComponent {
   }
 
   private setDateRange(dateEnum: DateEnum) {
-    let fromDate = new Date();
+    const fromDate = new Date();
     // to date should be yesterday
-    let toDate = new Date();
+    const toDate = new Date();
     switch (dateEnum) {
       case DateEnum.Today:
         fromDate.setDate(fromDate.getDate());
@@ -764,7 +769,7 @@ export class ChallanDashboardComponent {
         const allEvents = [...loadingEvents, ...unloadingEvents];
         //concat two event
         // concat two tripDocuments
-        let documents = [];
+        const documents = [];
         allEvents.map(event => {
           event.tripDocuments?.map(doc => {
             documents.push({
@@ -789,8 +794,8 @@ export class ChallanDashboardComponent {
   protected readonly truckEnum = TruckDocumentType;
 
   checkDocumentIsAvailableOrNot(tripId: string): any {
-    let loadingEvents = [];
-    let unloadingEvents = [];
+    const loadingEvents = [];
+    const unloadingEvents = [];
     this.trip
       .getAllTripEvent(tripId, 'Loading')
       .pipe(
@@ -812,7 +817,7 @@ export class ChallanDashboardComponent {
         const allEvents = [...loadingEvents, ...unloadingEvents];
         //concat two event
         // concat two tripDocuments
-        let documents = [];
+        const documents = [];
         allEvents.map(event => {
           event.tripDocuments?.map(doc => {
             documents.push({

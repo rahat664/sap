@@ -5,6 +5,7 @@ import {
   inject,
   OnInit,
   ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
@@ -45,7 +46,6 @@ import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-re
 
 @Component({
   selector: 'app-driver-details',
-  standalone: true,
   imports: [
     NgIf,
     UploadButtonComponent,
@@ -66,7 +66,7 @@ import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-re
   templateUrl: './driver-details.component.html',
   styleUrl: './driver-details.component.scss',
 })
-export class DriverDetailsComponent implements OnInit {
+export class DriverDetailsComponent implements OnInit, AfterViewInit {
   readonly dialog = inject(MatDialog);
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
   inEditMode = false;
@@ -220,7 +220,7 @@ export class DriverDetailsComponent implements OnInit {
           } else {
             this.deletedFileUrls = [file.fileUrl];
           }
-          const savedImagesMap: { [key: string]: any[] } = {
+          const savedImagesMap: Record<string, any[]> = {
             nidFront: this.savedNidFrontFile,
             nidBack: this.savedNidBackFile,
             drivingLicenseFront: this.savedDrivingLicenseFrontFile,

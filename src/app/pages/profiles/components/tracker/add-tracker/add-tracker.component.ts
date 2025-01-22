@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
 import {
@@ -27,24 +27,19 @@ import { TruckModel } from '../../truck/models/truck.model';
 
 @Component({
   selector: 'app-add-tracker',
-  standalone: true,
   imports: [
-    AlphabetOnlyDirective,
-    FileUploadPopupComponent,
     FormsModule,
     NgIf,
     ReactiveFormsModule,
     MatFormField,
-    MatOption,
-    MatSelect,
-    MatInput,
-    MatAutocomplete,
     MatAutocompleteTrigger,
+    MatAutocomplete,
+    MatOption,
   ],
   templateUrl: './add-tracker.component.html',
   styleUrl: './add-tracker.component.scss',
 })
-export class AddTrackerComponent {
+export class AddTrackerComponent implements OnInit {
   trackerAddForm: FormGroup;
   vendorList: VendorModel[] = [];
   trackAddModel: TrackerRequestModel = new TrackerRequestModel();

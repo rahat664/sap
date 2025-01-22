@@ -1,20 +1,19 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TripData, TripPoint } from '../../model/trip.details.model';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { DialogDataComponent } from '../dialog-data/dialog-data.component';
 import { ConfirmUpdateComponent } from '../confirm-update/confirm-update.component';
 import { MatDialog } from '@angular/material/dialog';
-import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
+import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-trip-info',
-  standalone: true,
   imports: [DatePipe, CommonModule, NumberSeperatorPipe],
   templateUrl: './trip-info.component.html',
   styleUrl: './trip-info.component.scss',
 })
-export class TripInfoComponent {
+export class TripInfoComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   userName: string;
   userPhone: string;

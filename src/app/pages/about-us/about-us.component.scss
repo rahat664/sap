@@ -9,7 +9,7 @@ body {
 
 .header {
   text-align: center;
-  background-color: #11484F;
+  background-color: #11484f;
   color: white;
   padding: 2rem 1rem;
 }
@@ -33,7 +33,7 @@ section {
 }
 
 h2 {
-  color: #11484F;
+  color: #11484f;
   margin-bottom: 1rem;
 }
 
@@ -49,8 +49,8 @@ ul li {
 }
 
 ul li::before {
-  content: "✔";
-  color: #11484F;
+  content: '✔';
+  color: #11484f;
   font-weight: bold;
   position: absolute;
   left: 0;
@@ -60,7 +60,7 @@ ul li::before {
   display: inline-block;
   text-decoration: none;
   padding: 0.8rem 1.5rem;
-  background-color: #11484F;
+  background-color: #11484f;
   color: white;
   font-weight: bold;
   border-radius: 5px;
@@ -78,4 +78,3 @@ ul li::before {
   color: white;
   margin-top: 2rem;
 }
-

@@ -1,4 +1,4 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -9,12 +9,11 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 
 @Component({
   selector: 'app-confirm-delete',
-  standalone: true,
   imports: [],
   templateUrl: './confirm-delete.component.html',
   styleUrl: './confirm-delete.component.scss',
 })
-export class ConfirmDeleteComponent {
+export class ConfirmDeleteComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
   constructor(

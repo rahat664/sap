@@ -14,7 +14,6 @@ import { GetOutsideModalClickDirective } from '../../directive/get-outside-modal
 
 @Component({
   selector: 'app-create-popup',
-  standalone: true,
   imports: [NgIf, GetOutsideModalClickDirective],
   templateUrl: './create-popup.component.html',
   styleUrl: './create-popup.component.scss',

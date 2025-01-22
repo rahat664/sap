@@ -3,7 +3,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-success-modal',
-  standalone: true,
   imports: [],
   templateUrl: './success-modal.component.html',
   styleUrl: './success-modal.component.scss',

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CustomDatePickerComponent } from '../../../../shared/modules/custom-date-picker/custom-date-picker.component';
 import { GMapComponent } from '../../../../shared/modules/g-map/g-map.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -30,19 +30,13 @@ import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-he
 
 @Component({
   selector: 'app-new-trip',
-  standalone: true,
   imports: [
-    CustomDatePickerComponent,
-    GMapComponent,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    GetOutsideModalClickDirective,
-    CreateTripPageComponent,
     RouterLink,
     MatFormField,
     MatInput,
-    MatCard,
     MatButton,
     MatMenuTrigger,
     MatMenuModule,
@@ -56,7 +50,7 @@ import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-he
   templateUrl: './new-trip.component.html',
   styleUrl: './new-trip.component.scss',
 })
-export class NewTripComponent implements OnInit {
+export class NewTripComponent implements OnInit, OnDestroy {
   readonly dialog = inject(MatDialog);
   companySuggestions: any;
   isCustomerMenuOpened: boolean;
@@ -64,7 +58,7 @@ export class NewTripComponent implements OnInit {
   createButtonEnabled: boolean;
   templates: any;
   selectedTemplate: any;
-  customerSelectMenuOpened: boolean = false;
+  customerSelectMenuOpened = false;
   isTemplateEnabled: boolean;
   dontClearLocalStorage: boolean;
   totalPages: number;

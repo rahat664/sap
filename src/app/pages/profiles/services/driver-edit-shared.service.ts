@@ -1,4 +1,4 @@
- import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { UserModel } from '../../user-management/models/user.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from './user.service';
@@ -76,25 +76,33 @@ export class DriverEditSharedService {
 
   validateInterNationalPhoneNumber() {
     timer(10).subscribe(() => {
-      const flagInput = document.getElementsByClassName('tel-form')[0]?.children[0]?.getElementsByClassName('country-option')[0].children[1];
+      const flagInput = document
+        .getElementsByClassName('tel-form')[0]
+        ?.children[0]?.getElementsByClassName('country-option')[0].children[1];
       let isBangladeshiNumber = false;
       if (flagInput) {
         // remove 0 from last of the phone number
-        if (flagInput.innerHTML.endsWith('0') && flagInput.innerHTML == '+880') {
+        if (
+          flagInput.innerHTML.endsWith('0') &&
+          flagInput.innerHTML == '+880'
+        ) {
           isBangladeshiNumber = true;
           flagInput.innerHTML = '+88';
         } else {
           isBangladeshiNumber = false;
         }
       }
-      const arrow = document.getElementsByClassName('tel-form')[0]?.getElementsByClassName('mat-mdc-select-arrow')[0];
+      const arrow = document
+        .getElementsByClassName('tel-form')[0]
+        ?.getElementsByClassName('mat-mdc-select-arrow')[0];
       if (arrow) {
-        arrow.classList.add('pr-1')
+        arrow.classList.add('pr-1');
         // change svg arrow icon color
         arrow.children[0].setAttribute('fill', '#fff');
       }
       const numberInput = document
-        .getElementsByClassName('tel-form')[0]?.children[1]?.getElementsByTagName('input')[0];
+        .getElementsByClassName('tel-form')[0]
+        ?.children[1]?.getElementsByTagName('input')[0];
       document.getElementsByClassName('tel-form')[0]?.classList.add('mt-1');
       if (numberInput) {
         numberInput.maxLength = numberInput?.placeholder.length;

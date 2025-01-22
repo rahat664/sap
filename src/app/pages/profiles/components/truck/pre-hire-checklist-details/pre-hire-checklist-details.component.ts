@@ -1,16 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { NgForOf, NgIf } from '@angular/common';
 import { PreHireChecklistModel } from '../models/pre-hire-checklist.model';
 import { TruckService } from '../services/truck.service';
 
 @Component({
   selector: 'app-pre-hire-checklist-details',
-  standalone: true,
   imports: [NgForOf, NgIf],
   templateUrl: './pre-hire-checklist-details.component.html',
   styleUrl: './pre-hire-checklist-details.component.scss',
 })
-export class PreHireChecklistDetailsComponent {
+export class PreHireChecklistDetailsComponent implements OnChanges {
   preHireCheckList: PreHireChecklistModel[] = [];
   @Input() object: any[] = [];
 
@@ -53,7 +52,7 @@ export class PreHireChecklistDetailsComponent {
     }
   }
 
-  @Input() passedCheckList: string = '0';
+  @Input() passedCheckList = '0';
 
   getChecklistPosition(i: number, j: number) {
     if (i == 0) {

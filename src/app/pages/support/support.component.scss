@@ -9,7 +9,7 @@ body {
 }
 
 header {
-  background-color: #11484F;
+  background-color: #11484f;
   color: white;
   text-align: center;
   padding: 1.5rem;
@@ -60,40 +60,41 @@ h4 {
   font-weight: 500;
 }
 
-ul, li {
+ul,
+li {
   padding-left: 1.5rem;
   position: relative;
 }
 
-ol, li {
+ol,
+li {
   padding-left: 1.5rem;
   position: relative;
 }
 
 a {
-  color: #0085FF;
+  color: #0085ff;
   text-decoration: none;
 }
 
 ul li::before {
-  content: "✔";
-  color: #11484F;
+  content: '✔';
+  color: #11484f;
   font-weight: bold;
   position: absolute;
   left: 0;
 }
 
 ol li::before {
-  content: "✔";
-  color: #11484F;
+  content: '✔';
+  color: #11484f;
   font-weight: bold;
   position: absolute;
   left: 0;
 }
 
-
 #contact ul li::before {
-  content: "";
+  content: '';
 }
 
 a:hover {
@@ -101,7 +102,7 @@ a:hover {
 }
 
 footer {
-  background-color: #11484F;
+  background-color: #11484f;
   color: white;
   text-align: center;
   padding: 1rem;

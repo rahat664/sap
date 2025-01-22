@@ -227,12 +227,12 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: isAdmin() ? 'dashboard' : 'trip-list',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: isAdmin() ? 'dashboard' : 'trip-list',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
 ];

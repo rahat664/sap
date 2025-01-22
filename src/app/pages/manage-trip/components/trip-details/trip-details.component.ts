@@ -1,4 +1,12 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+  OnInit,
+  OnChanges,
+} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ToggleResponsiveService } from '../../../../shared/services/toggle-responsive-services/toggle-responsive.service';
 import { TripData } from '../../model/trip.details.model';
@@ -19,7 +27,6 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trip-details',
-  standalone: true,
   imports: [
     DatePipe,
     CommonModule,
@@ -38,7 +45,7 @@ import { Router } from '@angular/router';
   templateUrl: './trip-details.component.html',
   styleUrl: './trip-details.component.scss',
 })
-export class TripDetailsComponent {
+export class TripDetailsComponent implements OnInit, OnChanges {
   readonly dialog = inject(MatDialog);
   buttonAvailable: boolean;
   onlyStatusTripEvents: any[];
@@ -90,8 +97,8 @@ export class TripDetailsComponent {
 
   @Input() tripDetails: TripData;
   @Output() foldUnfoldChange = new EventEmitter<boolean>();
-  expanded: boolean = false;
-  minimized: boolean = false;
+  expanded = false;
+  minimized = false;
 
   onClickExpand() {
     localStorage.setItem('expanded', 'true');
@@ -143,7 +150,7 @@ export class TripDetailsComponent {
 
   private changeTripTimeline(currentValue: TripData) {
     this.resetTripTimeline();
-    let onlyStatusTripEvents = [];
+    const onlyStatusTripEvents = [];
     if (currentValue.tripEvents) {
       currentValue.tripEvents.forEach(event => {
         if (event.name) {

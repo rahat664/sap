@@ -8,6 +8,7 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  OnInit,
 } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
@@ -33,7 +34,6 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
 
 @Component({
   selector: 'app-file-upload-popup',
-  standalone: true,
   imports: [
     CustomInputComponent,
     CommonModule,
@@ -50,7 +50,7 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
   templateUrl: './file-upload-popup.component.html',
   styleUrl: './file-upload-popup.component.scss',
 })
-export class FileUploadPopupComponent implements OnChanges {
+export class FileUploadPopupComponent implements OnChanges, OnInit {
   readonly dialogRef = inject(MatDialogRef<FileUploadPopupComponent>);
   readonly dialog = inject(MatDialog);
   file: File | null = null;
@@ -119,7 +119,7 @@ export class FileUploadPopupComponent implements OnChanges {
   }
 
   @Output() modalClosed: EventEmitter<any> = new EventEmitter<any>();
-  @Input() isUploadDisabled: boolean = false;
+  @Input() isUploadDisabled = false;
 
   onSubmit() {
     // remove the file from the file array if expiry not required for that filled like Nid front, Nid back, Driving License Front, Driving License Back, Other
@@ -132,7 +132,6 @@ export class FileUploadPopupComponent implements OnChanges {
         file.registrationType !== 'Driving License Back' &&
         file.registrationType !== 'Registration Paper'
     );
-
 
     const isExpiryFilled = newFileArray.every(
       (file: { registrationExpireDate: null }) =>

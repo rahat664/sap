@@ -4,16 +4,24 @@ import {
   Input,
   SimpleChanges,
   ViewChild,
+  OnChanges,
+  OnInit,
+  AfterViewInit,
 } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
   ApexDataLabels,
+  ApexGrid,
+  ApexLegend,
   ApexStroke,
+  ApexTitleSubtitle,
+  ApexTooltip,
   ApexXAxis,
+  ApexYAxis,
   ChartComponent,
 } from 'ng-apexcharts';
-import {timer} from "rxjs";
+import { timer } from 'rxjs';
 
 export interface ChartOptions {
   series: ApexAxisChartSeries;
@@ -31,12 +39,11 @@ export interface ChartOptions {
 
 @Component({
   selector: 'app-line-chart',
-  standalone: true,
   imports: [ChartComponent],
   templateUrl: './line-chart.component.html',
   styleUrl: './line-chart.component.scss',
 })
-export class LineChartComponent {
+export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
   @Input() seriesData: any = [];
@@ -56,7 +63,9 @@ export class LineChartComponent {
       const numberOfTrips = this.numberOfTrips;
       let index = -1;
       this.chartOptions = {
-        series: changes['seriesData'].currentValue,
+        series: changes['seriesData'].currentValue
+          ? changes['seriesData'].currentValue
+          : this.seriesData,
         chart: {
           height: 350,
           type: 'line',
@@ -86,6 +95,7 @@ export class LineChartComponent {
           },
         },
         tooltip: {
+          shared: true,
           x: {
             formatter: function (value) {
               return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear} <b>(${numberOfTrips[value - 1] ? numberOfTrips[value - 1] : 'No'} Trips)</b>`;
@@ -94,9 +104,12 @@ export class LineChartComponent {
           marker: {
             show: false,
           },
+          hideEmptySeries: false,
         },
         xaxis: {
-          categories: changes['categories'].currentValue,
+          categories: changes['categories']?.currentValue
+            ? changes['categories']?.currentValue
+            : this.categories,
           floating: false,
           decimalsInFloat: 0,
           tooltip: {
@@ -161,6 +174,7 @@ export class LineChartComponent {
           },
         },
         tooltip: {
+          shared: true,
           x: {
             formatter: function (value) {
               return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear} <b>(${numberOfTrips[value - 1] ? numberOfTrips[value - 1] : 'No'} Trips)</b>`;
@@ -169,6 +183,7 @@ export class LineChartComponent {
           marker: {
             show: false,
           },
+          hideEmptySeries: false,
         },
         yaxis: {
           labels: {

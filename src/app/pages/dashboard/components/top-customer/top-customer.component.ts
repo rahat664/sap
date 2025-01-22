@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
@@ -6,27 +6,21 @@ import { MatSelect } from '@angular/material/select';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { TopCustomers } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
-import {RouterLink} from "@angular/router";
-import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
+import { RouterLink } from '@angular/router';
+import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-top-customer',
-  standalone: true,
   imports: [
     FormsModule,
-    MatFormField,
-    MatOption,
-    MatSelect,
     ReactiveFormsModule,
-    DecimalPipe,
     CommonModule,
-    RouterLink,
     NumberSeperatorPipe,
   ],
   templateUrl: './top-customer.component.html',
   styleUrl: './top-customer.component.scss',
 })
-export class TopCustomerComponent {
+export class TopCustomerComponent implements OnInit {
   topCustomer: TopCustomers[] = [];
   fromDate: string;
   toDate: string;

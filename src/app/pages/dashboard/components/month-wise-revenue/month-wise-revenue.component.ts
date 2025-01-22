@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
@@ -7,24 +7,15 @@ import { ColumnChartComponent } from '../../../../shared/charts/column-chart/col
 import { DashboardService } from '../../services/dashboard.service';
 import { DatePipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
-import {LineChartComponent} from "../../../../shared/charts/line-chart/line-chart.component";
+import { LineChartComponent } from '../../../../shared/charts/line-chart/line-chart.component';
 
 @Component({
   selector: 'app-month-wise-revenue',
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatFormField,
-    MatOption,
-    MatSelect,
-    ReactiveFormsModule,
-    ColumnChartComponent,
-    LineChartComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, ColumnChartComponent],
   templateUrl: './month-wise-revenue.component.html',
   styleUrl: './month-wise-revenue.component.scss',
 })
-export class MonthWiseRevenueComponent {
+export class MonthWiseRevenueComponent implements OnInit {
   months: any[];
   fromDate: string[];
   toDate: string[];

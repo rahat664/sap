@@ -4,7 +4,7 @@
     (height)="height = $event"
     class="flex flex-col space-y-3">
     <div
-      class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem]  space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem] space-y-3 lg:space-y-0 lg:flex-row justify-between">
       <h1 class="text-h1 leading-h1 font-semibold">Trip List</h1>
     </div>
     <!--  filter section-->
@@ -12,13 +12,17 @@
       <button
         class="flex px-2 py-1 space-x-4 items-center w-full"
         [ngClass]="{ 'border-b border-[#A1D5DE]': filterOpened }">
-        <i (click)="onClickFilterOpened()" *ngIf="!filterOpened" class="fas fa-caret-down text-input-hint text-xl"></i>
-        <i (click)="onClickFilterOpened()" *ngIf="filterOpened" class="fas fa-caret-up text-input-hint text-xl"></i>
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="!filterOpened"
+          class="fas fa-caret-down text-input-hint text-xl"></i>
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="filterOpened"
+          class="fas fa-caret-up text-input-hint text-xl"></i>
         <span class="text-not-black text-h2_medium font-semibold"
         >Filter
-          <span *ngIf="getFilterLength() > 0"
-          >({{ getFilterLength() }})</span
-          >
+          <span *ngIf="getFilterLength() > 0">({{ getFilterLength() }})</span>
           <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3"
           >|</span
           >
@@ -30,24 +34,31 @@
           >
         </span>
       </button>
-      <div *ngIf="filterOpened" class="pt-3 pb-4 px-2 flex items-center space-x-4">
+      <div
+        *ngIf="filterOpened"
+        class="pt-3 pb-4 px-2 flex items-center space-x-4">
         <div class="flex flex-col space-y-1 w-[14.375rem]">
-          <label class="text-body  text-web-text-secondary px-2">Date</label>
-          <app-custom-input class=""
-                            appGetClickEvent
-                            (clickedElement)="dateOpened = $event"
-                            [inputSearch]="inputPlaceholder"
-                            (selectedFromDate)="onSelectedFromDate($event)"
-                            (selectedToDate)="onSelectedToDate($event)"
-                            (selectedFromDateToToDate)="inputPlaceholder = $event"
-                            inputPlaceholder="Select Date"
-                            [options]="dateOptionArray"
-                            (selectedId)="onSelectDate($event)"></app-custom-input>
+          <label class="text-body text-web-text-secondary px-2">Date</label>
+          <app-custom-input
+            class=""
+            appGetClickEvent
+            (clickedElement)="dateOpened = $event"
+            [inputSearch]="inputPlaceholder"
+            (selectedFromDate)="onSelectedFromDate($event)"
+            (selectedToDate)="onSelectedToDate($event)"
+            (selectedFromDateToToDate)="inputPlaceholder = $event"
+            inputPlaceholder="Select Date"
+            [options]="dateOptionArray"
+            (selectedId)="onSelectDate($event)"></app-custom-input>
         </div>
 
-        <div class="flex flex-col space-y-1 w-[14.375rem] ">
-          <label class="text-body  text-web-text-secondary px-2">Company name</label>
-          <mat-form-field appearance="outline" class="example-full-width relative">
+        <div class="flex flex-col space-y-1 w-[14.375rem]">
+          <label class="text-body text-web-text-secondary px-2"
+          >Company name</label
+          >
+          <mat-form-field
+            appearance="outline"
+            class="example-full-width relative">
             <input
               id="customerName"
               type="text"
@@ -55,64 +66,81 @@
               (keyup)="onSearchInputChange($event)"
               [(ngModel)]="searchName"
               placeholder="Enter Company Name"
-              [matAutocomplete]="auto">
+              [matAutocomplete]="auto"/>
             <mat-autocomplete #auto="matAutocomplete">
               @for (option of tripSuggestions; track option) {
-                <mat-option (click)="onClickSearchSuggestion(option)"
-                            [value]="option.name">{{ option.name ? option.name : option }}
+                <mat-option
+                  (click)="onClickSearchSuggestion(option)"
+                  [value]="option.name"
+                >{{ option.name ? option.name : option }}
                 </mat-option>
               }
             </mat-autocomplete>
-            <button type="button" (click)="onClickClearCompany()" *ngIf="searchValue"
-                    class="absolute inset-y-0 right-0  flex items-center">
+            <button
+              type="button"
+              (click)="onClickClearCompany()"
+              *ngIf="searchValue"
+              class="absolute inset-y-0 right-0 flex items-center">
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
         </div>
         <div class="flex flex-col space-y-1 w-[14.375rem]">
-          <label class="text-body  text-web-text-secondary px-2">Transporter
-            Name
+          <label class="text-body text-web-text-secondary px-2"
+          >Transporter Name
           </label>
-          <mat-form-field appearance="outline" class="example-full-width ">
+          <mat-form-field appearance="outline" class="example-full-width">
             <input
               type="text"
               matInput
               (keyup)="onKeyUpTransporterSearch($event)"
               [(ngModel)]="searchTransporter"
               placeholder="Enter Transporter Name"
-              [matAutocomplete]="transporter">
+              [matAutocomplete]="transporter"/>
             <mat-autocomplete #transporter="matAutocomplete">
               @for (option of transporterSuggestions; track option) {
-                <mat-option (click)="onClickTransporterSearchSuggestion(option)"
-                            [value]="option.name">{{ option.name }}
+                <mat-option
+                  (click)="onClickTransporterSearchSuggestion(option)"
+                  [value]="option.name"
+                >{{ option.name }}
                 </mat-option>
               }
             </mat-autocomplete>
-            <button type="button" (click)="onClickClearTransporter()" *ngIf="transporterName"
-                    class="absolute inset-y-0 right-0  flex items-center">
+            <button
+              type="button"
+              (click)="onClickClearTransporter()"
+              *ngIf="transporterName"
+              class="absolute inset-y-0 right-0 flex items-center">
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
         </div>
         <div class="flex flex-col space-y-1 w-[14.375rem]">
-          <label class="text-body  text-web-text-secondary px-2">Trip ID</label>
-          <mat-form-field appearance="outline" class="example-full-width relative">
+          <label class="text-body text-web-text-secondary px-2">Trip ID</label>
+          <mat-form-field
+            appearance="outline"
+            class="example-full-width relative">
             <input
               type="text"
               matInput
               (keyup)="onKeyUpTripSearch($event)"
               [(ngModel)]="searchId"
               placeholder="Enter Trip Number"
-              [matAutocomplete]="trip">
+              [matAutocomplete]="trip"/>
             <mat-autocomplete #trip="matAutocomplete">
               @for (option of tripIdSuggestions; track option) {
-                <mat-option (click)="onClickTripSearchSuggestion(option)"
-                            [value]="option.tripId">{{ option.tripId ? option.tripId : option }}
+                <mat-option
+                  (click)="onClickTripSearchSuggestion(option)"
+                  [value]="option.tripId"
+                >{{ option.tripId ? option.tripId : option }}
                 </mat-option>
               }
             </mat-autocomplete>
-            <button type="button" (click)="onClickClearTripId()" *ngIf="tripId"
-                    class="absolute inset-y-0 right-0  flex items-center">
+            <button
+              type="button"
+              (click)="onClickClearTripId()"
+              *ngIf="tripId"
+              class="absolute inset-y-0 right-0 flex items-center">
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
@@ -134,14 +162,16 @@
       <!--          </div>-->
       <!--        </div>-->
       <!--      </div>-->
-      <div *ngIf="isAdmin()"
-           class="bg-white rounded-lg text-body_title leading-body_title pt-4 px-3 whitespace-nowrap w-96">
-        <h1 class="font-semibold px-3 "><span class="text-not-black text-body_title">
-          Summary
-        </span>
+      <div
+        *ngIf="isAdmin()"
+        class="bg-white rounded-lg text-body_title leading-body_title pt-4 px-3 whitespace-nowrap w-96">
+        <h1 class="font-semibold px-3">
+          <span class="text-not-black text-body_title"> Summary </span>
           <span
-            class="text-body_medium text-body_title font-medium text-web-text-secondary">({{ summary.trips ? summary.trips : 0 }}
-            trips)</span></h1>
+            class="text-body_medium text-body_title font-medium text-web-text-secondary"
+          >({{ summary.trips ? summary.trips : 0 }} trips)</span
+          >
+        </h1>
         <div
           class="flex justify-between space-x-16 items-center text-web-text-secondary py-4 px-3 border-b border-[#F0F0F0]">
           <span>Customer Rate (CR)</span>
@@ -152,12 +182,14 @@
           <span>Transporter Rate (TR)</span>
           <span>{{ (summary.trs ? summary.trs : 0) | numberSeperator }} ৳</span>
         </div>
-        <div class="flex justify-between items-center text-web-text-secondary py-4 px-3">
+        <div
+          class="flex justify-between items-center text-web-text-secondary py-4 px-3">
           <span>Gross Profit (GP)</span>
-          <span>{{ (summary.gps ? summary.gps : 0) |numberSeperator }} ৳</span>
+          <span>{{ (summary.gps ? summary.gps : 0) | numberSeperator }} ৳</span>
         </div>
       </div>
-      <div class="overflow-hidden relative p-4 w-full rounded-lg min-h-44 bg-white">
+      <div
+        class="overflow-hidden relative p-4 w-full rounded-lg min-h-44 bg-white">
         <div
           appScrollByButton
           (isVisible)="scrollable = $event"
@@ -213,10 +245,11 @@
     [totalPage]="totalPages"
     (inBottomEnd)="onBottom($event)"
     [anotherItemsHeight]="height"
-    class="bg-white w-full relative rounded-lg  overflow-auto">
-    <table class="table-auto w-full text-body_title leading-body_title rounded-sm">
+    class="bg-white w-full relative rounded-lg overflow-auto">
+    <table
+      class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
-      <tr class="whitespace-nowrap bg-white  text-not-black">
+      <tr class="whitespace-nowrap bg-white text-not-black">
         <th class="text-left">Trip Number</th>
         <th class="text-left whitespace-nowrap">Trip Date</th>
         <th class="text-left" *ngIf="isAdmin()">Company</th>
@@ -230,58 +263,92 @@
         <th class="text-left" *ngIf="isAdmin()">GP(৳)</th>
       </tr>
       <tr>
-        <th class="border" [colSpan]="isAdmin() ? 9: 6"></th>
+        <th class="border" [colSpan]="isAdmin() ? 9 : 6"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
         <tr *ngFor="let trip of tripList; index as i">
           <td class="whitespace-nowrap">
-            <a class="text-link cursor-pointer"
-               (click)="onClickTripNumber(trip.tripId)">
+            <a
+              class="text-link cursor-pointer"
+              (click)="onClickTripNumber(trip.tripId)">
               {{ trip.tripId }}
             </a>
           </td>
           <td class="whitespace-nowrap">
             {{ trip.tripStartDatetime | date: 'd MMM yyyy' }}
           </td>
-          <td class="whitespace-nowrap" *ngIf="isAdmin()">{{ trip.customerName }}</td>
-          <td class="whitespace-nowrap" *ngIf="isAdmin()">{{ trip.transporterName }}</td>
-          <td class="whitespace-nowrap">
-            <p>{{ getLoadingPointsName(trip.tripPoints)[0]?.pointName }} <span
-              class="bg-not-black inline-block py-0.5 px-2 rounded-lg  text-white"
-              *ngIf="getLoadingPointsName(trip.tripPoints)?.length > 1">
-              +{{ getLoadingPointsName(trip.tripPoints)?.length - 1 }}</span></p>
+          <td class="whitespace-nowrap" *ngIf="isAdmin()">
+            {{ trip.customerName }}
+          </td>
+          <td class="whitespace-nowrap" *ngIf="isAdmin()">
+            {{ trip.transporterName }}
           </td>
           <td class="whitespace-nowrap">
-            <p>{{ getUnloadingPointsName(trip.tripPoints)[0]?.pointName }} <span
-              class="bg-not-black inline-block py-0.5 px-2 rounded-lg  text-white"
-              *ngIf="getUnloadingPointsName(trip.tripPoints)?.length > 1">
-              +{{ getUnloadingPointsName(trip.tripPoints)?.length - 1 }}</span></p>
+            <p>
+              {{ getLoadingPointsName(trip.tripPoints)[0]?.pointName }}
+              <span
+                class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+                *ngIf="getLoadingPointsName(trip.tripPoints)?.length > 1">
+                  +{{ getLoadingPointsName(trip.tripPoints)?.length - 1 }}</span
+              >
+            </p>
+          </td>
+          <td class="whitespace-nowrap">
+            <p>
+              {{ getUnloadingPointsName(trip.tripPoints)[0]?.pointName }}
+              <span
+                class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+                *ngIf="getUnloadingPointsName(trip.tripPoints)?.length > 1">
+                  +{{
+                  getUnloadingPointsName(trip.tripPoints)?.length - 1
+                }}</span
+              >
+            </p>
           </td>
           <td>{{ trip.status }}</td>
-          <td *ngIf="isAdmin()">{{ (trip.customerRate ? trip.customerRate : 0) | numberSeperator }}</td>
-          <td *ngIf="isAdmin()">{{ (trip.transporterRate ? trip.transporterRate : 0) | numberSeperator }}
+          <td *ngIf="isAdmin()">
+            {{
+              (trip.customerRate ? trip.customerRate : 0) | numberSeperator
+            }}
           </td>
-          <td
-            *ngIf="isAdmin()">{{ getCountOfGp(trip) == 'N/A' ? 'N/A' : (getCountOfGp(trip) | numberSeperator) }}
+          <td *ngIf="isAdmin()">
+            {{
+              (trip.transporterRate ? trip.transporterRate : 0)
+                | numberSeperator
+            }}
+          </td>
+          <td *ngIf="isAdmin()">
+            {{
+              getCountOfGp(trip) == 'N/A'
+                ? 'N/A'
+                : (getCountOfGp(trip) | numberSeperator)
+            }}
           </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="isAdmin() ? 9: 6">
-            <div class="w-full flex flex-col space-y-3 justify-center items-center">
-              <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-              <p class="text-body_title leading-body_title text-secondary font-semibold">No Data
-                Found</p>
+          <td class="text-center" [colSpan]="isAdmin() ? 9 : 6">
+            <div
+              class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img
+                loading="lazy"
+                src="assets/svg/no-data.svg"
+                class="notPreview"
+                alt="nodata"/>
+              <p
+                class="text-body_title leading-body_title text-secondary font-semibold">
+                No Data Found
+              </p>
             </div>
           </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="isAdmin() ? 9: 6">
+          <td class="h-full" [colSpan]="isAdmin() ? 9 : 6">
             <app-loading></app-loading>
           </td>
         </tr>
@@ -290,4 +357,3 @@
     </table>
   </div>
 </div>
-

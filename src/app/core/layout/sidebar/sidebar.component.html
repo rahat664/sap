@@ -15,7 +15,12 @@
               <div class="relative">
                 <div
                   class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <img src="assets/svg/search.svg" height="" width="" class="notPreview" alt="search">
+                  <img
+                    src="assets/svg/search.svg"
+                    height=""
+                    width=""
+                    class="notPreview"
+                    alt="search"/>
                 </div>
                 <input
                   type="text"
@@ -31,8 +36,15 @@
               routerLink="/dashboard"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
-              <img loading="lazy" class="notPreview"
-                   src="assets/svg/dashboard-{{isActive('/dashboard') ? 'select': 'deselect'}}.svg" alt="" height="24" width="24" />
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/dashboard-{{
+                  isActive('/dashboard') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""
+                height="24"
+                width="24"/>
               <span class="ml-3 font-semibold">Dashboard</span>
             </a>
           </li>
@@ -41,9 +53,15 @@
               routerLink="/challan-management"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
-              <img loading="lazy" class="notPreview"
-                   src="assets/svg/challan-{{isActive('/challan-management') ? 'select': 'deselect'}}.svg" alt=""
-                   height="24" width="24" />
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/challan-{{
+                  isActive('/challan-management') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""
+                height="24"
+                width="24"/>
               <span class="ml-3 font-semibold">Challan Management</span>
             </a>
           </li>
@@ -52,10 +70,17 @@
               routerLink="/trip-create/customerselection"
               routerLinkActive="active"
               (click)="clearSelectedTemplate()"
-              [routerLinkActiveOptions]="{ exact: true}"
+              [routerLinkActiveOptions]="{ exact: true }"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
-              <img loading="lazy" class="notPreview"
-                   src="assets/svg/trip-create-{{isActive('/trip-create') ? 'select': 'deselect'}}.svg" alt="" height="24" width="24"/>
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/trip-create-{{
+                  isActive('/trip-create') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""
+                height="24"
+                width="24"/>
               <span class="ml-3 font-semibold">Create Trip</span>
             </a>
           </li>
@@ -65,10 +90,18 @@
               routerLink="/manage-trip"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
-              <img height="24" width="24" loading="lazy" class="notPreview"
-                   src="assets/svg/trip-management-{{isActive('/manage-trip') ? 'select': 'deselect'}}.svg"
-                   alt="" />
-              <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Manage Trip</span>
+              <img
+                height="24"
+                width="24"
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/trip-management-{{
+                  isActive('/manage-trip') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""/>
+              <span class="ml-3 flex-1 font-semibold whitespace-nowrap"
+              >Manage Trip</span
+              >
             </a>
           </li>
           <li>
@@ -77,9 +110,17 @@
               routerLink="/trip-list"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
-              <img class="notPreview"
-                   height="24" width="24" src="assets/svg/trip-list-{{isActive('/trip-list') ? 'select': 'deselect'}}.svg" alt="" />
-              <span class="ml-3 flex-1  font-semibold whitespace-nowrap">Trip List</span>
+              <img
+                class="notPreview"
+                height="24"
+                width="24"
+                src="assets/svg/trip-list-{{
+                  isActive('/trip-list') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""/>
+              <span class="ml-3 flex-1 font-semibold whitespace-nowrap"
+              >Trip List</span
+              >
             </a>
           </li>
           <li *ngIf="isAdmin()">
@@ -91,9 +132,15 @@
               <img
                 loading="lazy"
                 class="notPreview"
-                src="assets/svg/user-management-{{isActive('/user-management') ? 'select': 'deselect'}}.svg"
-                alt="" height="24" width="24" />
-              <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
+                src="assets/svg/user-management-{{
+                  isActive('/user-management') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""
+                height="24"
+                width="24"/>
+              <span class="ml-3 flex-1 font-semibold whitespace-nowrap"
+              >User Management</span
+              >
             </a>
           </li>
           <li *ngIf="!isAdmin() && isCustomerAdmin()">
@@ -104,9 +151,16 @@
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img
                 loading="lazy"
-                class="notPreview" src="assets/svg/user-management-{{isActive('/user-management-customer') ? 'select': 'deselect'}}.svg"
-                alt="" height="" width="" />
-              <span class="ml-3 flex-1 font-semibold whitespace-nowrap">User Management</span>
+                class="notPreview"
+                src="assets/svg/user-management-{{
+                  isActive('/user-management-customer') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""
+                height=""
+                width=""/>
+              <span class="ml-3 flex-1 font-semibold whitespace-nowrap"
+              >User Management</span
+              >
             </a>
           </li>
           <li *ngIf="isAdmin()">
@@ -115,11 +169,19 @@
               [routerLinkActiveOptions]="{ exact: false }"
               (click)="onClickProfile()"
               type="button"
-              class="cursor-pointer text-base {{isActive('/profile') ? 'text-primary' : 'text-secondary'}} w-full leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
+              class="cursor-pointer text-base {{
+                isActive('/profile') ? 'text-primary' : 'text-secondary'
+              }} w-full leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
               aria-controls="dropdown-example">
-              <img loading="lazy" class="notPreview"
-                   src="assets/svg/user-{{isActive('/profile') ? 'select': 'deselect'}}.svg"
-                   alt="" height="24" width="24" />
+              <img
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/user-{{
+                  isActive('/profile') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""
+                height="24"
+                width="24"/>
               <span
                 class="flex-1 ms-3 text-left font-semibold rtl:text-right whitespace-nowrap"
               >Profiles</span
@@ -127,7 +189,9 @@
               <i *ngIf="dropdownOpen" class="fas fa-caret-up text-gray-500"></i>
               <i
                 *ngIf="!dropdownOpen"
-                class="fas fa-caret-down {{isActive('/profile') ? 'text-primary' : 'text-[#777777]'}} "></i>
+                class="fas fa-caret-down {{
+                  isActive('/profile') ? 'text-primary' : 'text-[#777777]'
+                }} "></i>
             </button>
             <ul
               appGetOutsideModalClick
@@ -184,9 +248,12 @@
               <img
                 loading="lazy"
                 class="notPreview"
-                src="assets/svg/vehicle-tracking-{{isActive('/vehicle-tracking') ? 'select':
-                'deselect'}}.svg"
-                alt="" height="24" width="24" />
+                src="assets/svg/vehicle-tracking-{{
+                  isActive('/vehicle-tracking') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""
+                height="24"
+                width="24"/>
               <span class="ml-3 font-semibold">Vehicle Tracking</span>
             </a>
           </li>
@@ -194,11 +261,19 @@
       </div>
     </div>
   </div>
-  <div class="fixed bottom-0 mr-0 border-app-bg ">
+  <div class="fixed bottom-0 mr-0 border-app-bg">
     <div class="p-4 flex items-center justify-center w-[19rem] bg-[#FAFEFF]">
-      <div class="flex flex-col items-center  space-y-3">
-        <img  loading="lazy" class="w-2/3 notPreview" height="18" width="101" src="assets/svg/ecoflit.svg" alt="ecoflit" >
-        <span class="text-[.75rem] text-secondary">© SNZ Technologies Limited {{ currentYear }}</span>
+      <div class="flex flex-col items-center space-y-3">
+        <img
+          loading="lazy"
+          class="w-2/3 notPreview"
+          height="18"
+          width="101"
+          src="assets/svg/ecoflit.svg"
+          alt="ecoflit"/>
+        <span class="text-[.75rem] text-secondary"
+        >© SNZ Technologies Limited {{ currentYear }}</span
+        >
       </div>
     </div>
   </div>
@@ -206,5 +281,4 @@
 
 <div
   class="bg-gray-900 opacity-50 hidden fixed inset-0 z-10"
-  id="sidebarBackdrop">
-</div>
+  id="sidebarBackdrop"></div>

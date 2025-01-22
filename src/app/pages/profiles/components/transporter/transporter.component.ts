@@ -14,28 +14,19 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
 import { debounceTime } from 'rxjs';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { MatDialog } from '@angular/material/dialog';
-import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
+import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-transporter',
-  standalone: true,
   imports: [
-    CreatePopupComponent,
-    CustomerCreateComponent,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
     NgForOf,
     NgIf,
-    NgClass,
     ReactiveFormsModule,
     FormsModule,
-    CustomInputComponent,
-    GetClickEventDirective,
-    TransporterAddComponent,
     LoadingComponent,
-    CheckTheHeightCrossMaxHeightOrNotDirective,
     DatePipe,
-    DecimalPipe,
     NumberSeperatorPipe,
   ],
   templateUrl: './transporter.component.html',
@@ -48,9 +39,9 @@ export class TransporterComponent implements OnInit {
   transporterList: UserModel[] = [];
   loading: boolean;
   searchValue: string;
-  page: number = 0;
+  page = 0;
   totalPages: number;
-  size: number = 20;
+  size = 20;
 
   constructor(private service: UserService) {}
 

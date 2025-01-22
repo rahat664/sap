@@ -15,34 +15,32 @@
   padding: 8px 8px !important;
 }
 
-
 ::ng-deep .error .mat-mdc-text-field-wrapper {
   width: 100%;
   border-radius: 0.5rem !important;
-  background-color: #FFFAFB !important;
+  background-color: #fffafb !important;
   height: 3.3rem !important;
 }
-
 
 .step {
   display: flex;
   align-items: center;
   position: relative;
   @apply space-x-6
-  /* Space between steps */
+    /* Space between steps */
+  ;
 }
 
- ::ng-deep .step:not(:last-child)::after {
+::ng-deep .step:not(:last-child)::after {
   content: '';
   position: absolute;
   left: 4px; /* Adjust based on circle size and spacing */
   top: 53%;
   height: calc(100% + 16px);
   width: 1px; /* Width of the dashed line */
-  border-left: 1px dashed #E5EAEB; /* Dashed border style */
+  border-left: 1px dashed #e5eaeb; /* Dashed border style */
   z-index: 0; /* Ensure the line is behind the circles */
 }
-
 
 .circle {
   margin-top: 1.5rem;
@@ -56,6 +54,3 @@
 .p {
   margin: 0;
 }
-
-
-

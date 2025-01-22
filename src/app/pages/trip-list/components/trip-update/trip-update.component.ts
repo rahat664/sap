@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import {
   MatAutocomplete,
   MatAutocompleteTrigger,
@@ -6,7 +6,13 @@ import {
 } from '@angular/material/autocomplete';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { MyErrorStateMatcher } from '../template-create/template-create.component';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { TripService } from '../../services/trip.service';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
@@ -37,7 +43,6 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-trip-update',
-  standalone: true,
   imports: [
     MatAutocomplete,
     ReactiveFormsModule,
@@ -64,7 +69,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
   templateUrl: './trip-update.component.html',
   styleUrl: './trip-update.component.scss',
 })
-export class TripUpdateComponent {
+export class TripUpdateComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   goodsOptionsArray: CustomInputSelectModel[] = [];
   matcher = new MyErrorStateMatcher();
@@ -72,7 +77,7 @@ export class TripUpdateComponent {
   district: any;
   @Input() template: any;
   @Input() customerName: string;
-  @Input() templateEnabled: boolean = false;
+  @Input() templateEnabled = false;
   vehicleTypeList: any;
   truckCapacitySuggestions: any[];
   truckSizeSuggestions: any[];
@@ -80,7 +85,7 @@ export class TripUpdateComponent {
   unloadingSuggestions: any;
   loadingGoodsSuggestions: any;
   numberOfTrucksSuggestions: any;
-  isFromTemplate: boolean = false;
+  isFromTemplate = false;
   driverSuggestion: any;
   transporterSuggestion: any;
 
@@ -197,9 +202,9 @@ export class TripUpdateComponent {
     }
   }
 
-  scrollable: boolean = false;
-  rightButtonClicked: boolean = false;
-  leftButtonClicked: boolean = false;
+  scrollable = false;
+  rightButtonClicked = false;
+  leftButtonClicked = false;
 
   onClickLeftButton() {
     this.leftButtonClicked = true;
@@ -251,7 +256,7 @@ export class TripUpdateComponent {
   readonly minDate = new Date();
   selectedDate: Date = new Date();
   returnToInputDate: Date;
-  isDisabled: boolean = false;
+  isDisabled = false;
 
   private getGoodsOptions() {
     this.service.getGoodsOptions().subscribe((res: any) => {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
@@ -8,28 +8,24 @@ import { DashboardService } from '../../services/dashboard.service';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   customerStats,
-  DashboardStatsModel, userStats,
+  DashboardStatsModel,
+  userStats,
 } from '../../models/dashboard-stats.model';
 import { RouterLink } from '@angular/router';
-import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
+import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-status-heighlight',
-  standalone: true,
   imports: [
-    MatFormField,
-    MatOption,
-    MatSelect,
     ReactiveFormsModule,
     StatusCardComponent,
     RouterLink,
-    DecimalPipe,
     NumberSeperatorPipe,
   ],
   templateUrl: './status-heighlight.component.html',
   styleUrl: './status-heighlight.component.scss',
 })
-export class StatusHeighlightComponent {
+export class StatusHeighlightComponent implements OnInit {
   fromDate: string;
   toDate: string;
   dashboardStats: DashboardStatsModel;

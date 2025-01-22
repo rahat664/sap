@@ -9,14 +9,13 @@ import { NgClass, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-confirm-reject',
-  standalone: true,
   imports: [FormsModule, NgClass, NgIf],
   templateUrl: './confirm-reject.component.html',
   styleUrl: './confirm-reject.component.scss',
 })
 export class ConfirmRejectComponent {
   readonly dialog = inject(MatDialog);
-  reason: string = '';
+  reason = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,

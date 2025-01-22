@@ -37,14 +37,12 @@ import { DriverEditSharedService } from '../../../profiles/services/driver-edit-
 
 @Component({
   selector: 'app-sign-in',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    InputAutoFocusDirective,
-    MatAutocomplete,
     MatFormField,
     MatInput,
+    InputAutoFocusDirective,
     NgxMaterialIntlTelInputComponent,
   ],
   templateUrl: './sign-in.component.html',
@@ -55,12 +53,12 @@ export class SignInComponent implements OnInit, OnDestroy {
   title = 'Login';
   loginForm: FormGroup;
   loginRequestPayload: LoginRequest;
-  usingEmail: boolean = true;
+  usingEmail = true;
 
   loginUsingPhonePayload: LoginPhoneRequest;
   loginPhoneRequestPayload: LoginRequestUsingPhonePayload;
-  otpScreen: boolean = false;
-  idName: string = 'otp1';
+  otpScreen = false;
+  idName = 'otp1';
   time: Date = new Date(0, 0, 0, 0, 2, 0); // 2 minutes
   private countdownSubscription: Subscription | undefined;
   private errorSubscription: Subscription | undefined;

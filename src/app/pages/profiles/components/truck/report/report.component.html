@@ -1,40 +1,52 @@
 <div class="m-3 bg-white rounded-lg flex flex-col min-h-[calc(100vh-5rem)]">
-  <div class="flex px-7 py-4  border-b border-line w-full  justify-between items-center">
+  <div
+    class="flex px-7 py-4 border-b border-line w-full justify-between items-center">
     <h1 class="text-h1 leading-h1 font-semibold">Report</h1>
     <div>
-      <button [matTooltipDisabled]="fromDate != null && toDate != null && selectedTruckList.length > 0"
-              matTooltip="Please select date and at least one truck"
-              [disabled]="fromDate == null || toDate == null || selectedTruckList.length <= 0"
-              (click)="onClickGenerateReport()"
-              class="px-16 flex space-x-2 text-white items-center  bg-primary py-3  rounded-lg">
-        <span class="text-h2_medium font-medium lg:block">Generate report as pdf file</span>
+      <button
+        [matTooltipDisabled]="
+          fromDate != null && toDate != null && selectedTruckList.length > 0
+        "
+        matTooltip="Please select date and at least one truck"
+        [disabled]="
+          fromDate == null || toDate == null || selectedTruckList.length <= 0
+        "
+        (click)="onClickGenerateReport()"
+        class="px-16 flex space-x-2 text-white items-center bg-primary py-3 rounded-lg">
+        <span class="text-h2_medium font-medium lg:block"
+        >Generate report as pdf file</span
+        >
       </button>
     </div>
   </div>
   <div class="px-7 pb-4 pt-1">
-    <div class="flex flex-col  space-y-1 w-[14.375rem]">
-      <label class="text-body  text-web-text-secondary px-2">Date</label>
-      <app-custom-input class=""
-                        appGetClickEvent
-                        (clickedElement)="dateOpened = $event"
-                        [inputSearch]="inputPlaceholder"
-                        (selectedFromDate)="onSelectedFromDate($event)"
-                        (selectedToDate)="onSelectedToDate($event)"
-                        (selectedFromDateToToDate)="inputPlaceholder = $event"
-                        inputPlaceholder="Select Date"
-                        [options]="dateOptionArray"
-                        [customOpened]="isCustomOpened"
-                        (selectedId)="onSelectDate($event)"></app-custom-input>
+    <div class="flex flex-col space-y-1 w-[14.375rem]">
+      <label class="text-body text-web-text-secondary px-2">Date</label>
+      <app-custom-input
+        class=""
+        appGetClickEvent
+        (clickedElement)="dateOpened = $event"
+        [inputSearch]="inputPlaceholder"
+        (selectedFromDate)="onSelectedFromDate($event)"
+        (selectedToDate)="onSelectedToDate($event)"
+        (selectedFromDateToToDate)="inputPlaceholder = $event"
+        inputPlaceholder="Select Date"
+        [options]="dateOptionArray"
+        [customOpened]="isCustomOpened"
+        (selectedId)="onSelectDate($event)"></app-custom-input>
     </div>
   </div>
   <div class="px-7">
     <div class="rounded-lg overflow-hidden" appGiveMaxHeight>
-      <table class="table-auto w-full text-body_title leading-body_title rounded-lg">
+      <table
+        class="table-auto w-full text-body_title leading-body_title rounded-lg">
         <thead class="bg-white">
-        <tr class="whitespace-nowrap bg-white  text-not-black">
+        <tr class="whitespace-nowrap bg-white text-not-black">
           <th class="text-left" style="width: 100%">
-            <mat-checkbox [indeterminate]="partiallyChecked" [checked]="checkThatAllIsCheckedOrNot()"
-                          (change)="selectAllTruck($any($event))">
+            <mat-checkbox
+              [indeterminate]="partiallyChecked"
+              [checked]="checkThatAllIsCheckedOrNot()"
+              (change)="selectAllTruck($any($event))">
               Select Truck
             </mat-checkbox>
           </th>
@@ -47,15 +59,16 @@
         <ng-container *ngIf="!loading">
           <tr *ngFor="let truck of truckList; index as i">
             <ng-container *ngIf="truck.vehicleRegistrationNumber">
-              <td style="width: 100%;" class="whitespace-nowrap">
-                <mat-checkbox [(ngModel)]="truck.checked"
-                              (change)="selectSingleTruck($any($event), truck)">
+              <td style="width: 100%" class="whitespace-nowrap">
+                <mat-checkbox
+                  [(ngModel)]="truck.checked"
+                  (change)="selectSingleTruck($any($event), truck)">
                   <div class="flex items-center space-x-4 w-full">
                     <div
                       class="w-8 h-8 rounded-full bg-another flex items-center justify-center">
-                  <span class="text-white font-bold capitalize">{{
-                      truck.vehicleRegistrationNumber[0]
-                    }}</span>
+                        <span class="text-white font-bold capitalize">{{
+                            truck.vehicleRegistrationNumber[0]
+                          }}</span>
                     </div>
                     <span>{{ truck.vehicleRegistrationNumber }}</span>
                   </div>
@@ -67,9 +80,17 @@
         <ng-container *ngIf="!loading">
           <tr *ngIf="truckList?.length === 0">
             <td class="text-center">
-              <div class="w-full flex flex-col space-y-3 justify-center items-center">
-                <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata">
-                <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+              <div
+                class="w-full flex flex-col space-y-3 justify-center items-center">
+                <img
+                  loading="lazy"
+                  src="assets/svg/no-data.svg"
+                  class="notPreview"
+                  alt="nodata"/>
+                <p
+                  class="text-body_title leading-body_title text-secondary font-semibold">
+                  No Data Found
+                </p>
               </div>
             </td>
           </tr>

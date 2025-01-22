@@ -1,22 +1,30 @@
 <div>
-  <div class="px-4 py-2 flex justify-between items-center bg-white border-b border-input">
+  <div
+    class="px-4 py-2 flex justify-between items-center bg-white border-b border-input">
     <h1 class="text-h1 leading-h1 font-semibold">Trip Overview</h1>
     <button
       [disabled]="loading"
       class="bg-primary text-white rounded-lg px-16 py-3"
-      (click)="onCreateTrip()"> <i *ngIf="loading"
-                                   class="fas fa-spinner fa-spin text-white mx-2"></i> Create Trip
+      (click)="onCreateTrip()">
+      <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mx-2"></i>
+      Create Trip
     </button>
   </div>
-  <div class="bg-white h-[calc(100vh-8.1rem)] overflow-y-auto w-full flex justify-center overflow-hidden">
-    <div class="w-[70vw] py-12  flex flex-col space-y-8 ">
+  <div
+    class="bg-white h-[calc(100vh-8.1rem)] overflow-y-auto w-full flex justify-center overflow-hidden">
+    <div class="w-[70vw] py-12 flex flex-col space-y-8">
       <div class="flex justify-between items-center">
         <div>
-          <h1 class="text-h3 leading-h3 font-semibold text-not-black">{{ customerName }}</h1>
-          <span
-            class="text-body text-web-text-secondary">{{ tripData.tripStartDatetime | date : "d MMM yyyy, h:mm a" }}</span>
+          <h1 class="text-h3 leading-h3 font-semibold text-not-black">
+            {{ customerName }}
+          </h1>
+          <span class="text-body text-web-text-secondary">{{
+              tripData.tripStartDatetime | date: 'd MMM yyyy, h:mm a'
+            }}</span>
         </div>
-        <button (click)="onclickEdit()" class="h-12 w-12 hover:bg-input rounded-lg">
+        <button
+          (click)="onclickEdit()"
+          class="h-12 w-12 hover:bg-input rounded-lg">
           <i class="fas fa-pen"></i>
         </button>
       </div>
@@ -24,45 +32,67 @@
         <div class="flex flex-col w-1/2 space-y-3">
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/loading.svg" alt="">
-              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Loading
-                Point{{ loadingPointNames?.length > 1 ? 's' : '' }}
-                <span *ngIf="loadingPointNames?.length > 1">({{loadingPointNames?.length}})
-                </span></h1>
+              <img
+                loading="lazy"
+                class="w-6 h-6 notPreview"
+                src="assets/svg/loading.svg"
+                alt=""/>
+              <h1
+                class="text-body_title leading-body_title text-not-black font-semibold">
+                Loading Point{{ loadingPointNames?.length > 1 ? 's' : '' }}
+                <span *ngIf="loadingPointNames?.length > 1"
+                >({{ loadingPointNames?.length }})
+                </span>
+              </h1>
             </div>
             <div class="ml-2 flex flex-col space-y-4">
               <ng-container *ngFor="let point of loadingPointNames">
                 <div class="step">
                   <div class="circle">
-                    <img class="notPreview" src="assets/svg/circle.svg" alt="loading">
+                    <img
+                      class="notPreview"
+                      src="assets/svg/circle.svg"
+                      alt="loading"/>
                   </div>
-                  <div class="flex items-center justify-between text-body text-not-black"><p class="w-full">
-                    {{ point.pointName }}
-                  </p>
+                  <div
+                    class="flex items-center justify-between text-body text-not-black">
+                    <p class="w-full">
+                      {{ point.pointName }}
+                    </p>
                   </div>
                 </div>
               </ng-container>
             </div>
           </div>
-          <div class="flex flex-col  space-y-2">
+          <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/locinfo.svg" alt="">
+              <img
+                loading="lazy"
+                class="w-6 h-6 notPreview"
+                src="assets/svg/locinfo.svg"
+                alt=""/>
               <h1
-                class="text-body_title leading-body_title text-not-black font-semibold">Unloading
-                Point{{unloadPointNames?.length > 1 ? 's' : ''}}
+                class="text-body_title leading-body_title text-not-black font-semibold">
+                Unloading Point{{ unloadPointNames?.length > 1 ? 's' : '' }}
                 <span *ngIf="unloadPointNames?.length > 1">
                   ({{ unloadPointNames?.length }})
-                </span></h1>
+                </span>
+              </h1>
             </div>
             <div class="ml-2 flex flex-col space-y-4">
               <ng-container *ngFor="let point of unloadPointNames">
                 <div class="step">
                   <div class="circle">
-                    <img class="notPreview" src="assets/svg/circle.svg" alt="loading">
+                    <img
+                      class="notPreview"
+                      src="assets/svg/circle.svg"
+                      alt="loading"/>
                   </div>
-                  <div class="flex items-center justify-between text-body text-not-black"><p class="w-full">
-                    {{ point.pointName }}
-                  </p>
+                  <div
+                    class="flex items-center justify-between text-body text-not-black">
+                    <p class="w-full">
+                      {{ point.pointName }}
+                    </p>
                   </div>
                 </div>
               </ng-container>
@@ -70,58 +100,97 @@
           </div>
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/truckinfo.svg" alt="">
-              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Truck</h1>
+              <img
+                loading="lazy"
+                class="w-6 h-6 notPreview"
+                src="assets/svg/truckinfo.svg"
+                alt=""/>
+              <h1
+                class="text-body_title leading-body_title text-not-black font-semibold">
+                Truck
+              </h1>
             </div>
-            <h1 class="text-body  text-wrap text-web-text-secondary">{{ getTruckName(tripData.categoryId) }}
-              | {{ tripData.truckSize }}ft, {{ tripData.truckCapacityInTon }} ton</h1>
+            <h1 class="text-body text-wrap text-web-text-secondary">
+              {{ getTruckName(tripData.categoryId) }} |
+              {{ tripData.truckSize }}ft, {{ tripData.truckCapacityInTon }} ton
+            </h1>
           </div>
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
-              <div class="w-6 h-6 bg-another text-white font-bold flex items-center justify-center rounded-full">#</div>
-              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Number of Truck</h1>
+              <div
+                class="w-6 h-6 bg-another text-white font-bold flex items-center justify-center rounded-full">
+                #
+              </div>
+              <h1
+                class="text-body_title leading-body_title text-not-black font-semibold">
+                Number of Truck
+              </h1>
             </div>
-            <h1 class="text-body  text-wrap text-web-text-secondary">
+            <h1 class="text-body text-wrap text-web-text-secondary">
               {{ tripData.numOfTrucks }}
             </h1>
           </div>
 
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="w-6 h-6 notPreview" src="assets/svg/goodsinfo.svg">
-              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Goods</h1>
+              <img
+                loading="lazy"
+                class="w-6 h-6 notPreview"
+                src="assets/svg/goodsinfo.svg"/>
+              <h1
+                class="text-body_title leading-body_title text-not-black font-semibold">
+                Goods
+              </h1>
             </div>
-            <h1 class="text-body text-wrap text-web-text-secondary">{{ tripData.goodsName }}</h1>
+            <h1 class="text-body text-wrap text-web-text-secondary">
+              {{ tripData.goodsName }}
+            </h1>
           </div>
           <div class="flex flex-col space-y-2" *ngIf="isAdmin()">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="h-6 w-6 notPreview" src="assets/svg/cr.svg">
+              <img
+                loading="lazy"
+                class="h-6 w-6 notPreview"
+                src="assets/svg/cr.svg"/>
               <h1
-                class="text-body_title leading-body_title text-not-black font-semibold">{{ isAdmin() ? 'Customer Rate' : 'Trip Rate' }}</h1>
+                class="text-body_title leading-body_title text-not-black font-semibold">
+                {{ isAdmin() ? 'Customer Rate' : 'Trip Rate' }}
+              </h1>
             </div>
-            <h1
-              class="text-body w-1/2 text-wrap text-web-text-secondary">{{
-                Number(tripData.customerRate) | numberSeperator
-              }} ৳</h1>
+            <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
+              {{ Number(tripData.customerRate) | numberSeperator }} ৳
+            </h1>
           </div>
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
-              <img loading="lazy" class="h-6 w-6" src="assets/svg/cgm.svg">
-              <h1 class="text-body_title leading-body_title text-not-black font-semibold">CGM</h1>
+              <img loading="lazy" class="h-6 w-6" src="assets/svg/cgm.svg"/>
+              <h1
+                class="text-body_title leading-body_title text-not-black font-semibold">
+                CGM
+              </h1>
             </div>
-            <h1 class="text-body text-wrap text-web-text-secondary">{{ userName }} | {{ userPhone }}</h1>
+            <h1 class="text-body text-wrap text-web-text-secondary">
+              {{ userName }} | {{ userPhone }}
+            </h1>
           </div>
 
-          <div>
-          </div>
+          <div></div>
         </div>
         <div class="flex flex-col items-end w-1/2 flex-1 space-y-3">
           <div class="flex flex-col space-y-2">
             <div class="flex space-x-3 items-center">
-              <img class="h-6 w-6 notPreview" loading="lazy" src="assets/svg/additional.svg">
-              <h1 class="text-body_title leading-body_title text-not-black font-semibold">Additional Instruction</h1>
+              <img
+                class="h-6 w-6 notPreview"
+                loading="lazy"
+                src="assets/svg/additional.svg"/>
+              <h1
+                class="text-body_title leading-body_title text-not-black font-semibold">
+                Additional Instruction
+              </h1>
             </div>
-            <h1 class="text-body text-wrap text-web-text-secondary">{{ tripData.note }}</h1>
+            <h1 class="text-body text-wrap text-web-text-secondary">
+              {{ tripData.note }}
+            </h1>
           </div>
         </div>
       </div>

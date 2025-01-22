@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../profiles/services/user.service';
 import { debounceTime } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -8,7 +8,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-transporter-popup',
-  standalone: true,
   imports: [
     CommonModule,
     GiveMaxHeightDirective,
@@ -18,7 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './transporter-popup.component.html',
   styleUrl: './transporter-popup.component.scss',
 })
-export class TransporterPopupComponent {
+export class TransporterPopupComponent implements OnInit {
   private totalPages: number;
 
   constructor(

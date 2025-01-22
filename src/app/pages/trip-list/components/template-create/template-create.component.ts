@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -53,31 +53,22 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 @Component({
   selector: 'app-template-create',
-  standalone: true,
   imports: [
     FormsModule,
     MatAutocomplete,
     MatAutocompleteTrigger,
-    MatButton,
-    MatCalendar,
-    MatCard,
-    MatCheckbox,
-    MatDatepickerToggle,
     MatFormField,
     MatInput,
-    MatMenu,
     MatOption,
-    MatSuffix,
     CommonModule,
     ReactiveFormsModule,
     ScrollByButtonDirective,
-    TimePickerComponent,
     MatError,
   ],
   templateUrl: './template-create.component.html',
   styleUrl: './template-create.component.scss',
 })
-export class TemplateCreateComponent {
+export class TemplateCreateComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
   templateForm: FormGroup;
   loadingSuggestions: any;
@@ -199,11 +190,11 @@ export class TemplateCreateComponent {
     // update above functionality with form array
     option?.locationPointName
       ? this.loadingPoints?.controls[i]
-        ?.get('pointName')
-        .setValue(option.locationPointName)
+          ?.get('pointName')
+          .setValue(option.locationPointName)
       : this.loadingPoints?.controls[i]
-        ?.get('pointName')
-        .setValue(option.addressText);
+          ?.get('pointName')
+          .setValue(option.addressText);
     if (option.district) {
       this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
       this.loadingPoints?.controls[i]
@@ -319,7 +310,6 @@ export class TemplateCreateComponent {
     }
   }
 
-
   onSelectLoadingDistrict(option: any, i: number) {
     this.loadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
     if (
@@ -356,29 +346,27 @@ export class TemplateCreateComponent {
     }
   }
 
-
   onSelectUnloadingDistrict(option: any, i: number) {
-    this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
+    this.unloadingPoints?.controls[i]
+      ?.get('pointDistrict')
+      .setValue(option.name);
     if (
       this.unloadingPoints?.controls[i]?.get('pointLat').value === '' ||
       this.unloadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.unloadingPoints?.controls[i]
-        .setValue(
-          this.unloadingPoints?.controls[i]?.get('pointLat').value
-            ? this.unloadingPoints?.controls[i]?.get('pointLat').value
-            : option.lat
-        );
-      this.unloadingPoints?.controls[i]
-        .setValue(
-          this.unloadingPoints?.controls[i]?.get('pointLon').value
-            ? this.unloadingPoints?.controls[i]?.get('pointLon').value
-            : option.lon
-        );
+      this.unloadingPoints?.controls[i].setValue(
+        this.unloadingPoints?.controls[i]?.get('pointLat').value
+          ? this.unloadingPoints?.controls[i]?.get('pointLat').value
+          : option.lat
+      );
+      this.unloadingPoints?.controls[i].setValue(
+        this.unloadingPoints?.controls[i]?.get('pointLon').value
+          ? this.unloadingPoints?.controls[i]?.get('pointLon').value
+          : option.lon
+      );
     }
     this.unloadingDistrictSuggestions = [];
   }
-
 
   onClickLeftButton() {
     this.leftButtonClicked = true;

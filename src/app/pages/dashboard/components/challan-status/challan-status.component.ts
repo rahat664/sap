@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
@@ -8,24 +8,15 @@ import { PieChartComponent } from '../../../../shared/charts/pie-chart/pie-chart
 import { DashboardService } from '../../services/dashboard.service';
 import { challanStatus } from '../../models/dashboard-stats.model';
 import { DatePipe } from '@angular/common';
-import {RouterLink} from "@angular/router";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-challan-status',
-  standalone: true,
-  imports: [
-    MatFormField,
-    MatOption,
-    MatSelect,
-    ReactiveFormsModule,
-    StatusCardComponent,
-    PieChartComponent,
-    RouterLink,
-  ],
+  imports: [ReactiveFormsModule, PieChartComponent, RouterLink],
   templateUrl: './challan-status.component.html',
   styleUrl: './challan-status.component.scss',
 })
-export class ChallanStatusComponent {
+export class ChallanStatusComponent implements OnInit {
   challanStatus: challanStatus;
   fromDate: string;
   toDate: string;

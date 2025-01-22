@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  ViewChild,
+  OnInit,
+  OnChanges,
+  AfterViewInit,
+} from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -13,9 +21,9 @@ import {
   ChartComponent,
   NgApexchartsModule,
 } from 'ng-apexcharts';
-import {timer} from "rxjs";
+import { timer } from 'rxjs';
 
-export type ChartOptions = {
+export interface ChartOptions {
   series: ApexAxisChartSeries;
   chart: ApexChart;
   dataLabels: ApexDataLabels;
@@ -26,26 +34,22 @@ export type ChartOptions = {
   tooltip: ApexTooltip;
   stroke: ApexStroke;
   legend: ApexLegend;
-};
+}
 
 @Component({
   selector: 'app-column-chart',
-  standalone: true,
   imports: [NgApexchartsModule],
   templateUrl: './column-chart.component.html',
   styleUrl: './column-chart.component.scss',
 })
-export class ColumnChartComponent {
+export class ColumnChartComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
   @Input() createdValue: number[] = [];
   @Input() completedValue: number[] = [];
-  @Input() categories: string[] = [
-  ];
+  @Input() categories: string[] = [];
 
-  constructor(private cd: ChangeDetectorRef) {
-
-  }
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     const colors = ['#85DAE5', '#208B99'];

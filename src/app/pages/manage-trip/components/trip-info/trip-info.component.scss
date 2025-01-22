@@ -1,10 +1,10 @@
-
 .step {
   display: flex;
   align-items: center;
   position: relative;
   @apply space-x-6
-  /* Space between steps */
+    /* Space between steps */
+  ;
 }
 
 .step:not(:last-child)::before {
@@ -14,10 +14,9 @@
   top: 53%;
   height: calc(100% + 16px);
   width: 1px; /* Width of the dashed line */
-  border-left: 1px dashed #E5EAEB; /* Dashed border style */
+  border-left: 1px dashed #e5eaeb; /* Dashed border style */
   z-index: 0; /* Ensure the line is behind the circles */
 }
-
 
 .circle {
   width: 9px;
@@ -31,4 +30,3 @@
 p {
   margin: 0;
 }
-

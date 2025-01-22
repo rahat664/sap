@@ -9,8 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-confirm-approve',
-  standalone: true,
-  imports: [NgIf, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './confirm-approve.component.html',
   styleUrl: './confirm-approve.component.scss',
 })

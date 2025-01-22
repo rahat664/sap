@@ -1,4 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  AfterViewInit,
+} from '@angular/core';
 import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import {
   FormBuilder,
@@ -36,7 +41,6 @@ import { UserService } from '../profiles/services/user.service';
 
 @Component({
   selector: 'app-trip-list',
-  standalone: true,
   imports: [
     NgIf,
     NgClass,
@@ -52,7 +56,6 @@ import { UserService } from '../profiles/services/user.service';
     GiveMaxHeightDirective,
     GetClickEventDirective,
     LoadingComponent,
-    DecimalPipe,
     MatAutocompleteTrigger,
     MatAutocomplete,
     MatOption,
@@ -63,11 +66,11 @@ import { UserService } from '../profiles/services/user.service';
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.scss'],
 })
-export class TripListComponent implements OnInit {
-  private transporterFilter: number = 0;
+export class TripListComponent implements OnInit, AfterViewInit {
+  private transporterFilter = 0;
   protected transporterName: string;
   protected transporterSuggestions: any[];
-  transporterSearchSubject: Subject<string> = new Subject();
+  transporterSearchSubject = new Subject<string>();
   filterOpened = true;
   filterForm: FormGroup;
   isDateOpened = false;
@@ -99,16 +102,16 @@ export class TripListComponent implements OnInit {
   loading = false;
   page = 0;
   totalPages = 0;
-  tripId: string = '';
-  isTripSearchedMenuOpened: boolean = false;
+  tripId = '';
+  isTripSearchedMenuOpened = false;
   tripIdSuggestions: any[] = [];
-  tripFilter: number = 0;
-  size: number = 0;
+  tripFilter = 0;
+  size = 0;
   anotherStatusCalled: boolean;
   customerCode: any;
   truckType: string;
-  searchSubject: Subject<string> = new Subject();
-  customerSearchSubject: Subject<string> = new Subject();
+  searchSubject = new Subject<string>();
+  customerSearchSubject = new Subject<string>();
   searchId: any;
   searchTransporter: any;
 
@@ -238,9 +241,9 @@ export class TripListComponent implements OnInit {
   }
 
   private setDateRange(dateEnum: DateEnum) {
-    let fromDate = new Date();
+    const fromDate = new Date();
     // to date should be yesterday
-    let toDate = new Date();
+    const toDate = new Date();
     switch (dateEnum) {
       case DateEnum.Today:
         fromDate.setDate(fromDate.getDate());

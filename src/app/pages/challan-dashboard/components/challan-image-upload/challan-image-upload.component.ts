@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GlobalImageUploadComponent } from '../../../../shared/modules/global-image-upload/global-image-upload.component';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-challan-image-upload',
-  standalone: true,
   imports: [GlobalImageUploadComponent],
   templateUrl: './challan-image-upload.component.html',
   styleUrl: './challan-image-upload.component.scss',
 })
-export class ChallanImageUploadComponent {
+export class ChallanImageUploadComponent implements OnInit {
   currentDate: Date = new Date();
   imageTypes: any[] = [];
   months: any[] = [
@@ -32,8 +32,8 @@ export class ChallanImageUploadComponent {
   tripId: any;
   protected tripDocuments: any[] = [];
   protected tripDocumentFiles: any[] = [];
-  expiryAvailable: boolean = false;
-  notesAvailable: boolean = false;
+  expiryAvailable = false;
+  notesAvailable = false;
   returnUrl: string;
   private notes: string;
   private eventTypeId: number;
@@ -44,7 +44,8 @@ export class ChallanImageUploadComponent {
     private router: Router,
     private datePipe: DatePipe,
     private trip: TripService,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -83,7 +84,16 @@ export class ChallanImageUploadComponent {
         const reader = new FileReader();
         reader.readAsDataURL(tripDocuments[i]);
         reader.onload = () => {
-          this.tripDocuments.push(reader.result);
+          // if pdf file push sanitized url
+          if (tripDocuments[i].type === 'application/pdf') {
+            if (typeof reader.result === 'string') {
+              this.tripDocuments.push(
+                this.sanitizer.bypassSecurityTrustResourceUrl(reader.result)
+              );
+            }
+          } else {
+            this.tripDocuments.push(reader.result);
+          }
           this.tripDocumentFiles.push({
             file: tripDocuments[i],
             preview: reader.result,

@@ -1,4 +1,10 @@
-import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  ViewChild,
+  OnInit,
+} from '@angular/core';
 import { CreatePopupComponent } from '../../../shared/modal/create-popup/create-popup.component';
 import { CustomInputComponent } from '../../../shared/modules/custom-input/custom-input.component';
 import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
@@ -21,9 +27,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-management-customer-admin',
-  standalone: true,
   imports: [
-    CreatePopupComponent,
     CustomInputComponent,
     DatePipe,
     GetClickEventDirective,
@@ -35,17 +39,15 @@ import { MatDialog } from '@angular/material/dialog';
     MatMenuItem,
     NgForOf,
     NgIf,
-    UserCreateComponent,
     CommonModule,
     MatMenuTrigger,
-    UserCustomerAdminCreateComponent,
   ],
   templateUrl: './user-management-customer-admin.component.html',
   styleUrl: './user-management-customer-admin.component.scss',
 })
-export class UserManagementCustomerAdminComponent {
+export class UserManagementCustomerAdminComponent implements OnInit {
   readonly dialog = inject(MatDialog);
-  filterOpened: boolean = true;
+  filterOpened = true;
   statusFilter = 0;
   roleFilter = 0;
   statusInputPlaceholder = 'Active';
@@ -74,10 +76,10 @@ export class UserManagementCustomerAdminComponent {
   totalPages: any;
   status: string;
   id: number;
-  statusValue: string = 'Active';
+  statusValue = 'Active';
   searchValue: string;
   departmentFilter: string;
-  size: number = 30;
+  size = 30;
 
   constructor(
     private service: UserService,

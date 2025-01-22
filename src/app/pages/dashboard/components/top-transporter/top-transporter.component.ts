@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
@@ -6,17 +6,13 @@ import { MatSelect } from '@angular/material/select';
 import { TopTransporters } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
 import { CommonModule, DatePipe } from '@angular/common';
-import {RouterLink} from "@angular/router";
-import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pipe";
+import { RouterLink } from '@angular/router';
+import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-top-transporter',
-  standalone: true,
   imports: [
     FormsModule,
-    MatFormField,
-    MatOption,
-    MatSelect,
     ReactiveFormsModule,
     CommonModule,
     RouterLink,
@@ -25,7 +21,7 @@ import {NumberSeperatorPipe} from "../../../../shared/pipes/number-seperator.pip
   templateUrl: './top-transporter.component.html',
   styleUrl: './top-transporter.component.scss',
 })
-export class TopTransporterComponent {
+export class TopTransporterComponent implements OnInit {
   topTransporter: TopTransporters[] = [];
   fromDate: string;
   toDate: string;

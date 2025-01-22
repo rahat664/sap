@@ -7,6 +7,8 @@ import {
   SimpleChanges,
   ViewChild,
   AfterViewInit,
+  OnInit,
+  OnChanges,
 } from '@angular/core';
 import { mapStyles } from '../../../../../shared/models/map-options';
 import { GoogleMap } from '@angular/google-maps';
@@ -20,12 +22,11 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trucking-map',
-  standalone: true,
   imports: [GoogleMap, CommonModule],
   templateUrl: './trucking-map.component.html',
   styleUrl: './trucking-map.component.scss',
 })
-export class TruckingMapComponent implements AfterViewInit {
+export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
   @Output() clearInput: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
@@ -40,15 +41,15 @@ export class TruckingMapComponent implements AfterViewInit {
   }
 
   @Input() tripStatus: string;
-  @Input() lat: number = 23.8103;
+  @Input() lat = 23.8103;
   // Dhaka lat
-  @Input() lng: number = 90.4125;
+  @Input() lng = 90.4125;
   @Input() starting: google.maps.LatLngLiteral[] = [];
   @Input() destination: google.maps.LatLngLiteral[] = [];
   @Input() truckLocationPosition: any[] = [];
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
-  fromlist: boolean = false;
-  fromMarker: boolean = false;
+  fromlist = false;
+  fromMarker = false;
 
   center: google.maps.LatLngLiteral;
   zoom = 12;
@@ -67,7 +68,7 @@ export class TruckingMapComponent implements AfterViewInit {
   truckLocationMarker: google.maps.Marker[] = [];
 
   polylines: google.maps.PolylineOptions[] = [];
-  bottomHeight: string = '0px';
+  bottomHeight = '0px';
   infoWindow: any;
   truckData: TruckData = {} as TruckData;
   loading: boolean;
@@ -246,6 +247,7 @@ export class TruckingMapComponent implements AfterViewInit {
       closeBtn?.addEventListener('click', () => {
         this.infoWindow.close();
         this.stopInterval();
+        this.clearSubs();
       });
     });
     // Delay to allow the DOM to render

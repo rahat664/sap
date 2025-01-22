@@ -45,7 +45,6 @@ import { DriverEditSharedService } from '../../../services/driver-edit-shared.se
 
 @Component({
   selector: 'app-driver-add',
-  standalone: true,
   imports: [
     CommonModule,
     NgIf,
@@ -287,6 +286,7 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
         },
         error => {
           // Handle error
+          this.loading = false;
           this.toastr.showError(error.error.message);
         }
       );

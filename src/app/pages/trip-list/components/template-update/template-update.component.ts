@@ -1,11 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   MatAutocomplete,
   MatAutocompleteTrigger,
   MatOption,
 } from '@angular/material/autocomplete';
 import { MatError, MatFormField } from '@angular/material/form-field';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { TripTemplate } from '../../models/trip-template.model';
 import { TripService } from '../../services/trip.service';
@@ -19,7 +25,6 @@ import { ScrollByButtonDirective } from '../../../../shared/directive/scroll-by-
 
 @Component({
   selector: 'app-template-update',
-  standalone: true,
   imports: [
     MatAutocomplete,
     MatError,
@@ -36,7 +41,7 @@ import { ScrollByButtonDirective } from '../../../../shared/directive/scroll-by-
   templateUrl: './template-update.component.html',
   styleUrl: './template-update.component.scss',
 })
-export class TemplateUpdateComponent {
+export class TemplateUpdateComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
   templateUpdateForm: FormGroup;
   loadingSuggestions: any;
@@ -101,11 +106,10 @@ export class TemplateUpdateComponent {
       this.templateUpdateForm.get('note').setValue(template.note);
       const loadingPoints = template.points.filter(
         (point: any) => point.pointType === 'Loading'
-      )
+      );
       const unloadingPoints = template.points.filter(
         (point: any) => point.pointType === 'Unloading'
-      )
-
+      );
 
       loadingPoints?.forEach((point: any, index: number) => {
         if (index > 0) {
@@ -114,10 +118,18 @@ export class TemplateUpdateComponent {
         if (point.id) {
           this.loadingPoints.controls[index].get('id').setValue(point.id);
         }
-        this.loadingPoints.controls[index].get('pointName').setValue(point.pointName);
-        this.loadingPoints.controls[index].get('pointDistrict').setValue(point.pointDistrict);
-        this.loadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
-        this.loadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+        this.loadingPoints.controls[index]
+          .get('pointName')
+          .setValue(point.pointName);
+        this.loadingPoints.controls[index]
+          .get('pointDistrict')
+          .setValue(point.pointDistrict);
+        this.loadingPoints.controls[index]
+          .get('pointLat')
+          .setValue(point.pointLat);
+        this.loadingPoints.controls[index]
+          .get('pointLon')
+          .setValue(point.pointLon);
       });
       unloadingPoints?.forEach((point: any, index: number) => {
         if (index > 0) {
@@ -126,10 +138,18 @@ export class TemplateUpdateComponent {
         if (point.id && point.id !== '') {
           this.unloadingPoints.controls[index].get('id').setValue(point.id);
         }
-        this.unloadingPoints.controls[index].get('pointName').setValue(point.pointName);
-        this.unloadingPoints.controls[index].get('pointDistrict').setValue(point.pointDistrict);
-        this.unloadingPoints.controls[index].get('pointLat').setValue(point.pointLat);
-        this.unloadingPoints.controls[index].get('pointLon').setValue(point.pointLon);
+        this.unloadingPoints.controls[index]
+          .get('pointName')
+          .setValue(point.pointName);
+        this.unloadingPoints.controls[index]
+          .get('pointDistrict')
+          .setValue(point.pointDistrict);
+        this.unloadingPoints.controls[index]
+          .get('pointLat')
+          .setValue(point.pointLat);
+        this.unloadingPoints.controls[index]
+          .get('pointLon')
+          .setValue(point.pointLon);
       });
     }
   }
@@ -213,11 +233,11 @@ export class TemplateUpdateComponent {
     // update above functionality with form array
     option?.locationPointName
       ? this.loadingPoints?.controls[i]
-        ?.get('pointName')
-        .setValue(option.locationPointName)
+          ?.get('pointName')
+          .setValue(option.locationPointName)
       : this.loadingPoints?.controls[i]
-        ?.get('pointName')
-        .setValue(option.addressText);
+          ?.get('pointName')
+          .setValue(option.addressText);
     if (option.district) {
       this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
       this.loadingPoints?.controls[i]
@@ -335,7 +355,6 @@ export class TemplateUpdateComponent {
     }
   }
 
-
   onSelectLoadingDistrict(option: any, i: number) {
     this.loadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
     if (
@@ -372,29 +391,27 @@ export class TemplateUpdateComponent {
     }
   }
 
-
   onSelectUnloadingDistrict(option: any, i: number) {
-    this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue(option.name);
+    this.unloadingPoints?.controls[i]
+      ?.get('pointDistrict')
+      .setValue(option.name);
     if (
       this.unloadingPoints?.controls[i]?.get('pointLat').value === '' ||
       this.unloadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.unloadingPoints?.controls[i]
-        .setValue(
-          this.unloadingPoints?.controls[i]?.get('pointLat').value
-            ? this.unloadingPoints?.controls[i]?.get('pointLat').value
-            : option.lat
-        );
-      this.unloadingPoints?.controls[i]
-        .setValue(
-          this.unloadingPoints?.controls[i]?.get('pointLon').value
-            ? this.unloadingPoints?.controls[i]?.get('pointLon').value
-            : option.lon
-        );
+      this.unloadingPoints?.controls[i].setValue(
+        this.unloadingPoints?.controls[i]?.get('pointLat').value
+          ? this.unloadingPoints?.controls[i]?.get('pointLat').value
+          : option.lat
+      );
+      this.unloadingPoints?.controls[i].setValue(
+        this.unloadingPoints?.controls[i]?.get('pointLon').value
+          ? this.unloadingPoints?.controls[i]?.get('pointLon').value
+          : option.lon
+      );
     }
     this.unloadingDistrictSuggestions = [];
   }
-
 
   onClickLeftButton() {
     this.leftButtonClicked = true;

@@ -2,10 +2,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'numberSeperator',
-  standalone: true
+  standalone: true,
 })
 export class NumberSeperatorPipe implements PipeTransform {
-
   transform(value: number | string): unknown {
     if (value === null || value === undefined) {
       return '';
@@ -20,10 +19,13 @@ export class NumberSeperatorPipe implements PipeTransform {
     const otherNumbers = integerPart.slice(0, -3);
 
     const formattedInteger =
-      otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + (otherNumbers ? ',' : '') + lastThree;
+      otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',') +
+      (otherNumbers ? ',' : '') +
+      lastThree;
 
     // Append the decimal part if it exists
-    return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
+    return decimalPart
+      ? `${formattedInteger}.${decimalPart}`
+      : formattedInteger;
   }
-
 }

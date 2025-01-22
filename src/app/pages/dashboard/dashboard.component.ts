@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { StatusHeighlightComponent } from './components/status-heighlight/status-heighlight.component';
 import { MonthWiseRevenueComponent } from './components/month-wise-revenue/month-wise-revenue.component';
@@ -8,29 +8,24 @@ import { TopTransporterComponent } from './components/top-transporter/top-transp
 import { TopCustomerComponent } from './components/top-customer/top-customer.component';
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
 import { RouterLink } from '@angular/router';
-import {
-  TransporterRateAnalysisComponent
-} from "./components/transporter-rate-analysis/transporter-rate-analysis.component";
+import { TransporterRateAnalysisComponent } from './components/transporter-rate-analysis/transporter-rate-analysis.component';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
     GetElementHeightDirective,
     StatusHeighlightComponent,
     MonthWiseRevenueComponent,
-    LiveTripStatusComponent,
     ChallanStatusComponent,
     TopTransporterComponent,
     TopCustomerComponent,
-    GiveMaxHeightDirective,
     RouterLink,
     TransporterRateAnalysisComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   height: any;
 
   ngOnInit() {}

@@ -7,7 +7,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-image-gallery',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './image-gallery.component.html',
   styleUrl: './image-gallery.component.scss',
