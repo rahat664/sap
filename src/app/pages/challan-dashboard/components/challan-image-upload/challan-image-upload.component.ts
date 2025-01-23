@@ -53,6 +53,10 @@ export class ChallanImageUploadComponent implements OnInit {
     this.getNavigationInformation();
   }
 
+  ngOnChanges() {
+    this.resetNavigationInformation();
+    this.getNavigationInformation();
+  }
   private resetNavigationInformation() {
     this.expiryAvailable = false;
     this.notesAvailable = false;
@@ -84,16 +88,11 @@ export class ChallanImageUploadComponent implements OnInit {
         const reader = new FileReader();
         reader.readAsDataURL(tripDocuments[i]);
         reader.onload = () => {
-          // if pdf file push sanitized url
-          if (tripDocuments[i].type === 'application/pdf') {
-            if (typeof reader.result === 'string') {
-              this.tripDocuments.push(
-                this.sanitizer.bypassSecurityTrustResourceUrl(reader.result)
-              );
-            }
-          } else {
-            this.tripDocuments.push(reader.result);
-          }
+          this.tripDocuments.push(
+            this.sanitizer.bypassSecurityTrustResourceUrl(
+              reader.result.toString()
+            )
+          );
           this.tripDocumentFiles.push({
             file: tripDocuments[i],
             preview: reader.result,

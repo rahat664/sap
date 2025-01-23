@@ -8,6 +8,7 @@ import { TopCustomers } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
 import { RouterLink } from '@angular/router';
 import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 
 @Component({
   selector: 'app-top-customer',
@@ -16,6 +17,10 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
     ReactiveFormsModule,
     CommonModule,
     NumberSeperatorPipe,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    LoadingComponent,
   ],
   templateUrl: './top-customer.component.html',
   styleUrl: './top-customer.component.scss',
@@ -24,6 +29,8 @@ export class TopCustomerComponent implements OnInit {
   topCustomer: TopCustomers[] = [];
   fromDate: string;
   toDate: string;
+  sortBy: string = 'grossProfit';
+  loading: boolean;
 
   constructor(
     private datePipe: DatePipe,
@@ -31,6 +38,7 @@ export class TopCustomerComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loading = false;
     this.getFromDateToDate();
     this.getTopCustomers();
   }
@@ -46,14 +54,18 @@ export class TopCustomerComponent implements OnInit {
   }
 
   private getTopCustomers() {
-    this.service.getTopCustomers(this.fromDate, this.toDate).subscribe(
-      (res: any) => {
-        this.topCustomer = res.data.content;
-      },
-      error => {
-        console.error(error);
-      }
-    );
+    this.service
+      .getTopCustomers(this.fromDate, this.toDate, this.sortBy)
+      .subscribe(
+        (res: any) => {
+          this.topCustomer = res.data.content;
+          this.loading = false;
+        },
+        error => {
+          console.error(error);
+          this.loading = false;
+        }
+      );
   }
 
   getBackgroundColor(alphabet: string) {
@@ -72,5 +84,11 @@ export class TopCustomerComponent implements OnInit {
     } else {
       return 'bg-another';
     }
+  }
+
+  sortData() {
+    this.topCustomer = [];
+    this.loading = true;
+    this.getTopCustomers();
   }
 }

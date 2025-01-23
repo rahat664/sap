@@ -22,7 +22,6 @@ export class ConfirmCancelComponent implements OnInit {
   reason = '';
   reasonTextArea = false;
   textareaReasons = '';
-  otherReason: boolean = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -83,7 +82,6 @@ export class ConfirmCancelComponent implements OnInit {
       if ($event.source.value !== 'Others') {
         reason.push($event.source.value);
       } else if ($event.source.value === 'Others') {
-        this.otherReason = true;
         this.reasonTextArea = true;
       }
     } else {

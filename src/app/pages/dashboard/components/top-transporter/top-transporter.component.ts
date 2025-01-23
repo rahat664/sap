@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { TopTransporters } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 
 @Component({
   selector: 'app-top-transporter',
@@ -17,6 +18,10 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
     CommonModule,
     RouterLink,
     NumberSeperatorPipe,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    LoadingComponent,
   ],
   templateUrl: './top-transporter.component.html',
   styleUrl: './top-transporter.component.scss',
@@ -25,6 +30,8 @@ export class TopTransporterComponent implements OnInit {
   topTransporter: TopTransporters[] = [];
   fromDate: string;
   toDate: string;
+  sortBy = 'grossProfit';
+  loading: boolean;
 
   constructor(
     private service: DashboardService,
@@ -32,19 +39,24 @@ export class TopTransporterComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loading = false;
     this.getFromDateToDate();
     this.getTopTransporters();
   }
 
   private getTopTransporters() {
-    this.service.getTopTransporters(this.fromDate, this.toDate).subscribe(
-      (res: any) => {
-        this.topTransporter = res.data.content;
-      },
-      error => {
-        console.error(error);
-      }
-    );
+    this.service
+      .getTopTransporters(this.fromDate, this.toDate, this.sortBy)
+      .subscribe(
+        (res: any) => {
+          this.topTransporter = res.data.content;
+          this.loading = false;
+        },
+        error => {
+          console.error(error);
+          this.loading = false;
+        }
+      );
   }
 
   private getFromDateToDate() {
@@ -73,5 +85,11 @@ export class TopTransporterComponent implements OnInit {
     } else {
       return 'bg-another';
     }
+  }
+
+  changeSorting($event: MatSelectChange) {
+    this.loading = true;
+    this.topTransporter = [];
+    this.getTopTransporters();
   }
 }

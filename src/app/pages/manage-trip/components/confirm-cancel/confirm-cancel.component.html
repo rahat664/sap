@@ -49,7 +49,7 @@
         Trip cancelled by customer
       </mat-checkbox>
       <mat-checkbox
-        [checked]="reason === 'Trip cancelled by transporter'"
+        [checked]="checkThatValueIsAvailableOrNot('Trip cancelled by transporter')"
         value="Trip cancelled by transporter"
         (change)="onChangeReason($event)">
         Trip cancelled by transporter
