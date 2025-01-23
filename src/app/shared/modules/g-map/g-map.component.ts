@@ -236,50 +236,50 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
         }
         this.startMarker = [];
         this.endMarker = [];
-        if (this.tripStatus === 'Completed') {
-          // 24 hours before trip started at time
-          const tripStartedAt = new Date(this.singleTripData?.tripStartedAt);
-          const oneDayBeforeTripStartedAt = new Date(
-            tripStartedAt.getTime() - 24 * 60 * 60 * 1000
-          );
-
-          const tripEndedAt = new Date(this.singleTripData?.tripEndedAt);
-          const oneDayAfterTripEndedAt = new Date(
-            tripEndedAt.getTime() + 24 * 60 * 60 * 1000
-          );
-          this.getTripHistory(
-            'previous',
-            this.datePipe.transform(
-              oneDayBeforeTripStartedAt,
-              'yyyy-MM-ddTHH:mm:ss'
-            ),
-            this.singleTripData?.tripStartedAt
-          );
-          this.getTripHistory(
-            'current',
-            this.singleTripData?.tripStartedAt,
-            this.singleTripData?.tripEndedAt
-          );
-          this.getTripHistory(
-            'next',
-            this.singleTripData?.tripEndedAt,
-            this.datePipe.transform(
-              oneDayAfterTripEndedAt,
-              'yyyy-MM-ddTHH:mm:ss'
-            )
-          );
-        } else {
-          if (this.lines) {
-            this.lines.forEach(line => {
-              line.setMap(null);
-            });
-          }
-          this.updateRoute();
-        }
       }
     }
     if (changes['truckLocationPosition']) {
       this.updateTruckLocation();
+    }
+
+    if (changes['trackerEnabled']) {
+      if (this.tripStatus === 'Completed') {
+        // 24 hours before trip started at time
+        const tripStartedAt = new Date(this.singleTripData?.tripStartedAt);
+        const oneDayBeforeTripStartedAt = new Date(
+          tripStartedAt.getTime() - 24 * 60 * 60 * 1000
+        );
+
+        const tripEndedAt = new Date(this.singleTripData?.tripEndedAt);
+        const oneDayAfterTripEndedAt = new Date(
+          tripEndedAt.getTime() + 24 * 60 * 60 * 1000
+        );
+        this.getTripHistory(
+          'previous',
+          this.datePipe.transform(
+            oneDayBeforeTripStartedAt,
+            'yyyy-MM-ddTHH:mm:ss'
+          ),
+          this.singleTripData?.tripStartedAt
+        );
+        this.getTripHistory(
+          'current',
+          this.singleTripData?.tripStartedAt,
+          this.singleTripData?.tripEndedAt
+        );
+        this.getTripHistory(
+          'next',
+          this.singleTripData?.tripEndedAt,
+          this.datePipe.transform(oneDayAfterTripEndedAt, 'yyyy-MM-ddTHH:mm:ss')
+        );
+      } else {
+        if (this.lines) {
+          this.lines.forEach(line => {
+            line.setMap(null);
+          });
+        }
+        this.updateRoute();
+      }
     }
   }
 
@@ -884,6 +884,7 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // Address helpers
+  @Input() trackerEnabled!: boolean;
   private getTripLoadingAddress(
     tripPoints: TripPoint[] | undefined,
     index: number
@@ -913,6 +914,13 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private connectHistoryRoute(data, type) {
+    for (let i = 0; i < data?.length; i = i + 10) {
+      this.artStopMarker(
+        i + 10 < data?.length ? data[i + 10] : data[data.length - 1],
+        data[i]
+      );
+    }
+
     for (let i = 0; i < data.length; i++) {
       const startLat = data[i].latitude;
       const startLng = data[i].longitude;
@@ -954,18 +962,14 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
       });
       line.setMap(this.map.googleMap);
       this.lines.push(line);
-      const bound = new google.maps.LatLngBounds();
-      bound.extend(start);
-      bound.extend(end);
-      this.map.googleMap.fitBounds(bound);
     }
   }
 
   getTripHistory(type, from, to) {
     this.startMarker = [];
     this.endMarker = [];
-    let startPoints: google.maps.LatLngLiteral[] = [];
-    let endPoints: google.maps.LatLngLiteral[] = [];
+    let startPoints = [];
+    let endPoints = [];
 
     startPoints = this.starting;
     endPoints = this.destination;
@@ -1049,6 +1053,22 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
       strokeOpacity: 1, // Opacity of the dots
       strokeColor: '#A5B8BB', // Color of the dots
     };
+
+    const lineCoordinates = [start, end];
+    const line = new google.maps.Polyline({
+      path: lineCoordinates,
+      geodesic: true,
+      strokeOpacity: 0,
+      icons: [
+        {
+          icon: dottedSymbol,
+          offset: '0',
+          repeat: '10px',
+        },
+      ],
+    });
+    line.setMap(this.map.googleMap);
+    this.lines.push(line);
   }
 
   private connect24HoursAfterHistoryRoute(start, end: any) {
@@ -1074,9 +1094,113 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
     });
     line.setMap(this.map.googleMap);
     this.lines.push(line);
-    const bound = new google.maps.LatLngBounds();
-    bound.extend(start);
-    bound.extend(end);
-    this.map.googleMap.fitBounds(bound);
+
+    // draw stop point
+  }
+
+  private drawStopPointAndDirection(start, end: any) {}
+
+  private artStopMarker(starts: any, destination: any) {
+    const start = starts?.latitude;
+    const end = starts?.longitude;
+    const destinationStart = destination?.latitude;
+    const destinationEnd = destination?.longitude;
+    const bearing =
+      starts.bearing > 0
+        ? starts.bearing
+        : this.calculateBearing(destinationStart, destinationEnd, start, end);
+    const dottedSymbol = {
+      path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, // Use a circle to create dots
+      scale: 3, // Size of the dots
+      strokeOpacity: 1, // Opacity of the dots
+      strokeColor: '#11484F', // Color of the dots
+      rotation: bearing,
+    };
+
+    const marker = new google.maps.Marker({
+      position: { lat: destinationStart, lng: destinationEnd },
+      icon: dottedSymbol,
+      title: 'Stop Point',
+      map: this.map.googleMap,
+      // rotate the marker
+    });
+
+    this.infoWindow = new google.maps.InfoWindow({
+      content: '',
+      maxWidth: 400,
+    });
+
+    marker.addListener('click', () => {
+      if (this.infoWindow) {
+        this.infoWindow.close();
+      }
+
+      this.infoWindow = new google.maps.InfoWindow({
+        content: '',
+        maxWidth: 400,
+        minWidth: 400,
+      });
+
+      this.infoWindow.setContent(this.getStopPointContent(destination));
+      this.infoWindow.open(this.map.googleMap, marker);
+      this.map.googleMap.setCenter(marker.getPosition());
+    });
+  }
+
+  private calculateBearing(
+    start: any,
+    end: any,
+    destinationStart: any,
+    destinationEnd: any
+  ) {
+    const startLat = this.toRadians(start);
+    const startLng = this.toRadians(end);
+    const destinationLat = this.toRadians(destinationStart);
+    const destinationLng = this.toRadians(destinationEnd);
+
+    const y = Math.sin(destinationLng - startLng) * Math.cos(destinationLat);
+    const x =
+      Math.cos(startLat) * Math.sin(destinationLat) -
+      Math.sin(startLat) *
+        Math.cos(destinationLat) *
+        Math.cos(destinationLng - startLng);
+    const bearing = Math.atan2(y, x);
+    return this.toDegrees(bearing);
+  }
+
+  private toDegrees(bearing: number) {
+    return (bearing * 180) / Math.PI;
+  }
+
+  private toRadians(start: any) {
+    return (start * Math.PI) / 180;
+  }
+
+  private getStopPointContent(data) {
+    timer(100).subscribe(() => {
+      const closeBtn = document.getElementById('closeBtn');
+      closeBtn.addEventListener('click', () => {
+        this.infoWindow.close();
+      });
+    });
+
+    return `
+      <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
+        <div class="flex flex-col space-y-1">
+          <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckFullRegistrationNumber}</div>
+          <div style="font-size: 12px; color: #777777">${data?.address ? data?.address : 'Unknown location'}</div>
+        </div>
+        <button id="closeBtn" style="background: transparent; border: none; cursor: pointer;">
+          <i class="far fa-times cursor-pointer"></i>
+        </button>
+      </div>
+      <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
+        <table id="info-table" style="width: 100%;">
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${data?.stopDuration ? data?.stopDuration : 'N/A'}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Engine<td>:</td></td><td class="col-span-4">${data?.engineStatus ? data?.engineStatus : 'N/A'}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Speed<td>:</td></td><td class="col-span-4">${data?.speed ? data?.speed : 'N/A'} ${data?.speed ? 'km/h' : ''}</td></tr>
+        </table>
+      </div>
+    `;
   }
 }
