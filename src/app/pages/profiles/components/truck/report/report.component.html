@@ -37,7 +37,7 @@
     </div>
   </div>
   <div class="px-7">
-    <div class="rounded-lg overflow-hidden h-[calc(100vh-17rem)] overflow-y-scroll" appGiveMaxHeight >
+    <div class="rounded-lg overflow-hidden h-[calc(100vh-17rem)] overflow-y-scroll" appGiveMaxHeight [totalPage]="totalPages" (inBottomEnd)="onBottom($event)">
       <table
         class="table-auto w-full text-body_title leading-body_title rounded-lg">
         <thead class="bg-white text-not-black z-50">

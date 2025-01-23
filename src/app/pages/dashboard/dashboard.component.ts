@@ -19,7 +19,6 @@ import { TransporterRateAnalysisComponent } from './components/transporter-rate-
     ChallanStatusComponent,
     TopTransporterComponent,
     TopCustomerComponent,
-    RouterLink,
     TransporterRateAnalysisComponent,
   ],
   templateUrl: './dashboard.component.html',
