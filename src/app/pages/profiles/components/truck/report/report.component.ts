@@ -50,6 +50,9 @@ export class ReportComponent implements OnInit {
   selectedTruckName: string[] = [];
   partiallyChecked: boolean;
   isCustomOpened = false;
+  page = 0;
+  size = 20;
+  totalPages: number;
 
   constructor(
     private datePipe: DatePipe,
@@ -152,9 +155,10 @@ export class ReportComponent implements OnInit {
 
   private getTrackerList() {
     this.loading = true;
-    this.service.getTrackers(0, 100).subscribe((res: any) => {
+    this.service.getTrackers(this.page, this.size).subscribe((res: any) => {
       this.loading = false;
       this.truckList = res.data.content;
+      this.totalPages = res.data.totalPages;
     });
   }
 
@@ -283,5 +287,19 @@ export class ReportComponent implements OnInit {
     const date = new Date(toDate);
     date.setDate(date.getDate() + 1);
     return this.datePipe.transform(date, 'yyyy-MM-dd') + ' 00:00';
+  }
+
+  onBottom($event: boolean) {
+    if ($event && this.page < this.totalPages - 1) {
+      this.page++;
+      this.service.getTrackers(this.page, this.size).subscribe(
+        (res: any) => {
+          this.truckList.push(...res.data.content);
+        },
+        err => {
+          this.loading = false;
+        }
+      );
+    }
   }
 }

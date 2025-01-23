@@ -31,6 +31,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
+import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-file-upload-popup',
@@ -45,6 +47,8 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
     ReactiveFormsModule,
     FormsModule,
     MatSuffix,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './file-upload-popup.component.html',

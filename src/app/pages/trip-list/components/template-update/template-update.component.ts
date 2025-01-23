@@ -22,6 +22,8 @@ import { MyErrorStateMatcher } from '../template-create/template-create.componen
 import { MatInput } from '@angular/material/input';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ScrollByButtonDirective } from '../../../../shared/directive/scroll-by-button.directive';
+import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-template-update',
@@ -37,6 +39,8 @@ import { ScrollByButtonDirective } from '../../../../shared/directive/scroll-by-
     ScrollByButtonDirective,
     NgIf,
     NgForOf,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   templateUrl: './template-update.component.html',
   styleUrl: './template-update.component.scss',

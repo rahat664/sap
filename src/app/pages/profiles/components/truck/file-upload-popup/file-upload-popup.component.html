@@ -53,7 +53,8 @@
         <img
           loading="lazy"
           class="h-full w-full"
-          [src]="filePreview"
+          [src]="filePreview | fallbackImage"
+          appImageError
           alt="File Preview"/>
       </div>
       <span
@@ -95,7 +96,7 @@
             </ng-container>
             <ng-template #imagePreview>
               <!-- Display Image Preview -->
-              <img class="h-full w-full" [src]="file.preview" alt="" />
+              <img class="h-full w-full" [src]="file.preview | fallbackImage" appImageError alt="" />
             </ng-template>
           </div>
           <div

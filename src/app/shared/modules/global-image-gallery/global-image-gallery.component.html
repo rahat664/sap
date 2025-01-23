@@ -68,8 +68,9 @@
             [src]="
               activatedDocument.url
                 ? activatedDocument.url
-                : activatedDocument?.document?.url
+                : activatedDocument?.document?.url | fallbackImage
             "
+               appImageError
             alt="activeDocument"
             class="notPreview h-full w-full"/>
           <div class="flex items-center justify-center flex-col space-y-3 h-full" *ngIf="activatedDocument.url?.includes('pdf') || activatedDocument?.document?.url?.includes('pdf')">
@@ -108,7 +109,8 @@
             class="document-item w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden rounded-lg">
             <img
               *ngIf="!doc.url?.includes('pdf') && !doc?.document?.url?.includes('pdf')"
-              [src]="doc.url ? doc.url : doc?.document?.url"
+              [src]="doc.url ? doc.url : doc?.document?.url | fallbackImage"
+              appImageError
               alt="document"
               class="h-full w-full notPreview"/>
             <img *ngIf="doc.url?.includes('pdf') || doc?.document?.url?.includes('pdf')"

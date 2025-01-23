@@ -187,7 +187,8 @@
                           <!-- Display Image Preview -->
                           <img
                             class="h-full w-full"
-                            [src]="file.preview"
+                            [src]="file.preview | fallbackImage"
+                            appImageError
                             alt=""/>
                         </ng-template>
                         <button
@@ -302,7 +303,8 @@
             <img
               (click)="onClickImage(file.preview)"
               class="h-full w-full"
-              [src]="file.preview"
+              [src]="file.preview | fallbackImage"
+              appImageError
               alt=""/>
           </ng-template>
           <button

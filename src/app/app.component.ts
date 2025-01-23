@@ -46,6 +46,8 @@ export class AppComponent implements OnInit, OnDestroy {
   map: google.maps.Map;
   isLoading = this.loadingService.loading$;
 
+  fallbackImage = 'assets/images/placehoder.webp';
+
   /**
    * Constructs the AppComponent.
    * @param router The Angular Router.

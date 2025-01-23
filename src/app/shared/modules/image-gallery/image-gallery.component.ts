@@ -4,10 +4,12 @@ import { ImageGalleryService } from '../../services/image-gallery/image-gallery.
 import { Subscription } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
+import { FallbackImagePipe } from '../../pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../directive/image-error.directive';
 
 @Component({
   selector: 'app-image-gallery',
-  imports: [CommonModule],
+  imports: [CommonModule, FallbackImagePipe, ImageErrorDirective],
   templateUrl: './image-gallery.component.html',
   styleUrl: './image-gallery.component.scss',
 })

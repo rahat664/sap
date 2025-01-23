@@ -14,10 +14,17 @@ import { GetElementHeightDirective } from '../../../../shared/directive/get-elem
 import { ImageGalleryComponent } from '../../../../shared/modules/image-gallery/image-gallery.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageGalleryService } from '../../../../shared/services/image-gallery/image-gallery.service';
+import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-trip-activity',
-  imports: [CommonModule, GetElementHeightDirective],
+  imports: [
+    CommonModule,
+    GetElementHeightDirective,
+    FallbackImagePipe,
+    ImageErrorDirective,
+  ],
   templateUrl: './trip-activity.component.html',
   styleUrl: './trip-activity.component.scss',
 })

@@ -88,7 +88,16 @@ export class TrackerComponent implements OnInit {
   onBottom($event: boolean) {
     if ($event && this.page < this.totalPages - 1) {
       this.page++;
-      this.getTrackers();
+      this.service
+        .getTrackers(this.page, this.size, this.searchValue)
+        .subscribe(
+          (res: any) => {
+            this.trackerList.push(...res.data.content);
+          },
+          err => {
+            this.loading = false;
+          }
+        );
     }
   }
 

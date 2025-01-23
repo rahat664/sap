@@ -39,6 +39,8 @@ import { TruckFileType, truckFileType } from '../models/truck-file-type';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
+import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-truck-add',
@@ -59,6 +61,8 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
     NgForOf,
     MatMenu,
     MatMenuTrigger,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './truck-add.component.html',

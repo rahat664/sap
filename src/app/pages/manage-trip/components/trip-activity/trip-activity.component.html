@@ -100,7 +100,8 @@
                     *ngIf="checkThatFileIsImageOrPdf(item.url) !== 'pdf'"
                     loading="lazy"
                     class="w-full h-full"
-                    [src]="item.url ? item.url : 'assets/images/dummy.jpg'"
+                    [src]="item.url ? item.url : 'assets/images/dummy.jpg' | fallbackImage"
+                    appImageError
                     alt=""/>
                 </div>
               </div>
@@ -241,7 +242,8 @@
                     *ngIf="checkThatFileIsImageOrPdf(item.url) !== 'pdf'"
                     loading="lazy"
                     class="w-full h-full"
-                    [src]="item.url ? item.url : 'assets/images/dummy.jpg'"
+                    [src]="item.url ? item.url : 'assets/images/dummy.jpg' | fallbackImage"
+                    appImageError
                     alt=""/>
                 </div>
               </div>

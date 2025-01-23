@@ -9,8 +9,7 @@
     *ngIf="checkImageOrDocument(galleryImages)"
     loading="lazy"
     class="h-full"
-    [src]="previewUrl"
-    alt=""/>
+    [src]="previewUrl | fallbackImage" appImageError alt=""/>
   <button
     (click)="closeModal()"
     class="absolute top-4 right-4 p-1 h-6 z-50 w-6 shadow-lg bg-white rounded-full flex items-center justify-center">
@@ -25,7 +24,8 @@
     !showNotPreviewAbleDialog
   ">
   <iframe
-    [src]="previewUrl"
+    [src]="previewUrl | fallbackImage"
+    appImageError
     type="application/pdf"
     class="h-full w-full"
     style="height: 90vh">

@@ -23,6 +23,8 @@ import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { TimePickerComponent } from '../time-picker/time-picker.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { timer } from 'rxjs';
+import { FallbackImagePipe } from '../../pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../directive/image-error.directive';
 
 @Component({
   selector: 'app-global-image-upload',
@@ -44,6 +46,8 @@ import { timer } from 'rxjs';
     MatSuffix,
     TimePickerComponent,
     MatMenuTrigger,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './global-image-upload.component.html',

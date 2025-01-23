@@ -20,6 +20,8 @@ import { CustomInputSelectModel } from '../../../../../shared/modules/custom-inp
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-file-upload',
@@ -37,6 +39,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     MatDatepickerModule,
     MatSuffix,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './file-upload.component.html',

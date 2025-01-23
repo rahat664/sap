@@ -12,6 +12,8 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { GetOutsideModalClickDirective } from '../../../shared/directive/get-outside-modal-click.directive';
+import { FallbackImagePipe } from '../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,6 +22,8 @@ import { GetOutsideModalClickDirective } from '../../../shared/directive/get-out
     RouterLink,
     RouterLinkActive,
     GetOutsideModalClickDirective,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
