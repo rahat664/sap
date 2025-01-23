@@ -46,8 +46,6 @@ import { ImageErrorDirective } from '../../../../shared/directive/image-error.di
     MatInput,
     InputAutoFocusDirective,
     NgxMaterialIntlTelInputComponent,
-    FallbackImagePipe,
-    ImageErrorDirective,
   ],
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss'],
