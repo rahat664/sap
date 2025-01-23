@@ -36,6 +36,8 @@ import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { TripTemplate } from '../../models/trip-template.model';
+import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -64,6 +66,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     ReactiveFormsModule,
     ScrollByButtonDirective,
     MatError,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   templateUrl: './template-create.component.html',
   styleUrl: './template-create.component.scss',

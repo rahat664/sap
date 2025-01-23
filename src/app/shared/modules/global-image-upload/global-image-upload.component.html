@@ -58,7 +58,8 @@
             *ngIf="documentFiles[activeDocumentIndex]?.file.type === 'application/pdf';
                             else imagePreview">
             <iframe
-              [src]="activatedDocument"
+              [src]="activatedDocument | fallbackImage"
+              appImageError
               type="application/pdf"
               class="h-full w-full"
               style="height: 90vh">
@@ -69,7 +70,8 @@
             <!-- Display Image Preview -->
             <img
               class="h-full w-full notPreview"
-              [src]="activatedDocument"
+              [src]="activatedDocument | fallbackImage"
+              appImageError
               alt="" />
           </ng-template>
         </div>
@@ -112,7 +114,8 @@
               <!-- Display Image Preview -->
               <img
                 class="h-full w-full notPreview"
-                [src]="doc"
+                [src]="doc | fallbackImage"
+                appImageError
                 alt="" />
             </ng-template>
             <!--            <img [src]="doc" alt="document" class="h-full w-full notPreview" />-->

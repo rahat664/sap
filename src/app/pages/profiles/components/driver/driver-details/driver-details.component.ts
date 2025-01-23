@@ -43,6 +43,8 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 import { ConfirmApproveComponent } from '../../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-reject/confirm-reject.component';
+import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-driver-details',
@@ -61,6 +63,8 @@ import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-re
     MatDatepickerInput,
     MatSuffix,
     NgxMaterialIntlTelInputComponent,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './driver-details.component.html',

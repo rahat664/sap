@@ -13,10 +13,19 @@ import { Router } from '@angular/router';
 import { TripService } from '../../../pages/trip-list/services/trip.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../../../pages/manage-trip/components/confirm-delete/confirm-delete.component';
+import { FallbackImagePipe } from '../../pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../directive/image-error.directive';
 
 @Component({
   selector: 'app-global-image-gallery',
-  imports: [DatePipe, NgIf, NgForOf, NgClass],
+  imports: [
+    DatePipe,
+    NgIf,
+    NgForOf,
+    NgClass,
+    FallbackImagePipe,
+    ImageErrorDirective,
+  ],
   templateUrl: './global-image-gallery.component.html',
   styleUrl: './global-image-gallery.component.scss',
 })

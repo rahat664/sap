@@ -43,6 +43,8 @@ import { ConfirmApproveComponent } from '../../../../../shared/modules/confirm-a
 import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-reject/confirm-reject.component';
 import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
+import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-truck-details',
@@ -64,6 +66,8 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
     MatDatepickerInput,
     PreHireChecklistDetailsComponent,
     MatSuffix,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './truck-details.component.html',

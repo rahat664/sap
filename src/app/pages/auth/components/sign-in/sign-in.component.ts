@@ -34,6 +34,8 @@ import {
   NgxMaterialIntlTelInputComponent,
 } from 'ngx-material-intl-tel-input';
 import { DriverEditSharedService } from '../../../profiles/services/driver-edit-shared.service';
+import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-sign-in',
@@ -44,6 +46,8 @@ import { DriverEditSharedService } from '../../../profiles/services/driver-edit-
     MatInput,
     InputAutoFocusDirective,
     NgxMaterialIntlTelInputComponent,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss'],

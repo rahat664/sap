@@ -37,6 +37,8 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { TripCreate } from '../../models/trip-create.model';
 import { TripTemplateResponse } from '../../models/trip-template-response.model';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -60,6 +62,8 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
     MatAutocomplete,
     MatAutocompleteTrigger,
     MatTooltip,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   providers: [
     provideNativeDateAdapter(),

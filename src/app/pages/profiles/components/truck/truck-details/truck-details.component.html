@@ -297,7 +297,8 @@
                             <!-- Display Image Preview -->
                             <img
                               class="h-full w-full"
-                              [src]="file.preview"
+                              [src]="file.preview | fallbackImage"
+                              appImageError
                               alt=""/>
                           </ng-template>
                           <button
@@ -319,16 +320,17 @@
                           let file of checkThatFileIsAvailableOrNot(option.name)
                         ">
                         <img
-                          *ngIf="checkThatFileIsImageOrPdf(file) == 'image'"
+                          *ngIf="checkThatFileIsImageOrPdf(file) === 'image'"
                           (click)="
                             $event.stopPropagation();
                             onClickImage(file, 'image')
                           "
                           class="h-full w-full"
-                          [src]="file.preSignedFileUrl"
+                          [src]="file.preSignedFileUrl | fallbackImage"
+                          appImageError
                           alt=""/>
                         <img
-                          *ngIf="checkThatFileIsImageOrPdf(file) == 'pdf'"
+                          *ngIf="checkThatFileIsImageOrPdf(file) === 'pdf'"
                           (click)="
                             $event.stopPropagation(); onClickImage(file, 'pdf')
                           "
@@ -482,13 +484,14 @@
         <div
           class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative">
           <img
-            *ngIf="checkThatFileIsImageOrPdf(file) == 'image'"
+            *ngIf="checkThatFileIsImageOrPdf(file) === 'image'"
             (click)="$event.stopPropagation(); onClickImage(file, 'image')"
             class="h-full w-full"
-            [src]="file.preSignedFileUrl"
+            [src]="file.preSignedFileUrl | fallbackImage"
+            appImageError
             alt=""/>
           <img
-            *ngIf="checkThatFileIsImageOrPdf(file) == 'pdf'"
+            *ngIf="checkThatFileIsImageOrPdf(file) === 'pdf'"
             (click)="$event.stopPropagation(); onClickImage(file, 'pdf')"
             class="h-full w-full"
             src="assets/svg/pdf.svg"
@@ -515,7 +518,7 @@
           </ng-container>
           <ng-template #imagePreview>
             <!-- Display Image Preview -->
-            <img class="h-full w-full" [src]="file.preview" alt="" />
+            <img class="h-full w-full" [src]="file.preview | fallbackImage" appImageError alt="" />
           </ng-template>
           <button
             *ngIf="isInEditMode"

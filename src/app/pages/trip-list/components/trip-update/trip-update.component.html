@@ -252,8 +252,8 @@
                     <div
                       class="flex flex-col w-full"
                       *ngIf="
-                        loadingPoint?.get('pointName')?.value != '' &&
-                        loadingPoint?.get('pointDistrict')?.value != '' &&
+                        loadingPoint?.get('pointName')?.value !== '' &&
+                        loadingPoint?.get('pointDistrict')?.value !== '' &&
                         loadingPoints?.length > 1 &&
                         i == loadingPoints?.length - 1
                       ">
@@ -440,8 +440,8 @@
                     <div
                       class="flex flex-col w-full"
                       *ngIf="
-                        loadingPoint?.get('pointName')?.value != '' &&
-                        loadingPoint?.get('pointDistrict')?.value != '' &&
+                        loadingPoint?.get('pointName')?.value !== '' &&
+                        loadingPoint?.get('pointDistrict')?.value !== '' &&
                         loadingPoints?.length > 1 &&
                         i == loadingPoints?.length - 1
                       ">
@@ -631,8 +631,8 @@
                     <div
                       class="flex flex-col w-full"
                       *ngIf="
-                        unloadingPoint?.get('pointName')?.value != '' &&
-                        unloadingPoint?.get('pointDistrict')?.value != '' &&
+                        unloadingPoint?.get('pointName')?.value !== '' &&
+                        unloadingPoint?.get('pointDistrict')?.value !== '' &&
                         unloadingPoints?.length > 1 &&
                         i == unloadingPoints?.length - 1
                       ">
@@ -723,7 +723,8 @@
                     <img
                       loading="lazy"
                       class="w-full notPreview"
-                      [src]="item.imageUrl"
+                      [src]="item.imageUrl | fallbackImage"
+                      appImageError
                       [alt]="item.name"/>
                   </div>
                   <span

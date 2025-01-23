@@ -12,6 +12,8 @@ import { concatMap, of } from 'rxjs';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
+import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-challan-details',
@@ -22,6 +24,8 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
     ReactiveFormsModule,
     FormsModule,
     LoadingComponent,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   templateUrl: './challan-details.component.html',
   styleUrl: './challan-details.component.scss',

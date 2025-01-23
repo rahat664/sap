@@ -40,6 +40,8 @@ import { MatCard } from '@angular/material/card';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TimePickerComponent } from '../../../../shared/modules/time-picker/time-picker.component';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
+import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-trip-update',
@@ -64,6 +66,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatSuffix,
     MatTooltip,
     TimePickerComponent,
+    FallbackImagePipe,
+    ImageErrorDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './trip-update.component.html',

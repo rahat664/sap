@@ -48,7 +48,8 @@
         <img
           loading="lazy"
           class="h-full w-full"
-          [src]="filePreview"
+          [src]="filePreview | fallbackImage"
+          appImageError
           alt="File Preview"/>
       </div>
       <span
@@ -81,7 +82,8 @@
           <div class="h-12 w-12 overflow-hidden">
             <img
               class="h-full w-full"
-              [src]="file.preview ? file.preview : 'assets/svg/fileupload.svg'"
+              [src]="file.preview ? file.preview : 'assets/svg/fileupload.svg' | fallbackImage"
+              appImageError
               alt="" />
           </div>
           <div

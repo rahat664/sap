@@ -298,7 +298,8 @@
                     "
                     class="w-[7.5rem] relative h-[7.25rem] rounded-lg overflow-hidden border border-line">
                     <img
-                      [src]="document.url?.includes('pdf') ? 'assets/svg/pdf.svg' : document.url"
+                      [src]="document.url?.includes('pdf') ? 'assets/svg/pdf.svg' : document.url | fallbackImage"
+                      appImageError
                       class="notPreview h-full w-full"
                       alt=""/>
                     <button
@@ -436,7 +437,8 @@
                     "
                     class="w-[7.5rem] relative h-[7.25rem] rounded-lg overflow-hidden border border-line">
                     <img
-                      [src]="document.url.includes('pdf') ? 'assets/svg/pdf.svg' : document.url"
+                      [src]="document.url.includes('pdf') ? 'assets/svg/pdf.svg' : document.url | fallbackImage"
+                      appImageError
                       class="notPreview h-full w-full"
                       alt=""/>
                     <button
