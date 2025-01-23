@@ -110,6 +110,7 @@ export class ManageTripComponent implements OnInit {
   customerNames: string[] = [];
   truckRegistrationNumbers: string;
   activatedTruckSizeInFeet = 0;
+  truckerEnabled: boolean;
 
   constructor(
     private tripService: TripService,
@@ -510,12 +511,27 @@ export class ManageTripComponent implements OnInit {
     if (truckRegistrationNumber) {
       this.tripService.getSensorData(truckRegistrationNumber).subscribe(
         (res: any) => {
-          this.truckLocationPosition = {
-            lng: res.data?.lng,
-            lat: res.data?.lat,
-          };
+          if (res.data) {
+            this.truckerEnabled = true;
+            this.truckLocationPosition = {
+              lng: res.data?.lng,
+              lat: res.data?.lat,
+            };
+          } else {
+            this.truckerEnabled = false;
+            this.truckLocationPosition = {
+              lng: 0,
+              lat: 0,
+            };
+          }
         },
-        error => {}
+        error => {
+          this.truckerEnabled = false;
+          this.truckLocationPosition = {
+            lng: 0,
+            lat: 0,
+          };
+        }
       );
     }
   }

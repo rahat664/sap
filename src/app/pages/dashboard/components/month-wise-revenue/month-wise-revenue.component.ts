@@ -8,10 +8,11 @@ import { DashboardService } from '../../services/dashboard.service';
 import { DatePipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { LineChartComponent } from '../../../../shared/charts/line-chart/line-chart.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-month-wise-revenue',
-  imports: [FormsModule, ReactiveFormsModule, ColumnChartComponent],
+  imports: [FormsModule, ReactiveFormsModule, ColumnChartComponent, RouterLink],
   templateUrl: './month-wise-revenue.component.html',
   styleUrl: './month-wise-revenue.component.scss',
 })
