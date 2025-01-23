@@ -12,9 +12,15 @@ export class FallbackImagePipe implements PipeTransform {
     return value;
   }
 
-  private isValidImageType(imagePath: string): boolean {
+  private isValidImageType(imagePath: any): boolean {
     const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
     // if the image path includes above extensions, return true
-    return validExtensions.some(ext => imagePath.includes(ext));
+    if (typeof imagePath !== 'string') {
+      return validExtensions.some(ext =>
+        imagePath?.changingThisBreaksApplicationSecurity?.includes(ext)
+      );
+    } else {
+      return validExtensions.some(ext => imagePath?.includes(ext));
+    }
   }
 }

@@ -22,8 +22,6 @@ import { ImageErrorDirective } from '../../../shared/directive/image-error.direc
     RouterLink,
     RouterLinkActive,
     GetOutsideModalClickDirective,
-    FallbackImagePipe,
-    ImageErrorDirective,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
