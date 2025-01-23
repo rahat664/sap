@@ -37,6 +37,7 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
   etaData: any;
   private endPoints: google.maps.LatLngLiteral[];
   private lines: google.maps.Polyline[] = [];
+  stopPointMarker: google.maps.Marker[] = [];
 
   get truckId(): string {
     return this._truckId;
@@ -117,6 +118,13 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
     if (this.subs) {
       this.subs.unsubscribe();
     }
+    if (this.stopPointMarker) {
+      this.stopPointMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+      this.stopPointMarker = [];
+    }
+
     this.clearPolylines();
     this.directionsRenderer.setMap(null);
     this.trip.bottomHeight.next('0px');
@@ -132,6 +140,12 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
       this.endMarker.forEach(marker => {
         marker.setMap(null);
       });
+    }
+    if (this.stopPointMarker) {
+      this.stopPointMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+      this.stopPointMarker = [];
     }
     this.startMarker = [];
     this.endMarker = [];
@@ -222,6 +236,13 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
     if (this.infoWindow) {
       this.infoWindow.close();
     }
+    if (this.stopPointMarker) {
+      this.stopPointMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+      this.stopPointMarker = [];
+    }
+
     if (changes) {
       if (this.starting.length > 0 && this.destination.length > 0) {
         if (this.startMarker) {
@@ -241,45 +262,43 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
     if (changes['truckLocationPosition']) {
       this.updateTruckLocation();
     }
+    this.clearPolylines();
+    if (this.tripStatus === 'Completed') {
+      // 24 hours before trip started at time
+      const tripStartedAt = new Date(this.singleTripData?.tripStartedAt);
+      const oneDayBeforeTripStartedAt = new Date(
+        tripStartedAt.getTime() - 24 * 60 * 60 * 1000
+      );
 
-    if (changes['trackerEnabled']) {
-      if (this.tripStatus === 'Completed') {
-        // 24 hours before trip started at time
-        const tripStartedAt = new Date(this.singleTripData?.tripStartedAt);
-        const oneDayBeforeTripStartedAt = new Date(
-          tripStartedAt.getTime() - 24 * 60 * 60 * 1000
-        );
-
-        const tripEndedAt = new Date(this.singleTripData?.tripEndedAt);
-        const oneDayAfterTripEndedAt = new Date(
-          tripEndedAt.getTime() + 24 * 60 * 60 * 1000
-        );
-        this.getTripHistory(
-          'previous',
-          this.datePipe.transform(
-            oneDayBeforeTripStartedAt,
-            'yyyy-MM-ddTHH:mm:ss'
-          ),
-          this.singleTripData?.tripStartedAt
-        );
-        this.getTripHistory(
-          'current',
-          this.singleTripData?.tripStartedAt,
-          this.singleTripData?.tripEndedAt
-        );
-        this.getTripHistory(
-          'next',
-          this.singleTripData?.tripEndedAt,
-          this.datePipe.transform(oneDayAfterTripEndedAt, 'yyyy-MM-ddTHH:mm:ss')
-        );
-      } else {
-        if (this.lines) {
-          this.lines.forEach(line => {
-            line.setMap(null);
-          });
-        }
-        this.updateRoute();
+      const tripEndedAt = new Date(this.singleTripData?.tripEndedAt);
+      const oneDayAfterTripEndedAt = new Date(
+        tripEndedAt.getTime() + 24 * 60 * 60 * 1000
+      );
+      this.getTripHistory(
+        'previous',
+        this.datePipe.transform(
+          oneDayBeforeTripStartedAt,
+          'yyyy-MM-ddTHH:mm:ss'
+        ),
+        this.singleTripData?.tripStartedAt
+      );
+      this.getTripHistory(
+        'current',
+        this.singleTripData?.tripStartedAt,
+        this.singleTripData?.tripEndedAt
+      );
+      this.getTripHistory(
+        'next',
+        this.singleTripData?.tripEndedAt,
+        this.datePipe.transform(oneDayAfterTripEndedAt, 'yyyy-MM-ddTHH:mm:ss')
+      );
+    } else {
+      if (this.lines) {
+        this.lines.forEach(line => {
+          line.setMap(null);
+        });
       }
+      this.updateRoute();
     }
   }
 
@@ -622,7 +641,7 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
         <table id="info-table" style="width: 100%;">
           <tr class="grid grid-cols-8 "><td class="col-span-3">Time</td><td>:</td><td class="col-span-4">${this.truckData.time ? this.truckData.time : 'N/A'}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${this.truckData.stopDuration ? this.truckData.stopDuration : 'N/A'}</td></tr>
-        <tr  class="grid grid-cols-8 "><td class="col-span-3">Engine<td>:</td></td><td class="col-span-4">${this.truckData.engineStatus ? this.truckData.engineStatus : 'N/A'}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Engine Status<td>:</td></td><td class="col-span-4">${this.truckData.engineStatus ? this.truckData.engineStatus : 'N/A'}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">GSM<td>:</td></td><td class="col-span-4">${this.truckData.gsmValue ? this.truckData.gsmValue : 'N/A'}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Speed<td>:</td></td><td class="col-span-4">${this.truckData.speed ? this.truckData.speed : 'N/A'} ${this.truckData.speed ? 'km/h' : ''}</td></tr>
         </table>
@@ -885,6 +904,7 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
 
   // Address helpers
   @Input() trackerEnabled!: boolean;
+
   private getTripLoadingAddress(
     tripPoints: TripPoint[] | undefined,
     index: number
@@ -1109,26 +1129,35 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
       starts.bearing > 0
         ? starts.bearing
         : this.calculateBearing(destinationStart, destinationEnd, start, end);
-    const dottedSymbol = {
-      path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, // Use a circle to create dots
-      scale: 3, // Size of the dots
-      strokeOpacity: 1, // Opacity of the dots
-      strokeColor: '#11484F', // Color of the dots
+
+    // draw stop point by svg
+    // Function to create a rotated icon
+
+    const stopIcon = {
+      path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+      scale: 4,
+      fillColor: '#11484F',
+      fillOpacity: 1,
+      strokeWeight: 0,
       rotation: bearing,
+      anchor: new google.maps.Point(0, 2),
     };
 
     const marker = new google.maps.Marker({
       position: { lat: destinationStart, lng: destinationEnd },
-      icon: dottedSymbol,
+      icon: stopIcon,
       title: 'Stop Point',
       map: this.map.googleMap,
-      // rotate the marker
     });
+
+    this.stopPointMarker.push(marker);
 
     this.infoWindow = new google.maps.InfoWindow({
       content: '',
       maxWidth: 400,
     });
+
+    marker.setIcon(stopIcon);
 
     marker.addListener('click', () => {
       if (this.infoWindow) {
@@ -1183,6 +1212,13 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
         this.infoWindow.close();
       });
     });
+    let time = '';
+
+    if (data?.createdAt) {
+      time = this.datePipe.transform(data?.createdAt, 'd MMM yyyy, h:mm a');
+    } else {
+      time = 'N/A';
+    }
 
     return `
       <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
@@ -1196,8 +1232,9 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
       </div>
       <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
         <table id="info-table" style="width: 100%;">
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Time<td>:</td></td><td class="col-span-4">${time}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${data?.stopDuration ? data?.stopDuration : 'N/A'}</td></tr>
-        <tr  class="grid grid-cols-8 "><td class="col-span-3">Engine<td>:</td></td><td class="col-span-4">${data?.engineStatus ? data?.engineStatus : 'N/A'}</td></tr>
+        <tr  class="grid grid-cols-8 "><td class="col-span-3">Engine Status<td>:</td></td><td class="col-span-4">${data?.engineStatus ? data?.engineStatus : 'N/A'}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Speed<td>:</td></td><td class="col-span-4">${data?.speed ? data?.speed : 'N/A'} ${data?.speed ? 'km/h' : ''}</td></tr>
         </table>
       </div>
