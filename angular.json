@@ -94,6 +94,17 @@
                   "with": "src/environments/environment.qa.ts"
                 }
               ]
+            },
+            "staging": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -115,6 +126,9 @@
             },
             "qa": {
               "buildTarget": "snz-web:build:qa"
+            },
+            "staging": {
+              "buildTarget": "snz-web:build:staging"
             }
           },
           "defaultConfiguration": "development"
