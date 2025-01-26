@@ -151,6 +151,7 @@ export class VehicleTrackingComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.trucklistOpened = true;
     this.truckLocationPosition = [];
     this.getTruckList();
     this.onClickTruckList();
@@ -313,6 +314,14 @@ export class VehicleTrackingComponent implements OnInit {
     }
     this.trackerEnabledTrucks = [];
     this.getTruckList();
+
+    if (this.trucklistOpened) {
+      this.truckListLoading = true;
+      this.allTruckList = [];
+      this.page = 0;
+      this.size = 10;
+      this.onClickTruckList();
+    }
   }
 
   private getLastRecordedLocation(responses: TruckModel[]) {
@@ -348,9 +357,16 @@ export class VehicleTrackingComponent implements OnInit {
   onClickTruckList() {
     this.truckListLoading = true;
     this.trucklistOpened = true;
-    this.allTruckList = [];
     this.truck
-      .getTruckList(this.page, this.size, '', null, true)
+      .getTruckList(
+        this.page,
+        this.size,
+        '',
+        null,
+        true,
+        null,
+        this.condition !== 'All' ? this.condition : ''
+      )
       .subscribe((truck: any) => {
         this.allTruckList = truck.data.responses;
         this.totalPages = truck.data.totalPages;
@@ -385,14 +401,30 @@ export class VehicleTrackingComponent implements OnInit {
       this.page++;
       if (this.searchTruckValue) {
         this.truck
-          .getTruckList(this.page, this.size, this.searchTruckValue, null, true)
+          .getTruckList(
+            this.page,
+            this.size,
+            this.searchTruckValue,
+            null,
+            true,
+            null,
+            this.condition !== 'All' ? this.condition : ''
+          )
           .pipe(debounceTime(500))
           .subscribe((res: any) => {
             this.allTruckList.push(...res.data.responses);
           });
       } else {
         this.truck
-          .getTruckList(this.page, this.size, null, null, true)
+          .getTruckList(
+            this.page,
+            this.size,
+            null,
+            null,
+            true,
+            null,
+            this.condition !== 'All' ? this.condition : ''
+          )
           .subscribe((res: any) => {
             this.allTruckList.push(...res.data.responses);
           });

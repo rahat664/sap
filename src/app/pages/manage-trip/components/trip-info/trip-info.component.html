@@ -13,8 +13,8 @@
       <button
         (click)="onClickAssignButton()"
         *ngIf="
-          tripDetails.status == 'Booked' &&
-          getAssignButtonName(tripDetails) != '' &&
+          tripDetails.status === 'Booked' &&
+          getAssignButtonName(tripDetails) !== '' &&
           isAdmin()
         "
         class="bg-white px-6 py-2 font-semibold text-primary rounded-lg border border-primary">
@@ -23,8 +23,8 @@
       <button
         (click)="onClickButton()"
         *ngIf="
-          tripDetails?.status != 'Completed' &&
-          tripDetails?.status != 'Cancelled' &&
+          tripDetails?.status !== 'Completed' &&
+          tripDetails?.status !== 'Cancelled' &&
           isAdmin()
         "
         class="bg-primary px-6 py-2 font-semibold rounded-lg text-white">
@@ -107,7 +107,7 @@
             class="text-2xl z-20 relative text-red"
             *ngIf="
               timeline.cancelled &&
-              tripDetails.status == 'Cancelled' &&
+              tripDetails.status === 'Cancelled' &&
               !timeline.active
             ">
             <i class="far fa-times"></i>
@@ -278,7 +278,7 @@
           </h1>
         </div>
         <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
-          {{ Number(tripDetails.customerRate) | numberSeperator }} ৳
+          {{ Number(tripDetails.customerRate) | number }} ৳
         </h1>
       </div>
       <div class="flex flex-col space-y-2">
@@ -329,7 +329,7 @@
             ></span
           >
           <span *ngIf="tripDetails.transporterRate && isAdmin()">
-            | {{ tripDetails.transporterRate | numberSeperator }} ৳</span
+            | {{ tripDetails.transporterRate | number }} ৳</span
           >
         </h1>
       </div>
@@ -340,8 +340,8 @@
           tripDetails.driverCode &&
           (isAdmin() ||
             (!isAdmin() &&
-              tripDetails?.status != 'Completed' &&
-              tripDetails?.status != 'Cancelled'))
+              tripDetails?.status !== 'Completed' &&
+              tripDetails?.status !== 'Cancelled'))
         ">
         <div class="flex space-x-3 items-center">
           <div

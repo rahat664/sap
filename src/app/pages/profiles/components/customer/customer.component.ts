@@ -11,7 +11,7 @@ import { GetClickEventDirective } from '../../../../shared/directive/get-click-e
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-customer',
@@ -21,7 +21,7 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
     GetElementHeightDirective,
     LoadingComponent,
     FormsModule,
-    NumberSeperatorPipe,
+    numberPipe,
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss',

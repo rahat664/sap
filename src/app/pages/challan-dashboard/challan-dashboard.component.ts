@@ -40,7 +40,7 @@ import { mergeMap } from 'rxjs/operators';
 import { TruckDocumentType } from '../../shared/Enums/registration_type';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
-import { NumberSeperatorPipe } from '../../shared/pipes/number-seperator.pipe';
+import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -65,7 +65,7 @@ import { NumberSeperatorPipe } from '../../shared/pipes/number-seperator.pipe';
     MatMenuItem,
     MatMenuTrigger,
     RouterLink,
-    NumberSeperatorPipe,
+    numberPipe,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',

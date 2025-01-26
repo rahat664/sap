@@ -233,6 +233,18 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.startMarker) {
+      this.startMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+    }
+    if (this.endMarker) {
+      this.endMarker.forEach(marker => {
+        marker.setMap(null);
+      });
+    }
+    this.startMarker = [];
+    this.endMarker = [];
     if (this.infoWindow) {
       this.infoWindow.close();
     }
@@ -244,6 +256,7 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (changes) {
+      this.updateRoute();
       if (this.starting.length > 0 && this.destination.length > 0) {
         if (this.startMarker) {
           this.startMarker.forEach(marker => {

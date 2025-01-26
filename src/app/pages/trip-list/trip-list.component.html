@@ -175,17 +175,17 @@
         <div
           class="flex justify-between space-x-16 items-center text-web-text-secondary py-4 px-3 border-b border-[#F0F0F0]">
           <span>Customer Rate (CR)</span>
-          <span>{{ (summary.crs ? summary.crs : 0) | numberSeperator }} ৳</span>
+          <span>{{ (summary.crs ? summary.crs : 0) | number }} ৳</span>
         </div>
         <div
           class="flex justify-between items-center py-4 px-3 text-web-text-secondary border-b border-[#F0F0F0]">
           <span>Transporter Rate (TR)</span>
-          <span>{{ (summary.trs ? summary.trs : 0) | numberSeperator }} ৳</span>
+          <span>{{ (summary.trs ? summary.trs : 0) | number }} ৳</span>
         </div>
         <div
           class="flex justify-between items-center text-web-text-secondary py-4 px-3">
           <span>Gross Profit (GP)</span>
-          <span>{{ (summary.gps ? summary.gps : 0) | numberSeperator }} ৳</span>
+          <span>{{ (summary.gps ? summary.gps : 0) | number }} ৳</span>
         </div>
       </div>
       <div
@@ -310,20 +310,20 @@
           <td>{{ trip.status }}</td>
           <td *ngIf="isAdmin()">
             {{
-              (trip.customerRate ? trip.customerRate : 0) | numberSeperator
+              (trip.customerRate ? trip.customerRate : 0) | number
             }}
           </td>
           <td *ngIf="isAdmin()">
             {{
               (trip.transporterRate ? trip.transporterRate : 0)
-                | numberSeperator
+                | number
             }}
           </td>
           <td *ngIf="isAdmin()">
             {{
-              getCountOfGp(trip) == 'N/A'
+              getCountOfGp(trip) === 'N/A'
                 ? 'N/A'
-                : (getCountOfGp(trip) | numberSeperator)
+                : (getCountOfGp(trip) | number)
             }}
           </td>
         </tr>

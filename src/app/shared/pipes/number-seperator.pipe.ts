@@ -1,10 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'numberSeperator',
+  name: 'number',
   standalone: true,
 })
-export class NumberSeperatorPipe implements PipeTransform {
+export class numberPipe implements PipeTransform {
   transform(value: number | string): unknown {
     if (value === null || value === undefined) {
       return '';

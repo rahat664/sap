@@ -5,11 +5,11 @@ import { TripService } from '../../../trip-list/services/trip.service';
 import { DialogDataComponent } from '../dialog-data/dialog-data.component';
 import { ConfirmUpdateComponent } from '../confirm-update/confirm-update.component';
 import { MatDialog } from '@angular/material/dialog';
-import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-trip-info',
-  imports: [DatePipe, CommonModule, NumberSeperatorPipe],
+  imports: [DatePipe, CommonModule, numberPipe],
   templateUrl: './trip-info.component.html',
   styleUrl: './trip-info.component.scss',
 })
