@@ -14,7 +14,7 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
 import { debounceTime } from 'rxjs';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { MatDialog } from '@angular/material/dialog';
-import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-transporter',
@@ -27,7 +27,7 @@ import { NumberSeperatorPipe } from '../../../../shared/pipes/number-seperator.p
     FormsModule,
     LoadingComponent,
     DatePipe,
-    NumberSeperatorPipe,
+    numberPipe,
   ],
   templateUrl: './transporter.component.html',
   styleUrl: './transporter.component.scss',

@@ -132,7 +132,7 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
           }
         });
       }
-    }, 500);
+    }, 2000);
   }
 
   private updateTruckLocation(truckPosition?: any): void {

@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { DecimalPipe, NgIf } from '@angular/common';
-import { NumberSeperatorPipe } from '../../../../../shared/pipes/number-seperator.pipe';
+import { numberPipe } from '../../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
   selector: 'app-status-card',
-  imports: [NumberSeperatorPipe, NgIf],
+  imports: [numberPipe, NgIf],
   templateUrl: './status-card.component.html',
   styleUrl: './status-card.component.scss',
 })

@@ -25,7 +25,7 @@
       text="{{
         dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange
           ? (dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange
-            | numberSeperator)
+            | number)
           : 0
       }} ৳ this month"
       backgroundColor="bg-[#1DBF73]"
@@ -38,7 +38,7 @@
       text="{{
         dashboardStats?.transporterRateStats?.dateFilteredRate
           ? (dashboardStats?.transporterRateStats?.dateFilteredRate
-            | numberSeperator)
+            | number)
           : 0
       }} ৳ this month"
       backgroundColor="bg-[#FFA711]"
@@ -51,7 +51,7 @@
       text="{{
         customerStatistics?.totalCustomersOnboardedWithinGivenDateRange
           ? (customerStatistics?.totalCustomersOnboardedWithinGivenDateRange
-            | numberSeperator)
+            | number)
           : 0
       }} new onboarded this month"
       backgroundColor="bg-[#F0614E]"
@@ -63,7 +63,7 @@
       [value]="transporterStatistics?.totalCount"
       text="{{
         transporterStatistics?.dateFilteredCount
-          ? (transporterStatistics?.dateFilteredCount | numberSeperator)
+          ? (transporterStatistics?.dateFilteredCount | number)
           : 0
       }} new onboarded this month"
       backgroundColor="bg-[#0CD5F0]"
@@ -76,7 +76,7 @@
       text="{{
         dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange
           ? (dashboardStats?.customerRateStat
-              ?.totalCustomerRateWithinTheDateRange | numberSeperator)
+              ?.totalCustomerRateWithinTheDateRange | number)
           : 0
       }} ৳ this month"
       backgroundColor="bg-[#1DBF73]"
@@ -90,7 +90,7 @@
       text="{{
         dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange
           ? (dashboardStats?.tripCountStat
-              ?.totalTripsCompletedWithinTheDateRange | numberSeperator)
+              ?.totalTripsCompletedWithinTheDateRange | number)
           : 0
       }} trip this month"
       backgroundColor="bg-[#FFA711]"
@@ -103,7 +103,7 @@
       text="{{
         dashboardStats?.truckCountStat?.dateFilteredCount
           ? (dashboardStats?.truckCountStat?.dateFilteredCount
-            | numberSeperator)
+            | number)
           : 0
       }} new onboarded this month"
       backgroundColor="bg-[#F0614E]"
@@ -115,7 +115,7 @@
       [value]="driverStatistics?.totalCount"
       text="{{
         driverStatistics?.dateFilteredCount
-          ? (driverStatistics?.dateFilteredCount | numberSeperator)
+          ? (driverStatistics?.dateFilteredCount | number)
           : 0
       }} new onboarded this month"
       backgroundColor="bg-[#0CD5F0]"
