@@ -4,6 +4,7 @@ export interface DashboardStatsModel {
   tripCountStat: tripCountStats;
   truckCountStat: truckCountStats;
   transporterRateStats: transporterRateStats;
+  tripProfitMarginStat: tripProfitMarginStat;
 }
 
 export interface customerRateStats {
@@ -14,6 +15,11 @@ export interface customerRateStats {
 export interface grossProfitStats {
   totalGrossProfit: number;
   totalGrossProfitWithinTheDateRange: number;
+}
+
+export interface tripProfitMarginStat {
+  totalProfitMargin: number;
+  dateFilteredProfitMargin: number;
 }
 
 export interface tripCountStats {

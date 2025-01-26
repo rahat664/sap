@@ -233,18 +233,6 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.startMarker) {
-      this.startMarker.forEach(marker => {
-        marker.setMap(null);
-      });
-    }
-    if (this.endMarker) {
-      this.endMarker.forEach(marker => {
-        marker.setMap(null);
-      });
-    }
-    this.startMarker = [];
-    this.endMarker = [];
     if (this.infoWindow) {
       this.infoWindow.close();
     }
@@ -256,7 +244,6 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (changes) {
-      this.updateRoute();
       if (this.starting.length > 0 && this.destination.length > 0) {
         if (this.startMarker) {
           this.startMarker.forEach(marker => {
@@ -269,13 +256,13 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
           });
         }
         this.startMarker = [];
-        this.endMarker = [];
+        this.endMarker = []
+        this.updateRoute()
       }
     }
     if (changes['truckLocationPosition']) {
       this.updateTruckLocation();
     }
-    this.clearPolylines();
     if (this.tripStatus === 'Completed') {
       // 24 hours before trip started at time
       const tripStartedAt = new Date(this.singleTripData?.tripStartedAt);
@@ -306,10 +293,30 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
         this.datePipe.transform(oneDayAfterTripEndedAt, 'yyyy-MM-ddTHH:mm:ss')
       );
     } else {
+      if (this.startMarker) {
+        this.startMarker.forEach(marker => {
+          marker.setMap(null);
+        });
+        this.startMarker = [];
+      }
+      if (this.endMarker) {
+        this.endMarker.forEach(marker => {
+          marker.setMap(null);
+        });
+        this.endMarker = [];
+      }
+
+      if (this.stopPointMarker) {
+        this.stopPointMarker.forEach(marker => {
+          marker.setMap(null);
+        });
+        this.stopPointMarker = [];
+      }
       if (this.lines) {
         this.lines.forEach(line => {
           line.setMap(null);
         });
+        this.lines = [];
       }
       this.updateRoute();
     }
@@ -999,8 +1006,6 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getTripHistory(type, from, to) {
-    this.startMarker = [];
-    this.endMarker = [];
     let startPoints = [];
     let endPoints = [];
 
