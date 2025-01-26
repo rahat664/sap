@@ -56,12 +56,12 @@ export class ColumnChartComponent implements OnInit, OnChanges, AfterViewInit {
     this.chartOptions = {
       series: [
         {
-          name: 'Trip Created',
+          name: 'Created Trip',
           data: this.createdValue || [0, 0, 0, 0, 0, 0, 0],
           color: colors[0],
         },
         {
-          name: 'Trip Completed',
+          name: 'Completed Trip',
           data: this.completedValue || [0, 0, 0, 0, 0, 0, 0],
           color: colors[1],
         },
@@ -138,12 +138,12 @@ export class ColumnChartComponent implements OnInit, OnChanges, AfterViewInit {
       this.chartOptions = {
         series: [
           {
-            name: 'Trip Created',
+            name: 'Created Trip',
             data: this.createdValue || [0, 0, 0, 0, 0, 0, 0],
             color: colors[0],
           },
           {
-            name: 'Trip Completed',
+            name: 'Completed Trip',
             data: this.completedValue || [0, 0, 0, 0, 0, 0, 0],
             color: colors[1],
           },

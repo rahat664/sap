@@ -16,7 +16,7 @@
     <!--      </mat-select>-->
     <!--    </mat-form-field>-->
   </div>
-  <div class="grid grid-cols-4 gap-3 cursor-pointer">
+  <div class="grid grid-cols-5 gap-3 cursor-pointer">
     <app-status-card
       routerLink="/trip-list"
       icon="revenue"
@@ -26,6 +26,32 @@
         dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange
           ? (dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange
             | number)
+          : 0
+      }} ৳ this month"
+      backgroundColor="bg-[#1DBF73]"
+      textColor="text-[#009D54]"></app-status-card>
+    <app-status-card
+      routerLink="/trip-list"
+      icon="margin"
+      title="Total Profit Margin"
+      [value]="dashboardStats?.tripProfitMarginStat?.totalProfitMargin"
+      text="{{
+        dashboardStats?.tripProfitMarginStat?.dateFilteredProfitMargin
+          ? (dashboardStats?.tripProfitMarginStat?.dateFilteredProfitMargin
+            | number)
+          : 0
+      }}% this month"
+      backgroundColor="bg-[#1DBF73]"
+      textColor="text-[#009D54]"></app-status-card>
+    <app-status-card
+      routerLink="/trip-list"
+      icon="cr-d"
+      title="Total Customer Rate"
+      [value]="dashboardStats?.customerRateStat?.totalCustomerRate"
+      text="{{
+        dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange
+          ? (dashboardStats?.customerRateStat
+              ?.totalCustomerRateWithinTheDateRange | number)
           : 0
       }} ৳ this month"
       backgroundColor="bg-[#1DBF73]"
@@ -44,48 +70,10 @@
       backgroundColor="bg-[#FFA711]"
       textColor="text-[#CD8304]"></app-status-card>
     <app-status-card
-      routerLink="/profile/customer"
-      icon="customers"
-      title="Total Customer"
-      [value]="customerStatistics?.totalCustomers"
-      text="{{
-        customerStatistics?.totalCustomersOnboardedWithinGivenDateRange
-          ? (customerStatistics?.totalCustomersOnboardedWithinGivenDateRange
-            | number)
-          : 0
-      }} new onboarded this month"
-      backgroundColor="bg-[#F0614E]"
-      textColor="text-[#F0614E]"></app-status-card>
-    <app-status-card
-      routerLink="/profile/transporter"
-      icon="transporter"
-      title="Total Transporter"
-      [value]="transporterStatistics?.totalCount"
-      text="{{
-        transporterStatistics?.dateFilteredCount
-          ? (transporterStatistics?.dateFilteredCount | number)
-          : 0
-      }} new onboarded this month"
-      backgroundColor="bg-[#0CD5F0]"
-      textColor="text-[#049FB4]"></app-status-card>
-    <app-status-card
-      routerLink="/trip-list"
-      icon="cr-d"
-      title="Total Customer Rate"
-      [value]="dashboardStats?.customerRateStat?.totalCustomerRate"
-      text="{{
-        dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange
-          ? (dashboardStats?.customerRateStat
-              ?.totalCustomerRateWithinTheDateRange | number)
-          : 0
-      }} ৳ this month"
-      backgroundColor="bg-[#1DBF73]"
-      textColor="text-[#009D54]"></app-status-card>
-    <app-status-card
       (click)="localStorage.setItem('filter', 'Completed')"
       routerLink="/trip-list"
       icon="totaltrip"
-      title="Total Trip Completed"
+      title="Total Completed Trip"
       [value]="dashboardStats?.tripCountStat?.totalTripsCompleted"
       text="{{
         dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange
@@ -95,30 +83,57 @@
       }} trip this month"
       backgroundColor="bg-[#FFA711]"
       textColor="text-[#CD8304]"></app-status-card>
-    <app-status-card
-      routerLink="/profile/truck"
-      icon="total-truck"
-      title="Total Truck"
-      [value]="dashboardStats?.truckCountStat?.totalCount"
-      text="{{
+    <div class="col-span-5 grid grid-cols-4 gap-3">
+      <app-status-card
+        routerLink="/profile/customer"
+        icon="customers"
+        title="Total Customer"
+        [value]="customerStatistics?.totalCustomers"
+        text="{{
+        customerStatistics?.totalCustomersOnboardedWithinGivenDateRange
+          ? (customerStatistics?.totalCustomersOnboardedWithinGivenDateRange
+            | number)
+          : 0
+      }} new onboarded this month"
+        backgroundColor="bg-[#F0614E]"
+        textColor="text-[#F0614E]"></app-status-card>
+      <app-status-card
+        routerLink="/profile/transporter"
+        icon="transporter"
+        title="Total Transporter"
+        [value]="transporterStatistics?.totalCount"
+        text="{{
+        transporterStatistics?.dateFilteredCount
+          ? (transporterStatistics?.dateFilteredCount | number)
+          : 0
+      }} new onboarded this month"
+        backgroundColor="bg-[#0CD5F0]"
+        textColor="text-[#049FB4]"></app-status-card>
+      <app-status-card
+        routerLink="/profile/truck"
+        icon="total-truck"
+        title="Total Truck"
+        [value]="dashboardStats?.truckCountStat?.totalCount"
+        text="{{
         dashboardStats?.truckCountStat?.dateFilteredCount
           ? (dashboardStats?.truckCountStat?.dateFilteredCount
             | number)
           : 0
       }} new onboarded this month"
-      backgroundColor="bg-[#F0614E]"
-      textColor="text-[#F0614E]"></app-status-card>
-    <app-status-card
-      icon="driver"
-      routerLink="/profile/driver"
-      title="Total Driver"
-      [value]="driverStatistics?.totalCount"
-      text="{{
+        backgroundColor="bg-[#F0614E]"
+        textColor="text-[#F0614E]"></app-status-card>
+      <app-status-card
+        icon="driver"
+        routerLink="/profile/driver"
+        title="Total Driver"
+        [value]="driverStatistics?.totalCount"
+        text="{{
         driverStatistics?.dateFilteredCount
           ? (driverStatistics?.dateFilteredCount | number)
           : 0
       }} new onboarded this month"
-      backgroundColor="bg-[#0CD5F0]"
-      textColor="text-[#049FB4]"></app-status-card>
+        backgroundColor="bg-[#0CD5F0]"
+        textColor="text-[#049FB4]"></app-status-card>
+    </div>
   </div>
 </div>

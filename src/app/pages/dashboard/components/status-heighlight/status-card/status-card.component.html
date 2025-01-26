@@ -10,8 +10,10 @@
       <span class="text-h3 leading-h3 text-not-black font-semibold"
       >{{
           value ? (value | number) : 0
-        }}<span *ngIf="icon === 'revenue' || icon === 'cr-d'"> ৳</span></span
+        }}<span *ngIf="icon === 'revenue' || icon === 'cr-d'"> ৳</span>
+      <span *ngIf="icon ==='margin'">%</span></span
       >
+
       <span class="text-body_title leading-body_title text-not-primary">{{
           title
         }}</span>
