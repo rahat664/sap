@@ -18,7 +18,7 @@ export class AlphabetOnlyDirective {
     //   event.preventDefault();
     // }
 
-    // allow numbers too for now allow &, (, ), -, |, space, backspace, delete and . for now
+    // allow numbers too for now allow &, (, ), -, /, space, backspace, delete and . for now
     if (
       !(charCode >= 65 && charCode <= 90) && // Uppercase letters
       !(charCode >= 97 && charCode <= 122) && // Lowercase letters
@@ -27,7 +27,7 @@ export class AlphabetOnlyDirective {
       charCode !== 8 && // Backspace
       charCode !== 46 && // Delete
       charCode !== 45 && // -
-      charCode !== 124 && // |
+      charCode !== 47 && // /
       charCode !== 40 && // (
       charCode !== 41 && // )
       charCode !== 38 // &
@@ -38,6 +38,6 @@ export class AlphabetOnlyDirective {
 
   @HostListener('input', ['$event']) onInput(event: InputEvent) {
     const input = event.target as HTMLInputElement;
-    input.value = input.value.replace(/[^a-zA-Z0-9\s\.\-\|\(\)\&]/g, '');
+    input.value = input.value.replace(/[^a-zA-Z0-9\s\.\-\/\(\)\&]/g, '');
   }
 }
