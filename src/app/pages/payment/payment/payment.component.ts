@@ -7,12 +7,8 @@ import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/mat
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { CommonModule, NgIf } from '@angular/common';
-import { numberPipe } from '../../../shared/pipes/number-seperator.pipe';
 import { GiveMaxHeightDirective } from '../../../shared/directive/give-max-height.directive';
 import { LoadingComponent } from '../../../shared/modules/loading/loading.component';
-import { MatButton } from '@angular/material/button';
-import { MatMenu, MatMenuItem } from '@angular/material/menu';
-import { RouterLink } from '@angular/router';
 import { OffCanvasComponent } from '../../../shared/modules/off-canvas/off-canvas.component';
 
 @Component({
