@@ -18,9 +18,7 @@ import { OffCanvasComponent } from '../../../shared/modules/off-canvas/off-canva
 @Component({
   selector: 'app-payment',
   imports: [
-    CustomInputComponent,
     FormsModule,
-    GetClickEventDirective,
     GetElementHeightDirective,
     MatAutocomplete,
     MatAutocompleteTrigger,
