@@ -226,6 +226,15 @@ export const routes: Routes = [
       import('./pages/support/support.component').then(m => m.SupportComponent),
   },
   {
+    path: 'payment',
+    title: 'Payment',
+    loadComponent: () =>
+      import('./pages/payment/payment/payment.component').then(
+        m => m.PaymentComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',

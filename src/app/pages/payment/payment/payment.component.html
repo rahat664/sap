@@ -1,0 +1,247 @@
+<div class="p-2 flex flex-col space-y-3">
+  <div
+    appGetElementHeight
+    (height)="height = $event"
+    class="flex flex-col space-y-3">
+    <div
+      class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem] space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      <h1 class="text-h1 leading-h1 font-semibold">Transporter Payment</h1>
+    </div>
+
+    <div class="w-full bg-white rounded-lg">
+      <button
+        class="flex px-2 py-1 space-x-4 items-center w-full"
+        [ngClass]="{ 'border-b border-[#A1D5DE]': filterOpened }">
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="!filterOpened"
+          class="fas fa-caret-down text-input-hint text-xl"></i>
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="filterOpened"
+          class="fas fa-caret-up text-input-hint text-xl"></i>
+        <span class="text-not-black text-h2_medium font-semibold"
+        >Filter
+          <span *ngIf="getFilterLength() > 0">({{ getFilterLength() }})</span>
+          <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3"
+          >|</span
+          >
+          <a
+            (click)="onClearFilter()"
+            *ngIf="getFilterLength() > 0"
+            class="text-red text-h2_medium font-semibold"
+          >Clear all</a
+          >
+        </span>
+      </button>
+      <div *ngIf="filterOpened" class="pt-3 pb-4 px-2 grid grid-cols-5 gap-3">
+        <div class="flex flex-col space-y-1 w-full">
+          <label class="text-body text-web-text-secondary px-2"
+          >Company Name</label
+          >
+          <mat-form-field
+            appearance="outline"
+            class="example-full-width relative">
+            <input
+              id="customerName"
+              type="text"
+              matInput
+              (keyup)="onSearchInputChange($event)"
+              [(ngModel)]="searchName"
+              placeholder="Enter Company Name"
+              [matAutocomplete]="auto"/>
+            <mat-autocomplete #auto="matAutocomplete">
+              @for (option of tripSuggestions; track option) {
+                <mat-option
+                  (click)="onClickSearchSuggestion(option)"
+                  [value]="option.name"
+                >{{ option.name ? option.name : option }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+            <button
+              type="button"
+              (click)="onClickClearCompany()"
+              *ngIf="searchValue"
+              class="absolute inset-y-0 right-0 flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-col space-y-1 w-full">
+          <label class="text-body text-web-text-secondary px-2">Truck </label>
+          <mat-form-field
+            appearance="outline"
+            class="example-full-width relative">
+            <input
+              type="text"
+              matInput
+              (keyup)="onKeyUpTruckSearch($event)"
+              [(ngModel)]="searchRegistationId"
+              placeholder="Enter Truck ID"
+              [matAutocomplete]="truck"/>
+            <mat-autocomplete #truck="matAutocomplete">
+              @for (option of truckRegSuggestions; track option) {
+                <mat-option
+                  (click)="onClickTruckSearchSuggestion(option)"
+                  [value]="option.fullRegistrationNumber"
+                >{{ option.fullRegistrationNumber }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+            <button
+              type="button"
+              (click)="onClickClearTruck()"
+              *ngIf="truckRegistrationId"
+              class="absolute inset-y-0 right-0 flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-col space-y-1 w-full">
+          <label class="text-body text-web-text-secondary px-2"
+          >Transporter Name
+          </label>
+          <mat-form-field appearance="outline" class="example-full-width">
+            <input
+              type="text"
+              matInput
+              (keyup)="onKeyUpTransporterSearch($event)"
+              [(ngModel)]="searchTransporter"
+              placeholder="Enter Transporter Name"
+              [matAutocomplete]="transporter"/>
+            <mat-autocomplete #transporter="matAutocomplete">
+              @for (option of transporterSuggestions; track option) {
+                <mat-option
+                  (click)="onClickTransporterSearchSuggestion(option)"
+                  [value]="option.name"
+                >{{ option.name }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+            <button
+              type="button"
+              (click)="onClickClearTransporter()"
+              *ngIf="transporterName"
+              class="absolute inset-y-0 right-0 flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-col space-y-1 w-full">
+          <label class="text-body text-web-text-secondary px-2">Trip ID</label>
+          <mat-form-field appearance="outline" class="example-full-width">
+            <input
+              type="text"
+              matInput
+              (keyup)="onKeyUpTripSearch($event)"
+              [(ngModel)]="searchId"
+              placeholder="Enter Trip Number"
+              [matAutocomplete]="trip"/>
+            <mat-autocomplete #trip="matAutocomplete">
+              @for (option of tripIdSuggestions; track option) {
+                <mat-option
+                  (click)="onClickTripSearchSuggestion(option)"
+                  [value]="option.tripId"
+                >{{ option.tripId ? option.tripId : option }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+            <button
+              type="button"
+              (click)="onClickClearTripId()"
+              *ngIf="tripId"
+              class="absolute inset-y-0 right-0 flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <!--  summary section-->
+    <div class="py-5 grid grid-cols-4 bg-white rounded-lg">
+      <div class="w-full flex items-center justify-center  border-r border-line">
+        <div class="flex flex-col space-y-3 py-1.5">
+          <span class="text-body text-secondary">Total trip</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">145</span>
+        </div>
+      </div>
+      <div class="w-full flex items-center justify-center  border-r border-line">
+        <div class="flex flex-col space-y-3 py-1.5">
+          <span class="text-body text-not-primary">Transporter Rate(৳)</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">120000</span>
+        </div>
+      </div>
+      <div class="w-full flex items-center justify-center  border-r border-line">
+        <div class="flex flex-col space-y-3 py-1.5">
+          <span class="text-body text-green">Paid(৳)</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">80000</span>
+        </div>
+      </div>
+      <div class="w-full flex items-center justify-center ">
+        <div class="flex flex-col space-y-3 py-1.5">
+          <span class="text-body text-red">Due(৳)</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">40000</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    appGiveMaxHeight
+    [totalPage]="totalPages"
+    (inBottomEnd)="onBottom($event)"
+    [anotherItemsHeight]="height"
+    class="bg-white w-full relative rounded-lg overflow-auto">
+    <table
+      class="table-auto w-full text-body_title leading-body_title rounded-sm">
+      <thead class="bg-white">
+      <tr class="whitespace-nowrap bg-white text-not-black">
+        <th class="text-left bg-white sticky left-0">Trip No.</th>
+        <th class="text-left">Company</th>
+        <th class="text-left">Date</th>
+        <th class="text-left">Route</th>
+        <th class="text-center">Status</th>
+        <th class="text-center whitespace-nowrap">Trip value(৳)</th>
+        <th class="text-center whitespace-nowrap">Paid(৳)</th>
+        <th class="text-center whitespace-nowrap">Payable(৳)</th>
+        <th class="text-center whitespace-nowrap"></th>
+      </tr>
+      <tr>
+        <th class="custom-border" [colSpan]="12"></th>
+      </tr>
+      </thead>
+      <tbody class="text-web-text-secondary">
+      <ng-container *ngFor="let trip of totalTrips">
+        <tr>
+          <td class="whitespace-nowrap text-link">TR-001</td>
+          <td class="whitespace-nowrap">Chittagong Energy Holdings</td>
+          <td class="whitespace-nowrap">30 Nov 2024</td>
+          <td class="text-left">Baridhara, Dhaka - Gabtoli, Dhaka</td>
+          <td class="text-center">Booked</td>
+          <td class="text-center">25000</td>
+          <td class="text-center">20000</td>
+          <td class="text-center">5000</td>
+          <td class="text-center">
+            <button
+              (click)="onClickPayNow()"
+              type="button"
+              class="px-[0.875rem] py-[0.375rem] text-primary border border-primary rounded">
+              <span class="text-body">Pay now</span>
+            </button>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" [colSpan]="12">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+<app-off-canvas *ngIf="isOffCanvasVisible" (closeCanvas)="hideOffCanvas()"></app-off-canvas>
+
