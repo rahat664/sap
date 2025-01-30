@@ -62,7 +62,7 @@ export class HelperPopupComponent implements OnInit, OnDestroy {
       this.page++;
       this.user
         .getHelpers(this.page, this.size, this.searchValue)
-        .pipe(debounceTime(500))
+        .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.helperList.push(...res.data.responses);
           this.totalPages = res.data.totalPages;

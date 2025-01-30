@@ -220,6 +220,8 @@ export class ChallanImageUploadComponent implements OnInit {
 
   onBackButtonClick($event: boolean) {
     if ($event) {
+      this.resetNavigationInformation();
+      localStorage.setItem('isBack', 'true');
       this.router.navigate([this.returnUrl]);
     }
   }

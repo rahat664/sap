@@ -31,7 +31,6 @@
             <i class="far fa-times text-gray-500 text-xs"></i>
           </button>
           <input
-            [disabled]="loading"
             [(ngModel)]="searchValue"
             (keyup)="onKeyUpSearch($event)"
             type="text"
@@ -158,7 +157,7 @@
                   type="button"
                   (click)="onClickFilterButton(button, picker)"
                   class="px-2 py-1   {{
-                    selectedButton == button
+                    selectedButton === button
                       ? 'border-none bg-green text-white'
                       : 'border border-input-hint text-secondary'
                   }}  font-semibold text-body self-end rounded-full">
