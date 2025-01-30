@@ -11,7 +11,7 @@
         <span class="text-h3 leading-h3 font-bold"
         >{{
             imageType ? imageType : activatedDocument?.event?.eventType
-          }}
+          }} {{imageType ? '' : 'Challan'}}
         </span
         >
       </div>
@@ -150,7 +150,7 @@
         <span class="text-h2 leading-h2 font-semibold text-not-black"
         >{{
             imageType ? imageType : activatedDocument?.event?.eventType
-          }}
+          }} {{imageType ? '' : 'Challan'}}
         </span
         >
       </div>
