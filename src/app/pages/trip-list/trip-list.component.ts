@@ -130,14 +130,14 @@ export class TripListComponent implements OnInit, AfterViewInit {
       startDate: [''],
       endDate: [''],
     });
-    this.searchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performSearch(searchText);
     });
-    this.customerSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+    this.customerSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performCustomerSearch(searchText);
     });
     this.transporterSearchSubject
-      .pipe(debounceTime(300))
+      .pipe(debounceTime(1000))
       .subscribe(searchText => {
         this.performTransporterSearch(searchText);
       });

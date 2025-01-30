@@ -77,7 +77,7 @@ export class TransporterComponent implements OnInit {
       if (this.searchValue) {
         this.service
           .getTransporter(this.page, this.size, this.searchValue)
-          .pipe(debounceTime(500))
+          .pipe(debounceTime(1000))
           .subscribe((res: any) => {
             this.transporterList.push(...res.data.responses);
           });
@@ -102,7 +102,7 @@ export class TransporterComponent implements OnInit {
     if (this.searchValue) {
       this.service
         .getTransporter(this.page, this.size, this.searchValue)
-        .pipe(debounceTime(500))
+        .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.transporterList = res.data.responses;
           this.totalPages = res.data.totalPages;

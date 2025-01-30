@@ -56,7 +56,7 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
       this.page++;
       this.user
         .getDriver(this.page, this.size, this.searchValue)
-        .pipe(debounceTime(500))
+        .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.driverList.push(...res.data.responses);
           this.totalPages = res.data.totalPages;

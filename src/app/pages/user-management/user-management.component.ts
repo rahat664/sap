@@ -169,7 +169,7 @@ export class UserManagementComponent implements OnInit {
 
     this.service
       .getUsers(params)
-      .pipe(debounceTime(500))
+      .pipe(debounceTime(1000))
       .subscribe((res: any) => {
         this.Users = res.data.responses;
         this.totalPages = res.data.totalPages;

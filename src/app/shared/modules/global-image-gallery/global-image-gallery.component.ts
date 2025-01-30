@@ -136,6 +136,17 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
     this.changeActiveDocument(-1);
   }
 
+  @HostListener('document:keydown.Delete', ['$event'])
+  onKeyDeleteHandler(event: KeyboardEvent) {
+    this.onClickDelete();
+  }
+
+  // windows pop state event
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event: any) {
+    this.onClickBack();
+  }
+
   private changeActiveDocument(direction: number) {
     if (this.documents.length > 1) {
       const currentIndex = this.documents.indexOf(this.activatedDocument);
@@ -302,9 +313,10 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   }
 
   onClickBack() {
-    console.log('returnUrl', this.returnUrl);
+    localStorage.setItem('isBack', 'true');
     this.router.navigate([this.returnUrl]);
   }
+
 
   downloadReport(images: any) {
     if (images) {

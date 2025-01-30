@@ -58,16 +58,29 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
   ngOnChanges(changes: any) {}
 
   ngOnInit() {
-    this.loading = true;
-    const directChallanEdit = localStorage.getItem('directEditChallan')
-      ? JSON.parse(localStorage.getItem('directEditChallan'))
-      : null;
-    if (directChallanEdit) {
-      this.isInEditMode = true;
-      localStorage.removeItem('directEditChallan');
-    }
+    const isFromBack = !!localStorage.getItem('isBack');
+    if (!isFromBack) {
+      // if store the data in local storage remove it
+      localStorage.removeItem('singleTrip');
+      localStorage.removeItem('loadingEvents');
+      localStorage.removeItem('unloadingEvents');
+      this.loading = true;
+      const directChallanEdit = localStorage.getItem('directEditChallan')
+        ? JSON.parse(localStorage.getItem('directEditChallan'))
+        : null;
+      if (directChallanEdit) {
+        this.isInEditMode = true;
+        localStorage.removeItem('directEditChallan');
+      }
 
-    this.getSingleTripEvents();
+      this.getSingleTripEvents();
+    } else {
+      localStorage.removeItem('isBack');
+      this.loading = false;
+      this.singleTrip = JSON.parse(localStorage.getItem('singleTrip'));
+      this.loadingEvents = JSON.parse(localStorage.getItem('loadingEvents'));
+      this.unloadingEvents = JSON.parse(localStorage.getItem('unloadingEvents'));
+    }
   }
 
   resetSingleTripEvents() {
@@ -86,6 +99,8 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
           this.loadingEvents = this.loadingEvents.filter(
             event => event.eventName === 'Upload loading challan'
           );
+          // store the data
+          localStorage.setItem('loadingEvents', JSON.stringify(this.loadingEvents));
         });
       this.trip
         .getAllTripEvent(params['id'], 'Unloading')
@@ -95,9 +110,12 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
           this.unloadingEvents = this.unloadingEvents.filter(
             event => event.eventName === 'Upload unloading challan'
           );
+          // store the data
+          localStorage.setItem('unloadingEvents', JSON.stringify(this.unloadingEvents));
         });
       this.trip.getTripDetailsByTripId(params['id']).subscribe((res: any) => {
         this.singleTrip = res.data;
+        localStorage.setItem('singleTrip', JSON.stringify(this.singleTrip));
       });
     });
   }

@@ -293,7 +293,7 @@
                   <div
                     (mouseenter)="onMouseEnterUnloading(i)"
                     (mouseleave)="onMouseLeaveUnLoading()"
-                    (dblclick)="
+                    (click)="
                       onDoubleClick(unloadingEvents[0]?.tripDocuments, document)
                     "
                     class="w-[7.5rem] relative h-[7.25rem] rounded-lg overflow-hidden border border-line">
@@ -429,7 +429,7 @@
                   <div
                     (mouseenter)="onMouseEnterLoading(i)"
                     (mouseleave)="onMouseLeaveLoading()"
-                    (dblclick)="
+                    (click)="
                       onDoubleClickLoading(
                         loadingEvents[0]?.tripDocuments,
                         document

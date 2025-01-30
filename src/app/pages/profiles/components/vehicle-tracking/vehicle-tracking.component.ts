@@ -130,15 +130,15 @@ export class VehicleTrackingComponent implements OnInit {
     private transporter: UserService,
     private geoLocation: GeolocationService
   ) {
-    this.truckSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+    this.truckSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performTruckSearch(searchText);
     });
     this.transporterSearchSubject
-      .pipe(debounceTime(300))
+      .pipe(debounceTime(1000))
       .subscribe(searchText => {
         this.performTransporterSearch(searchText);
       });
-    this.allTruckSearchSubject.pipe(debounceTime(300)).subscribe(searchText => {
+    this.allTruckSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performAllTruckSearch(searchText);
     });
     this.loadGoogleMapsScript();
@@ -410,7 +410,7 @@ export class VehicleTrackingComponent implements OnInit {
             null,
             this.condition !== 'All' ? this.condition : ''
           )
-          .pipe(debounceTime(500))
+          .pipe(debounceTime(1000))
           .subscribe((res: any) => {
             this.allTruckList.push(...res.data.responses);
           });

@@ -102,7 +102,7 @@
                 <mat-option
                   (click)="onClickTransporterSearchSuggestion(option)"
                   [value]="option.name"
-                >{{ option.name }}
+                >{{ option.name ? option.name : option }}
                 </mat-option>
               }
             </mat-autocomplete>

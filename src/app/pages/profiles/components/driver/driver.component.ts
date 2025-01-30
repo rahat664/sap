@@ -90,7 +90,7 @@ export class DriverComponent implements OnInit {
             ? ''
             : this.statusInputPlaceholder
         )
-        .pipe(debounceTime(500))
+        .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.driverList = res.data.responses;
           this.totalPages = res.data.totalPages;

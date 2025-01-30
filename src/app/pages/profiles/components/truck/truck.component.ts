@@ -104,7 +104,7 @@ export class TruckComponent implements OnInit {
       //subscribe with debounced time
       this.service
         .getTruckList(this.page, this.size, this.searchValue)
-        .pipe(debounceTime(500))
+        .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.truckList = res.data.responses;
           this.totalPages = res.data.totalPages;
@@ -193,7 +193,7 @@ export class TruckComponent implements OnInit {
               ? ''
               : this.statusInputPlaceholder
           )
-          .pipe(debounceTime(500))
+          .pipe(debounceTime(1000))
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
           });
