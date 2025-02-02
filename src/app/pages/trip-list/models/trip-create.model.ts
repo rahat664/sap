@@ -18,5 +18,6 @@ export class TripCreate {
   customerRate: number;
   truckId: string;
   note: string;
+  paymentType: string;
   points: Point[];
 }

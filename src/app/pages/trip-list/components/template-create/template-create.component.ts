@@ -38,6 +38,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { TripTemplate } from '../../models/trip-template.model';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -68,6 +69,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatError,
     FallbackImagePipe,
     ImageErrorDirective,
+    MatRadioButton,
+    MatRadioGroup,
   ],
   templateUrl: './template-create.component.html',
   styleUrl: './template-create.component.scss',
@@ -157,6 +160,7 @@ export class TemplateCreateComponent implements OnInit {
         ...this.templateForm.get('loadingPoints').value,
         ...this.templateForm.get('unloadingPoints').value,
       ];
+      this.tripTemplateData.paymentType = this.templateForm.get('paymentType').value;
       this.checkCacheDataAndUpdate(
         this.tripTemplateData.numOfTrucks,
         this.tripTemplateData.truckSize,
@@ -435,6 +439,7 @@ export class TemplateCreateComponent implements OnInit {
       goodsName: [''],
       customerRate: [null],
       note: [''],
+      paymentType: [''],
       loadingPoints: this.fb.array([this.createLoadingPoint()]),
       unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
       tripTemplateName: [''],

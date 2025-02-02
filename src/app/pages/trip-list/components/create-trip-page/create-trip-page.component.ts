@@ -39,6 +39,7 @@ import { TripTemplateResponse } from '../../models/trip-template-response.model'
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -64,6 +65,8 @@ import { ImageErrorDirective } from '../../../../shared/directive/image-error.di
     MatTooltip,
     FallbackImagePipe,
     ImageErrorDirective,
+    MatRadioGroup,
+    MatRadioButton,
   ],
   providers: [
     provideNativeDateAdapter(),
@@ -120,6 +123,7 @@ export class CreateTripPageComponent implements OnInit {
       this.tripDataModel.goodsId = this.tripForm.get('goodsId').value;
       this.tripDataModel.goodsName = this.tripForm.get('goodsName').value;
       this.tripDataModel.customerRate = this.tripForm.get('customerRate').value;
+      this.tripDataModel.paymentType = this.tripForm.get('paymentType').value;
       this.tripDataModel.note = this.tripForm.get('note').value;
       this.tripDataModel.points = [
         ...this.tripForm.get('loadingPoints').value,
@@ -359,6 +363,7 @@ export class CreateTripPageComponent implements OnInit {
       truckSize: ['', Validators.required],
       truckCapacityInTon: ['', Validators.required],
       goodsId: [''],
+      paymentType: [''],
       goodsName: ['', Validators.required],
       customerRate: [null],
       note: [''],
@@ -629,6 +634,7 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm.get('goodsName').setValue(template.good.name);
     this.tripForm.get('customerRate').setValue(template.customerRate);
     this.tripForm.get('note').setValue(template.note);
+    this.tripForm.get('paymentType').setValue(template.paymentType);
     const templateLoadingPoints = template.points.filter(
       point => point.pointType === 'Loading'
     );
@@ -740,6 +746,7 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm.get('categoryId').setValue(tripData.categoryId);
     this.tripForm.get('numOfTrucks').setValue(tripData.numOfTrucks);
     this.tripForm.get('truckSize').setValue(tripData.truckSize);
+    this.tripForm.get('paymentType').setValue(tripData.paymentType);
     this.tripForm
       .get('truckCapacityInTon')
       .setValue(tripData.truckCapacityInTon);
