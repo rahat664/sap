@@ -289,3 +289,22 @@ img:hover {
 .tel-form input {
   --tw-ring-color: none !important;
 }
+
+.filter {
+  height: 2.5rem !important;
+}
+
+.filter .mat-mdc-text-field-wrapper {
+  border-radius: 0.5rem !important;
+  background-color: #f5fbfc !important;
+  height: 2.5rem !important;
+}
+
+.filter .mat-mdc-form-field-infix {
+  padding: 0.5rem 0 !important;
+}
+
+.filter .mat-mdc-icon-button {
+  margin-bottom: 1.25rem;
+}
+

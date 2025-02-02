@@ -21,6 +21,7 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
     MatSelect,
     MatOption,
     LoadingComponent,
+    RouterLink,
   ],
   templateUrl: './top-customer.component.html',
   styleUrl: './top-customer.component.scss',
