@@ -9,6 +9,18 @@
   </div>
   <div class="px-4 h-[calc(100vh-9rem)] overflow-y-auto">
     <form [formGroup]="tripUpdateForm" class="rounded-lg bg-white w-full">
+      <div class="flex w-full items-center justify-center text-h2 leading-h2 font-semibold text-not-black py-2">
+        <div class="flex space-x-3 items-center">
+          <label><sup>*</sup>Payment type</label>
+          <mat-radio-group
+            aria-label="Select an option"
+            formControlName="paymentType">
+            <mat-radio-button value="CASH">Cash</mat-radio-button>
+            <mat-radio-button value="INVOICE">Invoice</mat-radio-button>
+            <mat-radio-button value="BOTH">Cash and invoice</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
       <div
         class="mx-8 flex flex-col space-y-3 py-8 border-b-2 border-input"
         *ngIf="tripStatus === 'Booked' || tripStatus === 'Unassigned'">

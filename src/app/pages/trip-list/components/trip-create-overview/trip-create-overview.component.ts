@@ -94,6 +94,7 @@ export class TripCreateOverviewComponent implements OnInit {
               goodsName: this.tripData.goodsName,
               customerRate: this.tripData.customerRate,
               note: this.tripData.note,
+              paymentType: this.tripData.paymentType,
               points: this.tripData.points,
             };
             this.service.postTripTemplate(templateData).subscribe(

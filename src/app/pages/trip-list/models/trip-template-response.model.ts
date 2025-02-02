@@ -31,4 +31,5 @@ export class TripTemplateResponse {
   good: Good;
   note: string;
   points: Point[];
+  paymentType: string;
 }
