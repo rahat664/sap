@@ -285,7 +285,7 @@
           <td class="whitespace-nowrap" *ngIf="isAdmin()">
             {{ trip.customerName }}
           </td>
-          <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin()">
+          <td class="whitespace-nowrap {{!trip.transporterName ? 'text-secondary' : ''}}" *ngIf="isAdmin()">
             {{ trip.transporterName ? trip.transporterName : 'Transporter not assigned' }}
           </td>
           <td class="whitespace-nowrap">

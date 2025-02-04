@@ -50,7 +50,8 @@ export class DashboardService {
 
   getTransporterRateAnalysisData(
     type?: string,
-    value?: string,
+    from?: string,
+    to?: string,
     transporterCode?: string,
     truckType?: string,
     loadingPointDistrictName?: string,
@@ -60,8 +61,11 @@ export class DashboardService {
     if (type) {
       params.set('type', type);
     }
-    if (value) {
-      params.set('value', value);
+    if (from) {
+      params.set('from', from);
+    }
+    if (to) {
+      params.set('to', to);
     }
     if (transporterCode) {
       params.set('transporterCode', transporterCode);

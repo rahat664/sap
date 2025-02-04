@@ -15,7 +15,7 @@ import { GetClickEventDirective } from '../../shared/directive/get-click-event.d
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { DateEnum } from '../trip-list/Enum/date.enum';
 import { debounceTime, Subject } from 'rxjs';
@@ -61,6 +61,7 @@ export class DashboardComponent implements OnInit {
   customerCode: any;
   searchName: any;
   searchFilter: number = 0;
+  selectedCompanies: any[] = [];
 
   constructor(private customer: CustomerService) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
@@ -157,9 +158,17 @@ export class DashboardComponent implements OnInit {
 
   onClickSearchSuggestion(option: any) {
     this.searchFilter = 1;
-    this.customerCode = option.customerCode;
-    this.searchName = option.name;
-    this.searchValue = option.name;
+    this.selectedCompanies.push({
+      customerCode: option.customerCode,
+      name: option.name,
+    })
+    this.searchName = '';
     this.tripSuggestions = [];
+  }
+
+  onClickRemoveCompany(selectedCompany: any) {
+    this.selectedCompanies = this.selectedCompanies.filter(
+      company => company.customerCode !== selectedCompany.customerCode
+    );
   }
 }
