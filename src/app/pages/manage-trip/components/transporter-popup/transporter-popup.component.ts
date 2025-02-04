@@ -56,7 +56,7 @@ export class TransporterPopupComponent implements OnInit {
       this.page++;
       this.user
         .getTransporter(this.page, this.size, this.searchValue)
-        .pipe(debounceTime(500))
+        .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.transporterList.push(...res.data.responses);
           this.totalPages = res.data.totalPages;

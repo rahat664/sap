@@ -42,6 +42,7 @@ import { TimePickerComponent } from '../../../../shared/modules/time-picker/time
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 
 @Component({
   selector: 'app-trip-update',
@@ -68,6 +69,8 @@ import { ImageErrorDirective } from '../../../../shared/directive/image-error.di
     TimePickerComponent,
     FallbackImagePipe,
     ImageErrorDirective,
+    MatRadioButton,
+    MatRadioGroup,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './trip-update.component.html',
@@ -132,6 +135,7 @@ export class TripUpdateComponent implements OnInit {
               goodsName: this.tripUpdateForm.get('goodsName').value,
               customerRate: this.tripUpdateForm.get('customerRate').value,
               note: this.tripUpdateForm.get('note').value,
+              paymentType: this.tripUpdateForm.get('paymentType').value,
               points: [
                 ...this.tripUpdateForm.get('loadingPoints').value,
                 ...this.tripUpdateForm.get('unloadingPoints').value,
@@ -452,6 +456,7 @@ export class TripUpdateComponent implements OnInit {
       truckCapacityInTon: [''],
       goodsId: [''],
       goodsName: [''],
+      paymentType: [''],
       customerRate: [null],
       note: [''],
       loadingPoints: this.fb.array([this.createLoadingPoint()]),
@@ -929,6 +934,7 @@ export class TripUpdateComponent implements OnInit {
       this.tripUpdateForm
         .get('truckCapacityInTon')
         .setValue(tripData.truckCapacityInTon);
+      this.tripUpdateForm.get('paymentType').setValue(tripData.paymentType);
       this.tripUpdateForm.get('goodsId').setValue(tripData.good?.id);
       this.tripUpdateForm.get('goodsName').setValue(tripData.good?.name);
       this.tripUpdateForm.get('customerRate').setValue(tripData.customerRate);

@@ -29,6 +29,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomerService } from '../profiles/services/customer.service';
 import { MatSelect } from '@angular/material/select';
 import { CustomerModel } from '../profiles/components/customer/model/customer.model';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-manage-trip',
@@ -59,6 +60,7 @@ import { CustomerModel } from '../profiles/components/customer/model/customer.mo
   styleUrls: ['./manage-trip.component.scss'],
 })
 export class ManageTripComponent implements OnInit {
+  searchSubject = new Subject<string>();
   tripList: Trip[] = [];
   startingPosition: { lng: number; lat: number }[] = [];
   destinationPosition: { lng: number; lat: number }[] = [];
@@ -117,7 +119,18 @@ export class ManageTripComponent implements OnInit {
     private toggleMobileViewService: ToggleResponsiveService,
     private customer: CustomerService,
     private datePipe: DatePipe
-  ) {}
+  ) {
+    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
+      if (searchText) {
+        this.performSearch(searchText);
+      } else {
+        this.page = 0;
+        this.size = 30;
+        this.tripService.anotherStatusCalled.next(true);
+        this.getTripList();
+      }
+    });
+  }
 
   ngOnInit() {
     this.dateSelected = false;
@@ -179,9 +192,9 @@ export class ManageTripComponent implements OnInit {
         this.customerCodes.toString(),
         this.startDate,
         this.endDate,
-        this.status,
-        this.searchValue,
-        this.truckType
+        this.status,null,
+        this.truckType,
+        this.searchValue
       )
       .pipe(finalize(() => (this.loading = false)))
       .subscribe(
@@ -195,15 +208,7 @@ export class ManageTripComponent implements OnInit {
   }
 
   onKeyUpSearch(event: KeyboardEvent) {
-    this.searchValue = (event.target as HTMLInputElement).value;
-    if (this.searchValue.length > 2) {
-      this.page = 0;
-      this.tripService.anotherStatusCalled.next(true);
-      this.getTripList();
-    } else if (this.searchValue.length === 0) {
-      this.page = 0;
-      this.getTripList();
-    }
+      this.searchSubject.next((event.target as HTMLInputElement).value);
   }
 
   getTruckRegistrationNumber(truck: Truck) {
@@ -719,5 +724,14 @@ export class ManageTripComponent implements OnInit {
     }
   }
 
-  onClearInput($event: boolean) {}
+  onClearInput($event: boolean) {
+  }
+
+  private performSearch(searchText: string) {
+      this.searchValue = searchText;
+      this.page = 0;
+      this.size = 30;
+      this.tripService.anotherStatusCalled.next(true);
+      this.getTripList();
+  }
 }

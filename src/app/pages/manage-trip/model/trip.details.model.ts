@@ -92,6 +92,7 @@ export interface TripData {
   createdByPhone: string;
   createdAt: string;
   updatedAt: string;
+  paymentType: string;
   tripPoints: TripPoint[];
   tripEvents: TripEvent[];
   customerRate: number;

@@ -58,8 +58,9 @@
           >
           <mat-form-field
             appearance="outline"
-            class="example-full-width relative">
+            class="example-full-width filter">
             <input
+              style="padding-right: 20px"
               id="customerName"
               type="text"
               matInput
@@ -80,17 +81,18 @@
               type="button"
               (click)="onClickClearCompany()"
               *ngIf="searchValue"
-              class="absolute inset-y-0 right-0 flex items-center">
-              <i class="far fa-times text-gray-500 text-xs"></i>
+              class="absolute inset-y-0 right-0 flex items-center mb-4">
+              <i class="fal fa-times text-gray-500 text-xl"></i>
             </button>
           </mat-form-field>
         </div>
-        <div class="flex flex-col space-y-1 w-[14.375rem]">
+        <div class="flex flex-col space-y-1 w-[14.375rem] ">
           <label class="text-body text-web-text-secondary px-2"
           >Transporter Name
           </label>
-          <mat-form-field appearance="outline" class="example-full-width">
+          <mat-form-field appearance="outline" class="example-full-width filter">
             <input
+              style="padding-right: 20px"
               type="text"
               matInput
               (keyup)="onKeyUpTransporterSearch($event)"
@@ -102,7 +104,7 @@
                 <mat-option
                   (click)="onClickTransporterSearchSuggestion(option)"
                   [value]="option.name"
-                >{{ option.name }}
+                >{{ option.name ? option.name : option }}
                 </mat-option>
               }
             </mat-autocomplete>
@@ -110,8 +112,8 @@
               type="button"
               (click)="onClickClearTransporter()"
               *ngIf="transporterName"
-              class="absolute inset-y-0 right-0 flex items-center">
-              <i class="far fa-times text-gray-500 text-xs"></i>
+              class="absolute inset-y-0 right-0 flex items-center mb-4">
+              <i class="fal fa-times text-gray-500 text-xl"></i>
             </button>
           </mat-form-field>
         </div>
@@ -119,8 +121,9 @@
           <label class="text-body text-web-text-secondary px-2">Trip ID</label>
           <mat-form-field
             appearance="outline"
-            class="example-full-width relative">
+            class="example-full-width relative filter">
             <input
+              style="padding-right: 20px"
               type="text"
               matInput
               (keyup)="onKeyUpTripSearch($event)"
@@ -140,8 +143,8 @@
               type="button"
               (click)="onClickClearTripId()"
               *ngIf="tripId"
-              class="absolute inset-y-0 right-0 flex items-center">
-              <i class="far fa-times text-gray-500 text-xs"></i>
+              class="absolute inset-y-0 right-0 flex items-center mb-4">
+              <i class="fal fa-times text-gray-500 text-xl"></i>
             </button>
           </mat-form-field>
         </div>

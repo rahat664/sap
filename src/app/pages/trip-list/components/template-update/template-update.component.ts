@@ -24,6 +24,7 @@ import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { ScrollByButtonDirective } from '../../../../shared/directive/scroll-by-button.directive';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 
 @Component({
   selector: 'app-template-update',
@@ -41,6 +42,8 @@ import { ImageErrorDirective } from '../../../../shared/directive/image-error.di
     NgForOf,
     FallbackImagePipe,
     ImageErrorDirective,
+    MatRadioButton,
+    MatRadioGroup,
   ],
   templateUrl: './template-update.component.html',
   styleUrl: './template-update.component.scss',
@@ -104,6 +107,7 @@ export class TemplateUpdateComponent implements OnInit {
         .setValue(template.truckCapacityInTon);
       this.templateUpdateForm.get('goodsId').setValue(template.good?.id);
       this.templateUpdateForm.get('goodsName').setValue(template.good?.name);
+      this.templateUpdateForm.get('paymentType').setValue(template.paymentType);
       this.templateUpdateForm
         .get('customerRate')
         .setValue(template.customerRate);
@@ -193,6 +197,8 @@ export class TemplateUpdateComponent implements OnInit {
         this.templateUpdateForm.get('goodsName').value;
       this.tripTemplateData.customerRate =
         this.templateUpdateForm.get('customerRate').value;
+      this.tripTemplateData.paymentType =
+        this.templateUpdateForm.get('paymentType').value;
       this.tripTemplateData.note = this.templateUpdateForm.get('note').value;
       this.tripTemplateData.points = [
         ...this.templateUpdateForm.get('loadingPoints').value,
@@ -482,6 +488,7 @@ export class TemplateUpdateComponent implements OnInit {
       goodsName: [''],
       customerRate: [null],
       note: [''],
+      paymentType: [''],
       loadingPoints: this.fb.array([this.createLoadingPoint()]),
       unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
       tripTemplateName: [''],
@@ -616,6 +623,7 @@ export class TemplateUpdateComponent implements OnInit {
   removeUnloadingPoint(index: number) {
     this.unloadingPoints.removeAt(index);
   }
+
   isAdmin() {
     const role = localStorage.getItem('role');
     return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
