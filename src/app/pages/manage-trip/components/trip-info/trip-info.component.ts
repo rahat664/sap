@@ -134,7 +134,10 @@ export class TripInfoComponent implements OnInit {
 
   copyNumber($event, createdByPhone: string) {
     $event.stopPropagation();
-    this.trip.copyToClipboard(createdByPhone);
+    // remove first 3 characters from the phone number
+    const phone = createdByPhone.slice(3);
+    // copy the phone number to the clipboard
+    this.trip.copyToClipboard(phone);
   }
 
   getLoadingPoint(tripPoints: TripPoint[]) {

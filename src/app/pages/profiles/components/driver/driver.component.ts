@@ -245,11 +245,13 @@ export class DriverComponent implements OnInit {
     this.getDriverList();
   }
 
-  copyNumber($event: MouseEvent, createdByPhone: any) {
+  copyNumber($event, createdByPhone: string) {
     $event.stopPropagation();
-    this.user.copyToClipboard(createdByPhone);
+    // remove first 3 characters from the phone number
+    const phone = createdByPhone.slice(3);
+    // copy the phone number to the clipboard
+    this.user.copyToClipboard(phone);
   }
-
   onClickFilterOpened() {
     this.filterOpened = !this.filterOpened;
   }

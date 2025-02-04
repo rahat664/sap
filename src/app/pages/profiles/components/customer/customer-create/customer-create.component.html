@@ -80,6 +80,13 @@
           class="text-red text-xs">
           {{ getCustomerCodeError() }}
         </div>
+        <div
+          *ngIf="
+          customerForm.get('code').value.length  === 4 && customerCodeLoading
+          "
+          class="text-red text-xs invisible">
+         abc
+        </div>
       </div>
       <div class="flex flex-col space-y-2 w-full">
         <label for="contactPerson">Contact Person</label>
