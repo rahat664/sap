@@ -42,7 +42,7 @@ export class ConfirmCancelComponent implements OnInit {
 
   confirmUpdate() {
     if (this.reasonTextArea) {
-      this.reason = this.reason + '\nOthers: ' + this.textareaReasons;
+      this.reason = this.reason + `${this.reason ? '\nOthers: ' : 'Others: '}` + this.textareaReasons;
     }
     const body = {};
     body['status'] = 'Cancelled';

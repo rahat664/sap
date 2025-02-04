@@ -292,17 +292,17 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.activatedChallanStatus = 'Completed';
+    this.chalanStatus = '';
+    this.status = 'Completed';
+    this.getFromDateAndToDate();
+    this.getChallanStatus();
+    this.loading = true;
+    this.anotherStatusCalled = false;
+    this.generateDateOptionsArray();
+    this.getTripList();
     const isFromBack = localStorage.getItem('isBack');
     if (isFromBack !== 'true') {
-      this.activatedChallanStatus = 'Completed';
-      this.chalanStatus = '';
-      this.status = 'Completed';
-      this.getFromDateAndToDate();
-      this.getChallanStatus();
-      this.loading = true;
-      this.anotherStatusCalled = false;
-      this.generateDateOptionsArray();
-      this.getTripList();
     } else {
       localStorage.removeItem('isBack');
     }
