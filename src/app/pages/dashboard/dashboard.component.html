@@ -58,7 +58,7 @@
           >
           <mat-form-field
             appearance="outline"
-            class="example-full-width filter relative" style="height: auto !important;">
+            class="example-full-width multiples relative" style="height: auto !important;">
             <div class="flex space-x-3 items-center flex-wrap">
               <div class="flex items-center flex-wrap gap-3">
                 @for (selectedCompany of selectedCompanies; track selectedCompany) {
@@ -70,26 +70,26 @@
 
                   </div>
                 }
-              </div>
-              <div>
-                <input
-                  style="padding-right: 20px"
-                  id="customerName"
-                  type="text"
-                  matInput
-                  (keyup)="onSearchInputChange($event)"
-                  [(ngModel)]="searchName"
-                  placeholder="Enter Company Name"
-                  [matAutocomplete]="auto" />
-                <mat-autocomplete #auto="matAutocomplete">
-                  @for (option of tripSuggestions; track option) {
-                    <mat-option
-                      (click)="onClickSearchSuggestion(option)"
-                      [value]="option.name"
-                    >{{ option.name ? option.name : option }}
-                    </mat-option>
-                  }
-                </mat-autocomplete>
+                <div>
+                  <input
+                    style="padding-right: 20px"
+                    id="customerName"
+                    type="text"
+                    matInput
+                    (keyup)="onSearchInputChange($event)"
+                    [(ngModel)]="searchName"
+                    placeholder="Enter Company Name"
+                    [matAutocomplete]="auto" />
+                  <mat-autocomplete #auto="matAutocomplete">
+                    @for (option of tripSuggestions; track option) {
+                      <mat-option
+                        (click)="onClickSearchSuggestion(option)"
+                        [value]="option.name"
+                      >{{ option.name ? option.name : option }}
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                </div>
               </div>
             </div>
             <button
