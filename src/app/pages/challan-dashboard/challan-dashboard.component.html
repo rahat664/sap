@@ -408,8 +408,10 @@
             {{ trip.tripStartDatetime | date: 'd MMM yyyy' }}
           </td>
           <td class="whitespace-nowrap">{{ trip.customerName }}</td>
-          <td class="whitespace-nowrap">{{ trip.transporterName }}</td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin()">
+            {{ trip.transporterName ? trip.transporterName : 'Transporter not assigned' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.truck ? 'text-line' : ''}}">
             {{ getFullRegistrationNumber(trip.truck) }}
           </td>
           <td class="whitespace-nowrap">
