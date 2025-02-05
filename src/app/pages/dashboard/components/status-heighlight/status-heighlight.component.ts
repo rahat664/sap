@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatFormField } from '@angular/material/form-field';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
@@ -11,7 +11,7 @@ import {
   DashboardStatsModel,
   userStats,
 } from '../../models/dashboard-stats.model';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 
 @Component({
@@ -27,21 +27,30 @@ export class StatusHeighlightComponent implements OnInit {
   customerStatistics: customerStats;
   transporterStatistics: userStats;
   driverStatistics: userStats;
+  customerCode: any[];
 
   constructor(
     private service: DashboardService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.countFromDateAndToDate();
-    this.getDashboardStats();
-    this.customerStats();
+    // get data from query params
+    this.activatedRoute.queryParams.subscribe((params) => {
+      this.customerCode = params['customerCode'] ? params['customerCode'] : '';
+      this.fromDate = params['fromDate'] ? params['fromDate'] : this.countFromDateAndToDate();
+      this.toDate = params['toDate'] ? params['toDate'] : this.countFromDateAndToDate();
+      this.getDashboardStats();
+      this.customerStats();
+    });
+
   }
+
 
   private getDashboardStats() {
     this.service
-      .getApiStats(this.fromDate, this.toDate)
+      .getApiStats(this.fromDate, this.toDate, this.customerCode.toString())
       .subscribe((res: any) => {
         if (res.status === 'OK') {
           this.dashboardStats = res.data;
@@ -51,7 +60,11 @@ export class StatusHeighlightComponent implements OnInit {
 
   private customerStats() {
     this.service
-      .getCustomerStats(this.fromDate, this.toDate)
+      .getCustomerStats(
+        this.fromDate,
+        this.toDate,
+        this.customerCode.toString()
+      )
       .subscribe((res: any) => {
         if (res.status === 'OK') {
           this.customerStatistics = res.data;

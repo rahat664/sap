@@ -7,7 +7,7 @@ import { ChallanStatusComponent } from './components/challan-status/challan-stat
 import { TopTransporterComponent } from './components/top-transporter/top-transporter.component';
 import { TopCustomerComponent } from './components/top-customer/top-customer.component';
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TransporterRateAnalysisComponent } from './components/transporter-rate-analysis/transporter-rate-analysis.component';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +15,7 @@ import { GetClickEventDirective } from '../../shared/directive/get-click-event.d
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { DateEnum } from '../trip-list/Enum/date.enum';
 import { debounceTime, Subject } from 'rxjs';
@@ -62,19 +62,32 @@ export class DashboardComponent implements OnInit {
   searchName: any;
   searchFilter: number = 0;
   selectedCompanies: any[] = [];
+  isDateFilterAvailable: boolean;
+  isCustomerFilterAvailable: boolean;
 
-  constructor(private customer: CustomerService) {
+  constructor(private customer: CustomerService, private datePipe: DatePipe, private router: Router) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performSearch(searchText);
     });
   }
 
   ngOnInit() {
+    this.isCustomerFilterAvailable = false;
+    this.isDateFilterAvailable = false;
     this.generateDateOptionsArray();
+    // remove query params from the current route
+    this.router.navigate([], {
+      queryParams: {
+        customerCode: null,
+        fromDate: null,
+        toDate: null,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   getFilterLength() {
-    return this.searchFilter + this.dateFilter;
+    return this.selectedCompanies.length + this.dateFilter;
   }
 
   onClearFilter() {
@@ -87,6 +100,17 @@ export class DashboardComponent implements OnInit {
     this.tripSuggestions = [];
     this.dateFilter = 0;
     this.searchFilter = 0;
+    this.isCustomerFilterAvailable = false;
+    this.selectedCompanies = [];
+    this.isDateFilterAvailable = false;
+    this.router.navigate([], {
+      queryParams: {
+        customerCode: null,
+        fromDate: null,
+        toDate: null,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   performSearch(value: string) {
@@ -110,6 +134,12 @@ export class DashboardComponent implements OnInit {
 
   onSelectedFromDate($event: string) {
     this.fromDate = $event;
+    this.router.navigate([], {
+      queryParams: {
+        fromDate: this.fromDate,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   private generateDateOptionsArray() {
@@ -126,13 +156,62 @@ export class DashboardComponent implements OnInit {
     this.toDate = $event;
     this.dateOpened = false;
     this.isDateOpened = false;
+    this.isDateFilterAvailable = true;
+    this.router.navigate([], {
+      queryParams: {
+        toDate: this.toDate,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   onSelectDate($event: number) {
     this.dateFilter = 1;
     if ($event === DateEnum.Custom) {
+      this.isDateFilterAvailable = false;
     } else {
+      this.inputPlaceholder =
+        this.dateOptionArray.find(x => x.id === $event)?.value || '';
+      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
+      this.setDateRange($event);
+      this.isDateFilterAvailable = true;
     }
+  }
+
+
+  private setDateRange(dateEnum: DateEnum) {
+    const fromDate = new Date();
+    // to date should be yesterday
+    const toDate = new Date();
+    switch (dateEnum) {
+      case DateEnum.Today:
+        fromDate.setDate(fromDate.getDate());
+        toDate.setDate(toDate.getDate());
+        break;
+      case DateEnum.LastSevenDays:
+        // shouldn't be count today
+        fromDate.setDate(fromDate.getDate() - 7);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastFifteenDays:
+        fromDate.setDate(fromDate.getDate() - 15);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastThirtyDays:
+        fromDate.setDate(fromDate.getDate() - 30);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+    }
+    this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
+    this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+    // set query params to the current route
+    this.router.navigate([], {
+      queryParams: {
+        fromDate: this.fromDate,
+        toDate: this.toDate,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   onSearchInputChange($event: any) {
@@ -164,11 +243,26 @@ export class DashboardComponent implements OnInit {
     })
     this.searchName = '';
     this.tripSuggestions = [];
+    this.searchValue = '';
+    // set query params to the current route
+    this.router.navigate([], {
+      queryParams: {
+        customerCode: this.selectedCompanies.map(company => company.customerCode).join(','),
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   onClickRemoveCompany(selectedCompany: any) {
     this.selectedCompanies = this.selectedCompanies.filter(
       company => company.customerCode !== selectedCompany.customerCode
     );
+    // set query params to the current route
+    this.router.navigate([], {
+      queryParams: {
+        customerCode: this.selectedCompanies.map(company => company.customerCode).join(','),
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 }

@@ -12,16 +12,24 @@ export class DashboardService {
 
   constructor(private http: HttpClient) {}
 
-  getApiStats(from: string, to: string) {
-    return this.http.get(
-      `${this._dashboardUrl}/statistics?from=${from}&to=${to}`
-    );
+  getApiStats(from: string, to: string, customerCode?: string) {
+    const params = new URLSearchParams();
+    params.set('from', from);
+    params.set('to', to);
+    if (customerCode) {
+      params.set('customerCode', customerCode);
+    }
+    return this.http.get(`${this._dashboardUrl}/stats?${params.toString()}`);
   }
 
-  getCustomerStats(from: string, to: string) {
-    return this.http.get(
-      `${this._customerStatsUrl}/stats?from=${from}&to=${to}`
-    );
+  getCustomerStats(from: string, to: string, customerCode?: string) {
+    const params = new URLSearchParams();
+    params.set('from', from);
+    params.set('to', to);
+    if (customerCode) {
+      params.set('customerCode', customerCode);
+    }
+    return this.http.get(`${this._dashboardUrl}/customer-stats?${params.toString()}`);
   }
 
   getChallanStatus(from: string, to: string) {

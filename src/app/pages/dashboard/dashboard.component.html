@@ -62,11 +62,12 @@
             <div class="flex space-x-3 items-center flex-wrap">
               <div class="flex items-center flex-wrap gap-3">
                 @for (selectedCompany of selectedCompanies; track selectedCompany) {
-                  <div class="h-[1.5rem] rounded-full bg-[#D4EEF2] text-body_title leading-body_title text-not-black px-2 py-0.5">
-                    {{ selectedCompany.name}}
+                  <div
+                    class="h-[1.5rem] rounded-full bg-[#D4EEF2] text-body_title leading-body_title text-not-black px-2 py-0.5">
+                    {{ selectedCompany.name }}
                     <i
                       (click)="onClickRemoveCompany(selectedCompany)"
-                      class="fal fa-times text-xs ml-1.5"></i>
+                      class="fal fa-times text-xs ml-1.5 cursor-pointer"></i>
 
                   </div>
                 }
