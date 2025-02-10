@@ -1003,18 +1003,6 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
       startPoints = this.starting;
       endPoints = this.destination;
     }
-    this.trip
-      .getTripHistory(
-        from,
-        to,
-        this.singleTripData?.truck?.fullRegistrationNumber
-      )
-      .subscribe(
-        (res: any) => {
-          this.clearInput.emit(true);
-    startPoints = this.starting;
-    endPoints = this.destination;
-    this.endPoints = this.destination;
     if (this.endPoints.length > 0 && from && to) {
       this.trip
         .getTripHistory(
