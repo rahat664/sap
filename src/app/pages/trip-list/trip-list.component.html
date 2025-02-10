@@ -263,7 +263,7 @@
         <th class="text-left" *ngIf="isAdmin()">GP(৳)</th>
       </tr>
       <tr>
-        <th class="border" [colSpan]="isAdmin() ? 9 : 6"></th>
+        <th class="border" [colSpan]="isAdmin() ? 10 : 7"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -330,7 +330,7 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="isAdmin() ? 9 : 6">
+          <td class="text-center" [colSpan]="isAdmin() ? 10 : 7">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img

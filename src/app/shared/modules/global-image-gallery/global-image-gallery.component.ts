@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../../../pages/manage-trip/components/confirm-delete/confirm-delete.component';
 import { FallbackImagePipe } from '../../pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../directive/image-error.directive';
+import { Trip } from '../../../pages/auth/models/response/trip';
 
 @Component({
   selector: 'app-global-image-gallery',
@@ -60,6 +61,8 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
+    const singleTrip: Trip = JSON.parse(sessionStorage.getItem('singleTrip'));
+    this.tripId = singleTrip.tripId;
     this.resetNavigationInformation();
     this.getNavigationInformation();
   }
@@ -93,7 +96,6 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
       this.imageType = navigation.imageType;
       this.activatedDocument = navigation.activatedDocument;
       this.returnUrl = navigation.returnUrl;
-      this.tripId = navigation.tripId;
       this.tripPointId = navigation.tripPointId;
       this.eventTypeId = navigation.eventTypeId;
       this.updateActiveDocumentIndex();
@@ -224,7 +226,7 @@ export class GlobalImageGalleryComponent implements OnInit, AfterViewInit {
   }
 
   // Zoom out
-  tripId: string;
+  tripId: string = '';
   zoomOut() {
     if (this.zoomLevel > this.minZoom) {
       this.zoomLevel -= 0.1;

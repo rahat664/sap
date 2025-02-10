@@ -43,9 +43,9 @@
     class="bg-white relative w-full rounded-lg overflow-auto">
     <table class="table-auto w-full rounded-lg text-body_title">
       <thead>
-      <tr class="whitespace-nowrap bg-white">
-        <th class="text-left">Transporter name</th>
-        <th class="text-left">Mobile</th>
+      <tr class="whitespace-nowrap  ">
+        <th class="text-left  sticky left-0 w-[20rem] bg-white">Transporter name</th>
+        <th class="text-left  sticky left-[20rem] bg-white">Mobile</th>
         <th class="text-left whitespace-nowrap">Created On</th>
         <th class="text-left">Truck Stand</th>
         <th class="text-left">Preferred Payment Method</th>
@@ -61,7 +61,7 @@
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
         <tr *ngFor="let transporter of transporterList">
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap sticky left-0 w-[20rem] bg-white">
             <div class="flex items-center space-x-4">
               <div
                 class="w-8 h-8 rounded-full bg-another flex items-center justify-center">
@@ -72,7 +72,7 @@
               <span class="flex-1">{{ transporter.name }}</span>
             </div>
           </td>
-          <td>
+          <td class="sticky left-[20rem] bg-white">
             <a
               class="cursor-pointer"
               (click)="copyNumber($event, transporter.phone)"

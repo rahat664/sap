@@ -33,6 +33,7 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
   ) {
     this.mutationObserver = new MutationObserver(() => {
       this.setMaxHeight();
+      this.setMinHeight();
     });
   }
 
@@ -96,6 +97,11 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
     if (this.el.nativeElement.querySelector('table')) {
       this.el.nativeElement.style.border = '1px solid #A1D5DE';
     }
+  }
+
+  private setMinHeight(): void {
+    const minHeight = `calc(100vh - ${this.anotherItemsHeight} - ${this.topBarHeight})`;
+    this.el.nativeElement.style.minHeight = minHeight;
   }
 
   private checkScrollPosition(event: any): void {

@@ -43,8 +43,8 @@
     <table class="table-auto w-full rounded-lg text-body_title">
       <thead>
       <tr class="whitespace-nowrap bg-white">
-          <th class="text-left">Company name</th>
-          <th class="text-center">Customer code</th>
+          <th class="text-left sticky left-0 w-[20rem] bg-white">Company name</th>
+          <th class="text-center sticky left-[20rem] bg-white">Customer code</th>
           <th class="whitespace-nowrap">Created On</th>
           <th class="text-left">Contact person</th>
           <th class="text-left">Mobile</th>
@@ -62,7 +62,7 @@
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
           <tr *ngFor="let customer of customers">
-              <td class="whitespace-nowrap">
+              <td class="whitespace-nowrap sticky left-0 w-[20rem] bg-white">
                   <div class="flex items-center space-x-4">
                       <div
                               class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
@@ -73,7 +73,7 @@
                       <span class="flex-1">{{ customer.name }}</span>
                   </div>
               </td>
-              <td class="text-center">{{ customer.customerCode }}</td>
+              <td class="text-center sticky left-[20rem] bg-white">{{ customer.customerCode }}</td>
               <td class="text-center whitespace-nowrap">
                   {{
                   customer.creationDate
