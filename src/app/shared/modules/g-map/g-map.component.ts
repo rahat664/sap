@@ -21,7 +21,6 @@ import {
   TripData,
   TripPoint,
 } from '../../../pages/manage-trip/model/trip.details.model';
-import { end } from '@popperjs/core';
 
 @Component({
   selector: 'app-g-map',
@@ -234,6 +233,10 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.destination.length > 0) {
+      this.endPoints = [];
+      this.endPoints = this.destination;
+    }
     if (this.infoWindow) {
       this.infoWindow.close();
     }
@@ -257,8 +260,8 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
           });
         }
         this.startMarker = [];
-        this.endMarker = []
-        this.updateRoute()
+        this.endMarker = [];
+        this.updateRoute();
       }
     }
     if (changes['truckLocationPosition']) {
@@ -294,19 +297,6 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
         this.datePipe.transform(oneDayAfterTripEndedAt, 'yyyy-MM-ddTHH:mm:ss')
       );
     } else {
-      if (this.startMarker) {
-        this.startMarker.forEach(marker => {
-          marker.setMap(null);
-        });
-        this.startMarker = [];
-      }
-      if (this.endMarker) {
-        this.endMarker.forEach(marker => {
-          marker.setMap(null);
-        });
-        this.endMarker = [];
-      }
-
       if (this.stopPointMarker) {
         this.stopPointMarker.forEach(marker => {
           marker.setMap(null);
@@ -329,7 +319,6 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
 
     startPoints = this.starting;
     endPoints = this.destination;
-    this.endPoints = this.destination;
 
     this.clearInput.emit(true);
 
@@ -498,7 +487,6 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private resetMarkers() {
-
     this.center = {
       lat: 23.8041,
       lng: 90.4125,
@@ -643,7 +631,7 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
         : `<span class="text-red">No eta data available</span>`;
     }
     return `
-      <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
+      <div style="display: flex; justify-content: space-between; align-items: start; padding:  1rem;">
         <div class="flex flex-col space-y-1">
           <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.numberPlate}</div>
           <div style="font-size: 12px; color: #777777">${this.truckData.address}</div>
@@ -654,13 +642,13 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
       </div>
       ${
         this.etaData && this.tripStatus === 'Running'
-          ? `<div id="info-body" style="background: #F5FBFC; padding: 0.5rem; padding-bottom: 0; font-size: 12px; color: #242424">
+          ? `<div id="info-body" style="background: #F5FBFC; padding: 0.5rem; margin-right: .75rem; padding-bottom: 0; font-size: 12px; color: #242424">
       <p class="text-body_title text-not-black font-bold">${dateTimeDisplay}</p>
        </div>`
           : ''
       }
-      <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
-        <table id="info-table" style="width: 100%;">
+      <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; margin-right: .75rem; margin-bottom: .75rem;  font-size: 12px; color: #242424">
+        <table id="info-table" style="width: 100%; margin-right: 0.5rem">
           <tr class="grid grid-cols-8 "><td class="col-span-3">Time</td><td>:</td><td class="col-span-4">${this.truckData.time ? this.truckData.time : 'N/A'}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${this.truckData.stopDuration ? this.truckData.stopDuration : 'N/A'}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Engine Status<td>:</td></td><td class="col-span-4">${this.truckData.engineStatus ? this.truckData.engineStatus : 'N/A'}</td></tr>
@@ -1011,9 +999,10 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
     let startPoints = [];
     let endPoints = [];
 
-    startPoints = this.starting;
-    endPoints = this.destination;
-    this.endPoints = this.destination;
+    if (this.destination.length > 0 && this.starting.length > 0) {
+      startPoints = this.starting;
+      endPoints = this.destination;
+    }
     if (this.endPoints.length > 0 && from && to) {
       this.trip
         .getTripHistory(
