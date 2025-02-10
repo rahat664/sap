@@ -19,7 +19,7 @@ export class DashboardService {
     if (customerCode) {
       params.set('customerCode', customerCode);
     }
-    return this.http.get(`${this._dashboardUrl}/stats?${params.toString()}`);
+    return this.http.get(`${this._dashboardUrl}/statistics?${params.toString()}`);
   }
 
   getCustomerStats(from: string, to: string, customerCode?: string) {
@@ -29,19 +29,27 @@ export class DashboardService {
     if (customerCode) {
       params.set('customerCode', customerCode);
     }
-    return this.http.get(`${this._dashboardUrl}/customer-stats?${params.toString()}`);
+    return this.http.get(`${this._customerStatsUrl}/stats?${params.toString()}`);
   }
 
-  getChallanStatus(from: string, to: string) {
-    return this.http.get(
-      `${this._dashboardUrl}/challan-status?from=${from}&to=${to}`
-    );
+  getChallanStatus(from: string, to: string, customerCode?: string) {
+    const params = new URLSearchParams();
+    params.set('from', from);
+    params.set('to', to);
+    if (customerCode) {
+      params.set('customerCode', customerCode);
+    }
+    return this.http.get(`${this._dashboardUrl}/challan-status?${params.toString()}`);
   }
 
-  getTripCountByStatus(from: string, to: string) {
-    return this.http.get(
-      `${this._dashboardUrl}/trips-count-by-status?from=${from}&to=${to}`
-    );
+  getTripCountByStatus(from: string, to: string, customerCode?: string) {
+    const params = new URLSearchParams();
+    params.set('from', from);
+    params.set('to', to);
+    if (customerCode) {
+      params.set('customerCode', customerCode);
+    }
+    return this.http.get(`${this._dashboardUrl}/trips-count-by-status?${params.toString()}`);
   }
 
   getTopTransporters(from: string, to: string, sortBy: string = 'grossProfit') {

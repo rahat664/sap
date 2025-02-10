@@ -9,11 +9,12 @@ import {
 import { FormsModule } from '@angular/forms';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { VehicleCategory } from '../../../auth/models/response/trip';
-import { NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { UserService } from '../../../profiles/services/user.service';
 import { UserModel } from '../../../user-management/models/user.model';
 import { DashboardService } from '../../services/dashboard.service';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-transporter-rate-analysis',
@@ -24,7 +25,6 @@ import { RouterLink } from '@angular/router';
     MatOption,
     FormsModule,
     NgForOf,
-    RouterLink,
     NgIf,
   ],
   templateUrl: './transporter-rate-analysis.component.html',
@@ -33,27 +33,10 @@ import { RouterLink } from '@angular/router';
 export class TransporterRateAnalysisComponent implements OnInit {
   chartType = 'all';
   vehicleTypeLists: VehicleCategory[] = [];
+  fromDate = '';
+  toDate = '';
   districts = [];
   transporterLists: UserModel[] = [];
-  monthList = [
-    { value: '01', viewValue: 'January' },
-    { value: '02', viewValue: 'February' },
-    { value: '03', viewValue: 'March' },
-    { value: '04', viewValue: 'April' },
-    { value: '05', viewValue: 'May' },
-    { value: '06', viewValue: 'June' },
-    { value: '07', viewValue: 'July' },
-    { value: '08', viewValue: 'August' },
-    { value: '09', viewValue: 'September' },
-    { value: '10', viewValue: 'October' },
-    { value: '11', viewValue: 'November' },
-    { value: '12', viewValue: 'December' },
-  ];
-
-  selectedMonth =
-    (new Date().getMonth() + 1).toString().length === 1
-      ? '0' + (new Date().getMonth() + 1).toString()
-      : (new Date().getMonth() + 1).toString();
 
   // make a year array which contain from 2024 to current year
   yearList = Array.from(
@@ -69,11 +52,20 @@ export class TransporterRateAnalysisComponent implements OnInit {
   numberOfTrips = [];
   colors = [];
   categories = [];
+  customerCode: string = '';
+  datatype: string = 'daily';
+  dateFilterApplied: boolean = false;
+  private routerSubs: Subscription;
+
   constructor(
     private trip: TripService,
     private user: UserService,
-    private service: DashboardService
-  ) {}
+    private service: DashboardService,
+    private activatedRoute: ActivatedRoute,
+    private datePipe: DatePipe
+  ) {
+    this.resetColorsAndSeriesData();
+  }
 
   changeChartType($event: MatSelectChange) {
     this.resetColorsAndSeriesData();
@@ -81,11 +73,33 @@ export class TransporterRateAnalysisComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.routerSubs) {
+      this.routerSubs.unsubscribe();
+    }
     this.resetColorsAndSeriesData();
+    this.datatype = 'daily';
     this.getVehicleTypeList();
     this.getDistrictList();
     this.getTransporterList();
-    this.getTransporterRateAnalysisData();
+    timer(100).subscribe(() => {
+      this.routerSubs = this.activatedRoute.queryParams.subscribe(params => {
+        this.customerCode = params['customerCode']
+          ? params['customerCode']
+          : '';
+        if (params['fromDate'] && params['toDate']) {
+          this.resetColorsAndSeriesData();
+          this.dateFilterApplied = true;
+          this.fromDate = params['fromDate'];
+          this.toDate = params['toDate'];
+          this.getTransporterRateAnalysisData();
+        } else {
+          this.resetColorsAndSeriesData();
+          this.dateFilterApplied = false;
+          this.calculateFromAndToDate();
+          this.getTransporterRateAnalysisData();
+        }
+      });
+    });
   }
 
   getVehicleTypeList() {
@@ -117,25 +131,57 @@ export class TransporterRateAnalysisComponent implements OnInit {
   }
 
   private getTransporterRateAnalysisData() {
-    let dataType = '';
-    if (this.selectedMonth && this.selectedYear) {
-      dataType = 'daily';
-    } else {
-      dataType = 'yearly';
-    }
+    this.categories = [];
+    this.seriesdata = [];
+    this.colors = [];
+    // calculate the number of days will be difference between fromdate and todate
 
-    // get the length of the month of the selected month and year
-    const daysInMonth = new Date(
-      this.selectedYear,
-      parseInt(this.selectedMonth),
-      0
-    ).getDate();
-    this.categories = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    if (this.datatype === 'daily') {
+      if (!this.dateFilterApplied) {
+        this.calculateFromAndToDate();
+      }
+      const daysDifference = Math.floor(
+        (new Date(this.toDate).getTime() - new Date(this.fromDate).getTime()) /
+          (1000 * 60 * 60 * 24)
+      );
+
+      // catagories will be the dates like 2024-01-01 to 2024-01-31
+      for (let i = 0; i <= daysDifference; i++) {
+        this.categories.push(
+          this.datePipe.transform(
+            new Date(
+              new Date(this.fromDate).getTime() + i * 24 * 60 * 60 * 1000
+            ),
+            'yyyy-MM-dd'
+          )
+        );
+      }
+    } else if (this.datatype === 'monthly') {
+      if (!this.dateFilterApplied) {
+        //fromdate will be the current year first date
+        const fromDate = new Date();
+        fromDate.setMonth(0);
+        fromDate.setDate(1);
+        this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd');
+        // todate will be the current date
+        const toDate = new Date();
+        this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd');
+      }
+      const date = new Date(this.fromDate);
+      date.setDate(1);
+      const endDate = new Date(this.toDate);
+
+      while (date <= endDate) {
+        this.categories.push(this.datePipe.transform(date, 'MMM-yyyy'));
+        date.setMonth(date.getMonth() + 1);
+      }
+    }
 
     this.service
       .getTransporterRateAnalysisData(
-        dataType,
-        `${this.selectedYear}${this.selectedMonth ? '-' + this.selectedMonth : ''}`,
+        this.datatype,
+        this.fromDate,
+        this.toDate,
         this.transporter,
         this.vehicleType,
         this.loadingDistrict,
@@ -182,7 +228,10 @@ export class TransporterRateAnalysisComponent implements OnInit {
       this.numberOfTrips = Array(this.categories.length).fill(null);
       data.forEach((item: any) => {
         const splitedDate = item.period?.split('-');
-        const date = parseInt(splitedDate[2]);
+        const date =
+          this.datatype === 'daily'
+            ? parseInt(splitedDate[2])
+            : parseInt(splitedDate[1]);
         // if date starting from 0 then remove the 0
         singleSeriesData[date - 1] =
           item.minRate != null ? item.maxRate : item.totalTrips ? 0 : null;
@@ -200,7 +249,10 @@ export class TransporterRateAnalysisComponent implements OnInit {
       this.numberOfTrips = Array(this.categories.length).fill(null);
       data.forEach((item: any) => {
         const splitedDate = item.period?.split('-');
-        const date = parseInt(splitedDate[2]);
+        const date =
+          this.datatype === 'daily'
+            ? parseInt(splitedDate[2])
+            : parseInt(splitedDate[1]);
         // if date starting from 0 then remove the 0
         singleSeriesData[date - 1] =
           item.minRate != null ? item.minRate : item.totalTrips ? 0 : null;
@@ -217,7 +269,10 @@ export class TransporterRateAnalysisComponent implements OnInit {
       this.numberOfTrips = Array(this.categories.length).fill(null);
       data.forEach((item: any) => {
         const splitedDate = item.period?.split('-');
-        const date = parseInt(splitedDate[2]);
+        const date =
+          this.datatype === 'daily'
+            ? parseInt(splitedDate[2])
+            : parseInt(splitedDate[1]);
         // if date starting from 0 then remove the 0
         singleSeriesData[date - 1] =
           item.avgRate != null ? item.avgRate : item.totalTrips ? 0 : null;
@@ -229,22 +284,33 @@ export class TransporterRateAnalysisComponent implements OnInit {
         color: '#208B99',
       });
       this.colors.push('#208B99');
-    } else {
+    } else if (this.chartType == 'all') {
+      console.log(this.categories.length);
       const singleSeriesDataHigh = Array(this.categories.length).fill(null);
       const singleSeriesDataLow = Array(this.categories.length).fill(null);
       const singleSeriesDataAverage = Array(this.categories.length).fill(null);
+      console.log(singleSeriesDataAverage);
+      console.log(singleSeriesDataHigh);
+      console.log(singleSeriesDataLow);
       this.numberOfTrips = Array(this.categories.length).fill(null);
       data.forEach((item: any) => {
         const splitedDate = item.period?.split('-');
-        const date = parseInt(splitedDate[2]);
-        // if date starting from 0 then remove the 0
-        singleSeriesDataHigh[date - 1] =
+        const date =
+          this.datatype === 'daily'
+            ? parseInt(splitedDate[2])
+            : parseInt(splitedDate[1]);
+        const selectedIndex = this.findIndexOfDate(date, this.datatype);
+        console.log(selectedIndex);
+        singleSeriesDataHigh[selectedIndex] =
           item.maxRate != null ? item.maxRate : item.totalTrips ? 0 : null;
-        singleSeriesDataLow[date - 1] =
+        singleSeriesDataLow[selectedIndex] =
           item.minRate != null ? item.minRate : item.totalTrips ? 0 : null;
-        singleSeriesDataAverage[date - 1] =
+        singleSeriesDataAverage[selectedIndex] =
           item.avgRate != null ? item.avgRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
+        this.numberOfTrips[selectedIndex] = item.totalTrips
+          ? item.totalTrips
+          : 0;
+        // if date starting from 0 then remove the 0
       });
       this.seriesdata.push({
         name: 'Highest Rate',
@@ -265,32 +331,14 @@ export class TransporterRateAnalysisComponent implements OnInit {
       this.colors.push('#208B99');
       this.colors.push('#F0614E');
     }
+    console.log(this.colors, this.seriesdata);
   }
 
   resetColorsAndSeriesData() {
     this.seriesdata = [];
     this.categories = [];
     this.numberOfTrips = [];
-
-    // const daysInMonth = new Date(this.selectedYear, parseInt(this.selectedMonth), 0).getDate();
-    // this.categories = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-    // // concat year and month as dd-mm-yyyy
-    //
-    this.colors = ['#1DBF73', '#208B99', '#F0614E'];
-    // this.seriesdata = [
-    //   {
-    //     name: 'Maximum Rate',
-    //     data: Array(daysInMonth).fill(null)
-    //   },
-    //   {
-    //     name: 'Average Rate',
-    //     data: Array(daysInMonth).fill(null)
-    //   },
-    //   {
-    //     name: 'Lowest Rate',
-    //     data: Array(daysInMonth).fill(null)
-    //   },
-    // ];
+    this.numberOfTrips = [];
   }
 
   clearAll() {
@@ -300,5 +348,59 @@ export class TransporterRateAnalysisComponent implements OnInit {
     this.unloadingDistrict = '';
     this.resetColorsAndSeriesData();
     this.getTransporterRateAnalysisData();
+  }
+
+  private calculateFromAndToDate() {
+    this.fromDate = '';
+    this.toDate = '';
+    // fromdate will be the current month first date
+    const fromDate = new Date();
+    fromDate.setDate(1);
+    this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd');
+    // todate will be the current date
+    const toDate = new Date();
+    this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd');
+  }
+
+  onDataTypeChange($event: any) {
+    this.datatype = $event.value;
+    this.resetColorsAndSeriesData();
+    this.getTransporterRateAnalysisData();
+  }
+
+  private findIndexOfDate(date: number, datatype: string) {
+    let selectedIndex = 0;
+    if (datatype === 'daily') {
+      for (let i = 0; i < this.categories?.length; i++) {
+        const splitedCategory = this.categories[i].split('-');
+        if (parseInt(splitedCategory[2]) == date) {
+          selectedIndex = i;
+        }
+      }
+    } else {
+      const monthNames = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+
+      const selectedMonthName = monthNames[date];
+
+      for (let i = 0; i < this.categories?.length; i++) {
+        if (this.categories[i].includes(selectedMonthName)) {
+          selectedIndex = i;
+        }
+      }
+    }
+    return selectedIndex;
   }
 }

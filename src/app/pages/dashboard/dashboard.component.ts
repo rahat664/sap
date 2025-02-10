@@ -2,20 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { StatusHeighlightComponent } from './components/status-heighlight/status-heighlight.component';
 import { MonthWiseRevenueComponent } from './components/month-wise-revenue/month-wise-revenue.component';
-import { LiveTripStatusComponent } from './components/live-trip-status/live-trip-status.component';
 import { ChallanStatusComponent } from './components/challan-status/challan-status.component';
 import { TopTransporterComponent } from './components/top-transporter/top-transporter.component';
 import { TopCustomerComponent } from './components/top-customer/top-customer.component';
-import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TransporterRateAnalysisComponent } from './components/transporter-rate-analysis/transporter-rate-analysis.component';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { FormsModule } from '@angular/forms';
 import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
-import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+  MatOption,
+} from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { DateEnum } from '../trip-list/Enum/date.enum';
 import { debounceTime, Subject } from 'rxjs';
@@ -65,7 +67,11 @@ export class DashboardComponent implements OnInit {
   isDateFilterAvailable: boolean;
   isCustomerFilterAvailable: boolean;
 
-  constructor(private customer: CustomerService, private datePipe: DatePipe, private router: Router) {
+  constructor(
+    private customer: CustomerService,
+    private datePipe: DatePipe,
+    private router: Router
+  ) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performSearch(searchText);
     });
@@ -117,6 +123,12 @@ export class DashboardComponent implements OnInit {
     if (value?.length > 0) {
       this.customer.searchCustomer(0, 100, value).subscribe((company: any) => {
         this.tripSuggestions = company.data.content;
+        if (this.tripSuggestions.length > 0 && this.selectedCompanies.length > 0) {
+          this.tripSuggestions = this.tripSuggestions.filter(
+            (suggestion) =>
+              !this.selectedCompanies.some((selected: any)=> selected.customerCode === suggestion.customerCode)
+          )
+        }
         if (this.tripSuggestions.length === 0) {
           this.tripSuggestions.push('No customer found');
         }
@@ -134,12 +146,6 @@ export class DashboardComponent implements OnInit {
 
   onSelectedFromDate($event: string) {
     this.fromDate = $event;
-    this.router.navigate([], {
-      queryParams: {
-        fromDate: this.fromDate,
-      },
-      queryParamsHandling: 'merge',
-    });
   }
 
   private generateDateOptionsArray() {
@@ -157,12 +163,6 @@ export class DashboardComponent implements OnInit {
     this.dateOpened = false;
     this.isDateOpened = false;
     this.isDateFilterAvailable = true;
-    this.router.navigate([], {
-      queryParams: {
-        toDate: this.toDate,
-      },
-      queryParamsHandling: 'merge',
-    });
   }
 
   onSelectDate($event: number) {
@@ -177,7 +177,6 @@ export class DashboardComponent implements OnInit {
       this.isDateFilterAvailable = true;
     }
   }
-
 
   private setDateRange(dateEnum: DateEnum) {
     const fromDate = new Date();
@@ -240,14 +239,16 @@ export class DashboardComponent implements OnInit {
     this.selectedCompanies.push({
       customerCode: option.customerCode,
       name: option.name,
-    })
+    });
     this.searchName = '';
     this.tripSuggestions = [];
     this.searchValue = '';
     // set query params to the current route
     this.router.navigate([], {
       queryParams: {
-        customerCode: this.selectedCompanies.map(company => company.customerCode).join(','),
+        customerCode: this.selectedCompanies
+          .map(company => company.customerCode)
+          .join(','),
       },
       queryParamsHandling: 'merge',
     });
@@ -260,9 +261,23 @@ export class DashboardComponent implements OnInit {
     // set query params to the current route
     this.router.navigate([], {
       queryParams: {
-        customerCode: this.selectedCompanies.map(company => company.customerCode).join(','),
+        customerCode: this.selectedCompanies
+          .map(company => company.customerCode)
+          .join(','),
       },
       queryParamsHandling: 'merge',
     });
+  }
+
+  onDateEmited($event: boolean) {
+    if ($event) {
+      this.router.navigate([], {
+        queryParams: {
+          fromDate: this.fromDate,
+          toDate: this.toDate,
+        },
+        queryParamsHandling: 'merge',
+      });
+    }
   }
 }

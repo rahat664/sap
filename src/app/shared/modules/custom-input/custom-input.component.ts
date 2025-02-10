@@ -53,10 +53,10 @@ export class CustomInputComponent implements OnInit, OnChanges {
     'December',
   ];
   days: number[] = Array.from({ length: 31 }, (_, i) => i + 1);
-  years: number[] = Array.from(
-    { length: new Date().getFullYear() - 1980 + 1 },
-    (_, i) => 1980 + i
-  ).reverse();
+  years: number[]  = Array.from(
+    { length: new Date().getFullYear() - 2023 },
+    (_, i) => 2024 + i
+  );
   selectedFromMonth: string; // Default selected month
   selectedFromDay: string; // Default selected day
   selectedFromYear: string; // Default selected year
@@ -74,6 +74,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
   selectedToMonthInString: string;
   private selection: any;
   selectedValue: number | undefined;
+  @Output() dateEmited: EventEmitter<boolean> = new EventEmitter<boolean>(false)
 
   constructor(private shared: DriverEditSharedService) {}
 
@@ -287,6 +288,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
       this.selectedFromDate.emit(selectedFromDate);
       const selectedToDate = this.combineToIntoSingleDate();
       this.selectedToDate.emit(selectedToDate);
+      this.dateEmited.emit(true)
       this.selectedFromDateToToDate.emit(
         `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`
       );
@@ -297,6 +299,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.dateEmited.next(false)
     if (this.options?.length == 1) {
       this.inputPlaceholder = this.options[0].value;
       this.selectedValue = this.options[0].id;

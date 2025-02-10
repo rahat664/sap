@@ -14,6 +14,7 @@ import {
   ApexDataLabels,
   ApexGrid,
   ApexLegend,
+  ApexResponsive,
   ApexStroke,
   ApexTitleSubtitle,
   ApexTooltip,
@@ -35,6 +36,7 @@ export interface ChartOptions {
   legend: ApexLegend;
   colors: string[];
   tooltip: ApexTooltip;
+  responsive: ApexResponsive;
 }
 
 @Component({
@@ -47,7 +49,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
   @Input() seriesData: any = [];
-  @Input() colors: string[] = ['#1DBF73', '#208B99', '#F0614E'];
+  @Input() colors: string[] = [];
   @Input() categories: any = [];
   @Input() selectedYear: any = '';
   @Input() selectedMonth: any = '';
@@ -57,23 +59,22 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges) {
     timer(1200).subscribe(() => {
-      const selectedYear = this.selectedYear;
-      const selectedMonth = this.selectedMonth;
-      const colors = this.colors;
-      const numberOfTrips = this.numberOfTrips;
+      let colors = [],
+        numberOfTrips = [],
+        categories = [];
+      colors = this.colors;
+      numberOfTrips = this.numberOfTrips;
+      categories = this.categories;
+
       let index = -1;
       this.chartOptions = {
-        series: changes['seriesData'].currentValue
-          ? changes['seriesData'].currentValue
-          : this.seriesData,
+        series: this.seriesData,
         chart: {
           height: 350,
           type: 'line',
           zoom: {
-            enabled: false,
-          },
-          toolbar: {
-            show: false,
+            enabled: true,
+            autoScaleYaxis: true
           },
         },
         dataLabels: {
@@ -98,7 +99,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
           shared: true,
           x: {
             formatter: function (value) {
-              return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear} <b>(${numberOfTrips[value - 1] ? numberOfTrips[value - 1] : 'No'} Trips)</b>`;
+              return `${categories[value - 1]} <b>(${numberOfTrips[value - 1] ? numberOfTrips[value - 1] : 'No'} Trips)</b>`;
             },
           },
           marker: {
@@ -107,9 +108,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
           hideEmptySeries: false,
         },
         xaxis: {
-          categories: changes['categories']?.currentValue
-            ? changes['categories']?.currentValue
-            : this.categories,
+          categories: this.categories,
           floating: false,
           decimalsInFloat: 0,
           tooltip: {
@@ -129,11 +128,12 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
 
   ngOnInit() {
     timer(1200).subscribe(() => {
-      const selectedYear = this.selectedYear;
-      const selectedMonth = this.selectedMonth;
-      const colors = this.colors;
-      const numberOfTrips = this.numberOfTrips;
-      console.log(numberOfTrips);
+      let colors = [],
+        numberOfTrips = [],
+        categories = [];
+      colors = this.colors;
+      numberOfTrips = this.numberOfTrips;
+      categories = this.categories;
       let index = -1;
       this.chartOptions = {
         series: this.seriesData,
@@ -141,7 +141,8 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
           height: 350,
           type: 'line',
           zoom: {
-            enabled: false,
+            enabled: true,
+            autoScaleYaxis: true
           },
           toolbar: {
             show: false,
@@ -177,7 +178,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
           shared: true,
           x: {
             formatter: function (value) {
-              return `${value.toString().length === 1 ? '0' : ''}${value}-${selectedMonth}-${selectedYear} <b>(${numberOfTrips[value - 1] ? numberOfTrips[value - 1] : 'No'} Trips)</b>`;
+              return `${categories[value - 1]} <b>(${numberOfTrips[value - 1] ? numberOfTrips[value - 1] : 'No'} Trips)</b>`;
             },
           },
           marker: {
@@ -198,5 +199,12 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.cd.detectChanges();
+  }
+
+  private resetData() {
+    this.colors = [];
+    this.categories = [];
+    this.seriesData = [];
+    this.numberOfTrips = [];
   }
 }

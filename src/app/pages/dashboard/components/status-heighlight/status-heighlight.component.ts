@@ -28,6 +28,7 @@ export class StatusHeighlightComponent implements OnInit {
   transporterStatistics: userStats;
   driverStatistics: userStats;
   customerCode: any[];
+  dateFilterAvailable: boolean;
 
   constructor(
     private service: DashboardService,
@@ -39,8 +40,14 @@ export class StatusHeighlightComponent implements OnInit {
     // get data from query params
     this.activatedRoute.queryParams.subscribe((params) => {
       this.customerCode = params['customerCode'] ? params['customerCode'] : '';
-      this.fromDate = params['fromDate'] ? params['fromDate'] : this.countFromDateAndToDate();
-      this.toDate = params['toDate'] ? params['toDate'] : this.countFromDateAndToDate();
+      this.fromDate = params['fromDate'] ? params['fromDate'] : '';
+      this.toDate = params['toDate'] ? params['toDate'] : '';
+      if (!this.fromDate || !this.toDate) {
+        this.dateFilterAvailable = false;
+        this.countFromDateAndToDate();
+      } else {
+        this.dateFilterAvailable = true;
+      }
       this.getDashboardStats();
       this.customerStats();
     });

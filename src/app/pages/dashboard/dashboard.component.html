@@ -49,6 +49,7 @@
             (selectedFromDateToToDate)="inputPlaceholder = $event"
             inputPlaceholder="Select Date"
             [options]="dateOptionArray"
+            (dateEmited)="onDateEmited($event)"
             (selectedId)="onSelectDate($event)"></app-custom-input>
         </div>
 

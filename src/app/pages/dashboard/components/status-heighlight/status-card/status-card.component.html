@@ -19,7 +19,7 @@
         }}</span>
     </div>
   </div>
-  <span class="text-body text-secondary">
+  <span class="text-body text-secondary" *ngIf="!dateFilterAvailable">
     {{ text }}
   </span>
 </div>
