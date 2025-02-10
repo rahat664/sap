@@ -61,9 +61,9 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
     const isFromBack = !!localStorage.getItem('isBack');
     if (!isFromBack) {
       // if store the data in local storage remove it
-      localStorage.removeItem('singleTrip');
-      localStorage.removeItem('loadingEvents');
-      localStorage.removeItem('unloadingEvents');
+      sessionStorage.removeItem('singleTrip');
+      sessionStorage.removeItem('loadingEvents');
+      sessionStorage.removeItem('unloadingEvents');
       this.loading = true;
       const directChallanEdit = localStorage.getItem('directEditChallan')
         ? JSON.parse(localStorage.getItem('directEditChallan'))
@@ -77,9 +77,9 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
     } else {
       localStorage.removeItem('isBack');
       this.loading = false;
-      this.singleTrip = JSON.parse(localStorage.getItem('singleTrip'));
-      this.loadingEvents = JSON.parse(localStorage.getItem('loadingEvents'));
-      this.unloadingEvents = JSON.parse(localStorage.getItem('unloadingEvents'));
+      this.singleTrip = JSON.parse(sessionStorage.getItem('singleTrip'));
+      this.loadingEvents = JSON.parse(sessionStorage.getItem('loadingEvents'));
+      this.unloadingEvents = JSON.parse(sessionStorage.getItem('unloadingEvents'));
     }
   }
 
@@ -100,7 +100,7 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
             event => event.eventName === 'Upload loading challan'
           );
           // store the data
-          localStorage.setItem('loadingEvents', JSON.stringify(this.loadingEvents));
+          sessionStorage.setItem('loadingEvents', JSON.stringify(this.loadingEvents));
         });
       this.trip
         .getAllTripEvent(params['id'], 'Unloading')
@@ -111,11 +111,11 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
             event => event.eventName === 'Upload unloading challan'
           );
           // store the data
-          localStorage.setItem('unloadingEvents', JSON.stringify(this.unloadingEvents));
+          sessionStorage.setItem('unloadingEvents', JSON.stringify(this.unloadingEvents));
         });
       this.trip.getTripDetailsByTripId(params['id']).subscribe((res: any) => {
         this.singleTrip = res.data;
-        localStorage.setItem('singleTrip', JSON.stringify(this.singleTrip));
+        sessionStorage.setItem('singleTrip', JSON.stringify(this.singleTrip));
       });
     });
   }
