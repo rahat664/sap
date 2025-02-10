@@ -21,6 +21,7 @@ import {
   TripData,
   TripPoint,
 } from '../../../pages/manage-trip/model/trip.details.model';
+import { end } from '@popperjs/core';
 
 @Component({
   selector: 'app-g-map',
@@ -497,6 +498,7 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private resetMarkers() {
+
     this.center = {
       lat: 23.8041,
       lng: 90.4125,
@@ -1012,76 +1014,78 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
     startPoints = this.starting;
     endPoints = this.destination;
     this.endPoints = this.destination;
-    this.trip
-      .getTripHistory(
-        from,
-        to,
-        this.singleTripData?.truck?.fullRegistrationNumber
-      )
-      .subscribe(
-        (res: any) => {
-          this.clearInput.emit(true);
+    if (this.endPoints.length > 0 && from && to) {
+      this.trip
+        .getTripHistory(
+          from,
+          to,
+          this.singleTripData?.truck?.fullRegistrationNumber
+        )
+        .subscribe(
+          (res: any) => {
+            this.clearInput.emit(true);
 
-          this.initialMarker = {};
+            this.initialMarker = {};
 
-          this.connectSequentialPoints(
-            startPoints,
-            'loading',
-            res.data?.length > 0 ? 'history' : 'main'
-          );
-          this.connectPoints(
-            startPoints[startPoints.length - 1],
-            endPoints[0],
-            'loading',
-            startPoints.length - 1,
-            res.data?.length > 0 ? 'history' : 'main'
-          );
-          this.connectPoints(
-            startPoints[startPoints.length - 1],
-            endPoints[0],
-            'unloading',
-            0,
-            res.data?.length > 0 ? 'history' : 'main'
-          );
-          this.connectSequentialPoints(
-            endPoints,
-            'unloading',
-            res.data?.length > 0 ? 'history' : 'main'
-          );
-          if (res.data?.length > 0) {
-            this.connectHistoryRoute(res.data, type);
-          } else {
+            this.connectSequentialPoints(
+              startPoints,
+              'loading',
+              res.data?.length > 0 ? 'history' : 'main'
+            );
+            this.connectPoints(
+              startPoints[startPoints.length - 1],
+              endPoints[0],
+              'loading',
+              startPoints.length - 1,
+              res.data?.length > 0 ? 'history' : 'main'
+            );
+            this.connectPoints(
+              startPoints[startPoints.length - 1],
+              endPoints[0],
+              'unloading',
+              0,
+              res.data?.length > 0 ? 'history' : 'main'
+            );
+            this.connectSequentialPoints(
+              endPoints,
+              'unloading',
+              res.data?.length > 0 ? 'history' : 'main'
+            );
+            if (res.data?.length > 0) {
+              this.connectHistoryRoute(res.data, type);
+            } else {
+              if (this.lines) {
+                this.lines.forEach(line => {
+                  line.setMap(null);
+                });
+              }
+            }
+          },
+          error => {
             if (this.lines) {
               this.lines.forEach(line => {
                 line.setMap(null);
               });
             }
+            this.connectSequentialPoints(startPoints, 'loading', 'main');
+            this.connectPoints(
+              startPoints[startPoints.length - 1],
+              endPoints[0],
+              'loading',
+              startPoints.length - 1,
+              'main'
+            );
+            this.connectPoints(
+              startPoints[startPoints.length - 1],
+              endPoints[0],
+              'unloading',
+              0,
+              'main'
+            );
+            this.connectSequentialPoints(endPoints, 'unloading', 'main');
           }
-        },
-        error => {
-          if (this.lines) {
-            this.lines.forEach(line => {
-              line.setMap(null);
-            });
-          }
-          this.connectSequentialPoints(startPoints, 'loading', 'main');
-          this.connectPoints(
-            startPoints[startPoints.length - 1],
-            endPoints[0],
-            'loading',
-            startPoints.length - 1,
-            'main'
-          );
-          this.connectPoints(
-            startPoints[startPoints.length - 1],
-            endPoints[0],
-            'unloading',
-            0,
-            'main'
-          );
-          this.connectSequentialPoints(endPoints, 'unloading', 'main');
-        }
-      );
+        );
+    }
   }
 
   private connect24HoursBeforeHistoryRoute(start, end: any) {
