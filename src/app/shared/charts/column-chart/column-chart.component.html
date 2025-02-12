@@ -1,13 +1,26 @@
-<div id="chart">
-  <apx-chart
-    [series]="chartOptions?.series"
-    [chart]="chartOptions?.chart"
-    [dataLabels]="chartOptions?.dataLabels"
-    [plotOptions]="chartOptions?.plotOptions"
-    [legend]="chartOptions?.legend"
-    [fill]="chartOptions?.fill"
-    [stroke]="chartOptions?.stroke"
-    [tooltip]="chartOptions?.tooltip"
-    [xaxis]="chartOptions?.xaxis"
-    [yaxis]="chartOptions?.yaxis"></apx-chart>
+<div class="relative ">
+  <!-- Sticky Y-Axis Container -->
+  <div class="h-[calc(100%-1rem)] absolute z-10 bg-white w-9 top-[24px]" >
+    <div class="y-axis-sticky h-full" #yAxisContainer></div>
+  </div>
+
+  <!-- Scrollable Chart Container -->
+  <div class="overflow-x-auto">
+    <div class="chart-content w-full overflow-x-auto" #chartContainer style="overflow-x: auto; white-space: nowrap; width: 100%;">
+      <apx-chart
+        id="chart"
+        [series]="chartOptions?.series"
+        [chart]="chartOptions?.chart"
+        [dataLabels]="chartOptions?.dataLabels"
+        [annotations]="chartOptions?.annotations"
+        [plotOptions]="chartOptions?.plotOptions"
+        [legend]="chartOptions?.legend"
+        [fill]="chartOptions?.fill"
+        [stroke]="chartOptions?.stroke"
+        [tooltip]="chartOptions?.tooltip"
+        [xaxis]="chartOptions?.xaxis"
+        [yaxis]="chartOptions?.yaxis"
+      ></apx-chart>
+    </div>
+  </div>
 </div>

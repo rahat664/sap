@@ -3,23 +3,19 @@
     <h2 class="text-h2 leading-h2 font-semibold text-not-black pt-5">
       Created Trip vs Completed Trip
     </h2>
-    <!--    <div class="absolute top-5 right-6">-->
-    <!--      <mat-form-field appearance="outline" class="w-[12rem]">-->
-    <!--        <mat-select-->
-    <!--          formControlName="vendorId"-->
-    <!--          placeholder="Select date">-->
-    <!--          <mat-option value="all">All time</mat-option>-->
-    <!--          <mat-option value="today">Today</mat-option>-->
-    <!--          <mat-option value="all">Yesterday</mat-option>-->
-    <!--          <mat-option value="all">Last 7 days</mat-option>-->
-    <!--          <mat-option value="all">Last 15 days</mat-option>-->
-    <!--          <mat-option value="all">Last 30 days</mat-option>-->
-    <!--        </mat-select>-->
-    <!--      </mat-form-field>-->
-    <!--    </div>-->
+    <mat-form-field appearance="outline" class="w-[12rem] filter ">
+      <mat-select [(ngModel)]="datatype"
+                  (selectionChange)="changeType($event)"
+                  placeholder="Select sorting">
+        <mat-option value="monthly">Monthly</mat-option>
+        <mat-option value="daily">Daily</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
-  <app-column-chart routerLink="/trip-list" class="cursor-pointer"
-    [createdValue]="createdTrips"
-    [completedValue]="completedTrips"
-    [categories]="months"></app-column-chart>
+  <div>
+    <app-column-chart routerLink="/trip-list" class="cursor-pointer min-w-full"
+                      [createdValue]="createdTrips"
+                      [completedValue]="completedTrips"
+                      [categories]="months"></app-column-chart>
+  </div>
 </div>

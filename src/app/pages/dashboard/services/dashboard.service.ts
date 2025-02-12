@@ -9,6 +9,7 @@ export class DashboardService {
   private _dashboardUrl = `${environment.backendUrl}/api/v1/dashboard`;
   private _customerStatsUrl = `${environment.userUrl}/api/customers`;
   private _transporterRateAnalysisUrl = `${environment.backendUrl}/api/trips/transporter-rate-stats`;
+  private _dateWiseTripCountUrl = `${environment.backendUrl}/api/v1/dashboard/trips-status-count-by-date`;
 
   constructor(private http: HttpClient) {}
 
@@ -21,6 +22,20 @@ export class DashboardService {
     }
     return this.http.get(`${this._dashboardUrl}/statistics?${params.toString()}`);
   }
+
+
+  getDateWiseTripCount(from: string, to: string, type: string, customerCode?: string) {
+    const params = new URLSearchParams();
+    params.set('from', from);
+    params.set('to', to);
+    params.set('type', type);
+    if (customerCode) {
+      params.set('customerCode', customerCode);
+    }
+    return this.http.get(`${this._dateWiseTripCountUrl}?${params.toString()}`);
+  }
+
+
 
   getCustomerStats(from: string, to: string, customerCode?: string) {
     const params = new URLSearchParams();

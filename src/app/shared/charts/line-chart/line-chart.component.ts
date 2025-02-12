@@ -74,7 +74,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
           type: 'line',
           zoom: {
             enabled: true,
-            autoScaleYaxis: true
+            autoScaleYaxis: true,
           },
         },
         dataLabels: {
@@ -142,7 +142,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
           type: 'line',
           zoom: {
             enabled: true,
-            autoScaleYaxis: true
+            autoScaleYaxis: true,
           },
           toolbar: {
             show: false,
