@@ -1,11 +1,10 @@
-<div class="relative ">
+<div class="relative">
   <!-- Sticky Y-Axis Container -->
-  <div class="h-[calc(100%-1rem)] absolute z-10 bg-white w-9 top-[24px]" >
+  <div class="absolute z-10 w-9 bg-white " #yAxisStickyContainer>
     <div class="y-axis-sticky h-full" #yAxisContainer></div>
   </div>
-
   <!-- Scrollable Chart Container -->
-  <div class="overflow-x-auto">
+  <div class="overflow-x-auto w-full">
     <div class="chart-content w-full overflow-x-auto" #chartContainer style="overflow-x: auto; white-space: nowrap; width: 100%;">
       <apx-chart
         id="chart"

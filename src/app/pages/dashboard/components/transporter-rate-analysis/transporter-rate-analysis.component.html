@@ -92,11 +92,13 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <app-line-chart
-    [numberOfTrips]="numberOfTrips"
-    class="cursor-pointer"
-    [seriesData]="seriesdata"
-    [categories]="categories"
-    [colors]="colors"
+  <div>
+    <app-line-chart
+      [numberOfTrips]="numberOfTrips"
+      class="cursor-pointer min-w-full"
+      [seriesData]="seriesdata"
+      [categories]="categories"
+      [colors]="colors"
     ></app-line-chart>
+  </div>
 </div>

@@ -40,11 +40,21 @@ export class MonthWiseRevenueComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.getParamData();
+  }
+
+
+  getParamData() {
     this.activatedRoute.queryParams.subscribe(params => {
       this.customerCode = params['customerCode'] ? params['customerCode'] : '';
       if (!params['fromDate'] || !params['toDate']) {
+        this.months = [];
+        this.getLastSixMonthNames();
+        this.getLastSixMonthFromDate();
+        this.getLastSixMonthToDate();
         this.getMonthWiseTripCount();
-      } else {
+      }
+      else {
         // count that how many months in the selected date range like 2025-01-29 to 2025-02-04 will be 2 months january and february
         const fromDate = new Date(params['fromDate']);
         const toDate = new Date(params['toDate']);
@@ -76,9 +86,9 @@ export class MonthWiseRevenueComponent implements OnInit {
             i === 0
               ? params['fromDate']
               : this.datePipe.transform(
-                  new Date(fromDate.getFullYear(), fromDate.getMonth() + i, 1),
-                  'yyyy-MM-dd'
-                )
+                new Date(fromDate.getFullYear(), fromDate.getMonth() + i, 1),
+                'yyyy-MM-dd'
+              )
           );
 
           // Push the toDate for the last month or the last day of the current month in the loop
@@ -86,13 +96,13 @@ export class MonthWiseRevenueComponent implements OnInit {
             i === this.months.length - 1
               ? params['toDate']
               : this.datePipe.transform(
-                  new Date(
-                    fromDate.getFullYear(),
-                    fromDate.getMonth() + i + 1,
-                    0
-                  ),
-                  'yyyy-MM-dd'
-                )
+                new Date(
+                  fromDate.getFullYear(),
+                  fromDate.getMonth() + i + 1,
+                  0
+                ),
+                'yyyy-MM-dd'
+              )
           );
         }
         this.getMonthWiseTripCount();
@@ -179,16 +189,14 @@ export class MonthWiseRevenueComponent implements OnInit {
     // to date will be the given to date
 
     if (this.datatype === 'monthly') {
-      this.months = [];
-      this.getLastSixMonthNames();
-      this.getLastSixMonthFromDate();
-      this.getLastSixMonthToDate();
+      this.createdTrips = [];
+      this.completedTrips = [];
       this.fromDate.map((fromDate, index) => {
         // concat the form date and to date with month name like 29-31 Jan-2025
         const fromDateObj = new Date(fromDate);
         const toDateObj = new Date(this.toDate[index]);
 
-        const fromDay = this.datePipe.transform(fromDateObj, 'd'); // Get day of the month
+        const fromDay = this.datePipe.transform(fromDateObj, 'd'); // Get day of the monthR
         const toDay = this.datePipe.transform(toDateObj, 'd'); // Get day of the month
         const fromMonth = this.datePipe.transform(fromDateObj, 'MMM'); // Get month name of fromDate
         const toMonth = this.datePipe.transform(toDateObj, 'MMM'); // Get month name of toDate
@@ -217,6 +225,8 @@ export class MonthWiseRevenueComponent implements OnInit {
       });
     } else  {
       this.months = [];
+      this.createdTrips = [];
+      this.completedTrips = [];
       // calculate days between the from and to date
       const fromDate = new Date(this.from);
       const toDate = new Date(this.to);
@@ -263,6 +273,6 @@ export class MonthWiseRevenueComponent implements OnInit {
 
   changeType($event: any) {
     this.datatype = $event.value;
-    this.getMonthWiseTripCount();
+    this.getParamData()
   }
 }

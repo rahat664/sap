@@ -1,8 +1,23 @@
-<div class="px-6 pb-5 bg-white rounded-lg flex flex-col relative">
-  <div class="flex justify-between items-end z-0">
-    <h2 class="text-h2 leading-h2 font-semibold text-not-black pt-5">
-      Created Trip vs Completed Trip
-    </h2>
+<div class="px-6 py-6 bg-white rounded-lg flex flex-col">
+  <div class="flex justify-between items-start z-0">
+    <div class="flex flex-col space-y-4 text-left">
+      <h2 class="text-h2 leading-h2 font-semibold text-not-black ">
+        Created Trip vs Completed Trip
+      </h2>
+      <div>
+<!-- custom legends-->
+        <div class="flex items-center space-x-3 text-secondary">
+          <div class="flex items-center space-x-1.5">
+            <div class="w-[13px] h-[13px] bg-[#85DAE5] rounded-[2px]"></div>
+            <span class="text-xs ">Created Trips</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <div class="w-[13px] h-[13px] bg-[#208B99] rounded-[2px]"></div>
+            <span class="text-xs">Completed Trips</span>
+          </div>
+        </div>
+      </div>
+    </div>
     <mat-form-field appearance="outline" class="w-[12rem] filter ">
       <mat-select [(ngModel)]="datatype"
                   (selectionChange)="changeType($event)"

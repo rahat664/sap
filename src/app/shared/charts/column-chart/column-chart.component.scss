@@ -4,4 +4,22 @@
   text-align: center;
 }
 
+.y-axis-sticky {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 100%;
+  padding-top: 20px;
+  margin-right: 4px;
+}
+
+.y-axis-label {
+  color: #777777;
+  font-size: 12px;
+  font-family: Helvetica, Arial, sans-serif;
+  text-align: right;
+  width: 100%;
+}
+
 
