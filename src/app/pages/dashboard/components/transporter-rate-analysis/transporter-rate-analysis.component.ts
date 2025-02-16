@@ -285,7 +285,6 @@ export class TransporterRateAnalysisComponent implements OnInit {
       });
       this.colors.push('#208B99');
     } else if (this.chartType == 'all') {
-      console.log(this.categories.length);
       const singleSeriesDataHigh = Array(this.categories.length).fill(null);
       const singleSeriesDataLow = Array(this.categories.length).fill(null);
       const singleSeriesDataAverage = Array(this.categories.length).fill(null);

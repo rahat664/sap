@@ -28,9 +28,9 @@ export interface tripCountStats {
 }
 
 export interface customerStats {
-  totalCustomers: number;
-  totalCustomersOnboardedWithinGivenDateRange: number;
-  totalUsers: userStats[];
+  roleName: string;
+  totalCount: number;
+  dateFilteredCount: number;
 }
 
 export interface userStats {

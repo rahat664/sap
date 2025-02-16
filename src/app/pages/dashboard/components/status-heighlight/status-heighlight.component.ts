@@ -74,12 +74,14 @@ export class StatusHeighlightComponent implements OnInit {
       )
       .subscribe((res: any) => {
         if (res.status === 'OK') {
-          this.customerStatistics = res.data;
           this.transporterStatistics = res.data.totalUsers.find(
             user => user.roleName === 'ROLE_TRANSPORTER'
           );
           this.driverStatistics = res.data.totalUsers.find(
             user => user.roleName === 'ROLE_DRIVER'
+          );
+          this.customerStatistics = res.data.totalUsers.find(
+            customer => customer.roleName === 'ROLE_CUSTOMER_ADMIN'
           );
         }
       });
@@ -96,4 +98,5 @@ export class StatusHeighlightComponent implements OnInit {
   }
 
   protected readonly localStorage = localStorage;
+  protected readonly Math = Math;
 }

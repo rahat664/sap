@@ -292,12 +292,12 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
     chart.style.minHeight = '350px';
 
     // Remove existing x-axis (prevents duplicates)
-    const oldXAxis = document.getElementById('custom-xaxis');
+    const oldXAxis = document.getElementById('custom-xaxis-line');
     if (oldXAxis) oldXAxis.remove();
 
     // Create a new div for the custom x-axis
     const xAxisDiv = document.createElement('div');
-    xAxisDiv.setAttribute('id', 'custom-xaxis');
+    xAxisDiv.setAttribute('id', 'custom-xaxis-line');
     xAxisDiv.style.display = 'flex';
     xAxisDiv.style.justifyContent = 'space-between';
     xAxisDiv.style.left = '0';

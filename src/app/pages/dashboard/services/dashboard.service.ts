@@ -67,10 +67,17 @@ export class DashboardService {
     return this.http.get(`${this._dashboardUrl}/trips-count-by-status?${params.toString()}`);
   }
 
-  getTopTransporters(from: string, to: string, sortBy: string = 'grossProfit') {
-    return this.http.get(
-      `${this._dashboardUrl}/top-transporters?from=${from}&to=${to}&size=5&sortBy=${sortBy}`
-    );
+  getTopTransporters(from: string, to: string, sortBy: string = 'grossProfit', customerCode?: string) {
+    const params = new URLSearchParams();
+    params.set('from', from);
+    params.set('to', to);
+    params.set('sortBy', sortBy);
+    params.set('size', '5');
+    if (customerCode) {
+      params.set('customerCode', customerCode);
+    }
+    return this.http.get(`${this._dashboardUrl}/top-transporters?${params.toString()}`);
+
   }
 
   getTopCustomers(from: string, to: string, sortBy: string = 'grossProfit') {

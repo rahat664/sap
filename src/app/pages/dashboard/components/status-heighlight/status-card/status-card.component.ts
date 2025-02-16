@@ -17,4 +17,5 @@ export class StatusCardComponent {
   @Input() text: string;
   protected readonly String = String;
   @Input() dateFilterAvailable: boolean = false;
+  protected readonly Math = Math;
 }

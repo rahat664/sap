@@ -267,7 +267,7 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
       }
     });
     return `
-      <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
+      <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0; margin-right: 0.5rem">
         <div class="flex flex-col space-y-1">
           <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckData.numberPlate}</div>
           <div style="font-size: 12px; color: #777777">${this.truckData.address}</div>
@@ -276,8 +276,8 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
           <i class="far fa-times cursor-pointer"></i>
         </button>
       </div>
-      <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
-        <table id="info-table" style="width: 100%;">
+      <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424;margin-right: 0.5rem; margin-bottom: 0.5rem">
+        <table id="info-table" style="width: 100%; ">
           <tr id="tripId"  class="grid grid-cols-8 "><td class="col-span-3">Trip</td><td>:</td><td class="col-span-4 text-link cursor-pointer">${this.truckData.associatedRunningTripId ? this.truckData.associatedRunningTripId : 'N/A'}</td></tr>
           <tr class="grid grid-cols-8 "><td class="col-span-3">Time</td><td>:</td><td class="col-span-4">${this.truckData.time ? this.truckData.time : 'N/A'}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${this.truckData.stopDuration ? this.truckData.stopDuration : 'N/A'}</td></tr>

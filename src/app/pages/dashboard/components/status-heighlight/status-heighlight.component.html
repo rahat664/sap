@@ -25,7 +25,7 @@
       [value]="dateFilterAvailable ? dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange : dashboardStats?.grossProfitStat?.totalGrossProfit"
       text="{{
         dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange
-          ? (dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange
+          ? ( Math.round(dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange)
             | number)
           : 0
       }} ৳ this month"
@@ -53,8 +53,8 @@
       [value]="dateFilterAvailable ? dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange : dashboardStats?.customerRateStat?.totalCustomerRate"
       text="{{
         dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange
-          ? (dashboardStats?.customerRateStat
-              ?.totalCustomerRateWithinTheDateRange | number)
+          ? (Math.round(dashboardStats?.customerRateStat
+              ?.totalCustomerRateWithinTheDateRange) | number)
           : 0
       }} ৳ this month"
       backgroundColor="bg-[#1DBF73]"
@@ -67,7 +67,7 @@
       [value]="dateFilterAvailable ? dashboardStats?.transporterRateStats?.dateFilteredRate : dashboardStats?.transporterRateStats?.totalRate"
       text="{{
         dashboardStats?.transporterRateStats?.dateFilteredRate
-          ? (dashboardStats?.transporterRateStats?.dateFilteredRate
+          ? (Math.round(dashboardStats?.transporterRateStats?.dateFilteredRate)
             | number)
           : 0
       }} ৳ this month"
@@ -82,8 +82,8 @@
       [value]="dateFilterAvailable ? dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange : dashboardStats?.tripCountStat?.totalTripsCompleted"
       text="{{
         dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange
-          ? (dashboardStats?.tripCountStat
-              ?.totalTripsCompletedWithinTheDateRange | number)
+          ? (Math.round(dashboardStats?.tripCountStat
+              ?.totalTripsCompletedWithinTheDateRange) | number)
           : 0
       }} trip this month"
       backgroundColor="bg-[#FFA711]"
@@ -94,10 +94,10 @@
         routerLink="/profile/customer"
         icon="customers"
         title="Total Customer"
-        [value]="dateFilterAvailable ? customerStatistics?.totalCustomersOnboardedWithinGivenDateRange : customerStatistics?.totalCustomers"
+        [value]="dateFilterAvailable ? customerStatistics?.dateFilteredCount : customerStatistics?.totalCount"
         text="{{
-        customerStatistics?.totalCustomersOnboardedWithinGivenDateRange
-          ? (customerStatistics?.totalCustomersOnboardedWithinGivenDateRange
+        customerStatistics?.dateFilteredCount
+          ? (Math.round(customerStatistics?.dateFilteredCount)
             | number)
           : 0
       }} new onboarded this month"
@@ -111,7 +111,7 @@
         [value]="dateFilterAvailable ? transporterStatistics?.dateFilteredCount : transporterStatistics?.totalCount"
         text="{{
         transporterStatistics?.dateFilteredCount
-          ? (transporterStatistics?.dateFilteredCount | number)
+          ? (Math.round(transporterStatistics?.dateFilteredCount) | number)
           : 0
       }} new onboarded this month"
         backgroundColor="bg-[#0CD5F0]"
@@ -124,7 +124,7 @@
         [value]="dateFilterAvailable ? dashboardStats?.truckCountStat?.dateFilteredCount : dashboardStats?.truckCountStat?.totalCount"
         text="{{
         dashboardStats?.truckCountStat?.dateFilteredCount
-          ? (dashboardStats?.truckCountStat?.dateFilteredCount
+          ? (Math.round(dashboardStats?.truckCountStat?.dateFilteredCount)
             | number)
           : 0
       }} new onboarded this month"
@@ -138,7 +138,7 @@
         [value]="dateFilterAvailable ? driverStatistics?.dateFilteredCount : driverStatistics?.totalCount"
         text="{{
         driverStatistics?.dateFilteredCount
-          ? (driverStatistics?.dateFilteredCount | number)
+          ? (Math.round(driverStatistics?.dateFilteredCount) | number)
           : 0
       }} new onboarded this month"
         backgroundColor="bg-[#0CD5F0]"
