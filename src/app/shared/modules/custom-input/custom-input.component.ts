@@ -75,6 +75,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
   private selection: any;
   selectedValue: number | undefined;
   @Output() dateEmited: EventEmitter<boolean> = new EventEmitter<boolean>(false)
+  afterCustomSelectedValue: string;
 
   constructor(private shared: DriverEditSharedService) {}
 
@@ -279,6 +280,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
       this.options.forEach(option => {
         if (option.id === this.selection) {
           option.value = `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`;
+          this.afterCustomSelectedValue = option.value;
           option.id = 99;
           setTimeout(() => {
             select.close();
@@ -311,6 +313,14 @@ export class CustomInputComponent implements OnInit, OnChanges {
       )?.id;
     } else {
       this.selectedValue = undefined;
+    }
+    if (!this.inputSearch) {
+      this.options.forEach(option => {
+        if (option.id == 99) {
+          option.value = 'Custom';
+        }
+
+      });
     }
   }
 

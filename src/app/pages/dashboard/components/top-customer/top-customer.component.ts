@@ -50,6 +50,12 @@ export class TopCustomerComponent implements OnInit {
         this.customerFilterEnabled = false;
         this.getTopCustomers();
       }
+      if (params['fromDate'] && params['toDate']) {
+        this.fromDate = params['fromDate'];
+        this.toDate = params['toDate'];
+      } else {
+        this.getFromDateToDate();
+      }
     });
   }
 

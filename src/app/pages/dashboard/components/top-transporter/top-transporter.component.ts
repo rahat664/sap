@@ -44,9 +44,9 @@ export class TopTransporterComponent implements OnInit {
     this.loading = false;
     this.activatedRoute.queryParams.subscribe(params => {
       this.customerCode = params['customerCode'] ? params['customerCode'] : '';
-      if (params['from'] && params['to']) {
-        this.fromDate = params['from'];
-        this.toDate = params['to'];
+      if (params['fromDate'] && params['toDate']) {
+        this.fromDate = params['fromDate'];
+        this.toDate = params['toDate'];
       } else {
         this.getFromDateToDate();
       }

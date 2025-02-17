@@ -231,8 +231,9 @@ export class MonthWiseRevenueComponent implements OnInit {
       const fromDate = new Date(this.from);
       const toDate = new Date(this.to);
       const diffTime = Math.abs(toDate.getTime() - fromDate.getTime());
+      console.log(diffTime);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      for (let i = 0; i < diffDays; i++) {
+      for (let i = 0; i <= diffDays; i++) {
         const date = new Date(fromDate);
         date.setDate(date.getDate() + i);
         this.months.push(this.datePipe.transform(date, 'dd-MMM-yyyy'));
@@ -256,14 +257,25 @@ export class MonthWiseRevenueComponent implements OnInit {
           completedTrips.push(completed);
         });
         res.data?.forEach(data => {
-          const period = this.datePipe.transform(
+          const period = this.datatype === 'monthly' ? this.datePipe.transform(
             new Date(data.period),
             'MMM-yyyy'
+          ) : this.datePipe.transform(
+            new Date(data.period),
+            'dd-MMM-yyyy'
           );
-          const index = this.months.findIndex(month => month.includes(period));
-          if (index !== -1) {
-            createdTrips[index] = data.All;
-            completedTrips[index] = data.Completed;
+          if (this.datatype === 'monthly') {
+            const index = this.months.findIndex(month => month.includes(period));
+            if (index !== -1) {
+              createdTrips[index] = data.All;
+              completedTrips[index] = data.Completed;
+            }
+          } else {
+            const index = this.months.findIndex(month => month.includes(period));
+            if (index !== -1) {
+              createdTrips[index] = data.All;
+              completedTrips[index] = data.Completed;
+            }
           }
         });
         this.createdTrips = createdTrips;

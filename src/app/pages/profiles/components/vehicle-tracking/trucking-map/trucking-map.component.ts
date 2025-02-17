@@ -317,6 +317,11 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
+  ngOnDestroy(): void {
+    this.clearSubs();
+    this.stopInterval();
+  }
+
   private updateTruckDataOnly(marker: any) {
     this.subs = this.truckService.getTrackerData(this._truckId).subscribe(
       (res: any) => {

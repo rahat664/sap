@@ -919,4 +919,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
   }
+
+  protected readonly Math = Math;
 }

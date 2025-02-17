@@ -93,7 +93,8 @@ export class DashboardService {
     transporterCode?: string,
     truckType?: string,
     loadingPointDistrictName?: string,
-    unloadingPointDistrictName?: string
+    unloadingPointDistrictName?: string,
+    customerCode?: string
   ) {
     const params = new URLSearchParams();
     if (type) {
@@ -116,6 +117,9 @@ export class DashboardService {
     }
     if (unloadingPointDistrictName) {
       params.set('unloadingPointDistrictName', unloadingPointDistrictName);
+    }
+    if (customerCode) {
+      params.set('customerCode', customerCode);
     }
 
     return this.http.get(

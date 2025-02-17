@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { StatusHeighlightComponent } from './components/status-heighlight/status-heighlight.component';
 import { MonthWiseRevenueComponent } from './components/month-wise-revenue/month-wise-revenue.component';
@@ -90,6 +90,13 @@ export class DashboardComponent implements OnInit {
       },
       queryParamsHandling: 'merge',
     });
+    this.selectedCompanies = [];
+    this.inputPlaceholder='';
+  }
+
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event: any) {
+    this.onClearFilter();
   }
 
   getFilterLength() {

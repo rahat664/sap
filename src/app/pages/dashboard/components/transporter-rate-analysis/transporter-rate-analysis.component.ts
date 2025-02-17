@@ -77,6 +77,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
       this.routerSubs.unsubscribe();
     }
     this.resetColorsAndSeriesData();
+
     this.datatype = 'daily';
     this.getVehicleTypeList();
     this.getDistrictList();
