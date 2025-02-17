@@ -6,13 +6,13 @@
         type="button"
         routerLink="/trip-create/create"
         *ngIf="createButtonEnabled && !isAdmin()"
-        class="bg-primary text-white rounded-lg px-16 py-3 justify-self-end"
+        class="bg-primary text-white rounded-lg px-12 py-2 justify-self-end"
         (click)="onCreateTrip()">
         Create Trip
       </button>
     </div>
     <div
-      class="bg-white p-4 m-4 rounded-lg flex justify-between items-center"
+      class="bg-white px-4 py-2 mx-4 rounded-lg flex justify-between items-center"
       *ngIf="isAdmin()">
       <div class="flex flex-1 flex-col space-y-2 relative">
         <label for="customerName" class="form-label">Select Customer</label>
@@ -40,7 +40,7 @@
         type="button"
         routerLink="/trip-create/create"
         *ngIf="createButtonEnabled"
-        class="bg-primary text-white rounded-lg px-16 py-3 justify-self-end"
+        class="bg-primary text-white rounded-lg px-12 py-2 justify-self-end"
         (click)="onCreateTrip()">
         Create Trip
       </button>
@@ -53,7 +53,7 @@
         type="button"
         routerLink="/trip-create/create-trip-template"
         (click)="onClickAddTemplate()"
-        class="border border-primary text-primary font-semibold rounded-lg px-4 py-2">
+        class="border border-primary text-primary font-semibold rounded-lg px-12 py-2">
         Add Template
       </button>
     </div>

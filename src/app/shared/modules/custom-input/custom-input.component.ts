@@ -216,6 +216,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
   @Input() inputSearch = '';
   @Input() backgroundColor = 'input';
   @Input() errorMessage: string;
+  @Input() isFilterMenu: boolean =  true;
 
   ngOnInit(): void {
     setTimeout(() => {

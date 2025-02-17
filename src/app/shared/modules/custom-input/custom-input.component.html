@@ -1,5 +1,5 @@
 <div>
-  <mat-form-field class="w-full filter" appearance="outline">
+  <mat-form-field class="w-full {{isFilterMenu ? 'filter' : ''}}" appearance="outline">
     <mat-select
       #select
       (selectionChange)="onClickOption($event, select)"

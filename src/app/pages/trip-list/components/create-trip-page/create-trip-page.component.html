@@ -2,7 +2,7 @@
   <div class="mx-4 py-2 flex justify-between items-center sticky top-16">
     <h1 class="text-h1 leading-h1 font-semibold">New Trip</h1>
     <button
-      class="bg-primary text-white rounded-lg px-16 py-3"
+      class="bg-primary text-white rounded-lg px-12 py-2"
       (click)="onCreateTrip()">
       Create Trip
     </button>
@@ -267,7 +267,7 @@
                           (loadingPoint.get('pointName').value === '' ||
                             loadingPoint.get('pointDistrict').value === '')
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -286,7 +286,7 @@
                           loadingPoint[i]?.get('pointName')?.value === '' ||
                           loadingPoints[i]?.get('pointDistrict')?.value === ''
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -296,7 +296,7 @@
                       <h1 class="invisible">height</h1>
                       <button
                         (click)="removeLoadingPoint(i)"
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
                         <i class="fas fa-trash-alt text-red text-lg"></i>
                       </button>
                     </div>
@@ -474,7 +474,7 @@
                           (unloadingPoint.get('pointName').value === '' ||
                             unloadingPoint.get('pointDistrict').value === '')
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -493,7 +493,7 @@
                           unloadingPoints[i]?.get('pointName')?.value === '' ||
                           unloadingPoints[i]?.get('pointDistrict')?.value === ''
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -503,7 +503,7 @@
                       <h1 class="invisible">height</h1>
                       <button
                         (click)="removeUnloadingPoint(i)"
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
                         <i class="fas fa-trash-alt text-red text-lg"></i>
                       </button>
                     </div>

@@ -78,17 +78,32 @@
       (click)="localStorage.setItem('filter', 'Completed')"
       routerLink="/trip-list"
       icon="totaltrip"
-      title="Total Completed Trip"
-      [value]="dateFilterAvailable ? dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange : dashboardStats?.tripCountStat?.totalTripsCompleted"
+      title="Total Calculated Trip"
+      [value]="dateFilterAvailable ? dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailableAndDateRange : dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailable"
       text="{{
+        dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailableAndDateRange
+          ? (Math.round(dashboardStats?.tripCountStat
+              ?.totalTripsCompletedWithRatesAvailableAndDateRange) | number)
+          : 0
+      }} trip this month"
+      backgroundColor="bg-[#FFA711]"
+      textColor="text-[#CD8304]"></app-status-card>
+    <div class="col-span-5 grid grid-cols-5 gap-3">
+      <app-status-card
+        [dateFilterAvailable]="dateFilterAvailable"
+        (click)="localStorage.setItem('filter', 'Completed')"
+        routerLink="/trip-list"
+        icon="totaltrip"
+        title="Total Completed Trip"
+        [value]="dateFilterAvailable ? dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange : dashboardStats?.tripCountStat?.totalTripsCompleted"
+        text="{{
         dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange
           ? (Math.round(dashboardStats?.tripCountStat
               ?.totalTripsCompletedWithinTheDateRange) | number)
           : 0
       }} trip this month"
-      backgroundColor="bg-[#FFA711]"
-      textColor="text-[#CD8304]"></app-status-card>
-    <div class="col-span-5 grid grid-cols-4 gap-3">
+        backgroundColor="bg-[#FFA711]"
+        textColor="text-[#CD8304]"></app-status-card>
       <app-status-card
         [dateFilterAvailable]="dateFilterAvailable"
         routerLink="/profile/customer"
