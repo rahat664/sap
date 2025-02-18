@@ -63,7 +63,6 @@ export class TopTransporterComponent implements OnInit {
           this.loading = false;
         },
         error => {
-          console.error(error);
           this.loading = false;
         }
       );

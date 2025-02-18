@@ -59,7 +59,6 @@ export class LiveTripStatusComponent implements OnInit {
         }
       },
       error => {
-        console.error('Error fetching trip list:', error);
         // Optionally show an error message via toaster or other UI feedback
       }
     );

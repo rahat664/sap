@@ -1,10 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  HostListener,
+} from '@angular/core';
 import { TruckModel } from '../../../profiles/components/truck/models/truck.model';
 import { TruckService } from '../../../profiles/components/truck/services/truck.service';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { FormsModule } from '@angular/forms';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-truck-popup',
@@ -13,12 +21,14 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './truck-popup.component.scss',
 })
 export class TruckPopupComponent implements OnInit, OnDestroy {
-  private totalPages: number;
+  totalPages: number;
 
   constructor(
     private service: TruckService,
     public dialogRef: MatDialogRef<TruckPopupComponent>
   ) {}
+
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
   truckList: TruckModel[] = [];
   loading: boolean;
@@ -30,9 +40,15 @@ export class TruckPopupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.page = 0;
+    this.size = 20;
     this.loading = true;
     this.truckList = [];
     this.getTruckList();
+  }
+
+  ngAfterViewInit() {
+    this.implementScrollToLoadMoreData();
   }
 
   private getTruckList() {
@@ -43,17 +59,6 @@ export class TruckPopupComponent implements OnInit, OnDestroy {
         this.totalPages = res.data.totalPages;
         this.loading = false;
       });
-  }
-
-  onBottom($event: boolean) {
-    if ($event && this.page < this.totalPages - 1) {
-      this.page++;
-      this.service
-        .getTruckList(this.page, this.size, this.searchValue)
-        .subscribe((res: any) => {
-          this.truckList.push(...res.data.responses);
-        });
-    }
   }
 
   ngOnDestroy() {
@@ -70,12 +75,16 @@ export class TruckPopupComponent implements OnInit, OnDestroy {
   }
 
   onClickClear() {
+    this.page = 0;
+    this.size = 20;
     this.loading = true;
     this.searchValue = '';
     this.getTruckList();
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
+    this.page = 0;
+    this.size = 20;
     this.truckList = [];
     this.loading = true;
     const target = ($event.target as HTMLInputElement).value;
@@ -85,5 +94,38 @@ export class TruckPopupComponent implements OnInit, OnDestroy {
       this.searchValue = '';
     }
     this.getTruckList();
+  }
+
+  private implementScrollToLoadMoreData() {
+    timer(1000).subscribe(() => {
+      // implement scroll event
+      this.myScrollContainer.nativeElement.style.height = '100%';
+      this.myScrollContainer.nativeElement.style.minHeight = '100%';
+      this.myScrollContainer.nativeElement.style.overflow = 'auto';
+
+      this.myScrollContainer.nativeElement.addEventListener('scroll', () => {
+        this.checkIfScrollAtBottom();
+      });
+    });
+  }
+
+  checkIfScrollAtBottom() {
+    const container = this.myScrollContainer.nativeElement;
+    const atBottom =
+      container.scrollTop + container.clientHeight >=
+      container.scrollHeight - 10; // Small buffer
+
+    if (atBottom) {
+      this.loadMoreData();
+    }
+  }
+
+  loadMoreData() {
+    if (this.page > this.totalPages - 1) return;
+    this.page++;
+
+    this.service.getTruckList(this.page, this.size).subscribe((res: any) => {
+      this.truckList.push(...res.data.responses);
+    });
   }
 }

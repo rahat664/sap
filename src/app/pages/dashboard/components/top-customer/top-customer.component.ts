@@ -74,7 +74,6 @@ export class TopCustomerComponent implements OnInit {
           this.loading = false;
         },
         error => {
-          console.error(error);
           this.loading = false;
         }
       );

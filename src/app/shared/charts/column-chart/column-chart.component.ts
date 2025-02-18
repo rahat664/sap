@@ -1,12 +1,12 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
-  Input,
-  ViewChild,
-  OnInit,
-  OnChanges,
-  AfterViewInit,
   ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
 import {
   ApexAnnotations,
@@ -49,7 +49,8 @@ export class ColumnChartComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('chart') chart: ChartComponent;
   @ViewChild('chartContainer', { static: false }) chartContainer: ElementRef;
   @ViewChild('yAxisContainer', { static: false }) yAxisContainer: ElementRef;
-  @ViewChild('yAxisStickyContainer', { static: false }) yAxisStickyContainer: ElementRef;
+  @ViewChild('yAxisStickyContainer', { static: false })
+  yAxisStickyContainer: ElementRef;
   private previousYAxisNodes: NodeListOf<HTMLElement> | null = null;
   public chartOptions: Partial<ChartOptions>;
   @Input() createdValue: number[] = [];
@@ -261,7 +262,7 @@ export class ColumnChartComponent implements OnInit, OnChanges, AfterViewInit {
 
     const chartFirstChild = chartContainer.firstChild;
     if (!chartFirstChild) return;
-    const chart = chartFirstChild.firstChild
+    const chart = chartFirstChild.firstChild;
     chart.style.minHeight = '350px';
 
     // Remove existing x-axis (prevents duplicates)
@@ -309,12 +310,9 @@ export class ColumnChartComponent implements OnInit, OnChanges, AfterViewInit {
     const chartWidth = this.defaultContainerWidth;
     const labelWidth = 100;
     const requiredWidth = labels.length * labelWidth;
-    console.log(this.defaultContainerWidth, requiredWidth, chartWidth);
     const chartContainerWidth =
       requiredWidth > chartWidth ? requiredWidth : chartWidth;
-    const requiredContainerWidthInPx = `${chartContainerWidth}px`;
-    console.log(requiredContainerWidthInPx);
-    chartContainer.style.width = requiredContainerWidthInPx;
+    chartContainer.style.width = `${chartContainerWidth}px`;
 
     // Append custom x-axis below the chart
     chartContainer.appendChild(xAxisDiv);
@@ -322,45 +320,47 @@ export class ColumnChartComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   makeYAxisSticky() {
-      timer(200).subscribe(() => {
-        if (!this.yAxisContainer?.nativeElement) return;
-        const yAxisContainer = this.yAxisContainer.nativeElement;
-        while (yAxisContainer.firstChild) {
-          yAxisContainer.removeChild(yAxisContainer.firstChild);
-        }
+    timer(200).subscribe(() => {
+      if (!this.yAxisContainer?.nativeElement) return;
+      const yAxisContainer = this.yAxisContainer.nativeElement;
+      while (yAxisContainer.firstChild) {
+        yAxisContainer.removeChild(yAxisContainer.firstChild);
+      }
 
-        // Get the labels from the ApexChart instance
-        const chart = this.chartOptions?.yaxis; // Get ApexCharts instance
-        if (!chart) return;
-        const uniqueLabels = new Set<string>(); // ✅ Avoid duplicates
-        // Extract Y-axis labels from rendered SVG
-        let yAxisElements = this.chartContainer.nativeElement.querySelectorAll('.apexcharts-yaxis text tspan');
-        this.previousYAxisNodes = yAxisElements as NodeListOf<HTMLElement>;
-        if (!yAxisElements) return;
-        yAxisElements.forEach((el: any) => {
-          const label = el.textContent;
-          console.log(label);
-          if (label && !uniqueLabels.has(label)) {
-            uniqueLabels.add(label); // ✅ Track added labels to prevent repetition
-            const labelDiv = document.createElement('div');
-            labelDiv.style.color = '#777777';
-            labelDiv.style.fontSize = '12px';
-            labelDiv.style.fontWeight = 'normal';
-            labelDiv.style.textAlign = 'right';
-            labelDiv.textContent = label
-            yAxisContainer.appendChild(labelDiv);
-          }
-        });
-        const yAxisElement = this.chartContainer.nativeElement.querySelectorAll('.apexcharts-yaxis')[0] as HTMLElement;
-        const yAxisStickyElement = this.yAxisStickyContainer.nativeElement;
-        yAxisStickyElement.style.height = `382px`;
-        yAxisStickyElement.style.paddingBottom = '32px';
-        // remove y axis element from the chart
-        yAxisElement.style.display = 'none'; // ✅ Hide original Y-axis
-        console.log(yAxisElement);
-        // ✅ Force reflow for updates
-        this.cd.detectChanges();
+      // Get the labels from the ApexChart instance
+      const chart = this.chartOptions?.yaxis; // Get ApexCharts instance
+      if (!chart) return;
+      const uniqueLabels = new Set<string>(); // ✅ Avoid duplicates
+      // Extract Y-axis labels from rendered SVG
+      let yAxisElements = this.chartContainer.nativeElement.querySelectorAll(
+        '.apexcharts-yaxis text tspan'
+      );
+      this.previousYAxisNodes = yAxisElements as NodeListOf<HTMLElement>;
+      if (!yAxisElements) return;
+      yAxisElements.forEach((el: any) => {
+        const label = el.textContent;
+        if (label && !uniqueLabels.has(label)) {
+          uniqueLabels.add(label); // ✅ Track added labels to prevent repetition
+          const labelDiv = document.createElement('div');
+          labelDiv.style.color = '#777777';
+          labelDiv.style.fontSize = '12px';
+          labelDiv.style.fontWeight = 'normal';
+          labelDiv.style.textAlign = 'right';
+          labelDiv.textContent = label;
+          yAxisContainer.appendChild(labelDiv);
+        }
       });
+      const yAxisElement = this.chartContainer.nativeElement.querySelectorAll(
+        '.apexcharts-yaxis'
+      )[0] as HTMLElement;
+      const yAxisStickyElement = this.yAxisStickyContainer.nativeElement;
+      yAxisStickyElement.style.height = `382px`;
+      yAxisStickyElement.style.paddingBottom = '32px';
+      // remove y axis element from the chart
+      yAxisElement.style.display = 'none'; // ✅ Hide original Y-axis
+      // ✅ Force reflow for updates
+      this.cd.detectChanges();
+    });
     // Delay to ensure chart renders first
   }
 

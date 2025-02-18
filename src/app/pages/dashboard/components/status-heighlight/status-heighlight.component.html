@@ -34,7 +34,7 @@
     <app-status-card
       [dateFilterAvailable] = "dateFilterAvailable"
       routerLink="/trip-list"
-      icon="margin"
+      icon="gp"
       title="Total Profit Margin"
       [value]="dateFilterAvailable ? dashboardStats?.tripProfitMarginStat?.dateFilteredProfitMargin : dashboardStats?.tripProfitMarginStat?.totalProfitMargin"
       text="{{
@@ -62,7 +62,7 @@
     <app-status-card
       [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/trip-list"
-      icon="cr-d"
+      icon="tr-d"
       title="Total Transporter Rate"
       [value]="dateFilterAvailable ? dashboardStats?.transporterRateStats?.dateFilteredRate : dashboardStats?.transporterRateStats?.totalRate"
       text="{{
@@ -77,7 +77,7 @@
       [dateFilterAvailable]="dateFilterAvailable"
       (click)="localStorage.setItem('filter', 'Completed')"
       routerLink="/trip-list"
-      icon="totaltrip"
+      icon="calculated"
       title="Total Calculated Trip"
       [value]="dateFilterAvailable ? dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailableAndDateRange : dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailable"
       text="{{

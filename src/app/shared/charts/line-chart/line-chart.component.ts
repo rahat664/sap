@@ -1,12 +1,13 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Input,
-  SimpleChanges,
-  ViewChild,
   OnChanges,
   OnInit,
-  AfterViewInit, ElementRef,
+  SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import {
   ApexAnnotations,
@@ -14,7 +15,8 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexGrid,
-  ApexLegend, ApexPlotOptions,
+  ApexLegend,
+  ApexPlotOptions,
   ApexResponsive,
   ApexStroke,
   ApexTitleSubtitle,
@@ -170,7 +172,6 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
       if (!yAxisElements) return;
       yAxisElements.forEach((el: any) => {
         const label = el.textContent;
-        console.log(label);
         if (label && !uniqueLabels.has(label)) {
           uniqueLabels.add(label); // ✅ Track added labels to prevent repetition
           const labelDiv = document.createElement('div');
@@ -190,7 +191,6 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
       yAxisStickyElement.style.paddingBottom = '32px';
       // remove y axis element from the chart
       yAxisElement.style.display = 'none'; // ✅ Hide original Y-axis
-      console.log(yAxisElement);
       // ✅ Force reflow for updates
       this.cd.detectChanges();
     });
@@ -324,8 +324,8 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
         labelSpan.appendChild(labelSpan2);
       }
       labelSpan.style.display = 'inline-block';
-      labelSpan.style.minWidth = `${(this.defaultContainerWidth / labels.length) -40}px`;
-      labelSpan.style.maxWidth = `${(this.defaultContainerWidth / labels.length) - 40}px`;
+      labelSpan.style.minWidth = `${this.defaultContainerWidth / labels.length - 40}px`;
+      labelSpan.style.maxWidth = `${this.defaultContainerWidth / labels.length - 40}px`;
       labelSpan.style.color = '#777777';
       labelSpan.style.fontSize = '12px';
       labelSpan.style.fontWeight = 'normal';
@@ -340,12 +340,9 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
     const chartWidth = this.defaultContainerWidth;
     const labelWidth = 100;
     const requiredWidth = labels.length * labelWidth;
-    console.log(this.defaultContainerWidth, requiredWidth, chartWidth);
     const chartContainerWidth =
       requiredWidth > chartWidth ? requiredWidth : chartWidth;
-    const requiredContainerWidthInPx = `${chartContainerWidth}px`;
-    console.log(requiredContainerWidthInPx);
-    chartContainer.style.width = requiredContainerWidthInPx;
+    chartContainer.style.width = `${chartContainerWidth}px`;
 
     // Append custom x-axis below the chart
     chartContainer.appendChild(xAxisDiv);
