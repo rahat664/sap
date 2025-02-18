@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   selector: 'app-transporter-popup',
   imports: [
     CommonModule,
-    GiveMaxHeightDirective,
     ReactiveFormsModule,
     FormsModule,
   ],

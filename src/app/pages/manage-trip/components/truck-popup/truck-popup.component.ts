@@ -16,7 +16,7 @@ import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-truck-popup',
-  imports: [CommonModule, GiveMaxHeightDirective, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './truck-popup.component.html',
   styleUrl: './truck-popup.component.scss',
 })
