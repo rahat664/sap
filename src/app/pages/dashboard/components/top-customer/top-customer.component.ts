@@ -42,20 +42,16 @@ export class TopCustomerComponent implements OnInit {
 
   ngOnInit() {
     this.loading = false;
-    this.getFromDateToDate();
     this.activatedRoute.queryParams.subscribe(params => {
-      if (params['customerCode']) {
-        this.customerFilterEnabled = true;
-      } else {
-        this.customerFilterEnabled = false;
-        this.getTopCustomers();
-      }
+
+      this.customerFilterEnabled = !!params['customerCode'];
       if (params['fromDate'] && params['toDate']) {
         this.fromDate = params['fromDate'];
         this.toDate = params['toDate'];
       } else {
         this.getFromDateToDate();
       }
+      this.getTopCustomers();
     });
   }
 

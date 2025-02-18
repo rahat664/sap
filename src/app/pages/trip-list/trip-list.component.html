@@ -58,10 +58,11 @@
           >
           <mat-form-field
             appearance="outline"
-            class="example-full-width relative filter">
+            class="example-full-width relative   filter">
             <input
               id="customerName"
               type="text"
+              class="inline-block pr-2"
               matInput
               (keyup)="onSearchInputChange($event)"
               [(ngModel)]="searchName"
@@ -80,7 +81,7 @@
               type="button"
               (click)="onClickClearCompany()"
               *ngIf="searchValue"
-              class="absolute inset-y-0 bottom-6 bg-input right-0 flex items-center">
+              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
@@ -110,7 +111,7 @@
               type="button"
               (click)="onClickClearTransporter()"
               *ngIf="transporterName"
-              class="absolute inset-y-0 bottom-6 bg-input flex items-center">
+              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
@@ -140,7 +141,7 @@
               type="button"
               (click)="onClickClearTripId()"
               *ngIf="tripId"
-              class="absolute inset-y-0 bottom-6 bg-input right-0 flex items-center">
+              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
