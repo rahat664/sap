@@ -79,6 +79,9 @@ export class NewTripComponent implements OnInit, OnDestroy {
     } else {
       this.dontClearLocalStorage = false;
     }
+    if (localStorage.getItem('tripData')) {
+      localStorage.removeItem('tripData');
+    }
     this.manageStore();
     if (this.isAdmin()) {
       const selectedCustomer = localStorage.getItem('selectedCustomer');
