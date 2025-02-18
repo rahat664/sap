@@ -35,6 +35,8 @@ import { TruckModel } from '../../truck/models/truck.model';
     MatAutocompleteTrigger,
     MatAutocomplete,
     MatOption,
+    MatSelect,
+    MatInput,
   ],
   templateUrl: './add-tracker.component.html',
   styleUrl: './add-tracker.component.scss',

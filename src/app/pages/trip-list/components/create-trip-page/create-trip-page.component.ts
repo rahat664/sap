@@ -165,6 +165,9 @@ export class CreateTripPageComponent implements OnInit {
           case 'unloadingPointDistrict':
             field = 'Unloading Point District';
             break;
+          case 'paymentType':
+            field = 'Payment Type';
+            break;
           case 'unloadingPointName':
             field = 'Unloading Point Name';
             break;
@@ -363,7 +366,7 @@ export class CreateTripPageComponent implements OnInit {
       truckSize: ['', Validators.required],
       truckCapacityInTon: ['', Validators.required],
       goodsId: [''],
-      paymentType: [''],
+      paymentType: ['', Validators.required],
       goodsName: ['', Validators.required],
       customerRate: [null],
       note: [''],

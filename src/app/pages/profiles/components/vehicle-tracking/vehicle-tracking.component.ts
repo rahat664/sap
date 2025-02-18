@@ -377,6 +377,10 @@ export class VehicleTrackingComponent implements OnInit {
   onClickClear() {
     this.searchTruckValue = '';
     this.allTruckSearchSubject.next('');
+    this.truckRegistrationId = '';
+    this.truckLocationPosition = [];
+    this.trackerEnabledTrucks = [];
+    this.getTruckList();
   }
 
   getColorByConditon(currentCondition: string | undefined, type: string) {
@@ -433,7 +437,13 @@ export class VehicleTrackingComponent implements OnInit {
   }
 
   onClickSingleTruck(fullRegistrationNumber: string | undefined) {
+    this.allTruckSearchSubject.next(fullRegistrationNumber);
+    this.searchTruckValue = fullRegistrationNumber;
+    this.truckRegistrationId = fullRegistrationNumber;
     this.selectedTruckNumber = fullRegistrationNumber;
+    this.truckLocationPosition = [];
+    this.trackerEnabledTrucks = [];
+    this.getTruckList();
     this.singleTruckButtonDisable = true;
     timer(2100).subscribe(() => {
       this.singleTruckButtonDisable = false;

@@ -133,8 +133,11 @@ export class TransporterComponent implements OnInit {
     this.getTransporterList();
   }
 
-  copyNumber($event: MouseEvent, phone: string) {
+  copyNumber($event, createdByPhone: string) {
     $event.stopPropagation();
+    // remove first 3 characters from the phone number
+    const phone = createdByPhone.slice(3);
+    // copy the phone number to the clipboard
     this.service.copyToClipboard(phone);
   }
 }

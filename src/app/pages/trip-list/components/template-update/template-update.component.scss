@@ -19,7 +19,7 @@
 }
 
 .circle {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   width: 9px;
   height: 9px;
   border-radius: 50%; /* Color of the circle */
@@ -29,4 +29,17 @@
 }
 .p {
   margin: 0;
+}
+
+
+::ng-deep .mat-mdc-menu-panel {
+  max-width: 25rem !important;
+}
+
+::ng-deep .mat-mdc-menu-content {
+  padding: 0 8px !important;
+}
+
+::ng-deep .mat-mdc-icon-button {
+  margin-bottom: 44px !important;
 }

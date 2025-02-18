@@ -22,7 +22,6 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
       ? '0' + (new Date().getMonth() + 1).toString()
       : (new Date().getMonth() + 1).toString();
   const selectedYear = new Date().getFullYear();
-  const value = `${selectedYear}-${selectedMonth}`;
 
   // Emit a loading state before data is resolved
   const loadingState = of({
@@ -40,7 +39,7 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
         topTransporters: dashboardService.getTopTransporters(from, to),
         topCustomers: dashboardService.getTopCustomers(from, to),
         transporterRateAnalysisData:
-          dashboardService.getTransporterRateAnalysisData(type, value),
+          dashboardService.getTransporterRateAnalysisData(type, from, to),
       }).pipe(
         map(data => {
           return {

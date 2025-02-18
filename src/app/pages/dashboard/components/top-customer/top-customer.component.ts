@@ -6,7 +6,7 @@ import { MatSelect } from '@angular/material/select';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { TopCustomers } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 
@@ -32,16 +32,27 @@ export class TopCustomerComponent implements OnInit {
   toDate: string;
   sortBy: string = 'grossProfit';
   loading: boolean;
+  customerFilterEnabled: boolean = false;
 
   constructor(
     private datePipe: DatePipe,
-    private service: DashboardService
+    private service: DashboardService,
+    private activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit() {
     this.loading = false;
-    this.getFromDateToDate();
-    this.getTopCustomers();
+    this.activatedRoute.queryParams.subscribe(params => {
+
+      this.customerFilterEnabled = !!params['customerCode'];
+      if (params['fromDate'] && params['toDate']) {
+        this.fromDate = params['fromDate'];
+        this.toDate = params['toDate'];
+      } else {
+        this.getFromDateToDate();
+      }
+      this.getTopCustomers();
+    });
   }
 
   private getFromDateToDate() {

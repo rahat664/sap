@@ -107,6 +107,7 @@
       <div class="flex flex-col space-y-2 lg:col-span-2 w-full">
         <label for="preferredPaymentMethod">Preferred Payment Method</label>
         <app-custom-input
+          [isFilterMenu]="false"
           id="preferredPaymentMethod"
           [inputSearch]="paymentInputPlaceholder"
           [options]="paymentOptionsArray"
@@ -220,7 +221,7 @@
       </div>
       <div class="lg:col-span-2 pb-4">
         <button
-          class="float-end py-[0.875rem] px-[5.125rem] flex justify-center items-center rounded-lg bg-primary text-white">
+          class="float-end px-12 py-2 flex justify-center items-center rounded-lg bg-primary text-white">
           <span>Save</span>
         </button>
       </div>

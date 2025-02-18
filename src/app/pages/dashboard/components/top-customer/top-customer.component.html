@@ -21,7 +21,7 @@
       <span class="text-center">CR(৳)</span>
       <span class="text-center">GP(৳)</span>
     </div>
-    <ng-container *ngIf="!loading">
+    <ng-container *ngIf="!loading && !customerFilterEnabled">
       <div class="flex flex-col space-y-5">
         <ng-container *ngFor="let customer of topCustomer">
           <div
@@ -49,6 +49,22 @@
     <ng-container *ngIf="loading">
       <div class="min-h-60 w-full flex items-center justify-center">
         <app-loading></app-loading>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!loading && customerFilterEnabled">
+      <div class="min-h-60 w-full flex items-center justify-center">
+        <div
+          class="w-full flex flex-col space-y-3 justify-center items-center">
+          <img
+            loading="lazy"
+            src="assets/svg/no-data.svg"
+            class="notPreview"
+            alt="nodata"/>
+          <p
+            class="text-body_title leading-body_title text-secondary font-semibold">
+            Top customer not allowed
+          </p>
+        </div>
       </div>
     </ng-container>
   </div>

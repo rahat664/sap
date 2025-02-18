@@ -296,7 +296,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.chalanStatus = '';
     this.status = 'Completed';
     this.getFromDateAndToDate();
-    this.getChallanStatus();
     this.loading = true;
     this.anotherStatusCalled = false;
     this.generateDateOptionsArray();
@@ -920,4 +919,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
   }
+
+  protected readonly Math = Math;
 }

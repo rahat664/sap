@@ -6,6 +6,7 @@ import { DialogDataComponent } from '../dialog-data/dialog-data.component';
 import { ConfirmUpdateComponent } from '../confirm-update/confirm-update.component';
 import { MatDialog } from '@angular/material/dialog';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import { PaymentType } from '../../../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-trip-info',
@@ -134,7 +135,10 @@ export class TripInfoComponent implements OnInit {
 
   copyNumber($event, createdByPhone: string) {
     $event.stopPropagation();
-    this.trip.copyToClipboard(createdByPhone);
+    // remove first 3 characters from the phone number
+    const phone = createdByPhone.slice(3);
+    // copy the phone number to the clipboard
+    this.trip.copyToClipboard(phone);
   }
 
   getLoadingPoint(tripPoints: TripPoint[]) {
@@ -143,5 +147,15 @@ export class TripInfoComponent implements OnInit {
 
   getUnloadingPoint(tripPoints: TripPoint[]) {
     return tripPoints.filter(point => point.pointType === 'Unloading');
+  }
+
+  getNameFromEnum(paymentType: string) {
+    if (paymentType === PaymentType.CASH) {
+      return 'Cash';
+    } else if (paymentType === PaymentType.INVOICE) {
+      return 'Invoice';
+    } else {
+      return 'Cash & Invoice';
+    }
   }
 }

@@ -304,7 +304,21 @@
           >
         </h1>
       </div>
-
+      <div class="flex flex-col space-y-2" *ngIf="isAdmin()">
+        <div class="flex space-x-3 items-center">
+          <img
+            loading="lazy"
+            class="h-6 w-6 notPreview"
+            src="assets/svg/cr.svg"/>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Payment type
+          </h1>
+        </div>
+        <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
+          {{ getNameFromEnum(tripDetails.paymentType) }}
+        </h1>
+      </div>
       <div
         class="flex flex-col space-y-2"
         *ngIf="tripDetails.transporterCode && isAdmin()">

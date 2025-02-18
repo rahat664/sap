@@ -926,6 +926,7 @@ export class TripUpdateComponent implements OnInit {
             'd MMM yyyy, hh:mm a'
           )
         );
+      this.returnToInputDate = new Date(tripData.tripStartDatetime);
       this.tripUpdateForm
         .get('categoryId')
         .setValue(tripData.vehicleCategory.id);

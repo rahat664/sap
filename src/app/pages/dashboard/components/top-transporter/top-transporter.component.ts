@@ -6,7 +6,7 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { TopTransporters } from '../../models/dashboard-stats.model';
 import { DashboardService } from '../../services/dashboard.service';
 import { CommonModule, DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 
@@ -32,21 +32,31 @@ export class TopTransporterComponent implements OnInit {
   toDate: string;
   sortBy = 'grossProfit';
   loading: boolean;
+  customerCode: string;
 
   constructor(
     private service: DashboardService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
     this.loading = false;
-    this.getFromDateToDate();
-    this.getTopTransporters();
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.customerCode = params['customerCode'] ? params['customerCode'] : '';
+      if (params['fromDate'] && params['toDate']) {
+        this.fromDate = params['fromDate'];
+        this.toDate = params['toDate'];
+      } else {
+        this.getFromDateToDate();
+      }
+      this.getTopTransporters();
+    } )
   }
 
   private getTopTransporters() {
     this.service
-      .getTopTransporters(this.fromDate, this.toDate, this.sortBy)
+      .getTopTransporters(this.fromDate, this.toDate, this.sortBy, this.customerCode)
       .subscribe(
         (res: any) => {
           this.topTransporter = res.data.content;

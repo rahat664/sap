@@ -28,7 +28,7 @@
       <button
         [matMenuTriggerFor]="menu"
         *ngIf="
-          tripDetails.status != 'Completed' && tripDetails.status != 'Cancelled'
+          tripDetails.status !== 'Completed' && tripDetails.status !== 'Cancelled'
         ">
         <img
           loading="lazy"
@@ -59,8 +59,8 @@
         <button
           (click)="onClickAssignButton()"
           *ngIf="
-            tripDetails.status == 'Booked' &&
-            getAssignButtonName(tripDetails) != '' &&
+            tripDetails.status === 'Booked' &&
+            getAssignButtonName(tripDetails) !== '' &&
             isAdmin()
           "
           class="bg-white px-6 py-2 font-semibold text-primary rounded-lg border border-primary">
@@ -69,8 +69,8 @@
         <button
           (click)="onClickButton()"
           *ngIf="
-            tripDetails?.status != 'Completed' &&
-            tripDetails?.status != 'Cancelled' &&
+            tripDetails?.status !== 'Completed' &&
+            tripDetails?.status !== 'Cancelled' &&
             isAdmin()
           "
           class="bg-primary px-6 py-2 font-semibold rounded-lg text-white">
@@ -155,7 +155,7 @@
               class="text-2xl z-20 relative text-red"
               *ngIf="
                 timeline.cancelled &&
-                tripDetails.status == 'Cancelled' &&
+                tripDetails.status === 'Cancelled' &&
                 !timeline.active
               ">
               <i class="far fa-times"></i>

@@ -58,11 +58,11 @@
           >
           <mat-form-field
             appearance="outline"
-            class="example-full-width filter">
+            class="example-full-width relative   filter">
             <input
-              style="padding-right: 20px"
               id="customerName"
               type="text"
+              class="inline-block pr-2"
               matInput
               (keyup)="onSearchInputChange($event)"
               [(ngModel)]="searchName"
@@ -81,18 +81,17 @@
               type="button"
               (click)="onClickClearCompany()"
               *ngIf="searchValue"
-              class="absolute inset-y-0 right-0 flex items-center mb-4">
-              <i class="fal fa-times text-gray-500 text-xl"></i>
+              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
         </div>
-        <div class="flex flex-col space-y-1 w-[14.375rem] ">
+        <div class="flex flex-col space-y-1 w-[14.375rem]">
           <label class="text-body text-web-text-secondary px-2"
           >Transporter Name
           </label>
           <mat-form-field appearance="outline" class="example-full-width filter">
             <input
-              style="padding-right: 20px"
               type="text"
               matInput
               (keyup)="onKeyUpTransporterSearch($event)"
@@ -112,8 +111,8 @@
               type="button"
               (click)="onClickClearTransporter()"
               *ngIf="transporterName"
-              class="absolute inset-y-0 right-0 flex items-center mb-4">
-              <i class="fal fa-times text-gray-500 text-xl"></i>
+              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
         </div>
@@ -123,7 +122,6 @@
             appearance="outline"
             class="example-full-width relative filter">
             <input
-              style="padding-right: 20px"
               type="text"
               matInput
               (keyup)="onKeyUpTripSearch($event)"
@@ -143,8 +141,8 @@
               type="button"
               (click)="onClickClearTripId()"
               *ngIf="tripId"
-              class="absolute inset-y-0 right-0 flex items-center mb-4">
-              <i class="fal fa-times text-gray-500 text-xl"></i>
+              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
         </div>
@@ -266,7 +264,7 @@
         <th class="text-left" *ngIf="isAdmin()">GP(৳)</th>
       </tr>
       <tr>
-        <th class="border" [colSpan]="isAdmin() ? 9 : 6"></th>
+        <th class="custom-border" [colSpan]="isAdmin() ? 10 : 7"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -285,8 +283,8 @@
           <td class="whitespace-nowrap" *ngIf="isAdmin()">
             {{ trip.customerName }}
           </td>
-          <td class="whitespace-nowrap" *ngIf="isAdmin()">
-            {{ trip.transporterName }}
+          <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin()">
+            {{ trip.transporterName ? trip.transporterName : 'Transporter not assigned' }}
           </td>
           <td class="whitespace-nowrap">
             <p>
@@ -333,7 +331,7 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="isAdmin() ? 9 : 6">
+          <td class="text-center" [colSpan]="isAdmin() ? 10 : 7">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
