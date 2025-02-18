@@ -172,8 +172,8 @@
                 Payment type
               </h1>
             </div>
-            <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
-              {{ tripData.paymentType === 'BOTH' ? 'Cash & Invoice' : tripData.paymentType }}
+            <h1 class="text-body w-1/2 text-wrap text-web-text-secondary" >
+              {{ getNameFromEnum(tripData.paymentType) }}
             </h1>
           </div>
           <div class="flex flex-col space-y-2">

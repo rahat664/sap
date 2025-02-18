@@ -316,7 +316,7 @@
           </h1>
         </div>
         <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
-          {{ tripDetails.paymentType === 'BOTH' ? 'Cash & Invoice' : tripDetails.paymentType }}
+          {{ getNameFromEnum(tripDetails.paymentType) }}
         </h1>
       </div>
       <div

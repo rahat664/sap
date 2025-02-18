@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import { PaymentType } from '../../../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-trip-create-overview',
@@ -30,6 +31,7 @@ export class TripCreateOverviewComponent implements OnInit {
   vehicleType: any;
   tripTemplateName: string;
   loading: boolean;
+  paymentType: PaymentType;
 
   constructor(
     private service: TripService,
@@ -218,5 +220,15 @@ export class TripCreateOverviewComponent implements OnInit {
   isAdmin() {
     const role = localStorage.getItem('role');
     return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
+
+  getNameFromEnum(paymentType: string) {
+    if (paymentType === PaymentType.CASH) {
+      return 'Cash';
+    } else if (paymentType === PaymentType.INVOICE) {
+      return 'Invoice';
+    } else {
+      return 'Cash & Invoice';
+    }
   }
 }

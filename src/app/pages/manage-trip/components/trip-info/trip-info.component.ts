@@ -6,6 +6,7 @@ import { DialogDataComponent } from '../dialog-data/dialog-data.component';
 import { ConfirmUpdateComponent } from '../confirm-update/confirm-update.component';
 import { MatDialog } from '@angular/material/dialog';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import { PaymentType } from '../../../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-trip-info',
@@ -146,5 +147,15 @@ export class TripInfoComponent implements OnInit {
 
   getUnloadingPoint(tripPoints: TripPoint[]) {
     return tripPoints.filter(point => point.pointType === 'Unloading');
+  }
+
+  getNameFromEnum(paymentType: string) {
+    if (paymentType === PaymentType.CASH) {
+      return 'Cash';
+    } else if (paymentType === PaymentType.INVOICE) {
+      return 'Invoice';
+    } else {
+      return 'Cash & Invoice';
+    }
   }
 }
