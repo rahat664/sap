@@ -284,9 +284,9 @@ export class MonthWiseRevenueComponent implements OnInit {
         });
 
         this.createdTrips =
-          this.datatype === 'daily' ? createdTrips.reverse() : createdTrips;
+          createdTrips;
         this.completedTrips =
-          this.datatype === 'daily' ? completedTrips.reverse() : completedTrips;
+           completedTrips;
       });
   }
 
