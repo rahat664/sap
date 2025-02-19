@@ -179,35 +179,45 @@ export class TransporterRateAnalysisComponent implements OnInit {
       }
       const firstMonthStartingDate = new Date(this.fromDate);
       // if the first month is not starting from the first date then apply a logic
-      if (firstMonthStartingDate.getDate() != 1) {
-        const firstMonthDays = new Date(
-          firstMonthStartingDate.getFullYear(),
-          firstMonthStartingDate.getMonth() + 1,
-          0
-        ).getDate();
+
+      //if fromdate and toDate month is same then we need to show only one month
+      if (this.categories.length == 1) {
         this.categories[0] =
           this.categories[0] +
           '|' +
           firstMonthStartingDate.getDate() +
           '-' +
-          firstMonthDays;
-      }
+          endDate.getDate();
+      } else {
+        if (firstMonthStartingDate.getDate() != 1) {
+          const firstMonthDays = new Date(
+            firstMonthStartingDate.getFullYear(),
+            firstMonthStartingDate.getMonth() + 1,
+            0
+          ).getDate();
+          this.categories[0] =
+            this.categories[0] +
+            '|' +
+            firstMonthStartingDate.getDate() +
+            '-' +
+            firstMonthDays;
+        }
 
-      const lastMonthEndingDate = new Date(this.toDate);
-      // if the last month is not ending at the last date then apply a logic
-      if (lastMonthEndingDate.getDate() != 1) {
-        const lastMonthDays = new Date(
-          lastMonthEndingDate.getFullYear(),
-          lastMonthEndingDate.getMonth() + 1,
-          0
-        ).getDate();
-        this.categories[this.categories.length - 1] =
-          this.categories[this.categories.length - 1] +
-          '|' +
-          '1-' +
-          lastMonthEndingDate.getDate();
+        const lastMonthEndingDate = new Date(this.toDate);
+        // if the last month is not ending at the last date then apply a logic
+        if (lastMonthEndingDate.getDate() != 1) {
+          const lastMonthDays = new Date(
+            lastMonthEndingDate.getFullYear(),
+            lastMonthEndingDate.getMonth() + 1,
+            0
+          ).getDate();
+          this.categories[this.categories.length - 1] =
+            this.categories[this.categories.length - 1] +
+            '|' +
+            '1-' +
+            lastMonthEndingDate.getDate();
+        }
       }
-
     }
 
     this.service
