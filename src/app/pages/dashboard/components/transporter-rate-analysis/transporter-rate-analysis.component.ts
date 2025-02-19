@@ -416,6 +416,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
         }
       }
     } else {
+      debugger;
       const monthNames = [
         'Jan',
         'Feb',
@@ -431,7 +432,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
         'Dec',
       ];
 
-      const selectedMonthName = monthNames[date];
+      const selectedMonthName = monthNames[date-1];
 
       for (let i = 0; i < this.categories?.length; i++) {
         if (this.categories[i].includes(selectedMonthName)) {
@@ -439,6 +440,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
         }
       }
     }
+    console.log('selected index', selectedIndex);
     return selectedIndex;
   }
 }
