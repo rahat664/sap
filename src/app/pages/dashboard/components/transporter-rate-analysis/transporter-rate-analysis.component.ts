@@ -277,9 +277,10 @@ export class TransporterRateAnalysisComponent implements OnInit {
             ? parseInt(splitedDate[2])
             : parseInt(splitedDate[1]);
         // if date starting from 0 then remove the 0
-        singleSeriesData[date - 1] =
+        const selectedIndex = this.findIndexOfDate(date, this.datatype);
+        singleSeriesData[selectedIndex] =
           item.minRate != null ? item.maxRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
+        this.numberOfTrips[selectedIndex] = item.totalTrips ? item.totalTrips : 0;
       });
       this.seriesdata.push({
         name: 'Highest Rate',
@@ -298,9 +299,10 @@ export class TransporterRateAnalysisComponent implements OnInit {
             ? parseInt(splitedDate[2])
             : parseInt(splitedDate[1]);
         // if date starting from 0 then remove the 0
-        singleSeriesData[date - 1] =
+        const selectedIndex = this.findIndexOfDate(date, this.datatype);
+        singleSeriesData[selectedIndex] =
           item.minRate != null ? item.minRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
+        this.numberOfTrips[selectedIndex] = item.totalTrips ? item.totalTrips : 0;
       });
       this.seriesdata.push({
         name: 'Lowest Rate',
@@ -318,9 +320,10 @@ export class TransporterRateAnalysisComponent implements OnInit {
             ? parseInt(splitedDate[2])
             : parseInt(splitedDate[1]);
         // if date starting from 0 then remove the 0
-        singleSeriesData[date - 1] =
+        const selectedIndex = this.findIndexOfDate(date, this.datatype);
+        singleSeriesData[selectedIndex] =
           item.avgRate != null ? item.avgRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
+        this.numberOfTrips[selectedIndex] = item.totalTrips ? item.totalTrips : 0;
       });
       this.seriesdata.push({
         name: 'Average Rate',
