@@ -143,7 +143,7 @@ export class TripUpdateComponent implements OnInit {
             };
             if (
               this.tripUpdateForm.get('truckId').value &&
-              this.tripUpdateForm.get('truckId').value !== tripData.truck.id
+              this.tripUpdateForm.get('truckId').value !== tripData.truck?.id
             ) {
               body['truckId'] = this.tripUpdateForm.get('truckId').value;
             }
