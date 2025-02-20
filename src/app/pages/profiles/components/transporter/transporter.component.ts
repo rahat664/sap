@@ -61,6 +61,7 @@ export class TransporterComponent implements OnInit {
 
   onKeyUpSearch($event: KeyboardEvent) {
     this.page = 0;
+    this.size = 20;
     const value = ($event.target as HTMLInputElement).value;
     if (value?.length > 0) {
       this.searchValue = value;
@@ -79,21 +80,21 @@ export class TransporterComponent implements OnInit {
           .getTransporter(this.page, this.size, this.searchValue)
           .pipe(debounceTime(1000))
           .subscribe((res: any) => {
-            this.transporterList.push(...res.data.responses);
+            this.transporterList.push(...res.data);
           });
       } else {
         this.service
           .getTransporter(this.page, this.size)
           .subscribe((res: any) => {
-            this.transporterList.push(...res.data.responses);
+            this.transporterList.push(...res.data);
           });
       }
     }
   }
 
   ngOnInit(): void {
-    this.searchValue = '';
-    this.page = 0;
+    this.page=0;
+    this.size=20;
     this.getTransporterList();
   }
 
@@ -104,16 +105,16 @@ export class TransporterComponent implements OnInit {
         .getTransporter(this.page, this.size, this.searchValue)
         .pipe(debounceTime(1000))
         .subscribe((res: any) => {
-          this.transporterList = res.data.responses;
-          this.totalPages = res.data.totalPages;
+          this.transporterList = res.data;
+          this.totalPages = res.meta.totalPageCount;
           this.loading = false;
         });
     } else {
       this.service
         .getTransporter(this.page, this.size)
         .subscribe((res: any) => {
-          this.transporterList = res.data.responses;
-          this.totalPages = res.data.totalPages;
+          this.transporterList = res.data;
+          this.totalPages = res.meta.totalPageCount;
           this.loading = false;
         });
     }

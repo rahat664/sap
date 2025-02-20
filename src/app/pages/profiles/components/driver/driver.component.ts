@@ -385,7 +385,7 @@ export class DriverComponent implements OnInit {
   checkThatFileIsExistOrNot(fileName: any, truckDocumentList: any[]) {
     let isExist = false;
     let expDate = '';
-    truckDocumentList.forEach(doc => {
+    truckDocumentList?.forEach(doc => {
       if (doc.documentType == this.driverEnum[fileName]) {
         isExist = true;
         expDate = doc?.expiryDate;

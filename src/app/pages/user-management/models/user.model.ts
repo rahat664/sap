@@ -54,4 +54,6 @@ export class UserModel {
   grossProfit: number;
   numberOfTrips: number;
   rank: number;
+  createdAt: string;
+  contactPersonNumber: string;
 }
