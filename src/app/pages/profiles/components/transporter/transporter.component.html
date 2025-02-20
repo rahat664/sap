@@ -96,22 +96,22 @@
           </td>
           <td>
             {{
-              transporter.numberOfTrips !== null
-                ? transporter.numberOfTrips
+              transporter.rank?.numberOfTrips !== null
+                ? (Math.round(transporter.rank?.numberOfTrips) | number)
                 : '0'
             }}
           </td>
           <td>
             {{
-              transporter.grossProfit !== null
-                ? (transporter.grossProfit | number)
-                : '0'
+              transporter.rank?.grossProfit !== null
+                ? (Math.round(transporter.rank?.grossProfit) | number)
+                : 'N/A'
             }}
           </td>
           <td>
             {{
-              transporter.rank !== null && transporter.rank > 0
-                ? transporter.rank
+              transporter.rank?.rank !== null && transporter.rank?.rank > 0
+                ? Math.round(transporter.rank?.rank)
                 : 'N/A'
             }}
           </td>
