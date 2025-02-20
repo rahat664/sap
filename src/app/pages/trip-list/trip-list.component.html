@@ -176,17 +176,22 @@
         <div
           class="flex justify-between space-x-16 items-center text-web-text-secondary py-4 px-3 border-b border-[#F0F0F0]">
           <span>Customer Rate (CR)</span>
-          <span>{{ (summary.crs ? summary.crs : 0) | number }} ৳</span>
+          <span>{{ (summary.crs ? Math.round(summary.crs) : 0) | number }} ৳</span>
         </div>
         <div
           class="flex justify-between items-center py-4 px-3 text-web-text-secondary border-b border-[#F0F0F0]">
           <span>Transporter Rate (TR)</span>
-          <span>{{ (summary.trs ? summary.trs : 0) | number }} ৳</span>
+          <span>{{ (summary.trs ? Math.round(summary.trs) : 0) | number }} ৳</span>
+        </div>
+        <div
+          class="flex justify-between items-center text-web-text-secondary py-4 px-3 border-b border-[#F0F0F0]">
+          <span>Gross Profit (GP)</span>
+          <span>{{ (summary.gps ? Math.round(summary.gps) : 0) | number }} ৳</span>
         </div>
         <div
           class="flex justify-between items-center text-web-text-secondary py-4 px-3">
-          <span>Gross Profit (GP)</span>
-          <span>{{ (summary.gps ? summary.gps : 0) | number }} ৳</span>
+          <span>Profit Margin</span>
+          <span>{{ (summary.pms ? summary.pms : 0) | number }}%</span>
         </div>
       </div>
       <div
@@ -251,7 +256,7 @@
       class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
       <tr class="whitespace-nowrap bg-white text-not-black">
-        <th class="text-left">Trip Number</th>
+        <th class="text-left sticky left-0 bg-white">Trip Number</th>
         <th class="text-left whitespace-nowrap">Trip Date</th>
         <th class="text-left" *ngIf="isAdmin()">Company</th>
         <th class="text-left" *ngIf="isAdmin()">Transporter</th>
@@ -262,15 +267,16 @@
         <th class="text-left" *ngIf="isAdmin()">CR(৳)</th>
         <th class="text-left" *ngIf="isAdmin()">TR(৳)</th>
         <th class="text-left" *ngIf="isAdmin()">GP(৳)</th>
+        <th class="text-left" *ngIf="isAdmin()">Profit Margin</th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="isAdmin() ? 10 : 7"></th>
+        <th class="custom-border" [colSpan]="isAdmin() ? 11 : 7"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
         <tr *ngFor="let trip of tripList; index as i">
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap sticky left-0 bg-white">
             <a
               class="text-link cursor-pointer"
               (click)="onClickTripNumber(trip.tripId)">
@@ -327,11 +333,16 @@
                 : (getCountOfGp(trip) | number)
             }}
           </td>
+          <td *ngIf="isAdmin()">
+            {{
+              (trip.profitMargin > 0 ? (trip.profitMargin | number)+ '%'  : "N/A")
+            }}
+          </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="isAdmin() ? 10 : 7">
+          <td class="text-center" [colSpan]="isAdmin() ? 11 : 7">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
@@ -349,7 +360,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="isAdmin() ? 9 : 6">
+          <td class="h-full" [colSpan]="isAdmin() ? 11 : 7">
             <app-loading></app-loading>
           </td>
         </tr>

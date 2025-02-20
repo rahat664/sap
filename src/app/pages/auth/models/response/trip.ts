@@ -14,6 +14,7 @@ export interface Trip {
   tripPoints: TripPoint[];
   truck: Truck | null; // Truck is nullable
   company: string | null;
+  profitMargin: number;
   loadingPoint: string;
   unloadingPoint: string;
   status: string;

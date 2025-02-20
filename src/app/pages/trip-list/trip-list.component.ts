@@ -91,6 +91,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
     trs: 0,
     crs: 0,
     gps: 0,
+    pms: 0,
   };
   statusButtons = statusButtons;
   rightButtonClicked = false;
@@ -553,4 +554,6 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.service.anotherStatusCalled.next(true);
     this.getTripList();
   }
+
+  protected readonly Math = Math;
 }
