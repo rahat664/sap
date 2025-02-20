@@ -141,4 +141,6 @@ export class TransporterComponent implements OnInit {
     // copy the phone number to the clipboard
     this.service.copyToClipboard(phone);
   }
+
+  protected readonly Math = Math;
 }

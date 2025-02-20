@@ -53,7 +53,14 @@ export class UserModel {
   rejectedReason: string;
   grossProfit: number;
   numberOfTrips: number;
-  rank: number;
+  rank: Rank;
   createdAt: string;
   contactPersonNumber: string;
+}
+
+export interface Rank {
+  transporterCode: string;
+  rank: number;
+  grossProfit: number;
+  numberOfTrips: number;
 }
