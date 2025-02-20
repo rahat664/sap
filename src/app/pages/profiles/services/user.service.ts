@@ -13,6 +13,7 @@ export class UserService {
   rolesUrl = environment.userUrl + '/api/roles';
   departmentsUrl = environment.userUrl + '/api/departments';
   permissionsUrl = environment.userUrl + '/api/permissions';
+  transportersUrl = environment.userUrl + '/api/transporter';
 
   constructor(
     private http: HttpClient,
@@ -75,7 +76,7 @@ export class UserService {
   }
 
   getTransporter(page: number, size: number, search?: string): Observable<any> {
-    let apiUrl = `${this.url}/transporters?page=${page}&size=${size}`;
+    let apiUrl = `${this.transportersUrl}?page=${page}&size=${size}`;
 
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
