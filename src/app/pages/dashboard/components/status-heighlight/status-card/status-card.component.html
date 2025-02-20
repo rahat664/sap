@@ -9,9 +9,9 @@
     <div class="flex flex-col flex-1 space-y-1">
       <span class="text-h3 leading-h3 text-not-black font-semibold"
       >{{
-          value ? (value | number) : 0
-        }}<span *ngIf="icon === 'revenue' || icon === 'cr-d'"> ৳</span>
-      <span *ngIf="icon ==='margin'">%</span></span
+          value ? ((icon === 'gp' ? value : Math.round(value)) | number ) : 0
+        }}<span *ngIf="icon === 'revenue' || icon === 'cr-d' || icon === 'tr-d'"> ৳</span>
+      <span *ngIf="icon ==='gp'">%</span></span
       >
 
       <span class="text-body_title leading-body_title text-not-primary">{{
@@ -19,7 +19,7 @@
         }}</span>
     </div>
   </div>
-  <span class="text-body text-secondary">
+  <span class="text-body text-secondary" *ngIf="!dateFilterAvailable">
     {{ text }}
   </span>
 </div>

@@ -1,40 +1,42 @@
 <div class="rounded-lg flex flex-col h-full space-y-3">
-  <div class="flex justify-between items-center">
-    <h2 class="text-h2 leading-h2 font-semibold text-not-black">
-      Status Highlight
-    </h2>
-    <!--    <mat-form-field appearance="outline" class="w-[12rem]">-->
-    <!--      <mat-select-->
-    <!--        formControlName="vendorId"-->
-    <!--        placeholder="Select Vendor">-->
-    <!--        <mat-option value="all">All time</mat-option>-->
-    <!--        <mat-option value="today">Today</mat-option>-->
-    <!--        <mat-option value="all">Yesterday</mat-option>-->
-    <!--        <mat-option value="all">Last 7 days</mat-option>-->
-    <!--        <mat-option value="all">Last 15 days</mat-option>-->
-    <!--        <mat-option value="all">Last 30 days</mat-option>-->
-    <!--      </mat-select>-->
-    <!--    </mat-form-field>-->
-  </div>
+<!--  <div class="flex justify-between items-center">-->
+<!--&lt;!&ndash;    <h2 class="text-h2 leading-h2 font-semibold text-not-black">&ndash;&gt;-->
+<!--&lt;!&ndash;      Status Highlight&ndash;&gt;-->
+<!--&lt;!&ndash;    </h2>&ndash;&gt;-->
+<!--    &lt;!&ndash;    <mat-form-field appearance="outline" class="w-[12rem]">&ndash;&gt;-->
+<!--    &lt;!&ndash;      <mat-select&ndash;&gt;-->
+<!--    &lt;!&ndash;        formControlName="vendorId"&ndash;&gt;-->
+<!--    &lt;!&ndash;        placeholder="Select Vendor">&ndash;&gt;-->
+<!--    &lt;!&ndash;        <mat-option value="all">All time</mat-option>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <mat-option value="today">Today</mat-option>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <mat-option value="all">Yesterday</mat-option>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <mat-option value="all">Last 7 days</mat-option>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <mat-option value="all">Last 15 days</mat-option>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <mat-option value="all">Last 30 days</mat-option>&ndash;&gt;-->
+<!--    &lt;!&ndash;      </mat-select>&ndash;&gt;-->
+<!--    &lt;!&ndash;    </mat-form-field>&ndash;&gt;-->
+<!--  </div>-->
   <div class="grid grid-cols-5 gap-3 cursor-pointer">
     <app-status-card
+      [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/trip-list"
       icon="revenue"
       title="Total Gross Profit (GP)"
-      [value]="dashboardStats?.grossProfitStat?.totalGrossProfit"
+      [value]="dateFilterAvailable ? dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange : dashboardStats?.grossProfitStat?.totalGrossProfit"
       text="{{
         dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange
-          ? (dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange
+          ? ( Math.round(dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange)
             | number)
           : 0
       }} ৳ this month"
       backgroundColor="bg-[#1DBF73]"
       textColor="text-[#009D54]"></app-status-card>
     <app-status-card
+      [dateFilterAvailable] = "dateFilterAvailable"
       routerLink="/trip-list"
-      icon="margin"
+      icon="gp"
       title="Total Profit Margin"
-      [value]="dashboardStats?.tripProfitMarginStat?.totalProfitMargin"
+      [value]="dateFilterAvailable ? dashboardStats?.tripProfitMarginStat?.dateFilteredProfitMargin : dashboardStats?.tripProfitMarginStat?.totalProfitMargin"
       text="{{
         dashboardStats?.tripProfitMarginStat?.dateFilteredProfitMargin
           ? (dashboardStats?.tripProfitMarginStat?.dateFilteredProfitMargin
@@ -44,92 +46,114 @@
       backgroundColor="bg-[#1DBF73]"
       textColor="text-[#009D54]"></app-status-card>
     <app-status-card
+      [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/trip-list"
       icon="cr-d"
       title="Total Customer Rate"
-      [value]="dashboardStats?.customerRateStat?.totalCustomerRate"
+      [value]="dateFilterAvailable ? dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange : dashboardStats?.customerRateStat?.totalCustomerRate"
       text="{{
         dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange
-          ? (dashboardStats?.customerRateStat
-              ?.totalCustomerRateWithinTheDateRange | number)
+          ? (Math.round(dashboardStats?.customerRateStat
+              ?.totalCustomerRateWithinTheDateRange) | number)
           : 0
       }} ৳ this month"
       backgroundColor="bg-[#1DBF73]"
       textColor="text-[#009D54]"></app-status-card>
     <app-status-card
+      [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/trip-list"
-      icon="cr-d"
+      icon="tr-d"
       title="Total Transporter Rate"
-      [value]="dashboardStats?.transporterRateStats?.totalRate"
+      [value]="dateFilterAvailable ? dashboardStats?.transporterRateStats?.dateFilteredRate : dashboardStats?.transporterRateStats?.totalRate"
       text="{{
         dashboardStats?.transporterRateStats?.dateFilteredRate
-          ? (dashboardStats?.transporterRateStats?.dateFilteredRate
+          ? (Math.round(dashboardStats?.transporterRateStats?.dateFilteredRate)
             | number)
           : 0
       }} ৳ this month"
       backgroundColor="bg-[#FFA711]"
       textColor="text-[#CD8304]"></app-status-card>
     <app-status-card
+      [dateFilterAvailable]="dateFilterAvailable"
       (click)="localStorage.setItem('filter', 'Completed')"
       routerLink="/trip-list"
-      icon="totaltrip"
-      title="Total Completed Trip"
-      [value]="dashboardStats?.tripCountStat?.totalTripsCompleted"
+      icon="calculated"
+      title="Total Calculated Trip"
+      [value]="dateFilterAvailable ? dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailableAndDateRange : dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailable"
       text="{{
-        dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange
-          ? (dashboardStats?.tripCountStat
-              ?.totalTripsCompletedWithinTheDateRange | number)
+        dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailableAndDateRange
+          ? (Math.round(dashboardStats?.tripCountStat
+              ?.totalTripsCompletedWithRatesAvailableAndDateRange) | number)
           : 0
       }} trip this month"
       backgroundColor="bg-[#FFA711]"
       textColor="text-[#CD8304]"></app-status-card>
-    <div class="col-span-5 grid grid-cols-4 gap-3">
+    <div class="col-span-5 grid grid-cols-5 gap-3">
       <app-status-card
+        [dateFilterAvailable]="dateFilterAvailable"
+        (click)="localStorage.setItem('filter', 'Completed')"
+        routerLink="/trip-list"
+        icon="totaltrip"
+        title="Total Completed Trip"
+        [value]="dateFilterAvailable ? dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange : dashboardStats?.tripCountStat?.totalTripsCompleted"
+        text="{{
+        dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange
+          ? (Math.round(dashboardStats?.tripCountStat
+              ?.totalTripsCompletedWithinTheDateRange) | number)
+          : 0
+      }} trip this month"
+        backgroundColor="bg-[#FFA711]"
+        textColor="text-[#CD8304]"></app-status-card>
+      <app-status-card
+        [dateFilterAvailable]="dateFilterAvailable"
         routerLink="/profile/customer"
         icon="customers"
         title="Total Customer"
-        [value]="customerStatistics?.totalCustomers"
+        [value]="dateFilterAvailable ? customerStatistics?.dateFilteredCount : customerStatistics?.totalCount"
         text="{{
-        customerStatistics?.totalCustomersOnboardedWithinGivenDateRange
-          ? (customerStatistics?.totalCustomersOnboardedWithinGivenDateRange
+        customerStatistics?.dateFilteredCount
+          ? (Math.round(customerStatistics?.dateFilteredCount)
             | number)
           : 0
       }} new onboarded this month"
         backgroundColor="bg-[#F0614E]"
         textColor="text-[#F0614E]"></app-status-card>
       <app-status-card
+        [dateFilterAvailable]="dateFilterAvailable"
         routerLink="/profile/transporter"
         icon="transporter"
         title="Total Transporter"
-        [value]="transporterStatistics?.totalCount"
+        [value]="dateFilterAvailable ? transporterStatistics?.dateFilteredCount : transporterStatistics?.totalCount"
         text="{{
         transporterStatistics?.dateFilteredCount
-          ? (transporterStatistics?.dateFilteredCount | number)
+          ? (Math.round(transporterStatistics?.dateFilteredCount) | number)
           : 0
       }} new onboarded this month"
         backgroundColor="bg-[#0CD5F0]"
         textColor="text-[#049FB4]"></app-status-card>
       <app-status-card
+        [dateFilterAvailable]="dateFilterAvailable"
         routerLink="/profile/truck"
         icon="total-truck"
         title="Total Truck"
-        [value]="dashboardStats?.truckCountStat?.totalCount"
+        [value]="dateFilterAvailable ? dashboardStats?.truckCountStat?.dateFilteredCount : dashboardStats?.truckCountStat?.totalCount"
         text="{{
         dashboardStats?.truckCountStat?.dateFilteredCount
-          ? (dashboardStats?.truckCountStat?.dateFilteredCount
+          ? (Math.round(dashboardStats?.truckCountStat?.dateFilteredCount)
             | number)
           : 0
       }} new onboarded this month"
         backgroundColor="bg-[#F0614E]"
         textColor="text-[#F0614E]"></app-status-card>
       <app-status-card
+        [dateFilterAvailable]="dateFilterAvailable"
         icon="driver"
         routerLink="/profile/driver"
         title="Total Driver"
-        [value]="driverStatistics?.totalCount"
+        [value]="dateFilterAvailable ? driverStatistics?.dateFilteredCount : driverStatistics?.totalCount"
         text="{{
         driverStatistics?.dateFilteredCount
-          ? (driverStatistics?.dateFilteredCount | number)
+          ? (Math.round(driverStatistics?.dateFilteredCount) | number)
           : 0
       }} new onboarded this month"
         backgroundColor="bg-[#0CD5F0]"

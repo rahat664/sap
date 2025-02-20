@@ -27,7 +27,7 @@
     <!--    </div>-->
   </div>
   <div class="flex space-x-3 items-center">
-    <mat-form-field appearance="outline" class="w-[12rem]">
+    <mat-form-field appearance="outline" class="w-[12rem] filter">
       <mat-select
         [(ngModel)]="chartType"
         placeholder="Chart"
@@ -38,7 +38,7 @@
         <mat-option value="low">Lowest rate</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[12rem]">
+    <mat-form-field appearance="outline" class="w-[12rem] filter">
       <mat-select
         [(ngModel)]="vehicleType"
         (selectionChange)="onVehicleTypeChange($event)"
@@ -50,7 +50,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[12rem]">
+    <mat-form-field appearance="outline" class="w-[12rem] filter">
       <mat-select
         [(ngModel)]="transporter"
         (selectionChange)="onTransporterChange($event)"
@@ -62,7 +62,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[12rem]">
+    <mat-form-field appearance="outline" class="w-[12rem] filter">
       <mat-select
         [(ngModel)]="loadingDistrict"
         (selectionChange)="onLoadingDistrictChange($event)"
@@ -72,7 +72,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[13rem]">
+    <mat-form-field appearance="outline" class="w-[13rem] filter">
       <mat-select
         [(ngModel)]="unloadingDistrict"
         (selectionChange)="onUnloadingDistrictChange($event)"
@@ -82,36 +82,23 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[12rem]">
+    <mat-form-field appearance="outline" class="w-[13rem] filter">
       <mat-select
-        [(ngModel)]="selectedYear"
-        (selectionChange)="onYearChange($event)"
-        placeholder="Year">
-        <mat-option *ngFor="let year of yearList" [value]="year">{{
-            year
-          }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[12rem]">
-      <mat-select
-        [(ngModel)]="selectedMonth"
-        (selectionChange)="onMonthChange($event)"
-        placeholder="Month">
-        <!--        default value-->
-        <mat-option *ngFor="let month of monthList" [value]="month?.value"
-        >{{ month?.viewValue }}
-        </mat-option>
+        [(ngModel)]="datatype"
+        (selectionChange)="onDataTypeChange($event)"
+        placeholder="Type">
+        <mat-option value="daily">Daily</mat-option>
+        <mat-option value="monthly">Monthly</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
-  <app-line-chart
-    [numberOfTrips]="numberOfTrips"
-    class="cursor-pointer"
-    routerLink="/trip-list"
-    [seriesData]="seriesdata"
-    [categories]="categories"
-    [colors]="colors"
-    [selectedYear]="selectedYear"
-    [selectedMonth]="selectedMonth"></app-line-chart>
+  <div>
+    <app-line-chart
+      [numberOfTrips]="numberOfTrips"
+      class="cursor-pointer min-w-full"
+      [seriesData]="seriesdata"
+      [categories]="categories"
+      [colors]="colors"
+    ></app-line-chart>
+  </div>
 </div>

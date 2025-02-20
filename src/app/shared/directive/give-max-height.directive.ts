@@ -3,7 +3,7 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
-  Input,
+  Input, numberAttribute,
   OnDestroy,
   OnInit,
   Output,
@@ -17,7 +17,7 @@ import { TripService } from '../../pages/trip-list/services/trip.service';
 })
 export class GiveMaxHeightDirective implements OnInit, OnDestroy {
   @Input() anotherItemsHeight = '0px';
-  @Input() totalPage: number = 0;
+  @Input({ transform: numberAttribute }) totalPage: number = 0;
   @Output() elementHeight: EventEmitter<string> = new EventEmitter<string>();
   @Input() anotherStatusCalled: boolean = false;
   @Output() inBottomEnd: EventEmitter<boolean> = new EventEmitter<boolean>(

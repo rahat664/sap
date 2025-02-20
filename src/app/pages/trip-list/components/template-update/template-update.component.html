@@ -10,7 +10,19 @@
   </div>
   <div class="p-4">
     <form [formGroup]="templateUpdateForm" class="rounded-lg bg-white w-full">
-      <div class="mx-8 flex flex-col space-y-3 py-8 border-b-2 border-input">
+      <div class="flex w-full items-center justify-center text-h2 leading-h2 font-semibold text-not-black py-2">
+        <div class="flex space-x-3 items-center">
+          <label><sup>*</sup>Payment type</label>
+          <mat-radio-group
+            aria-label="Select an option"
+            formControlName="paymentType">
+            <mat-radio-button value="CASH">Cash</mat-radio-button>
+            <mat-radio-button value="INVOICE">Invoice</mat-radio-button>
+            <mat-radio-button value="BOTH">Cash and invoice</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <div class="mx-8 flex flex-col space-y-3 pb-8 py-2 border-b-2 border-input">
         <div class="flex items-center space-x-3">
           <img
             loading="lazy"
@@ -182,7 +194,7 @@
                           (loadingPoint.get('pointName').value === '' ||
                             loadingPoint.get('pointDistrict').value === '')
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -201,7 +213,7 @@
                           loadingPoint[i]?.get('pointName')?.value === '' ||
                           loadingPoints[i]?.get('pointDistrict')?.value === ''
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -211,7 +223,7 @@
                       <h1 class="invisible">height</h1>
                       <button
                         (click)="removeLoadingPoint(i)"
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
                         <i class="fas fa-trash-alt text-red text-lg"></i>
                       </button>
                     </div>
@@ -369,7 +381,7 @@
                           (unloadingPoint.get('pointName').value === '' ||
                             unloadingPoint.get('pointDistrict').value === '')
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -388,7 +400,7 @@
                           unloadingPoints[i]?.get('pointName')?.value === '' ||
                           unloadingPoints[i]?.get('pointDistrict')?.value === ''
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -398,7 +410,7 @@
                       <h1 class="invisible">height</h1>
                       <button
                         (click)="removeUnloadingPoint(i)"
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
                         <i class="fas fa-trash-alt text-red text-lg"></i>
                       </button>
                     </div>
@@ -624,7 +636,7 @@
                 </mat-form-field>
                 <img
                   id="icon"
-                  class="notPreview absolute right-4 top-4 cursor-pointer"
+                  class="notPreview absolute right-4 top-2 cursor-pointer"
                   src="assets/svg/bdt.svg"
                   alt="bdt"/>
               </div>

@@ -40,12 +40,13 @@
   transform 1s ease;
 }
 
+
 .customButton {
   display: block;
   width: 100%;
   margin: 0;
   padding: 0;
-  height: 56px;
+  height: 40px;
   border-radius: 8px;
 }
 
@@ -53,13 +54,18 @@
   max-width: 25rem !important;
 }
 
+
 ::ng-deep .mat-mdc-menu-content {
-  padding: 8px 8px !important;
+  padding: 0 8px !important;
 }
 
 ::ng-deep .error .mat-mdc-text-field-wrapper {
   width: 100%;
   border-radius: 0.5rem !important;
   background-color: #fffafb !important;
-  height: 3.3rem !important;
+  height:2.3rem !important;
+}
+
+::ng-deep .mat-mdc-icon-button {
+  margin-bottom: 16px !important;
 }

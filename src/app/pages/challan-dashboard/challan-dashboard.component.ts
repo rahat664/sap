@@ -492,7 +492,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     if (truck) {
       return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial}-${truck.registrationNum}`;
     } else {
-      return 'truck not found';
+      return 'Not found';
     }
   }
 
@@ -839,8 +839,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   onFileChange($event: Event, tripId: string) {
     const input = $event.target as HTMLInputElement;
     const files = input.files;
-
-    console.log(files);
     if (files && files.length > 0) {
       this.router.navigate(
         [`challan-management/${this.uploadAbleTripId}/image-upload`],
@@ -919,4 +917,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
   }
+
+  protected readonly Math = Math;
 }

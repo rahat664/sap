@@ -268,8 +268,11 @@ export class UserManagementComponent implements OnInit {
     array.forEach(item => (item.selected = item.id === selectedId));
   }
 
-  copyNumber($event: MouseEvent, mobile: string) {
+  copyNumber($event, createdByPhone: string) {
     $event.stopPropagation();
-    this.service.copyToClipboard(mobile);
+    // remove first 3 characters from the phone number
+    const phone = createdByPhone.slice(3);
+    // copy the phone number to the clipboard
+    this.service.copyToClipboard(phone);
   }
 }

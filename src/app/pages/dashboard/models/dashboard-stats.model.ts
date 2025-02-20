@@ -25,12 +25,15 @@ export interface tripProfitMarginStat {
 export interface tripCountStats {
   totalTripsCompleted: number;
   totalTripsCompletedWithinTheDateRange: number;
+  totalTripsCompletedWithRatesAvailable: number;
+  totalTripsCompletedWithRatesAvailableAndDateRange: number;
 }
 
+
 export interface customerStats {
-  totalCustomers: number;
-  totalCustomersOnboardedWithinGivenDateRange: number;
-  totalUsers: userStats[];
+  roleName: string;
+  totalCount: number;
+  dateFilteredCount: number;
 }
 
 export interface userStats {

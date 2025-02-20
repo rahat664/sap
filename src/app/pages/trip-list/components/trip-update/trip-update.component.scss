@@ -19,7 +19,7 @@
 }
 
 .circle {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   width: 9px;
   height: 9px;
   border-radius: 50%; /* Color of the circle */
@@ -36,7 +36,7 @@
   width: 100%;
   margin: 0;
   padding: 0;
-  height: 56px;
+  height: 40px;
   border-radius: 8px;
 }
 
@@ -45,14 +45,14 @@
 }
 
 ::ng-deep .mat-mdc-menu-content {
-  padding: 8px 8px !important;
+  padding: 0 8px !important;
 }
 
 ::ng-deep .error .mat-mdc-text-field-wrapper {
   width: 100%;
-  border-radius: 0.5rem !important;
+  border-radius: 0.25rem !important;
   background-color: #fffafb !important;
-  height: 3.3rem !important;
+  height:2.4rem !important;
 }
 
 .step {
@@ -76,7 +76,7 @@
 }
 
 .circle {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   width: 9px;
   height: 9px;
   border-radius: 50%; /* Color of the circle */
@@ -88,3 +88,16 @@
 .p {
   margin: 0;
 }
+
+::ng-deep .mat-mdc-menu-panel {
+  max-width: 25rem !important;
+}
+
+::ng-deep .mat-mdc-menu-content {
+  padding: 0 8px !important;
+}
+
+::ng-deep .mat-mdc-icon-button {
+  margin-bottom: 44px !important;
+}
+

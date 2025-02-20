@@ -58,10 +58,11 @@
           >
           <mat-form-field
             appearance="outline"
-            class="example-full-width relative">
+            class="example-full-width relative   filter">
             <input
               id="customerName"
               type="text"
+              class="inline-block pr-2"
               matInput
               (keyup)="onSearchInputChange($event)"
               [(ngModel)]="searchName"
@@ -80,7 +81,7 @@
               type="button"
               (click)="onClickClearCompany()"
               *ngIf="searchValue"
-              class="absolute inset-y-0 right-0 flex items-center">
+              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
@@ -89,7 +90,7 @@
           <label class="text-body text-web-text-secondary px-2"
           >Transporter Name
           </label>
-          <mat-form-field appearance="outline" class="example-full-width">
+          <mat-form-field appearance="outline" class="example-full-width filter">
             <input
               type="text"
               matInput
@@ -110,7 +111,7 @@
               type="button"
               (click)="onClickClearTransporter()"
               *ngIf="transporterName"
-              class="absolute inset-y-0 right-0 flex items-center">
+              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
@@ -119,7 +120,7 @@
           <label class="text-body text-web-text-secondary px-2">Trip ID</label>
           <mat-form-field
             appearance="outline"
-            class="example-full-width relative">
+            class="example-full-width relative filter">
             <input
               type="text"
               matInput
@@ -140,7 +141,7 @@
               type="button"
               (click)="onClickClearTripId()"
               *ngIf="tripId"
-              class="absolute inset-y-0 right-0 flex items-center">
+              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
           </mat-form-field>
@@ -263,7 +264,7 @@
         <th class="text-left" *ngIf="isAdmin()">GP(৳)</th>
       </tr>
       <tr>
-        <th class="border" [colSpan]="isAdmin() ? 10 : 7"></th>
+        <th class="custom-border" [colSpan]="isAdmin() ? 10 : 7"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -282,8 +283,8 @@
           <td class="whitespace-nowrap" *ngIf="isAdmin()">
             {{ trip.customerName }}
           </td>
-          <td class="whitespace-nowrap" *ngIf="isAdmin()">
-            {{ trip.transporterName }}
+          <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin()">
+            {{ trip.transporterName ? trip.transporterName : 'Not assigned' }}
           </td>
           <td class="whitespace-nowrap">
             <p>

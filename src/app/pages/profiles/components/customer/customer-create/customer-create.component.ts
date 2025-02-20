@@ -51,6 +51,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     false
   );
   sendEmail = false;
+  customerCodeLoading: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -175,9 +176,11 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
 
   private checkCustomerCodeIsAlreadyExistOrNot(fourDigitName: string) {
     if (fourDigitName.length === 4) {
+      this.customerCodeLoading = true;
       this.service
         .customerCodeValidation(fourDigitName)
         .subscribe((res: any) => {
+          this.customerCodeLoading = false;
           if (res.data.validation == 'Failed') {
             this.customerForm.get('code').setErrors({
               invalidCustomerCode: true,
@@ -187,6 +190,8 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
           } else {
             this.customerModel.customerCode = fourDigitName;
           }
+        }, (error) => {
+          this.customerCodeLoading = false;
         });
     }
   }

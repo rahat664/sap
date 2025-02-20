@@ -3,7 +3,7 @@
     <h2 class="text-h2 leading-h2 font-semibold text-not-black">
       Top Transporter
     </h2>
-    <mat-form-field appearance="outline" class="w-[12rem]">
+    <mat-form-field appearance="outline" class="w-[12rem] filter">
       <mat-select [(ngModel)]="sortBy"
                   (selectionChange)="changeSorting($event)"
                   placeholder="Select sorting">
@@ -22,7 +22,7 @@
       <span class="text-center">TR(৳)</span>
       <span class="text-center">GP(৳)</span>
     </div>
-    <ng-container *ngIf="!loading">
+    <ng-container *ngIf="!loading && topTransporter.length > 0">
       <div class="flex flex-col space-y-5">
         <ng-container *ngFor="let transporter of topTransporter">
           <div
@@ -55,6 +55,22 @@
         <div class="min-h-60 flex items-center w-full justify-center">
           <app-loading></app-loading>
         </div>
+    </ng-container>
+    <ng-container *ngIf="!loading && topTransporter.length === 0">
+      <div class="min-h-60 w-full flex items-center justify-center">
+        <div
+          class="w-full flex flex-col space-y-3 justify-center items-center">
+          <img
+            loading="lazy"
+            src="assets/svg/no-data.svg"
+            class="notPreview"
+            alt="nodata"/>
+          <p
+            class="text-body_title leading-body_title text-secondary font-semibold">
+            No Data Found
+          </p>
+        </div>
+      </div>
     </ng-container>
   </div>
 </div>

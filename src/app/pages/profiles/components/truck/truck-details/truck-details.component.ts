@@ -208,7 +208,6 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
         this.service.deleteTruckFiles(url, this.truckDetails.id).subscribe(
           (res: any) => {},
           error => {
-            console.error('Error deleting file:', error);
           }
         );
       });
@@ -579,11 +578,9 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
               this.splitDoucumentsByType(this.documents);
               this.updateFormValues(truck);
             } else {
-              console.error('Truck details not found in response');
             }
           },
           error => {
-            console.error('Error fetching truck details:', error);
             // Handle error (e.g., show a notification)
           }
         );
@@ -600,16 +597,13 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
                 }
               ).length;
             } else {
-              console.error('Pre-hire checklist not found in response');
             }
           },
           error => {
-            console.error('Error fetching pre-hire checklist:', error);
             // Handle error (e.g., show a notification)
           }
         );
       } else {
-        console.error('Truck ID is missing in the route parameters.');
         // Handle missing truck ID case (e.g., show a notification)
       }
     });

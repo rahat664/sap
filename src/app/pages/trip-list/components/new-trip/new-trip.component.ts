@@ -56,7 +56,7 @@ export class NewTripComponent implements OnInit, OnDestroy {
   isCustomerMenuOpened: boolean;
   customerName: string;
   createButtonEnabled: boolean;
-  templates: any;
+  templates: any[] = [];
   selectedTemplate: any;
   customerSelectMenuOpened = false;
   isTemplateEnabled: boolean;
@@ -78,6 +78,9 @@ export class NewTripComponent implements OnInit, OnDestroy {
       this.dontClearLocalStorage = true;
     } else {
       this.dontClearLocalStorage = false;
+    }
+    if (localStorage.getItem('tripData')) {
+      localStorage.removeItem('tripData');
     }
     this.manageStore();
     if (this.isAdmin()) {
@@ -309,4 +312,17 @@ export class NewTripComponent implements OnInit, OnDestroy {
   }
 
   onBottom($event: boolean) {}
+
+  onClickClearCustomer() {
+    this.createButtonEnabled = false;
+    this.customerName = '';
+    this.companySuggestions = [];
+    this.isCustomerMenuOpened = false;
+    localStorage.removeItem('selectedCustomer');
+    localStorage.removeItem('selectedTemplate');
+    localStorage.removeItem('isFromTemplate');
+    this.selectedTemplate = null;
+    this.isTemplateEnabled = false;
+    this.templates = [];
+  }
 }

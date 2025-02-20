@@ -45,14 +45,14 @@
 
 .error {
   outline: 1px solid #f7cad0;
-  border-radius: 0.5rem;
+  border-radius: 0.25rem;
 }
 
 ::ng-deep .error .mat-mdc-text-field-wrapper {
   width: 100%;
-  border-radius: 0.5rem !important;
+  border-radius: 0.25rem !important;
   background-color: #fffafb !important;
-  height: 3.5rem !important;
+  height: 2.4rem !important;
 }
 
 ::ng-deep .mat-mdc-menu-panel {

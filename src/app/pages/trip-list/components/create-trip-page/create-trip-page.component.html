@@ -2,14 +2,38 @@
   <div class="mx-4 py-2 flex justify-between items-center sticky top-16">
     <h1 class="text-h1 leading-h1 font-semibold">New Trip</h1>
     <button
-      class="bg-primary text-white rounded-lg px-16 py-3"
+      class="bg-primary text-white rounded-lg px-12 py-2"
       (click)="onCreateTrip()">
       Create Trip
     </button>
   </div>
   <div class="px-4 h-[calc(100vh-9rem)] overflow-y-auto">
     <form [formGroup]="tripForm" class="rounded-lg bg-white w-full">
-      <div class="mx-8 flex flex-col space-y-3 py-8 border-b-2 border-input">
+      <div class="flex w-full items-center justify-center text-h2 leading-h2 font-semibold text-not-black py-2">
+        <div class="flex flex-col space-y-0.5 items-center">
+          <div class="flex space-x-3 items-center">
+            <label><sup>*</sup>Payment type</label>
+            <mat-radio-group
+              aria-label="Select an option"
+              formControlName="paymentType"
+            >
+              <mat-radio-button
+                value="CASH">Cash</mat-radio-button>
+              <mat-radio-button value="INVOICE">Invoice</mat-radio-button>
+              <mat-radio-button value="BOTH">Cash and invoice</mat-radio-button>
+            </mat-radio-group>
+            <!--          // error message-->
+          </div>
+          <mat-error
+            *ngIf="
+              tripForm.get('paymentType').invalid &&
+              tripForm.get('paymentType').touched
+            ">
+            Please select a valid payment type
+          </mat-error>
+        </div>
+      </div>
+      <div class="mx-8 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
         <div class="flex items-center space-x-3">
           <img
             loading="lazy"
@@ -243,7 +267,7 @@
                           (loadingPoint.get('pointName').value === '' ||
                             loadingPoint.get('pointDistrict').value === '')
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -262,7 +286,7 @@
                           loadingPoint[i]?.get('pointName')?.value === '' ||
                           loadingPoints[i]?.get('pointDistrict')?.value === ''
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -272,7 +296,7 @@
                       <h1 class="invisible">height</h1>
                       <button
                         (click)="removeLoadingPoint(i)"
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
                         <i class="fas fa-trash-alt text-red text-lg"></i>
                       </button>
                     </div>
@@ -450,7 +474,7 @@
                           (unloadingPoint.get('pointName').value === '' ||
                             unloadingPoint.get('pointDistrict').value === '')
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -469,7 +493,7 @@
                           unloadingPoints[i]?.get('pointName')?.value === '' ||
                           unloadingPoints[i]?.get('pointDistrict')?.value === ''
                         "
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-input flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-input flex items-center justify-center">
                         <i class="fas fa-plus text-primary text-lg"></i>
                       </button>
                     </div>
@@ -479,7 +503,7 @@
                       <h1 class="invisible">height</h1>
                       <button
                         (click)="removeUnloadingPoint(i)"
-                        class="w-[3.375rem] h-[3.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
+                        class="w-[2.375rem] h-[2.5rem] rounded-lg bg-red bg-opacity-[10%] flex items-center justify-center">
                         <i class="fas fa-trash-alt text-red text-lg"></i>
                       </button>
                     </div>
@@ -810,7 +834,7 @@
                 </mat-form-field>
                 <img
                   id="icon"
-                  class="notPreview absolute right-4 top-4 cursor-pointer"
+                  class="notPreview absolute right-4 top-2 cursor-pointer"
                   src="assets/svg/bdt.svg"
                   alt="bdt"/>
               </div>

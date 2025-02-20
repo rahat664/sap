@@ -638,7 +638,6 @@ export class DriverDetailsComponent implements OnInit, AfterViewInit {
         this.service.deleteDriverFiles(url, this.driverDetails.id).subscribe(
           (res: any) => {},
           error => {
-            console.error('Error deleting file:', error);
           }
         );
       });
@@ -862,16 +861,13 @@ export class DriverDetailsComponent implements OnInit, AfterViewInit {
               this.splitDoucumentsByType(this.documents);
               this.updateFormValues(driver);
             } else {
-              console.error('Truck details not found in response');
             }
           },
           error => {
-            console.error('Error fetching truck details:', error);
             // Handle error (e.g., show a notification)
           }
         );
       } else {
-        console.error('Driver ID is missing in the route parameters.');
         // Handle missing truck ID case (e.g., show a notification)
       }
     });

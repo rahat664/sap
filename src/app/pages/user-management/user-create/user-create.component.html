@@ -94,6 +94,7 @@
       <div class="flex flex-col space-y-2 w-full">
         <label for="email">Department</label>
         <app-custom-input
+          [isFilterMenu]="false"
           [inputSearch]="roleInputPlaceholder"
           [options]="roles"
           inputPlaceholder="Select Department"
@@ -103,7 +104,7 @@
       </div>
       <div class="lg:col-span-2 py-4">
         <button
-          class="float-end py-[0.875rem] px-[5.125rem] flex justify-center items-center text-[1.125rem] rounded-lg bg-primary text-white">
+          class="float-end px-12 py-2 flex justify-center items-center text-[1.125rem] rounded-lg bg-primary text-white">
           <span>Save</span>
         </button>
       </div>

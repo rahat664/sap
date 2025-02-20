@@ -16,4 +16,6 @@ export class StatusCardComponent {
   @Input() textColor = '#009D54';
   @Input() text: string;
   protected readonly String = String;
+  @Input() dateFilterAvailable: boolean = false;
+  protected readonly Math = Math;
 }

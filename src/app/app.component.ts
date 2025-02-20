@@ -69,6 +69,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private renderer: Renderer2,
     private loadingService: LoadingService
   ) {
+    this.setUrlWiseFavicon()
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.loadingService.show();
@@ -170,6 +171,25 @@ export class AppComponent implements OnInit, OnDestroy {
         );
       });
     }
+  }
+
+  // set the url wise favicon
+  setUrlWiseFavicon() {
+    // link tag for favicon
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/x-icon';
+    // get the current url
+    const url = window.location.href;
+    // check if the url contains the word support
+    if (url.includes('ecoflit')) {
+      link.href = 'assets/logo/eco.ico';
+    } else {
+      link.href = 'assets/logo/snz.ico';
+    }
+
+    // append link tag to head
+    document.getElementsByTagName('head')[0].appendChild(link);
   }
 
   /**

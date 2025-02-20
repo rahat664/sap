@@ -7,12 +7,110 @@
       class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem] space-y-3 lg:space-y-0 lg:flex-row justify-between">
       <h1 class="text-h1 leading-h1 font-semibold">Dashboard</h1>
     </div>
+
+    <div class="w-full bg-white rounded-lg">
+      <button
+        class="flex px-2 py-1 space-x-4 items-center w-full"
+        [ngClass]="{ 'border-b border-[#A1D5DE]': filterOpened }">
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="!filterOpened"
+          class="fas fa-caret-down text-input-hint text-xl"></i>
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="filterOpened"
+          class="fas fa-caret-up text-input-hint text-xl"></i>
+        <span class="text-not-black text-h2_medium font-semibold"
+        >Filter
+          <span *ngIf="getFilterLength() > 0">({{ getFilterLength() }})</span>
+          <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3"
+          >|</span
+          >
+          <a
+            (click)="onClearFilter()"
+            *ngIf="getFilterLength() > 0"
+            class="text-red text-h2_medium font-semibold"
+          >Clear all</a
+          >
+        </span>
+      </button>
+      <div
+        *ngIf="filterOpened"
+        class="pt-3 pb-4 px-2 flex items-center space-x-4">
+        <div class="flex flex-col space-y-1 w-[20rem]">
+          <label class="text-body text-web-text-secondary px-2">Date</label>
+          <app-custom-input
+            class=""
+            appGetClickEvent
+            (clickedElement)="dateOpened = $event"
+            [inputSearch]="inputPlaceholder"
+            (selectedFromDate)="onSelectedFromDate($event)"
+            (selectedToDate)="onSelectedToDate($event)"
+            (selectedFromDateToToDate)="inputPlaceholder = $event"
+            inputPlaceholder="Select Date"
+            [options]="dateOptionArray"
+            (dateEmited)="onDateEmited($event)"
+            (selectedId)="onSelectDate($event)"></app-custom-input>
+        </div>
+
+        <div class="flex flex-col space-y-1 w-full ">
+          <label class="text-body text-web-text-secondary px-2"
+          >Company name</label
+          >
+          <mat-form-field
+            appearance="outline"
+            class="example-full-width filter multiples relative" style="height: auto !important;">
+            <div class="flex space-x-3 items-center flex-wrap">
+              <div class="flex items-center flex-wrap gap-3">
+                @for (selectedCompany of selectedCompanies; track selectedCompany) {
+                  <div
+                    class="h-[1.5rem] rounded-full bg-[#D4EEF2] text-body_title leading-body_title text-not-black px-2 py-0.5">
+                    {{ selectedCompany.name }}
+                    <i
+                      (click)="onClickRemoveCompany(selectedCompany)"
+                      class="fal fa-times text-xs ml-1.5 cursor-pointer"></i>
+
+                  </div>
+                }
+                <div>
+                  <input
+                    style="padding-right: 20px"
+                    id="customerName"
+                    type="text"
+                    matInput
+                    (keyup)="onSearchInputChange($event)"
+                    [(ngModel)]="searchName"
+                    placeholder="Enter Company Name"
+                    [matAutocomplete]="auto" />
+                  <mat-autocomplete #auto="matAutocomplete">
+                    @for (option of tripSuggestions; track option) {
+                      <mat-option
+                        (click)="onClickSearchSuggestion(option)"
+                        [value]="option.name"
+                      >{{ option.name ? option.name : option }}
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              (click)="onClickClearCompany()"
+              *ngIf="searchValue"
+              class="absolute inset-y-0 right-0 flex items-center mb-4">
+              <i class="fal fa-times text-gray-500 text-xl"></i>
+            </button>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="grid grid-cols-4 gap-3">
     <div class="col-span-4 h-full rounded-lg">
       <app-status-heighlight></app-status-heighlight>
     </div>
-    <div  class="w-full col-span-2 h-full rounded-lg">
+    <div class="w-full col-span-2 h-full rounded-lg">
       <app-month-wise-revenue></app-month-wise-revenue>
     </div>
     <div class="h-full col-span-2 bg-white rounded-lg">
