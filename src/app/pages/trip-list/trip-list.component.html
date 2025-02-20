@@ -186,7 +186,7 @@
         <div
           class="flex justify-between items-center text-web-text-secondary py-4 px-3 border-b border-[#F0F0F0]">
           <span>Gross Profit (GP)</span>
-          <span>{{ (summary.gps ? Math.round(summary.gps) : 0) | number }}</span>
+          <span>{{ (summary.gps ? Math.round(summary.gps) : 0) | number }} ৳</span>
         </div>
         <div
           class="flex justify-between items-center text-web-text-secondary py-4 px-3">
@@ -256,7 +256,7 @@
       class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
       <tr class="whitespace-nowrap bg-white text-not-black">
-        <th class="text-left">Trip Number</th>
+        <th class="text-left sticky left-0 bg-white">Trip Number</th>
         <th class="text-left whitespace-nowrap">Trip Date</th>
         <th class="text-left" *ngIf="isAdmin()">Company</th>
         <th class="text-left" *ngIf="isAdmin()">Transporter</th>
@@ -276,7 +276,7 @@
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
         <tr *ngFor="let trip of tripList; index as i">
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap sticky left-0 bg-white">
             <a
               class="text-link cursor-pointer"
               (click)="onClickTripNumber(trip.tripId)">
@@ -335,9 +335,8 @@
           </td>
           <td *ngIf="isAdmin()">
             {{
-              (trip.profitMargin ? trip.profitMargin : 0)
-                | number
-            }}%
+              (trip.profitMargin > 0 ? (trip.profitMargin | number)+ '%'  : "N/A")
+            }}
           </td>
         </tr>
       </ng-container>
