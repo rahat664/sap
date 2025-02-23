@@ -31,14 +31,14 @@
               <div
                 class="text-body_title text-white flex justify-center items-center h-[1.75rem] w-[1.75rem] rounded-full {{
                 getBackgroundColor(
-                  transporter.transporterName[0].toLocaleLowerCase()
+                  transporter.transporterName ? transporter.transporterName[0].toLocaleLowerCase() : ''
                 )
               }} font-semibold">
               <span>{{
-                  transporter.transporterName[0].toLocaleUpperCase()
+                  transporter.transporterName ? transporter.transporterName[0].toLocaleUpperCase() : ''
                 }}</span>
               </div>
-              <span class="flex-1">{{ transporter.transporterName }}</span>
+              <span class="flex-1">{{ transporter?.transporterName }}</span>
             </div>
             <span class="text-center w-full">{{ transporter.noOfTrips }}</span>
             <span class="text-center">{{

@@ -79,21 +79,25 @@ export class TopTransporterComponent implements OnInit {
   }
 
   getBackgroundColor(alphabet: string) {
-    if ('agmsy'.includes(alphabet)) {
-      return 'bg-agmsy';
-    } else if ('bhntz'.includes(alphabet)) {
-      return 'bg-bhntz';
-    } else if ('ciou'.includes(alphabet)) {
-      return 'bg-ciou';
-    } else if ('djpv'.includes(alphabet)) {
-      return 'bg-djpv';
-    } else if ('ekqw'.includes(alphabet)) {
-      return 'bg-ekqw';
-    } else if ('flrx'.includes(alphabet)) {
-      return 'bg-flrx';
-    } else {
+   if (alphabet) {
+     if ('agmsy'.includes(alphabet)) {
+       return 'bg-agmsy';
+     } else if ('bhntz'.includes(alphabet)) {
+       return 'bg-bhntz';
+     } else if ('ciou'.includes(alphabet)) {
+       return 'bg-ciou';
+     } else if ('djpv'.includes(alphabet)) {
+       return 'bg-djpv';
+     } else if ('ekqw'.includes(alphabet)) {
+       return 'bg-ekqw';
+     } else if ('flrx'.includes(alphabet)) {
+       return 'bg-flrx';
+     } else {
+       return 'bg-another';
+     }
+   } else {
       return 'bg-another';
-    }
+   }
   }
 
   changeSorting($event: MatSelectChange) {
