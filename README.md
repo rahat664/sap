@@ -65,6 +65,6 @@ If you would like to contribute to this project, please follow these steps:
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
 
-## Further help 
+## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
