@@ -33,6 +33,23 @@ export const profileRoutes: Routes = [
       transporter: transporterResolver,
     },
   },
+
+  {
+    path: 'transporter/add',
+    title: 'Add Transporter',
+    loadComponent: () =>
+      import('./components/transporter/transporter-add/transporter-add.component').then(
+        c => c.TransporterAddComponent
+      ),
+  },
+  {
+    path: 'transporter/:id/details',
+    title: 'Transporter Details',
+    loadComponent: () =>
+      import(
+        './components/transporter/transporter-details/transporter-details.component'
+      ).then(c => c.TransporterDetailsComponent),
+  },
   {
     path: 'truck',
     title: 'Truck',
@@ -128,4 +145,12 @@ export const profileRoutes: Routes = [
         c => c.EditTrackerComponent
       ),
   },
+  {
+    path: 'document-viewer',
+    title: 'Document Viewer',
+    loadComponent: () =>
+      import('./components/document-viewer/document-viewer.component').then(
+        c => c.DocumentViewerComponent
+      ),
+  }
 ];

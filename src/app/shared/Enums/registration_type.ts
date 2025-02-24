@@ -17,3 +17,10 @@ export enum DriverDocumentType {
   DRIVING_LICENSE_BACK = 4,
   OTHER_FILE = 5,
 }
+
+export enum TransporterDocumentType {
+  PROFILE_PICTURE = 1,
+  NID_FRONT = 2,
+  NID_BACK = 3,
+  TRADE_LICENSE = 4,
+}

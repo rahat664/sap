@@ -69,7 +69,8 @@
                       transporter.name[0]
                     }}</span>
               </div>
-              <span class="flex-1">{{ transporter.name }}</span>
+              <a routerLink="/profile/transporter/{{ transporter.id }}/details"
+                 class="flex-1 text-link">{{ transporter.name }}</a>
             </div>
           </td>
           <td class="sticky left-[20rem] bg-white">
@@ -89,8 +90,8 @@
           <td>{{ transporter.truckStand }}</td>
           <td>
             {{
-              transporter.paymentMethod?.paymentMethod
-                ? transporter.paymentMethod?.paymentMethod
+              transporter.defaultPaymentMethod?.paymentMethod
+                ? transporter.defaultPaymentMethod?.paymentMethod
                 : 'Cash'
             }}
           </td>
