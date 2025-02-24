@@ -366,7 +366,7 @@ export class CreateTripPageComponent implements OnInit {
       truckSize: ['', Validators.required],
       truckCapacityInTon: ['', Validators.required],
       goodsId: [''],
-      paymentType: ['', Validators.required],
+      paymentType: ['INVOICE', Validators.required],
       goodsName: ['', Validators.required],
       customerRate: [null],
       note: [''],
