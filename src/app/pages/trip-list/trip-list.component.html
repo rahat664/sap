@@ -335,7 +335,7 @@
           </td>
           <td *ngIf="isAdmin()">
             {{
-              (trip.profitMargin > 0 ? (trip.profitMargin | number)+ '%'  : "N/A")
+              (trip.customerRate > 0 && trip.transporterRate ? (trip.profitMargin | number)+ '%'  : "N/A")
             }}
           </td>
         </tr>
