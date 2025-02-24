@@ -102,7 +102,7 @@ export class TransporterAddComponent implements OnInit {
       this.transporterModel.role = 'ROLE_TRANSPORTER';
       this.transporterModel.truckStand =
         this.transporterForm.get('truckStand').value;
-      this.transporterModel.paymentMethod = this.transporterForm.get(
+      this.transporterModel.defaultPaymentMethod = this.transporterForm.get(
         'preferredPaymentMethod'
       ).value;
       switch (this.paymentInputPlaceholder) {

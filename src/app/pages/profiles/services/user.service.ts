@@ -181,4 +181,8 @@ export class UserService {
   getDriverById(driverId: any) {
     return this.http.get(`${this.url}/drivers/${driverId}`);
   }
+
+  getTransporterById(transporterId: any) {
+    return this.http.get(`${this.transportersUrl}/get-by-id/${transporterId}`);
+  }
 }

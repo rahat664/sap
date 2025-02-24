@@ -15,6 +15,7 @@ import { debounceTime } from 'rxjs';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { MatDialog } from '@angular/material/dialog';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-transporter',
@@ -28,6 +29,7 @@ import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
     LoadingComponent,
     DatePipe,
     numberPipe,
+    RouterLink,
   ],
   templateUrl: './transporter.component.html',
   styleUrl: './transporter.component.scss',
@@ -93,8 +95,8 @@ export class TransporterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.page=0;
-    this.size=20;
+    this.page = 0;
+    this.size = 20;
     this.getTransporterList();
   }
 
