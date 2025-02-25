@@ -439,7 +439,7 @@ export class TemplateCreateComponent implements OnInit {
       goodsName: [''],
       customerRate: [null],
       note: [''],
-      paymentType: [''],
+      paymentType: ['INVOICE'],
       loadingPoints: this.fb.array([this.createLoadingPoint()]),
       unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
       tripTemplateName: [''],
