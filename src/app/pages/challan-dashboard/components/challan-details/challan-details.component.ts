@@ -229,7 +229,6 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
   onReject() {}
 
   onDoubleClick(tripDocuments: any, document: any) {
-    debugger
     this.router.navigate(['image-details'], {
       state: {
         tripDocuments: tripDocuments,

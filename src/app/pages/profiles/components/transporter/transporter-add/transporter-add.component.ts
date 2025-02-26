@@ -46,7 +46,6 @@ import {
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransporterAddComponent implements OnInit {
   transporterForm: FormGroup;

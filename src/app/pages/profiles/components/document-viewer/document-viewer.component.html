@@ -10,8 +10,7 @@
         ></a>
         <span class="text-h3 leading-h3 font-bold"
         >{{
-            imageType ? imageType : activatedDocument?.event?.eventType
-          }} {{imageType ? '' : 'Challan'}}
+            changeDocumentNameToGeneralName(activatedDocument?.documentType)}}
         </span
         >
       </div>
@@ -34,13 +33,13 @@
           <img
             src="assets/svg/download.svg"
             class="notPreview h-full w-full"
-            alt=""/>
+            alt="" />
         </button>
         <button type="button" (click)="onClickDelete()">
           <img
             src="assets/svg/delete.svg"
             class="notPreview h-full w-full"
-            alt=""/>
+            alt="" />
         </button>
       </div>
     </div>
@@ -64,24 +63,26 @@
           #imageElement
           class="transition-transform h-full rounded-lg overflow-hidden duration-300 transform origin-center relative"
           [style.transform]="'scale(' + zoomLevel + ')'">
-          <img *ngIf="!activatedDocument.preSignedFileUrl?.includes('pdf') && !activatedDocument?.document?.preSignedFileUrl?.includes('pdf')"
-               [src]="
-              activatedDocument.preSignedFileUrl
-                ? activatedDocument.preSignedFileUrl
+          <img
+            *ngIf="!activatedDocument?.preSignedFileUrl?.includes('pdf') && !activatedDocument?.document?.preSignedFileUrl?.includes('pdf')"
+            [src]="
+              activatedDocument?.preSignedFileUrl
+                ? activatedDocument?.preSignedFileUrl
                 : activatedDocument?.document?.preSignedFileUrl | fallbackImage
             "
-               appImageError
-               alt="activeDocument"
-               class="notPreview h-full w-full"/>
-          <div class="flex items-center justify-center flex-col space-y-3 h-full" *ngIf="activatedDocument.url?.includes('pdf') || activatedDocument?.document?.url?.includes('pdf')">
-            <img class="w-[152px] h-[152px]" src="./assets/svg/pdf.svg"/>
+            appImageError
+            alt="activeDocument"
+            class="notPreview h-full w-full" />
+          <div class="flex items-center justify-center flex-col space-y-3 h-full"
+               *ngIf="activatedDocument?.preSignedFileUrl?.includes('pdf') || activatedDocument?.document?.preSignedFileUrl?.includes('pdf')">
+            <img class="w-[152px] h-[152px]" src="./assets/svg/pdf.svg" />
             <p
               class="text-body_title text-center leading-body_title text-secondary font-semibold w-2/3">
               Cannot preview this document. You can download it now.
             </p>
             <button
               type="button"
-              (click)="downloadReport(activatedDocument.url ? activatedDocument.url : activatedDocument?.document?.url)"
+              (click)="downloadReport(activatedDocument?.preSignedFileUrl ? activatedDocument?.preSignedFileUrl : activatedDocument?.document?.preSignedFileUrl)"
               class="px-16 py-4 bg-primary text-white rounded-lg">
               <i class="fas fa-download mr-2"></i>
               <span>Download</span>
@@ -112,11 +113,11 @@
               [src]="doc.preSignedFileUrl ? doc.preSignedFileUrl : doc?.document?.preSignedFileUrl | fallbackImage"
               appImageError
               alt="document"
-              class="h-full w-full notPreview"/>
+              class="h-full w-full notPreview" />
             <img *ngIf="doc.preSignedFileUrl?.includes('pdf') || doc?.document?.preSignedFileUrl?.includes('pdf')"
                  src="assets/svg/pdf.svg"
                  alt="document"
-                 class="h-full w-full notPreview"/>
+                 class="h-full w-full notPreview" />
           </div>
         </ng-container>
       </div>
@@ -132,8 +133,8 @@
     <div class="px-10 py-5 flex flex-col space-y-5">
       <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Trip ID</span>
-        <span class="text-h2 leading-h2 font-semibold text-not-black">{{
-            tripId
+        <span class="text-h2 leading-h2 font-semibold uppercase text-not-black">{{
+            documentBelongToId
           }}</span>
       </div>
       <div class="flex flex-col space-y-1">
@@ -149,8 +150,7 @@
         <span class="text-body text-secondary">Image type</span>
         <span class="text-h2 leading-h2 font-semibold text-not-black"
         >{{
-            imageType ? imageType : activatedDocument?.event?.eventType
-          }} {{imageType ? '' : 'Challan'}}
+            changeDocumentNameToGeneralName(activatedDocument?.documentType)}}
         </span
         >
       </div>
@@ -166,9 +166,9 @@
         >
         <p class="text-body text-secondary text-justify">
           {{
-            activatedDocument?.note
-              ? activatedDocument?.note
-              : activatedDocument?.document?.note
+          activatedDocument?.note
+          ? activatedDocument?.note
+          : activatedDocument?.document?.note
           }}
         </p>
       </div>
