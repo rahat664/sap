@@ -1,0 +1,18 @@
+.error {
+  outline: 1px solid #f7cad0;
+  border-radius: 0.25rem;
+}
+
+::ng-deep .error .mat-mdc-text-field-wrapper {
+  width: 100%;
+  border-radius: 0.25rem !important;
+  background-color: #fffafb !important;
+  height:2.4rem !important;
+}
+
+.customError ::ng-deep .tel-form .mat-mdc-form-field {
+  width: 100%;
+  border-radius: 0.25rem !important;
+  background-color: #fffafb !important;
+  height:2.4rem !important;
+}

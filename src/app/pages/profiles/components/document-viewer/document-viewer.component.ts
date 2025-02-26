@@ -40,9 +40,7 @@ export class DocumentViewerComponent {
   translateX = 0; // Horizontal translation
   translateY = 0; // Vertical translation
   returnUrl: any;
-  tripPointId: any;
-  eventTypeId: any;
-
+  documentBelongToId: string = '';
   readonly dialog = inject(MatDialog);
 
   constructor(
@@ -52,44 +50,21 @@ export class DocumentViewerComponent {
   ) {}
 
   ngOnInit() {
-    const singleTrip: Trip = JSON.parse(sessionStorage.getItem('singleTrip'));
-    this.tripId = singleTrip.tripId;
     this.resetNavigationInformation();
     this.getNavigationInformation();
   }
 
   private resetNavigationInformation() {
-    this.expiryAvailable = false;
-    this.notesAvailable = false;
-    this.notes = '';
-    this.expiryDate = '';
-    this.documents = [];
-    this.imageType = 'image';
-    this.activatedDocument = null;
-    this.activeDocumentIndex = -1;
-    this.returnUrl = null;
-    this.tripPointId = null;
-    this.eventTypeId = null;
   }
 
   private getNavigationInformation() {
     const navigation = history.state;
     if (navigation) {
-      this.expiryAvailable = navigation.expiryAvailable;
-      this.notesAvailable = navigation.notesAvailable;
-      this.notes = navigation.notesAvailable ? navigation.notes : null;
-      this.expiryDate = navigation.expiryAvailable
-        ? navigation.expiryDate
-        : null;
-      this.documents = navigation.tripDocuments
-        ? navigation.tripDocuments
-        : navigation.documents;
-      console.log(this.documents)
-      this.imageType = navigation.imageType;
+      this.documents = navigation.documents;
       this.activatedDocument = navigation.activatedDocument;
+      this.documentBelongToId = navigation.id;
       this.returnUrl = navigation.returnUrl;
-      this.tripPointId = navigation.tripPointId;
-      this.eventTypeId = navigation.eventTypeId;
+      this.imageType = navigation.imageType;
       this.updateActiveDocumentIndex();
       this.scrollToActiveDocument();
     }
@@ -218,7 +193,6 @@ export class DocumentViewerComponent {
   }
 
   // Zoom out
-  tripId: string = '';
   zoomOut() {
     if (this.zoomLevel > this.minZoom) {
       this.zoomLevel -= 0.1;
@@ -249,46 +223,23 @@ export class DocumentViewerComponent {
   }
 
   onClickDelete() {
-    // apply delete functionalities to activeDocument
-    if (this.documents?.length > 0) {
-      if (this.activatedDocument) {
-        this.dialog
-          .open(ConfirmDeleteComponent, {
-            data: {
-              title: 'Attention',
-              text: 'Are you sure you want to delete this document?',
-              buttonText: 'Delete',
-            },
-          })
-          .afterClosed()
-          .subscribe(res => {
-            const tripPointId = this.tripPointId
-              ? this.tripPointId
-              : this.activatedDocument?.event?.tripPointId;
-            const eventTypeId = this.eventTypeId
-              ? this.eventTypeId
-              : this.activatedDocument?.event?.eventTypeId;
-            const documentId = this.activatedDocument?.id
-              ? this.activatedDocument?.id
-              : this.activatedDocument?.document.id;
-            if (res === 'deleted') {
-              this.trip
-                .deleteTripDocument(tripPointId, eventTypeId, documentId)
-                .subscribe(() => {
-                  this.documents = this.documents.filter(
-                    doc => doc !== this.activatedDocument
-                  );
-                  this.activatedDocument = this.documents[0];
-                  this.activeDocumentIndex = 0;
-                  this.scrollToActiveDocument();
-                  if (this.documents.length === 0) {
-                    this.router.navigate([this.returnUrl]);
-                  }
-                });
-            }
-          });
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
+      width: '400px',
+      data: {
+        message: 'Are you sure you want to delete this document?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.documents = this.documents.filter(
+          (doc) => doc !== this.activatedDocument
+        );
+        this.activatedDocument = this.documents[0];
+        this.updateActiveDocumentIndex();
+        this.scrollToActiveDocument();
       }
-    }
+    });
   }
 
   onClickDownload() {
@@ -320,5 +271,10 @@ export class DocumentViewerComponent {
       a.click();
       document.body.removeChild(a);
     }
+  }
+
+  changeDocumentNameToGeneralName(documentType: any) {
+    documentType = documentType.replace(/_/g, ' ');
+    return documentType.charAt(0).toUpperCase() + documentType.slice(1);
   }
 }

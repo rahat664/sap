@@ -1,47 +1,49 @@
-<div class="m-3">
-  <div class="bg-white flex items-center justify-between p-4 rounded-lg">
-    <h1 class="text-h1 leading-h1 font-semibold">
-      {{ isInEditMode ? 'Edit Transporter' : 'Transporter Details' }}
-    </h1>
-    <div class="flex space-x-4 items-center">
-      <button
-        *ngIf="isInEditMode"
-        (click)="onClickSave()"
-        class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
-        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-        <span>Save</span>
-      </button>
-      <button
-        *ngIf="isInEditMode"
-        (click)="onClickCancel()"
-        class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
-        <span>Cancel</span>
-      </button>
-      <button
-        *ngIf="
+<div class="mx-3 ">
+  <div class="pt-3 bg-app-bg sticky top-[4rem] z-50">
+    <div class="bg-white flex items-center justify-between p-4 rounded-lg ">
+      <h1 class="text-h1 leading-h1 font-semibold">
+        {{ isInEditMode ? 'Edit Transporter' : 'Transporter Details' }}
+      </h1>
+      <div class="flex space-x-4 items-center">
+        <button
+          *ngIf="isInEditMode"
+          (click)="onClickSave()"
+          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+          <span>Save</span>
+        </button>
+        <button
+          *ngIf="isInEditMode"
+          (click)="onClickCancel()"
+          class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
+          <span>Cancel</span>
+        </button>
+        <button
+          *ngIf="
             !isInEditMode
           "
-        (click)="onClickApprove(transporter)"
-        class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
-        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-        <span>Approve</span>
-      </button>
-      <button
-        *ngIf="!isInEditMode"
-        (click)="onClickReject(transporter)"
-        class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
-        <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-        <span>Reject</span>
-      </button>
-      <button
-        (click)="onClickEdit()"
-        *ngIf="!isInEditMode"
-        class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
-        <i class="far fa-pen text-primary"></i>
-      </button>
+          (click)="onClickApprove(transporter)"
+          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+          <span>Approve</span>
+        </button>
+        <button
+          *ngIf="!isInEditMode"
+          (click)="onClickReject(transporter)"
+          class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+          <span>Reject</span>
+        </button>
+        <button
+          (click)="onClickEdit()"
+          *ngIf="!isInEditMode"
+          class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
+          <i class="far fa-pen text-primary"></i>
+        </button>
+      </div>
     </div>
   </div>
-  <form class="grid mt-3 grid-cols-2 gap-3">
+  <form [formGroup]="transporterUpdateForm" class="grid mt-3 grid-cols-2 gap-3 text-body_title text-web-text-secondary">
     <div class="flex flex-col space-y-3">
       <div class="bg-white rounded-lg p-4">
         <div class="flex space-x-3 items-center mb-4">
@@ -49,377 +51,307 @@
           <h1 class="text-h2 leading-h2 font-semibold">Transporter info</h1>
         </div>
         <div class="w-full grid grid-cols-2 gap-3">
-          <div class="flex flex-col space-y-1">
-            <span class="text-body text-secondary font-normal">Name</span>
-            <span class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.name }}</span>
-          </div>
-          <div class="flex flex-col space-y-1">
-            <span class="text-body text-secondary font-normal">Mobile no.</span>
-            <span
-              class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.contactPersonNumber }}</span>
-          </div>
-          <div class="flex flex-col space-y-1">
-            <span class="text-body text-secondary font-normal">Truck stand</span>
-            <span
-              class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.truckStand }}</span>
-          </div>
-          <div class="flex flex-col space-y-1">
-            <span class="text-body text-secondary font-normal">Preferred payment</span>
-            <span
-              class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod }}</span>
-          </div>
-        </div>
-      </div>
-      <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
-        <div class="flex space-x-4 items-center">
-          <img
-            src="assets/svg/truckDocument.svg"
-            class="notPreview"
-            alt="truck document" />
-          <span class="text-not-black text-h3 leading-h3 font-semibold"
-          >Document</span
-          >
-        </div>
-        <div class="flex flex-col space-y-1">
-          <ng-container *ngFor="let option of transporterFileType; index as i">
-            <div
-              class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
-              <div class="flex space-x-4 items-center">
-                <img
-                  src="assets/svg/not-available.svg"
-                  class="notPreview"
-                  alt=""
-                  *ngIf="
-                      !checkThatFileIsAvailableOrNot(option.name).length &&
-                      !transporterUpdateForm.get(option.formControlName).value
-                    " />
-                <img
-                  src="assets/svg/available.svg"
-                  alt=""
-                  class="notPreview"
-                  *ngIf="
-                      checkThatFileIsAvailableOrNot(option.name).length > 0 ||
-                      transporterUpdateForm.get(option.formControlName).value
-                    " />
-                <div class="flex flex-col space-y-0.5">
-                    <span
-                      class="text-not-black text-body_title leading-body_title font-semibold"
-                    >{{ option.name }}</span
-                    >
-                  <span
-                    *ngIf="
-                        option.expiryAvailable &&
-                        checkThatFileIsAvailableOrNot(option.name) &&
-                        checkThatFileIsAvailableOrNot(option.name)[0]
-                          ?.expiryDate &&
-                        !isInEditMode
-                      "
-                    class="{{
-                        checkDateIsExpiredOrNot(
-                          checkThatFileIsAvailableOrNot(option.name)[0]
-                            ?.expiryDate
-                        ).isExpired
-                          ? 'text-red'
-                          : 'text-not-black'
-                      }} text-body"
-                  >{{
-                      checkDateIsExpiredOrNot(
-                        checkThatFileIsAvailableOrNot(option.name)[0]
-                          ?.expiryDate
-                      ).text
-                    }}</span
-                  >
-                  <mat-form-field
-                    *ngIf="option?.expiryAvailable && isInEditMode"
-                    class="example-full-width flex-1 custom"
-                    appearance="outline"
-                    [ngClass]="{
-                        error: transporterUpdateForm.get(
-                          option.expiryFormControlName
-                        ).invalid,
-                      }">
-                    <input
-                      [formControlName]="option.expiryFormControlName"
-                      matInput
-                      [matDatepicker]="picker"
-                      placeholder="Expiry Date"
-                      (focusin)="picker.open()"
-                      (selectionchange)="
-                          onDateChange($event, option.expiryFormControlName)
-                        " />
-                    <mat-datepicker-toggle
-                      matIconSuffix
-                      [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                  </mat-form-field>
-                </div>
-              </div>
-
-              <div class="flex space-x-6 items-center">
-                <div class="flex">
-                  <div class="flex space-x-3 relative">
-                    <ng-container
-                      *ngIf="
-                          isInEditMode &&
-                          checkThatFileIsAvailableOrNot(option.name)?.length < 3
-                        ">
-                      <div
-                        class="w-[2.625rem] h-[1.875rem] object-center border border-blue relative"
-                        *ngFor="
-                            let file of getSpecificFiles(
-                              option?.formControlName,
-                              checkThatFileIsAvailableOrNot(option.name).length
-                            )
-                          ">
-                        <ng-container
-                          *ngIf="
-                              file.file.type === 'application/pdf';
-                              else imagePreview
-                            ">
-                          <!-- Display PDF Preview -->
-                          <img
-                            (click)="
-                                $event.stopPropagation();
-                                onClickPdfDocument(file)
-                              "
-                            class="h-full w-full"
-                            src="assets/svg/pdf.svg"
-                            alt="" />
-                        </ng-container>
-                        <ng-template #imagePreview>
-                          <!-- Display Image Preview -->
-                          <img
-                            (click)="
-                                $event.stopPropagation();
-                                onClickImage(file,'image',option.name)"
-                            class="h-full w-full"
-                            [src]="file.preview | fallbackImage"
-                            appImageError
-                            alt="" />
-                        </ng-template>
-                      </div>
-                    </ng-container>
-                    <div
-                      class="w-[2.625rem] h-[1.875rem]  rounded-sm object-center border border-blue relative">
-                    <div
-                      class="w-[2.625rem] h-[1.875rem] relative bottom-1 right-1 rounded-sm overflow-hidden object-center border border-blue"
-                      *ngFor="
-                          let file of checkThatFileIsAvailableOrNot(option.name)
-                        ">
-                      <img
-                        *ngIf="checkThatFileIsImageOrPdf(file) === 'image'"
-                        (click)="
-                            $event.stopPropagation();
-                            onClickImage(file, 'image', option.name)
-                          "
-                        class="h-full w-full"
-                        [src]="file.preSignedFileUrl | fallbackImage"
-                        appImageError
-                        alt="" />
-                      <img
-                        *ngIf="checkThatFileIsImageOrPdf(file) === 'pdf'"
-                        (click)="
-                            $event.stopPropagation(); onClickImage(file,'pdf',option.name)
-                          "
-                        class="h-full w-full"
-                        src="assets/svg/pdf.svg"
-                        alt="" />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  *ngIf="
-                        getSavedFileArray(option?.formControlName)?.length +
-                          getFileArray(option.formControlName).length >
-                          3 &&
-                        getSavedFileArray(option?.formControlName)?.length +
-                          getFileArray(option.formControlName).length >
-                          0
-                      ">
-                  <button type="button"
-                          [matMenuTriggerFor]="truckImagePop"
-                          (click)="
-                          viewMoreFormControlName = option?.formControlName
-                        "
-                          class="px-2 h-[3.75rem] flex text-link items-center justify-center bg-opacity-10 bg-blue space-x-1 text-h2_medium font-semibold rounded-md">
-                        <span class="text-link font-semibold"
-                        >+{{
-                            isInEditMode
-                              ? getSavedFileArray(option?.formControlName)
-                                .length +
-                              getFileArray(option?.formControlName).length -
-                              3
-                              : getSavedFileArray(option?.formControlName)
-                              .length - 3
-                          }}</span
-                        >
-                  </button>
-                </div>
-              </div>
+          <ng-container *ngIf="!isInEditMode">
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-secondary font-normal">Name</span>
               <span
-                class="text-web-text-secondary text-body"
-                *ngIf="
-                      getSavedFileArray(option?.formControlName)?.length <= 0 &&
-                      !isInEditMode
-                    "
-              >Not Uploaded Yet</span
-              >
-              <ng-container *ngIf="isInEditMode">
-                <app-upload-button
-                  *ngIf="
-                        (getSpecificFiles(option?.formControlName)?.length ===
-                          0 &&
-                          getSavedFileArray(option?.formControlName)?.length ===
-                            0) ||
-                        !getSpecificFiles(option?.formControlName)
-                      "
-                  buttonText="Upload"
-                  [file]="true"
-                  (click)="
-                        triggerFileUpload(option?.formControlName, option.max)
-                      "
-                  icon="upload"></app-upload-button>
-                <app-upload-button
-                  *ngIf="
-                        (getSpecificFiles(option?.formControlName)?.length >
-                          0 ||
-                          getSavedFileArray(option?.formControlName).length >
-                            0) &&
-                        getFileArray(option?.formControlName)?.length +
-                          getSavedFileArray(option?.formControlName).length <
-                          option?.max
-                      "
-                  (click)="
-                        triggerFileUpload(option?.formControlName, option.max)
-                      "
-                  icon="plus"></app-upload-button>
-                <input
-                  [multiple]="option.multiple"
-                  type="file"
-                  #fileInput
-                  accept=".png, .jpg, .jpeg, .pdf"
-                  style="display: none"
-                  (change)="onFileSelected($event)" />
-              </ng-container>
+                class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.name }}</span>
             </div>
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-secondary font-normal">Mobile no.</span>
+              <span
+                class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.contactPersonNumber }}</span>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-secondary font-normal">Truck stand</span>
+              <span
+                class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.truckStand }}</span>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-secondary font-normal">Preferred payment</span>
+              <span
+                class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod }}</span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="isInEditMode">
+            <div class="flex flex-col space-y-1">
+              <label for="name">Transporter name</label>
+              <mat-form-field
+                appearance="outline"
+                class="example-full-width"
+                [ngClass]="{
+            error:
+              transporterUpdateForm.get('name').invalid &&
+              transporterUpdateForm.get('name').touched,
+          }">
+                <input
+                  id="name"
+                  [minLength]="2"
+                  [maxLength]="50"
+                  type="text"
+                  matInput
+                  formControlName="name"
+                  placeholder="Enter Transporter Name" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="contactPersonName">Contact person name</label>
+              <mat-form-field
+                appearance="outline"
+                class="example-full-width"
+                [ngClass]="{
+            error:
+              transporterUpdateForm.get('contactPersonName').invalid &&
+              transporterUpdateForm.get('contactPersonName').touched,
+          }">
+                <input
+                  id="contactPersonName"
+                  [minLength]="2"
+                  [maxLength]="50"
+                  type="text"
+                  matInput
+                  formControlName="contactPersonName"
+                  placeholder="Enter Contact Person Name" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1 ">
+              <ngx-material-intl-tel-input
+                [includeDialCode]="false"
+                class="customize"
+                id="phoneNumber"
+                [textLabels]="textLabels"
+                [autoSelectedCountry]="CountryISO.Bangladesh"
+                [preferredCountries]="[CountryISO.Bangladesh]"
+                [fieldControl]="phoneNumber"
+                [numberValidation]="true"
+                [hidePhoneIcon]="true"
+                [required]="true"
+                [autoIpLookup]="false"
+                [ngClass]="{
+            customError:
+              transporterUpdateForm.get('phone').invalid &&
+              transporterUpdateForm.get('phone').touched,
+          }"></ngx-material-intl-tel-input>
+              <!--        error-message-->
+              <div>
+          <span
+            *ngIf="
+              transporterUpdateForm.get('phone').touched &&
+              transporterUpdateForm.get('phone').invalid
+            "
+            class="text-red text-xs">
+            <span>Phone number is required</span>
+          </span>
+              </div>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="truckStand">Truck Stand</label>
+              <mat-form-field
+                appearance="outline"
+                class="example-full-width"
+                [ngClass]="{
+            error:
+              transporterUpdateForm.get('truckStand').invalid &&
+              transporterUpdateForm.get('truckStand').touched,
+          }">
+                <input
+                  id="truckStand"
+                  type="text"
+                  matInput
+                  formControlName="truckStand"
+                  placeholder="Enter Truck Stand" />
+              </mat-form-field>
+              <div
+                *ngIf="
+            transporterUpdateForm.get('truckStand').touched &&
+            transporterUpdateForm.get('truckStand').invalid
+          "
+                class="text-red text-xs">
+                <span>Truck stand is required</span>
+              </div>
+              <!--        error-message-->
+            </div>
+
+            <div class="flex flex-col space-y-1 w-full col-span-2">
+              <label for="note">Note (Optional)</label>
+              <textarea
+                placeholder="Enter Note"
+                class="bg-input rounded-lg p-4 border border-disabled"
+                id="note"
+                formControlName="note"></textarea>
+            </div>
+          </ng-container>
         </div>
-        </ng-container>
       </div>
+      <app-profile-documents [transporterId]="transporter?.code" [documentTypes]="transporterFileType" [documents]="transporterDocuments" ></app-profile-documents>
     </div>
-</div>
-<div class="p-4 bg-white rounded-lg" *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Cash'">
-  <div class="flex space-x-3 items-center mb-4">
-    <img class="notPreview" src="assets/svg/payment-info.svg" alt="payment-info" />
-    <h1 class="text-h2 leading-h2 font-semibold">Payment info</h1>
-  </div>
-  <div class="border border-x-disabled rounded-lg overflow-hidden">
-    <div class="flex justify-between px-3 py-2.5 items-center bg-input">
-      <div class="flex space-x-3 items-center">
-        <img src="assets/svg/bank.svg" class="notPreview" alt="bank" />
-        <h1
-          class="text-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod }}</h1>
+    <div class="p-4 bg-white rounded-lg" *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Cash'">
+      <div class="flex space-x-3 items-center mb-4">
+        <img class="notPreview" src="assets/svg/payment-info.svg" alt="payment-info" />
+        <h1 class="text-h2 leading-h2 font-semibold">Payment info</h1>
       </div>
-      <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
-        <i class="fal fa-angle-down text-xl"></i>
-      </button>
-    </div>
-    <div class="py-3 px-12 grid grid-cols-2 gap-4 bg-[#FDFFFF]">
-      <div class="flex flex-col space-y-1 col-span-2">
+      <div class="border border-x-disabled rounded-lg overflow-hidden" *ngIf="!isInEditMode">
+        <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+          <div class="flex space-x-3 items-center">
+            <img
+              src="assets/svg/{{transporter?.defaultPaymentMethod?.paymentMethod === 'Bank' ? 'bank' : 'mobile'}}.svg"
+              class="notPreview" alt="payment" />
+            <h1
+              class="text-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod }}</h1>
+          </div>
+          <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
+            <i class="fal fa-angle-down text-xl"></i>
+          </button>
+        </div>
+        <div class="py-3 px-12 grid grid-cols-2 gap-4 bg-[#FDFFFF]">
+          <div class="flex flex-col space-y-1 col-span-2">
         <span
           class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.name }}</span>
-        <span class="text-body text-secondary font-normal"
-              *ngIf="transporter?.defaultPaymentMethod?.paymentMethod === 'Bank'">{{ transporter?.defaultPaymentMethod?.branchName }}
-          branch</span>
-        <span class="text-body text-secondary font-normal"
-              *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Bank'">MFS service</span>
-      </div>
-      <div class="flex flex-col space-y-1">
-        <span class="text-body text-secondary font-normal">Account number</span>
-        <span
-          class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.bankAccNo }}</span>
-      </div>
-      <div class="flex flex-col space-y-1">
+            <span class="text-body text-secondary font-normal"
+                  *ngIf="transporter?.defaultPaymentMethod?.paymentMethod === 'Bank'">{{ transporter?.defaultPaymentMethod?.branchName }}
+              branch</span>
+            <span class="text-body text-secondary font-normal"
+                  *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Bank'">MFS service</span>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <span class="text-body text-secondary font-normal">Account number</span>
+            <span
+              class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.bankAccNo }}</span>
+          </div>
+          <div class="flex flex-col space-y-1">
         <span
           class="text-body text-secondary font-normal">{{ transporter?.defaultPaymentMethod?.paymentMethod === 'Bank' ? 'Account name' : 'Account type' }}</span>
-        <span
-          class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod === 'Bank' ? transporter?.defaultPaymentMethod?.accHolderName : transporter?.defaultPaymentMethod.accType }}</span>
+            <span
+              class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod === 'Bank' ? transporter?.defaultPaymentMethod?.accHolderName : transporter?.defaultPaymentMethod.accType }}</span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isInEditMode" class="flex flex-col space-y-4">
+        <div class="border border-x-disabled rounded-lg overflow-hidden">
+          <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/bank.svg" class="notPreview" alt="bank" />
+              <h1
+                class="text-body_title font-semibold text-not-black">Bank</h1>
+            </div>
+            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
+              <i class="fal fa-angle-down text-xl"></i>
+            </button>
+          </div>
+          <div class="py-3 px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
+            <div class="flex flex-col space-y-1 col-span-2">
+              <label for="bankName">Bank Name</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="bankName"
+                  type="text"
+                  matInput
+                  formControlName="bankName"
+                  placeholder="Enter Bank Name" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="bankBranch">Branch</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="bankBranch"
+                  type="text"
+                  matInput
+                  formControlName="bankBranch"
+                  placeholder="Enter Branch" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="bankAccountName">Account Name</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="bankAccountName"
+                  type="text"
+                  matInput
+                  formControlName="bankAccountName"
+                  placeholder="Enter Account Name" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1 col-span-2">
+              <label for="bankAccountNumber">Account Number</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="bankAccountNumber"
+                  type="text"
+                  matInput
+                  formControlName="bankAccountNumber"
+                  placeholder="Enter Account Number" />
+              </mat-form-field>
+            </div>
+            <mat-checkbox (change)="setPreferredPaymentMethod($any($event), 'Bank')">
+              Set as preferred
+            </mat-checkbox>
+          </div>
+        </div>
+        <div class="border border-x-disabled rounded-lg overflow-hidden">
+          <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/mobile.svg" class="notPreview" alt="MFS" />
+              <h1
+                class="text-body_title font-semibold text-not-black">MFS</h1>
+            </div>
+            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
+              <i class="fal fa-angle-down text-xl"></i>
+            </button>
+          </div>
+          <div class="py-3 px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
+            <div class="flex flex-col space-y-1">
+              <label for="mfservice">MFS Service</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="mfservice"
+                  type="text"
+                  matInput
+                  formControlName="mfsName"
+                  placeholder="Enter MFS Name" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="bankBranch">MFS Type</label>
+              <app-custom-input
+                id="accountType"
+                [isFilterMenu]="false"
+                [inputSearch]="bkashPaymentTypePlaceholder"
+                [options]="bkashPaymentMethod"
+                inputPlaceholder="Select Account Type"
+                appGetClickEvent
+                (selectedId)="onSelectBkashType($event)"></app-custom-input>
+            </div>
+            <div class="flex flex-col space-y-1 col-span-2">
+              <label for="mfsNumber">Account Number</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="mfsNumber"
+                  type="text"
+                  matInput
+                  formControlName="mfsNumber"
+                  placeholder="Enter Account Number" />
+              </mat-form-field>
+            </div>
+            <mat-checkbox (change)="setPreferredPaymentMethod($any($event), 'MFS')">
+              Set as preferred
+            </mat-checkbox>
+          </div>
+        </div>
+        <div class="border border-x-disabled rounded-lg overflow-hidden">
+          <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/cash.svg" class="notPreview" alt="Cash" />
+              <h1
+                class="text-body_title font-semibold text-not-black">Cash</h1>
+            </div>
+          </div>
+          <mat-checkbox class="px-2" (change)="setPreferredPaymentMethod($any($event), 'Cash')">
+            Set as preferred
+          </mat-checkbox>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-</form>
+  </form>
 </div>
 
-<mat-menu #truckImagePop="matMenu" class="truck-menu">
-  <div (click)="$event.stopPropagation()">
-    <div class="flex justify-between items-center pl-6 pr-2 py-2">
-      <h1
-        class="text-body_title leading-body_title text-not-black font-semibold">
-        {{ getTransporterImageTitle(viewMoreFormControlName) }}
-      </h1>
-      <button type="button"
-              (click)="onClickClosePopUp()"
-              class="h-6 w-6 rounded-full hover:bg-input">
-        <i class="fal fa-times"></i>
-      </button>
-    </div>
-    <div class="grid grid-cols-6 gap-3 px-6 py-4">
-      <ng-container
-        *ngFor="let file of getSavedFileArray(viewMoreFormControlName)">
-        <div
-          class="w-[2.625rem] h-[1.875rem] object-center border border-blue relative">
-          <img
-            *ngIf="checkThatFileIsImageOrPdf(file) === 'image'"
-            (click)="$event.stopPropagation(); onClickImage(file,'image',file.name)"
-            class="h-full w-full"
-            [src]="file.preSignedFileUrl | fallbackImage"
-            appImageError
-            alt="" />
-          <img
-            *ngIf="checkThatFileIsImageOrPdf(file) === 'pdf'"
-            (click)="$event.stopPropagation(); onClickImage(file,'pdf',file.name)"
-            class="h-full w-full"
-            src="assets/svg/pdf.svg"
-            alt="" />
-          <button type="button"
-                  *ngIf="isInEditMode"
-                  (click)="onCloseImageSavedImage(viewMoreFormControlName, file)"
-                  class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white">
-            <i class="far fa-times"></i>
-          </button>
-        </div>
-      </ng-container>
-      <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
-        <div
-          class="w-[2.625rem] h-[1.875rem] object-center border border-blue relative">
-          <ng-container
-            *ngIf="file.file.type === 'application/pdf'; else imagePreview">
-            <!-- Display PDF Preview -->
-            <img
-              (click)="$event.stopPropagation(); onClickPdfDocument(file)"
-              class="h-full w-full"
-              src="assets/svg/pdf.svg"
-              alt="" />
-          </ng-container>
-          <ng-template #imagePreview>
-            <!-- Display Image Preview -->
-            <img class="h-full w-full" [src]="file.preview | fallbackImage" appImageError
-                 alt="" />
-          </ng-template>
-          <button type="button"
-                  *ngIf="isInEditMode"
-                  (click)="
-              onCloseImage(
-                viewMoreFormControlName,
-                file,
-                viewMoreExpiryControlName
-              )
-            "
-                  class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white">
-            <i class="far fa-times"></i>
-          </button>
-        </div>
-      </ng-container>
-    </div>
-  </div>
-</mat-menu>
