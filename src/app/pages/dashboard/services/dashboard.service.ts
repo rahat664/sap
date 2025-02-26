@@ -13,18 +13,21 @@ export class DashboardService {
 
   constructor(private http: HttpClient) {}
 
-  getApiStats(from: string, to: string, customerCode?: string) {
+  getApiStats(from: string, to: string, customerCode?: string,paymentType?: string) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
     if (customerCode) {
       params.set('customerCode', customerCode);
     }
+    if (paymentType) {
+      params.set('paymentType', paymentType);
+    }
     return this.http.get(`${this._dashboardUrl}/statistics?${params.toString()}`);
   }
 
 
-  getDateWiseTripCount(from: string, to: string, type: string, customerCode?: string) {
+  getDateWiseTripCount(from: string, to: string, type: string, customerCode?: string, paymentType?: string) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
@@ -32,27 +35,36 @@ export class DashboardService {
     if (customerCode) {
       params.set('customerCode', customerCode);
     }
+    if (paymentType) {
+      params.set('paymentType', paymentType);
+    }
     return this.http.get(`${this._dateWiseTripCountUrl}?${params.toString()}`);
   }
 
 
 
-  getCustomerStats(from: string, to: string, customerCode?: string) {
+  getCustomerStats(from: string, to: string, customerCode?: string, paymentType?: string) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
     if (customerCode) {
       params.set('customerCode', customerCode);
     }
+    if (paymentType) {
+      params.set('paymentType', paymentType);
+    }
     return this.http.get(`${this._customerStatsUrl}/stats?${params.toString()}`);
   }
 
-  getChallanStatus(from: string, to: string, customerCode?: string) {
+  getChallanStatus(from: string, to: string, customerCode?: string, paymentType?: string) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
     if (customerCode) {
       params.set('customerCode', customerCode);
+    }
+    if (paymentType) {
+      params.set('paymentType', paymentType);
     }
     return this.http.get(`${this._dashboardUrl}/challan-status?${params.toString()}`);
   }
@@ -67,7 +79,7 @@ export class DashboardService {
     return this.http.get(`${this._dashboardUrl}/trips-count-by-status?${params.toString()}`);
   }
 
-  getTopTransporters(from: string, to: string, sortBy: string = 'grossProfit', customerCode?: string) {
+  getTopTransporters(from: string, to: string, sortBy: string = 'grossProfit', customerCode?: string, paymentType?: string) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
@@ -76,14 +88,23 @@ export class DashboardService {
     if (customerCode) {
       params.set('customerCode', customerCode);
     }
+    if (paymentType) {
+      params.set('paymentType', paymentType);
+    }
     return this.http.get(`${this._dashboardUrl}/top-transporters?${params.toString()}`);
 
   }
 
-  getTopCustomers(from: string, to: string, sortBy: string = 'grossProfit') {
-    return this.http.get(
-      `${this._dashboardUrl}/top-customers?from=${from}&to=${to}&size=5&sortBy=${sortBy}`
-    );
+  getTopCustomers(from: string, to: string, sortBy: string = 'grossProfit', paymentType?: string) {
+    const params = new URLSearchParams();
+    params.set('from', from);
+    params.set('to', to);
+    params.set('sortBy', sortBy);
+    params.set('size', '5');
+    if (paymentType) {
+      params.set('paymentType', paymentType);
+    }
+    return this.http.get(`${this._dashboardUrl}/top-customers?${params.toString()}`);
   }
 
   getTransporterRateAnalysisData(
@@ -94,7 +115,8 @@ export class DashboardService {
     truckType?: string,
     loadingPointDistrictName?: string,
     unloadingPointDistrictName?: string,
-    customerCode?: string
+    customerCode?: string,
+    paymentType?: string
   ) {
     const params = new URLSearchParams();
     if (type) {
@@ -120,6 +142,9 @@ export class DashboardService {
     }
     if (customerCode) {
       params.set('customerCode', customerCode);
+    }
+    if (paymentType) {
+      params.set('paymentType', paymentType);
     }
 
     return this.http.get(

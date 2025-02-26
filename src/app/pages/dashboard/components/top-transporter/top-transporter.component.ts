@@ -33,6 +33,7 @@ export class TopTransporterComponent implements OnInit {
   sortBy = 'grossProfit';
   loading: boolean;
   customerCode: string;
+  paymentType: string = '';
 
   constructor(
     private service: DashboardService,
@@ -44,6 +45,7 @@ export class TopTransporterComponent implements OnInit {
     this.loading = false;
     this.activatedRoute.queryParams.subscribe(params => {
       this.customerCode = params['customerCode'] ? params['customerCode'] : '';
+      this.paymentType = params['paymentType'] ? params['paymentType'] : '';
       if (params['fromDate'] && params['toDate']) {
         this.fromDate = params['fromDate'];
         this.toDate = params['toDate'];
@@ -56,7 +58,7 @@ export class TopTransporterComponent implements OnInit {
 
   private getTopTransporters() {
     this.service
-      .getTopTransporters(this.fromDate, this.toDate, this.sortBy, this.customerCode)
+      .getTopTransporters(this.fromDate, this.toDate, this.sortBy, this.customerCode, this.paymentType)
       .subscribe(
         (res: any) => {
           this.topTransporter = res.data.content;

@@ -50,9 +50,9 @@
               src="assets/svg/filter.svg"
               alt="filter"/>
             <span
-              *ngIf="filterValues.length > 0"
+              *ngIf="filterValues.length + paymentFilter > 0"
               class="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red text-white text-xs font-semibold rounded-full h-4 w-4 flex items-center justify-center">
-              {{ filterValues.length }}
+              {{ filterValues.length + paymentFilter }}
             </span>
           </div>
         </button>
@@ -75,6 +75,13 @@
             ></a>
           </div>
         </ng-container>
+        <div *ngIf="paymentTypePlaceholder"
+          class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint">
+          <span>{{ paymentTypePlaceholder }}</span>
+          <a (click)="onClickClosePaymentType()" class="cursor-pointer"
+          ><i class="far fa-times"></i
+          ></a>
+        </div>
       </div>
       <div
         class="flex flex-col space-y-2 overflow-y-auto pl-4"
@@ -248,6 +255,15 @@
                 }
               </mat-select>
             </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-1 w-full">
+            <label class="text-body text-web-text-secondary px-2">Payment Type</label>
+            <app-custom-input
+              appGetClickEvent
+              [inputSearch]="paymentTypePlaceholder"
+              [options]="paymentTypeOptionsArray"
+              inputPlaceholder="Select Payment type"
+              (selectedId)="onSelectPayment($event)"></app-custom-input>
           </div>
         </div>
         <button

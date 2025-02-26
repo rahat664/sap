@@ -77,6 +77,13 @@ export class TripListComponent implements OnInit, AfterViewInit {
   tripList: Trip[] = [];
   inputPlaceholder = '';
   dateOptionArray: CustomInputSelectModel[] = [];
+  paymentTypeOptionsArray: CustomInputSelectModel[] = [
+    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
+    { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
+    { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+  ];
+  paymentTypePlaceholder: string = '';
+  paymentTypeValue: string = '';
   searchValue = '';
   from = '';
   to = '';
@@ -115,6 +122,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
   customerSearchSubject = new Subject<string>();
   searchId: any;
   searchTransporter: any;
+   paymentFilter: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -211,7 +219,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
         null,
         null,
         null,
-        this.transporterName
+        this.transporterName,
+        this.paymentTypeValue
       )
       .subscribe(
         (trip: any) => {
@@ -344,11 +353,14 @@ export class TripListComponent implements OnInit, AfterViewInit {
       this.dateFilter +
       this.searchFilter +
       this.tripFilter +
-      this.transporterFilter
+      this.transporterFilter + this.paymentFilter
     );
   }
 
   onClearFilter() {
+    this.paymentTypePlaceholder = '';
+    this.paymentTypeValue = '';
+    this.paymentFilter = 0;
     this.customerCode = '';
     this.tripId = '';
     this.page = 0;
@@ -556,4 +568,18 @@ export class TripListComponent implements OnInit, AfterViewInit {
   }
 
   protected readonly Math = Math;
+
+  onSelectPayment($event: number) {
+    this.paymentFilter = 1;
+    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.paymentTypePlaceholder =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.paymentTypeValue = this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    this.service.anotherStatusCalled.next(true);
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.getTripList();
+
+  }
 }
