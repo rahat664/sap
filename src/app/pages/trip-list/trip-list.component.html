@@ -270,6 +270,7 @@
         <th class="text-left" *ngIf="isAdmin()">Transporter</th>
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
+        <th class="text-left whitespace-nowrap">Payment Type</th>
         <th class="text-left">Status</th>
         <!--        <th class="text-left" *ngIf="!isAdmin()">Trip Fare</th>-->
         <th class="text-left" *ngIf="isAdmin()">CR(৳)</th>
@@ -278,7 +279,7 @@
         <th class="text-left" *ngIf="isAdmin()">Profit Margin</th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="isAdmin() ? 11 : 7"></th>
+        <th class="custom-border" [colSpan]="isAdmin() ? 12 : 8"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -322,6 +323,7 @@
               >
             </p>
           </td>
+          <td class="whitespace-nowrap">{{ trip.paymentType === 'BOTH' ? 'Cash & Invoice' : trip.paymentType }}</td>
           <td>{{ trip.status }}</td>
           <td *ngIf="isAdmin()">
             {{
@@ -350,7 +352,7 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="isAdmin() ? 11 : 7">
+          <td class="text-center" [colSpan]="isAdmin() ? 12 : 8">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
@@ -368,7 +370,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="isAdmin() ? 11 : 7">
+          <td class="h-full" [colSpan]="isAdmin() ? 12 : 8">
             <app-loading></app-loading>
           </td>
         </tr>
