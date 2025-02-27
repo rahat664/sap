@@ -38,6 +38,19 @@ export class ProfileDocumentsComponent {
   ngOnChanges(changes: SimpleChanges) {
     if (changes && this.documents?.length > 0) {
       this.categorizeDocuments();
+    } else {
+      this.categorizedDocuments = this.documentTypes.reduce(
+        (acc, type) => {
+          acc[type] = [];
+          return acc;
+        },
+        {} as { [key: string]: any[] }
+      );
+      //fill the categorizedDocuments with empty array
+      this.documentTypes.forEach(documentType => {
+        this.categorizedDocuments[documentType.documentType] = [];
+      });
+      console.log(this.categorizedDocuments);
     }
   }
 
