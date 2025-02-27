@@ -4,7 +4,7 @@
       <img src="assets/svg/document.svg" class="notPreview" alt="document" />
       <span class="text-lg font-bold">{{ documentName }}</span>
     </div>
-    <a (click)="viewAllDocument()" class="text-link">View all</a>
+    <a *ngIf="documents?.length > 0" (click)="viewAllDocument()" class="text-link">View all</a>
   </div>
   <div class="flex flex-col space-y-1">
     <ng-container *ngFor="let doc of documentTypes">
