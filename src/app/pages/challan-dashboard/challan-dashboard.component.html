@@ -448,7 +448,7 @@
               >
             </p>
           </td>
-          <td class="whitespace-nowrap">{{ trip.paymentType === 'BOTH' ? 'Cash & Invoice' : trip.paymentType }}</td>
+          <td class="whitespace-nowrap">{{ getNameFromEnum(trip.paymentType) }}</td>
           <td class="whitespace-nowrap text-center">
                   <span *ngIf="trip.challanHardCopyReceivedAt">{{
                       trip.challanHardCopyReceivedAt | date: 'dd MMM,yyyy h:mm a'

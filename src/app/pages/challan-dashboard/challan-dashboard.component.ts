@@ -41,6 +41,7 @@ import { TruckDocumentType } from '../../shared/Enums/registration_type';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
+import { PaymentType } from '../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -943,5 +944,15 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.loading = true;
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
+  }
+
+  getNameFromEnum(paymentType: string) {
+    if (paymentType === PaymentType.CASH) {
+      return 'Cash';
+    } else if (paymentType === PaymentType.INVOICE) {
+      return 'Invoice';
+    } else {
+      return 'Cash & Invoice';
+    }
   }
 }

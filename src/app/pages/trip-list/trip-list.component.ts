@@ -38,6 +38,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
 import { UserService } from '../profiles/services/user.service';
+import { PaymentType } from '../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-trip-list',
@@ -580,6 +581,15 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.size = 30;
     this.loading = true;
     this.getTripList();
+  }
 
+  getNameFromEnum(paymentType: string) {
+    if (paymentType === PaymentType.CASH) {
+      return 'Cash';
+    } else if (paymentType === PaymentType.INVOICE) {
+      return 'Invoice';
+    } else {
+      return 'Cash & Invoice';
+    }
   }
 }

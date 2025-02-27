@@ -323,7 +323,7 @@
               >
             </p>
           </td>
-          <td class="whitespace-nowrap">{{ trip.paymentType === 'BOTH' ? 'Cash & Invoice' : trip.paymentType }}</td>
+          <td class="whitespace-nowrap">{{ getNameFromEnum(trip.paymentType) }}</td>
           <td>{{ trip.status }}</td>
           <td *ngIf="isAdmin()">
             {{
