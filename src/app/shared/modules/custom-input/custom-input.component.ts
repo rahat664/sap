@@ -223,7 +223,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
     setTimeout(() => {
       if (this.inputSearch) {
         this.selectedValue = this.options.find(
-          option => option.value === this.inputSearch
+          option => option.value === this.inputSearch || option.showname === this.inputSearch
         )?.id;
       }
     }, 1000);
@@ -302,6 +302,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+
     this.dateEmited.next(false)
     if (this.options?.length == 1) {
       this.inputPlaceholder = this.options[0].value;
@@ -309,7 +310,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
     }
     if (this.inputSearch) {
       this.selectedValue = this.options.find(
-        option => option.value === this.inputSearch
+        option => option.value === this.inputSearch || option.showname === this.inputSearch
       )?.id;
     } else {
       this.selectedValue = undefined;

@@ -66,6 +66,14 @@ export class DashboardComponent implements OnInit {
   selectedCompanies: any[] = [];
   isDateFilterAvailable: boolean;
   isCustomerFilterAvailable: boolean;
+  paymentTypePlaceholder: string = '';
+  paymentTypeOptionsArray: CustomInputSelectModel[] = [
+    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
+    { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
+    { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+  ];
+  paymentFilter: number = 0;
+  paymentTypeValue: string = '';
 
   constructor(
     private customer: CustomerService,
@@ -100,7 +108,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getFilterLength() {
-    return this.selectedCompanies.length + this.dateFilter;
+    return this.selectedCompanies.length + this.dateFilter + this.paymentFilter;
   }
 
   onClearFilter() {
@@ -110,9 +118,12 @@ export class DashboardComponent implements OnInit {
     this.searchValue = '';
     this.customerCode = '';
     this.inputPlaceholder = '';
-    this.tripSuggestions = [];
+    this.paymentTypePlaceholder = '';
+    this.tripSuggestions = []
+    this.paymentTypeValue = '';
     this.dateFilter = 0;
     this.searchFilter = 0;
+    this.paymentFilter = 0;
     this.isCustomerFilterAvailable = false;
     this.selectedCompanies = [];
     this.isDateFilterAvailable = false;
@@ -121,6 +132,7 @@ export class DashboardComponent implements OnInit {
         customerCode: null,
         fromDate: null,
         toDate: null,
+        paymentType: null,
       },
       queryParamsHandling: 'merge',
     });
@@ -286,5 +298,21 @@ export class DashboardComponent implements OnInit {
         queryParamsHandling: 'merge',
       });
     }
+  }
+
+  onSelectPayment($event: number) {
+    this.paymentFilter = 1;
+    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.paymentTypePlaceholder =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.paymentTypeValue = this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    // set query params to the current route
+    this.router.navigate([], {
+      queryParams: {
+        paymentType: this.paymentTypeValue,
+      },
+      queryParamsHandling: 'merge',
+    });
+
   }
 }
