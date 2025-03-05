@@ -152,5 +152,13 @@ export const profileRoutes: Routes = [
       import('./components/document-viewer/document-viewer.component').then(
         c => c.DocumentViewerComponent
       ),
+  },
+  {
+    path: 'document-upload',
+    title: 'Document Upload',
+    loadComponent: () =>
+      import('./components/document-upload/document-upload.component').then(
+        c => c.DocumentUploadComponent
+      ),
   }
 ];

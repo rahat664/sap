@@ -446,7 +446,6 @@ export class TransporterRateAnalysisComponent implements OnInit {
         }
       }
     }
-    console.log('selected index', selectedIndex);
     return selectedIndex;
   }
 }

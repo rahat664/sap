@@ -789,6 +789,4 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
       },
     });
   }
-
-  protected readonly event = event;
 }

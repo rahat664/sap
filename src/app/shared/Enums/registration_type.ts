@@ -23,4 +23,6 @@ export enum TransporterDocumentType {
   NID_FRONT = 2,
   NID_BACK = 3,
   TRADE_LICENSE = 4,
+  AGREEMENT = 5,
+  OTHER_FILE = 6,
 }

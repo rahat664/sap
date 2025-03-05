@@ -1,11 +1,11 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { NgForOf, NgIf } from '@angular/common';
-import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { FormsModule } from '@angular/forms';
-import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
-import { MatDatepicker } from '@angular/material/datepicker';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { Router } from '@angular/router';
+import {
+  TransporterDocumentType,
+} from '../../../../shared/Enums/registration_type';
 
 @Component({
   selector: 'app-profile-documents',
@@ -15,11 +15,17 @@ import { Router } from '@angular/router';
 })
 export class ProfileDocumentsComponent {
   @Input() documentName: string = 'Document Name';
+  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   @Input() documentTypes: any[] = [];
   @Input() documents: any[] = [];
   @Input() isInEditMode: boolean = false;
   categorizedDocuments: { [key: string]: any[] } = {};
   @Input() transporterId: any;
+  @Input() fromAddDocument: boolean = false;
+  maxUploadable: any;
+  selectedDocumentType: any;
+  isMultiple: boolean = false;
+  @Output() onInputFilesReturnToParent: EventEmitter<any> = new EventEmitter();
 
   constructor(private router: Router) {}
 
@@ -50,7 +56,6 @@ export class ProfileDocumentsComponent {
       this.documentTypes.forEach(documentType => {
         this.categorizedDocuments[documentType.documentType] = [];
       });
-      console.log(this.categorizedDocuments);
     }
   }
 
@@ -74,7 +79,46 @@ export class ProfileDocumentsComponent {
   }
 
   changeDocumentNameToGeneralName(documentType: any) {
-    documentType = documentType.replace(/_/g, ' ');
-    return documentType.charAt(0).toUpperCase() + documentType.slice(1);
+    switch (documentType) {
+      case TransporterDocumentType[TransporterDocumentType.PROFILE_PICTURE]:
+        return 'Transporter Image'
+      case TransporterDocumentType[TransporterDocumentType.NID_FRONT]:
+        return 'NID Front'
+      case TransporterDocumentType[TransporterDocumentType.NID_BACK]:
+        return 'NID Back'
+      case TransporterDocumentType[TransporterDocumentType.TRADE_LICENSE]:
+        return 'Trade License'
+      case TransporterDocumentType[TransporterDocumentType.AGREEMENT]:
+        return 'Agreement'
+      case TransporterDocumentType[TransporterDocumentType.OTHER_FILE]:
+        return 'Other'
+      default:
+        return documentType;
+    }
+  }
+
+  onFileSelected($event: Event) {
+    const input = $event.target as HTMLInputElement;
+    const files = input.files;
+    if (files && files.length > 0) {
+      this.router.navigate(['/profile/document-upload'], {
+        state: {
+          documents: files,
+          activeDocument: files[0],
+          returnUrl: this.router.url,
+          imageType: this.selectedDocumentType,
+        },
+      });
+    }
+  }
+
+  triggerFileUpload(documentType: any, maxUploadable: any, isMultiple: boolean) {
+    this.isMultiple = isMultiple;
+    this.selectedDocumentType = documentType;
+    this.maxUploadable = maxUploadable;
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.multiple = isMultiple;
+      this.fileInput.nativeElement.click();
+    }
   }
 }

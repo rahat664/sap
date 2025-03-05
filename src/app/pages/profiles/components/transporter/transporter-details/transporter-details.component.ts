@@ -1,11 +1,4 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
-import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
-import {
-  MatDatepicker,
-  MatDatepickerInput,
-  MatDatepickerToggle,
-} from '@angular/material/datepicker';
 import { UserService } from '../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -24,7 +17,6 @@ import { transporterFileTypeModel } from '../../truck/models/transporter-file-ty
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
-import { TransporterDocumentType } from '../../../../../shared/Enums/registration_type';
 import { CountryISO, NgxMaterialIntlTelInputComponent } from 'ngx-material-intl-tel-input';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';

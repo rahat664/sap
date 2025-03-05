@@ -4,7 +4,7 @@ export const transporterFileTypeModel: TransporterFileType[] = [
   {
     id: 1,
     documentType: TransporterDocumentType[TransporterDocumentType.PROFILE_PICTURE],
-    name: 'Profile Picture',
+    name: 'Transporter Image',
     max: 1,
     expiryAvailable: false,
     uploaded: false,
@@ -40,6 +40,26 @@ export const transporterFileTypeModel: TransporterFileType[] = [
     uploaded: false,
     multiple: true,
     formControlName: 'tradeLicense',
+  },
+  {
+    id: 5,
+    documentType: TransporterDocumentType[TransporterDocumentType.AGREEMENT],
+    name: 'Agreement',
+    max: 50,
+    expiryAvailable: false,
+    uploaded: false,
+    multiple: true,
+    formControlName: 'agreement',
+  },
+  {
+    id: 6,
+    documentType: TransporterDocumentType[TransporterDocumentType.OTHER_FILE],
+    name: 'Other',
+    max: 50,
+    expiryAvailable: false,
+    uploaded: false,
+    multiple: true,
+    formControlName: 'other',
   }
 ];
 

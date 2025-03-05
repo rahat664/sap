@@ -15,7 +15,7 @@ import { debounceTime } from 'rxjs';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { MatDialog } from '@angular/material/dialog';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-transporter',
@@ -45,20 +45,10 @@ export class TransporterComponent implements OnInit {
   totalPages: number;
   size = 20;
 
-  constructor(private service: UserService) {}
+  constructor(private service: UserService, private router: Router) {}
 
   onClickAddTransporter() {
-    const dialogRef = this.dialog
-      .open(TransporterAddComponent, {
-        minWidth: '50vw',
-      })
-      .afterClosed()
-      .subscribe(res => {
-        if (res) {
-          this.transporterList = [];
-          this.getTransporterList();
-        }
-      });
+    this.router.navigate(['/profile/transporter/add']);
   }
 
   onKeyUpSearch($event: KeyboardEvent) {

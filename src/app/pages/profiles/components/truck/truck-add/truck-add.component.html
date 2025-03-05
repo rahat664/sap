@@ -138,7 +138,7 @@
                     alt=""
                     *ngIf="
                       getFileArray(option?.formControlName)?.length <= 0 ||
-                      (option.expiryAvailable == true &&
+                      (option.expiryAvailable === true &&
                         truckAddForm.get(option?.expiryFormControlName)
                           ?.value == null)
                     "/>

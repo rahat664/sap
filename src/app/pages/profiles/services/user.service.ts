@@ -51,25 +51,25 @@ export class UserService {
     department: string;
     status: string;
   }): Observable<any> {
-    const params: any = { page };
+    const params = {
+      size: page.size.toString(),
+      page: page.page.toString(),
+    }
 
     if (page.search) {
-      params.search = page.search;
+      params['search'] = page.search;
     }
-    if (page.size) {
-      params.size = page.size;
-    }
+
     if (page.department) {
-      params.department = page.department;
+      params['department'] = page.department;
     }
+
     if (page.status) {
-      params.status = page.status;
+      params['status'] = page.status;
     }
-    if (page.page) {
-      params.page = page.page;
-    }
+
     const queryString = Object.keys(params)
-      .map(key => `${key}=${encodeURIComponent(params[key])}`)
+      .map(key => `${key}=${params[key]}`)
       .join('&');
 
     return this.http.get(`${this.url}/admins?${queryString}`);
