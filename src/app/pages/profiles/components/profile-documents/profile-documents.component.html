@@ -12,14 +12,14 @@
         class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
         <div class="flex space-x-4 items-center">
           <img *ngIf="categorizedDocuments[doc.documentType]?.length === 0"
-               src="assets/svg/not-available.svg"
-               class="notPreview"
-               alt=""
+            src="assets/svg/not-available.svg"
+            class="notPreview"
+            alt=""
           />
           <img *ngIf="categorizedDocuments[doc.documentType]?.length > 0"
-               src="assets/svg/available.svg"
-               alt=""
-               class="notPreview"
+            src="assets/svg/available.svg"
+            alt=""
+            class="notPreview"
           />
           <div class="flex flex-col space-y-0.5">
                     <span

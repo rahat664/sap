@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { NgForOf, NgIf } from '@angular/common';
+import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { FormsModule } from '@angular/forms';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { Router } from '@angular/router';
