@@ -21,7 +21,6 @@
       [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/trip-list"
       icon="revenue"
-      title="Total Gross Profit (GP)"
       [value]="dateFilterAvailable ? dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange : dashboardStats?.grossProfitStat?.totalGrossProfit"
       text="{{
         dashboardStats?.grossProfitStat?.totalGrossProfitWithinTheDateRange
@@ -35,7 +34,6 @@
       [dateFilterAvailable] = "dateFilterAvailable"
       routerLink="/trip-list"
       icon="gp"
-      title="Total Profit Margin"
       [value]="dateFilterAvailable ? dashboardStats?.tripProfitMarginStat?.dateFilteredProfitMargin : dashboardStats?.tripProfitMarginStat?.totalProfitMargin"
       text="{{
         dashboardStats?.tripProfitMarginStat?.dateFilteredProfitMargin
@@ -49,7 +47,6 @@
       [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/trip-list"
       icon="cr-d"
-      title="Total Customer Rate"
       [value]="dateFilterAvailable ? dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange : dashboardStats?.customerRateStat?.totalCustomerRate"
       text="{{
         dashboardStats?.customerRateStat?.totalCustomerRateWithinTheDateRange
@@ -63,7 +60,6 @@
       [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/trip-list"
       icon="tr-d"
-      title="Total Transporter Rate"
       [value]="dateFilterAvailable ? dashboardStats?.transporterRateStats?.dateFilteredRate : dashboardStats?.transporterRateStats?.totalRate"
       text="{{
         dashboardStats?.transporterRateStats?.dateFilteredRate
@@ -78,7 +74,6 @@
       (click)="localStorage.setItem('filter', 'Completed')"
       routerLink="/trip-list"
       icon="calculated"
-      title="Total Calculated Trip"
       [value]="dateFilterAvailable ? dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailableAndDateRange : dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailable"
       text="{{
         dashboardStats?.tripCountStat?.totalTripsCompletedWithRatesAvailableAndDateRange
@@ -94,7 +89,6 @@
         (click)="localStorage.setItem('filter', 'Completed')"
         routerLink="/trip-list"
         icon="totaltrip"
-        title="Total Completed Trip"
         [value]="dateFilterAvailable ? dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange : dashboardStats?.tripCountStat?.totalTripsCompleted"
         text="{{
         dashboardStats?.tripCountStat?.totalTripsCompletedWithinTheDateRange
@@ -108,7 +102,6 @@
         [dateFilterAvailable]="dateFilterAvailable"
         routerLink="/profile/customer"
         icon="customers"
-        title="Total Customer"
         [value]="dateFilterAvailable ? customerStatistics?.dateFilteredCount : customerStatistics?.totalCount"
         text="{{
         customerStatistics?.dateFilteredCount
@@ -122,7 +115,6 @@
         [dateFilterAvailable]="dateFilterAvailable"
         routerLink="/profile/transporter"
         icon="transporter"
-        title="Total Transporter"
         [value]="dateFilterAvailable ? transporterStatistics?.dateFilteredCount : transporterStatistics?.totalCount"
         text="{{
         transporterStatistics?.dateFilteredCount
@@ -135,7 +127,6 @@
         [dateFilterAvailable]="dateFilterAvailable"
         routerLink="/profile/truck"
         icon="total-truck"
-        title="Total Truck"
         [value]="dateFilterAvailable ? dashboardStats?.truckCountStat?.dateFilteredCount : dashboardStats?.truckCountStat?.totalCount"
         text="{{
         dashboardStats?.truckCountStat?.dateFilteredCount
@@ -149,7 +140,6 @@
         [dateFilterAvailable]="dateFilterAvailable"
         icon="driver"
         routerLink="/profile/driver"
-        title="Total Driver"
         [value]="dateFilterAvailable ? driverStatistics?.dateFilteredCount : driverStatistics?.totalCount"
         text="{{
         driverStatistics?.dateFilteredCount
