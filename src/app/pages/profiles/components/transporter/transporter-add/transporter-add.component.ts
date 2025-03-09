@@ -88,23 +88,9 @@ export class TransporterAddComponent implements OnInit {
   ngOnInit() {
     this.initializeForm();
     // get transporter id from param
-    this.route.params.subscribe(params => {
-      this.transporterId = params['id'];
-      this.getTransporterId();
-    });
-
     this.transporterAddForm.get('name').valueChanges.subscribe(value => {
       this.transporterAddForm.get('contactPersonName').setValue(value);
     });
-  }
-
-  private getTransporterId() {
-    this.service
-      .getTransporterById(this.transporterId)
-      .subscribe((res: any) => {
-        this.transporter = res.data;
-        this.transporterDocuments = this.transporter?.documentsList;
-      });
   }
 
   onClickSave() {}

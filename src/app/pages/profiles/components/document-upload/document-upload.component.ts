@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-document-upload',
@@ -28,7 +29,7 @@ export class DocumentUploadComponent {
   documents: any[] = [];
   imageType = 'image';
   activatedDocument: any;
-  activeDocumentIndex = -1;
+  activeDocumentIndex = 0;
   showRightArrow = false;
   showLeftArrow = false;
   @ViewChild('containerElement') containerElement!: ElementRef<HTMLDivElement>;
@@ -41,11 +42,13 @@ export class DocumentUploadComponent {
   returnUrl: any;
   documentBelongToId: string = '';
   readonly dialog = inject(MatDialog);
+  documentFiles: any[] = [];
 
   constructor(
     private router: Router,
     private trip: TripService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -58,18 +61,18 @@ export class DocumentUploadComponent {
   private getNavigationInformation() {
     const navigation = history.state;
     if (navigation) {
-      this.documents = navigation.documents;
-      this.activatedDocument = navigation.activatedDocument;
+      this.previewDocuments(navigation.documents);
       this.returnUrl = navigation.returnUrl;
       this.imageType = navigation.imageType;
       this.updateActiveDocumentIndex();
       this.scrollToActiveDocument();
     }
-    console.log(navigation);
   }
 
   private updateActiveDocumentIndex() {
-    this.activeDocumentIndex = 1;
+    this.activeDocumentIndex = this.documents.findIndex(
+      doc => doc === this.activatedDocument
+    );
   }
 
   private scrollToActiveDocument() {
@@ -86,6 +89,7 @@ export class DocumentUploadComponent {
   }
 
   onClickDocument(doc: any, index: number) {
+    console.log(doc, index);
     this.activatedDocument = doc;
     this.activeDocumentIndex = index;
     this.scrollToActiveDocument();
@@ -266,6 +270,26 @@ export class DocumentUploadComponent {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+    }
+  }
+
+  private previewDocuments(addedDocuments) {
+    if (addedDocuments) {
+      for (let i = 0; i < addedDocuments.length; i++) {
+        const reader = new FileReader();
+        reader.readAsDataURL(addedDocuments[i]);
+        reader.onload = () => {
+          this.documents.push(
+            this.sanitizer.bypassSecurityTrustResourceUrl(
+              reader.result.toString()
+            )
+          );
+          this.documentFiles.push({
+            file: addedDocuments[i],
+            preview: reader.result,
+          });
+        };
+      }
     }
   }
 }

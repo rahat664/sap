@@ -107,7 +107,7 @@ export class ProfileDocumentsComponent {
           documents: files,
           activeDocument: files[0],
           returnUrl: this.router.url,
-          imageType: this.selectedDocumentType,
+          imageType: this.changeDocumentNameToGeneralName(this.selectedDocumentType),
         },
       });
     }

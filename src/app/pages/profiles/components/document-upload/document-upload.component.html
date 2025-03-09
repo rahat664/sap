@@ -62,31 +62,26 @@
           #imageElement
           class="transition-transform h-full rounded-lg overflow-hidden duration-300 transform origin-center relative"
           [style.transform]="'scale(' + zoomLevel + ')'">
-          <img
-            *ngIf="!activatedDocument?.preSignedFileUrl?.includes('pdf') && !activatedDocument?.document?.preSignedFileUrl?.includes('pdf')"
-            [src]="
-              activatedDocument?.preSignedFileUrl
-                ? activatedDocument?.preSignedFileUrl
-                : activatedDocument?.document?.preSignedFileUrl | fallbackImage
-            "
-            appImageError
-            alt="activeDocument"
-            class="notPreview h-full w-full" />
-          <div class="flex items-center justify-center flex-col space-y-3 h-full"
-               *ngIf="activatedDocument?.preSignedFileUrl?.includes('pdf') || activatedDocument?.document?.preSignedFileUrl?.includes('pdf')">
-            <img class="w-[152px] h-[152px]" src="./assets/svg/pdf.svg" />
-            <p
-              class="text-body_title text-center leading-body_title text-secondary font-semibold w-2/3">
-              Cannot preview this document. You can download it now.
-            </p>
-            <button
-              type="button"
-              (click)="downloadReport(activatedDocument?.preSignedFileUrl ? activatedDocument?.preSignedFileUrl : activatedDocument?.document?.preSignedFileUrl)"
-              class="px-16 py-4 bg-primary text-white rounded-lg">
-              <i class="fas fa-download mr-2"></i>
-              <span>Download</span>
-            </button>
-          </div>
+          <ng-container
+            *ngIf="documentFiles[activeDocumentIndex]?.file.type === 'application/pdf';
+                            else imagePreview">
+            <iframe
+              [src]="activatedDocument | fallbackImage"
+              appImageError
+              type="application/pdf"
+              class="h-full w-full"
+              style="height: 90vh">
+            </iframe>
+            <!-- Display PDF Preview -->
+          </ng-container>
+          <ng-template #imagePreview>
+            <!-- Display Image Preview -->
+            <img
+              class="h-full w-full notPreview"
+              [src]="activatedDocument | fallbackImage"
+              appImageError
+              alt="" />
+          </ng-template>
         </div>
       </div>
 
@@ -107,16 +102,23 @@
             (click)="onClickDocument(doc, i)"
             [ngClass]="{ scaled: doc === activatedDocument }"
             class="document-item w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden rounded-lg">
-            <img
-              *ngIf="!doc.url?.includes('pdf') && !doc?.document?.url?.includes('pdf')"
-              [src]="doc.preSignedFileUrl ? doc.preSignedFileUrl : doc?.document?.preSignedFileUrl | fallbackImage"
-              appImageError
-              alt="document"
-              class="h-full w-full notPreview" />
-            <img *ngIf="doc.preSignedFileUrl?.includes('pdf') || doc?.document?.preSignedFileUrl?.includes('pdf')"
-                 src="assets/svg/pdf.svg"
-                 alt="document"
-                 class="h-full w-full notPreview" />
+            <ng-container
+              *ngIf="documentFiles[i]?.file.type === 'application/pdf';
+                            else imagePreview">
+              <!-- Display PDF Preview -->
+              <img
+                class="h-full w-full notPreview"
+                src="assets/svg/pdf.svg"
+                alt="abc" />
+            </ng-container>
+            <ng-template #imagePreview>
+              <!-- Display Image Preview -->
+              <img
+                class="h-full w-full notPreview"
+                [src]="doc | fallbackImage"
+                appImageError
+                alt="" />
+            </ng-template>
           </div>
         </ng-container>
       </div>
