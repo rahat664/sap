@@ -10,7 +10,7 @@ import { numberPipe } from '../../../../../shared/pipes/number-seperator.pipe';
 })
 export class StatusCardComponent {
   @Input() backgroundColor = '#1DBF73';
-  @Input() title = 'Title';
+  @Input() subtitles = 'Title';
   @Input() value = 0;
   @Input() icon = 'icon';
   @Input() textColor = '#009D54';
