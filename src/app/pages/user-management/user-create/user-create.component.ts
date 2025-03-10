@@ -84,7 +84,7 @@ export class UserCreateComponent implements OnInit {
       // remove space and - from phone number
       this.userModel.mobile = this.userModel.mobile.replace(/[\s-]/g, '');
       this.userModel.email = this.userForm.get('email').value;
-      this.userModel.role = 'ROLE_ADMIN';
+      this.userModel.role = this.userForm.get('role').value === 'GSO' ? 'ROLE_GSO' : 'ROLE_ADMIN';
       this.userModel.department = this.userForm.get('role').value;
       this.userModel.designation = this.userForm.get('designation').value;
       this.service.addUser(this.userModel).subscribe(

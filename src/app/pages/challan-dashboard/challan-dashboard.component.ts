@@ -41,6 +41,7 @@ import { TruckDocumentType } from '../../shared/Enums/registration_type';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
+import { PaymentType } from '../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -91,6 +92,15 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   searchRegistationId: any;
   searchTransporter: any;
   searchId: any;
+  protected readonly Math = Math;
+  paymentTypePlaceholder: string = '';
+  paymentTypeValue: string = '';
+  paymentFilter: number = 0;
+  paymentTypeOptionsArray: CustomInputSelectModel[] = [
+    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
+    { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
+    { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+  ];
 
   get tripSuggestions(): any {
     return this._tripSuggestions;
@@ -359,7 +369,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         this.from,
         this.to,
         this.truckRegistrationId,
-        this.transporterName
+        this.transporterName,
+        this.paymentTypeValue
       )
       .subscribe(
         (trip: any) => {
@@ -568,7 +579,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.searchFilter +
       this.tripFilter +
       this.truckFilter +
-      this.transporterFilter
+      this.transporterFilter + this.paymentFilter
     );
   }
 
@@ -580,6 +591,9 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.searchFilter = 0;
     this.dateFilter = 0;
     this.transporterFilter = 0;
+    this.paymentFilter = 0;
+    this.paymentTypePlaceholder = '';
+    this.paymentTypeValue = '';
     this.truckFilter = 0;
     this.tripFilter = 0;
     this.searchValue = '';
@@ -918,5 +932,27 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.getTripList();
   }
 
-  protected readonly Math = Math;
+
+  onSelectPayment($event: number) {
+    this.paymentFilter = 1;
+    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.paymentTypePlaceholder =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.paymentTypeValue = this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  getNameFromEnum(paymentType: string) {
+    if (paymentType === PaymentType.CASH) {
+      return 'Cash';
+    } else if (paymentType === PaymentType.INVOICE) {
+      return 'Invoice';
+    } else {
+      return 'Cash & Invoice';
+    }
+  }
 }

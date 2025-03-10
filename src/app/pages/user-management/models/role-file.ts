@@ -36,4 +36,9 @@ export const roles: CustomInputSelectModel[] = [
     value: 'Others',
     selected: false,
   },
+  {
+    id: 8,
+    value: 'GSO',
+    selected: false,
+  }
 ];

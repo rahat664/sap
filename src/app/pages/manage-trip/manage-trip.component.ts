@@ -30,6 +30,9 @@ import { CustomerService } from '../profiles/services/customer.service';
 import { MatSelect } from '@angular/material/select';
 import { CustomerModel } from '../profiles/components/customer/model/customer.model';
 import { debounceTime, Subject } from 'rxjs';
+import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
+import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
+import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 
 @Component({
   selector: 'app-manage-trip',
@@ -54,6 +57,8 @@ import { debounceTime, Subject } from 'rxjs';
     ReactiveFormsModule,
     MatSelect,
     FormsModule,
+    CustomInputComponent,
+    GetClickEventDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
@@ -113,6 +118,14 @@ export class ManageTripComponent implements OnInit {
   truckRegistrationNumbers: string;
   activatedTruckSizeInFeet = 0;
   truckerEnabled: boolean;
+  paymentTypePlaceholder: string = '';
+  paymentTypeValue: string = '';
+  paymentFilter: number = 0;
+  paymentTypeOptionsArray: CustomInputSelectModel[] = [
+    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
+    { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
+    { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+  ];
 
   constructor(
     private tripService: TripService,
@@ -192,9 +205,17 @@ export class ManageTripComponent implements OnInit {
         this.customerCodes.toString(),
         this.startDate,
         this.endDate,
-        this.status,null,
+        this.status,
+        null,
         this.truckType,
-        this.searchValue
+        this.searchValue,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        this.paymentTypeValue
       )
       .pipe(finalize(() => (this.loading = false)))
       .subscribe(
@@ -208,7 +229,7 @@ export class ManageTripComponent implements OnInit {
   }
 
   onKeyUpSearch(event: KeyboardEvent) {
-      this.searchSubject.next((event.target as HTMLInputElement).value);
+    this.searchSubject.next((event.target as HTMLInputElement).value);
   }
 
   getTruckRegistrationNumber(truck: Truck) {
@@ -491,6 +512,8 @@ export class ManageTripComponent implements OnInit {
     this.customerCodes = [];
     this.customerNames = [];
     this.customers = [];
+    this.paymentTypeValue = '';
+    this.paymentFilter = 0;
     this.dateText = '';
     this.filterValues = [];
     this.selectedButton = '';
@@ -501,6 +524,7 @@ export class ManageTripComponent implements OnInit {
     this.endDate = '';
     this.truckType = '';
     this.customerCode = '';
+    this.paymentTypePlaceholder = '';
     this.filterOpen = false;
     this.page = 0;
     this.tripService.anotherStatusCalled.next(true);
@@ -633,6 +657,11 @@ export class ManageTripComponent implements OnInit {
   }
 
   onClickFilterOpen() {
+    this.paymentTypeOptionsArray = [
+      { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
+      { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
+      { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+    ]
     this.truckType = [];
     this.customers = [];
     this.selectedButton = '';
@@ -643,7 +672,8 @@ export class ManageTripComponent implements OnInit {
     this.customerNames = [];
     this.filterLength = 0;
     this.filterOpen = true;
-    if (this.filterValues.length > 0) {
+
+    if (this.filterValues.length > 0 || this.paymentFilter > 0) {
       this.filterValues.forEach((element: any) => {
         const selectedVehicle = this.vehicleTypeList.find(
           (value: any) => value.name === element
@@ -708,7 +738,10 @@ export class ManageTripComponent implements OnInit {
           );
         }
       });
-      this.filterLength = this.filterValues.length;
+      this.filterLength = this.filterValues.length + this.paymentFilter;
+      this.paymentTypePlaceholder = this.paymentTypeOptionsArray.find(
+        x => x.value === this.paymentTypeValue
+      )?.showname;
     } else {
       this.truckType = [];
       this.selectedButton = '';
@@ -724,14 +757,35 @@ export class ManageTripComponent implements OnInit {
     }
   }
 
-  onClearInput($event: boolean) {
-  }
+  onClearInput($event: boolean) {}
 
   private performSearch(searchText: string) {
-      this.searchValue = searchText;
-      this.page = 0;
-      this.size = 30;
-      this.tripService.anotherStatusCalled.next(true);
-      this.getTripList();
+    this.searchValue = searchText;
+    this.page = 0;
+    this.size = 30;
+    this.tripService.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onSelectPayment($event: number) {
+    if (this.paymentFilter === 0) {
+      this.filterLength += 1;
+    }
+    this.paymentFilter = 1;
+    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.paymentTypePlaceholder =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.paymentTypeValue = this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+  }
+
+  onClickClosePaymentType() {
+    this.paymentTypePlaceholder = '';
+    this.paymentTypeValue = '';
+    this.paymentFilter = 0;
+    this.filterLength -= 1;
+    this.page = 0;
+    this.size = 30;
+    this.tripService.anotherStatusCalled.next(true);
+    this.getTripList();
   }
 }
