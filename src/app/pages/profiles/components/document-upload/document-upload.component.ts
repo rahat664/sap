@@ -58,15 +58,17 @@ export class DocumentUploadComponent {
     private router: Router,
     private trip: TripService,
     private cd: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
-  ) {}
+    private sanitizer: DomSanitizer,
+  ) {
+  }
 
   ngOnInit() {
     this.resetNavigationInformation();
     this.getNavigationInformation();
   }
 
-  private resetNavigationInformation() {}
+  private resetNavigationInformation() {
+  }
 
   private getNavigationInformation() {
     const navigation = history.state;
@@ -81,7 +83,7 @@ export class DocumentUploadComponent {
 
   private updateActiveDocumentIndex() {
     this.activeDocumentIndex = this.documents.findIndex(
-      doc => doc === this.activatedDocument
+      doc => doc === this.activatedDocument,
     );
   }
 
@@ -205,6 +207,7 @@ export class DocumentUploadComponent {
   // Zoom out
   uploadTime: Date = new Date();
   isLoading: boolean;
+
   zoomOut() {
     if (this.zoomLevel > this.minZoom) {
       this.zoomLevel -= 0.1;
@@ -226,11 +229,11 @@ export class DocumentUploadComponent {
     // Clamp the translations to prevent overflow
     this.translateX = Math.max(
       -overflowX,
-      Math.min(overflowX, this.translateX)
+      Math.min(overflowX, this.translateX),
     );
     this.translateY = Math.max(
       -overflowY,
-      Math.min(overflowY, this.translateY)
+      Math.min(overflowY, this.translateY),
     );
   }
 
@@ -245,7 +248,7 @@ export class DocumentUploadComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.documents = this.documents.filter(
-          doc => doc !== this.activatedDocument
+          doc => doc !== this.activatedDocument,
         );
         this.activatedDocument = this.documents[0];
         this.updateActiveDocumentIndex();
@@ -287,28 +290,56 @@ export class DocumentUploadComponent {
 
   private previewDocuments(addedDocuments) {
     if (addedDocuments) {
+      this.documentFiles = []; // Reset or initialize documentFiles
+      this.documents = []; // Reset document previews
+
       for (let i = 0; i < addedDocuments.length; i++) {
+        const file = addedDocuments[i];
         const reader = new FileReader();
-        reader.readAsDataURL(addedDocuments[i]);
+
         reader.onload = () => {
-          this.documents.push(
-            this.sanitizer.bypassSecurityTrustResourceUrl(
-              reader.result.toString()
-            )
+          const previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+            reader.result.toString()
           );
+
+          this.documents.push(previewUrl);
           this.documentFiles.push({
-            file: addedDocuments[i],
-            preview: reader.result,
+            file: {
+              name: file.name,
+              type: file.type,
+              size: file.size,
+              lastModified: file.lastModified,
+            },
+            preview: reader.result, // Store actual preview
           });
+
+          // Set activatedDocument after all files are processed
+          if (i === addedDocuments.length - 1) {
+            this.activatedDocument = this.documents[0];
+          }
         };
+
+        reader.readAsDataURL(file);
       }
-      setTimeout(() => {
-        this.activatedDocument = this.documents[0];
-      }, 500);
     }
   }
 
   onClickSave() {
-    this.router.navigate([this.returnUrl]);
+
+    // Ensure data is saved after all files are processed
+    setTimeout(() => {
+      // only store the documentFiles file object in sessionStorage
+      const doc = this.documentFiles.map(file => {
+        return {
+          name: file.file.name,
+          type: file.file.type,
+          size: file.file.size,
+          lastModified: file.file.lastModified,
+          base64: file.preview,
+        };
+      });
+      sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
+      this.router.navigate([this.returnUrl]);
+    }, 500); // Delay to allow file reading to complete
   }
 }

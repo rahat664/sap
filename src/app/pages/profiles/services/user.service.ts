@@ -187,4 +187,8 @@ export class UserService {
   getTransporterById(transporterId: any) {
     return this.http.get(`${this.transportersUrl}/get-by-id/${transporterId}`);
   }
+
+  addTransporter(transporter: any) {
+    return this.http.post(`${this.transportersUrl}`, transporter);
+  }
 }

@@ -32,6 +32,7 @@ import {
 } from '../models/transporter-details.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatOption } from '@angular/material/core';
+import { PaymentType } from '../../../../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-transporter-add',
@@ -47,12 +48,17 @@ import { MatOption } from '@angular/material/core';
     NgClass,
     MatCheckbox,
     ProfileDocumentsComponent,
-    MatOption,
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',
 })
 export class TransporterAddComponent implements OnInit {
+  nidFront: any[] = [];
+  nidBack: any[] = [];
+  profilePicture: any[] = [];
+  tradeLicense: any[] = [];
+  agreement: any[] = [];
+  other: any[] = [];
   readonly dialog = inject(MatDialog);
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
   transporterFileType = transporterFileTypeModel;
@@ -75,6 +81,7 @@ export class TransporterAddComponent implements OnInit {
   };
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   transporterDocuments: TransporterDocument[] = [];
+  preferredPaymentMethod: string = 'Cash';
 
   constructor(
     private service: UserService,
@@ -82,8 +89,9 @@ export class TransporterAddComponent implements OnInit {
     private fb: FormBuilder,
     private datePipe: DatePipe,
     private toastr: HandleToastrService,
-    private router: Router
-  ) {}
+    private router: Router,
+  ) {
+  }
 
   ngOnInit() {
     this.initializeForm();
@@ -93,15 +101,132 @@ export class TransporterAddComponent implements OnInit {
     });
   }
 
-  onClickSave() {}
+  onClickSave() {
+    if (this.transporterAddForm.invalid) {
+      this.toastr.showError('Please fill all required fields');
+      return;
+    }
+    this.loading = true;
+    const payload = {
+      name: this.transporterAddForm.get('name').value,
+      contactPersonNumber: this.transporterAddForm.get('phone').value,
+      truckStand: this.transporterAddForm.get('truckStand').value,
+      defaultPaymentMethod: {
+        name: this.transporterAddForm.get('bankName').value,
+        branchName: this.transporterAddForm.get('bankBranch').value,
+        accHolderName: this.transporterAddForm.get('bankAccountName').value,
+        bankAccNo: this.transporterAddForm.get('bankAccountNumber').value,
+        paymentMethod: this.transporterAddForm.get('paymentMethod').value,
+      },
+      contactPersonName: this.transporterAddForm.get('contactPersonName').value,
+      note: this.transporterAddForm.get('note').value,
+      tradeLicenseExpiration: this.datePipe.transform(
+        // set a default date because in backend it is required
+        new Date('2022-12-31'),
+        'yyyy-MM-ddTHH:mm:ss',
+      ),
+    };
+
+    const payloadFormData = new FormData();
+    payloadFormData.append('payload', JSON.stringify(payload));
+
+
+    const files = this.retrieveFilesForUpload();
+
+    if (files.profileFiles.length > 0) {
+      files.profileFiles.forEach((file: any) => {
+        payloadFormData.append('profilePicture', file);
+      });
+    }
+    if (files.nidFrontFiles.length > 0) {
+      files.nidFrontFiles.forEach((file: any) => {
+        payloadFormData.append('nidFront', file);
+      });
+    }
+    if (files.nidBackFiles.length > 0) {
+      files.nidBackFiles.forEach((file: any) => {
+        payloadFormData.append('nidBack', file);
+      });
+    }
+    if (files.tradeLicenseFiles.length > 0) {
+      files.tradeLicenseFiles.forEach((file: any) => {
+        payloadFormData.append('tradeLicense', file);
+      });
+    }
+    if (files.agreementFiles.length > 0) {
+      files.agreementFiles.forEach((file: any) => {
+        payloadFormData.append('agreement', file);
+      });
+    }
+    if (files.otherFiles.length > 0) {
+      files.otherFiles.forEach((file: any) => {
+        payloadFormData.append('other', file);
+      });
+    }
+
+    this.service.addTransporter(payloadFormData).subscribe(
+      (response: any) => {
+        this.loading = false;
+        this.toastr.showSuccess('Transporter added successfully');
+        this.router.navigate(['/profile/transporter']);
+      },
+      error => {
+        this.loading = false;
+        this.toastr.showError('Failed to add transporter');
+      },
+    );
+  }
+
+  retrieveFilesForUpload() {
+    // Retrieve all file data from sessionStorage
+    const profileFiles = sessionStorage.getItem('Transporter Image');
+    const nidFrontFiles = sessionStorage.getItem('NID Front');
+    const nidBackFiles = sessionStorage.getItem('NID Back');
+    const tradeLicenseFiles = sessionStorage.getItem('Trade License');
+    const agreementFiles = sessionStorage.getItem('Agreement');
+    const otherFiles = sessionStorage.getItem('Other');
+
+    // Function to reconstruct files from stored base64
+    const reconstructFiles = (storedFiles: string | null) => {
+      if (!storedFiles) return [];
+
+      const parsedFiles = JSON.parse(storedFiles);
+      return parsedFiles.map((fileData: any) => {
+        // Convert base64 to Blob
+        const byteCharacters = atob(fileData.base64.split(',')[1]); // Remove "data:<type>;base64,"
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const fileBlob = new Blob([byteArray], { type: fileData.type });
+
+        // Create a File object
+        return new File([fileBlob], fileData.name, { type: fileData.type });
+      });
+    };
+
+    // Reconstruct all file categories
+    return {
+      profileFiles: reconstructFiles(profileFiles),
+      nidFrontFiles: reconstructFiles(nidFrontFiles),
+      nidBackFiles: reconstructFiles(nidBackFiles),
+      tradeLicenseFiles: reconstructFiles(tradeLicenseFiles),
+      agreementFiles: reconstructFiles(agreementFiles),
+      otherFiles: reconstructFiles(otherFiles),
+    };
+  }
+
 
   onClickCancel() {
     this.isInEditMode = false;
   }
 
-  onClickApprove(driverDetails: any) {}
+  onClickApprove(driverDetails: any) {
+  }
 
-  onClickReject(driverDetails: any) {}
+  onClickReject(driverDetails: any) {
+  }
 
   onClickEdit() {
     this.isInEditMode = true;
@@ -120,7 +245,7 @@ export class TransporterAddComponent implements OnInit {
       mfsName: [''],
       mfsNumber: [''],
       mfsType: [''],
-      paymentMethod: ['', Validators.required],
+      paymentMethod: ['Cash', Validators.required],
       contactPersonName: ['', Validators.required],
       role: [''],
       note: [''],
@@ -141,16 +266,17 @@ export class TransporterAddComponent implements OnInit {
 
   setPreferredPaymentMethod($any: any, paymentMethod: string) {
     if ($any.checked) {
+      this.preferredPaymentMethod = paymentMethod;
       this.transporterAddForm.get('paymentMethod').setValue(paymentMethod);
     }
   }
 
   onSelectBkashType($event: number) {
     this.bkashPaymentTypePlaceholder = this.bkashPaymentMethod.find(
-      method => method.id === $event
+      method => method.id === $event,
     ).value;
     this.bkashPaymentMethod.forEach(
-      method => (method.selected = method.id === $event)
+      method => (method.selected = method.id === $event),
     );
     this.transporterAddForm
       .get('mfsType')

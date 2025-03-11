@@ -195,8 +195,8 @@
                   placeholder="Enter Account Number" />
               </mat-form-field>
             </div>
-            <mat-checkbox formControlName="paymentMethod" (change)="setPreferredPaymentMethod($any($event), 'Bank')">
-              <mat-option value="Bank">Set as preferred</mat-option>
+            <mat-checkbox [checked]="preferredPaymentMethod === 'Bank'"  (change)="setPreferredPaymentMethod($any($event), 'Bank')">
+              Set as preferred
             </mat-checkbox>
           </div>
         </div>
@@ -245,8 +245,8 @@
                   placeholder="Enter Account Number" />
               </mat-form-field>
             </div>
-            <mat-checkbox  formControlName="paymentMethod" (change)="setPreferredPaymentMethod($any($event), 'MFS')">
-              <mat-option value="MFS">Set as preferred</mat-option>
+            <mat-checkbox [checked]="preferredPaymentMethod === 'MFS'"  (change)="setPreferredPaymentMethod($any($event), 'MFS')">
+              Set as preferred
             </mat-checkbox>
           </div>
         </div>
@@ -258,8 +258,7 @@
                 class="text-body_title font-semibold text-not-black">Cash</h1>
             </div>
           </div>
-          <mat-checkbox formControlName="paymentMethod" class="px-2" (change)="setPreferredPaymentMethod($any($event), 'Cash')">
-            <mat-option value="Cash">Set as preferred</mat-option>
+          <mat-checkbox [checked]="preferredPaymentMethod === 'Cash'"  class="px-2" (change)="setPreferredPaymentMethod($any($event), 'Cash')">Set as preferred
           </mat-checkbox>
         </div>
       </div>
