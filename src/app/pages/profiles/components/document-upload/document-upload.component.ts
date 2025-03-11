@@ -1,4 +1,13 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  inject,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
@@ -34,6 +43,7 @@ export class DocumentUploadComponent {
   showLeftArrow = false;
   @ViewChild('containerElement') containerElement!: ElementRef<HTMLDivElement>;
   @ViewChild('imageElement') imageElement!: ElementRef<HTMLImageElement>;
+  @Output() returnImagesToParent: EventEmitter<any> = new EventEmitter();
   zoomLevel = 1; // Default zoom level
   maxZoom = 3; // Maximum zoom level
   minZoom = 1; // Minimum zoom level
@@ -193,6 +203,8 @@ export class DocumentUploadComponent {
   }
 
   // Zoom out
+  uploadTime: Date = new Date();
+  isLoading: boolean;
   zoomOut() {
     if (this.zoomLevel > this.minZoom) {
       this.zoomLevel -= 0.1;
@@ -290,6 +302,13 @@ export class DocumentUploadComponent {
           });
         };
       }
+      setTimeout(() => {
+        this.activatedDocument = this.documents[0];
+      }, 500);
     }
+  }
+
+  onClickSave() {
+    this.router.navigate([this.returnUrl]);
   }
 }

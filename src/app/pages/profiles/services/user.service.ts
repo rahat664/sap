@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../../auth/models/response/api-response';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 
@@ -9,6 +9,8 @@ import { HandleToastrService } from '../../../shared/services/handle-toastr/hand
   providedIn: 'root',
 })
 export class UserService {
+  public getFileDataFromChildComponent: BehaviorSubject<any> = new BehaviorSubject<any>([]);
+
   url = environment.userUrl + '/api/users';
   rolesUrl = environment.userUrl + '/api/roles';
   departmentsUrl = environment.userUrl + '/api/departments';
