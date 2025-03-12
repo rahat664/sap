@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { FormsModule } from '@angular/forms';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
@@ -28,7 +28,7 @@ export class ProfileDocumentsComponent {
   isMultiple: boolean = false;
   @Output() onInputFilesReturnToParent: EventEmitter<any> = new EventEmitter();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private datePipe: DatePipe) {}
 
   viewAllDocument() {
     sessionStorage.setItem('documentId', this.transporterId);
@@ -121,5 +121,48 @@ export class ProfileDocumentsComponent {
       this.fileInput.nativeElement.multiple = isMultiple;
       this.fileInput.nativeElement.click();
     }
+  }
+
+  checkDateIsExpiredOrNot(expiryDate: string): {
+    isExpired: boolean;
+    text: string;
+  } {
+    const pastDate = new Date(expiryDate);
+    const currentDate = new Date();
+
+    // Normalize time to midnight for accurate comparison
+    pastDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
+
+    // Check if the past date is today or in the future
+    if (pastDate >= currentDate) {
+      return {
+        isExpired: false,
+        text: `Expiry date: ${this.datePipe.transform(pastDate, 'dd MMM, yyyy') || ''}`,
+      };
+    }
+
+    // Calculate the time difference in milliseconds
+    const timeDiff = currentDate.getTime() - pastDate.getTime();
+
+    // Convert milliseconds to days, months, and years
+    const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    const yearDiff = Math.floor(dayDiff / 365);
+    const monthDiff = Math.floor((dayDiff % 365) / 30);
+    const remainingDays = dayDiff % 30;
+
+    // Build the result string
+    const resultParts = [];
+    if (yearDiff > 0)
+      resultParts.push(`${yearDiff} year${yearDiff > 1 ? 's' : ''}`);
+    if (monthDiff > 0)
+      resultParts.push(`${monthDiff} month${monthDiff > 1 ? 's' : ''}`);
+    if (remainingDays > 0)
+      resultParts.push(`${remainingDays} day${remainingDays > 1 ? 's' : ''}`);
+
+    return {
+      isExpired: true,
+      text: `Expired ${resultParts.join(', ')} ago`,
+    };
   }
 }

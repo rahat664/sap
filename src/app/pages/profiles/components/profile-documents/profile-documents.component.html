@@ -11,12 +11,12 @@
       <div
         class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
         <div class="flex space-x-4 items-center">
-          <img *ngIf="categorizedDocuments[doc.documentType]?.length === 0"
+          <img *ngIf="categorizedDocuments[doc.documentType]?.length === 0 || !categorizedDocuments[doc.documentType]"
             src="assets/svg/not-available.svg"
             class="notPreview"
             alt=""
           />
-          <img *ngIf="categorizedDocuments[doc.documentType]?.length > 0"
+          <img *ngIf="categorizedDocuments[doc.documentType]?.length > 0 "
             src="assets/svg/available.svg"
             alt=""
             class="notPreview"
@@ -26,6 +26,13 @@
                       class="text-not-black text-body_title leading-body_title font-semibold"
                     >{{ doc.name }}</span
                     >
+            <span class="{{
+                        checkDateIsExpiredOrNot(
+                          categorizedDocuments[doc.documentType][categorizedDocuments[doc.documentType]?.length - 1]?.expiryDate
+                        ).isExpired
+                          ? 'text-red'
+                          : 'text-not-black'
+                      }} text-body" *ngIf="doc?.expiryAvailable" >{{ checkDateIsExpiredOrNot(categorizedDocuments[doc.documentType][categorizedDocuments[doc.documentType]?.length - 1]?.expiryDate).text }}</span>
           </div>
         </div>
 
@@ -40,15 +47,17 @@
                    class="w-full h-full object-cover notPreview" />
             </div>
           </div>
+          <span *ngIf="(categorizedDocuments[doc.documentType]?.length === 0 || !categorizedDocuments[doc.documentType]) && !isInEditMode" class="text-web-text-secondary text-body"
+          >Not uploaded yet</span>
           <ng-container *ngIf="isInEditMode || fromAddDocument">
-            <ng-container *ngIf="!documents || documents?.length <= 0">
+            <ng-container *ngIf="(categorizedDocuments[doc.documentType]?.length === 0 || !categorizedDocuments[doc.documentType]) && categorizedDocuments[doc.documentType]?.length < doc.max">
               <app-upload-button
                 (click)="triggerFileUpload(doc.documentType, doc?.max, doc.multiple)"
                 buttonText="Upload"
                 [file]="true"
                 icon="upload" ></app-upload-button>
             </ng-container>
-            <ng-container *ngIf="documents && documents?.length > 0">
+            <ng-container *ngIf="categorizedDocuments[doc.documentType]?.length > 0 && categorizedDocuments[doc.documentType] && categorizedDocuments[doc.documentType]?.length < doc.max">
               <app-upload-button
                 icon="plus"></app-upload-button>
             </ng-container>

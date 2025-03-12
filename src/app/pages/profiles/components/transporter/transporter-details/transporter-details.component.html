@@ -18,22 +18,22 @@
           class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
           <span>Cancel</span>
         </button>
-        <button
-          *ngIf="
-            !isInEditMode
-          "
-          (click)="onClickApprove(transporter)"
-          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
-          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span>Approve</span>
-        </button>
-        <button
-          *ngIf="!isInEditMode"
-          (click)="onClickReject(transporter)"
-          class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
-          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span>Reject</span>
-        </button>
+<!--        <button-->
+<!--          *ngIf="-->
+<!--            !isInEditMode-->
+<!--          "-->
+<!--          (click)="onClickApprove(transporter)"-->
+<!--          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">-->
+<!--          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>-->
+<!--          <span>Approve</span>-->
+<!--        </button>-->
+<!--        <button-->
+<!--          *ngIf="!isInEditMode"-->
+<!--          (click)="onClickReject(transporter)"-->
+<!--          class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">-->
+<!--          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>-->
+<!--          <span>Reject</span>-->
+<!--        </button>-->
         <button
           (click)="onClickEdit()"
           *ngIf="!isInEditMode"
@@ -183,9 +183,9 @@
           </ng-container>
         </div>
       </div>
-      <app-profile-documents [transporterId]="transporter?.code" [documentTypes]="transporterFileType" [documents]="transporterDocuments" ></app-profile-documents>
+      <app-profile-documents [isInEditMode]="isInEditMode" [transporterId]="transporter?.code" [documentTypes]="transporterFileType" [documents]="transporterDocuments" ></app-profile-documents>
     </div>
-    <div class="p-4 bg-white rounded-lg" *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Cash'">
+    <div class="p-4 bg-white rounded-lg" *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Cash'|| isInEditMode ">
       <div class="flex space-x-3 items-center mb-4">
         <img class="notPreview" src="assets/svg/payment-info.svg" alt="payment-info" />
         <h1 class="text-h2 leading-h2 font-semibold">Payment info</h1>

@@ -33,6 +33,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatOption } from '@angular/material/core';
 import { PaymentType } from '../../../../../shared/Enums/payment-type';
+import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 
 @Component({
   selector: 'app-transporter-add',
@@ -90,10 +91,12 @@ export class TransporterAddComponent implements OnInit {
     private datePipe: DatePipe,
     private toastr: HandleToastrService,
     private router: Router,
+    private shared: DriverEditSharedService
   ) {
   }
 
   ngOnInit() {
+    this.shared.validateInterNationalPhoneNumber();
     this.initializeForm();
     // get transporter id from param
     this.transporterAddForm.get('name').valueChanges.subscribe(value => {
@@ -117,15 +120,19 @@ export class TransporterAddComponent implements OnInit {
         accHolderName: this.transporterAddForm.get('bankAccountName').value,
         bankAccNo: this.transporterAddForm.get('bankAccountNumber').value,
         paymentMethod: this.transporterAddForm.get('paymentMethod').value,
+        accType: '',
+
       },
       contactPersonName: this.transporterAddForm.get('contactPersonName').value,
       note: this.transporterAddForm.get('note').value,
-      tradeLicenseExpiration: this.datePipe.transform(
-        // set a default date because in backend it is required
-        new Date('2022-12-31'),
-        'yyyy-MM-ddTHH:mm:ss',
-      ),
     };
+
+    payload.contactPersonNumber = payload.contactPersonNumber.replace(/[\s-]/g, '');
+    if (payload.defaultPaymentMethod.paymentMethod === 'MFS') {
+      payload.defaultPaymentMethod.name = this.transporterAddForm.get('mfsName').value;
+      payload.defaultPaymentMethod.bankAccNo = this.transporterAddForm.get('mfsNumber').value;
+      payload.defaultPaymentMethod.accType = this.transporterAddForm.get('mfsType').value;
+    }
 
     const payloadFormData = new FormData();
     payloadFormData.append('payload', JSON.stringify(payload));
