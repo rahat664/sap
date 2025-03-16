@@ -10,13 +10,16 @@
     <ng-container *ngFor="let doc of documentTypes">
       <div
         class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
-        <div class="flex space-x-4 items-center">
-          <img *ngIf="categorizedDocuments[doc.documentType]?.length === 0 || !categorizedDocuments[doc.documentType]"
-            src="assets/svg/not-available.svg"
-            class="notPreview"
-            alt=""
-          />
-          <img *ngIf="categorizedDocuments[doc.documentType]?.length > 0 "
+        <div class="flex space-x-4 items-center" >
+          <ng-container *ngIf="!checkDocumentType(doc.name).uploaded && (categorizedDocuments[doc.documentType]?.length === 0 || !categorizedDocuments[doc.documentType])">
+            <img
+              src="assets/svg/not-available.svg"
+              class="notPreview"
+              alt=""
+            />
+          </ng-container>
+
+          <img *ngIf="checkDocumentType(doc.name).uploaded || categorizedDocuments[doc.documentType]?.length > 0 "
             src="assets/svg/available.svg"
             alt=""
             class="notPreview"
@@ -36,31 +39,30 @@
           </div>
         </div>
 
+
         <div class="flex space-x-4 items-center">
-          <div class="relative w-[3rem] h-[2.25rem]" *ngIf="categorizedDocuments[doc.documentType]?.length > 0">
+          <div class="relative w-[3rem] h-[2.25rem]" *ngIf="categorizedDocuments[doc.documentType]?.length > 0 || checkDocumentType(doc.name).uploaded">
             <div class="w-[2.5rem] h-[1.875rem] bg-disabled absolute top-2 left-2 rounded-sm border border-blue">
             </div>
             <div class="w-[2.5rem] h-[1.875rem] absolute bg-white top-1 left-1 rounded-sm border border-blue">
             </div>
             <div class="w-[2.5rem] h-[1.875rem] rounded-sm border border-blue absolute top-0 left-0 overflow-hidden">
-              <img [src]="categorizedDocuments[doc.documentType][0].preSignedFileUrl" alt=""
+              <img  [src]="categorizedDocuments[doc.documentType][0] ? categorizedDocuments[doc.documentType][0]?.preSignedFileUrl : (checkDocumentType(doc.name).preview | fallbackImage)" alt=""
                    class="w-full h-full object-cover notPreview" />
             </div>
           </div>
-          <span *ngIf="(categorizedDocuments[doc.documentType]?.length === 0 || !categorizedDocuments[doc.documentType]) && !isInEditMode" class="text-web-text-secondary text-body"
+          <span *ngIf="(categorizedDocuments[doc.documentType]?.length === 0 || !categorizedDocuments[doc.documentType]) && !isInEditMode && !checkDocumentType(doc.name).uploaded" class="text-web-text-secondary text-body"
           >Not uploaded yet</span>
           <ng-container *ngIf="isInEditMode || fromAddDocument">
-            <ng-container *ngIf="(categorizedDocuments[doc.documentType]?.length === 0 || !categorizedDocuments[doc.documentType]) && categorizedDocuments[doc.documentType]?.length < doc.max">
+            <ng-container *ngIf="shouldShowUploadButton(doc)">
               <app-upload-button
                 (click)="triggerFileUpload(doc.documentType, doc?.max, doc.multiple)"
-                buttonText="Upload"
-                [file]="true"
-                icon="upload" ></app-upload-button>
+                [file]="getFileOrNot(doc)"
+                [icon]="getUploadIcon(doc)"
+                [buttonText]="getUploadButtonText(doc)">
+              </app-upload-button>
             </ng-container>
-            <ng-container *ngIf="categorizedDocuments[doc.documentType]?.length > 0 && categorizedDocuments[doc.documentType] && categorizedDocuments[doc.documentType]?.length < doc.max">
-              <app-upload-button
-                icon="plus"></app-upload-button>
-            </ng-container>
+
             <input
               type="file"
               #fileInput
@@ -73,3 +75,4 @@
     </ng-container>
   </div>
 </div>
+

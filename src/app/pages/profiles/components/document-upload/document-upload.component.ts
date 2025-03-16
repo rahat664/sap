@@ -338,7 +338,18 @@ export class DocumentUploadComponent {
           base64: file.preview,
         };
       });
-      sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
+      // check there is any document on the sessionStorage if found then store previous and current document in the sessionStorage
+
+      const isAlreadyStored = JSON.parse(sessionStorage.getItem(`${this.imageType}`));
+      if (isAlreadyStored) {
+        const previousDoc = JSON.parse(sessionStorage.getItem(`${this.imageType}`));
+       previousDoc.forEach((document) => {
+         doc.push(document)
+       })
+        sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
+      } else {
+        sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
+      }
       this.router.navigate([this.returnUrl]);
     }, 500); // Delay to allow file reading to complete
   }

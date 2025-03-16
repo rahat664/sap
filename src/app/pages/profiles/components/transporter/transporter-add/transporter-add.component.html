@@ -131,7 +131,7 @@
           </div>
         </div>
       </div>
-      <app-profile-documents [fromAddDocument]="true" [transporterId]="transporter?.code" [documentTypes]="transporterFileType"
+      <app-profile-documents (uploadButtonTriggered)="onUploadButtonTriggered($event)" [fromAddDocument]="true" [transporterId]="transporter?.code" [documentTypes]="transporterFileType"
                              [documents]="transporterDocuments"></app-profile-documents>
     </div>
     <div class="p-4 bg-white rounded-lg" *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Cash'">

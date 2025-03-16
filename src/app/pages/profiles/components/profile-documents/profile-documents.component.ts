@@ -7,14 +7,17 @@ import { Router } from '@angular/router';
 import {
   TransporterDocumentType,
 } from '../../../../shared/Enums/registration_type';
+import { timer } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile-documents',
-  imports: [NgForOf, FormsModule, NgIf, UploadButtonComponent],
+  imports: [NgForOf, FormsModule, NgIf, UploadButtonComponent, FallbackImagePipe],
   templateUrl: './profile-documents.component.html',
   styleUrl: './profile-documents.component.scss',
 })
 export class ProfileDocumentsComponent {
+  private cachedCheck: boolean | null = null;
   @Input() documentName: string = 'Document Name';
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   @Input() documentTypes: any[] = [];
@@ -27,8 +30,9 @@ export class ProfileDocumentsComponent {
   selectedDocumentType: any;
   isMultiple: boolean = false;
   @Output() onInputFilesReturnToParent: EventEmitter<any> = new EventEmitter();
+  @Output() uploadButtonTriggered: EventEmitter<any> = new EventEmitter(false);
 
-  constructor(private router: Router, private datePipe: DatePipe) {}
+  constructor(private router: Router, private datePipe: DatePipe, private sanitizer: DomSanitizer) {}
 
   viewAllDocument() {
     sessionStorage.setItem('documentId', this.transporterId);
@@ -111,6 +115,7 @@ export class ProfileDocumentsComponent {
         },
       });
     }
+    this.uploadButtonTriggered.emit(true)
   }
 
   triggerFileUpload(documentType: any, maxUploadable: any, isMultiple: boolean) {
@@ -164,5 +169,35 @@ export class ProfileDocumentsComponent {
       isExpired: true,
       text: `Expired ${resultParts.join(', ')} ago`,
     };
+  }
+
+  checkDocumentType(documentType: any) {
+      const doc = JSON.parse( sessionStorage.getItem(documentType));
+      return {
+        uploaded: !!doc,
+        preview: doc? doc[0].base64 : null,
+        length: doc? doc.length : 0
+      }
+  }
+
+  shouldShowUploadButton(doc: any): boolean {
+    const docCount = this.categorizedDocuments[doc.documentType]?.length || 0;
+    const uploaded = this.checkDocumentType(doc.name).uploaded;
+    const uploadedCount = this.checkDocumentType(doc.name)?.length || 0;
+    const totalCount = docCount + uploadedCount;
+
+    return totalCount < doc.max;
+  }
+
+  getUploadIcon(doc: any): string {
+    return this.categorizedDocuments[doc.documentType]?.length > 0 || this.checkDocumentType(doc.name).uploaded ? 'plus' : 'upload';
+  }
+
+  getUploadButtonText(doc: any): string {
+    return this.categorizedDocuments[doc.documentType]?.length === 0 && !this.checkDocumentType(doc.name).uploaded ? 'Upload' : '';
+  }
+
+  getFileOrNot(doc: any) {
+    return this.categorizedDocuments[doc.documentType]?.length > 0 || this.checkDocumentType(doc.name).uploaded ? false : true;
   }
 }

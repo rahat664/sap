@@ -98,6 +98,10 @@ export class TransporterAddComponent implements OnInit {
   ngOnInit() {
     this.shared.validateInterNationalPhoneNumber();
     this.initializeForm();
+    const isFromDocumentSave = localStorage.getItem('isFromDocumentSave');
+    if (isFromDocumentSave) {
+      this.loadPreviousPayload();
+    }
     // get transporter id from param
     this.transporterAddForm.get('name').valueChanges.subscribe(value => {
       this.transporterAddForm.get('contactPersonName').setValue(value);
@@ -262,6 +266,8 @@ export class TransporterAddComponent implements OnInit {
       tradeLicense: [''],
       agreement: [''],
       other: [''],
+      agreementExpiration: [''],
+      tradeLicenseExpiration: [''],
     });
   }
 
@@ -312,6 +318,61 @@ export class TransporterAddComponent implements OnInit {
         mfsNumber: this.transporter.defaultPaymentMethod?.bankAccNo,
         mfsType: this.transporter.defaultPaymentMethod?.paymentMethod,
       });
+    }
+  }
+
+  private loadPreviousPayload() {
+    const payload = JSON.parse(localStorage.getItem('transporterPayload'));
+    this.transporterAddForm.patchValue({
+      name: payload.name,
+      phone: payload.contactPersonNumber,
+      truckStand: payload.truckStand,
+      bankName: payload.defaultPaymentMethod?.name,
+      bankBranch: payload.defaultPaymentMethod?.branchName,
+      bankAccountName: payload.defaultPaymentMethod?.accHolderName,
+      bankAccountNumber: payload.defaultPaymentMethod?.bankAccNo,
+      paymentMethod: payload.defaultPaymentMethod?.paymentMethod,
+      contactPersonName: payload.contactPersonName,
+      note: payload.note,
+    });
+    if (
+      payload.defaultPaymentMethod?.paymentMethod !== 'Cash' &&
+      payload.defaultPaymentMethod?.paymentMethod !== 'Bank'
+    ) {
+      this.transporterAddForm.patchValue({
+        mfsName: payload.defaultPaymentMethod?.name,
+        mfsNumber: payload.defaultPaymentMethod?.bankAccNo,
+        mfsType: payload.defaultPaymentMethod?.paymentMethod,
+      });
+    }
+  }
+
+  onUploadButtonTriggered($event: any) {
+    if ($event) {
+      const payload = {
+        name: this.transporterAddForm.get('name').value,
+        contactPersonNumber: this.transporterAddForm.get('phone').value,
+        truckStand: this.transporterAddForm.get('truckStand').value,
+        defaultPaymentMethod: {
+          name: this.transporterAddForm.get('bankName').value,
+          branchName: this.transporterAddForm.get('bankBranch').value,
+          accHolderName: this.transporterAddForm.get('bankAccountName').value,
+          bankAccNo: this.transporterAddForm.get('bankAccountNumber').value,
+          paymentMethod: this.transporterAddForm.get('paymentMethod').value,
+          accType: '',
+        },
+        contactPersonName: this.transporterAddForm.get('contactPersonName').value,
+        note: this.transporterAddForm.get('note').value,
+      }
+      if (this.preferredPaymentMethod === 'MFS') {
+        payload.defaultPaymentMethod.name = this.transporterAddForm.get('mfsName').value;
+        payload.defaultPaymentMethod.bankAccNo = this.transporterAddForm.get('mfsNumber').value;
+        payload.defaultPaymentMethod.accType = this.transporterAddForm.get('mfsType').value;
+      }
+
+      localStorage.setItem('isFromDocumentSave', String(true))
+
+      localStorage.setItem('transporterPayload', JSON.stringify(payload));
     }
   }
 }
