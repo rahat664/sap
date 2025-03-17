@@ -4,7 +4,7 @@
       <img src="assets/svg/document.svg" class="notPreview" alt="document" />
       <span class="text-lg font-bold">{{ documentName }}</span>
     </div>
-    <a *ngIf="documents?.length > 0" (click)="viewAllDocument()" class="text-link">View all</a>
+    <a *ngIf="documents?.length > 0" (click)="viewAllDocument()" class="text-link cursor-pointer">View all</a>
   </div>
   <div class="flex flex-col space-y-1">
     <ng-container *ngFor="let doc of documentTypes">
@@ -29,13 +29,23 @@
                       class="text-not-black text-body_title leading-body_title font-semibold"
                     >{{ doc.name }}</span
                     >
-            <span class="{{
+            <span
+              class="{{
                         checkDateIsExpiredOrNot(
                           categorizedDocuments[doc.documentType][categorizedDocuments[doc.documentType]?.length - 1]?.expiryDate
                         ).isExpired
                           ? 'text-red'
                           : 'text-not-black'
-                      }} text-body" *ngIf="doc?.expiryAvailable" >{{ checkDateIsExpiredOrNot(categorizedDocuments[doc.documentType][categorizedDocuments[doc.documentType]?.length - 1]?.expiryDate).text }}</span>
+                      }} text-body" *ngIf="doc?.expiryAvailable && checkDocumentType(doc.name).uploaded && categorizedDocuments[doc.documentType][categorizedDocuments[doc.documentType]?.length - 1]?.expiryDate"
+            >{{ checkDateIsExpiredOrNot(categorizedDocuments[doc.documentType][categorizedDocuments[doc.documentType]?.length - 1]?.expiryDate).text }}</span>
+            <span
+              class="{{
+                        checkDateIsExpiredOrNot(getDateFromSessionStorage(doc.name)).isExpired
+                          ? 'text-red'
+                          : 'text-not-black'
+                      }} text-body" *ngIf="doc?.expiryAvailable && checkDocumentType(doc.name).uploaded && getDateFromSessionStorage(doc.name)"
+            >{{ checkDateIsExpiredOrNot(getDateFromSessionStorage(doc.name)).text }}</span>
+
           </div>
         </div>
 
@@ -47,16 +57,17 @@
             <div class="w-[2.5rem] h-[1.875rem] absolute bg-white top-1 left-1 rounded-sm border border-blue">
             </div>
             <div class="w-[2.5rem] h-[1.875rem] rounded-sm border border-blue absolute top-0 left-0 overflow-hidden">
-              <img  [src]="categorizedDocuments[doc.documentType][0] ? categorizedDocuments[doc.documentType][0]?.preSignedFileUrl : (checkDocumentType(doc.name).preview | fallbackImage)" alt=""
+              <img *ngIf="!isPdf(categorizedDocuments[doc.documentType][0]?.fileUrl)" (click)="viewSpecificDocument(categorizedDocuments[doc.documentType])"  [src]="categorizedDocuments[doc.documentType][0] ? categorizedDocuments[doc.documentType][0]?.preSignedFileUrl : (checkDocumentType(doc.name).preview | fallbackImage)" alt=""
                    class="w-full h-full object-cover notPreview" />
+              <img *ngIf="isPdf(categorizedDocuments[doc.documentType][0]?.fileUrl)" (click)="viewSpecificDocument(categorizedDocuments[doc.documentType])" src="assets/svg/pdf.svg" alt="" class="w-full h-full object-cover notPreview" />
             </div>
           </div>
-          <span *ngIf="(categorizedDocuments[doc.documentType]?.length === 0 || !categorizedDocuments[doc.documentType]) && !isInEditMode && !checkDocumentType(doc.name).uploaded" class="text-web-text-secondary text-body"
+          <span *ngIf="(categorizedDocuments[doc.documentType]?.length === 0 || !categorizedDocuments[doc.documentType]) && !isInEditMode && !checkDocumentType(doc.name).uploaded && !fromAddDocument" class="text-web-text-secondary text-body"
           >Not uploaded yet</span>
           <ng-container *ngIf="isInEditMode || fromAddDocument">
             <ng-container *ngIf="shouldShowUploadButton(doc)">
               <app-upload-button
-                (click)="triggerFileUpload(doc.documentType, doc?.max, doc.multiple)"
+                (click)="triggerFileUpload(doc.documentType, doc?.max, doc.multiple, doc.expiryAvailable)"
                 [file]="getFileOrNot(doc)"
                 [icon]="getUploadIcon(doc)"
                 [buttonText]="getUploadButtonText(doc)">

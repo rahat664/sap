@@ -16,6 +16,10 @@ import { Router } from '@angular/router';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-document-upload',
@@ -26,6 +30,14 @@ import { DomSanitizer } from '@angular/platform-browser';
     NgForOf,
     NgIf,
     NgClass,
+    MatDatepicker,
+    MatFormField,
+    MatInput,
+    MatDatepickerInput,
+    MatDatepickerToggle,
+  ],
+  providers: [
+    provideNativeDateAdapter(),
   ],
   templateUrl: './document-upload.component.html',
   styleUrl: './document-upload.component.scss',
@@ -59,16 +71,15 @@ export class DocumentUploadComponent {
     private trip: TripService,
     private cd: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
-  ) {
-  }
+    private datePipe: DatePipe
+  ) {}
 
   ngOnInit() {
     this.resetNavigationInformation();
     this.getNavigationInformation();
   }
 
-  private resetNavigationInformation() {
-  }
+  private resetNavigationInformation() {}
 
   private getNavigationInformation() {
     const navigation = history.state;
@@ -76,6 +87,7 @@ export class DocumentUploadComponent {
       this.previewDocuments(navigation.documents);
       this.returnUrl = navigation.returnUrl;
       this.imageType = navigation.imageType;
+      this.expiryAvailable = navigation.expiryAvailable;
       this.updateActiveDocumentIndex();
       this.scrollToActiveDocument();
     }
@@ -83,7 +95,7 @@ export class DocumentUploadComponent {
 
   private updateActiveDocumentIndex() {
     this.activeDocumentIndex = this.documents.findIndex(
-      doc => doc === this.activatedDocument,
+      doc => doc === this.activatedDocument
     );
   }
 
@@ -229,11 +241,11 @@ export class DocumentUploadComponent {
     // Clamp the translations to prevent overflow
     this.translateX = Math.max(
       -overflowX,
-      Math.min(overflowX, this.translateX),
+      Math.min(overflowX, this.translateX)
     );
     this.translateY = Math.max(
       -overflowY,
-      Math.min(overflowY, this.translateY),
+      Math.min(overflowY, this.translateY)
     );
   }
 
@@ -248,7 +260,7 @@ export class DocumentUploadComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.documents = this.documents.filter(
-          doc => doc !== this.activatedDocument,
+          doc => doc !== this.activatedDocument
         );
         this.activatedDocument = this.documents[0];
         this.updateActiveDocumentIndex();
@@ -325,7 +337,6 @@ export class DocumentUploadComponent {
   }
 
   onClickSave() {
-
     // Ensure data is saved after all files are processed
     setTimeout(() => {
       // only store the documentFiles file object in sessionStorage
@@ -340,17 +351,27 @@ export class DocumentUploadComponent {
       });
       // check there is any document on the sessionStorage if found then store previous and current document in the sessionStorage
 
-      const isAlreadyStored = JSON.parse(sessionStorage.getItem(`${this.imageType}`));
+      const isAlreadyStored = JSON.parse(
+        sessionStorage.getItem(`${this.imageType}`)
+      );
       if (isAlreadyStored) {
-        const previousDoc = JSON.parse(sessionStorage.getItem(`${this.imageType}`));
-       previousDoc.forEach((document) => {
-         doc.push(document)
-       })
+        const previousDoc = JSON.parse(
+          sessionStorage.getItem(`${this.imageType}`)
+        );
+        previousDoc.forEach(document => {
+          doc.push(document);
+        });
         sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
       } else {
         sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
       }
       this.router.navigate([this.returnUrl]);
     }, 500); // Delay to allow file reading to complete
+  }
+
+  onDateChange($event: Event) {
+    const date = $event.target['value'];
+    this.expiryDate = this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss');
+    sessionStorage.setItem(`${this.imageType.toLocaleLowerCase().replace(/\s/g,'')}expiry`, this.expiryDate);
   }
 }

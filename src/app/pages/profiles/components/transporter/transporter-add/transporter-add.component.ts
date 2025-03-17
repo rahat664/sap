@@ -7,15 +7,17 @@ import {
 } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import { bkashPaymentMethod, paymentMethod } from '../models/payment-method';
 import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
-import {
-  MatDialog,
-  MatDialogModule,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import {
@@ -83,6 +85,8 @@ export class TransporterAddComponent implements OnInit {
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   transporterDocuments: TransporterDocument[] = [];
   preferredPaymentMethod: string = 'Cash';
+  tradeLicenseExpiration: string;
+  agreementExpiration: any;
 
   constructor(
     private service: UserService,
@@ -92,8 +96,7 @@ export class TransporterAddComponent implements OnInit {
     private toastr: HandleToastrService,
     private router: Router,
     private shared: DriverEditSharedService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.shared.validateInterNationalPhoneNumber();
@@ -114,7 +117,7 @@ export class TransporterAddComponent implements OnInit {
       return;
     }
     this.loading = true;
-    const payload = {
+    let payload = {
       name: this.transporterAddForm.get('name').value,
       contactPersonNumber: this.transporterAddForm.get('phone').value,
       truckStand: this.transporterAddForm.get('truckStand').value,
@@ -125,22 +128,25 @@ export class TransporterAddComponent implements OnInit {
         bankAccNo: this.transporterAddForm.get('bankAccountNumber').value,
         paymentMethod: this.transporterAddForm.get('paymentMethod').value,
         accType: '',
-
       },
       contactPersonName: this.transporterAddForm.get('contactPersonName').value,
       note: this.transporterAddForm.get('note').value,
     };
 
-    payload.contactPersonNumber = payload.contactPersonNumber.replace(/[\s-]/g, '');
+    payload.contactPersonNumber = payload.contactPersonNumber.replace(
+      /[\s-]/g,
+      ''
+    );
     if (payload.defaultPaymentMethod.paymentMethod === 'MFS') {
-      payload.defaultPaymentMethod.name = this.transporterAddForm.get('mfsName').value;
-      payload.defaultPaymentMethod.bankAccNo = this.transporterAddForm.get('mfsNumber').value;
-      payload.defaultPaymentMethod.accType = this.transporterAddForm.get('mfsType').value;
+      payload.defaultPaymentMethod.name =
+        this.transporterAddForm.get('mfsName').value;
+      payload.defaultPaymentMethod.bankAccNo =
+        this.transporterAddForm.get('mfsNumber').value;
+      payload.defaultPaymentMethod.accType =
+        this.transporterAddForm.get('mfsType').value;
     }
 
     const payloadFormData = new FormData();
-    payloadFormData.append('payload', JSON.stringify(payload));
-
 
     const files = this.retrieveFilesForUpload();
 
@@ -160,11 +166,14 @@ export class TransporterAddComponent implements OnInit {
       });
     }
     if (files.tradeLicenseFiles.length > 0) {
+      this.tradeLicenseExpiration = this.getExpiryFromSessionStorage('Trade License');
       files.tradeLicenseFiles.forEach((file: any) => {
         payloadFormData.append('tradeLicense', file);
       });
     }
     if (files.agreementFiles.length > 0) {
+      this.agreementExpiration = this.getExpiryFromSessionStorage('Agreement');
+      // create a property in payload for agreement expiration
       files.agreementFiles.forEach((file: any) => {
         payloadFormData.append('agreement', file);
       });
@@ -175,16 +184,30 @@ export class TransporterAddComponent implements OnInit {
       });
     }
 
+
+    if (this.agreementExpiration) {
+      payload['agreementExpiration'] = this.agreementExpiration;
+    }
+
+    if (this.tradeLicenseExpiration) {
+      payload['tradeLicenseExpiration'] = this.tradeLicenseExpiration
+    }
+
+    payloadFormData.append('payload', JSON.stringify(payload));
+
     this.service.addTransporter(payloadFormData).subscribe(
       (response: any) => {
-        this.loading = false;
-        this.toastr.showSuccess('Transporter added successfully');
-        this.router.navigate(['/profile/transporter']);
+        if (response && response.status === 'OK') {
+          this.toastr.showSuccess(response.message);
+          this.router.navigate(['/profiles/transporter']);
+        } else {
+          this.toastr.showError(response.message);
+        }
       },
       error => {
         this.loading = false;
-        this.toastr.showError('Failed to add transporter');
-      },
+        this.toastr.showError(error.error.message);
+      }
     );
   }
 
@@ -228,16 +251,13 @@ export class TransporterAddComponent implements OnInit {
     };
   }
 
-
   onClickCancel() {
     this.isInEditMode = false;
   }
 
-  onClickApprove(driverDetails: any) {
-  }
+  onClickApprove(driverDetails: any) {}
 
-  onClickReject(driverDetails: any) {
-  }
+  onClickReject(driverDetails: any) {}
 
   onClickEdit() {
     this.isInEditMode = true;
@@ -286,10 +306,10 @@ export class TransporterAddComponent implements OnInit {
 
   onSelectBkashType($event: number) {
     this.bkashPaymentTypePlaceholder = this.bkashPaymentMethod.find(
-      method => method.id === $event,
+      method => method.id === $event
     ).value;
     this.bkashPaymentMethod.forEach(
-      method => (method.selected = method.id === $event),
+      method => (method.selected = method.id === $event)
     );
     this.transporterAddForm
       .get('mfsType')
@@ -361,18 +381,33 @@ export class TransporterAddComponent implements OnInit {
           paymentMethod: this.transporterAddForm.get('paymentMethod').value,
           accType: '',
         },
-        contactPersonName: this.transporterAddForm.get('contactPersonName').value,
+        contactPersonName:
+          this.transporterAddForm.get('contactPersonName').value,
         note: this.transporterAddForm.get('note').value,
-      }
+      };
       if (this.preferredPaymentMethod === 'MFS') {
-        payload.defaultPaymentMethod.name = this.transporterAddForm.get('mfsName').value;
-        payload.defaultPaymentMethod.bankAccNo = this.transporterAddForm.get('mfsNumber').value;
-        payload.defaultPaymentMethod.accType = this.transporterAddForm.get('mfsType').value;
+        payload.defaultPaymentMethod.name =
+          this.transporterAddForm.get('mfsName').value;
+        payload.defaultPaymentMethod.bankAccNo =
+          this.transporterAddForm.get('mfsNumber').value;
+        payload.defaultPaymentMethod.accType =
+          this.transporterAddForm.get('mfsType').value;
       }
 
-      localStorage.setItem('isFromDocumentSave', String(true))
+      localStorage.setItem('isFromDocumentSave', String(true));
 
       localStorage.setItem('transporterPayload', JSON.stringify(payload));
+    }
+  }
+
+  private getExpiryFromSessionStorage(name: string) {
+    switch (name) {
+      case 'Trade License':
+        return sessionStorage.getItem('tradelicenseexpiry');
+      case 'Agreement':
+        return sessionStorage.getItem('agreementexpiry');
+      default:
+        return null;
     }
   }
 }

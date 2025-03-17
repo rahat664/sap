@@ -109,7 +109,7 @@
             [ngClass]="{ scaled: doc === activatedDocument }"
             class="document-item w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden rounded-lg">
             <img
-              *ngIf="!doc.url?.includes('pdf') && !doc?.document?.url?.includes('pdf')"
+              *ngIf="!doc.preSignedFileUrl?.includes('pdf') && !doc?.document?.url?.includes('pdf')"
               [src]="doc.preSignedFileUrl ? doc.preSignedFileUrl : doc?.document?.preSignedFileUrl | fallbackImage"
               appImageError
               alt="document"

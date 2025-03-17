@@ -12,7 +12,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile-documents',
-  imports: [NgForOf, FormsModule, NgIf, UploadButtonComponent, FallbackImagePipe],
+  imports: [
+    NgForOf,
+    FormsModule,
+    NgIf,
+    UploadButtonComponent,
+    FallbackImagePipe,
+  ],
   templateUrl: './profile-documents.component.html',
   styleUrl: './profile-documents.component.scss',
 })
@@ -31,8 +37,13 @@ export class ProfileDocumentsComponent {
   isMultiple: boolean = false;
   @Output() onInputFilesReturnToParent: EventEmitter<any> = new EventEmitter();
   @Output() uploadButtonTriggered: EventEmitter<any> = new EventEmitter(false);
+  expiryAvailable: any;
 
-  constructor(private router: Router, private datePipe: DatePipe, private sanitizer: DomSanitizer) {}
+  constructor(
+    private router: Router,
+    private datePipe: DatePipe,
+    private sanitizer: DomSanitizer
+  ) {}
 
   viewAllDocument() {
     sessionStorage.setItem('documentId', this.transporterId);
@@ -41,7 +52,7 @@ export class ProfileDocumentsComponent {
         documents: this.documents,
         activatedDocument: this.documents[0],
         id: this.transporterId,
-        returnUrl: this.router.url
+        returnUrl: this.router.url,
       },
     });
   }
@@ -86,17 +97,17 @@ export class ProfileDocumentsComponent {
   changeDocumentNameToGeneralName(documentType: any) {
     switch (documentType) {
       case TransporterDocumentType[TransporterDocumentType.PROFILE_PICTURE]:
-        return 'Transporter Image'
+        return 'Transporter Image';
       case TransporterDocumentType[TransporterDocumentType.NID_FRONT]:
-        return 'NID Front'
+        return 'NID Front';
       case TransporterDocumentType[TransporterDocumentType.NID_BACK]:
-        return 'NID Back'
+        return 'NID Back';
       case TransporterDocumentType[TransporterDocumentType.TRADE_LICENSE]:
-        return 'Trade License'
+        return 'Trade License';
       case TransporterDocumentType[TransporterDocumentType.AGREEMENT]:
-        return 'Agreement'
+        return 'Agreement';
       case TransporterDocumentType[TransporterDocumentType.OTHER_FILE]:
-        return 'Other'
+        return 'Other';
       default:
         return documentType;
     }
@@ -111,17 +122,26 @@ export class ProfileDocumentsComponent {
           documents: files,
           activeDocument: files[0],
           returnUrl: this.router.url,
-          imageType: this.changeDocumentNameToGeneralName(this.selectedDocumentType),
+          imageType: this.changeDocumentNameToGeneralName(
+            this.selectedDocumentType
+          ),
+          expiryAvailable: this.expiryAvailable,
         },
       });
     }
-    this.uploadButtonTriggered.emit(true)
+    this.uploadButtonTriggered.emit(true);
   }
 
-  triggerFileUpload(documentType: any, maxUploadable: any, isMultiple: boolean) {
+  triggerFileUpload(
+    documentType: any,
+    maxUploadable: any,
+    isMultiple: boolean,
+    expiryAvailable: any
+  ) {
     this.isMultiple = isMultiple;
     this.selectedDocumentType = documentType;
     this.maxUploadable = maxUploadable;
+    this.expiryAvailable = expiryAvailable;
     if (this.fileInput && this.fileInput.nativeElement) {
       this.fileInput.nativeElement.multiple = isMultiple;
       this.fileInput.nativeElement.click();
@@ -172,12 +192,12 @@ export class ProfileDocumentsComponent {
   }
 
   checkDocumentType(documentType: any) {
-      const doc = JSON.parse( sessionStorage.getItem(documentType));
-      return {
-        uploaded: !!doc,
-        preview: doc? doc[0].base64 : null,
-        length: doc? doc.length : 0
-      }
+    const doc = JSON.parse(sessionStorage.getItem(documentType));
+    return {
+      uploaded: !!doc,
+      preview: doc ? doc[0].base64 : null,
+      length: doc ? doc.length : 0,
+    };
   }
 
   shouldShowUploadButton(doc: any): boolean {
@@ -190,14 +210,48 @@ export class ProfileDocumentsComponent {
   }
 
   getUploadIcon(doc: any): string {
-    return this.categorizedDocuments[doc.documentType]?.length > 0 || this.checkDocumentType(doc.name).uploaded ? 'plus' : 'upload';
+    return this.categorizedDocuments[doc.documentType]?.length > 0 ||
+      this.checkDocumentType(doc.name).uploaded
+      ? 'plus'
+      : 'upload';
   }
 
   getUploadButtonText(doc: any): string {
-    return this.categorizedDocuments[doc.documentType]?.length === 0 && !this.checkDocumentType(doc.name).uploaded ? 'Upload' : '';
+    return this.categorizedDocuments[doc.documentType]?.length === 0 &&
+      !this.checkDocumentType(doc.name).uploaded && doc.max > 0
+      ? 'Upload'
+      : '';
   }
 
   getFileOrNot(doc: any) {
-    return this.categorizedDocuments[doc.documentType]?.length > 0 || this.checkDocumentType(doc.name).uploaded ? false : true;
+    return !(this.categorizedDocuments[doc.documentType]?.length > 0 ||
+      this.checkDocumentType(doc.name).uploaded);
+  }
+
+  getDateFromSessionStorage(name) {
+    switch (name) {
+      case 'Trade License':
+        console.log(sessionStorage.getItem('tradelicenseexpiry'));
+        return sessionStorage.getItem('tradelicenseexpiry');
+      case 'Agreement':
+        return sessionStorage.getItem('agreementexpiry');
+        default:
+          return null;
+    }
+  }
+
+  viewSpecificDocument(categorizedDocument: any) {
+    this.router.navigate(['/profile/document-viewer'], {
+      state: {
+        documents: categorizedDocument,
+        activatedDocument: categorizedDocument[0],
+        id: this.transporterId,
+        returnUrl: this.router.url,
+      },
+    });
+  }
+
+  isPdf(preSignedFileUrl: any) {
+    return preSignedFileUrl?.endsWith('.pdf');
   }
 }

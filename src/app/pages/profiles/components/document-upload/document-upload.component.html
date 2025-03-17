@@ -154,16 +154,26 @@
       </div>
       <div class="flex flex-col space-y-1" *ngIf="expiryAvailable">
         <span class="text-body text-secondary">Expire date</span>
-        <span class="text-h2 leading-h2 font-semibold text-not-black"
-        >30 Mar 2029</span
-        >
+        <mat-form-field
+          class="example-full-width flex-1 w-full"
+          [ngClass]="{ error: !expiryDate }"
+          appearance="outline">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            placeholder="Expiry Date"
+            (focusin)="picker.open()"
+            (selectionchange)="onDateChange($event)"/>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
       </div>
       <div class="flex flex-col space-y-1" *ngIf="notesAvailable">
         <span class="text-h2 leading-h2 font-semibold text-not-black"
-        >Note</span
-        >
+        >Note</span>
         <p class="text-body text-secondary text-justify">
-
         </p>
       </div>
     </div>

@@ -191,4 +191,8 @@ export class UserService {
   addTransporter(transporter: any) {
     return this.http.post(`${this.transportersUrl}`, transporter);
   }
+
+  updateTransporter(transporter: any) {
+    return this.http.put(`${this.transportersUrl}`, transporter);
+  }
 }

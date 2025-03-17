@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { Trip } from '../../../auth/models/response/trip';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
+import { TransporterDocumentType } from '../../../../shared/Enums/registration_type';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-document-viewer',
@@ -46,7 +48,8 @@ export class DocumentViewerComponent {
   constructor(
     private router: Router,
     private trip: TripService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private service: UserService
   ) {}
 
   ngOnInit() {
@@ -226,19 +229,23 @@ export class DocumentViewerComponent {
     const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
       width: '400px',
       data: {
-        message: 'Are you sure you want to delete this document?',
+        title: 'Attention',
+        text: 'Are you sure you want to delete this document?',
+        buttonText: 'Delete',
       },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.documents = this.documents.filter(
-          (doc) => doc !== this.activatedDocument
-        );
-        this.activatedDocument = this.documents[0];
-        this.updateActiveDocumentIndex();
-        this.scrollToActiveDocument();
-      }
+    }).afterClosed().subscribe((result) => {
+      console.log(this.activatedDocument)
+        this.service.deleteDriverFiles(
+          this.activatedDocument.fileUrl,
+          Number(this.documentBelongToId.split('-')[1])
+        ).subscribe(() => {
+          this.documents = this.documents.filter(
+            (doc) => doc !== this.activatedDocument
+          );
+          this.activatedDocument = this.documents[0];
+          this.updateActiveDocumentIndex();
+          this.scrollToActiveDocument();
+        });
     });
   }
 
@@ -274,7 +281,21 @@ export class DocumentViewerComponent {
   }
 
   changeDocumentNameToGeneralName(documentType: any) {
-    documentType = documentType.replace(/_/g, ' ');
-    return documentType.charAt(0).toUpperCase() + documentType.slice(1);
+    switch (documentType) {
+    case TransporterDocumentType[TransporterDocumentType.PROFILE_PICTURE]:
+      return 'Transporter Image';
+    case TransporterDocumentType[TransporterDocumentType.NID_FRONT]:
+      return 'NID Front';
+    case TransporterDocumentType[TransporterDocumentType.NID_BACK]:
+      return 'NID Back';
+    case TransporterDocumentType[TransporterDocumentType.TRADE_LICENSE]:
+      return 'Trade License';
+    case TransporterDocumentType[TransporterDocumentType.AGREEMENT]:
+      return 'Agreement';
+    case TransporterDocumentType[TransporterDocumentType.OTHER_FILE]:
+      return 'Other';
+    default:
+      return documentType;
+  }
   }
 }

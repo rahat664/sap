@@ -239,13 +239,15 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         console.log(this.router.url);
-        if (this.router.url !== '/profile/transporter/add' && this.router.url !== '/profile/document-upload') {
+        if (this.router.url !== '/profile/transporter/add' && this.router.url !== '/profile/document-upload' && !this.router.url.startsWith('/profile/transporter') && !this.router.url.endsWith('/details')) {
           sessionStorage.removeItem('Transporter Image');
           sessionStorage.removeItem('NID Front');
           sessionStorage.removeItem('NID Back');
           sessionStorage.removeItem('Trade License');
           sessionStorage.removeItem('Agreement');
           sessionStorage.removeItem('Other');
+          sessionStorage.removeItem('transporterPayload');
+          sessionStorage.removeItem('isFromDocumentSave');
         }
       }
     });

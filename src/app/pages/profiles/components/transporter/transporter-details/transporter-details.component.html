@@ -7,10 +7,10 @@
       <div class="flex space-x-4 items-center">
         <button
           *ngIf="isInEditMode"
-          (click)="onClickSave()"
+          (click)="onClickUpdate()"
           class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span>Save</span>
+          <span>Update</span>
         </button>
         <button
           *ngIf="isInEditMode"
@@ -183,7 +183,7 @@
           </ng-container>
         </div>
       </div>
-      <app-profile-documents [isInEditMode]="isInEditMode" [transporterId]="transporter?.code" [documentTypes]="transporterFileType" [documents]="transporterDocuments" ></app-profile-documents>
+      <app-profile-documents (uploadButtonTriggered)="onUploadButtonTriggered($event)" [isInEditMode]="isInEditMode" [transporterId]="transporter?.code" [documentTypes]="transporterFileType" [documents]="transporterDocuments" ></app-profile-documents>
     </div>
     <div class="p-4 bg-white rounded-lg" *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Cash'|| isInEditMode ">
       <div class="flex space-x-3 items-center mb-4">
@@ -283,7 +283,7 @@
                   placeholder="Enter Account Number" />
               </mat-form-field>
             </div>
-            <mat-checkbox (change)="setPreferredPaymentMethod($any($event), 'Bank')">
+            <mat-checkbox  [checked]="preferredPaymentMethod === 'Bank'"  (change)="setPreferredPaymentMethod($any($event), 'Bank')">
               Set as preferred
             </mat-checkbox>
           </div>
@@ -333,7 +333,7 @@
                   placeholder="Enter Account Number" />
               </mat-form-field>
             </div>
-            <mat-checkbox (change)="setPreferredPaymentMethod($any($event), 'MFS')">
+            <mat-checkbox [checked]="preferredPaymentMethod === 'MFS'"  (change)="setPreferredPaymentMethod($any($event), 'MFS')">
               Set as preferred
             </mat-checkbox>
           </div>
@@ -346,7 +346,7 @@
                 class="text-body_title font-semibold text-not-black">Cash</h1>
             </div>
           </div>
-          <mat-checkbox class="px-2" (change)="setPreferredPaymentMethod($any($event), 'Cash')">
+          <mat-checkbox [checked]="preferredPaymentMethod === 'Cash'" class="px-2" (change)="setPreferredPaymentMethod($any($event), 'Cash')">
             Set as preferred
           </mat-checkbox>
         </div>

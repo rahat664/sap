@@ -46,7 +46,7 @@ export const transporterFileTypeModel: TransporterFileType[] = [
     documentType: TransporterDocumentType[TransporterDocumentType.AGREEMENT],
     name: 'Agreement',
     max: 50,
-    expiryAvailable: false,
+    expiryAvailable: true,
     uploaded: false,
     multiple: true,
     formControlName: 'agreement',
