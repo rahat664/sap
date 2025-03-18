@@ -327,13 +327,13 @@
           <td>{{ trip.status }}</td>
           <td *ngIf="isAdmin()">
             {{
-              (trip.customerRate ? trip.customerRate : 0) | number
+              (trip.customerRate !== null ? (trip.customerRate | number) : 'N/A')
             }}
           </td>
           <td *ngIf="isAdmin()">
             {{
-              (trip.transporterRate ? trip.transporterRate : 0)
-                | number
+              (trip.transporterRate !== null ? (trip.transporterRate|number) : 'N/A')
+
             }}
           </td>
           <td *ngIf="isAdmin()">
