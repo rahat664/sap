@@ -1,6 +1,7 @@
 import { TripPoint } from '../../../manage-trip/model/trip.details.model';
 
 export interface Trip {
+  tripType: string;
   paymentType: string;
   challanReceivedFromDTOList: challanReceivedFromDTOList[];
   id: number;
@@ -60,3 +61,51 @@ export interface Truck {
   registrationNum?: string; // Make optional as it's missing
   fullRegistrationNumber?: string; // Make optional as it's missing
 }
+
+export interface tripType {
+  id: number;
+  name: string;
+  active: boolean;
+}
+
+export interface paymentType {
+  id: number;
+  name: string;
+  active: boolean;
+}
+
+export const tripTypes: tripType[] = [
+  {
+    id: 1,
+    name: 'Commercial Logistics',
+    active: true
+  },
+  {
+    id: 2,
+    name: 'Project Logistics',
+    active: false
+  }
+];
+
+export const paymentTypes: paymentType[] = [
+  {
+    id:1,
+    name: 'Cash',
+    active: false
+  },
+  {
+    id: 2,
+    name: 'Invoice',
+    active: true
+  },
+  {
+    id: 3,
+    name: 'Cash & Invoice',
+    active: false
+  },
+  {
+    id: 4,
+    name: 'Commission',
+    active: false
+  }
+];

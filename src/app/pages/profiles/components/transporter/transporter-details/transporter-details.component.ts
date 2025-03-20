@@ -23,6 +23,7 @@ import { bkashPaymentMethod } from '../models/payment-method';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { ProfileDocumentsComponent } from '../../profile-documents/profile-documents.component';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
+import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 
 @Component({
   selector: 'app-transporter-details',
@@ -47,6 +48,7 @@ export class TransporterDetailsComponent {
   transporterFileType = transporterFileTypeModel;
   protected readonly bkashPaymentMethod = bkashPaymentMethod;
   bkashPaymentTypePlaceholder: string;
+  mfsTypePlaceholder: string;
   transporterId: any;
   transporter: Transporter;
   isInEditMode: boolean;
@@ -289,6 +291,18 @@ export class TransporterDetailsComponent {
   }
 
   protected readonly CountryISO = CountryISO;
+  mfsService: CustomInputSelectModel[] = [
+    {
+      id: 1,
+      value: 'Bkash',
+      selected: false,
+    },
+    {
+      id: 2,
+      value: 'Nagad',
+      selected: false,
+    }
+  ];
 
   get phoneNumber() {
     return this.transporterUpdateForm.get('phone');
@@ -407,5 +421,17 @@ export class TransporterDetailsComponent {
         mfsType: payload.defaultPaymentMethod?.paymentMethod,
       });
     }
+  }
+
+  onSelectMFSType($event: number) {
+    this.mfsTypePlaceholder = this.mfsService.find(
+      method => method.id === $event
+    ).value;
+    this.mfsService.forEach(
+      method => (method.selected = method.id === $event)
+    );
+    this.transporterUpdateForm
+      .get('mfsType')
+      .setValue(this.bkashPaymentTypePlaceholder);
   }
 }

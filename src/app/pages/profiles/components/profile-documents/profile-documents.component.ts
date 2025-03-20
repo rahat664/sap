@@ -24,7 +24,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class ProfileDocumentsComponent {
   private cachedCheck: boolean | null = null;
-  @Input() documentName: string = 'Document Name';
+  @Input() documentName: string = 'Documents';
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   @Input() documentTypes: any[] = [];
   @Input() documents: any[] = [];
@@ -231,7 +231,6 @@ export class ProfileDocumentsComponent {
   getDateFromSessionStorage(name) {
     switch (name) {
       case 'Trade License':
-        console.log(sessionStorage.getItem('tradelicenseexpiry'));
         return sessionStorage.getItem('tradelicenseexpiry');
       case 'Agreement':
         return sessionStorage.getItem('agreementexpiry');

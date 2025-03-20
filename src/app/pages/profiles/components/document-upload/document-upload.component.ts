@@ -113,7 +113,6 @@ export class DocumentUploadComponent {
   }
 
   onClickDocument(doc: any, index: number) {
-    console.log(doc, index);
     this.activatedDocument = doc;
     this.activeDocumentIndex = index;
     this.scrollToActiveDocument();

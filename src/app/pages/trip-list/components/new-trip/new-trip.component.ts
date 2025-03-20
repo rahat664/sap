@@ -73,6 +73,10 @@ export class NewTripComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if (localStorage.getItem('isFromBackEdit')) {
+      localStorage.removeItem('isFromBackEdit');
+      this.dontClearLocalStorage = true;
+    }
     if (localStorage.getItem('backFromTemplateEditOrUpdate')) {
       localStorage.removeItem('backFromTemplateEditOrUpdate');
       this.dontClearLocalStorage = true;

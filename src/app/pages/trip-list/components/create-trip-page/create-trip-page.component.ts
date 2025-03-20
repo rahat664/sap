@@ -40,6 +40,12 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import {
+  paymentType,
+  paymentTypes,
+  tripType,
+  tripTypes,
+} from '../../../auth/models/response/trip';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -65,8 +71,6 @@ import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
     MatTooltip,
     FallbackImagePipe,
     ImageErrorDirective,
-    MatRadioGroup,
-    MatRadioButton,
   ],
   providers: [
     provideNativeDateAdapter(),
@@ -124,6 +128,7 @@ export class CreateTripPageComponent implements OnInit {
       this.tripDataModel.goodsName = this.tripForm.get('goodsName').value;
       this.tripDataModel.customerRate = this.tripForm.get('customerRate').value;
       this.tripDataModel.paymentType = this.tripForm.get('paymentType').value;
+      this.tripDataModel.tripType = this.tripForm.get('tripType').value;
       this.tripDataModel.note = this.tripForm.get('note').value;
       this.tripDataModel.points = [
         ...this.tripForm.get('loadingPoints').value,
@@ -367,6 +372,7 @@ export class CreateTripPageComponent implements OnInit {
       truckCapacityInTon: ['', Validators.required],
       goodsId: [''],
       paymentType: ['INVOICE', Validators.required],
+      tripType: ['commercial', Validators.required],
       goodsName: ['', Validators.required],
       customerRate: [null],
       note: [''],
@@ -638,6 +644,7 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm.get('customerRate').setValue(template.customerRate);
     this.tripForm.get('note').setValue(template.note);
     this.tripForm.get('paymentType').setValue(template.paymentType);
+    this.tripForm.get('tripType').setValue(template.tripType);
     const templateLoadingPoints = template.points.filter(
       point => point.pointType === 'Loading'
     );
@@ -807,6 +814,8 @@ export class CreateTripPageComponent implements OnInit {
   }
 
   protected readonly Number = Number;
+  tripTypes: tripType[] = tripTypes;
+  paymentType: paymentType[] = paymentTypes;
 
   private createLoadingPoint() {
     return this.fb.group({
@@ -850,5 +859,37 @@ export class CreateTripPageComponent implements OnInit {
 
   removeUnloadingPoint(index: number) {
     this.unloadingPoints.removeAt(index);
+  }
+
+  onTripTypeClick(type: tripType) {
+    switch (type.id) {
+      case 1:
+        this.tripForm.get('tripType').setValue('COMMERCIAL');
+        break;
+      case 2:
+        this.tripForm.get('tripType').setValue('PROJECT');
+        break;
+      default:
+        break;
+    }
+  }
+
+  onPaymentTypeClick(type: paymentType) {
+    switch (type.id) {
+      case 1:
+        this.tripForm.get('paymentType').setValue('CASH');
+        break;
+      case 2:
+        this.tripForm.get('paymentType').setValue('INVOICE');
+        break;
+      case 3:
+        this.tripForm.get('paymentType').setValue('CASH_AND_INVOICE');
+        break;
+      case 4:
+        this.tripForm.get('paymentType').setValue('COMMISSION');
+        break;
+      default:
+        break;
+    }
   }
 }

@@ -234,7 +234,6 @@ export class DocumentViewerComponent {
         buttonText: 'Delete',
       },
     }).afterClosed().subscribe((result) => {
-      console.log(this.activatedDocument)
         this.service.deleteDriverFiles(
           this.activatedDocument.fileUrl,
           Number(this.documentBelongToId.split('-')[1])

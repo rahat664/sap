@@ -2,7 +2,7 @@
   <div class="flex justify-between">
     <div class="flex space-x-3 items-center">
       <img src="assets/svg/document.svg" class="notPreview" alt="document" />
-      <span class="text-lg font-bold">{{ documentName }}</span>
+      <span class="text-h2 leading-h2 font-semibold text-not-black">{{ documentName }}</span>
     </div>
     <a *ngIf="documents?.length > 0" (click)="viewAllDocument()" class="text-link cursor-pointer">View all</a>
   </div>

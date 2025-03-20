@@ -43,6 +43,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { paymentType, paymentTypes, tripType, tripTypes } from '../../../auth/models/response/trip';
 
 @Component({
   selector: 'app-trip-update',
@@ -69,8 +70,6 @@ import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
     TimePickerComponent,
     FallbackImagePipe,
     ImageErrorDirective,
-    MatRadioButton,
-    MatRadioGroup,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './trip-update.component.html',
@@ -136,6 +135,7 @@ export class TripUpdateComponent implements OnInit {
               customerRate: this.tripUpdateForm.get('customerRate').value,
               note: this.tripUpdateForm.get('note').value,
               paymentType: this.tripUpdateForm.get('paymentType').value,
+              tripType: this.tripUpdateForm.get('tripType').value,
               points: [
                 ...this.tripUpdateForm.get('loadingPoints').value,
                 ...this.tripUpdateForm.get('unloadingPoints').value,
@@ -457,6 +457,7 @@ export class TripUpdateComponent implements OnInit {
       goodsId: [''],
       goodsName: [''],
       paymentType: [''],
+      tripType: [''],
       customerRate: [null],
       note: [''],
       loadingPoints: this.fb.array([this.createLoadingPoint()]),
@@ -1095,5 +1096,41 @@ export class TripUpdateComponent implements OnInit {
       .setValue(
         this.datePipe.transform(this.selectedDate, 'd MMM yyyy, hh:mm a')
       );
+  }
+
+  protected readonly tripTypes = tripTypes;
+  protected readonly paymentType = paymentTypes;
+
+
+  onTripTypeClick(type: tripType) {
+    switch (type.id) {
+      case 1:
+        this.tripUpdateForm.get('tripType').setValue('COMMERCIAL');
+        break;
+      case 2:
+        this.tripUpdateForm.get('tripType').setValue('PROJECT');
+        break;
+      default:
+        break;
+    }
+  }
+
+  onPaymentTypeClick(type: paymentType) {
+    switch (type.id) {
+      case 1:
+        this.tripUpdateForm.get('paymentType').setValue('CASH');
+        break;
+      case 2:
+        this.tripUpdateForm.get('paymentType').setValue('INVOICE');
+        break;
+      case 3:
+        this.tripUpdateForm.get('paymentType').setValue('CASH_AND_INVOICE');
+        break;
+      case 4:
+        this.tripUpdateForm.get('paymentType').setValue('COMMISSION');
+        break;
+      default:
+        break;
+    }
   }
 }

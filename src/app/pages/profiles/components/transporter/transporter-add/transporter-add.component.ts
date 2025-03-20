@@ -36,6 +36,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatOption } from '@angular/material/core';
 import { PaymentType } from '../../../../../shared/Enums/payment-type';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
+import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 
 @Component({
   selector: 'app-transporter-add',
@@ -84,9 +85,10 @@ export class TransporterAddComponent implements OnInit {
   };
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   transporterDocuments: TransporterDocument[] = [];
-  preferredPaymentMethod: string = 'Cash';
+  preferredPaymentMethod: string = '';
   tradeLicenseExpiration: string;
   agreementExpiration: any;
+  mfsTypePlaceholder: string;
 
   constructor(
     private service: UserService,
@@ -292,6 +294,10 @@ export class TransporterAddComponent implements OnInit {
   }
 
   protected readonly CountryISO = CountryISO;
+  mfsService: CustomInputSelectModel[] = [
+    { id: 1, value: 'bKash', selected: false },
+    { id: 2, value: 'Nagad', selected: false },
+  ];
 
   get phoneNumber() {
     return this.transporterAddForm.get('phone');
@@ -409,5 +415,17 @@ export class TransporterAddComponent implements OnInit {
       default:
         return null;
     }
+  }
+
+  onSelectMFSType($event: number) {
+    this.mfsTypePlaceholder = this.mfsService.find(
+      method => method.id === $event
+    ).value;
+    this.mfsService.forEach(
+      method => (method.selected = method.id === $event)
+    );
+    this.transporterAddForm
+      .get('mfsType')
+      .setValue(this.bkashPaymentTypePlaceholder);
   }
 }

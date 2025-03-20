@@ -238,7 +238,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private checkWhichRouteWeAreOn() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        console.log(this.router.url);
         if (this.router.url !== '/profile/transporter/add' && this.router.url !== '/profile/document-upload' && !this.router.url.startsWith('/profile/transporter') && !this.router.url.endsWith('/details')) {
           sessionStorage.removeItem('Transporter Image');
           sessionStorage.removeItem('NID Front');
