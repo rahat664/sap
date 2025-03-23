@@ -1,6 +1,7 @@
 import { TripPoint } from '../../../manage-trip/model/trip.details.model';
 
 export interface Trip {
+  firstChallanUploadedDate: string;
   tripType: string;
   paymentType: string;
   challanReceivedFromDTOList: challanReceivedFromDTOList[];

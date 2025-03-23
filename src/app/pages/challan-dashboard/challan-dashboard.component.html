@@ -388,6 +388,7 @@
         <th class="text-center whitespace-nowrap">Hardcopy</th>
         <th class="text-center whitespace-nowrap">Softcopy</th>
         <th class="text-center whitespace-nowrap">Due Days</th>
+        <th class="text-center whitespace-nowrap">Received Date</th>
         <th
           class="text-center sticky  bg-white right-{{
                   chalanStatus !== 'Pending' && chalanStatus !== 'Approved'
@@ -403,7 +404,7 @@
                 "></th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="13"></th>
+        <th class="custom-border" [colSpan]="14"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -490,6 +491,9 @@
           <td class="text-center whitespace-nowrap">
             {{ checkDueDays(trip) }}
           </td>
+          <td class="text-center whitespace-nowrap">
+            {{ checkReceivedDays(trip) }}
+          </td>
           <td
             class="whitespace-nowrap sticky right-{{
                     chalanStatus !== 'Approved' && chalanStatus !== 'Pending'
@@ -572,7 +576,7 @@
         </tr>
 
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="13">
+          <td class="text-center" [colSpan]="14">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
@@ -590,7 +594,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="13">
+          <td class="h-full" [colSpan]="14">
             <app-loading></app-loading>
           </td>
         </tr>

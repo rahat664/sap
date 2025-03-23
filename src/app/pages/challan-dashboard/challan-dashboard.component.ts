@@ -1,9 +1,9 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   inject,
   OnInit,
-  AfterViewInit,
 } from '@angular/core';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
@@ -98,8 +98,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   paymentFilter: number = 0;
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-    { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
-    { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
+    { id: 3, value: 'BOTH', selected: false, showname: 'Cash & Invoice' },
   ];
 
   get tripSuggestions(): any {
@@ -524,6 +524,51 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
 
   checkDueDays(trip: Trip) {
     const tripCompletedDate = new Date(trip.tripEndedAt);
+
+    if (trip.challanStatus === 'Pending') {
+      const currentDate = new Date();
+      // set tripCompletedDate to 12:00:00 AM and currentDate to 12:00:00 AM
+      tripCompletedDate.setHours(0, 0, 0, 0);
+      currentDate.setHours(0, 0, 0, 0);
+      const diffTime = Math.abs(
+        currentDate.getTime() - tripCompletedDate.getTime()
+      );
+      return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    } else {
+      if (trip.firstChallanUploadedDate || trip.challanStatusUpdatedAt) {
+        // set tripCompletedDate to 12:00:00 AM
+        tripCompletedDate.setHours(0, 0, 0, 0);
+        if (trip.firstChallanUploadedDate) {
+          const firstChallanUploadedDate = new Date(
+            trip.firstChallanUploadedDate
+          );
+          // set firstChallanUploadedDate to 12:00:00 AM
+          firstChallanUploadedDate.setHours(0, 0, 0, 0);
+          const diffTime = Math.abs(
+            firstChallanUploadedDate.getTime() - tripCompletedDate.getTime()
+          );
+          return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        } else {
+          const challanStatusUpdatedDate = new Date(
+            trip.challanStatusUpdatedAt
+          );
+          // set challanStatusUpdatedDate to 12:00:00 AM
+          challanStatusUpdatedDate.setHours(0, 0, 0, 0);
+          const diffTime = Math.abs(
+            challanStatusUpdatedDate.getTime() - tripCompletedDate.getTime()
+          );
+          return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        }
+      } else {
+        // set tripCompletedDate to 12:00:00 AM and currentDate to 12:00:00 AM
+        const currentDate = new Date();
+        const diffTime = Math.abs(
+          currentDate.getTime() - tripCompletedDate.getTime()
+        );
+        return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      }
+    }
+
     if (trip.challanStatusUpdatedAt) {
       const challanStatusUpdatedDate = new Date(trip.challanStatusUpdatedAt);
       return this.datePipe.transform(
@@ -579,7 +624,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.searchFilter +
       this.tripFilter +
       this.truckFilter +
-      this.transporterFilter + this.paymentFilter
+      this.transporterFilter +
+      this.paymentFilter
     );
   }
 
@@ -932,13 +978,13 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.getTripList();
   }
 
-
   onSelectPayment($event: number) {
     this.paymentFilter = 1;
     this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
     this.paymentTypePlaceholder =
       this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.paymentTypeValue = this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    this.paymentTypeValue =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
     this.page = 0;
     this.size = 30;
     this.loading = true;
@@ -953,6 +999,26 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       return 'Invoice';
     } else {
       return 'Cash & Invoice';
+    }
+  }
+
+  checkReceivedDays(trip: Trip) {
+    if (trip.firstChallanUploadedDate || trip.challanStatusUpdatedAt) {
+      if (trip.firstChallanUploadedDate) {
+        const firstChallanUploadedDate = new Date(trip.firstChallanUploadedDate);
+        return this.datePipe.transform(
+          firstChallanUploadedDate,
+          'dd MMM,yyyy h:mm a'
+        );
+      } else {
+        const challanStatusUpdatedDate = new Date(trip.challanStatusUpdatedAt);
+        return this.datePipe.transform(
+          challanStatusUpdatedDate,
+          'dd MMM,yyyy h:mm a'
+        );
+      }
+    } else {
+      return 'N/A';
     }
   }
 }
