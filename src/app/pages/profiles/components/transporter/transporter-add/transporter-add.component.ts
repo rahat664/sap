@@ -201,7 +201,7 @@ export class TransporterAddComponent implements OnInit {
       (response: any) => {
         if (response && response.status === 'OK') {
           this.toastr.showSuccess(response.message);
-          this.router.navigate(['/profiles/transporter']);
+          this.router.navigate(['/profile/transporter']);
         } else {
           this.toastr.showError(response.message);
         }
