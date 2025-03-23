@@ -64,6 +64,7 @@ export class NewTripComponent implements OnInit, OnDestroy {
   totalPages: number;
   height: string;
   templateCustomer: any;
+  favouriteCustomer: any;
 
   constructor(
     private customer: CustomerService,
@@ -73,6 +74,8 @@ export class NewTripComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+
+    this.getFavoriteCustomers();
     if (localStorage.getItem('isFromBackEdit')) {
       localStorage.removeItem('isFromBackEdit');
       this.dontClearLocalStorage = true;
@@ -137,6 +140,7 @@ export class NewTripComponent implements OnInit, OnDestroy {
     this.companySuggestions = [];
     this.isCustomerMenuOpened = false;
     localStorage.setItem('selectedCustomer', JSON.stringify(result));
+    this.storeLatestFiveAsFavorite(result);
     this.getTripTemplate(result.customerCode);
     this.templateCustomer = result.name;
   }
@@ -328,5 +332,31 @@ export class NewTripComponent implements OnInit, OnDestroy {
     this.selectedTemplate = null;
     this.isTemplateEnabled = false;
     this.templates = [];
+  }
+
+  private storeLatestFiveAsFavorite(result: any) {
+    const favoriteCustomers = JSON.parse(
+      localStorage.getItem('favoriteCustomers')
+    );
+    if (favoriteCustomers) {
+      if (favoriteCustomers.length < 5) {
+        favoriteCustomers.push(result);
+      } else {
+        favoriteCustomers.shift();
+        favoriteCustomers.push(result);
+      }
+      localStorage.setItem('favoriteCustomers', JSON.stringify(favoriteCustomers));
+    } else {
+      localStorage.setItem('favoriteCustomers', JSON.stringify([result]));
+    }
+  }
+
+  private getFavoriteCustomers() {
+    const favoriteCustomers = JSON.parse(
+      localStorage.getItem('favoriteCustomers')
+    );
+    if (favoriteCustomers) {
+      this.favouriteCustomer = favoriteCustomers;
+    }
   }
 }
