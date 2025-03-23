@@ -27,14 +27,16 @@
             [matAutocomplete]="auto"/>
           <mat-autocomplete #auto="matAutocomplete">
             <ng-container>
-              <div class="px-4 pt-2 text-not-black font-semibold text-body_title leading-body_title">Recently used</div>
-              <mat-option
-                *ngFor="let customer of favouriteCustomer"
-                (click)="onClickCustomerSearchSuggestion(customer)"
-                [value]="customer.name"
+              <div *ngIf="favouriteCustomer?.length > 0" class="px-4 pt-2 text-not-black font-semibold text-body_title leading-body_title">Recently used</div>
+              <div class="border-b-4 border-line">
+                <mat-option class="border-bottom border-line"
+                            *ngFor="let customer of favouriteCustomer"
+                            (click)="onClickCustomerSearchSuggestion(customer)"
+                            [value]="customer.name"
                 >
-                {{ customer.name }}
-              </mat-option>
+                  {{ customer.name }}
+                </mat-option>
+              </div>
             </ng-container>
             @for (option of companySuggestions; track option) {
               <mat-option

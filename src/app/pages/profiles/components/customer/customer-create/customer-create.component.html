@@ -173,6 +173,15 @@
           id="note"
           formControlName="note"></textarea>
       </div>
+      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
+        <label for="address">Preferred trip type</label>
+        <div class="flex space-x-2 items-center">
+          <mat-radio-button (change)="onSelectTripType($event,'PROJECT')">Commercial Logistics</mat-radio-button>
+          <mat-radio-button (change)="onSelectTripType($event, 'COMMERCIAL')">
+            Projects Logistics
+          </mat-radio-button>
+        </div>
+      </div>
       <div class="flex flex-col space-y-2 w-full col-span-2">
         <mat-checkbox (change)="toggleSendEmail($any($event))">
           Send email to customer

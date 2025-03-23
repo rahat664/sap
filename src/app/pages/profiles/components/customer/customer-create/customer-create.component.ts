@@ -27,6 +27,8 @@ import {
 } from 'ngx-material-intl-tel-input';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { MatRadioButton, MatRadioChange } from '@angular/material/radio';
+import { tripTypes } from '../../../../auth/models/response/trip';
 
 @Component({
   selector: 'app-customer-create',
@@ -39,6 +41,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
     NgxMaterialIntlTelInputComponent,
     NgClass,
     MatCheckbox,
+    MatRadioButton,
   ],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss',
@@ -86,6 +89,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       ],
       address: [null],
       note: [null],
+      tripType: ['', [Validators.required]],
     });
   }
 
@@ -105,6 +109,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       this.customerModel.email = this.customerForm.get('email').value;
       this.customerModel.address = this.customerForm.get('address').value;
       this.customerModel.note = this.customerForm.get('note').value;
+      this.customerModel.tripType = this.customerForm.get('tripType').value;
       this.customerModel.sendEmail = this.sendEmail;
       this.service
         .customerCodeValidation(this.customerModel.customerCode)
@@ -177,9 +182,8 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   private checkCustomerCodeIsAlreadyExistOrNot(fourDigitName: string) {
     if (fourDigitName.length === 4) {
       this.customerCodeLoading = true;
-      this.service
-        .customerCodeValidation(fourDigitName)
-        .subscribe((res: any) => {
+      this.service.customerCodeValidation(fourDigitName).subscribe(
+        (res: any) => {
           this.customerCodeLoading = false;
           if (res.data.validation == 'Failed') {
             this.customerForm.get('code').setErrors({
@@ -190,9 +194,11 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
           } else {
             this.customerModel.customerCode = fourDigitName;
           }
-        }, (error) => {
+        },
+        error => {
           this.customerCodeLoading = false;
-        });
+        }
+      );
     }
   }
 
@@ -299,4 +305,12 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   toggleSendEmail($any: any) {
     this.sendEmail = !!$any.checked;
   }
+
+  onSelectTripType($event: MatRadioChange, type: string) {
+    this.customerTripType = type
+    this.customerForm.get('tripType').setValue(type);
+  }
+
+  protected readonly tripTypes = tripTypes;
+  customerTripType: string = '';
 }

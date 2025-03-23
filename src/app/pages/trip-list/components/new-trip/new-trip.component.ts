@@ -339,6 +339,13 @@ export class NewTripComponent implements OnInit, OnDestroy {
       localStorage.getItem('favoriteCustomers')
     );
     if (favoriteCustomers) {
+      // Check if the customer is already in the favorite list
+      const index = favoriteCustomers.findIndex(
+        customer => customer.customerCode === result.customerCode
+      );
+      if (index !== -1) {
+        favoriteCustomers.splice(index, 1);
+      }
       if (favoriteCustomers.length < 5) {
         favoriteCustomers.push(result);
       } else {
@@ -356,7 +363,7 @@ export class NewTripComponent implements OnInit, OnDestroy {
       localStorage.getItem('favoriteCustomers')
     );
     if (favoriteCustomers) {
-      this.favouriteCustomer = favoriteCustomers;
+      this.favouriteCustomer = favoriteCustomers.reverse();
     }
   }
 }

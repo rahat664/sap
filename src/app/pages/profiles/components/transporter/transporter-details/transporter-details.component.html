@@ -183,7 +183,7 @@
           </ng-container>
         </div>
       </div>
-      <app-profile-documents documentName="Transporter’s documents." (uploadButtonTriggered)="onUploadButtonTriggered($event)" [isInEditMode]="isInEditMode" [transporterId]="transporter?.code" [documentTypes]="transporterFileType" [documents]="transporterDocuments" ></app-profile-documents>
+      <app-profile-documents documentName="Transporter’s documents" (uploadButtonTriggered)="onUploadButtonTriggered($event)" [isInEditMode]="isInEditMode" [transporterId]="transporter?.code" [documentTypes]="transporterFileType" [documents]="transporterDocuments" ></app-profile-documents>
     </div>
     <div class="p-4 bg-white rounded-lg" *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Cash'|| isInEditMode ">
       <div class="flex space-x-3 items-center mb-4">
