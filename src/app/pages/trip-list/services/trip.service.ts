@@ -254,4 +254,18 @@ export class TripService {
       `${this.historyApi}?from=${from}&to=${to}&vehicleRegId=${vehicleRegId}`
     );
   }
+
+  getTripReport(params?: any) {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.keys(params).forEach((key) => {
+        if (params[key] !== undefined && params[key] !== null) {
+          httpParams = httpParams.set(key, params[key]);
+        }
+      });
+    }
+
+    return this.http.get(this.url, { params: httpParams });
+  }
 }
