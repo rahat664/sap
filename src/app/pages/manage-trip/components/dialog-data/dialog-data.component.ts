@@ -109,7 +109,7 @@ export class DialogDataComponent implements OnInit {
 
   onClickTransporterSearchSuggestion(option: any) {
     this.tripUpdateForm.get('transporterCode').setValue(option.code);
-    this.tripUpdateForm.get('transporterName').setValue(option.name);
+    this.tripUpdateForm.get('transporterName').setValue(option.contactPersonName);
     this.tripUpdateForm.get('transporterPhone').setValue(option.contactPersonNumber);
   }
 
