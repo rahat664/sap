@@ -50,7 +50,7 @@
         <span class="text-not-black text-body_title leading-body_title"
         >Filter
           <span *ngIf="statusInputPlaceholder"
-          >({{ statusInputPlaceholder ? 1 : 0 }})</span
+          >({{ dateFilter + (statusInputPlaceholder ? 1 : 0) }})</span
           >
           <span *ngIf="statusInputPlaceholder" class="text-input-hint px-3"
           >|</span
@@ -64,12 +64,30 @@
         </span>
       </button>
       <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
-        <app-custom-input
-          appGetClickEvent
-          [inputSearch]="statusInputPlaceholder"
-          [options]="statusOptionsArray"
-          inputPlaceholder="Select Status"
-          (selectedId)="onSelectStatus($event)"></app-custom-input>
+        <div class="flex flex-col space-y-1 w-[14.375rem]">
+          <label class="text-body text-web-text-secondary px-2">Status</label>
+          <app-custom-input
+            appGetClickEvent
+            [inputSearch]="statusInputPlaceholder"
+            [options]="statusOptionsArray"
+            inputPlaceholder="Select Status"
+            (selectedId)="onSelectStatus($event)"></app-custom-input>
+        </div>
+
+        <div class="flex flex-col space-y-1 w-[14.375rem]">
+          <label class="text-body text-web-text-secondary px-2">Date</label>
+          <app-custom-input
+            class=""
+            appGetClickEvent
+            (clickedElement)="dateOpened = $event"
+            [inputSearch]="inputPlaceholder"
+            (selectedFromDate)="onSelectedFromDate($event)"
+            (selectedToDate)="onSelectedToDate($event)"
+            (selectedFromDateToToDate)="inputPlaceholder = $event"
+            inputPlaceholder="Select Date"
+            [options]="dateOptionArray"
+            (selectedId)="onSelectDate($event)"></app-custom-input>
+        </div>
       </div>
     </div>
   </div>
@@ -322,7 +340,7 @@
                     getBgColor(driver.status)
                   }} bg-opacity-[30%] z-30 px-2 py-0.5 rounded-full flex items-center">
                   <span class="text-web-text-secondary">{{
-                      driver.status
+                      driver.approveStatus
                     }}</span>
               </div>
             </div>

@@ -43,9 +43,15 @@ export class CustomerService {
     page: number,
     size: number,
     searchValue?: string,
-    phone?: string
+    phone?: string,
+    from?: string,
+    to?: string
   ): Observable<any> {
     let apiUrl = `${this.url}?page=${page}&size=${size}`;
+
+    if (from && to) {
+      apiUrl += `&from=${from}&to=${to}`;
+    }
 
     if (searchValue) {
       apiUrl += `&search=${encodeURIComponent(searchValue)}`;

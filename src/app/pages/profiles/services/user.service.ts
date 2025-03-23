@@ -77,11 +77,17 @@ export class UserService {
     return this.http.get(`${this.url}/admins?${queryString}`);
   }
 
-  getTransporter(page: number, size: number, search?: string): Observable<any> {
+  getTransporter(page: number, size: number, search?: string, from?: string, to?: string): Observable<any> {
     let apiUrl = `${this.transportersUrl}?page=${page}&size=${size}`;
 
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
+    }
+    if (from) {
+      apiUrl += `&from=${from}`;
+    }
+    if (to) {
+      apiUrl += `&to=${to}`;
     }
 
     return this.http.get(apiUrl);
@@ -99,7 +105,9 @@ export class UserService {
     page: number,
     size: number,
     search?: string,
-    approveStatus?: string
+    approveStatus?: string,
+    from?: string,
+    to?: string
   ): Observable<any> {
     let apiUrl = `${this.url}/drivers?page=${page}&size=${size}`;
 
@@ -108,6 +116,12 @@ export class UserService {
     }
     if (approveStatus) {
       apiUrl += `&approveStatus=${approveStatus}`;
+    }
+    if (from) {
+      apiUrl += `&from=${from}`;
+    }
+    if (to) {
+      apiUrl += `&to=${to}`;
     }
 
     return this.http.get(apiUrl);

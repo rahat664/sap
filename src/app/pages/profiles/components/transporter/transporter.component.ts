@@ -5,7 +5,7 @@ import { GetElementHeightDirective } from '../../../../shared/directive/get-elem
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { UserModel } from '../../../user-management/models/user.model';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { UserService } from '../../services/user.service';
@@ -16,6 +16,9 @@ import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/d
 import { MatDialog } from '@angular/material/dialog';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 import { Router, RouterLink } from '@angular/router';
+import { DateEnum } from '../../../trip-list/Enum/date.enum';
+import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
+import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 
 @Component({
   selector: 'app-transporter',
@@ -30,6 +33,9 @@ import { Router, RouterLink } from '@angular/router';
     DatePipe,
     numberPipe,
     RouterLink,
+    CustomInputComponent,
+    NgClass,
+    GetClickEventDirective,
   ],
   templateUrl: './transporter.component.html',
   styleUrl: './transporter.component.scss',
@@ -44,8 +50,25 @@ export class TransporterComponent implements OnInit {
   page = 0;
   totalPages: number;
   size = 20;
+  from: string;
+  to: string;
+  filterForm: FormGroup
+  inputPlaceholder: string  = '';
+  private isDateOpened: boolean;
 
-  constructor(private service: UserService, private router: Router) {}
+  constructor(
+    private service: UserService,
+    private router: Router,
+    private shared: DriverEditSharedService,
+    private datePipe: DatePipe,
+    private formBuilder: FormBuilder
+  ) {
+    this.filterForm = this.formBuilder.group({
+      search: [''],
+      startDate: [''],
+      endDate: [''],
+    });
+  }
 
   onClickAddTransporter() {
     this.router.navigate(['/profile/transporter/add']);
@@ -87,6 +110,7 @@ export class TransporterComponent implements OnInit {
   ngOnInit(): void {
     this.page = 0;
     this.size = 20;
+    this.generateDateOptionsArray();
     this.getTransporterList();
   }
 
@@ -94,7 +118,7 @@ export class TransporterComponent implements OnInit {
     this.loading = true;
     if (this.searchValue) {
       this.service
-        .getTransporter(this.page, this.size, this.searchValue)
+        .getTransporter(this.page, this.size, this.searchValue, this.from, this.to)
         .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.transporterList = res.data;
@@ -103,7 +127,7 @@ export class TransporterComponent implements OnInit {
         });
     } else {
       this.service
-        .getTransporter(this.page, this.size)
+        .getTransporter(this.page, this.size, null, this.from, this.to)
         .subscribe((res: any) => {
           this.transporterList = res.data;
           this.totalPages = res.meta.totalPageCount;
@@ -126,6 +150,14 @@ export class TransporterComponent implements OnInit {
     this.getTransporterList();
   }
 
+
+  protected readonly Math = Math;
+  filterOpened: boolean = true;
+  dateFilter: number = 0;
+  dateOpened: boolean;
+  dateOptionArray: CustomInputSelectModel[];
+
+
   copyNumber($event, createdByPhone: string) {
     $event.stopPropagation();
     // remove first 3 characters from the phone number
@@ -134,5 +166,87 @@ export class TransporterComponent implements OnInit {
     this.service.copyToClipboard(phone);
   }
 
-  protected readonly Math = Math;
+  onClickFilterOpened() {
+    this.filterOpened = !this.filterOpened;
+  }
+
+  onClearFilter() {
+    this.filterForm.reset();
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.from = '';
+    this.to = '';
+    this.inputPlaceholder = '';
+    this.getTransporterList();
+  }
+
+  private generateDateOptionsArray() {
+    this.dateOptionArray = [
+      { id: DateEnum.Today, value: 'Today', selected: false },
+      { id: DateEnum.LastSevenDays, value: 'Last 7 days', selected: false },
+      { id: DateEnum.LastFifteenDays, value: 'Last 15 days', selected: false },
+      { id: DateEnum.LastThirtyDays, value: 'Last 30 days', selected: false },
+      { id: DateEnum.Custom, value: 'Custom', selected: false },
+    ];
+  }
+
+  onSelectedFromDate($event: string) {
+    this.filterForm.get('startDate')?.setValue($event);
+  }
+
+  onSelectedToDate($event: string) {
+    this.filterForm.get('endDate')?.setValue($event);
+    this.from = this.filterForm.get('startDate')?.value || '';
+    this.to = this.filterForm.get('endDate')?.value || '';
+    this.dateOpened = false;
+    this.isDateOpened = false;
+    this.page = 0;
+    this.size = 30;
+    this.getTransporterList();
+  }
+  onSelectDate($event: number) {
+    this.dateFilter = 1;
+    if ($event === DateEnum.Custom) {
+      this.shared.closeInputSelect.next(true);
+    } else {
+      this.shared.closeInputSelect.next(false);
+      this.inputPlaceholder =
+        this.dateOptionArray.find(x => x.id === $event)?.value || '';
+      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
+      this.setDateRange($event);
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getTransporterList();
+    }
+  }
+
+
+  private setDateRange(dateEnum: DateEnum) {
+    const fromDate = new Date();
+    // to date should be yesterday
+    const toDate = new Date();
+    switch (dateEnum) {
+      case DateEnum.Today:
+        fromDate.setDate(fromDate.getDate());
+        toDate.setDate(toDate.getDate());
+        break;
+      case DateEnum.LastSevenDays:
+        // shouldn't be count today
+        fromDate.setDate(fromDate.getDate() - 7);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastFifteenDays:
+        fromDate.setDate(fromDate.getDate() - 15);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastThirtyDays:
+        fromDate.setDate(fromDate.getDate() - 30);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+    }
+    this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
+    this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+  }
 }
