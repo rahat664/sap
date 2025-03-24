@@ -136,7 +136,7 @@
           }"></ngx-material-intl-tel-input>
 
         <!--        error-message-->
-        <div *ngIf="customerForm.get('phone').touched" class="text-red text-xs">
+        <div *ngIf="customerForm.get('phone').touched && customerForm.get('phone').invalid" class="text-red text-xs">
           <span>
             <span>Phone number is required</span>
           </span>
@@ -181,7 +181,7 @@
             Projects Logistics
           </mat-radio-button>
         </div>
-        <div *ngIf="customerForm.get('tripType').touched" class="text-red text-xs">
+        <div *ngIf="customerForm.get('tripType').touched && customerForm.get('tripType').invalid"  class="text-red text-xs">
           <span>
             <span>Preferred trip type is required</span>
           </span>

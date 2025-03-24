@@ -69,8 +69,9 @@ export class DashboardComponent implements OnInit {
   paymentTypePlaceholder: string = '';
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-    { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
-    { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
+    { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
+    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
   ];
   paymentFilter: number = 0;
   paymentTypeValue: string = '';

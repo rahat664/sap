@@ -31,6 +31,8 @@ export class TripService {
   vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
   districtUrl = `${environment.backendUrl}/api/districts`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
+  reportUrl = `${environment.backendUrl}/api/trip/report`;
+
   locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
   trackByRegistationUrl = `${environment.locationUrl}/api/locations/filter`;
   tripPointEventsUrl = `${environment.backendUrl}/api/tripPointEvents`;
@@ -266,6 +268,6 @@ export class TripService {
       });
     }
 
-    return this.http.get(this.url, { params: httpParams });
+    return this.http.get(`${this.reportUrl}`, { params: httpParams, responseType: 'blob' });
   }
 }
