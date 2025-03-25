@@ -63,7 +63,6 @@ import { PaymentType } from '../../shared/Enums/payment-type';
     MatFormField,
     MatInput,
     numberPipe,
-    RouterLink,
   ],
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.scss'],
