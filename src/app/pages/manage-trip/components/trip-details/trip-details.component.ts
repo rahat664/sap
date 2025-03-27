@@ -278,7 +278,7 @@ export class TripDetailsComponent implements OnInit, OnChanges {
       minWidth: '30rem',
       maxHeight: '90vw',
       data: {
-        title: 'Attention?',
+        title: 'Attention',
         textPrefix: 'Do you want to cancel the trip ',
         text: `${this.tripDetails.tripId}?`,
         trip: this.tripDetails,

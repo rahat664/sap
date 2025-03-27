@@ -21,6 +21,7 @@ export class ChallanStatusComponent implements OnInit {
   fromDate: string;
   toDate: string;
   customerCode: any;
+   paymentType: string = '';
 
   constructor(
     private service: DashboardService,
@@ -31,6 +32,7 @@ export class ChallanStatusComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe((params) => {
       this.customerCode = params['customerCode'] ? params['customerCode'] : '';
+      this.paymentType = params['paymentType'] ? params['paymentType'] : '';
       this.fromDate = params['fromDate'] ? params['fromDate'] : '';
       this.toDate = params['toDate'] ? params['toDate'] : '';
       if (!this.fromDate || !this.toDate) {
@@ -60,7 +62,7 @@ export class ChallanStatusComponent implements OnInit {
 
   private getChallanStatus() {
     this.service
-      .getChallanStatus(this.fromDate, this.toDate, this.customerCode.toString())
+      .getChallanStatus(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType)
       .subscribe((res: any) => {
         this.challanStatus = res.data;
       });

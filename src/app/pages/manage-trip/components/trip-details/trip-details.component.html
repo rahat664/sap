@@ -86,11 +86,11 @@
           [ngClass]="{
             'text-red':
               tripDetails?.status === 'Cancelled' &&
-              onlyStatusTripEvents?.length == 2,
+              onlyStatusTripEvents?.length === 2,
           }"
         >{{
             tripDetails?.status === 'Cancelled' &&
-            onlyStatusTripEvents?.length == 2
+            onlyStatusTripEvents?.length === 2
               ? 'Cancelled'
               : 'Booked'
           }}</span
@@ -99,7 +99,7 @@
           [ngClass]="{
             'text-red':
               tripDetails?.status === 'Cancelled' &&
-              onlyStatusTripEvents?.length == 3,
+              onlyStatusTripEvents?.length === 3,
           }"
           [hidden]="
             tripDetails?.status === 'Cancelled' &&
@@ -107,7 +107,7 @@
           "
         >{{
             tripDetails?.status === 'Cancelled' &&
-            onlyStatusTripEvents?.length == 3
+            onlyStatusTripEvents?.length === 3
               ? 'Cancelled'
               : 'Running'
           }}</span
@@ -116,7 +116,7 @@
           [ngClass]="{
             'text-red':
               tripDetails?.status === 'Cancelled' &&
-              onlyStatusTripEvents?.length == 4,
+              onlyStatusTripEvents?.length === 4,
           }"
           [hidden]="
             tripDetails?.status === 'Cancelled' &&
@@ -124,7 +124,7 @@
           ">
           {{
             tripDetails?.status === 'Cancelled' &&
-            onlyStatusTripEvents?.length == 4
+            onlyStatusTripEvents?.length === 4
               ? 'Cancelled'
               : 'Completed'
           }}</span

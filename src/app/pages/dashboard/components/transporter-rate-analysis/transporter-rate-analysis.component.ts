@@ -55,6 +55,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
   customerCode: string = '';
   datatype: string = 'daily';
   dateFilterApplied: boolean = false;
+  paymentType: string = '';
   private routerSubs: Subscription;
 
   constructor(
@@ -84,6 +85,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
     this.getTransporterList();
     timer(100).subscribe(() => {
       this.routerSubs = this.activatedRoute.queryParams.subscribe(params => {
+        this.paymentType = params['paymentType'] ? params['paymentType'] : '';
         this.customerCode = params['customerCode']
           ? params['customerCode']
           : '';
@@ -153,10 +155,11 @@ export class TransporterRateAnalysisComponent implements OnInit {
             new Date(
               new Date(this.fromDate).getTime() + i * 24 * 60 * 60 * 1000
             ),
-            'yyyy-MM-dd'
+            'dd-MMM-yyyy'
           )
         );
       }
+      this.categories = this.categories.reverse();
     } else if (this.datatype === 'monthly') {
       if (!this.dateFilterApplied) {
         //fromdate will be the current year first date
@@ -176,6 +179,47 @@ export class TransporterRateAnalysisComponent implements OnInit {
         this.categories.push(this.datePipe.transform(date, 'MMM-yyyy'));
         date.setMonth(date.getMonth() + 1);
       }
+      const firstMonthStartingDate = new Date(this.fromDate);
+      // if the first month is not starting from the first date then apply a logic
+
+      //if fromdate and toDate month is same then we need to show only one month
+      if (this.categories.length == 1) {
+        this.categories[0] =
+          this.categories[0] +
+          '|' +
+          firstMonthStartingDate.getDate() +
+          '-' +
+          endDate.getDate();
+      } else {
+        if (firstMonthStartingDate.getDate() != 1) {
+          const firstMonthDays = new Date(
+            firstMonthStartingDate.getFullYear(),
+            firstMonthStartingDate.getMonth() + 1,
+            0
+          ).getDate();
+          this.categories[0] =
+            this.categories[0] +
+            '|' +
+            firstMonthStartingDate.getDate() +
+            '-' +
+            firstMonthDays;
+        }
+
+        const lastMonthEndingDate = new Date(this.toDate);
+        // if the last month is not ending at the last date then apply a logic
+        if (lastMonthEndingDate.getDate() != 1) {
+          const lastMonthDays = new Date(
+            lastMonthEndingDate.getFullYear(),
+            lastMonthEndingDate.getMonth() + 1,
+            0
+          ).getDate();
+          this.categories[this.categories.length - 1] =
+            this.categories[this.categories.length - 1] +
+            '|' +
+            '1-' +
+            lastMonthEndingDate.getDate();
+        }
+      }
     }
 
     this.service
@@ -186,7 +230,9 @@ export class TransporterRateAnalysisComponent implements OnInit {
         this.transporter,
         this.vehicleType,
         this.loadingDistrict,
-        this.unloadingDistrict
+        this.unloadingDistrict,
+        this.customerCode,
+        this.paymentType
       )
       .subscribe((res: any) => {
         this.parseSeriesDataAndColorsFromResponse(res.data);
@@ -234,9 +280,10 @@ export class TransporterRateAnalysisComponent implements OnInit {
             ? parseInt(splitedDate[2])
             : parseInt(splitedDate[1]);
         // if date starting from 0 then remove the 0
-        singleSeriesData[date - 1] =
+        const selectedIndex = this.findIndexOfDate(date, this.datatype);
+        singleSeriesData[selectedIndex] =
           item.minRate != null ? item.maxRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
+        this.numberOfTrips[selectedIndex] = item.totalTrips ? item.totalTrips : 0;
       });
       this.seriesdata.push({
         name: 'Highest Rate',
@@ -255,9 +302,10 @@ export class TransporterRateAnalysisComponent implements OnInit {
             ? parseInt(splitedDate[2])
             : parseInt(splitedDate[1]);
         // if date starting from 0 then remove the 0
-        singleSeriesData[date - 1] =
+        const selectedIndex = this.findIndexOfDate(date, this.datatype);
+        singleSeriesData[selectedIndex] =
           item.minRate != null ? item.minRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
+        this.numberOfTrips[selectedIndex] = item.totalTrips ? item.totalTrips : 0;
       });
       this.seriesdata.push({
         name: 'Lowest Rate',
@@ -275,9 +323,10 @@ export class TransporterRateAnalysisComponent implements OnInit {
             ? parseInt(splitedDate[2])
             : parseInt(splitedDate[1]);
         // if date starting from 0 then remove the 0
-        singleSeriesData[date - 1] =
+        const selectedIndex = this.findIndexOfDate(date, this.datatype);
+        singleSeriesData[selectedIndex] =
           item.avgRate != null ? item.avgRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[date - 1] = item.totalTrips ? item.totalTrips : 0;
+        this.numberOfTrips[selectedIndex] = item.totalTrips ? item.totalTrips : 0;
       });
       this.seriesdata.push({
         name: 'Average Rate',
@@ -289,9 +338,6 @@ export class TransporterRateAnalysisComponent implements OnInit {
       const singleSeriesDataHigh = Array(this.categories.length).fill(null);
       const singleSeriesDataLow = Array(this.categories.length).fill(null);
       const singleSeriesDataAverage = Array(this.categories.length).fill(null);
-      console.log(singleSeriesDataAverage);
-      console.log(singleSeriesDataHigh);
-      console.log(singleSeriesDataLow);
       this.numberOfTrips = Array(this.categories.length).fill(null);
       data.forEach((item: any) => {
         const splitedDate = item.period?.split('-');
@@ -300,7 +346,6 @@ export class TransporterRateAnalysisComponent implements OnInit {
             ? parseInt(splitedDate[2])
             : parseInt(splitedDate[1]);
         const selectedIndex = this.findIndexOfDate(date, this.datatype);
-        console.log(selectedIndex);
         singleSeriesDataHigh[selectedIndex] =
           item.maxRate != null ? item.maxRate : item.totalTrips ? 0 : null;
         singleSeriesDataLow[selectedIndex] =
@@ -331,7 +376,6 @@ export class TransporterRateAnalysisComponent implements OnInit {
       this.colors.push('#208B99');
       this.colors.push('#F0614E');
     }
-    console.log(this.colors, this.seriesdata);
   }
 
   resetColorsAndSeriesData() {
@@ -373,11 +417,12 @@ export class TransporterRateAnalysisComponent implements OnInit {
     if (datatype === 'daily') {
       for (let i = 0; i < this.categories?.length; i++) {
         const splitedCategory = this.categories[i].split('-');
-        if (parseInt(splitedCategory[2]) == date) {
+        if (parseInt(splitedCategory[0]) == date) {
           selectedIndex = i;
         }
       }
     } else {
+      debugger;
       const monthNames = [
         'Jan',
         'Feb',
@@ -393,7 +438,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
         'Dec',
       ];
 
-      const selectedMonthName = monthNames[date];
+      const selectedMonthName = monthNames[date-1];
 
       for (let i = 0; i < this.categories?.length; i++) {
         if (this.categories[i].includes(selectedMonthName)) {

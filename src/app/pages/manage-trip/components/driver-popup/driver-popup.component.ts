@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { UserService } from '../../../profiles/services/user.service';
-import { debounceTime } from 'rxjs';
+import { debounceTime, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   selector: 'app-driver-popup',
   imports: [
     CommonModule,
-    GiveMaxHeightDirective,
     ReactiveFormsModule,
     FormsModule,
   ],
@@ -18,6 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './driver-popup.component.scss',
 })
 export class DriverPopupComponent implements OnInit, OnDestroy {
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   private totalPages: number;
 
   constructor(
@@ -36,12 +36,15 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.page = 0;
+    this.size = 20;
     this.loading = true;
     this.driverList = [];
-    this.getHelperList();
+    this.getDriverList();
   }
 
-  private getHelperList() {
+
+  private getDriverList() {
     this.user
       .getDriver(this.page, this.size, this.searchValue)
       .subscribe((res: any) => {
@@ -51,18 +54,6 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
       });
   }
 
-  onBottom($event: boolean) {
-    if ($event && this.page < this.totalPages - 1) {
-      this.page++;
-      this.user
-        .getDriver(this.page, this.size, this.searchValue)
-        .pipe(debounceTime(1000))
-        .subscribe((res: any) => {
-          this.driverList.push(...res.data.responses);
-          this.totalPages = res.data.totalPages;
-        });
-    }
-  }
 
   ngOnDestroy() {
     this.driverList = [];
@@ -75,12 +66,16 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
   }
 
   onClickClear() {
+    this.page = 0;
+    this.size = 20;
     this.searchValue = '';
     this.driverList = [];
-    this.getHelperList();
+    this.getDriverList();
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
+    this.page = 0;
+    this.size = 20;
     this.loading = true;
     const target = ($event.target as HTMLInputElement).value;
     if (target?.length) {
@@ -89,6 +84,45 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
       this.searchValue = '';
     }
     this.driverList = [];
-    this.getHelperList();
+    this.getDriverList()
+  }
+
+  ngAfterViewInit() {
+    this.implementScrollToLoadMoreData();
+  }
+
+  private implementScrollToLoadMoreData() {
+    timer(1000).subscribe(() => {
+      // implement scroll event
+      this.myScrollContainer.nativeElement.style.height = '100%';
+      this.myScrollContainer.nativeElement.style.minHeight = '100%';
+      this.myScrollContainer.nativeElement.style.overflow = 'auto';
+
+      this.myScrollContainer.nativeElement.addEventListener('scroll', () => {
+        this.checkIfScrollAtBottom();
+      });
+    });
+  }
+
+  checkIfScrollAtBottom() {
+    const container = this.myScrollContainer.nativeElement;
+    const atBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 10; // Small buffer
+
+    if (atBottom) {
+      this.loadMoreData();
+    }
+  }
+
+  loadMoreData() {
+    if (this.page > this.totalPages - 1) return;
+    this.page++;
+
+    this.user
+      .getDriver(this.page, this.size, this.searchValue)
+      .pipe(debounceTime(1000))
+      .subscribe((res: any) => {
+        this.driverList.push(...res.data.responses);
+        this.totalPages = res.data.totalPages;
+      });
   }
 }

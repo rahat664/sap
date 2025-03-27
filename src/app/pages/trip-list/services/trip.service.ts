@@ -31,6 +31,8 @@ export class TripService {
   vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
   districtUrl = `${environment.backendUrl}/api/districts`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
+  reportUrl = `${environment.backendUrl}/api/trip/report`;
+
   locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
   trackByRegistationUrl = `${environment.locationUrl}/api/locations/filter`;
   tripPointEventsUrl = `${environment.backendUrl}/api/tripPointEvents`;
@@ -62,7 +64,8 @@ export class TripService {
     challanFrom?: string,
     challanTo?: string,
     truckRegId?: string,
-    transporterNameOrPhone?: string
+    transporterNameOrPhone?: string,
+    paymentType?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -109,6 +112,9 @@ export class TripService {
     }
     if (transporterNameOrPhone) {
       params = params.set('transporterNameOrPhone', transporterNameOrPhone);
+    }
+    if (paymentType) {
+      params = params.set('paymentType', paymentType);
     }
 
     return this.http.get(`${this.url}`, { params });
@@ -249,5 +255,19 @@ export class TripService {
     return this.http.get(
       `${this.historyApi}?from=${from}&to=${to}&vehicleRegId=${vehicleRegId}`
     );
+  }
+
+  getTripReport(params?: any) {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.keys(params).forEach((key) => {
+        if (params[key] !== undefined && params[key] !== null) {
+          httpParams = httpParams.set(key, params[key]);
+        }
+      });
+    }
+
+    return this.http.get(`${this.reportUrl}`, { params: httpParams, responseType: 'blob' });
   }
 }

@@ -183,7 +183,6 @@ export class PieChartComponent implements OnChanges, AfterViewInit, OnInit {
           },
           y: {
             formatter(val: number, opts?: any): string {
-              console.log(opts.globals?.series);
               return `${((val / opts.globals?.series?.reduce((a, b) => a + b, 0)) * 100).toFixed(2)}%`;
             },
           },

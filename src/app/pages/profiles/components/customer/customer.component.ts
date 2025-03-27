@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CustomerModel } from './model/customer.model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
 import { CustomerCreateComponent } from './customer-create/customer-create.component';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
@@ -9,9 +9,12 @@ import { CustomerService } from '../../services/customer.service';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
+import { DateEnum } from '../../../trip-list/Enum/date.enum';
+import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 
 @Component({
   selector: 'app-customer',
@@ -22,6 +25,8 @@ import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
     LoadingComponent,
     FormsModule,
     numberPipe,
+    CustomInputComponent,
+    GetClickEventDirective,
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss',
@@ -36,16 +41,41 @@ export class CustomerComponent implements OnInit {
   totalPages: number;
   searchValue: any;
   readonly dialog = inject(MatDialog);
+  filterOpened: boolean = true;
+  dateFilter: number = 0;
+  dateOpened: boolean;
+  inputPlaceholder: string = '';
+  filterForm: FormGroup
+  private from: any;
+  private to: any;
+  private isDateOpened: boolean;
+  dateOptionArray: CustomInputSelectModel[];
 
-  constructor(private service: CustomerService) {}
+  constructor(private service: CustomerService,private formBuilder: FormBuilder, private shared: DriverEditSharedService, private datePipe: DatePipe) {
+    this.filterForm = this.formBuilder.group({
+      search: [''],
+      startDate: [''],
+      endDate: [''],
+    });
+  }
 
   ngOnInit(): void {
+    this.generateDateOptionsArray();
     this.getCustomer();
   }
 
+  private generateDateOptionsArray() {
+    this.dateOptionArray = [
+      { id: DateEnum.Today, value: 'Today', selected: false },
+      { id: DateEnum.LastSevenDays, value: 'Last 7 days', selected: false },
+      { id: DateEnum.LastFifteenDays, value: 'Last 15 days', selected: false },
+      { id: DateEnum.LastThirtyDays, value: 'Last 30 days', selected: false },
+      { id: DateEnum.Custom, value: 'Custom', selected: false },
+    ];
+  }
   getCustomer() {
     this.loading = true;
-    this.service.searchCustomer(this.page, this.size).subscribe((res: any) => {
+    this.service.searchCustomer(this.page, this.size, null, null, this.from,this.to).subscribe((res: any) => {
       this.customers = res.data.content;
       this.totalPages = res.data.totalPages;
       this.loading = false;
@@ -77,7 +107,7 @@ export class CustomerComponent implements OnInit {
       if (target?.length == 11) {
         if (this.checkIfAllInputIsNumber(target)) {
           this.service
-            .searchCustomer(this.page, this.size, null, target)
+            .searchCustomer(this.page, this.size, null, target, this.from, this.to)
             .subscribe((res: any) => {
               this.customers = res.data.content;
               this.totalPages = res.data.totalPages;
@@ -85,7 +115,7 @@ export class CustomerComponent implements OnInit {
             });
         } else {
           this.service
-            .searchCustomer(this.page, this.size, target, null)
+            .searchCustomer(this.page, this.size, target, null, this.from, this.to)
             .subscribe((res: any) => {
               this.customers = res.data.content;
               this.totalPages = res.data.totalPages;
@@ -135,5 +165,79 @@ export class CustomerComponent implements OnInit {
     const phone = createdByPhone.slice(3);
     // copy the phone number to the clipboard
     this.service.copyToClipboard(phone);
+  }
+
+  onClickFilterOpened() {
+    this.filterOpened = !this.filterOpened;
+  }
+
+  onClearFilter() {
+    this.filterForm.reset();
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.from = '';
+    this.to = '';
+    this.inputPlaceholder = '';
+    this.getCustomer();
+  }
+
+  onSelectedFromDate($event: string) {
+    this.filterForm.get('startDate')?.setValue($event);
+  }
+
+  onSelectedToDate($event: string) {
+    this.filterForm.get('endDate')?.setValue($event);
+    this.from = this.filterForm.get('startDate')?.value || '';
+    this.to = this.filterForm.get('endDate')?.value || '';
+    this.dateOpened = false;
+    this.isDateOpened = false;
+    this.page = 0;
+    this.size = 30;
+    this.getCustomer();
+  }
+  onSelectDate($event: number) {
+    this.dateFilter = 1;
+    if ($event === DateEnum.Custom) {
+      this.shared.closeInputSelect.next(true);
+    } else {
+      this.shared.closeInputSelect.next(false);
+      this.inputPlaceholder =
+        this.dateOptionArray.find(x => x.id === $event)?.value || '';
+      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
+      this.setDateRange($event);
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getCustomer();
+    }
+  }
+
+
+  private setDateRange(dateEnum: DateEnum) {
+    const fromDate = new Date();
+    // to date should be yesterday
+    const toDate = new Date();
+    switch (dateEnum) {
+      case DateEnum.Today:
+        fromDate.setDate(fromDate.getDate());
+        toDate.setDate(toDate.getDate());
+        break;
+      case DateEnum.LastSevenDays:
+        // shouldn't be count today
+        fromDate.setDate(fromDate.getDate() - 7);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastFifteenDays:
+        fromDate.setDate(fromDate.getDate() - 15);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastThirtyDays:
+        fromDate.setDate(fromDate.getDate() - 30);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+    }
+    this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
+    this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
   }
 }

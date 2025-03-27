@@ -14,6 +14,7 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
+import { PaymentType, TripType } from '../../../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-challan-details',
@@ -60,7 +61,7 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
   ngOnInit() {
     const isFromBack = !!localStorage.getItem('isBack');
     if (!isFromBack) {
-      // if store the data in local storage remove it
+      // if store the data in local storage, remove it
       sessionStorage.removeItem('singleTrip');
       sessionStorage.removeItem('loadingEvents');
       sessionStorage.removeItem('unloadingEvents');
@@ -438,6 +439,30 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
         return 'Receiving Time';
       default:
         return 'Receiving Time';
+    }
+  }
+
+  getNameFromEnum(paymentType: string) {
+    if (paymentType === PaymentType.CASH) {
+      return 'Cash';
+    } else if (paymentType === PaymentType.INVOICE) {
+      return 'Invoice';
+    }else if (paymentType === PaymentType.CASH_AND_INVOICE) {
+      return 'Cash & Invoice';
+    } else if (paymentType === PaymentType.COMMISSION) {
+      return 'Commission';
+    }
+    else {
+      return 'N/A';
+    }
+  }
+  getTripTypeFromEnum(tripType: string) {
+    if (tripType === TripType.COMMERCIAL) {
+      return 'Commercial Logistics';
+    } else if (tripType === TripType.PROJECT) {
+      return 'Project Logistics';
+    } else {
+      return 'N/A';
     }
   }
 }

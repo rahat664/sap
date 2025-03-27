@@ -25,6 +25,7 @@ import { ScrollByButtonDirective } from '../../../../shared/directive/scroll-by-
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { paymentType, paymentTypes, tripType, tripTypes } from '../../../auth/models/response/trip';
 
 @Component({
   selector: 'app-template-update',
@@ -42,8 +43,6 @@ import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
     NgForOf,
     FallbackImagePipe,
     ImageErrorDirective,
-    MatRadioButton,
-    MatRadioGroup,
   ],
   templateUrl: './template-update.component.html',
   styleUrl: './template-update.component.scss',
@@ -199,6 +198,8 @@ export class TemplateUpdateComponent implements OnInit {
         this.templateUpdateForm.get('customerRate').value;
       this.tripTemplateData.paymentType =
         this.templateUpdateForm.get('paymentType').value;
+      this.tripTemplateData.tripType =
+        this.templateUpdateForm.get('tripType').value;
       this.tripTemplateData.note = this.templateUpdateForm.get('note').value;
       this.tripTemplateData.points = [
         ...this.templateUpdateForm.get('loadingPoints').value,
@@ -489,6 +490,7 @@ export class TemplateUpdateComponent implements OnInit {
       customerRate: [null],
       note: [''],
       paymentType: [''],
+      tripType: [''],
       loadingPoints: this.fb.array([this.createLoadingPoint()]),
       unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
       tripTemplateName: [''],
@@ -627,5 +629,40 @@ export class TemplateUpdateComponent implements OnInit {
   isAdmin() {
     const role = localStorage.getItem('role');
     return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
+
+  protected readonly tripTypes = tripTypes;
+  protected readonly paymentType = paymentTypes;
+
+  onTripTypeClick(type: tripType) {
+    switch (type.id) {
+      case 1:
+        this.templateUpdateForm.get('tripType').setValue('COMMERCIAL');
+        break;
+      case 2:
+        this.templateUpdateForm.get('tripType').setValue('PROJECT');
+        break;
+      default:
+        break;
+    }
+  }
+
+  onPaymentTypeClick(type: paymentType) {
+    switch (type.id) {
+      case 1:
+        this.templateUpdateForm.get('paymentType').setValue('CASH');
+        break;
+      case 2:
+        this.templateUpdateForm.get('paymentType').setValue('INVOICE');
+        break;
+      case 3:
+        this.templateUpdateForm.get('paymentType').setValue('CASH_AND_INVOICE');
+        break;
+      case 4:
+        this.templateUpdateForm.get('paymentType').setValue('COMMISSION');
+        break;
+      default:
+        break;
+    }
   }
 }

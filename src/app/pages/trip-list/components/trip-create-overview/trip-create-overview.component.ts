@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SuccessModalComponent } from '../../../../shared/modules/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
-import { PaymentType } from '../../../../shared/Enums/payment-type';
+import { PaymentType, TripType } from '../../../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-trip-create-overview',
@@ -97,6 +97,7 @@ export class TripCreateOverviewComponent implements OnInit {
               customerRate: this.tripData.customerRate,
               note: this.tripData.note,
               paymentType: this.tripData.paymentType,
+              tripType: this.tripData.tripType,
               points: this.tripData.points,
             };
             this.service.postTripTemplate(templateData).subscribe(
@@ -227,8 +228,22 @@ export class TripCreateOverviewComponent implements OnInit {
       return 'Cash';
     } else if (paymentType === PaymentType.INVOICE) {
       return 'Invoice';
-    } else {
+    }else if (paymentType === PaymentType.CASH_AND_INVOICE) {
       return 'Cash & Invoice';
+    } else if (paymentType === PaymentType.COMMISSION) {
+      return 'Commission';
+    }
+    else {
+      return 'N/A';
+    }
+  }
+  getTripTypeFromEnum(tripType: string) {
+    if (tripType === TripType.COMMERCIAL) {
+      return 'Commercial Logistics';
+    } else if (tripType === TripType.PROJECT) {
+      return 'Project Logistics';
+    } else {
+      return 'N/A';
     }
   }
 }

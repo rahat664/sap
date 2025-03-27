@@ -166,14 +166,14 @@
               <img
                 loading="lazy"
                 class="h-6 w-6 notPreview"
-                src="assets/svg/cr.svg"/>
+                src="assets/svg/EpaymenType.svg"/>
               <h1
                 class="text-body_title leading-body_title text-not-black font-semibold">
-                Payment type
+                Trip & payment type
               </h1>
             </div>
             <h1 class="text-body w-1/2 text-wrap text-web-text-secondary" >
-              {{ getNameFromEnum(tripData.paymentType) }}
+              {{getTripTypeFromEnum(tripData.tripType)}}, {{ getNameFromEnum(tripData.paymentType) }}
             </h1>
           </div>
           <div class="flex flex-col space-y-2">

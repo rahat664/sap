@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../../../profiles/services/user.service';
 import { debounceTime } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   selector: 'app-helper-popup',
   imports: [
     CommonModule,
-    GiveMaxHeightDirective,
     ReactiveFormsModule,
     FormsModule,
   ],
@@ -18,6 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './helper-popup.component.scss',
 })
 export class HelperPopupComponent implements OnInit, OnDestroy {
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   private totalPages: number;
 
   constructor(
@@ -36,6 +36,8 @@ export class HelperPopupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.page = 0;
+    this.size = 20;
     this.loading = true;
     this.helperList = [];
     this.getHelperList();
@@ -57,24 +59,13 @@ export class HelperPopupComponent implements OnInit, OnDestroy {
       });
   }
 
-  onBottom($event: boolean) {
-    if ($event && this.page < this.totalPages - 1) {
-      this.page++;
-      this.user
-        .getHelpers(this.page, this.size, this.searchValue)
-        .pipe(debounceTime(1000))
-        .subscribe((res: any) => {
-          this.helperList.push(...res.data.responses);
-          this.totalPages = res.data.totalPages;
-        });
-    }
-  }
-
   onSelectHelper(helper: any) {
     this.dialogRef.close(helper);
   }
 
   onClickClear() {
+    this.page = 0;
+    this.size = 20;
     this.searchValue = '';
     this.helperList = [];
     this.getHelperList();
@@ -82,6 +73,8 @@ export class HelperPopupComponent implements OnInit, OnDestroy {
 
   onKeyUpSearch($event: KeyboardEvent) {
     this.loading = true;
+    this.page = 0;
+    this.size = 20;
     const target = ($event.target as HTMLInputElement).value;
     if (target?.length) {
       this.searchValue = target;

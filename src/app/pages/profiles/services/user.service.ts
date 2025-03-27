@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../../auth/models/response/api-response';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 
@@ -9,10 +9,13 @@ import { HandleToastrService } from '../../../shared/services/handle-toastr/hand
   providedIn: 'root',
 })
 export class UserService {
+  public getFileDataFromChildComponent: BehaviorSubject<any> = new BehaviorSubject<any>([]);
+
   url = environment.userUrl + '/api/users';
   rolesUrl = environment.userUrl + '/api/roles';
   departmentsUrl = environment.userUrl + '/api/departments';
   permissionsUrl = environment.userUrl + '/api/permissions';
+  transportersUrl = environment.userUrl + '/api/transporter';
 
   constructor(
     private http: HttpClient,
@@ -50,35 +53,41 @@ export class UserService {
     department: string;
     status: string;
   }): Observable<any> {
-    const params: any = { page };
+    const params = {
+      size: page.size.toString(),
+      page: page.page.toString(),
+    }
 
     if (page.search) {
-      params.search = page.search;
+      params['search'] = page.search;
     }
-    if (page.size) {
-      params.size = page.size;
-    }
+
     if (page.department) {
-      params.department = page.department;
+      params['department'] = page.department;
     }
+
     if (page.status) {
-      params.status = page.status;
+      params['status'] = page.status;
     }
-    if (page.page) {
-      params.page = page.page;
-    }
+
     const queryString = Object.keys(params)
-      .map(key => `${key}=${encodeURIComponent(params[key])}`)
+      .map(key => `${key}=${params[key]}`)
       .join('&');
 
     return this.http.get(`${this.url}/admins?${queryString}`);
   }
 
-  getTransporter(page: number, size: number, search?: string): Observable<any> {
-    let apiUrl = `${this.url}/transporters?page=${page}&size=${size}`;
+  getTransporter(page: number, size: number, search?: string, from?: string, to?: string): Observable<any> {
+    let apiUrl = `${this.transportersUrl}?page=${page}&size=${size}`;
 
     if (search) {
       apiUrl += `&search=${encodeURIComponent(search)}`;
+    }
+    if (from) {
+      apiUrl += `&from=${from}`;
+    }
+    if (to) {
+      apiUrl += `&to=${to}`;
     }
 
     return this.http.get(apiUrl);
@@ -96,7 +105,9 @@ export class UserService {
     page: number,
     size: number,
     search?: string,
-    approveStatus?: string
+    approveStatus?: string,
+    from?: string,
+    to?: string
   ): Observable<any> {
     let apiUrl = `${this.url}/drivers?page=${page}&size=${size}`;
 
@@ -105,6 +116,12 @@ export class UserService {
     }
     if (approveStatus) {
       apiUrl += `&approveStatus=${approveStatus}`;
+    }
+    if (from) {
+      apiUrl += `&from=${from}`;
+    }
+    if (to) {
+      apiUrl += `&to=${to}`;
     }
 
     return this.http.get(apiUrl);
@@ -179,5 +196,17 @@ export class UserService {
 
   getDriverById(driverId: any) {
     return this.http.get(`${this.url}/drivers/${driverId}`);
+  }
+
+  getTransporterById(transporterId: any) {
+    return this.http.get(`${this.transportersUrl}/get-by-id/${transporterId}`);
+  }
+
+  addTransporter(transporter: any) {
+    return this.http.post(`${this.transportersUrl}`, transporter);
+  }
+
+  updateTransporter(transporter: any) {
+    return this.http.put(`${this.transportersUrl}`, transporter);
   }
 }

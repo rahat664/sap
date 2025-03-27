@@ -33,6 +33,7 @@ export class TopCustomerComponent implements OnInit {
   sortBy: string = 'grossProfit';
   loading: boolean;
   customerFilterEnabled: boolean = false;
+  paymentType: string = '';
 
   constructor(
     private datePipe: DatePipe,
@@ -43,7 +44,7 @@ export class TopCustomerComponent implements OnInit {
   ngOnInit() {
     this.loading = false;
     this.activatedRoute.queryParams.subscribe(params => {
-
+      this.paymentType = params['paymentType'] ? params['paymentType'] : '';
       this.customerFilterEnabled = !!params['customerCode'];
       if (params['fromDate'] && params['toDate']) {
         this.fromDate = params['fromDate'];
@@ -67,14 +68,13 @@ export class TopCustomerComponent implements OnInit {
 
   private getTopCustomers() {
     this.service
-      .getTopCustomers(this.fromDate, this.toDate, this.sortBy)
+      .getTopCustomers(this.fromDate, this.toDate, this.sortBy, this.paymentType)
       .subscribe(
         (res: any) => {
           this.topCustomer = res.data.content;
           this.loading = false;
         },
         error => {
-          console.error(error);
           this.loading = false;
         }
       );

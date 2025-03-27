@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UserService } from '../../../profiles/services/user.service';
-import { debounceTime } from 'rxjs';
+import { debounceTime, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   selector: 'app-transporter-popup',
   imports: [
     CommonModule,
-    GiveMaxHeightDirective,
     ReactiveFormsModule,
     FormsModule,
   ],
@@ -18,6 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './transporter-popup.component.scss',
 })
 export class TransporterPopupComponent implements OnInit {
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   private totalPages: number;
 
   constructor(
@@ -36,33 +36,27 @@ export class TransporterPopupComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.size = 20;
+    this.page = 0;
     this.loading = true;
     this.transporterList = [];
     this.getTransporterList();
+  }
+
+  ngAfterViewInit() {
+    this.implementScrollToLoadMoreData();
   }
 
   private getTransporterList() {
     this.user
       .getTransporter(this.page, this.size, this.searchValue)
       .subscribe((res: any) => {
-        this.transporterList = res.data.responses;
-        this.totalPages = res.data.totalPages;
+        this.transporterList = res.data;
+        this.totalPages = res.meta.totalPageCount;
         this.loading = false;
       });
   }
 
-  onBottom($event: boolean) {
-    if ($event && this.page < this.totalPages - 1) {
-      this.page++;
-      this.user
-        .getTransporter(this.page, this.size, this.searchValue)
-        .pipe(debounceTime(1000))
-        .subscribe((res: any) => {
-          this.transporterList.push(...res.data.responses);
-          this.totalPages = res.data.totalPages;
-        });
-    }
-  }
 
   onSelectTransporter(transporter: any) {
     this.dialogRef.close(transporter);
@@ -70,12 +64,16 @@ export class TransporterPopupComponent implements OnInit {
 
   onClickClear() {
     this.searchValue = '';
+    this.page = 0;
+    this.size = 20;
     this.transporterList = [];
     this.getTransporterList();
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
     this.loading = true;
+    this.page = 0;
+    this.size = 20;
     const target = ($event.target as HTMLInputElement).value;
     if (target?.length) {
       this.searchValue = target;
@@ -84,5 +82,40 @@ export class TransporterPopupComponent implements OnInit {
     }
     this.transporterList = [];
     this.getTransporterList();
+  }
+
+  private implementScrollToLoadMoreData() {
+    timer(1000).subscribe(() => {
+      // implement scroll event
+      this.myScrollContainer.nativeElement.style.height = '100%';
+      this.myScrollContainer.nativeElement.style.minHeight = '100%';
+      this.myScrollContainer.nativeElement.style.overflow = 'auto';
+
+      this.myScrollContainer.nativeElement.addEventListener('scroll', () => {
+        this.checkIfScrollAtBottom();
+      });
+    });
+  }
+
+  checkIfScrollAtBottom() {
+    const container = this.myScrollContainer.nativeElement;
+    const atBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 10; // Small buffer
+
+    if (atBottom) {
+      this.loadMoreData();
+    }
+  }
+
+  loadMoreData() {
+    if (this.page > this.totalPages - 1) return;
+    this.page++;
+
+    this.user
+      .getTransporter(this.page, this.size, this.searchValue)
+      .pipe(debounceTime(1000))
+      .subscribe((res: any) => {
+        this.transporterList.push(...res.data);
+        this.totalPages = res.meta.totalPageCount;
+      });
   }
 }

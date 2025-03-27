@@ -60,29 +60,35 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(loginSuccess),
         tap(({ response }) => {
-          localStorage.setItem('accessToken', response.data.accessToken);
-          localStorage.setItem('email', response.data.email);
-          localStorage.setItem('name', response.data.name);
-          localStorage.setItem('image', response.data.image || '');
-          localStorage.setItem('role', JSON.stringify(response.data.roles));
-          localStorage.setItem('userPhoneNumber', response.data.phone);
-          // Change to your desired route
-          this.user.getUserPermissions().subscribe((permissions: any) => {
-            if (permissions.status == 'OK') {
-              localStorage.setItem(
-                'permissions',
-                JSON.stringify(permissions.data)
-              );
-              this.toaster.showSuccess('Login Successful', '');
-              if (this.isAdmin()) {
-                this.router.navigateByUrl('/dashboard').then(r => {});
+          const isGsoRoles = response?.data?.roles?.includes('ROLE_GSO')
+          if (isGsoRoles) {
+            this.toaster.showError('You are not authorized to login', '');
+          }
+          else {
+            localStorage.setItem('accessToken', response.data.accessToken);
+            localStorage.setItem('email', response.data.email);
+            localStorage.setItem('name', response.data.name);
+            localStorage.setItem('image', response.data.image || '');
+            localStorage.setItem('role', JSON.stringify(response.data.roles));
+            localStorage.setItem('userPhoneNumber', response.data.phone);
+            // Change to your desired route
+            this.user.getUserPermissions().subscribe((permissions: any) => {
+              if (permissions.status == 'OK') {
+                localStorage.setItem(
+                  'permissions',
+                  JSON.stringify(permissions.data)
+                );
+                this.toaster.showSuccess('Login Successful', '');
+                if (this.isAdmin()) {
+                  this.router.navigateByUrl('/dashboard').then(r => {});
+                } else {
+                  this.router.navigateByUrl('/trip-list').then(r => {});
+                }
               } else {
-                this.router.navigateByUrl('/trip-list').then(r => {});
+                this.toaster.showError(permissions.message, '');
               }
-            } else {
-              this.toaster.showError(permissions.message, '');
-            }
-          });
+            });
+          }
         })
       ),
     { dispatch: false }

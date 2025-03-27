@@ -278,7 +278,7 @@
           </h1>
         </div>
         <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
-          {{ Number(tripDetails.customerRate) | number }} ৳
+          {{ tripDetails.customerRate !== null ? (tripDetails.customerRate | number) : 'N/A'}} ৳
         </h1>
       </div>
       <div class="flex flex-col space-y-2">
@@ -309,7 +309,7 @@
           <img
             loading="lazy"
             class="h-6 w-6 notPreview"
-            src="assets/svg/cr.svg"/>
+            src="assets/svg/payment-type.svg"/>
           <h1
             class="text-body_title leading-body_title text-not-black font-semibold">
             Payment type
@@ -356,7 +356,7 @@
           </h1>
         </div>
         <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
-          {{ Number(tripDetails.transporterRate) | number }} ৳
+          {{tripDetails.transporterRate !== null ? (tripDetails.transporterRate | number) :  'N/A' }} ৳
         </h1>
       </div>
 

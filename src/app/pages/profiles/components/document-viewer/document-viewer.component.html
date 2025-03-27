@@ -1,0 +1,177 @@
+<div class="grid grid-cols-3">
+  <div
+    class="col-span-2 flex flex-col w-full bg-black h-[calc(100vh-4.125rem)]">
+    <div class="px-7 py-[1.375rem] flex justify-between bg-[#302F2F]">
+      <div
+        (click)="onClickBack()"
+        class="flex space-x-3 items-center cursor-pointer text-white">
+        <a class="cursor-pointer"
+        ><i class="fas fa-chevron-left text-white"></i
+        ></a>
+        <span class="text-h3 leading-h3 font-bold"
+        >{{
+            changeDocumentNameToGeneralName(activatedDocument?.documentType)}}
+        </span
+        >
+      </div>
+      <div class="flex space-x-4 text-white items-center">
+        <button
+          [disabled]="zoomLevel >= maxZoom"
+          [ngClass]="{ 'text-secondary': zoomLevel >= maxZoom }"
+          (click)="zoomIn()"
+          class="flex items-center justify-center">
+          <i class="fal text-[2rem] fa-search-plus"></i>
+        </button>
+        <button
+          [disabled]="zoomLevel <= minZoom"
+          (click)="zoomOut()"
+          [ngClass]="{ 'text-secondary': zoomLevel <= minZoom }"
+          class="flex items-center justify-center">
+          <i class="fal text-[2rem] fa-search-minus"></i>
+        </button>
+        <button type="button" (click)="onClickDownload()" class="h-full">
+          <img
+            src="assets/svg/download.svg"
+            class="notPreview h-full w-full"
+            alt="" />
+        </button>
+        <button type="button" (click)="onClickDelete()">
+          <img
+            src="assets/svg/delete.svg"
+            class="notPreview h-full w-full"
+            alt="" />
+        </button>
+      </div>
+    </div>
+    <div
+      (wheel)="onZoom($event)"
+      class="h-[calc(100vh-16.5rem)] py-[1.125rem] flex relative justify-center items-center overflow-hidden"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()"
+      (mousemove)="onMouseMove($event)">
+      <button
+        (click)="onClickLeftButton()"
+        [ngClass]="{ show: activeDocumentIndex > 0 && showLeftArrow }"
+        class="arrow absolute left-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+        <i class="fas fa-chevron-left font-bold text-white text-xxl"></i>
+      </button>
+
+      <div
+        #containerElement
+        class="w-[90%] h-[calc(100vh-18.75rem)] overflow-hidden rounded-lg border border-gray-800 flex items-center justify-center transition-transform duration-300 transform origin-center relative">
+        <div
+          #imageElement
+          class="transition-transform h-full rounded-lg overflow-hidden duration-300 transform origin-center relative"
+          [style.transform]="'scale(' + zoomLevel + ')'">
+          <img
+            *ngIf="!activatedDocument?.preSignedFileUrl?.includes('pdf') && !activatedDocument?.document?.preSignedFileUrl?.includes('pdf')"
+            [src]="
+              activatedDocument?.preSignedFileUrl
+                ? activatedDocument?.preSignedFileUrl
+                : activatedDocument?.document?.preSignedFileUrl | fallbackImage
+            "
+            appImageError
+            alt="activeDocument"
+            class="notPreview h-full w-full" />
+          <div class="flex items-center justify-center flex-col space-y-3 h-full"
+               *ngIf="activatedDocument?.preSignedFileUrl?.includes('pdf') || activatedDocument?.document?.preSignedFileUrl?.includes('pdf')">
+            <img class="w-[152px] h-[152px]" src="./assets/svg/pdf.svg" />
+            <p
+              class="text-body_title text-center leading-body_title text-secondary font-semibold w-2/3">
+              Cannot preview this document. You can download it now.
+            </p>
+            <button
+              type="button"
+              (click)="downloadReport(activatedDocument?.preSignedFileUrl ? activatedDocument?.preSignedFileUrl : activatedDocument?.document?.preSignedFileUrl)"
+              class="px-16 py-4 bg-primary text-white rounded-lg">
+              <i class="fas fa-download mr-2"></i>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button
+        (click)="onClickRightButton()"
+        [ngClass]="{
+          show: activeDocumentIndex < documents.length - 1 && showRightArrow,
+        }"
+        class="arrow absolute right-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+        <i class="fas fa-chevron-right font-bold text-white text-xxl"></i>
+      </button>
+    </div>
+    <div
+      class="min-h-32 bg-[#302F2F] flex items-center w-full justify-center customScrollbar">
+      <div class="flex space-x-4 w-2/3 overflow-x-auto" #documentContainer>
+        <ng-container *ngFor="let doc of documents; index as i">
+          <div
+            (click)="onClickDocument(doc, i)"
+            [ngClass]="{ scaled: doc === activatedDocument }"
+            class="document-item w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden rounded-lg">
+            <img
+              *ngIf="!doc.preSignedFileUrl?.includes('pdf') && !doc?.document?.url?.includes('pdf')"
+              [src]="doc.preSignedFileUrl ? doc.preSignedFileUrl : doc?.document?.preSignedFileUrl | fallbackImage"
+              appImageError
+              alt="document"
+              class="h-full w-full notPreview" />
+            <img *ngIf="doc.preSignedFileUrl?.includes('pdf') || doc?.document?.preSignedFileUrl?.includes('pdf')"
+                 src="assets/svg/pdf.svg"
+                 alt="document"
+                 class="h-full w-full notPreview" />
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="mx-6">
+    <div
+      class="px-10 py-5 flex justify-between items-center border-b border-b-line">
+      <span class="text-h3 leading-h3 text-not-black font-bold"
+      >Image details</span
+      >
+    </div>
+    <div class="px-10 py-5 flex flex-col space-y-5">
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Trip ID</span>
+        <span class="text-h2 leading-h2 font-semibold uppercase text-not-black">{{
+            documentBelongToId
+          }}</span>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Upload time</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black">{{
+            (activatedDocument?.createdAt
+                ? activatedDocument?.createdAt
+                : activatedDocument?.document?.createdAt
+            ) | date: 'd MMM yyyy, h:mm a'
+          }}</span>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Image type</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black"
+        >{{
+            changeDocumentNameToGeneralName(activatedDocument?.documentType)}}
+        </span
+        >
+      </div>
+      <div class="flex flex-col space-y-1" *ngIf="expiryAvailable">
+        <span class="text-body text-secondary">Expire date</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black"
+        >30 Mar 2029</span
+        >
+      </div>
+      <div class="flex flex-col space-y-1" *ngIf="notesAvailable">
+        <span class="text-h2 leading-h2 font-semibold text-not-black"
+        >Note</span
+        >
+        <p class="text-body text-secondary text-justify">
+          {{
+          activatedDocument?.note
+          ? activatedDocument?.note
+          : activatedDocument?.document?.note
+          }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

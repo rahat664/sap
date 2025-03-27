@@ -395,7 +395,6 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
             this.clearPolylines();
           }
         } else {
-          console.error('Error fetching directions', status);
         }
       });
     }

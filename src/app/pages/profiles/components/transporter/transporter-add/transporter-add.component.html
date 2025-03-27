@@ -1,230 +1,269 @@
-<div class="flex w-full h-full">
-  <button (click)="onClickClose()" class="absolute top-4 right-4">
-    <i class="fal fa-times text-lg"></i>
-  </button>
-  <div
-    class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
-    <div>
-      <img
-        loading="lazy"
-        class="notPreview"
-        src="assets/images/customer-create.png"
-        alt=""/>
+<div class="mx-3 ">
+  <div class="pt-3 bg-app-bg sticky top-[4rem] z-50">
+    <div class="bg-white flex items-center justify-between p-4 rounded-lg ">
+      <h1 class="text-h1 leading-h1 font-semibold">
+        Add Transporter
+      </h1>
+      <div class="flex space-x-4 items-center">
+        <button
+          (click)="onClickSave()"
+          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+          <span>Save</span>
+        </button>
+      </div>
     </div>
   </div>
-  <div class="p-8 max-h-[90vh] overflow-y-auto overflow-x-hidden">
-    <h3 class="text-not-black font-semibold text-xl mb-4">
-      Add New Transporter
-    </h3>
-    <form
-      [formGroup]="transporterForm"
-      (ngSubmit)="onSave()"
-      class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
-      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
-        <label for="name">Transporter name</label>
-        <mat-form-field
-          appearance="outline"
-          class="example-full-width"
-          [ngClass]="{
-            error:
-              transporterForm.get('name').invalid &&
-              transporterForm.get('name').touched,
-          }">
-          <input
-            id="name"
-            [minLength]="2"
-            [maxLength]="50"
-            type="text"
-            matInput
-            formControlName="name"
-            placeholder="Enter Transporter Name"/>
-        </mat-form-field>
-        <div
-          *ngIf="transporterForm.get('name').touched"
-          class="text-red text-xs">
-          <span>{{ getNameErrorMessage() }}</span>
+  <form [formGroup]="transporterAddForm" class="grid mt-3 grid-cols-2 gap-3 text-body_title text-web-text-secondary">
+    <div class="flex flex-col space-y-3">
+      <div class="bg-white rounded-lg p-4">
+        <div class="flex space-x-3 items-center mb-4">
+          <img class="notPreview" src="assets/svg/transporter-info.svg" alt="transporter-info" />
+          <h1 class="text-h2 leading-h2 text-not-black font-semibold">Transporter info</h1>
         </div>
-        <!--        error-message-->
-      </div>
-      <div class="flex flex-col space-y-2 w-full">
-        <ngx-material-intl-tel-input
-          [includeDialCode]="false"
-          #numberInput
-          class="customize"
-          id="phoneNumber"
-          [textLabels]="textLabels"
-          [autoSelectedCountry]="CountryISO.Bangladesh"
-          [preferredCountries]="[CountryISO.Bangladesh]"
-          [fieldControl]="phoneNumber"
-          [numberValidation]="true"
-          [hidePhoneIcon]="true"
-          [required]="true"
-          [autoIpLookup]="false"
-          [ngClass]="{
+        <div class="w-full grid grid-cols-2 gap-3">
+          <div class="flex flex-col space-y-1">
+            <label for="name">Transporter name</label>
+            <mat-form-field
+              appearance="outline"
+              class="example-full-width"
+              [ngClass]="{
+            error:
+              transporterAddForm.get('name').invalid &&
+              transporterAddForm.get('name').touched,
+          }">
+              <input
+                id="name"
+                [minLength]="2"
+                [maxLength]="50"
+                type="text"
+                matInput
+                formControlName="name"
+                placeholder="Enter Transporter Name" />
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <label for="contactPersonName">Contact person name</label>
+            <mat-form-field
+              appearance="outline"
+              class="example-full-width"
+              [ngClass]="{
+            error:
+              transporterAddForm.get('contactPersonName').invalid &&
+              transporterAddForm.get('contactPersonName').touched,
+          }">
+              <input
+                id="contactPersonName"
+                [minLength]="2"
+                [maxLength]="50"
+                type="text"
+                matInput
+                formControlName="contactPersonName"
+                placeholder="Enter Contact Person Name" />
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-2 w-full">
+            <ngx-material-intl-tel-input
+              #numberInput
+              [includeDialCode]="false"
+              class="customize"
+              id="phoneNumber"
+              [textLabels]="textLabels"
+              [autoSelectedCountry]="CountryISO.Bangladesh"
+              [preferredCountries]="[CountryISO.Bangladesh]"
+              [fieldControl]="phoneNumber"
+              [numberValidation]="true"
+              [hidePhoneIcon]="true"
+              [required]="true"
+              [autoIpLookup]="false"
+              [ngClass]="{
             customError:
-              transporterForm.get('phone').invalid &&
-              transporterForm.get('phone').touched,
+              transporterAddForm.get('phone').invalid &&
+              transporterAddForm.get('phone').touched,
           }"></ngx-material-intl-tel-input>
-        <!--        error-message-->
-        <div>
+            <!--        error-message-->
+            <div>
           <span
             *ngIf="
-              transporterForm.get('phone').touched &&
-              transporterForm.get('phone').invalid
+              transporterAddForm.get('phone').touched &&
+              transporterAddForm.get('phone').invalid
             "
             class="text-red text-xs">
             <span>Phone number is required</span>
           </span>
-        </div>
-      </div>
-      <div class="flex flex-col space-y-2 w-full">
-        <label for="truckStand">Truck Stand</label>
-        <mat-form-field
-          appearance="outline"
-          class="example-full-width"
-          [ngClass]="{
+            </div>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <label for="truckStand">Truck Stand</label>
+            <mat-form-field
+              appearance="outline"
+              class="example-full-width"
+              [ngClass]="{
             error:
-              transporterForm.get('truckStand').invalid &&
-              transporterForm.get('truckStand').touched,
+              transporterAddForm.get('truckStand').invalid &&
+              transporterAddForm.get('truckStand').touched,
           }">
-          <input
-            id="truckStand"
-            type="text"
-            matInput
-            formControlName="truckStand"
-            placeholder="Enter Truck Stand"/>
-        </mat-form-field>
-        <div
-          *ngIf="
-            transporterForm.get('truckStand').touched &&
-            transporterForm.get('truckStand').invalid
+              <input
+                id="truckStand"
+                type="text"
+                matInput
+                formControlName="truckStand"
+                placeholder="Enter Truck Stand" />
+            </mat-form-field>
+            <div
+              *ngIf="
+            transporterAddForm.get('truckStand').touched &&
+            transporterAddForm.get('truckStand').invalid
           "
-          class="text-red text-xs">
-          <span>Truck stand is required</span>
-        </div>
-        <!--        error-message-->
-      </div>
-      <div class="flex flex-col space-y-2 lg:col-span-2 w-full">
-        <label for="preferredPaymentMethod">Preferred Payment Method</label>
-        <app-custom-input
-          [isFilterMenu]="false"
-          id="preferredPaymentMethod"
-          [inputSearch]="paymentInputPlaceholder"
-          [options]="paymentOptionsArray"
-          inputPlaceholder="Select Payment Method"
-          appGetClickEvent
-          (clickedElement)="onClickPayment($event)"
-          (selectedId)="onSelectPayment($event)"></app-custom-input>
-        <div
-          *ngIf="
-            transporterForm.get('preferredPaymentMethod').touched &&
-            transporterForm.get('preferredPaymentMethod').invalid
-          "
-          class="text-red text-xs">
-          <span>Preferred payment method is required</span>
+              class="text-red text-xs">
+              <span>Truck stand is required</span>
+            </div>
+            <!--        error-message-->
+          </div>
+
+          <div class="flex flex-col space-y-1 w-full col-span-2">
+            <label for="note">Note (Optional)</label>
+            <textarea
+              placeholder="Enter Note"
+              class="bg-input rounded-lg p-4 border border-disabled"
+              id="note"
+              formControlName="note"></textarea>
+          </div>
         </div>
       </div>
-      <ng-container *ngIf="paymentInputPlaceholder === 'Bkash'">
-        <div class="flex flex-col space-y-2">
-          <label for="bkashName">Bkash Account Name</label>
-          <mat-form-field appearance="outline" class="example-full-width">
-            <input
-              id="bkashName"
-              [minLength]="2"
-              [maxLength]="50"
-              type="text"
-              matInput
-              formControlName="bkashName"
-              placeholder="Enter Bkash Account Name"/>
-          </mat-form-field>
-        </div>
-        <div class="flex flex-col space-y-2">
-          <label for="bkashNumber">Bkash Number</label>
-          <mat-form-field appearance="outline" class="example-full-width">
-            <input
-              id="bkashNumber"
-              [minLength]="11"
-              [maxLength]="11"
-              type="text"
-              matInput
-              formControlName="bkashNumber"
-              placeholder="Enter Bkash Number"/>
-          </mat-form-field>
-        </div>
-        <div class="flex flex-col space-y-2 lg:col-span-2">
-          <label for="accountType">Account Type</label>
-          <app-custom-input
-            id="accountType"
-            [inputSearch]="bkashPaymentTypePlaceholder"
-            [options]="bkashPaymentMethod"
-            inputPlaceholder="Select Account Type"
-            appGetClickEvent
-            (clickedElement)="onClickBkashType($event)"
-            (selectedId)="onSelectBkashType($event)"></app-custom-input>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="paymentInputPlaceholder === 'Bank'">
-        <div class="flex flex-col space-y-2">
-          <label for="bankName">Bank Name</label>
-          <mat-form-field appearance="outline" class="example-full-width">
-            <input
-              id="bankName"
-              type="text"
-              matInput
-              formControlName="bankName"
-              placeholder="Enter Bank Name"/>
-          </mat-form-field>
-        </div>
-        <div class="flex flex-col space-y-2">
-          <label for="bankBranch">Bank Branch</label>
-          <mat-form-field appearance="outline" class="example-full-width">
-            <input
-              id="bankBranch"
-              type="text"
-              matInput
-              formControlName="bankBranch"
-              placeholder="Enter Bank Branch"/>
-          </mat-form-field>
-        </div>
-        <div class="flex flex-col space-y-2">
-          <label for="bankAccountName">Bank Account Name</label>
-          <mat-form-field appearance="outline" class="example-full-width">
-            <input
-              id="bankAccountName"
-              type="text"
-              matInput
-              formControlName="bankAccountName"
-              placeholder="Enter Bank Account Name"/>
-          </mat-form-field>
-        </div>
-        <div class="flex flex-col space-y-2">
-          <label for="bankAccountNumber">Bank Account Number</label>
-          <mat-form-field appearance="outline" class="example-full-width">
-            <input
-              id="bankAccountNumber"
-              type="text"
-              matInput
-              formControlName="bankAccountNumber"
-              placeholder="Enter Bank Account Number"/>
-          </mat-form-field>
-        </div>
-      </ng-container>
-      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
-        <label for="note">Note (Optional)</label>
-        <mat-form-field appearance="outline" class="example-full-width">
-          <input
-            id="note"
-            matInput
-            formControlName="note"
-            placeholder="Enter Note"/>
-        </mat-form-field>
+      <app-profile-documents documentName="Transporter’s documents" (uploadButtonTriggered)="onUploadButtonTriggered($event)" [fromAddDocument]="true" [transporterId]="transporter?.code" [documentTypes]="transporterFileType"
+                             [documents]="transporterDocuments"></app-profile-documents>
+    </div>
+    <div class="p-4 bg-white rounded-lg" *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Cash'">
+      <div class="flex space-x-3 items-center mb-4">
+        <img class="notPreview" src="assets/svg/payment-info.svg" alt="payment-info" />
+        <h1 class="text-h2 leading-h2 text-not-black font-semibold">Payment info</h1>
       </div>
-      <div class="lg:col-span-2 pb-4">
-        <button
-          class="float-end px-12 py-2 flex justify-center items-center rounded-lg bg-primary text-white">
-          <span>Save</span>
-        </button>
+      <div class="flex flex-col space-y-4">
+        <div class="border border-x-disabled rounded-lg overflow-hidden">
+          <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/bank.svg" class="notPreview" alt="bank" />
+              <h1
+                class="text-body_title font-semibold text-not-black">Bank</h1>
+            </div>
+            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
+              <i class="fal fa-angle-down text-xl"></i>
+            </button>
+          </div>
+          <div class="py-3 px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
+            <div class="flex flex-col space-y-1 col-span-2">
+              <label for="bankName">Bank Name</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="bankName"
+                  type="text"
+                  matInput
+                  formControlName="bankName"
+                  placeholder="Enter Bank Name" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="bankBranch">Branch</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="bankBranch"
+                  type="text"
+                  matInput
+                  formControlName="bankBranch"
+                  placeholder="Enter Branch" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="bankAccountName">Account Name</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="bankAccountName"
+                  type="text"
+                  matInput
+                  formControlName="bankAccountName"
+                  placeholder="Enter Account Name" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1 col-span-2">
+              <label for="bankAccountNumber">Account Number</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="bankAccountNumber"
+                  type="text"
+                  matInput
+                  formControlName="bankAccountNumber"
+                  placeholder="Enter Account Number" />
+              </mat-form-field>
+            </div>
+            <mat-checkbox [checked]="preferredPaymentMethod === 'Bank'"  (change)="setPreferredPaymentMethod($any($event), 'Bank')">
+              Set as preferred
+            </mat-checkbox>
+          </div>
+        </div>
+        <div class="border border-x-disabled rounded-lg overflow-hidden">
+          <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/mobile.svg" class="notPreview" alt="MFS" />
+              <h1
+                class="text-body_title font-semibold text-not-black">MFS</h1>
+            </div>
+            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
+              <i class="fal fa-angle-down text-xl"></i>
+            </button>
+          </div>
+          <div class="py-3 px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
+            <div class="flex flex-col space-y-1">
+              <label for="mfservice">MFS Service</label>
+              <app-custom-input
+                id="mfservice"
+                [isFilterMenu]="false"
+                [inputSearch]="mfsTypePlaceholder"
+                [options]="mfsService"
+                inputPlaceholder="Select MFS Service"
+                appGetClickEvent
+                (selectedId)="onSelectMFSType($event)"></app-custom-input>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="bankBranch">MFS Type</label>
+              <app-custom-input
+                id="accountType"
+                [isFilterMenu]="false"
+                [inputSearch]="bkashPaymentTypePlaceholder"
+                [options]="bkashPaymentMethod"
+                inputPlaceholder="Select Account Type"
+                appGetClickEvent
+                (selectedId)="onSelectBkashType($event)"></app-custom-input>
+            </div>
+            <div class="flex flex-col space-y-1 col-span-2">
+              <label for="mfsNumber">Account Number</label>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <input
+                  id="mfsNumber"
+                  type="text"
+                  matInput
+                  formControlName="mfsNumber"
+                  placeholder="Enter Account Number" />
+              </mat-form-field>
+            </div>
+            <mat-checkbox [checked]="preferredPaymentMethod === 'MFS'"  (change)="setPreferredPaymentMethod($any($event), 'MFS')">
+              Set as preferred
+            </mat-checkbox>
+          </div>
+        </div>
+        <div class="border border-x-disabled rounded-lg overflow-hidden">
+          <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/cash.svg" class="notPreview" alt="Cash" />
+              <h1
+                class="text-body_title font-semibold text-not-black">Cash</h1>
+            </div>
+          </div>
+          <mat-checkbox [checked]="preferredPaymentMethod === 'Cash'"  class="px-2" (change)="setPreferredPaymentMethod($any($event), 'Cash')">Set as preferred
+          </mat-checkbox>
+        </div>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </div>
+

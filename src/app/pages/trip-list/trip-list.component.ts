@@ -25,7 +25,7 @@ import { statusButtons } from './models/status-buttons';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 import { CustomerService } from '../profiles/services/customer.service';
 import { Trip } from '../auth/models/response/trip';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
 import {
   MatAutocomplete,
@@ -38,6 +38,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
 import { UserService } from '../profiles/services/user.service';
+import { PaymentType } from '../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-trip-list',
@@ -77,6 +78,14 @@ export class TripListComponent implements OnInit, AfterViewInit {
   tripList: Trip[] = [];
   inputPlaceholder = '';
   dateOptionArray: CustomInputSelectModel[] = [];
+  paymentTypeOptionsArray: CustomInputSelectModel[] = [
+    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
+    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
+    { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
+    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
+  ];
+  paymentTypePlaceholder: string = '';
+  paymentTypeValue: string = '';
   searchValue = '';
   from = '';
   to = '';
@@ -91,6 +100,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
     trs: 0,
     crs: 0,
     gps: 0,
+    pms: 0,
   };
   statusButtons = statusButtons;
   rightButtonClicked = false;
@@ -114,6 +124,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
   customerSearchSubject = new Subject<string>();
   searchId: any;
   searchTransporter: any;
+  paymentFilter: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -133,9 +144,11 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performSearch(searchText);
     });
-    this.customerSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performCustomerSearch(searchText);
-    });
+    this.customerSearchSubject
+      .pipe(debounceTime(1000))
+      .subscribe(searchText => {
+        this.performCustomerSearch(searchText);
+      });
     this.transporterSearchSubject
       .pipe(debounceTime(1000))
       .subscribe(searchText => {
@@ -210,7 +223,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
         null,
         null,
         null,
-        this.transporterName
+        this.transporterName,
+        this.paymentTypeValue
       )
       .subscribe(
         (trip: any) => {
@@ -343,11 +357,15 @@ export class TripListComponent implements OnInit, AfterViewInit {
       this.dateFilter +
       this.searchFilter +
       this.tripFilter +
-      this.transporterFilter
+      this.transporterFilter +
+      this.paymentFilter
     );
   }
 
   onClearFilter() {
+    this.paymentTypePlaceholder = '';
+    this.paymentTypeValue = '';
+    this.paymentFilter = 0;
     this.customerCode = '';
     this.tripId = '';
     this.page = 0;
@@ -552,5 +570,46 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.loading = true;
     this.service.anotherStatusCalled.next(true);
     this.getTripList();
+  }
+
+  protected readonly Math = Math;
+
+  onSelectPayment($event: number) {
+    this.paymentFilter = 1;
+    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.paymentTypePlaceholder =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.paymentTypeValue =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    this.service.anotherStatusCalled.next(true);
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.getTripList();
+  }
+
+  getNameFromEnum(paymentType: string) {
+    if (paymentType === PaymentType.CASH) {
+      return 'Cash';
+    } else if (paymentType === PaymentType.INVOICE) {
+      return 'Invoice';
+    } else {
+      return 'Cash & Invoice';
+    }
+  }
+
+  onClickGenerateReport() {
+    this.service.getTripReport().subscribe((response: any) => {
+      const url = window.URL.createObjectURL(response)
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.style.display = 'none';
+      a.href = url;
+      // download link with formated timestamp
+      a.download = `TripReport_${new Date().getTime()}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    });
   }
 }

@@ -1,0 +1,18 @@
+.drop-area {
+  @apply border-2 border-dashed bg-input  rounded-lg p-5 text-center cursor-pointer;
+}
+
+.drop-area.dragover {
+  background-color: #f0f0f0;
+}
+
+.customs {
+  display: none;
+}
+
+::ng-deep .error .mat-mdc-text-field-wrapper {
+  width: 100%;
+  border-radius: 0.5rem !important;
+  background-color: #fffafb !important;
+  height:2.5rem !important;
+}

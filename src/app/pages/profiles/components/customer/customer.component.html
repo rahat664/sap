@@ -34,6 +34,52 @@
         </button>
       </div>
     </div>
+
+    <div class="w-full bg-white rounded-lg">
+      <button
+        class="flex px-2 py-1 space-x-3 items-center w-full"
+        [ngClass]="{ 'border-b-2 border-[#0CD5F0]': filterOpened }">
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="!filterOpened"
+          class="fas fa-caret-down text-input-hint text-xl"></i>
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="filterOpened"
+          class="fas fa-caret-up text-input-hint text-xl"></i>
+        <span class="text-not-black text-body_title leading-body_title"
+        >Filter
+          <span  *ngIf="dateFilter"
+          >({{ dateFilter }})</span
+          >
+          <span *ngIf="dateFilter" class="text-input-hint px-3"
+          >|</span
+          >
+          <a
+            *ngIf="dateFilter"
+            (click)="onClearFilter()"
+            class="text-red"
+          >Clear all</a
+          >
+        </span>
+      </button>
+      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
+        <div class="flex flex-col space-y-1 w-[14.375rem]">
+          <label class="text-body text-web-text-secondary px-2">Date</label>
+          <app-custom-input
+            class=""
+            appGetClickEvent
+            (clickedElement)="dateOpened = $event"
+            [inputSearch]="inputPlaceholder"
+            (selectedFromDate)="onSelectedFromDate($event)"
+            (selectedToDate)="onSelectedToDate($event)"
+            (selectedFromDateToToDate)="inputPlaceholder = $event"
+            inputPlaceholder="Select Date"
+            [options]="dateOptionArray"
+            (selectedId)="onSelectDate($event)"></app-custom-input>
+        </div>
+      </div>
+    </div>
   </div>
   <div
     appGiveMaxHeight
@@ -43,8 +89,8 @@
     <table class="table-auto w-full rounded-lg text-body_title">
       <thead class="z-50">
       <tr class="whitespace-nowrap bg-white">
-          <th class="text-left sticky left-0 w-[20rem] bg-white">Company name</th>
-          <th class="text-center sticky left-[20rem] bg-white">Customer code</th>
+          <th class="text-left sticky left-0 w-[20rem] inline-block bg-white">Company name</th>
+          <th class="text-center sticky left-[20rem]  bg-white">Customer code</th>
           <th class="whitespace-nowrap">Created On</th>
           <th class="text-left">Contact person</th>
           <th class="text-left">Mobile</th>
@@ -62,7 +108,7 @@
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
           <tr *ngFor="let customer of customers">
-              <td class="whitespace-nowrap sticky left-0 w-[20rem] bg-white">
+              <td class="whitespace-nowrap sticky left-0 w-[20rem] inline-block bg-white">
                   <div class="flex items-center space-x-4">
                       <div
                               class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">

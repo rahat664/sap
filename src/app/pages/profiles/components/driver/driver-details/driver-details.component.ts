@@ -45,6 +45,7 @@ import { ConfirmApproveComponent } from '../../../../../shared/modules/confirm-a
 import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-reject/confirm-reject.component';
 import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
+import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 
 @Component({
   selector: 'app-driver-details',
@@ -65,6 +66,7 @@ import { ImageErrorDirective } from '../../../../../shared/directive/image-error
     NgxMaterialIntlTelInputComponent,
     FallbackImagePipe,
     ImageErrorDirective,
+    AlphabetOnlyDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './driver-details.component.html',
@@ -73,14 +75,10 @@ import { ImageErrorDirective } from '../../../../../shared/directive/image-error
 export class DriverDetailsComponent implements OnInit, AfterViewInit {
   readonly dialog = inject(MatDialog);
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
-  inEditMode = false;
-  singleDriver: UserModel;
   documents: any[] = [];
   driverName: string;
   driverPhone: string;
   protected driverUpdateForm: FormGroup;
-  newDriverFileType: any;
-  closedDocument: any;
   private deletedFileUrls: any[] = [];
   savedNidFrontFile: any[] = [];
   savedNidBackFile: any[] = [];
@@ -239,6 +237,9 @@ export class DriverDetailsComponent implements OnInit, AfterViewInit {
             switch (formControlName) {
               case 'nidFront':
                 this.savedNidFrontFile = updatedImages;
+                if (updatedImages.length === 0) {
+                  this.driverUpdateForm.get('nidFront').setValue(null);
+                }
                 break;
               case 'nidBack':
                 this.savedNidBackFile = updatedImages;
@@ -637,9 +638,7 @@ export class DriverDetailsComponent implements OnInit, AfterViewInit {
       this.deletedFileUrls.forEach(url => {
         this.service.deleteDriverFiles(url, this.driverDetails.id).subscribe(
           (res: any) => {},
-          error => {
-            console.error('Error deleting file:', error);
-          }
+          error => {}
         );
       });
     }
@@ -859,25 +858,22 @@ export class DriverDetailsComponent implements OnInit, AfterViewInit {
               this.driverDetails = driver;
               this.documents = driver.documentsList;
               // split the document by type
-              this.splitDoucumentsByType(this.documents);
+              this.splitDocumentsByType(this.documents);
               this.updateFormValues(driver);
             } else {
-              console.error('Truck details not found in response');
             }
           },
           error => {
-            console.error('Error fetching truck details:', error);
             // Handle error (e.g., show a notification)
           }
         );
       } else {
-        console.error('Driver ID is missing in the route parameters.');
         // Handle missing truck ID case (e.g., show a notification)
       }
     });
   }
 
-  private splitDoucumentsByType(documents: any[]) {
+  private splitDocumentsByType(documents: any[]) {
     // Split the documents by type
     documents.forEach(doc => {
       // split by trucj document type

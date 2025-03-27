@@ -84,7 +84,7 @@ export class DialogDataComponent implements OnInit {
     const value = ($event.target as HTMLInputElement).value;
     if (value.length > 0) {
       this.user.getTransporter(0, 100, value).subscribe((res: any) => {
-        this.transporterSuggestion = res.data.responses;
+        this.transporterSuggestion = res.data;
       });
     }
   }
@@ -108,9 +108,9 @@ export class DialogDataComponent implements OnInit {
   }
 
   onClickTransporterSearchSuggestion(option: any) {
-    this.tripUpdateForm.get('transporterCode').setValue(option.userId);
-    this.tripUpdateForm.get('transporterName').setValue(option.name);
-    this.tripUpdateForm.get('transporterPhone').setValue(option.phone);
+    this.tripUpdateForm.get('transporterCode').setValue(option.code);
+    this.tripUpdateForm.get('transporterName').setValue(option.contactPersonName);
+    this.tripUpdateForm.get('transporterPhone').setValue(option.contactPersonNumber);
   }
 
   onClickDriverSearchSuggestion(option: any) {
@@ -149,15 +149,13 @@ export class DialogDataComponent implements OnInit {
           this.tripUpdateForm.get('transporterName').setValue(transporter.name);
           this.tripUpdateForm
             .get('transporterPhone')
-            .setValue(transporter.phone);
-          this.tripUpdateForm.get('transporterRate').setValue(transporter.rate);
+            .setValue(transporter.contactPersonNumber);
           this.tripUpdateForm
             .get('transporterCode')
-            .setValue(transporter.userId);
+            .setValue(transporter.code);
         } else {
           this.tripUpdateForm.get('transporterName').setValue('');
           this.tripUpdateForm.get('transporterPhone').setValue('');
-          this.tripUpdateForm.get('transporterRate').setValue('');
           this.tripUpdateForm.get('transporterCode').setValue('');
         }
       });

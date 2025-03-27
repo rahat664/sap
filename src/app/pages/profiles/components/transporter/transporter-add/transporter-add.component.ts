@@ -1,10 +1,9 @@
 import {
-  ChangeDetectionStrategy,
   Component,
-  EventEmitter,
+  ElementRef,
   inject,
   OnInit,
-  Output,
+  ViewChild,
 } from '@angular/core';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
@@ -15,21 +14,29 @@ import {
   Validators,
 } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
-import { UserModel } from '../../../../user-management/models/user.model';
 import { bkashPaymentMethod, paymentMethod } from '../models/payment-method';
-import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
-import { NgClass, NgIf } from '@angular/common';
-import { ValidationService } from '../../../../../shared/services/validation/validation.service';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
-import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
-import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import {
   CountryISO,
   NgxMaterialIntlTelInputComponent,
 } from 'ngx-material-intl-tel-input';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { ProfileDocumentsComponent } from '../../profile-documents/profile-documents.component';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { transporterFileTypeModel } from '../../truck/models/transporter-file-type';
+import {
+  Transporter,
+  TransporterDocument,
+} from '../models/transporter-details.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatOption } from '@angular/material/core';
+import { PaymentType } from '../../../../../shared/Enums/payment-type';
+import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
+import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 
 @Component({
   selector: 'app-transporter-add',
@@ -43,209 +50,29 @@ import {
     MatInput,
     NgxMaterialIntlTelInputComponent,
     NgClass,
+    MatCheckbox,
+    ProfileDocumentsComponent,
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransporterAddComponent implements OnInit {
-  transporterForm: FormGroup;
-  transporterModel: UserModel = new UserModel();
-  paymentOpened: boolean;
-  paymentOptionsArray: CustomInputSelectModel[] = paymentMethod;
-  paymentInputPlaceholder: string;
-  @Output() formCreated = new EventEmitter<boolean>();
-  bkashPaymentTypePlaceholder: string;
-  readonly dialogRef = inject(MatDialogRef<TransporterAddComponent>);
-
-  constructor(
-    private service: UserService,
-    private validation: ValidationService,
-    private toastr: HandleToastrService,
-    private fb: FormBuilder,
-    private shared: DriverEditSharedService
-  ) {
-    this.transporterForm = this.fb.group({
-      name: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(50),
-        ],
-      ],
-      phone: ['', [Validators.required]],
-      truckStand: ['', Validators.required],
-      preferredPaymentMethod: ['', Validators.required],
-      bkashName: [null],
-      bkashNumber: [null],
-      bkashType: [null],
-      bankName: [null],
-      bankBranch: [null],
-      bankAccountName: [null],
-      bankAccountNumber: [null],
-      role: [''],
-      note: [''],
-    });
-  }
-
-  onSave() {
-    if (this.transporterForm.valid) {
-      this.transporterModel.name = this.transporterForm.get('name').value;
-      this.transporterModel.phone = this.transporterForm.get('phone').value;
-      // remove space and - from phone number
-      this.transporterModel.phone = this.transporterModel.phone.replace(
-        /[\s-]/g,
-        ''
-      );
-      this.transporterModel.note = this.transporterForm.get('note').value;
-      this.transporterModel.role = 'ROLE_TRANSPORTER';
-      this.transporterModel.truckStand =
-        this.transporterForm.get('truckStand').value;
-      this.transporterModel.paymentMethod = this.transporterForm.get(
-        'preferredPaymentMethod'
-      ).value;
-      switch (this.paymentInputPlaceholder) {
-        case 'Bkash':
-          this.transporterModel.accHolderName =
-            this.transporterForm.get('bkashName').value;
-          this.transporterModel.bankAccNo =
-            this.transporterForm.get('bkashNumber').value;
-          this.transporterModel.accType =
-            this.transporterForm.get('bkashType').value;
-          this.transporterModel.bankName = 'Bkash';
-          this.transporterModel.branchName = null;
-          this.transporterForm.patchValue({
-            bankBranch: null,
-            bankAccountName: null,
-            bankAccountNumber: null,
-          });
-          break;
-        case 'Bank':
-          this.transporterModel.accHolderName =
-            this.transporterForm.get('bankAccountName').value;
-          this.transporterModel.bankAccNo =
-            this.transporterForm.get('bankAccountNumber').value;
-          this.transporterModel.accType = null;
-          this.transporterModel.bankName =
-            this.transporterForm.get('bankName').value;
-          this.transporterModel.branchName =
-            this.transporterForm.get('bankBranch').value;
-          this.transporterForm.patchValue({
-            bkashName: null,
-            bkashNumber: null,
-            bkashType: null,
-          });
-          break;
-        default:
-          this.transporterModel.accHolderName = null;
-          this.transporterModel.bankAccNo = null;
-          this.transporterModel.accType = null;
-          this.transporterModel.bankName = 'Cash';
-          this.transporterModel.branchName = null;
-          this.transporterForm.patchValue({
-            bankBranch: null,
-            bankAccountName: null,
-            bankAccountNumber: null,
-            bkashName: null,
-            bkashNumber: null,
-            bkashType: null,
-          });
-          break;
-      }
-      this.service.addUserFromTransport(this.transporterModel).subscribe(
-        (res: any) => {
-          if (res.status == 'OK') {
-            this.toastr.showSuccess('Transporter created successfully');
-            this.transporterForm.reset();
-            this.dialogRef.close(true);
-          } else {
-            this.toastr.showError(res.message);
-          }
-        },
-        error => {
-          this.toastr.showError(error.error.message);
-          this.formCreated.emit(false);
-        }
-      );
-    } else {
-      this.transporterForm.markAllAsTouched();
-    }
-  }
-
-  ngOnInit(): void {
-    this.shared.validateInterNationalPhoneNumber();
-  }
-
-  onClickPayment($event: boolean) {
-    this.paymentOpened = $event;
-  }
-
-  onSelectPayment($event: number) {
-    this.shared.closeInputSelect.next(false);
-    // this.transporterForm.get('preferredPaymentMethod').setValue($event);
-    this.paymentInputPlaceholder = this.paymentOptionsArray.find(
-      item => item.id === $event
-    ).value;
-    this.paymentOpened = false;
-    this.paymentOptionsArray.forEach(
-      item => (item.selected = item.id === $event)
-    );
-    this.transporterForm.patchValue({
-      preferredPaymentMethod: this.paymentInputPlaceholder,
-    });
-  }
-
+  nidFront: any[] = [];
+  nidBack: any[] = [];
+  profilePicture: any[] = [];
+  tradeLicense: any[] = [];
+  agreement: any[] = [];
+  other: any[] = [];
+  readonly dialog = inject(MatDialog);
+  @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
+  transporterFileType = transporterFileTypeModel;
   protected readonly bkashPaymentMethod = bkashPaymentMethod;
-  bkashOpened: boolean;
-
-  onClickBkashType($event: boolean) {
-    this.bkashOpened = $event;
-  }
-
-  onSelectBkashType($event: number) {
-    this.bkashPaymentTypePlaceholder = this.bkashPaymentMethod.find(
-      item => item.id === $event
-    ).value;
-    this.bkashOpened = false;
-    this.bkashPaymentMethod.forEach(
-      item => (item.selected = item.id === $event)
-    );
-    this.transporterForm.patchValue({
-      bkashType: this.bkashPaymentTypePlaceholder,
-    });
-  }
-
-  getErrorMessage() {
-    return this.validation.getErrorMessage(this.transporterForm);
-  }
-
-  getNameErrorMessage() {
-    if (this.transporterForm.get('name').hasError('required')) {
-      return 'Name required';
-    } else if (this.transporterForm.get('name').hasError('minlength')) {
-      return 'Invalid name';
-    } else if (this.transporterForm.get('name').hasError('maxlength')) {
-      return 'Invalid name';
-    } else {
-      return '';
-    }
-  }
-
-  getPhoneErrorMessageWithTouch() {
-    return this.validation.getErrorMessageWithTouch(this.transporterForm);
-  }
-
-  onClickClose() {
-    this.dialogRef.close(false);
-  }
-
-  protected readonly CountryISO = CountryISO;
-
-  get phoneNumber() {
-    return this.transporterForm.get('phone');
-  }
-
+  bkashPaymentTypePlaceholder: string;
+  transporterId: any;
+  transporter: Transporter;
+  isInEditMode: boolean;
+  loading: boolean;
+  transporterAddForm: FormGroup;
   textLabels = {
     mainLabel: 'Mobile number',
     codePlaceholder: 'Code',
@@ -256,4 +83,349 @@ export class TransporterAddComponent implements OnInit {
     invalidNumberError: '',
     requiredError: 'This field is required',
   };
+  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
+  transporterDocuments: TransporterDocument[] = [];
+  preferredPaymentMethod: string = '';
+  tradeLicenseExpiration: string;
+  agreementExpiration: any;
+  mfsTypePlaceholder: string;
+
+  constructor(
+    private service: UserService,
+    private route: ActivatedRoute,
+    private fb: FormBuilder,
+    private datePipe: DatePipe,
+    private toastr: HandleToastrService,
+    private router: Router,
+    private shared: DriverEditSharedService
+  ) {}
+
+  ngOnInit() {
+    this.shared.validateInterNationalPhoneNumber();
+    this.initializeForm();
+    const isFromDocumentSave = localStorage.getItem('isFromDocumentSave');
+    if (isFromDocumentSave) {
+      this.loadPreviousPayload();
+    }
+    // get transporter id from param
+    this.transporterAddForm.get('name').valueChanges.subscribe(value => {
+      this.transporterAddForm.get('contactPersonName').setValue(value);
+    });
+  }
+
+  onClickSave() {
+    if (this.transporterAddForm.invalid) {
+      this.toastr.showError('Please fill all required fields');
+      return;
+    }
+    this.loading = true;
+    let payload = {
+      name: this.transporterAddForm.get('name').value,
+      contactPersonNumber: this.transporterAddForm.get('phone').value,
+      truckStand: this.transporterAddForm.get('truckStand').value,
+      defaultPaymentMethod: {
+        name: this.transporterAddForm.get('bankName').value,
+        branchName: this.transporterAddForm.get('bankBranch').value,
+        accHolderName: this.transporterAddForm.get('bankAccountName').value,
+        bankAccNo: this.transporterAddForm.get('bankAccountNumber').value,
+        paymentMethod: this.transporterAddForm.get('paymentMethod').value,
+        accType: '',
+      },
+      contactPersonName: this.transporterAddForm.get('contactPersonName').value,
+      note: this.transporterAddForm.get('note').value,
+    };
+
+    payload.contactPersonNumber = payload.contactPersonNumber.replace(
+      /[\s-]/g,
+      ''
+    );
+    if (payload.defaultPaymentMethod.paymentMethod === 'MFS') {
+      payload.defaultPaymentMethod.name =
+        this.transporterAddForm.get('mfsName').value;
+      payload.defaultPaymentMethod.bankAccNo =
+        this.transporterAddForm.get('mfsNumber').value;
+      payload.defaultPaymentMethod.accType =
+        this.transporterAddForm.get('mfsType').value;
+    }
+
+    const payloadFormData = new FormData();
+
+    const files = this.retrieveFilesForUpload();
+
+    if (files.profileFiles.length > 0) {
+      files.profileFiles.forEach((file: any) => {
+        payloadFormData.append('profilePicture', file);
+      });
+    }
+    if (files.nidFrontFiles.length > 0) {
+      files.nidFrontFiles.forEach((file: any) => {
+        payloadFormData.append('nidFront', file);
+      });
+    }
+    if (files.nidBackFiles.length > 0) {
+      files.nidBackFiles.forEach((file: any) => {
+        payloadFormData.append('nidBack', file);
+      });
+    }
+    if (files.tradeLicenseFiles.length > 0) {
+      this.tradeLicenseExpiration = this.getExpiryFromSessionStorage('Trade License');
+      files.tradeLicenseFiles.forEach((file: any) => {
+        payloadFormData.append('tradeLicense', file);
+      });
+    }
+    if (files.agreementFiles.length > 0) {
+      this.agreementExpiration = this.getExpiryFromSessionStorage('Agreement');
+      // create a property in payload for agreement expiration
+      files.agreementFiles.forEach((file: any) => {
+        payloadFormData.append('agreement', file);
+      });
+    }
+    if (files.otherFiles.length > 0) {
+      files.otherFiles.forEach((file: any) => {
+        payloadFormData.append('other', file);
+      });
+    }
+
+
+    if (this.agreementExpiration) {
+      payload['agreementExpiration'] = this.agreementExpiration;
+    }
+
+    if (this.tradeLicenseExpiration) {
+      payload['tradeLicenseExpiration'] = this.tradeLicenseExpiration
+    }
+
+    payloadFormData.append('payload', JSON.stringify(payload));
+
+    this.service.addTransporter(payloadFormData).subscribe(
+      (response: any) => {
+        if (response && response.status === 'OK') {
+          this.toastr.showSuccess(response.message);
+          this.router.navigate(['/profile/transporter']);
+        } else {
+          this.toastr.showError(response.message);
+        }
+      },
+      error => {
+        this.loading = false;
+        this.toastr.showError(error.error.message);
+      }
+    );
+  }
+
+  retrieveFilesForUpload() {
+    // Retrieve all file data from sessionStorage
+    const profileFiles = sessionStorage.getItem('Transporter Image');
+    const nidFrontFiles = sessionStorage.getItem('NID Front');
+    const nidBackFiles = sessionStorage.getItem('NID Back');
+    const tradeLicenseFiles = sessionStorage.getItem('Trade License');
+    const agreementFiles = sessionStorage.getItem('Agreement');
+    const otherFiles = sessionStorage.getItem('Other');
+
+    // Function to reconstruct files from stored base64
+    const reconstructFiles = (storedFiles: string | null) => {
+      if (!storedFiles) return [];
+
+      const parsedFiles = JSON.parse(storedFiles);
+      return parsedFiles.map((fileData: any) => {
+        // Convert base64 to Blob
+        const byteCharacters = atob(fileData.base64.split(',')[1]); // Remove "data:<type>;base64,"
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const fileBlob = new Blob([byteArray], { type: fileData.type });
+
+        // Create a File object
+        return new File([fileBlob], fileData.name, { type: fileData.type });
+      });
+    };
+
+    // Reconstruct all file categories
+    return {
+      profileFiles: reconstructFiles(profileFiles),
+      nidFrontFiles: reconstructFiles(nidFrontFiles),
+      nidBackFiles: reconstructFiles(nidBackFiles),
+      tradeLicenseFiles: reconstructFiles(tradeLicenseFiles),
+      agreementFiles: reconstructFiles(agreementFiles),
+      otherFiles: reconstructFiles(otherFiles),
+    };
+  }
+
+  onClickCancel() {
+    this.isInEditMode = false;
+  }
+
+  onClickApprove(driverDetails: any) {}
+
+  onClickReject(driverDetails: any) {}
+
+  onClickEdit() {
+    this.isInEditMode = true;
+    this.bindTransporterData();
+  }
+
+  private initializeForm() {
+    this.transporterAddForm = this.fb.group({
+      name: ['', Validators.required],
+      phone: ['', Validators.required],
+      truckStand: ['', Validators.required],
+      bankName: [''],
+      bankBranch: [''],
+      bankAccountName: [''],
+      bankAccountNumber: [''],
+      mfsName: [''],
+      mfsNumber: [''],
+      mfsType: [''],
+      paymentMethod: ['Cash', Validators.required],
+      contactPersonName: ['', Validators.required],
+      role: [''],
+      note: [''],
+      nidFront: [''],
+      nidBack: [''],
+      profilePicture: [''],
+      tradeLicense: [''],
+      agreement: [''],
+      other: [''],
+      agreementExpiration: [''],
+      tradeLicenseExpiration: [''],
+    });
+  }
+
+  protected readonly CountryISO = CountryISO;
+  mfsService: CustomInputSelectModel[] = [
+    { id: 1, value: 'bKash', selected: false },
+    { id: 2, value: 'Nagad', selected: false },
+  ];
+
+  get phoneNumber() {
+    return this.transporterAddForm.get('phone');
+  }
+
+  setPreferredPaymentMethod($any: any, paymentMethod: string) {
+    if ($any.checked) {
+      this.preferredPaymentMethod = paymentMethod;
+      this.transporterAddForm.get('paymentMethod').setValue(paymentMethod);
+    }
+  }
+
+  onSelectBkashType($event: number) {
+    this.bkashPaymentTypePlaceholder = this.bkashPaymentMethod.find(
+      method => method.id === $event
+    ).value;
+    this.bkashPaymentMethod.forEach(
+      method => (method.selected = method.id === $event)
+    );
+    this.transporterAddForm
+      .get('mfsType')
+      .setValue(this.bkashPaymentTypePlaceholder);
+  }
+
+  private bindTransporterData() {
+    this.transporterAddForm.patchValue({
+      name: this.transporter.name,
+      phone: this.transporter.contactPersonNumber,
+      truckStand: this.transporter.truckStand,
+      bankName: this.transporter?.defaultPaymentMethod?.name,
+      bankBranch: this.transporter?.defaultPaymentMethod?.branchName,
+      bankAccountName: this.transporter?.defaultPaymentMethod?.accHolderName,
+      bankAccountNumber: this.transporter?.defaultPaymentMethod?.bankAccNo,
+      paymentMethod: this.transporter.defaultPaymentMethod?.paymentMethod,
+      contactPersonName: this.transporter.contactPersonName,
+      note: this.transporter.note,
+    });
+    if (
+      this.transporter?.defaultPaymentMethod?.paymentMethod !== 'Cash' &&
+      this.transporter?.defaultPaymentMethod?.paymentMethod !== 'Bank'
+    ) {
+      this.transporterAddForm.patchValue({
+        mfsName: this.transporter.defaultPaymentMethod?.name,
+        mfsNumber: this.transporter.defaultPaymentMethod?.bankAccNo,
+        mfsType: this.transporter.defaultPaymentMethod?.paymentMethod,
+      });
+    }
+  }
+
+  private loadPreviousPayload() {
+    const payload = JSON.parse(localStorage.getItem('transporterPayload'));
+    this.transporterAddForm.patchValue({
+      name: payload.name,
+      phone: payload.contactPersonNumber,
+      truckStand: payload.truckStand,
+      bankName: payload.defaultPaymentMethod?.name,
+      bankBranch: payload.defaultPaymentMethod?.branchName,
+      bankAccountName: payload.defaultPaymentMethod?.accHolderName,
+      bankAccountNumber: payload.defaultPaymentMethod?.bankAccNo,
+      paymentMethod: payload.defaultPaymentMethod?.paymentMethod,
+      contactPersonName: payload.contactPersonName,
+      note: payload.note,
+    });
+    if (
+      payload.defaultPaymentMethod?.paymentMethod !== 'Cash' &&
+      payload.defaultPaymentMethod?.paymentMethod !== 'Bank'
+    ) {
+      this.transporterAddForm.patchValue({
+        mfsName: payload.defaultPaymentMethod?.name,
+        mfsNumber: payload.defaultPaymentMethod?.bankAccNo,
+        mfsType: payload.defaultPaymentMethod?.paymentMethod,
+      });
+    }
+  }
+
+  onUploadButtonTriggered($event: any) {
+    if ($event) {
+      const payload = {
+        name: this.transporterAddForm.get('name').value,
+        contactPersonNumber: this.transporterAddForm.get('phone').value,
+        truckStand: this.transporterAddForm.get('truckStand').value,
+        defaultPaymentMethod: {
+          name: this.transporterAddForm.get('bankName').value,
+          branchName: this.transporterAddForm.get('bankBranch').value,
+          accHolderName: this.transporterAddForm.get('bankAccountName').value,
+          bankAccNo: this.transporterAddForm.get('bankAccountNumber').value,
+          paymentMethod: this.transporterAddForm.get('paymentMethod').value,
+          accType: '',
+        },
+        contactPersonName:
+          this.transporterAddForm.get('contactPersonName').value,
+        note: this.transporterAddForm.get('note').value,
+      };
+      if (this.preferredPaymentMethod === 'MFS') {
+        payload.defaultPaymentMethod.name =
+          this.transporterAddForm.get('mfsName').value;
+        payload.defaultPaymentMethod.bankAccNo =
+          this.transporterAddForm.get('mfsNumber').value;
+        payload.defaultPaymentMethod.accType =
+          this.transporterAddForm.get('mfsType').value;
+      }
+
+      localStorage.setItem('isFromDocumentSave', String(true));
+
+      localStorage.setItem('transporterPayload', JSON.stringify(payload));
+    }
+  }
+
+  private getExpiryFromSessionStorage(name: string) {
+    switch (name) {
+      case 'Trade License':
+        return sessionStorage.getItem('tradelicenseexpiry');
+      case 'Agreement':
+        return sessionStorage.getItem('agreementexpiry');
+      default:
+        return null;
+    }
+  }
+
+  onSelectMFSType($event: number) {
+    this.mfsTypePlaceholder = this.mfsService.find(
+      method => method.id === $event
+    ).value;
+    this.mfsService.forEach(
+      method => (method.selected = method.id === $event)
+    );
+    this.transporterAddForm
+      .get('mfsType')
+      .setValue(this.bkashPaymentTypePlaceholder);
+  }
 }

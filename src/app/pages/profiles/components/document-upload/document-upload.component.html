@@ -1,0 +1,181 @@
+<div class="grid grid-cols-3">
+  <div
+    class="col-span-2 flex flex-col w-full bg-black h-[calc(100vh-4.125rem)]">
+    <div class="px-7 py-[1.375rem] flex justify-between bg-[#302F2F]">
+      <div
+        (click)="onClickBack()"
+        class="flex space-x-3 items-center cursor-pointer text-white">
+        <a class="cursor-pointer"
+        ><i class="fas fa-chevron-left text-white"></i
+        ></a>
+        <span class="text-h3 leading-h3 font-bold"
+        >{{imageType}}
+        </span
+        >
+      </div>
+      <div class="flex space-x-4 text-white items-center">
+        <button
+          [disabled]="zoomLevel >= maxZoom"
+          [ngClass]="{ 'text-secondary': zoomLevel >= maxZoom }"
+          (click)="zoomIn()"
+          class="flex items-center justify-center">
+          <i class="fal text-[2rem] fa-search-plus"></i>
+        </button>
+        <button
+          [disabled]="zoomLevel <= minZoom"
+          (click)="zoomOut()"
+          [ngClass]="{ 'text-secondary': zoomLevel <= minZoom }"
+          class="flex items-center justify-center">
+          <i class="fal text-[2rem] fa-search-minus"></i>
+        </button>
+        <button type="button" (click)="onClickDownload()" class="h-full">
+          <img
+            src="assets/svg/download.svg"
+            class="notPreview h-full w-full"
+            alt="" />
+        </button>
+        <button type="button" (click)="onClickDelete()">
+          <img
+            src="assets/svg/delete.svg"
+            class="notPreview h-full w-full"
+            alt="" />
+        </button>
+      </div>
+    </div>
+    <div
+      (wheel)="onZoom($event)"
+      class="h-[calc(100vh-16.5rem)] py-[1.125rem] flex relative justify-center items-center overflow-hidden"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()"
+      (mousemove)="onMouseMove($event)">
+      <button
+        (click)="onClickLeftButton()"
+        [ngClass]="{ show: activeDocumentIndex > 0 && showLeftArrow }"
+        class="arrow absolute left-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+        <i class="fas fa-chevron-left font-bold text-white text-xxl"></i>
+      </button>
+
+      <div
+        #containerElement
+        class="w-[90%] h-[calc(100vh-18.75rem)] overflow-hidden rounded-lg border border-gray-800 flex items-center justify-center transition-transform duration-300 transform origin-center relative">
+        <div
+          #imageElement
+          class="transition-transform h-full rounded-lg overflow-hidden duration-300 transform origin-center relative"
+          [style.transform]="'scale(' + zoomLevel + ')'">
+          <ng-container
+            *ngIf="documentFiles[activeDocumentIndex]?.file.type === 'application/pdf';
+                            else imagePreview">
+            <iframe
+              [src]="activatedDocument | fallbackImage"
+              appImageError
+              type="application/pdf"
+              class="h-full w-full"
+              style="height: 90vh">
+            </iframe>
+            <!-- Display PDF Preview -->
+          </ng-container>
+          <ng-template #imagePreview>
+            <!-- Display Image Preview -->
+            <img
+              class="h-full w-full notPreview"
+              [src]="activatedDocument | fallbackImage"
+              appImageError
+              alt="" />
+          </ng-template>
+        </div>
+      </div>
+
+      <button
+        (click)="onClickRightButton()"
+        [ngClass]="{
+          show: activeDocumentIndex < documents.length - 1 && showRightArrow,
+        }"
+        class="arrow absolute right-0 top-1/2 transform -translate-y-1/2 w-8 h-16 bg-[#302F2F]">
+        <i class="fas fa-chevron-right font-bold text-white text-xxl"></i>
+      </button>
+    </div>
+    <div
+      class="min-h-32 bg-[#302F2F] flex items-center w-full justify-center customScrollbar">
+      <div class="flex space-x-4 w-2/3 overflow-x-auto" #documentContainer>
+        <ng-container *ngFor="let doc of documents; index as i">
+          <div
+            (click)="onClickDocument(doc, i)"
+            [ngClass]="{ scaled: doc === activatedDocument }"
+            class="document-item w-[5.25rem] flex-shrink-0 h-20 bg-[#F0F4F8] overflow-hidden rounded-lg">
+            <ng-container
+              *ngIf="documentFiles[i]?.file.type === 'application/pdf';
+                            else imagePreview">
+              <!-- Display PDF Preview -->
+              <img
+                class="h-full w-full notPreview"
+                src="assets/svg/pdf.svg"
+                alt="abc" />
+            </ng-container>
+            <ng-template #imagePreview>
+              <!-- Display Image Preview -->
+              <img
+                class="h-full w-full notPreview"
+                [src]="doc | fallbackImage"
+                appImageError
+                alt="" />
+            </ng-template>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="mx-6">
+    <div
+      class="px-10 py-5 flex justify-between items-center border-b border-b-line">
+      <span class="text-h3 leading-h3 text-not-black font-bold"
+      >Image details</span
+      >
+      <button
+        [disabled]="isLoading"
+        (click)="onClickSave()"
+        class="bg-primary py-2 text-white rounded-lg px-8 text-center text-h2_medium">
+        <i *ngIf="isLoading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+        Save
+      </button>
+    </div>
+    <div class="px-10 py-5 flex flex-col space-y-5">
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Upload time</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black">
+          {{uploadTime | date: 'dd MMM yyyy, hh:mm a'}}
+        </span>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="text-body text-secondary">Image type</span>
+        <span class="text-h2 leading-h2 font-semibold text-not-black"
+        >{{imageType}}
+        </span
+        >
+      </div>
+      <div class="flex flex-col space-y-1" *ngIf="expiryAvailable">
+        <span class="text-body text-secondary">Expire date</span>
+        <mat-form-field
+          class="example-full-width flex-1 w-full"
+          [ngClass]="{ error: !expiryDate }"
+          appearance="outline">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            placeholder="Expiry Date"
+            (focusin)="picker.open()"
+            (selectionchange)="onDateChange($event)"/>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col space-y-1" *ngIf="notesAvailable">
+        <span class="text-h2 leading-h2 font-semibold text-not-black"
+        >Note</span>
+        <p class="text-body text-secondary text-justify">
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

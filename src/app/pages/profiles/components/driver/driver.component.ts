@@ -15,7 +15,7 @@ import { driverFileType } from '../customer/model/driver-file-type';
 import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { debounceTime } from 'rxjs';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { MatButton } from '@angular/material/button';
@@ -27,6 +27,7 @@ import {
   DriverDocumentType,
   TruckDocumentType,
 } from '../../../../shared/Enums/registration_type';
+import { DateEnum } from '../../../trip-list/Enum/date.enum';
 
 @Component({
   selector: 'app-driver',
@@ -62,14 +63,28 @@ export class DriverComponent implements OnInit {
   totalPages: number;
   searchValue: string;
   private size = 30;
+  dateFilter: number = 0;
+  private from: any;
+  private to: any;
+  filterForm: FormGroup;
+  isDateOpened: boolean;
 
   constructor(
     private user: UserService,
     private sharedService: DriverEditSharedService,
-    private toastr: HandleToastrService
-  ) {}
+    private toastr: HandleToastrService,
+    private datePipe: DatePipe,
+    private formBuilder: FormBuilder
+  ) {
+    this.filterForm = this.formBuilder.group({
+      search: [''],
+      startDate: [''],
+      endDate: [''],
+    });
+  }
 
   ngOnInit(): void {
+    this.generateDateOptionsArray()
     this.onSelectStatus(0);
     this.driverList = [];
     this.getDriverList();
@@ -88,7 +103,9 @@ export class DriverComponent implements OnInit {
           this.searchValue,
           this.statusInputPlaceholder === 'All'
             ? ''
-            : this.statusInputPlaceholder
+            : this.statusInputPlaceholder,
+          this.from,
+          this.to
         )
         .pipe(debounceTime(1000))
         .subscribe((res: any) => {
@@ -104,7 +121,9 @@ export class DriverComponent implements OnInit {
           null,
           this.statusInputPlaceholder === 'All'
             ? ''
-            : this.statusInputPlaceholder
+            : this.statusInputPlaceholder,
+          this.from,
+          this.to
         )
         .subscribe((res: any) => {
           this.driverList = res.data.responses;
@@ -260,6 +279,12 @@ export class DriverComponent implements OnInit {
     this.statusOptionsArray.forEach(option => {
       option.selected = false;
     });
+    this.dateFilter = 0;
+    this.from = '';
+    this.to = '';
+    this.filterForm.get('startDate')?.setValue('');
+    this.filterForm.get('endDate')?.setValue('');
+    this.inputPlaceholder = ''
     this.statusInputPlaceholder = 'All';
     this.page = 0;
     this.size = 30;
@@ -385,7 +410,7 @@ export class DriverComponent implements OnInit {
   checkThatFileIsExistOrNot(fileName: any, truckDocumentList: any[]) {
     let isExist = false;
     let expDate = '';
-    truckDocumentList.forEach(doc => {
+    truckDocumentList?.forEach(doc => {
       if (doc.documentType == this.driverEnum[fileName]) {
         isExist = true;
         expDate = doc?.expiryDate;
@@ -411,6 +436,19 @@ export class DriverComponent implements OnInit {
   }
 
   protected readonly truckEnum = TruckDocumentType;
+  dateOpened: boolean;
+  inputPlaceholder: string;
+  dateOptionArray: CustomInputSelectModel[];
+
+  private generateDateOptionsArray() {
+    this.dateOptionArray = [
+      { id: DateEnum.Today, value: 'Today', selected: false },
+      { id: DateEnum.LastSevenDays, value: 'Last 7 days', selected: false },
+      { id: DateEnum.LastFifteenDays, value: 'Last 15 days', selected: false },
+      { id: DateEnum.LastThirtyDays, value: 'Last 30 days', selected: false },
+      { id: DateEnum.Custom, value: 'Custom', selected: false },
+    ];
+  }
 
   onClickOther(other: string, driver: UserModel) {
     this.singleDriver = driver;
@@ -434,5 +472,65 @@ export class DriverComponent implements OnInit {
         value: driver,
       },
     });
+  }
+
+  onSelectedFromDate($event: string) {
+    this.filterForm.get('startDate')?.setValue($event);
+  }
+
+  onSelectedToDate($event: string) {
+    this.filterForm.get('endDate')?.setValue($event);
+    this.from = this.filterForm.get('startDate')?.value || '';
+    this.to = this.filterForm.get('endDate')?.value || '';
+    this.dateOpened = false;
+    this.isDateOpened = false;
+    this.page = 0;
+    this.size = 30;
+    this.getDriverList();
+  }
+
+  onSelectDate($event: number) {
+    this.dateFilter = 1;
+    if ($event === DateEnum.Custom) {
+      this.sharedService.closeInputSelect.next(true);
+    } else {
+      this.sharedService.closeInputSelect.next(false);
+      this.inputPlaceholder =
+        this.dateOptionArray.find(x => x.id === $event)?.value || '';
+      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
+      this.setDateRange($event);
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getDriverList();
+    }
+  }
+
+
+  private setDateRange(dateEnum: DateEnum) {
+    const fromDate = new Date();
+    // to date should be yesterday
+    const toDate = new Date();
+    switch (dateEnum) {
+      case DateEnum.Today:
+        fromDate.setDate(fromDate.getDate());
+        toDate.setDate(toDate.getDate());
+        break;
+      case DateEnum.LastSevenDays:
+        // shouldn't be count today
+        fromDate.setDate(fromDate.getDate() - 7);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastFifteenDays:
+        fromDate.setDate(fromDate.getDate() - 15);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastThirtyDays:
+        fromDate.setDate(fromDate.getDate() - 30);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+    }
+    this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
+    this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
   }
 }

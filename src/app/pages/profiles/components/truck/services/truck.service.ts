@@ -20,7 +20,9 @@ export class TruckService {
     status?: string,
     isTrackerEnabled?: boolean,
     transporterName?: string,
-    condition?: string
+    condition?: string,
+    from?: string,
+    to?: string
   ): Observable<any> {
     let apiUrl = `${this.url}?page=${page}&size=${size}`;
     if (search) {
@@ -37,6 +39,12 @@ export class TruckService {
     }
     if (condition) {
       apiUrl += `&condition=${condition}`;
+    }
+    if (from) {
+      apiUrl += `&from=${from}`;
+    }
+    if (to) {
+      apiUrl += `&to=${to}`;
     }
 
     return this.http.get(apiUrl);

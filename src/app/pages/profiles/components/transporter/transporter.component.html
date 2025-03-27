@@ -34,6 +34,51 @@
         </button>
       </div>
     </div>
+    <div class="w-full bg-white rounded-lg">
+      <button
+        class="flex px-2 py-1 space-x-3 items-center w-full"
+        [ngClass]="{ 'border-b-2 border-[#0CD5F0]': filterOpened }">
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="!filterOpened"
+          class="fas fa-caret-down text-input-hint text-xl"></i>
+        <i
+          (click)="onClickFilterOpened()"
+          *ngIf="filterOpened"
+          class="fas fa-caret-up text-input-hint text-xl"></i>
+        <span class="text-not-black text-body_title leading-body_title"
+        >Filter
+          <span  *ngIf="dateFilter"
+          >({{ dateFilter }})</span
+          >
+          <span *ngIf="dateFilter" class="text-input-hint px-3"
+          >|</span
+          >
+          <a
+            *ngIf="dateFilter"
+            (click)="onClearFilter()"
+            class="text-red"
+          >Clear all</a
+          >
+        </span>
+      </button>
+      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
+        <div class="flex flex-col space-y-1 w-[14.375rem]">
+          <label class="text-body text-web-text-secondary px-2">Date</label>
+          <app-custom-input
+            class=""
+            appGetClickEvent
+            (clickedElement)="dateOpened = $event"
+            [inputSearch]="inputPlaceholder"
+            (selectedFromDate)="onSelectedFromDate($event)"
+            (selectedToDate)="onSelectedToDate($event)"
+            (selectedFromDateToToDate)="inputPlaceholder = $event"
+            inputPlaceholder="Select Date"
+            [options]="dateOptionArray"
+            (selectedId)="onSelectDate($event)"></app-custom-input>
+        </div>
+      </div>
+    </div>
   </div>
   <div
     appGiveMaxHeight
@@ -55,7 +100,7 @@
         <!--        <th style="width: 5%"></th>-->
       </tr>
       <tr>
-        <th class="border" colspan="8"></th>
+        <th class="custom-border" colspan="8"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -69,49 +114,50 @@
                       transporter.name[0]
                     }}</span>
               </div>
-              <span class="flex-1">{{ transporter.name }}</span>
+              <a routerLink="/profile/transporter/{{ transporter.id }}/details"
+                 class="flex-1 text-link">{{ transporter.name }}</a>
             </div>
           </td>
           <td class="sticky left-[20rem] bg-white">
             <a
               class="cursor-pointer"
               (click)="copyNumber($event, transporter.phone)"
-            >{{ transporter.phone }}</a
+            >{{ transporter.contactPersonNumber }}</a
             >
           </td>
           <td class="whitespace-nowrap">
             {{
-              transporter.createdOn
-                ? (transporter.createdOn | date: 'd MMM yyyy')
+              transporter.createdAt
+                ? (transporter.createdAt | date: 'd MMM yyyy')
                 : ''
             }}
           </td>
           <td>{{ transporter.truckStand }}</td>
           <td>
             {{
-              transporter.paymentMethod?.paymentMethod
-                ? transporter.paymentMethod?.paymentMethod
+              transporter.defaultPaymentMethod?.paymentMethod
+                ? transporter.defaultPaymentMethod?.paymentMethod
                 : 'Cash'
             }}
           </td>
           <td>
             {{
-              transporter.numberOfTrips != null
-                ? transporter.numberOfTrips
+              transporter.rank?.numberOfTrips !== null
+                ? (Math.round(transporter.rank?.numberOfTrips) | number)
                 : '0'
             }}
           </td>
           <td>
             {{
-              transporter.grossProfit != null
-                ? (transporter.grossProfit | number)
-                : '0'
+              transporter.rank?.grossProfit !== null
+                ? (Math.round(transporter.rank?.grossProfit) | number)
+                : 'N/A'
             }}
           </td>
           <td>
             {{
-              transporter.rank != null && transporter.rank > 0
-                ? transporter.rank
+              transporter.rank?.rank !== null && transporter.rank?.rank > 0
+                ? Math.round(transporter.rank?.rank)
                 : 'N/A'
             }}
           </td>
