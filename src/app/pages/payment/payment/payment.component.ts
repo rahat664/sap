@@ -11,6 +11,7 @@ import { GiveMaxHeightDirective } from '../../../shared/directive/give-max-heigh
 import { LoadingComponent } from '../../../shared/modules/loading/loading.component';
 import { OffCanvasComponent } from '../../../shared/modules/off-canvas/off-canvas.component';
 import { TripService } from '../../trip-list/services/trip.service';
+import { TransporterPayment } from '../model/transporter-payment.model';
 
 @Component({
   selector: 'app-payment',
@@ -48,6 +49,16 @@ export class PaymentComponent {
   tripId: any;
   page: number = 0;
   size:number = 20;
+  paymentData: {
+    totalTransportRate: number;
+    totalPaid: number;
+    totalUnpaid: number;
+  } = {
+    totalTransportRate: 0,
+    totalPaid: 0,
+    totalUnpaid: 0,
+  }
+  transportersPaymentList: TransporterPayment[] = [];
 
   constructor(private trip: TripService) {
   }
@@ -106,7 +117,14 @@ export class PaymentComponent {
 
   private transporterPaymentList() {
     this.trip.getTransporterPaymentList(this.page, this.size).subscribe((res: any) => {
-
+      this.transportersPaymentList = res.data.responses;
+      this.totalPages = res.data.totalPages;
+      this.paymentData = res.data.paymentData;
+      this.totalTrips = res.data.totalItems;
+      this.loading = false;
+    }, (error: any) => {
+      this.loading = false;
+      console.error('Error fetching transporter payment list:', error);
     })
   }
 }

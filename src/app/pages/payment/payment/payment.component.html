@@ -164,25 +164,31 @@
       <div class="w-full flex items-center justify-center  border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-secondary">Total trip</span>
-          <span class="text-h1 font-semibold leading-h1 text-not-black">145</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">{{totalTrips}}</span>
         </div>
       </div>
       <div class="w-full flex items-center justify-center  border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-not-primary">Transporter Rate(৳)</span>
-          <span class="text-h1 font-semibold leading-h1 text-not-black">120000</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">{{
+            paymentData?.totalTransportRate
+            }}</span>
         </div>
       </div>
       <div class="w-full flex items-center justify-center  border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-green">Paid(৳)</span>
-          <span class="text-h1 font-semibold leading-h1 text-not-black">80000</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">
+            {{paymentData?.totalPaid}}
+          </span>
         </div>
       </div>
       <div class="w-full flex items-center justify-center ">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-red">Due(৳)</span>
-          <span class="text-h1 font-semibold leading-h1 text-not-black">40000</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">{{
+            paymentData?.totalUnpaid
+            }}</span>
         </div>
       </div>
     </div>
@@ -212,7 +218,7 @@
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
-      <ng-container *ngFor="let trip of totalTrips">
+      <ng-container *ngFor="let trip of transportersPaymentList">
         <tr>
           <td class="whitespace-nowrap text-link">TR-001</td>
           <td class="whitespace-nowrap">Chittagong Energy Holdings</td>
