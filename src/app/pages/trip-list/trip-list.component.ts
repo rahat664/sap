@@ -593,7 +593,10 @@ export class TripListComponent implements OnInit, AfterViewInit {
       return 'Cash';
     } else if (paymentType === PaymentType.INVOICE) {
       return 'Invoice';
-    } else {
+    } else if (paymentType === PaymentType.COMMISSION) {
+      return 'Commission';
+    }else
+     {
       return 'Cash & Invoice';
     }
   }

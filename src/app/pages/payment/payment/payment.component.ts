@@ -10,6 +10,7 @@ import { CommonModule, NgIf } from '@angular/common';
 import { GiveMaxHeightDirective } from '../../../shared/directive/give-max-height.directive';
 import { LoadingComponent } from '../../../shared/modules/loading/loading.component';
 import { OffCanvasComponent } from '../../../shared/modules/off-canvas/off-canvas.component';
+import { TripService } from '../../trip-list/services/trip.service';
 
 @Component({
   selector: 'app-payment',
@@ -45,6 +46,15 @@ export class PaymentComponent {
   searchId: any;
   tripIdSuggestions: any;
   tripId: any;
+  page: number = 0;
+  size:number = 20;
+
+  constructor(private trip: TripService) {
+  }
+
+  ngONInit() {
+    this.transporterPaymentList();
+  }
 
   onClickFilterOpened() {}
 
@@ -92,5 +102,11 @@ export class PaymentComponent {
 
   hideOffCanvas() {
     this.isOffCanvasVisible = false;
+  }
+
+  private transporterPaymentList() {
+    this.trip.getTransporterPaymentList(this.page, this.size).subscribe((res: any) => {
+
+    })
   }
 }

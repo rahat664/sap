@@ -998,6 +998,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       return 'Cash';
     } else if (paymentType === PaymentType.INVOICE) {
       return 'Invoice';
+    } else if (paymentType === PaymentType.COMMISSION) {
+      return 'Commission';
     } else {
       return 'Cash & Invoice';
     }
