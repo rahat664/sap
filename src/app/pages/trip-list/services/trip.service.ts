@@ -43,7 +43,7 @@ export class TripService {
   bottomHeight: BehaviorSubject<string> = new BehaviorSubject('0px');
   anotherStatusCalled: BehaviorSubject<boolean> = new BehaviorSubject(false);
   historyApi = `${environment.locationUrl}/api/locations/histories`;
-  transporterPaymentUrl = `${environment.backendUrl}/api/trips/transporter-payment`;
+  transporterPaymentUrl = `${environment.backendUrl}/api/transporter-payment`;
 
   constructor(
     private http: HttpClient,

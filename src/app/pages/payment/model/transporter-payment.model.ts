@@ -1,4 +1,5 @@
-export interface TripPayment {
+// trip.model.ts (Trip Data Model)
+export interface Trip {
   id: number;
   tripId: string;
   customerName: string;
@@ -29,6 +30,9 @@ export interface TripPayment {
     registrationSerial: string;
     registrationNum: string;
   };
+  company: string;
+  loadingPoint: string;
+  unloadingPoint: string;
   status: string;
   customerRate: number;
   transporterRate: number;
@@ -40,8 +44,19 @@ export interface TripPayment {
   transporterCode: string;
   transporterName?: string;
   transporterPhone?: string;
+  challanStatusUpdatedAt?: string | null;
   tripEndedAt: string;
+  challanStatusUpdatedBy?: string | null;
+  challanHardCopyReceivedAt?: string | null;
+  challanHardCopyReceivedBy?: string | null;
+  incidentOccurred: boolean;
+  paymentType: string;
+  tripType?: string | null;
+  paymentAmountToTransporter: number;
+  lastPaymentDateToTransporter?: string | null;
+  firstChallanUploadedDate?: string | null;
   createdBy: string;
   createdByName: string;
   createdByPhone: string;
 }
+

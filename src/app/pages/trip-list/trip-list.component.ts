@@ -606,7 +606,20 @@ export class TripListComponent implements OnInit, AfterViewInit {
 
   onClickGenerateReport() {
     this.excelLoading = true;
-    this.service.getTripReport().subscribe((response: any) => {
+    const params = {
+      customerCode: this.customerCode,
+      from: this.from,
+      to: this.to,
+      status: this.status,
+      searchValue: this.searchValue,
+      truckType: this.truckType,
+      tripId: this.tripId,
+      transporterName: this.transporterName,
+      paymentType: this.paymentTypeValue,
+    }
+    this.service.getTripReport(
+      params
+    ).subscribe((response: any) => {
       if (response) {
         const url = window.URL.createObjectURL(response)
         const a = document.createElement('a');

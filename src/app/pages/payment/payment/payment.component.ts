@@ -52,7 +52,7 @@ export class PaymentComponent {
   constructor(private trip: TripService) {
   }
 
-  ngONInit() {
+  ngOnInit() {
     this.transporterPaymentList();
   }
 
