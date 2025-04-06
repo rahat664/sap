@@ -1098,19 +1098,29 @@ export class TripUpdateComponent implements OnInit {
       );
   }
 
-  protected readonly tripTypes = tripTypes;
-  protected readonly paymentType = paymentTypes;
+  protected readonly tripTypes: tripType[] = tripTypes;
+  protected readonly paymentType: paymentType[] = paymentTypes;
 
 
   onTripTypeClick(type: tripType) {
     switch (type.id) {
       case 1:
         this.tripUpdateForm.get('tripType').setValue('COMMERCIAL');
+        this.tripTypes.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        )
         break;
       case 2:
         this.tripUpdateForm.get('tripType').setValue('PROJECT');
+        this.tripTypes.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        )
         break;
       default:
+        this.tripUpdateForm.get('tripType').setValue('COMMERCIAL');
+        this.tripTypes.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        )
         break;
     }
   }
@@ -1119,17 +1129,33 @@ export class TripUpdateComponent implements OnInit {
     switch (type.id) {
       case 1:
         this.tripUpdateForm.get('paymentType').setValue('CASH');
+        this.paymentType.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        )
         break;
       case 2:
         this.tripUpdateForm.get('paymentType').setValue('INVOICE');
+        this.paymentType.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        )
         break;
       case 3:
         this.tripUpdateForm.get('paymentType').setValue('CASH_AND_INVOICE');
+        this.paymentType.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        )
         break;
       case 4:
         this.tripUpdateForm.get('paymentType').setValue('COMMISSION');
+        this.paymentType.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        )
         break;
       default:
+        this.tripUpdateForm.get('paymentType').setValue('INVOICE');
+        this.paymentType.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        )
         break;
     }
   }

@@ -41,6 +41,14 @@
                 formControlName="name"
                 placeholder="Enter Transporter Name" />
             </mat-form-field>
+            <div
+              *ngIf="
+            transporterAddForm.get('name').touched &&
+            transporterAddForm.get('name').invalid
+          "
+              class="text-red text-xs">
+              <span>Transporter name is required</span>
+            </div>
           </div>
           <div class="flex flex-col space-y-1">
             <label for="contactPersonName">Contact person name</label>
@@ -61,6 +69,14 @@
                 formControlName="contactPersonName"
                 placeholder="Enter Contact Person Name" />
             </mat-form-field>
+            <div
+              *ngIf="
+            transporterAddForm.get('contactPersonName').touched &&
+            transporterAddForm.get('contactPersonName').invalid
+          "
+              class="text-red text-xs">
+              <span>Contact person name is required</span>
+            </div>
           </div>
           <div class="flex flex-col  w-full">
             <ngx-material-intl-tel-input
@@ -147,58 +163,60 @@
               <h1
                 class="text-body_title font-semibold text-not-black">Bank</h1>
             </div>
-            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
-              <i class="fal fa-angle-down text-xl"></i>
-            </button>
+<!--            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">-->
+<!--              <i class="fal fa-angle-down text-xl"></i>-->
+<!--            </button>-->
           </div>
-          <div class="py-3 px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
-            <div class="flex flex-col space-y-1 col-span-2">
-              <label for="bankName">Bank Name</label>
-              <mat-form-field appearance="outline" class="example-full-width">
-                <input
-                  id="bankName"
-                  type="text"
-                  matInput
-                  formControlName="bankName"
-                  placeholder="Enter Bank Name" />
-              </mat-form-field>
-            </div>
-            <div class="flex flex-col space-y-1">
-              <label for="bankBranch">Branch</label>
-              <mat-form-field appearance="outline" class="example-full-width">
-                <input
-                  id="bankBranch"
-                  type="text"
-                  matInput
-                  formControlName="bankBranch"
-                  placeholder="Enter Branch" />
-              </mat-form-field>
-            </div>
-            <div class="flex flex-col space-y-1">
-              <label for="bankAccountName">Account Name</label>
-              <mat-form-field appearance="outline" class="example-full-width">
-                <input
-                  id="bankAccountName"
-                  type="text"
-                  matInput
-                  formControlName="bankAccountName"
-                  placeholder="Enter Account Name" />
-              </mat-form-field>
-            </div>
-            <div class="flex flex-col space-y-1 col-span-2">
-              <label for="bankAccountNumber">Account Number</label>
-              <mat-form-field appearance="outline" class="example-full-width">
-                <input
-                  id="bankAccountNumber"
-                  type="text"
-                  matInput
-                  formControlName="bankAccountNumber"
-                  placeholder="Enter Account Number" />
-              </mat-form-field>
-            </div>
-            <mat-checkbox [checked]="preferredPaymentMethod === 'Bank'"  (change)="setPreferredPaymentMethod($any($event), 'Bank')">
+          <div class="{{preferredPaymentMethod === 'Bank' ? 'py-3' : 'py-1'}} px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]" >
+            <ng-container *ngIf="preferredPaymentMethod === 'Bank'">
+              <div class="flex flex-col space-y-1 col-span-2">
+                <label for="bankName">Bank Name</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                  <input
+                    id="bankName"
+                    type="text"
+                    matInput
+                    formControlName="bankName"
+                    placeholder="Enter Bank Name" />
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label for="bankBranch">Branch</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                  <input
+                    id="bankBranch"
+                    type="text"
+                    matInput
+                    formControlName="bankBranch"
+                    placeholder="Enter Branch" />
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label for="bankAccountName">Account Name</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                  <input
+                    id="bankAccountName"
+                    type="text"
+                    matInput
+                    formControlName="bankAccountName"
+                    placeholder="Enter Account Name" />
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1 col-span-2">
+                <label for="bankAccountNumber">Account Number</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                  <input
+                    id="bankAccountNumber"
+                    type="text"
+                    matInput
+                    formControlName="bankAccountNumber"
+                    placeholder="Enter Account Number" />
+                </mat-form-field>
+              </div>
+            </ng-container>
+            <mat-radio-button [checked]="preferredPaymentMethod === 'Bank'"  (change)="setPreferredPaymentMethod($any($event), 'Bank')">
               Set as preferred
-            </mat-checkbox>
+            </mat-radio-button>
           </div>
         </div>
         <div class="border border-x-disabled rounded-lg overflow-hidden">
@@ -208,47 +226,49 @@
               <h1
                 class="text-body_title font-semibold text-not-black">MFS</h1>
             </div>
-            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
-              <i class="fal fa-angle-down text-xl"></i>
-            </button>
+<!--            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">-->
+<!--              <i class="fal fa-angle-down text-xl"></i>-->
+<!--            </button>-->
           </div>
-          <div class="py-3 px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
-            <div class="flex flex-col space-y-1">
-              <label for="mfservice">MFS Service</label>
-              <app-custom-input
-                id="mfservice"
-                [isFilterMenu]="false"
-                [inputSearch]="mfsTypePlaceholder"
-                [options]="mfsService"
-                inputPlaceholder="Select MFS Service"
-                appGetClickEvent
-                (selectedId)="onSelectMFSType($event)"></app-custom-input>
-            </div>
-            <div class="flex flex-col space-y-1">
-              <label for="bankBranch">MFS Type</label>
-              <app-custom-input
-                id="accountType"
-                [isFilterMenu]="false"
-                [inputSearch]="bkashPaymentTypePlaceholder"
-                [options]="bkashPaymentMethod"
-                inputPlaceholder="Select Account Type"
-                appGetClickEvent
-                (selectedId)="onSelectBkashType($event)"></app-custom-input>
-            </div>
-            <div class="flex flex-col space-y-1 col-span-2">
-              <label for="mfsNumber">Account Number</label>
-              <mat-form-field appearance="outline" class="example-full-width">
-                <input
-                  id="mfsNumber"
-                  type="text"
-                  matInput
-                  formControlName="mfsNumber"
-                  placeholder="Enter Account Number" />
-              </mat-form-field>
-            </div>
-            <mat-checkbox [checked]="preferredPaymentMethod === 'MFS'"  (change)="setPreferredPaymentMethod($any($event), 'MFS')">
+          <div class="{{preferredPaymentMethod === 'MFS' ? 'py-3' : 'py-1'}} px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
+            <ng-container *ngIf="preferredPaymentMethod === 'MFS'">
+              <div class="flex flex-col space-y-1">
+                <label for="mfservice">MFS Service</label>
+                <app-custom-input
+                  id="mfservice"
+                  [isFilterMenu]="false"
+                  [inputSearch]="mfsTypePlaceholder"
+                  [options]="mfsService"
+                  inputPlaceholder="Select MFS Service"
+                  appGetClickEvent
+                  (selectedId)="onSelectMFSType($event)"></app-custom-input>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label for="bankBranch">MFS Type</label>
+                <app-custom-input
+                  id="accountType"
+                  [isFilterMenu]="false"
+                  [inputSearch]="bkashPaymentTypePlaceholder"
+                  [options]="bkashPaymentMethod"
+                  inputPlaceholder="Select Account Type"
+                  appGetClickEvent
+                  (selectedId)="onSelectBkashType($event)"></app-custom-input>
+              </div>
+              <div class="flex flex-col space-y-1 col-span-2">
+                <label for="mfsNumber">Account Number</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                  <input
+                    id="mfsNumber"
+                    type="text"
+                    matInput
+                    formControlName="mfsNumber"
+                    placeholder="Enter Account Number" />
+                </mat-form-field>
+              </div>
+            </ng-container>
+            <mat-radio-button [checked]="preferredPaymentMethod === 'MFS'"  (change)="setPreferredPaymentMethod($any($event), 'MFS')">
               Set as preferred
-            </mat-checkbox>
+            </mat-radio-button>
           </div>
         </div>
         <div class="border border-x-disabled rounded-lg overflow-hidden">
@@ -259,8 +279,10 @@
                 class="text-body_title font-semibold text-not-black">Cash</h1>
             </div>
           </div>
-          <mat-checkbox [checked]="preferredPaymentMethod === 'Cash'"  class="px-2" (change)="setPreferredPaymentMethod($any($event), 'Cash')">Set as preferred
-          </mat-checkbox>
+         <div class="py-1">
+           <mat-radio-button [checked]="preferredPaymentMethod === 'Cash'"  class="px-2 " (change)="setPreferredPaymentMethod($any($event), 'Cash')">Set as preferred
+           </mat-radio-button>
+         </div>
         </div>
       </div>
     </div>

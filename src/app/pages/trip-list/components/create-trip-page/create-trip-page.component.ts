@@ -865,11 +865,18 @@ export class CreateTripPageComponent implements OnInit {
     switch (type.id) {
       case 1:
         this.tripForm.get('tripType').setValue('COMMERCIAL');
+        this.tripTypes.forEach(element => {
+          element.active = element.id === 1;
+        })
         break;
       case 2:
         this.tripForm.get('tripType').setValue('PROJECT');
+        this.tripTypes.forEach(element => {
+          element.active = element.id === 2;
+        })
         break;
       default:
+        this.tripForm.get('tripType').setValue('COMMERCIAL');
         break;
     }
   }
@@ -878,17 +885,33 @@ export class CreateTripPageComponent implements OnInit {
     switch (type.id) {
       case 1:
         this.tripForm.get('paymentType').setValue('CASH');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 1;
+        })
         break;
       case 2:
         this.tripForm.get('paymentType').setValue('INVOICE');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 2;
+        })
         break;
       case 3:
         this.tripForm.get('paymentType').setValue('CASH_AND_INVOICE');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 3;
+        })
         break;
       case 4:
         this.tripForm.get('paymentType').setValue('COMMISSION');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 4;
+        })
         break;
       default:
+        this.tripForm.get('paymentType').setValue('INVOICE');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 2;
+        })
         break;
     }
   }

@@ -10,8 +10,11 @@
         <button
           (click)="onClickGenerateReport()"
           class="px-16 flex space-x-4 items-center py-3 lg:py-2 border border-primary text-primary rounded-lg">
+          <i
+            *ngIf="excelLoading"
+            class="fas fa-spinner fa-spin text-primary text-xl"></i>
           <span>
-            Export
+            Export in Excel
           </span>
         </button>
       </div>

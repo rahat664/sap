@@ -37,6 +37,7 @@ import { MatOption } from '@angular/material/core';
 import { PaymentType } from '../../../../../shared/Enums/payment-type';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
+import { MatRadioButton } from '@angular/material/radio';
 
 @Component({
   selector: 'app-transporter-add',
@@ -50,8 +51,8 @@ import { CustomInputSelectModel } from '../../../../../shared/modules/custom-inp
     MatInput,
     NgxMaterialIntlTelInputComponent,
     NgClass,
-    MatCheckbox,
     ProfileDocumentsComponent,
+    MatRadioButton,
   ],
   templateUrl: './transporter-add.component.html',
   styleUrl: './transporter-add.component.scss',
@@ -81,7 +82,7 @@ export class TransporterAddComponent implements OnInit {
     nationalNumberLabel: '',
     hintLabel: '',
     invalidNumberError: '',
-    requiredError: 'This field is required',
+    requiredError: 'Transporter phone number is required',
   };
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   transporterDocuments: TransporterDocument[] = [];
@@ -114,6 +115,7 @@ export class TransporterAddComponent implements OnInit {
   }
 
   onClickSave() {
+    this.transporterAddForm.markAllAsTouched();
     if (this.transporterAddForm.invalid) {
       this.toastr.showError('Please fill all required fields');
       return;
@@ -168,7 +170,8 @@ export class TransporterAddComponent implements OnInit {
       });
     }
     if (files.tradeLicenseFiles.length > 0) {
-      this.tradeLicenseExpiration = this.getExpiryFromSessionStorage('Trade License');
+      this.tradeLicenseExpiration =
+        this.getExpiryFromSessionStorage('Trade License');
       files.tradeLicenseFiles.forEach((file: any) => {
         payloadFormData.append('tradeLicense', file);
       });
@@ -186,13 +189,12 @@ export class TransporterAddComponent implements OnInit {
       });
     }
 
-
     if (this.agreementExpiration) {
       payload['agreementExpiration'] = this.agreementExpiration;
     }
 
     if (this.tradeLicenseExpiration) {
-      payload['tradeLicenseExpiration'] = this.tradeLicenseExpiration
+      payload['tradeLicenseExpiration'] = this.tradeLicenseExpiration;
     }
 
     payloadFormData.append('payload', JSON.stringify(payload));
@@ -304,9 +306,13 @@ export class TransporterAddComponent implements OnInit {
   }
 
   setPreferredPaymentMethod($any: any, paymentMethod: string) {
-    if ($any.checked) {
+    console.log($any);
+    if ($any.source.checked) {
       this.preferredPaymentMethod = paymentMethod;
       this.transporterAddForm.get('paymentMethod').setValue(paymentMethod);
+    } else {
+      this.preferredPaymentMethod = '';
+      this.transporterAddForm.get('paymentMethod').setValue('');
     }
   }
 
@@ -421,11 +427,11 @@ export class TransporterAddComponent implements OnInit {
     this.mfsTypePlaceholder = this.mfsService.find(
       method => method.id === $event
     ).value;
-    this.mfsService.forEach(
-      method => (method.selected = method.id === $event)
-    );
+    this.mfsService.forEach(method => (method.selected = method.id === $event));
     this.transporterAddForm
       .get('mfsType')
       .setValue(this.bkashPaymentTypePlaceholder);
   }
+
+  protected readonly paymentMethod = paymentMethod;
 }

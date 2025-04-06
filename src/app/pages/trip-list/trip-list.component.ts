@@ -39,6 +39,7 @@ import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
 import { UserService } from '../profiles/services/user.service';
 import { PaymentType } from '../../shared/Enums/payment-type';
+import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-trip-list',
@@ -134,7 +135,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
     private shared: DriverEditSharedService,
     private router: Router,
     private transporter: UserService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private toaster: HandleToastrService
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -573,6 +575,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
   }
 
   protected readonly Math = Math;
+  excelLoading: boolean = false;
 
   onSelectPayment($event: number) {
     this.paymentFilter = 1;
@@ -602,17 +605,24 @@ export class TripListComponent implements OnInit, AfterViewInit {
   }
 
   onClickGenerateReport() {
+    this.excelLoading = true;
     this.service.getTripReport().subscribe((response: any) => {
-      const url = window.URL.createObjectURL(response)
-      const a = document.createElement('a');
-      document.body.appendChild(a);
-      a.style.display = 'none';
-      a.href = url;
-      // download link with formated timestamp
-      a.download = `TripReport_${new Date().getTime()}.xlsx`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      if (response) {
+        const url = window.URL.createObjectURL(response)
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.style.display = 'none';
+        a.href = url;
+        // download link with formated timestamp
+        a.download = `TripReport_${new Date().getTime()}.xlsx`;
+        a.click();
+        this.excelLoading = false;
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }
+    }, error => {
+      this.excelLoading = false;
+      this.toaster.showError(error.message);
     });
   }
 }
