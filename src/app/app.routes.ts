@@ -221,8 +221,8 @@ export const routes: Routes = [
       import('./pages/support/support.component').then(m => m.SupportComponent),
   },
   {
-    path: 'payment',
-    title: 'Payment',
+    path: 'transporter-payment',
+    title: 'Transporter Payment',
     loadComponent: () =>
       import('./pages/payment/payment/payment.component').then(
         m => m.PaymentComponent

@@ -343,4 +343,12 @@ export class TripService {
     }
     return this.http.get(`${this.transporterPaymentUrl}`, { params });
   }
+
+  paymentTransporter(body) {
+    return this.http.post(`${this.transporterPaymentUrl}/bulk-payment`, body);
+  }
+
+  getPaymentDetails(tripId: string) {
+    return this.http.get(`${this.transporterPaymentUrl}/trip/${tripId}`);
+  }
 }

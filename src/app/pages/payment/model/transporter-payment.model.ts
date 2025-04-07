@@ -60,3 +60,22 @@ export interface TransporterPayment {
   createdByPhone: string;
 }
 
+export interface TransporterPaymentDetails {
+  financialInstituteName: string;
+  id: number;
+  tripId: string;
+  transporterCode: string;
+  transporterName: string;
+  paidUserId: string;
+  paidUserName: string;
+  customerCode: string;
+  customerName: string;
+  driverCode: string;
+  driverName: string;
+  vehicleCode: string;
+  vehicleNumber: string;
+  amount: number;
+  paymentDate: string; // ISO date string (e.g. "2025-04-07T12:54:54.28325")
+  paymentMethod: string; // e.g. "CASH", "BANK", "MFS", etc.
+}
+

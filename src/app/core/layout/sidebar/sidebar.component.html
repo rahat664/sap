@@ -126,6 +126,26 @@
           <li *ngIf="isAdmin()">
             <a
               (click)="clearSelectedTemplate()"
+              routerLink="/transporter-payment"
+              routerLinkActive="active"
+              class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
+              <img
+                class="notPreview"
+                height="24"
+                width="24"
+                src="assets/svg/payment-{{
+                  isActive('/transporter-payment') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""/>
+              <span class="ml-3 flex-1 font-semibold whitespace-nowrap"
+              >Transporter Payment</span
+              >
+            </a>
+          </li>
+
+          <li *ngIf="isAdmin()">
+            <a
+              (click)="clearSelectedTemplate()"
               routerLink="/user-management"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">

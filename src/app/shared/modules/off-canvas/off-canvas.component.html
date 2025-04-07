@@ -1,8 +1,8 @@
 <div
-  class="fixed top-0 right-0 w-[26rem] bg-white  h-full flex flex-col z-50 shadow-lg justify-between px-8 pb-6 transform transition-transform translate-x-0">
+  class="fixed top-0 right-0 w-[26rem] bg-white  h-full flex flex-col z-50 shadow-lg justify-between px-8 pb-6 overflow-auto transform transition-transform translate-x-0">
   <div
-    class="h-full flex flex-col space-y-8  py-6 ">
-    <div class="flex items-center justify-between">
+    class="h-full flex flex-col">
+    <div class="flex items-center justify-between py-6 sticky top-0">
       <h2 class="text-h3 leading-h3 font-semibold">Payment Details</h2>
       <button (click)="onClose()" class="text-gray-500 hover:text-black">
         <i class="fal fa-times text-xl text-primary"></i>
@@ -10,61 +10,140 @@
     </div>
     <div class="flex flex-col space-y-4">
       <div class="flex flex-col space-y-0.5 text-left px-4 py-3 bg-app-bg rounded-lg">
-        <span class="text-not-black text-xs font-semibold">Trip no: 123456</span>
-        <span class="text-body_title leading-body_title font-semibold  text-not-black">Dhaka metro TA 11-7895</span>
-        <span class="text-body text-secondary">Fair Electronics Bangladesh Lt66d</span>
+        <span class="text-not-black text-xs font-semibold">Trip no: {{ transporterDetails?.tripId }}</span>
+        <span class="text-body_title leading-body_title font-semibold  text-not-black">{{getTruckFullRegistrationNumber(transporterDetails.truck)}}</span>
+        <span class="text-body text-secondary">{{transporterDetails?.customerName}}</span>
       </div>
       <div class="flex flex-col">
         <span class="text-secondary text-body"><sup>*</sup>Please chose the payment status</span>
-        <mat-radio-button class="text-not-black" value="partial" [checked]="paymentStatus === 'partial'"
-                          (change)="onPaymentStatusChange($event)">
-          Partial
-        </mat-radio-button>
-        <mat-radio-button class="text-not-black" value="full" [checked]="paymentStatus === 'full'"
-                          (change)="onPaymentStatusChange($event)">
-          Full
-        </mat-radio-button>
+        <mat-radio-group class="flex flex-col space-y-1" [(ngModel)]="paymentStatus" (change)="onPaymentStatusChange($event)">
+          <mat-radio-button class="text-not-black" value="partial">
+            Partial
+          </mat-radio-button>
+          <mat-radio-button class="text-not-black" value="full">
+            Full
+          </mat-radio-button>
+        </mat-radio-group>
+        <div>
+          <ng-container *ngIf="!paymentStatus && this.paymentButtonTriggered">
+            <span class="text-red text-sm">Please select a payment status</span>
+          </ng-container>
+        </div>
       </div>
       <div class="flex flex-col">
         <h1 class="py-1.5 px-3.5 text-secondary text-body border-line border-b">Payment info</h1>
         <div class="flex justify-between items-center mx-6 border-b border-dotted border-line py-2">
           <span class="text-body text-not-black">Transporter Rate</span>
-          <span class="text body text-not-black">20000(৳)</span>
+          <span class="text body text-not-black">{{
+              (transporterDetails.transporterRate !== null ? (transporterDetails.transporterRate|number) + '(৳)' : 'N/A')
+            }}</span>
         </div>
         <div class="flex justify-between items-center mx-6 border-b border-dotted border-line py-2">
           <span class="text-body text-not-black">Paid</span>
-          <span class="text body text-not-black">0(৳)</span>
+          <span class="text body text-not-black">{{
+              (transporterDetails.paymentAmountToTransporter !== null ? (transporterDetails.paymentAmountToTransporter|number) + '(৳)' : 'N/A')
+            }}</span>
         </div>
         <div class="flex justify-between items-center mx-6 border-line py-2">
           <span class="text-body text-not-black">Payable</span>
-          <span class="text body text-not-black">20000(৳)</span>
+          <span class="text body text-not-black">{{
+            countDueAmount(transporterDetails)
+            }}</span>
         </div>
       </div>
       <div class="bg-input rounded-lg py-2">
         <h1 class="text-secondary  text-sm text-center w-full">Pay now(৳)</h1>
         <mat-form-field appearance="outline" class="w-full" style="outline: none !important;">
-          <input class=" text-center" matInput type="number" placeholder="Enter amount here" [(ngModel)]="amount" />
+          <input class=" text-center" matInput type="number" placeholder="Enter amount here" [(ngModel)]="amount" (input)="onPaymentAmountChange($event, transporterDetails)" />
         </mat-form-field>
+      </div>
+      <!--        error message if amount not given or invalid-->
+      <div>
+        <ng-container *ngIf="!amount && this.paymentButtonTriggered">
+          <span class="text-red text-sm">Please enter a valid amount</span>
+        </ng-container>
       </div>
     </div>
     <div class="flex flex-col space-y-4">
-      <span class="text-secondary text-body font-normal">Select payment method</span>
+      <span class="text-secondary text-body font-normal">Select payment method<sup>*</sup></span>
       <div class="flex flex-col space-y-1">
-        <ng-container *ngFor="let method of paymentMethods">
-          <div class="flex items-center w-full space-x-3 py-2 px-3 bg-input rounded-lg">
-            <mat-radio-button class="text-not-black" [value]="method.name"
-                              (change)="onPaymentMethodChange($event)">
-            </mat-radio-button>
-            <img src="assets/svg/{{method.icon}}">
-            <span class="text-body_title font-medium leading-body_title text-not-black">{{method.name}}</span>
-          </div>
+        <mat-radio-group class="flex flex-col space-y-1" [(ngModel)]="selectedPaymentMethod" (change)="onPaymentMethodChange($event)">
+          <ng-container *ngFor="let method of paymentMethods">
+            <div class="flex items-center w-full space-x-3 py-2 px-3 bg-input rounded-lg">
+              <mat-radio-button class="text-not-black" [value]="method.name">
+              </mat-radio-button>
+              <img src="assets/svg/{{method.icon}}">
+              <span class="text-body_title font-medium leading-body_title text-not-black">{{method.name}}</span>
+            </div>
+            <div *ngIf="selectedPaymentMethod === 'Bank' && method.name === 'Bank'">
+              <div class="flex flex-col space-y-1 w-full">
+                <mat-form-field
+                  appearance="outline"
+                  class="example-full-width w-full">
+                  <input
+                    [(ngModel)]="financialInstituteName"
+                    id="bankName"
+                    type="text"
+                    matInput
+                    placeholder="Enter Bank Name" />
+                </mat-form-field>
+                <mat-form-field
+                  appearance="outline"
+                  class="example-full-width w-full">
+                  <input
+                    [(ngModel)]="accountName"
+                    id="accountName"
+                    type="text"
+                    matInput
+                    placeholder="Enter Account Name" />
+                </mat-form-field>
+                <mat-form-field
+                  [(ngModel)]="accountNumber"
+                  appearance="outline"
+                  class="example-full-width w-full">
+                  <input
+                    id="accountNumber"
+                    type="text"
+                    matInput
+                    placeholder="Enter Account Number" />
+                </mat-form-field>
+              </div>
+            </div>
+            <div *ngIf="selectedPaymentMethod === 'MFS' && method.name === 'MFS'">
+              <div class="flex flex-col space-y-1 w-full">
+                <app-custom-input
+                  id="mfservice"
+                  [isFilterMenu]="false"
+                  [inputSearch]="mfsTypePlaceholder"
+                  [options]="mfsService"
+                  inputPlaceholder="Select MFS Service"
+                  appGetClickEvent
+                  (selectedId)="onSelectMFSType($event)"></app-custom-input>
+                <mat-form-field
+                  appearance="outline"
+                  class="example-full-width w-full">
+                  <input
+                    [(ngModel)]="accountNumber"
+                    id="mfsNumber"
+                    type="text"
+                    matInput
+                    placeholder="Enter Bkash Number" />
+                </mat-form-field>
+              </div>
+            </div>
+          </ng-container>
+        </mat-radio-group>
+      </div>
+      <div>
+<!--        error message if payment method not selected-->
+        <ng-container *ngIf="!selectedPaymentMethod && this.paymentButtonTriggered">
+          <span class="text-red text-sm">Please select a payment method</span>
         </ng-container>
       </div>
     </div>
   </div>
-  <div class="bottom-0 w-full justify-self-end">
+  <div class="bottom-0  w-full justify-self-end">
     <button class="bg-primary text-white rounded-lg py-2 font-semibold w-full" (click)="onPayNow()">Make Payment
     </button>
   </div>
-
 </div>
