@@ -373,7 +373,7 @@
     (inBottomEnd)="onBottom($event)"
     [anotherItemsHeight]="height"
     class="bg-white w-full relative rounded-lg overflow-auto">
-    <table
+    <table style=" border-collapse: separate;"
       class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
       <tr class="whitespace-nowrap bg-white text-not-black">
@@ -398,7 +398,7 @@
           Status
         </th>
         <th
-          class="text-left w-[5rem] z-50 sticky right-0 bg-white"
+          class="text-left w-[5rem]  sticky right-0 bg-white"
           *ngIf="
                   chalanStatus !== 'Approved' && chalanStatus !== 'Pending'
                 "></th>
@@ -409,7 +409,7 @@
       </thead>
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
-        <tr *ngFor="let trip of tripList; index as i">
+        <tr *ngFor="let trip of tripList; index as i" >
           <td class="whitespace-nowrap bg-white sticky left-0">
             <a
               class="text-link cursor-pointer"

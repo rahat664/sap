@@ -186,7 +186,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
       this.transporter
         .getTransporter(0, 100, searchText)
         .subscribe((transporter: any) => {
-          this.transporterSuggestions = transporter.data.responses;
+          this.transporterSuggestions = transporter.data;
           if (this.transporterSuggestions.length === 0) {
             this.transporterSuggestions.push('No transporter found');
           }

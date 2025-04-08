@@ -372,7 +372,7 @@ export class CreateTripPageComponent implements OnInit {
       truckCapacityInTon: ['', Validators.required],
       goodsId: [''],
       paymentType: ['INVOICE', Validators.required],
-      tripType: ['commercial', Validators.required],
+      tripType: ['', Validators.required],
       goodsName: ['', Validators.required],
       customerRate: [null],
       note: [''],
@@ -644,7 +644,13 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm.get('customerRate').setValue(template.customerRate);
     this.tripForm.get('note').setValue(template.note);
     this.tripForm.get('paymentType').setValue(template.paymentType);
+    this.paymentType.forEach(element => {
+      element.active = element.enumName === template.paymentType;
+    })
     this.tripForm.get('tripType').setValue(template.tripType);
+    this.tripTypes.forEach(element => {
+      element.active = element.name === template.tripType;
+    })
     const templateLoadingPoints = template.points.filter(
       point => point.pointType === 'Loading'
     );
@@ -757,6 +763,13 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm.get('numOfTrucks').setValue(tripData.numOfTrucks);
     this.tripForm.get('truckSize').setValue(tripData.truckSize);
     this.tripForm.get('paymentType').setValue(tripData.paymentType);
+    this.tripForm.get('tripType').setValue(tripData.paymentType);
+    this.paymentType.forEach((paymentType: any) => {
+      paymentType.active = paymentType.enumName === tripData.paymentType;
+    })
+    this.tripTypes.forEach((tripType: any) => {
+      tripType.active = tripType.enumName === tripData.tripType;
+    })
     this.tripForm
       .get('truckCapacityInTon')
       .setValue(tripData.truckCapacityInTon);

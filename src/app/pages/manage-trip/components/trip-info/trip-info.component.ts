@@ -6,7 +6,7 @@ import { DialogDataComponent } from '../dialog-data/dialog-data.component';
 import { ConfirmUpdateComponent } from '../confirm-update/confirm-update.component';
 import { MatDialog } from '@angular/material/dialog';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
-import { PaymentType } from '../../../../shared/Enums/payment-type';
+import { PaymentType, TripType } from '../../../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-trip-info',
@@ -154,8 +154,20 @@ export class TripInfoComponent implements OnInit {
       return 'Cash';
     } else if (paymentType === PaymentType.INVOICE) {
       return 'Invoice';
+    } else if (paymentType === PaymentType.COMMISSION) {
+      return 'Commission';
     } else {
       return 'Cash & Invoice';
+    }
+  }
+
+  getTripTypeFromEnum(tripType: string) {
+    if (tripType === TripType.COMMERCIAL) {
+      return 'Commercial Logistics';
+    } else if (tripType === TripType.PROJECT) {
+      return 'Project Logistics';
+    } else {
+      return 'N/A';
     }
   }
 }

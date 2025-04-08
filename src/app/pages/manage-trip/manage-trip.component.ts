@@ -658,11 +658,6 @@ export class ManageTripComponent implements OnInit {
   }
 
   onClickFilterOpen() {
-    this.paymentTypeOptionsArray = [
-      { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-      { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
-      { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
-    ]
     this.truckType = [];
     this.customers = [];
     this.selectedButton = '';

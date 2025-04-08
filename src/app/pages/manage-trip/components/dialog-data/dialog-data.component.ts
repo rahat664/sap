@@ -117,7 +117,7 @@ export class DialogDataComponent implements OnInit {
     this.tripUpdateForm.get('transporterCode').setValue(option.code);
     this.tripUpdateForm
       .get('transporterName')
-      .setValue(option.contactPersonName);
+      .setValue(option.name);
     this.tripUpdateForm
       .get('transporterPhone')
       .setValue(option.contactPersonNumber);

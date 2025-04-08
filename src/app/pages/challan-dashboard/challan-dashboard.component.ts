@@ -220,7 +220,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.transporter
         .getTransporter(0, 100, searchText)
         .subscribe((transporter: any) => {
-          this.transporterSuggestions = transporter.data.responses;
+          this.transporterSuggestions = transporter.data;
           if (this.transporterSuggestions.length === 0) {
             this.transporterSuggestions.push('No trip found');
           }
@@ -654,6 +654,9 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.tripSuggestions = [];
     this.loading = true;
     this.chalanStatus = '';
+    this.searchTransporter= '';
+    this.searchRegistationId='';
+    this.searchId = '';
     this.status = 'Completed';
     this.activatedChallanStatus = 'Completed';
     this.trip.anotherStatusCalled.next(true);

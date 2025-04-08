@@ -548,7 +548,7 @@ export class TripUpdateComponent implements OnInit {
     const value = ($event.target as HTMLInputElement).value;
     if (value.length > 0) {
       this.user.getTransporter(0, 100, value).subscribe((res: any) => {
-        this.transporterSuggestion = res.data.responses;
+        this.transporterSuggestion = res.data;
       });
     }
   }
@@ -829,7 +829,7 @@ export class TripUpdateComponent implements OnInit {
           this.tripUpdateForm.get('transporterName').setValue(transporter.name);
           this.tripUpdateForm
             .get('transporterPhone')
-            .setValue(transporter.phone);
+            .setValue(transporter.contactPersonNumber);
           this.tripUpdateForm.get('transporterRate').setValue(transporter.rate);
           this.tripUpdateForm
             .get('transporterCode')

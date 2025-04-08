@@ -119,7 +119,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
 
   private getTransporterList() {
     this.user.getTransporter(0, 1000).subscribe((res: any) => {
-      this.transporterLists = res.data.responses;
+      this.transporterLists = res.data;
       // sort the transporter list by name
       this.transporterLists.sort((a, b) => {
         if (a.name < b.name) {
