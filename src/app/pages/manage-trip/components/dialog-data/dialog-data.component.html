@@ -206,13 +206,15 @@
         </mat-error>
       </div>
       <div class="flex space-y-1 flex-col w-full col-span-2">
+        <label for="truck" class="text-body text-secondary"
+        >Truck Source</label>
         <app-custom-input
           [isFilterMenu]="false"
           class="w-full"
           appGetClickEvent
           [options]="truckSourceList"
           inputPlaceholder="Zone"
-          (selectedId)="onSelectRegistrationZone($event)"
+          (selectedId)="onSelectTruckSource($event)"
           [inputSearch]="
                       truckSourcePlaceholder
                     "></app-custom-input>

@@ -767,12 +767,15 @@ export class DialogDataComponent implements OnInit {
     return text;
   }
 
-  onSelectRegistrationZone($event: number) {
-    this.truckSourcePlaceholder = this.registrationZoneList.find(
+  onSelectTruckSource($event: number) {
+
+    this.tripUpdateForm.get('source').setValue(this.truckSourcePlaceholder);
+    this.truckSourcePlaceholder = this.truckSourceList.find(
       option => option.id === $event
     ).value;
     this.truckSourceList.forEach(option => {
       option.selected = option.id === $event;
     });
   }
+
 }
