@@ -1,18 +1,12 @@
 import { Component } from '@angular/core';
-import { CustomInputComponent } from '../../../shared/modules/custom-input/custom-input.component';
 import { FormsModule } from '@angular/forms';
-import { GetClickEventDirective } from '../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../shared/directive/get-element-height.directive';
-import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
 import { CommonModule, NgIf } from '@angular/common';
 import { GiveMaxHeightDirective } from '../../../shared/directive/give-max-height.directive';
 import { LoadingComponent } from '../../../shared/modules/loading/loading.component';
 import { OffCanvasComponent } from '../../../shared/modules/off-canvas/off-canvas.component';
 import { TripService } from '../../trip-list/services/trip.service';
 import { TransporterPayment } from '../model/transporter-payment.model';
-import { TripPoint } from '../../manage-trip/model/trip.details.model';
 import { numberPipe } from '../../../shared/pipes/number-seperator.pipe';
 import { PaymentDetailsComponent } from '../payment-details/payment-details.component';
 import { PaymentFilterComponent } from '../payment-filter/payment-filter.component';
@@ -22,11 +16,6 @@ import { PaymentFilterComponent } from '../payment-filter/payment-filter.compone
   imports: [
     FormsModule,
     GetElementHeightDirective,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
-    MatFormField,
-    MatInput,
-    MatOption,
     NgIf,
     CommonModule,
     GiveMaxHeightDirective,
@@ -42,17 +31,8 @@ import { PaymentFilterComponent } from '../payment-filter/payment-filter.compone
 export class PaymentComponent {
   height: any;
   filterOpened: boolean = false;
-  searchName: any;
-  tripSuggestions: any;
   searchValue: any;
-  searchRegistationId: any;
-  truckRegSuggestions: any;
-  truckRegistrationId: any;
-  searchTransporter: any;
-  transporterSuggestions: any;
   transporterName: any;
-  searchId: any;
-  tripIdSuggestions: any;
   tripId: any;
   page: number = 0;
   size: number = 20;
@@ -77,38 +57,6 @@ export class PaymentComponent {
   ngOnInit() {
     this.transporterPaymentList();
   }
-
-  onClickFilterOpened() {}
-
-  getFilterLength() {
-    return 0;
-  }
-
-  onClearFilter() {}
-
-  onSearchInputChange($event: KeyboardEvent) {}
-
-  onClickSearchSuggestion(option: any) {}
-
-  onClickClearCompany() {}
-
-  onKeyUpTruckSearch($event: KeyboardEvent) {}
-
-  onClickTruckSearchSuggestion(option: any) {}
-
-  onClickClearTruck() {}
-
-  onKeyUpTransporterSearch($event: KeyboardEvent) {}
-
-  onClickTransporterSearchSuggestion(option: any) {}
-
-  onClickClearTransporter() {}
-
-  onKeyUpTripSearch($event: KeyboardEvent) {}
-
-  onClickTripSearchSuggestion(option: any) {}
-
-  onClickClearTripId() {}
 
   protected readonly localStorage = localStorage;
   totalPages: number = 0;
