@@ -29,6 +29,9 @@ import { SuccessModalComponent } from '../../../../shared/modules/success-modal/
 import { DatePipe, NgIf } from '@angular/common';
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
+import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
+import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 
 @Component({
   selector: 'app-dialog-data',
@@ -41,6 +44,8 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
     ReactiveFormsModule,
     NgIf,
     MatError,
+    CustomInputComponent,
+    GetClickEventDirective,
   ],
   templateUrl: './dialog-data.component.html',
   styleUrl: './dialog-data.component.scss',
@@ -67,6 +72,7 @@ export class DialogDataComponent implements OnInit {
       truckId: [''],
       driverCode: [''],
       driverName: [''],
+      source: ['Agency'],
       driverPhone: [''],
       helperCode: [''],
       helperName: [''],
@@ -109,8 +115,12 @@ export class DialogDataComponent implements OnInit {
 
   onClickTransporterSearchSuggestion(option: any) {
     this.tripUpdateForm.get('transporterCode').setValue(option.code);
-    this.tripUpdateForm.get('transporterName').setValue(option.contactPersonName);
-    this.tripUpdateForm.get('transporterPhone').setValue(option.contactPersonNumber);
+    this.tripUpdateForm
+      .get('transporterName')
+      .setValue(option.contactPersonName);
+    this.tripUpdateForm
+      .get('transporterPhone')
+      .setValue(option.contactPersonNumber);
   }
 
   onClickDriverSearchSuggestion(option: any) {
@@ -133,6 +143,33 @@ export class DialogDataComponent implements OnInit {
   protected readonly registrationCategoryList = registrationCategoryList;
   tripUpdateForm: FormGroup;
   loading = false;
+  truckSourcePlaceholder: string = 'Agency';
+  truckSourceList: CustomInputSelectModel[] = [
+    {
+      id: 1,
+      value: 'Owner',
+      showname: 'Owner',
+      selected: false,
+    },
+    {
+      id: 2,
+      value: 'Agency',
+      showname: 'Agency',
+      selected: true,
+    },
+    {
+      id: 3,
+      value: 'Driver',
+      showname: 'Driver',
+      selected: false,
+    },
+    {
+      id: 4,
+      value: 'Others',
+      showname: 'Others',
+      selected: false,
+    },
+  ];
 
   getTransporterList() {
     const dialogRef = this.dialog
@@ -150,9 +187,7 @@ export class DialogDataComponent implements OnInit {
           this.tripUpdateForm
             .get('transporterPhone')
             .setValue(transporter.contactPersonNumber);
-          this.tripUpdateForm
-            .get('transporterCode')
-            .setValue(transporter.code);
+          this.tripUpdateForm.get('transporterCode').setValue(transporter.code);
         } else {
           this.tripUpdateForm.get('transporterName').setValue('');
           this.tripUpdateForm.get('transporterPhone').setValue('');
@@ -730,5 +765,14 @@ export class DialogDataComponent implements OnInit {
 
     const text = parts.join(', ') + ` have been assigned to trip ${res.tripId}`;
     return text;
+  }
+
+  onSelectRegistrationZone($event: number) {
+    this.truckSourcePlaceholder = this.registrationZoneList.find(
+      option => option.id === $event
+    ).value;
+    this.truckSourceList.forEach(option => {
+      option.selected = option.id === $event;
+    });
   }
 }
