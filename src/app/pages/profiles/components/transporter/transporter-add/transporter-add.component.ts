@@ -306,7 +306,6 @@ export class TransporterAddComponent implements OnInit {
   }
 
   setPreferredPaymentMethod($any: any, paymentMethod: string) {
-    console.log($any);
     if ($any.source.checked) {
       this.preferredPaymentMethod = paymentMethod;
       this.transporterAddForm.get('paymentMethod').setValue(paymentMethod);

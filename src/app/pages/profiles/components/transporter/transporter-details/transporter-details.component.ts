@@ -24,6 +24,7 @@ import { GetClickEventDirective } from '../../../../../shared/directive/get-clic
 import { ProfileDocumentsComponent } from '../../profile-documents/profile-documents.component';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
+import { MatRadioButton } from '@angular/material/radio';
 
 @Component({
   selector: 'app-transporter-details',
@@ -34,10 +35,10 @@ import { CustomInputSelectModel } from '../../../../../shared/modules/custom-inp
     NgClass,
     MatInput,
     NgxMaterialIntlTelInputComponent,
-    MatCheckbox,
     CustomInputComponent,
     GetClickEventDirective,
     ProfileDocumentsComponent,
+    MatRadioButton,
   ],
   templateUrl: './transporter-details.component.html',
   styleUrl: './transporter-details.component.scss',
@@ -81,7 +82,6 @@ export class TransporterDetailsComponent {
   ) {}
 
   ngOnInit() {
-
     this.shared.validateInterNationalPhoneNumber();
     this.initializeForm();
 
@@ -119,31 +119,25 @@ export class TransporterDetailsComponent {
       contactPersonNumber: formValue.phone,
       truckStand: formValue.truckStand,
       defaultPaymentMethod: {
-        name: formValue.bankName,
-        branchName: formValue.bankBranch,
-        accHolderName: formValue.bankAccountName,
-        bankAccNo: formValue.bankAccountNumber,
-        paymentMethod: formValue.paymentMethod,
+        name: this.transporterUpdateForm.get('bankName').value,
+        branchName: this.transporterUpdateForm.get('bankBranch').value,
+        accHolderName: this.transporterUpdateForm.get('bankAccountName').value,
+        bankAccNo: this.transporterUpdateForm.get('bankAccountNumber').value,
+        paymentMethod: this.transporterUpdateForm.get('paymentMethod').value,
+        accType: '',
       },
       contactPersonName: formValue.contactPersonName,
       note: formValue.note,
     };
-    if (
-      formValue.paymentMethod !== 'Cash' &&
-      formValue.paymentMethod !== 'Bank'
-    ) {
-      body.defaultPaymentMethod = {
-        name: formValue.mfsName,
-        branchName: '',
-        accHolderName: '',
-        bankAccNo: formValue.mfsNumber,
-        paymentMethod: formValue.mfsType,
-      };
+    if (this.preferredPaymentMethod === 'MFS') {
+      body.defaultPaymentMethod.name =
+        this.transporterUpdateForm.get('mfsName').value;
+      body.defaultPaymentMethod.bankAccNo =
+        this.transporterUpdateForm.get('mfsNumber').value;
+      body.defaultPaymentMethod.accType =
+        this.transporterUpdateForm.get('mfsType').value;
     }
-    body.contactPersonNumber = body.contactPersonNumber.replace(
-      /[\s-]/g,
-      ''
-    );
+    body.contactPersonNumber = body.contactPersonNumber.replace(/[\s-]/g, '');
     const formData = new FormData();
     const files = this.retrieveFilesForUpload();
 
@@ -163,7 +157,8 @@ export class TransporterDetailsComponent {
       });
     }
     if (files.tradeLicenseFiles.length > 0) {
-      this.tradeLicenseExpiration = this.getExpiryFromSessionStorage('Trade License');
+      this.tradeLicenseExpiration =
+        this.getExpiryFromSessionStorage('Trade License');
       files.tradeLicenseFiles.forEach((file: any) => {
         formData.append('tradeLicense', file);
       });
@@ -181,13 +176,12 @@ export class TransporterDetailsComponent {
       });
     }
 
-
     if (this.agreementExpiration) {
       body['agreementExpiration'] = this.agreementExpiration;
     }
 
     if (this.tradeLicenseExpiration) {
-      body['tradeLicenseExpiration'] = this.tradeLicenseExpiration
+      body['tradeLicenseExpiration'] = this.tradeLicenseExpiration;
     }
 
     formData.append('payload', JSON.stringify(body));
@@ -207,8 +201,6 @@ export class TransporterDetailsComponent {
       }
     );
   }
-
-
 
   onClickCancel() {
     this.isInEditMode = false;
@@ -301,7 +293,7 @@ export class TransporterDetailsComponent {
       id: 2,
       value: 'Nagad',
       selected: false,
-    }
+    },
   ];
 
   get phoneNumber() {
@@ -309,8 +301,12 @@ export class TransporterDetailsComponent {
   }
 
   setPreferredPaymentMethod($any: any, paymentMethod: string) {
-    if ($any.checked) {
+    if ($any.source.checked) {
+      this.preferredPaymentMethod = paymentMethod;
       this.transporterUpdateForm.get('paymentMethod').setValue(paymentMethod);
+    } else {
+      this.preferredPaymentMethod = '';
+      this.transporterUpdateForm.get('paymentMethod').setValue('');
     }
   }
 
@@ -346,10 +342,22 @@ export class TransporterDetailsComponent {
       this.transporterUpdateForm.patchValue({
         mfsName: this.transporter.defaultPaymentMethod?.name,
         mfsNumber: this.transporter.defaultPaymentMethod?.bankAccNo,
-        mfsType: this.transporter.defaultPaymentMethod?.paymentMethod,
+        mfsType: this.transporter.defaultPaymentMethod?.accType,
       });
+      this.mfsService.forEach((method: any) => {
+        method.selected =
+          method.value === this.transporter.defaultPaymentMethod?.name;
+      })
+      this.mfsTypePlaceholder = this.transporter.defaultPaymentMethod?.name;
+      this.bkashPaymentMethod.forEach(method => {
+        method.selected =
+          method.value === this.transporter.defaultPaymentMethod?.accType;
+      })
+
+      this.bkashPaymentTypePlaceholder = this.transporter.defaultPaymentMethod?.accType;
     }
-    this.preferredPaymentMethod = this.transporter.defaultPaymentMethod?.paymentMethod;
+    this.preferredPaymentMethod =
+      this.transporter.defaultPaymentMethod?.paymentMethod;
   }
 
   private getExpiryFromSessionStorage(name: string) {
@@ -363,7 +371,6 @@ export class TransporterDetailsComponent {
     }
   }
 
-
   onUploadButtonTriggered($event: any) {
     if ($event) {
       const payload = {
@@ -373,13 +380,14 @@ export class TransporterDetailsComponent {
         defaultPaymentMethod: {
           name: this.transporterUpdateForm.get('bankName').value,
           branchName: this.transporterUpdateForm.get('bankBranch').value,
-          accHolderName: this.transporterUpdateForm.get('bankAccountName').value,
+          accHolderName:
+            this.transporterUpdateForm.get('bankAccountName').value,
           bankAccNo: this.transporterUpdateForm.get('bankAccountNumber').value,
           paymentMethod: this.transporterUpdateForm.get('paymentMethod').value,
           accType: '',
         },
         contactPersonName:
-        this.transporterUpdateForm.get('contactPersonName').value,
+          this.transporterUpdateForm.get('contactPersonName').value,
         note: this.transporterUpdateForm.get('note').value,
       };
       if (this.preferredPaymentMethod === 'MFS') {
@@ -427,11 +435,9 @@ export class TransporterDetailsComponent {
     this.mfsTypePlaceholder = this.mfsService.find(
       method => method.id === $event
     ).value;
-    this.mfsService.forEach(
-      method => (method.selected = method.id === $event)
-    );
+    this.mfsService.forEach(method => (method.selected = method.id === $event));
     this.transporterUpdateForm
-      .get('mfsType')
-      .setValue(this.bkashPaymentTypePlaceholder);
+      .get('mfsName')
+      .setValue(this.mfsTypePlaceholder);
   }
 }
