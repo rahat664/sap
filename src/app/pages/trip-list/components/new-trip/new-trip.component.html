@@ -11,58 +11,60 @@
         Create Trip
       </button>
     </div>
-    <div
-      class="bg-white px-4 py-2 mx-4 rounded-lg flex justify-between items-center"
-      *ngIf="isAdmin()">
-      <div class="flex flex-1 flex-col space-y-2 relative">
-        <label for="customerName" class="form-label">Select Customer</label>
-        <mat-form-field appearance="outline" class="example-full-width w-1/3">
-          <input
-            id="customerName"
-            type="text"
-            matInput
-            (keyup)="onKeyUpCustomerSearch($event)"
-            [(ngModel)]="customerName"
-            placeholder="Select customer"
-            [matAutocomplete]="auto"/>
-          <mat-autocomplete #auto="matAutocomplete">
-            <ng-container>
-              <div *ngIf="favouriteCustomer?.length > 0" class="px-4 pt-2 text-not-black font-semibold text-body_title leading-body_title">Recently used</div>
-              <div class="border-b-4 border-line">
-                <mat-option class="border-bottom border-line"
-                            *ngFor="let customer of favouriteCustomer"
-                            (click)="onClickCustomerSearchSuggestion(customer)"
-                            [value]="customer.name"
-                >
-                  {{ customer.name }}
+    <div class="flex flex-col space-y-1 px-4 py-2 bg-white">
+      <div
+        class="bg-white  mx-4 rounded-lg flex justify-between items-center"
+        *ngIf="isAdmin()">
+        <div class="flex flex-1 flex-col space-y-2 relative">
+          <label for="customerName" class="form-label">Select Customer</label>
+          <mat-form-field appearance="outline" class="example-full-width w-1/3">
+            <input
+              id="customerName"
+              type="text"
+              matInput
+              (keyup)="onKeyUpCustomerSearch($event)"
+              [(ngModel)]="customerName"
+              placeholder="Select customer"
+              [matAutocomplete]="auto"/>
+            <mat-autocomplete #auto="matAutocomplete">
+              @for (option of companySuggestions; track option) {
+                <mat-option
+                  (click)="onClickCustomerSearchSuggestion(option)"
+                  [value]="option.name"
+                >{{ option.name }}
                 </mat-option>
-              </div>
-            </ng-container>
-            @for (option of companySuggestions; track option) {
-              <mat-option
-                (click)="onClickCustomerSearchSuggestion(option)"
-                [value]="option.name"
-              >{{ option.name }}
-              </mat-option>
-            }
-          </mat-autocomplete>
-          <button
-            type="button"
-            (click)="onClickClearCustomer()"
-            *ngIf="createButtonEnabled"
-            class="absolute inset-y-0 bottom-4 right-0 flex items-center">
-            <i class="far fa-times text-gray-500 text-xs"></i>
-          </button>
-        </mat-form-field>
+              }
+            </mat-autocomplete>
+            <button
+              type="button"
+              (click)="onClickClearCustomer()"
+              *ngIf="createButtonEnabled"
+              class="absolute inset-y-0 bottom-4 right-0 flex items-center">
+              <i class="far fa-times text-gray-500 text-xs"></i>
+            </button>
+          </mat-form-field>
+        </div>
+        <button
+          type="button"
+          routerLink="/trip-create/create"
+          *ngIf="createButtonEnabled"
+          class="bg-primary text-white rounded-lg px-12 py-2 justify-self-end"
+          (click)="onCreateTrip()">
+          Create Trip
+        </button>
       </div>
-      <button
-        type="button"
-        routerLink="/trip-create/create"
-        *ngIf="createButtonEnabled"
-        class="bg-primary text-white rounded-lg px-12 py-2 justify-self-end"
-        (click)="onCreateTrip()">
-        Create Trip
-      </button>
+      <div *ngIf="favouriteCustomer?.length > 0 && !createButtonEnabled">
+        <div  class="px-4 pt-2 text-not-black font-semibold text-body_title leading-body_title">Recently used</div>
+        <div >
+          <mat-option class="border-bottom border-line"
+                      *ngFor="let customer of favouriteCustomer"
+                      (click)="onClickCustomerSearchSuggestion(customer)"
+                      [value]="customer.name"
+          >
+            {{ customer.name }}
+          </mat-option>
+        </div>
+      </div>
     </div>
   </div>
   <div class="bg-white mx-4 rounded-lg" *ngIf="createButtonEnabled">

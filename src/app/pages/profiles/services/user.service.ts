@@ -144,7 +144,6 @@ export class UserService {
       id: id,
       status: status,
     };
-
     return this.http
       .put<ApiResponse>(this.url + '/updateStatus', payload)
       .pipe(
@@ -167,6 +166,13 @@ export class UserService {
     return this.http.delete(
       `${this.url}/${id}/documents?documentUrl=${deletedDriverFiles}`,
       deletedDriverFiles
+    );
+  }
+
+  deleteTransporterFiles(deletedTransporterFiles: any, id: number) {
+    return this.http.delete(
+      `${this.url}/transporter-documents?documentUrl=${deletedTransporterFiles}`,
+      deletedTransporterFiles
     );
   }
 

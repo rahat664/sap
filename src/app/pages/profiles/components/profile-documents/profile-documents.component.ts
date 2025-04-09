@@ -51,6 +51,7 @@ export class ProfileDocumentsComponent {
       state: {
         documents: this.documents,
         activatedDocument: this.documents[0],
+        documentTitle: 'Transporter ID',
         id: this.transporterId,
         returnUrl: this.router.url,
       },
@@ -240,14 +241,17 @@ export class ProfileDocumentsComponent {
   }
 
   viewSpecificDocument(categorizedDocument: any) {
-    this.router.navigate(['/profile/document-viewer'], {
-      state: {
-        documents: categorizedDocument,
-        activatedDocument: categorizedDocument[0],
-        id: this.transporterId,
-        returnUrl: this.router.url,
-      },
-    });
+    if (!this.fromAddDocument) {
+      this.router.navigate(['/profile/document-viewer'], {
+        state: {
+          documents: categorizedDocument,
+          activatedDocument: categorizedDocument[0],
+          documentTitle: 'Transporter ID',
+          id: this.transporterId,
+          returnUrl: this.router.url,
+        },
+      });
+    }
   }
 
   isPdf(preSignedFileUrl: any) {

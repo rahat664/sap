@@ -833,7 +833,7 @@ export class TripUpdateComponent implements OnInit {
           this.tripUpdateForm.get('transporterRate').setValue(transporter.rate);
           this.tripUpdateForm
             .get('transporterCode')
-            .setValue(transporter.userId);
+            .setValue(transporter.code);
         } else {
           this.tripUpdateForm.get('transporterName').setValue('');
           this.tripUpdateForm.get('transporterPhone').setValue('');
@@ -906,7 +906,8 @@ export class TripUpdateComponent implements OnInit {
 
   onClickTransporterSearchSuggestion(option: any) {
     this.tripUpdateForm.get('transporterName').setValue(option.name);
-    this.tripUpdateForm.get('transporterPhone').setValue(option.phone);
+    this.tripUpdateForm.get('transporterPhone').setValue(option.contactPersonNumber);
+    this.tripUpdateForm.get('transporterCode').setValue(option.code);
   }
 
   onClickDriverSearchSuggestion(option: any) {

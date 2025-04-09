@@ -16,10 +16,16 @@ import { Router } from '@angular/router';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
-import { MatFormField } from '@angular/material/form-field';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerModule,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-document-upload',
@@ -35,6 +41,9 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatInput,
     MatDatepickerInput,
     MatDatepickerToggle,
+    MatDatepickerModule,
+    FormsModule,
+    MatFormFieldModule
   ],
   providers: [
     provideNativeDateAdapter(),
@@ -252,7 +261,9 @@ export class DocumentUploadComponent {
     const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
       width: '400px',
       data: {
-        message: 'Are you sure you want to delete this document?',
+        title: 'Attention',
+        text: 'Are you sure you want to close this document?',
+        buttonText: 'Yes',
       },
     });
 
@@ -261,6 +272,10 @@ export class DocumentUploadComponent {
         this.documents = this.documents.filter(
           doc => doc !== this.activatedDocument
         );
+        if (this.documents.length === 0) {
+          this.router.navigate([this.returnUrl]);
+          return;
+        }
         this.activatedDocument = this.documents[0];
         this.updateActiveDocumentIndex();
         this.scrollToActiveDocument();
@@ -324,9 +339,12 @@ export class DocumentUploadComponent {
             preview: reader.result, // Store actual preview
           });
 
+
+
           // Set activatedDocument after all files are processed
           if (i === addedDocuments.length - 1) {
             this.activatedDocument = this.documents[0];
+            this.activeDocumentIndex = 0;
           }
         };
 

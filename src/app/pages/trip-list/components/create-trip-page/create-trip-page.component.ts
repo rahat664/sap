@@ -259,6 +259,14 @@ export class CreateTripPageComponent implements OnInit {
     this.isFromTemplate = isFromTemplate;
     if (isFromTemplate) {
       this.setTheValuesFromTemplate();
+    } else {
+      this.tripForm.get('tripType').setValue(
+        JSON.parse(
+          localStorage.getItem('selectedCustomer')
+        ).tripType);
+      this.tripTypes.forEach(element => {
+        element.active = element.enumName === this.tripForm.get('tripType').value;
+      })
     }
     if (isFromBackEdit) {
       this.setBackEditValues();

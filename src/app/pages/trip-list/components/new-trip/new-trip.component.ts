@@ -80,6 +80,10 @@ export class NewTripComponent implements OnInit, OnDestroy {
       localStorage.removeItem('isFromBackEdit');
       this.dontClearLocalStorage = true;
     }
+    if (localStorage.getItem('isFromTemplate')) {
+      localStorage.removeItem('isFromBackEdit');
+      this.dontClearLocalStorage = true;
+    }
     if (localStorage.getItem('backFromTemplateEditOrUpdate')) {
       localStorage.removeItem('backFromTemplateEditOrUpdate');
       this.dontClearLocalStorage = true;

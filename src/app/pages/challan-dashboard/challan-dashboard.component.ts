@@ -194,11 +194,11 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.trip.getTripSuggestions(searchText).subscribe((trip: any) => {
         this.tripIdSuggestions = trip.responses;
         if (this.tripIdSuggestions.length === 0) {
-          this.tripIdSuggestions.push('No trip found');
+          this.tripIdSuggestions.push('No customer found');
         }
       });
     } else {
-      this.resetTripIdSearch();
+      this.resetSearch();
     }
   }
 
@@ -207,7 +207,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.truck.getTruckList(0, 100, searchText).subscribe((truck: any) => {
         this.truckRegSuggestions = truck.data.responses;
         if (this.truckRegSuggestions.length === 0) {
-          this.truckRegSuggestions.push('No trip found');
+          this.truckRegSuggestions.push('No truck found');
         }
       });
     } else {
@@ -222,7 +222,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         .subscribe((transporter: any) => {
           this.transporterSuggestions = transporter.data;
           if (this.transporterSuggestions.length === 0) {
-            this.transporterSuggestions.push('No trip found');
+            this.transporterSuggestions.push('No transporter found');
           }
         });
     } else {
@@ -236,7 +236,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.page = 0;
     this.size = 30;
     this.tripIdSuggestions = [];
-    this.tripIdSuggestions.push('No trip found');
+    this.tripIdSuggestions.push('No trip id found');
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
     this.tripFilter = 0;
@@ -260,7 +260,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.page = 0;
     this.size = 30;
     this.transporterSuggestions = [];
-    this.transporterSuggestions.push('No trip found');
+    this.transporterSuggestions.push('No transporter found');
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
     this.transporterFilter = 0;

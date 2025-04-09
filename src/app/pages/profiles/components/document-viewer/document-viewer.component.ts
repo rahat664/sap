@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, inject, Input, ViewChild } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
@@ -9,6 +9,7 @@ import { Trip } from '../../../auth/models/response/trip';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { TransporterDocumentType } from '../../../../shared/Enums/registration_type';
 import { UserService } from '../../services/user.service';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-document-viewer',
@@ -49,7 +50,8 @@ export class DocumentViewerComponent {
     private router: Router,
     private trip: TripService,
     private cd: ChangeDetectorRef,
-    private service: UserService
+    private service: UserService,
+    private toaster: HandleToastrService
   ) {}
 
   ngOnInit() {
@@ -58,6 +60,21 @@ export class DocumentViewerComponent {
   }
 
   private resetNavigationInformation() {
+    this.documents = [];
+    this.activatedDocument = null;
+    this.activeDocumentIndex = -1;
+    this.showRightArrow = false;
+    this.showLeftArrow = false;
+    this.zoomLevel = 1;
+    this.translateX = 0;
+    this.translateY = 0;
+    this.expiryAvailable = false;
+    this.notesAvailable = false;
+    this.notes = '';
+    this.expiryDate = '';
+    this.documentBelongToId = '';
+    this.documentTitle = '';
+    this.returnUrl = '';
   }
 
   private getNavigationInformation() {
@@ -66,6 +83,7 @@ export class DocumentViewerComponent {
       this.documents = navigation.documents;
       this.activatedDocument = navigation.activatedDocument;
       this.documentBelongToId = navigation.id;
+      this.documentTitle = navigation.documentTitle;
       this.returnUrl = navigation.returnUrl;
       this.imageType = navigation.imageType;
       this.updateActiveDocumentIndex();
@@ -196,6 +214,7 @@ export class DocumentViewerComponent {
   }
 
   // Zoom out
+  documentTitle: string;
   zoomOut() {
     if (this.zoomLevel > this.minZoom) {
       this.zoomLevel -= 0.1;
@@ -234,13 +253,17 @@ export class DocumentViewerComponent {
         buttonText: 'Delete',
       },
     }).afterClosed().subscribe((result) => {
-        this.service.deleteDriverFiles(
+        this.service.deleteTransporterFiles(
           this.activatedDocument.fileUrl,
           Number(this.documentBelongToId.split('-')[1])
         ).subscribe(() => {
+          this.toaster.showSuccess('Document deleted successfully');
           this.documents = this.documents.filter(
             (doc) => doc !== this.activatedDocument
           );
+          if (this.documents.length === 0) {
+            this.router.navigate([this.returnUrl]);
+          }
           this.activatedDocument = this.documents[0];
           this.updateActiveDocumentIndex();
           this.scrollToActiveDocument();
@@ -253,9 +276,9 @@ export class DocumentViewerComponent {
     if (this.documents?.length > 0) {
       if (this.activatedDocument) {
         const link = document.createElement('a');
-        link.href = this.activatedDocument.url
-          ? this.activatedDocument.url
-          : this.activatedDocument?.document?.url;
+        link.href = this.activatedDocument.preSignedFileUrl
+          ? this.activatedDocument.preSignedFileUrl
+          : this.activatedDocument.fileUrl;
         link.download = `${this.imageType}`;
         document.body.appendChild(link);
         link.click();

@@ -379,10 +379,13 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.transporterName = '';
     this.transporterFilter = 0;
     this.searchName = '';
+    this.searchName = '';
     this.from = '';
     this.to = '';
     this.inputPlaceholder = '';
     this.tripSuggestions = [];
+    this.searchTransporter= '';
+    this.searchId = '';
     this.filterForm.reset();
     this.loading = true;
     this.service.anotherStatusCalled.next(true);

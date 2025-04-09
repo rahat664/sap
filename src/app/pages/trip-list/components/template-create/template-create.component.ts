@@ -113,11 +113,18 @@ export class TemplateCreateComponent implements OnInit {
     this.selectedCustomer = JSON.parse(
       localStorage.getItem('selectedCustomer')
     );
+
     if (this.selectedCustomer) {
       this.customerName = this.selectedCustomer.name;
       this.templateForm
         .get('customerCode')
         .setValue(this.selectedCustomer.customerCode);
+      this.templateForm.get('tripType').setValue(
+        this.selectedCustomer.tripType
+      )
+      this.tripTypes.forEach((tripType) => {
+        tripType.active = tripType.enumName === this.selectedCustomer.tripType;
+      })
     }
   }
 
