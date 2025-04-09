@@ -275,32 +275,19 @@ export class TripService {
   getTransporterPaymentList(
     page: number,
     size: number,
-    search?: string,
     status?: string,
-    challanStatus?: string,
     from?: string,
     to?: string,
     tripId?: string,
-    incidentOccurred?: string,
-    transporterNameOrPhone?: string,
-    truckRegId?: string,
-    challanFrom?: string,
-    challanTo?: string,
-    customerNameOrPhone?: string,
-    transporterRateExist?: boolean,
-    customerRateExist?: boolean,
     customerCode?: string,
-    paymentStatuses?: string,
+    transporterPaymentStatus?: string,
+    loadingDistrict?: string,
+    unloadingDistrict?: string
   ) {
     let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
-    if (search) {
-      params = params.set('search', search);
-    }
+
     if (status) {
       params = params.set('status', status);
-    }
-    if (challanStatus) {
-      params = params.set('challanStatus', challanStatus);
     }
     if (from) {
       params = params.set('from', from);
@@ -311,35 +298,15 @@ export class TripService {
     if (tripId) {
       params = params.set('tripId', tripId);
     }
-    if (incidentOccurred) {
-      params = params.set('incidentOccurred', incidentOccurred);
-    }
-    if (transporterNameOrPhone) {
-      params = params.set('transporterNameOrPhone', transporterNameOrPhone);
-    }
-    if (truckRegId) {
-      params = params.set('truckRegId', truckRegId);
-    }
-    if (challanFrom) {
-      params = params.set('challanFrom', challanFrom);
-    }
-    if (challanTo) {
-      params = params.set('challanTo', challanTo);
-    }
-    if (customerNameOrPhone) {
-      params = params.set('customerNameOrPhone', customerNameOrPhone);
-    }
-    if (transporterRateExist) {
-      params = params.set('transporterRateExist', transporterRateExist.toString());
-    }
-    if (customerRateExist) {
-      params = params.set('customerRateExist', customerRateExist.toString());
-    }
     if (customerCode) {
       params = params.set('customerCode', customerCode);
     }
-    if (paymentStatuses) {
-      params = params.set('paymentStatuses', paymentStatuses);
+     if (transporterPaymentStatus) {
+      params = params.set('transporterPaymentStatus', transporterPaymentStatus);
+    } if (loadingDistrict) {
+      params = params.set('loadingDistrict', loadingDistrict);
+    } if (unloadingDistrict) {
+      params = params.set('unloadingDistrict', unloadingDistrict);
     }
     return this.http.get(`${this.transporterPaymentUrl}`, { params });
   }

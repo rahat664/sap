@@ -16,6 +16,9 @@ import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autoc
 import { MatInput } from '@angular/material/input';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { districts } from '../../../shared/models/ditrict-with-latlng.model';
+import { debounceTime, Subject } from 'rxjs';
+import { CustomerService } from '../../profiles/services/customer.service';
+import { TripService } from '../../trip-list/services/trip.service';
 
 @Component({
   selector: 'app-payment-filter',
@@ -120,16 +123,54 @@ export class PaymentFilterComponent {
   searchName: any;
   tripSuggestions: any;
   searchValue: any;
+  @Output() filterApplied: EventEmitter<any> = new EventEmitter<any>();
+  @Output() filterData: EventEmitter<any> = new EventEmitter<any>();
+  searchSubject = new Subject<string>();
+  customerSearchSubject = new Subject<string>();
+  isSearchedMenuOpened: boolean;
+  isTripSearchedMenuOpened: boolean;
+  customerCode: string;
+  picker: any;
+  event: any;
 
-  constructor(private datePipe: DatePipe) {}
+  constructor(private datePipe: DatePipe, private customer: CustomerService, private trip: TripService) {
+    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
+      this.performSearch(searchText);
+    });
+    this.customerSearchSubject
+      .pipe(debounceTime(1000))
+      .subscribe(searchText => {
+        this.performCustomerSearch(searchText);
+      });
+  }
 
-  onApplyFilter() {}
+  onApplyFilter() {
+    const filterData = {
+      startDate: this.startDate,
+      endDate: this.endDate,
+      paymentStatus: this.paymentStatusPlaceholder,
+      tripStatus: this.tripStatusPlaceholder,
+      tripId: this.tripId,
+      searchName: this.searchName,
+      customerCode: this.customerCode,
+      searchId: this.searchId,
+      loadingDistrict: this.loadingDistrict,
+      unloadingDistrict: this.unloadingDistrict,
+      selectedButton: this.selectedButton,
+    }
+    this.filterData.emit(filterData);
+    localStorage.setItem('paymentFilter', JSON.stringify(filterData));
+    this.filterApplied.emit();
+    this.filterClosed.emit();
+  }
 
   onClose() {
     this.filterClosed.emit();
   }
 
   onClickFilterButton(event: any, picker: any) {
+    this.picker = picker;
+    this.event = event;
     this.selectedButton = event;
     if (event === 'Custom') {
       this.startDate = '';
@@ -212,16 +253,24 @@ export class PaymentFilterComponent {
       this.paymentStatusOptionsArray.find(x => x.id === $event)?.showname || '';
   }
 
-  onKeyUpTripSearch($event: KeyboardEvent) {
-
+  onKeyUpTripSearch($event: any) {
+    const value = $event.target.value;
+    this.customerSearchSubject.next(value);
   }
 
-  onClickTripSearchSuggestion(option: any) {
-
+  onClickTripSearchSuggestion(result: any) {
+    this.tripId = result.tripId;
+    this.searchId = result.tripId;
+    this.tripIdSuggestions = [];
+    this.isTripSearchedMenuOpened = false;
+    this.trip.anotherStatusCalled.next(true);;
   }
 
   onClickClearTripId() {
-
+    this.tripId = '';
+    this.searchId = '';
+    this.tripIdSuggestions = [];
+    this.tripIdSuggestions.push('No trip found');
   }
 
   onSelectTripStatus($event: number) {
@@ -230,19 +279,29 @@ export class PaymentFilterComponent {
       this.tripStatusOptionsArray.find(x => x.id === $event)?.showname || '';
   }
 
-  onSearchInputChange($event: KeyboardEvent) {
-
+  onSearchInputChange($event: any) {
+    const value = $event.target.value;
+    this.searchSubject.next(value); // Trigger the Subject when input changes
   }
 
-  onClickSearchSuggestion(option: any) {
 
+  onClickSearchSuggestion(result: any) {
+    this.customerCode = result.customerCode;
+    this.searchName = result.name;
+    this.searchValue = result.name;
+    this.tripSuggestions = [];
+    this.isSearchedMenuOpened = false;
+    this.trip.anotherStatusCalled.next(true);
   }
 
   onClickClearCompany() {
-
+    this.searchValue = '';
+    this.searchName = '';
+    this.tripSuggestions = [];
+    this.tripSuggestions.push('No customer found');
   }
 
-  protected readonly districts = [];
+  protected districts = [];
   loadingDistrict: any;
   unloadingDistrict: any;
 
@@ -252,5 +311,92 @@ export class PaymentFilterComponent {
 
   onUnloadingDistrictChange($event: MatSelectChange) {
 
+  }
+
+  ngOnInit() {
+    this.getDistrictList();
+    const isFilter = localStorage.getItem('paymentFilter');
+    if (isFilter) {
+      const filterData = JSON.parse(isFilter);
+      this.startDate = filterData.startDate;
+      this.endDate = filterData.endDate;
+      this.tripId = filterData.tripId;
+      this.searchName = filterData.searchName;
+      this.customerCode = filterData.customerCode;
+      this.searchId = filterData.searchId;
+      this.loadingDistrict = filterData.loadingDistrict;
+      this.unloadingDistrict = filterData.unloadingDistrict;
+      this.paymentStatusPlaceholder = filterData.paymentStatus;
+      this.tripStatusPlaceholder = filterData.tripStatus;
+      this.tripStatusOptionsArray.forEach(x => {
+        if (x.value === filterData.tripStatus) {
+          x.selected = true;
+          this.tripStatusPlaceholder = x.showname;
+        } else {
+          x.selected = false;
+        }
+      });
+      this.paymentStatusOptionsArray.forEach(x => {
+        if (x.value === filterData.paymentStatus) {
+          x.selected = true;
+          this.paymentStatusPlaceholder = x.showname;
+        } else {
+          x.selected = false;
+        }
+      });
+      this.selectedButton = filterData.selectedButton;
+      if (this.selectedButton) {
+        this.dateText = true
+      }
+    }
+  }
+
+  private getDistrictList() {
+    this.trip.getDistricts().subscribe((res: any) => {
+      this.districts = res.data;
+    });
+  }
+
+  performSearch(value: string) {
+    if (value?.length > 0) {
+      this.customer.searchCustomer(0, 100, value).subscribe((company: any) => {
+        this.tripSuggestions = company.data.content;
+        if (this.tripSuggestions.length === 0) {
+          this.tripSuggestions.push('No customer found');
+        }
+        this.isSearchedMenuOpened = true;
+      });
+    } else {
+      this.resetSearch();
+    }
+  }
+
+  resetSearch() {
+    this.isSearchedMenuOpened = false;
+    this.customerCode = '';
+    this.searchValue = '';
+    this.tripSuggestions = ['No customer found'];
+    this.trip.anotherStatusCalled.next(true);
+  }
+
+  private performCustomerSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.trip.getTripSuggestions(searchText).subscribe((trip: any) => {
+        this.tripIdSuggestions = trip.responses;
+        if (this.tripIdSuggestions.length === 0) {
+          this.tripIdSuggestions.push('No trip found');
+        }
+      });
+    } else {
+      this.resetTripIdSearch();
+    }
+  }
+
+  private resetTripIdSearch() {
+    this.isTripSearchedMenuOpened = false;
+    this.tripId = '';
+    this.tripIdSuggestions = [];
+    this.tripIdSuggestions.push('No trip found');
+    this.trip.anotherStatusCalled.next(true);
   }
 }

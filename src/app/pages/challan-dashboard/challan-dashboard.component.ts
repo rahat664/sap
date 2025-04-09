@@ -194,11 +194,11 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.trip.getTripSuggestions(searchText).subscribe((trip: any) => {
         this.tripIdSuggestions = trip.responses;
         if (this.tripIdSuggestions.length === 0) {
-          this.tripIdSuggestions.push('No customer found');
+          this.tripIdSuggestions.push('No trip found');
         }
       });
     } else {
-      this.resetSearch();
+      this.resetTripIdSearch();
     }
   }
 

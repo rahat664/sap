@@ -13,6 +13,10 @@
         </div>
       </div>
     </div>
+    <div *ngIf="filterApplied" class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
+      <span class="text-xs text-not-black">Showing result for {{filterSummary}}</span>
+      <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
+    </div>
 
 
     <!--  summary section-->
@@ -20,14 +24,14 @@
       <div class="w-full flex items-center justify-center  border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-secondary">Total trip</span>
-          <span class="text-h1 font-semibold leading-h1 text-not-black">{{totalTrips}}</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">{{ totalTrips }}</span>
         </div>
       </div>
       <div class="w-full flex items-center justify-center  border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-not-primary">Transporter Rate(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">{{
-            paymentData?.totalTransportRate
+              paymentData?.totalTransportRate
             }}</span>
         </div>
       </div>
@@ -35,7 +39,7 @@
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-green">Paid(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">
-            {{paymentData?.totalPaid}}
+            {{ paymentData?.totalPaid }}
           </span>
         </div>
       </div>
@@ -43,7 +47,7 @@
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-red">Due(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">{{
-            paymentData?.totalUnpaid
+              paymentData?.totalUnpaid
             }}</span>
         </div>
       </div>
@@ -79,10 +83,10 @@
       <ng-container *ngFor="let transporter of transportersPaymentList">
         <tr>
           <td class="whitespace-nowrap text-link cursor-pointer">
-            <a (click)="onClickTripId(transporter)">{{transporter.tripId}}</a>
+            <a (click)="onClickTripId(transporter)">{{ transporter.tripId }}</a>
           </td>
-          <td class="whitespace-nowrap">{{transporter.customerName}}</td>
-          <td class="whitespace-nowrap">{{transporter.tripStartDatetime | date: 'dd MMM yyyy'}}</td>
+          <td class="whitespace-nowrap">{{ transporter.customerName }}</td>
+          <td class="whitespace-nowrap">{{ transporter.tripStartDatetime | date: 'dd MMM yyyy' }}</td>
           <td class="text-left"><p>
             {{ getLoadingPointsName(transporter.tripPoints)[0]?.pointName }}
             <span
@@ -100,7 +104,7 @@
             >
           </p></td>
 
-          <td class="text-center">{{transporter.status}}</td>
+          <td class="text-center">{{ transporter.status }}</td>
           <td class="text-center">
             {{
               (transporter.transporterRate !== null ? (transporter.transporterRate|number) : 'N/A')
@@ -112,16 +116,16 @@
             }}
           </td>
           <td class="text-center whitespace-nowrap">
-            {{transporter.lastPaymentDateToTransporter ? (transporter.lastPaymentDateToTransporter | date: 'dd MMM yyyy') : 'N/A'}}
+            {{ transporter.lastPaymentDateToTransporter ? (transporter.lastPaymentDateToTransporter | date: 'dd MMM yyyy') : 'N/A' }}
           </td>
           <td class="text-center">
-            {{countDueAmount(transporter)}}
+            {{ countDueAmount(transporter) }}
           </td>
           <td class="text-center">
             <button *ngIf="countDueAmount(transporter) !== 'N/A' && Number(countDueAmount(transporter)) > 0"
-              (click)="onClickPayNow(transporter)"
-              type="button"
-              class="px-[0.875rem] py-[0.375rem] text-primary border border-primary rounded">
+                    (click)="onClickPayNow(transporter)"
+                    type="button"
+                    class="px-[0.875rem] py-[0.375rem] text-primary border border-primary rounded">
               <span class="text-body">Pay now</span>
             </button>
           </td>
@@ -138,7 +142,10 @@
     </table>
   </div>
 </div>
-<app-off-canvas (isPaymentSuccessful)="onPaymentSucceful($event)" [transporterDetails]="selectedTransporter" *ngIf="isOffCanvasVisible" (closeCanvas)="hideOffCanvas()"></app-off-canvas>
-<app-payment-details (paymentFromDetatils)="onPaymentFromDetails()" [transporterDetails]="selectedTransporter" *ngIf="paymentDetailsOpened" (closeCanvas)="hideDetails()"></app-payment-details>
-<app-payment-filter (filterClosed)="onFilterClose()" *ngIf="filterOpened"> </app-payment-filter>
+<app-off-canvas (isPaymentSuccessful)="onPaymentSucceful($event)" [transporterDetails]="selectedTransporter"
+                *ngIf="isOffCanvasVisible" (closeCanvas)="hideOffCanvas()"></app-off-canvas>
+<app-payment-details (paymentFromDetatils)="onPaymentFromDetails()" [transporterDetails]="selectedTransporter"
+                     *ngIf="paymentDetailsOpened" (closeCanvas)="hideDetails()"></app-payment-details>
+<app-payment-filter (filterData)="onFilterData($event)" (filterApplied)="onfilterApply()"
+                    (filterClosed)="onFilterClose()" *ngIf="filterOpened"></app-payment-filter>
 
