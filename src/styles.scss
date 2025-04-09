@@ -344,8 +344,8 @@ img:hover {
 }
 
 .cdk-overlay-connected-position-bounding-box {
-  height: auto;
-  width: auto;
+  height: auto !important;
+  width: auto !important;
 }
 
 .mat-mdc-form-field-icon-suffix{

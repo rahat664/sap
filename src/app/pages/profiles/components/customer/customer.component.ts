@@ -144,12 +144,22 @@ export class CustomerComponent implements OnInit {
   onScrollEnd($event: boolean) {
     if ($event && this.page < this.totalPages - 1) {
       this.page = this.page + 1;
-      this.service
-        .searchCustomer(this.page, this.size)
-        .subscribe((res: any) => {
-          this.customers.push(...res.data.content);
-          this.totalPages = res.data.totalPages;
-        });
+      if (this.checkIfAllInputIsNumber(this.searchValue)) {
+        this.service
+          .searchCustomer(this.page, this.size, null, this.searchValue, this.from, this.to)
+          .subscribe((res: any) => {
+            this.customers = res.data.content;
+            this.totalPages = res.data.totalPages;
+            this.loading = false;
+          });
+      } else {
+        this.service
+          .searchCustomer(this.page, this.size, this.searchValue, null, this.from, this.to)
+          .subscribe((res: any) => {
+            this.customers.push(...res.data.content);
+            this.totalPages = res.data.totalPages;
+          });
+      }
     }
   }
 

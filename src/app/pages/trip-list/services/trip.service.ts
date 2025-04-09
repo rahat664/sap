@@ -263,7 +263,7 @@ export class TripService {
 
     if (params) {
       Object.keys(params).forEach((key) => {
-        if (params[key] !== undefined && params[key] !== null) {
+        if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
           httpParams = httpParams.set(key, params[key]);
         }
       });

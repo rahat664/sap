@@ -28,12 +28,6 @@
           class="flex items-center justify-center">
           <i class="fal text-[2rem] fa-search-minus"></i>
         </button>
-        <button type="button" (click)="onClickDownload()" class="h-full">
-          <img
-            src="assets/svg/download.svg"
-            class="notPreview h-full w-full"
-            alt="" />
-        </button>
         <button type="button" (click)="onClickDelete()">
           <i class="fal fa-times text-xl text-red"></i>
         </button>
@@ -143,7 +137,7 @@
         </span>
       </div>
       <div class="flex flex-col space-y-1">
-        <span class="text-body text-secondary">Image type</span>
+        <span class="text-body text-secondary">Document type</span>
         <span class="text-h2 leading-h2 font-semibold text-not-black"
         >{{imageType}}
         </span
