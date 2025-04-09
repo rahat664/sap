@@ -107,6 +107,14 @@ export class TemplateUpdateComponent implements OnInit {
       this.templateUpdateForm.get('goodsId').setValue(template.good?.id);
       this.templateUpdateForm.get('goodsName').setValue(template.good?.name);
       this.templateUpdateForm.get('paymentType').setValue(template.paymentType);
+      this.templateUpdateForm.get('tripType').setValue(template.tripType);
+      this.tripTypes.forEach(tripType => {
+        tripType.active = tripType.enumName === template.tripType;
+      })
+      this.paymentType.forEach(paymentType => {
+        paymentType.active = false
+        paymentType.active = paymentType.enumName === template.paymentType;
+      })
       this.templateUpdateForm
         .get('customerRate')
         .setValue(template.customerRate);

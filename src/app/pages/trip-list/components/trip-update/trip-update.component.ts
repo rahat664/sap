@@ -938,6 +938,16 @@ export class TripUpdateComponent implements OnInit {
         .get('truckCapacityInTon')
         .setValue(tripData.truckCapacityInTon);
       this.tripUpdateForm.get('paymentType').setValue(tripData.paymentType);
+      this.paymentType.forEach((paymentType: any) => {
+        paymentType.active = false;
+        if (paymentType.enumName === tripData.paymentType) {
+          paymentType.active = paymentType.enumName === tripData.paymentType;
+        }
+      })
+      this.tripUpdateForm.get('tripType').setValue(tripData.tripType);
+      this.tripTypes.forEach((tripType: any) => {
+        tripType.active = tripType.enumName === tripData.tripType;
+      })
       this.tripUpdateForm.get('goodsId').setValue(tripData.good?.id);
       this.tripUpdateForm.get('goodsName').setValue(tripData.good?.name);
       this.tripUpdateForm.get('customerRate').setValue(tripData.customerRate);
