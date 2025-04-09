@@ -79,9 +79,9 @@ export class PaymentFilterComponent {
     },
     {
       id: 3,
-      value: 'Partially Paid',
+      value: 'Partial',
       selected: false,
-      showname: 'Partially Paid',
+      showname: 'Partial',
     },
     {
       id: 4,

@@ -198,6 +198,7 @@ export class ProfileDocumentsComponent {
       uploaded: !!doc,
       preview: doc ? doc[0].base64 : null,
       length: doc ? doc.length : 0,
+      fileType: doc ? doc[0].type : null,
     };
   }
 
@@ -256,5 +257,9 @@ export class ProfileDocumentsComponent {
 
   isPdf(preSignedFileUrl: any) {
     return preSignedFileUrl?.endsWith('.pdf');
+  }
+
+  isPdfFromAdded(uploaded: any) {
+    return uploaded === 'application/pdf';
   }
 }

@@ -146,18 +146,18 @@
             ) | date: 'd MMM yyyy, h:mm a'
           }}</span>
       </div>
+      <div class="flex flex-col space-y-1" *ngIf="expiryAvailable">
+        <span class="text-body text-secondary">Expire date</span>
+        <span class="text-h2 leading-h2 font-semibold  {{checkDateIsExpiredOrNot(activatedDocument.expiryDate).isExpired ? 'text-red' : 'text-not-black'}}"
+        >{{ checkDateIsExpiredOrNot(activatedDocument.expiryDate).text }}</span
+        >
+      </div>
       <div class="flex flex-col space-y-1">
         <span class="text-body text-secondary">Document type</span>
         <span class="text-h2 leading-h2 font-semibold text-not-black"
         >{{
             changeDocumentNameToGeneralName(activatedDocument?.documentType)}}
         </span
-        >
-      </div>
-      <div class="flex flex-col space-y-1" *ngIf="expiryAvailable">
-        <span class="text-body text-secondary">Expire date</span>
-        <span class="text-h2 leading-h2 font-semibold text-not-black"
-        >30 Mar 2029</span
         >
       </div>
       <div class="flex flex-col space-y-1" *ngIf="notesAvailable">

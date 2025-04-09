@@ -29,7 +29,8 @@ export class StatusHeighlightComponent implements OnInit {
   driverStatistics: userStats;
   customerCode: any[];
   dateFilterAvailable: boolean;
-  paymentType: any;
+  paymentType: string = '';
+  tripType: string = '';
 
   constructor(
     private service: DashboardService,
@@ -44,6 +45,7 @@ export class StatusHeighlightComponent implements OnInit {
       this.fromDate = params['fromDate'] ? params['fromDate'] : '';
       this.toDate = params['toDate'] ? params['toDate'] : '';
       this.paymentType = params['paymentType'] ? params['paymentType'] : '';
+      this.tripType = params['tripType'] ? params['tripType'] : '';
       if (!this.fromDate || !this.toDate) {
         this.dateFilterAvailable = false;
         this.countFromDateAndToDate();

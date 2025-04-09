@@ -102,6 +102,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
     { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
   ];
+  tripTypeFilter: number = 0;
+   tripTypeValue: string = '';
 
   get tripSuggestions(): any {
     return this._tripSuggestions;
@@ -371,7 +373,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         this.to,
         this.truckRegistrationId,
         this.transporterName,
-        this.paymentTypeValue
+        this.paymentTypeValue,
+        this.tripTypeValue
       )
       .subscribe(
         (trip: any) => {
@@ -626,7 +629,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.tripFilter +
       this.truckFilter +
       this.transporterFilter +
-      this.paymentFilter
+      this.paymentFilter +
+        this.tripTypeFilter
     );
   }
 
@@ -656,6 +660,9 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.chalanStatus = '';
     this.searchTransporter= '';
     this.searchRegistationId='';
+    this.tripTypeFilter=0;
+    this.tripTypePlaceholder = '';
+    this.tripTypeValue = '';
     this.searchId = '';
     this.status = 'Completed';
     this.activatedChallanStatus = 'Completed';
@@ -933,6 +940,11 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
 
   protected readonly localStorage = localStorage;
   uploadAbleTripId: any;
+  tripTypePlaceholder: string = '';
+  tripTypeOptionsArray: CustomInputSelectModel[] = [
+    {id: 1, value: 'PROJECT', selected: false, showname: 'Project'},
+    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial'},
+  ];
 
   onClickClearCompany() {
     this.customerCode = '';
@@ -989,6 +1001,19 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
     this.paymentTypeValue =
       this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+  onSelectTrip($event: number) {
+    this.tripTypeFilter = 1;
+    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.tripTypePlaceholder =
+      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.tripTypeValue =
+      this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
     this.page = 0;
     this.size = 30;
     this.loading = true;

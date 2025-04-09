@@ -104,7 +104,7 @@ export class TransporterAddComponent implements OnInit {
   ngOnInit() {
     this.shared.validateInterNationalPhoneNumber();
     this.initializeForm();
-    const isFromDocumentSave = localStorage.getItem('isFromDocumentSave');
+    const isFromDocumentSave = sessionStorage.getItem('isFromDocumentSave');
     if (isFromDocumentSave) {
       this.loadPreviousPayload();
     }
@@ -280,7 +280,7 @@ export class TransporterAddComponent implements OnInit {
       mfsName: [''],
       mfsNumber: [''],
       mfsType: [''],
-      paymentMethod: ['Cash', Validators.required],
+      paymentMethod: ['', Validators.required],
       contactPersonName: ['', Validators.required],
       role: [''],
       note: [''],
@@ -353,7 +353,8 @@ export class TransporterAddComponent implements OnInit {
   }
 
   private loadPreviousPayload() {
-    const payload = JSON.parse(localStorage.getItem('transporterPayload'));
+    const payload = JSON.parse(sessionStorage.getItem('transporterPayload'));
+    this.preferredPaymentMethod = payload.defaultPaymentMethod?.paymentMethod;
     this.transporterAddForm.patchValue({
       name: payload.name,
       phone: payload.contactPersonNumber,
@@ -367,14 +368,25 @@ export class TransporterAddComponent implements OnInit {
       note: payload.note,
     });
     if (
-      payload.defaultPaymentMethod?.paymentMethod !== 'Cash' &&
-      payload.defaultPaymentMethod?.paymentMethod !== 'Bank'
+      this.preferredPaymentMethod === 'MFS'
     ) {
       this.transporterAddForm.patchValue({
         mfsName: payload.defaultPaymentMethod?.name,
+        accType: payload.defaultPaymentMethod?.accType,
         mfsNumber: payload.defaultPaymentMethod?.bankAccNo,
         mfsType: payload.defaultPaymentMethod?.paymentMethod,
       });
+
+      this.bkashPaymentMethod.forEach(method => {
+        method.selected =
+          method.value === payload.defaultPaymentMethod?.accType;
+      })
+      this.bkashPaymentTypePlaceholder = payload.defaultPaymentMethod?.accType;
+      this.mfsService.forEach((method) => {
+        method.selected =
+          method.value === payload.defaultPaymentMethod?.name;
+      })
+      this.mfsTypePlaceholder = payload.defaultPaymentMethod?.name;
     }
   }
 
@@ -405,9 +417,9 @@ export class TransporterAddComponent implements OnInit {
           this.transporterAddForm.get('mfsType').value;
       }
 
-      localStorage.setItem('isFromDocumentSave', String(true));
+      sessionStorage.setItem('isFromDocumentSave', String(true));
 
-      localStorage.setItem('transporterPayload', JSON.stringify(payload));
+      sessionStorage.setItem('transporterPayload', JSON.stringify(payload));
     }
   }
 
@@ -428,8 +440,8 @@ export class TransporterAddComponent implements OnInit {
     ).value;
     this.mfsService.forEach(method => (method.selected = method.id === $event));
     this.transporterAddForm
-      .get('mfsType')
-      .setValue(this.bkashPaymentTypePlaceholder);
+      .get('mfsName')
+      .setValue(this.mfsTypePlaceholder);
   }
 
   protected readonly paymentMethod = paymentMethod;

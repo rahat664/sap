@@ -156,7 +156,8 @@
         <h1 class="text-h2 leading-h2 text-not-black font-semibold">Payment info</h1>
       </div>
       <div class="flex flex-col space-y-4">
-        <div class="border border-x-disabled rounded-lg overflow-hidden">
+        <div class="border {{ transporterAddForm.get('paymentMethod').touched &&
+            transporterAddForm.get('paymentMethod').invalid ? 'border-red' : 'border-disabled' }} rounded-lg overflow-hidden">
           <div class="flex justify-between px-3 py-2.5 items-center bg-input">
             <div class="flex space-x-3 items-center">
               <img src="assets/svg/bank.svg" class="notPreview" alt="bank" />
@@ -219,7 +220,16 @@
             </mat-radio-button>
           </div>
         </div>
-        <div class="border border-x-disabled rounded-lg overflow-hidden">
+        <div
+          *ngIf="
+            transporterAddForm.get('paymentMethod').touched &&
+            transporterAddForm.get('paymentMethod').invalid
+          "
+          class="text-red text-xs">
+          <span>Payment method is required</span>
+        </div>
+        <div class="border {{ transporterAddForm.get('paymentMethod').touched &&
+            transporterAddForm.get('paymentMethod').invalid ? 'border-red' : 'border-disabled' }} rounded-lg overflow-hidden">
           <div class="flex justify-between px-3 py-2.5 items-center bg-input">
             <div class="flex space-x-3 items-center">
               <img src="assets/svg/mobile.svg" class="notPreview" alt="MFS" />
@@ -271,7 +281,16 @@
             </mat-radio-button>
           </div>
         </div>
-        <div class="border border-x-disabled rounded-lg overflow-hidden">
+        <div
+          *ngIf="
+            transporterAddForm.get('paymentMethod').touched &&
+            transporterAddForm.get('paymentMethod').invalid
+          "
+          class="text-red text-xs">
+          <span>Payment method is required</span>
+        </div>
+        <div class="border {{ transporterAddForm.get('paymentMethod').touched &&
+            transporterAddForm.get('paymentMethod').invalid ? 'border-red' : 'border-disabled' }} rounded-lg overflow-hidden">
           <div class="flex justify-between px-3 py-2.5 items-center bg-input">
             <div class="flex space-x-3 items-center">
               <img src="assets/svg/cash.svg" class="notPreview" alt="Cash" />
@@ -283,6 +302,14 @@
            <mat-radio-button [checked]="preferredPaymentMethod === 'Cash'"  class="px-2 " (change)="setPreferredPaymentMethod($any($event), 'Cash')">Set as preferred
            </mat-radio-button>
          </div>
+        </div>
+        <div
+          *ngIf="
+            transporterAddForm.get('paymentMethod').touched &&
+            transporterAddForm.get('paymentMethod').invalid
+          "
+          class="text-red text-xs">
+          <span>Payment method is required</span>
         </div>
       </div>
     </div>

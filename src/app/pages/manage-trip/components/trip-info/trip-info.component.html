@@ -256,6 +256,21 @@
           <img
             loading="lazy"
             class="w-6 h-6 notPreview"
+            src="assets/svg/truckinfo.svg"/>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Truck
+          </h1>
+        </div>
+        <h1 class="text-body text-wrap text-web-text-secondary">
+          {{ tripDetails.truck.source ? tripDetails.truck.source : 'N/A' }}
+        </h1>
+      </div>
+      <div class="flex flex-col space-y-2">
+        <div class="flex space-x-3 items-center">
+          <img
+            loading="lazy"
+            class="w-6 h-6 notPreview"
             src="assets/svg/goodsinfo.svg"/>
           <h1
             class="text-body_title leading-body_title text-not-black font-semibold">
@@ -356,7 +371,7 @@
           </h1>
         </div>
         <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
-          {{tripDetails.transporterRate !== null ? (tripDetails.transporterRate | number) :  'N/A' }} ৳
+          {{tripDetails.transporterRate !== null ? (tripDetails.transporterRate | number) +' ৳' :  'N/A' }}
         </h1>
       </div>
 

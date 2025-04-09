@@ -51,7 +51,8 @@ export class DocumentViewerComponent {
     private trip: TripService,
     private cd: ChangeDetectorRef,
     private service: UserService,
-    private toaster: HandleToastrService
+    private toaster: HandleToastrService,
+    private datePipe: DatePipe,
   ) {}
 
   ngOnInit() {
@@ -82,6 +83,7 @@ export class DocumentViewerComponent {
     if (navigation) {
       this.documents = navigation.documents;
       this.activatedDocument = navigation.activatedDocument;
+      this.expiryAvailable = this.activatedDocument?.expiryDate
       this.documentBelongToId = navigation.id;
       this.documentTitle = navigation.documentTitle;
       this.returnUrl = navigation.returnUrl;
@@ -319,5 +321,48 @@ export class DocumentViewerComponent {
     default:
       return documentType;
   }
+  }
+
+  checkDateIsExpiredOrNot(expiryDate: string): {
+    isExpired: boolean;
+    text: string;
+  } {
+    const pastDate = new Date(expiryDate);
+    const currentDate = new Date();
+
+    // Normalize time to midnight for accurate comparison
+    pastDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
+
+    // Check if the past date is today or in the future
+    if (pastDate >= currentDate) {
+      return {
+        isExpired: false,
+        text: `${this.datePipe.transform(pastDate, 'dd MMM, yyyy') || ''}`,
+      };
+    }
+
+    // Calculate the time difference in milliseconds
+    const timeDiff = currentDate.getTime() - pastDate.getTime();
+
+    // Convert milliseconds to days, months, and years
+    const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    const yearDiff = Math.floor(dayDiff / 365);
+    const monthDiff = Math.floor((dayDiff % 365) / 30);
+    const remainingDays = dayDiff % 30;
+
+    // Build the result string
+    const resultParts = [];
+    if (yearDiff > 0)
+      resultParts.push(`${yearDiff} year${yearDiff > 1 ? 's' : ''}`);
+    if (monthDiff > 0)
+      resultParts.push(`${monthDiff} month${monthDiff > 1 ? 's' : ''}`);
+    if (remainingDays > 0)
+      resultParts.push(`${remainingDays} day${remainingDays > 1 ? 's' : ''}`);
+
+    return {
+      isExpired: true,
+      text: `Expired ${resultParts.join(', ')} ago`,
+    };
   }
 }

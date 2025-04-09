@@ -56,6 +56,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
   datatype: string = 'daily';
   dateFilterApplied: boolean = false;
   paymentType: string = '';
+  tripType: string = '';
   private routerSubs: Subscription;
 
   constructor(
@@ -232,7 +233,8 @@ export class TransporterRateAnalysisComponent implements OnInit {
         this.loadingDistrict,
         this.unloadingDistrict,
         this.customerCode,
-        this.paymentType
+        this.paymentType,
+        this.tripType
       )
       .subscribe((res: any) => {
         this.parseSeriesDataAndColorsFromResponse(res.data);

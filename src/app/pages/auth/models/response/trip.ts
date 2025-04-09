@@ -61,6 +61,7 @@ export interface Truck {
   registrationSerial?: string; // Make optional as it's missing
   registrationNum?: string; // Make optional as it's missing
   fullRegistrationNumber?: string; // Make optional as it's missing
+  source?: string;
 }
 
 export interface tripType {

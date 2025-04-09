@@ -166,7 +166,15 @@ export class PaymentComponent {
       this.page = 0;
       this.loading = true;
       this.size = 30;
-      this.trip.getTransporterPaymentList(this.page, this.size).subscribe(
+      this.trip.getTransporterPaymentList(this.page, this.size,
+        this.filterData.tripStatus,
+        this.filterData.startDate,
+        this.filterData.endDate,
+        this.filterData.tripId,
+        this.filterData.customerCode,
+        this.filterData.paymentStatus,
+        this.filterData.loadingDistrict,
+        this.filterData.unloadingDistrict).subscribe(
         (res: any) => {
           this.transportersPaymentList = res.data.responses;
           this.totalPages = res.data.totalPages;
@@ -223,7 +231,7 @@ export class PaymentComponent {
       this.filterData.customerCode,
       this.filterData.paymentStatus,
       this.filterData.loadingDistrict,
-      this.filterData.unloadingDistrict,
+      this.filterData.unloadingDistrict
     ).subscribe(
       (res: any) => {
         this.transportersPaymentList = res.data.responses;

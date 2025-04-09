@@ -26,6 +26,7 @@ import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-document-upload',
@@ -80,7 +81,8 @@ export class DocumentUploadComponent {
     private trip: TripService,
     private cd: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private toaster: HandleToastrService
   ) {}
 
   ngOnInit() {
@@ -283,36 +285,12 @@ export class DocumentUploadComponent {
     });
   }
 
-  onClickDownload() {
-    // apply download functionalities to activeDocument
-    if (this.documents?.length > 0) {
-      if (this.activatedDocument) {
-        const link = document.createElement('a');
-        link.href = this.activatedDocument.url
-          ? this.activatedDocument.url
-          : this.activatedDocument?.document?.url;
-        link.download = `${this.imageType}`;
-        document.body.appendChild(link);
-        link.click();
-      }
-    }
-  }
 
   onClickBack() {
     localStorage.setItem('isBack', 'true');
     this.router.navigate([this.returnUrl]);
   }
 
-  downloadReport(images: any) {
-    if (images) {
-      const a = document.createElement('a');
-      a.href = images;
-      a.download = images;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-  }
 
   private previewDocuments(addedDocuments) {
     if (addedDocuments) {
@@ -355,35 +333,43 @@ export class DocumentUploadComponent {
 
   onClickSave() {
     // Ensure data is saved after all files are processed
-    setTimeout(() => {
-      // only store the documentFiles file object in sessionStorage
-      const doc = this.documentFiles.map(file => {
-        return {
-          name: file.file.name,
-          type: file.file.type,
-          size: file.file.size,
-          lastModified: file.file.lastModified,
-          base64: file.preview,
-        };
-      });
-      // check there is any document on the sessionStorage if found then store previous and current document in the sessionStorage
-
-      const isAlreadyStored = JSON.parse(
-        sessionStorage.getItem(`${this.imageType}`)
+    if (this.expiryAvailable && !this.expiryDate) {
+      this.toaster.showError(
+        'Please select an expiry date for the document.'
       );
-      if (isAlreadyStored) {
-        const previousDoc = JSON.parse(
+      return;
+    } else {
+      setTimeout(() => {
+        // only store the documentFiles file object in sessionStorage
+        const doc = this.documentFiles.map(file => {
+          return {
+            name: file.file.name,
+            type: file.file.type,
+            size: file.file.size,
+            lastModified: file.file.lastModified,
+            base64: file.preview,
+          };
+        });
+        // check there is any document on the sessionStorage if found then store a previous and current document in the sessionStorage
+
+        const isAlreadyStored = JSON.parse(
           sessionStorage.getItem(`${this.imageType}`)
         );
-        previousDoc.forEach(document => {
-          doc.push(document);
-        });
-        sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
-      } else {
-        sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
-      }
-      this.router.navigate([this.returnUrl]);
-    }, 500); // Delay to allow file reading to complete
+        if (isAlreadyStored) {
+          const previousDoc = JSON.parse(
+            sessionStorage.getItem(`${this.imageType}`)
+          );
+          previousDoc.forEach(document => {
+            doc.push(document);
+          });
+          sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
+        } else {
+          sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
+        }
+        this.router.navigate([this.returnUrl]);
+      }, 500);
+    }
+    // Delay to allow file reading to complete
   }
 
   onDateChange($event: Event) {

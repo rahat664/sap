@@ -61,6 +61,15 @@
             inputPlaceholder="Select Payment type"
             (selectedId)="onSelectPayment($event)"></app-custom-input>
         </div>
+        <div class="flex flex-col space-y-1 w-[20rem]">
+          <label class="text-body text-web-text-secondary px-2">Trip Type</label>
+          <app-custom-input
+            appGetClickEvent
+            [inputSearch]="tripTypePlaceholder"
+            [options]="tripTypeOptionsArray"
+            inputPlaceholder="Select Trip type"
+            (selectedId)="onSelectTripType($event)"></app-custom-input>
+        </div>
         <div class="flex flex-col space-y-1 w-full ">
           <label class="text-body text-web-text-secondary px-2"
           >Company name</label
