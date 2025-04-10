@@ -508,4 +508,5 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
       return 'N/A';
     }
   }
+
 }

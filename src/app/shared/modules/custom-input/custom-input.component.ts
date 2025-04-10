@@ -53,7 +53,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
     'December',
   ];
   days: number[] = Array.from({ length: 31 }, (_, i) => i + 1);
-  years: number[]  = Array.from(
+  years: number[] = Array.from(
     { length: new Date().getFullYear() - 2023 },
     (_, i) => 2024 + i
   );
@@ -74,7 +74,9 @@ export class CustomInputComponent implements OnInit, OnChanges {
   selectedToMonthInString: string;
   private selection: any;
   selectedValue: number | undefined;
-  @Output() dateEmited: EventEmitter<boolean> = new EventEmitter<boolean>(false)
+  @Output() dateEmited: EventEmitter<boolean> = new EventEmitter<boolean>(
+    false
+  );
   afterCustomSelectedValue: string;
 
   constructor(private shared: DriverEditSharedService) {}
@@ -217,13 +219,16 @@ export class CustomInputComponent implements OnInit, OnChanges {
   @Input() inputSearch = '';
   @Input() backgroundColor = 'input';
   @Input() errorMessage: string;
-  @Input() isFilterMenu: boolean =  true;
+  @Input() isFilterMenu: boolean = true;
+  isSpecial: boolean = true;
 
   ngOnInit(): void {
     setTimeout(() => {
       if (this.inputSearch) {
         this.selectedValue = this.options.find(
-          option => option.value === this.inputSearch || option.showname === this.inputSearch
+          option =>
+            option.value === this.inputSearch ||
+            option.showname === this.inputSearch
         )?.id;
       }
     }, 1000);
@@ -291,7 +296,7 @@ export class CustomInputComponent implements OnInit, OnChanges {
       this.selectedFromDate.emit(selectedFromDate);
       const selectedToDate = this.combineToIntoSingleDate();
       this.selectedToDate.emit(selectedToDate);
-      this.dateEmited.emit(true)
+      this.dateEmited.emit(true);
       this.selectedFromDateToToDate.emit(
         `${this.combineFromIntoSingleDate()} to ${this.combineToIntoSingleDate()}`
       );
@@ -302,15 +307,16 @@ export class CustomInputComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-
-    this.dateEmited.next(false)
+    this.dateEmited.next(false);
     if (this.options?.length == 1) {
       this.inputPlaceholder = this.options[0].value;
       this.selectedValue = this.options[0].id;
     }
     if (this.inputSearch) {
       this.selectedValue = this.options.find(
-        option => option.value === this.inputSearch || option.showname === this.inputSearch
+        option =>
+          option.value === this.inputSearch ||
+          option.showname === this.inputSearch
       )?.id;
     } else {
       this.selectedValue = undefined;
@@ -320,7 +326,6 @@ export class CustomInputComponent implements OnInit, OnChanges {
         if (option.id == 99) {
           option.value = 'Custom';
         }
-
       });
     }
   }
@@ -333,5 +338,18 @@ export class CustomInputComponent implements OnInit, OnChanges {
         select.open();
       }, 0);
     }
+  }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
+
+  onMouseEnter($event: any) {
+    this.updateOverLayStyle(true);
   }
 }

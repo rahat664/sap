@@ -399,4 +399,13 @@ export class PaymentFilterComponent {
     this.tripIdSuggestions.push('No trip found');
     this.trip.anotherStatusCalled.next(true);
   }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
 }

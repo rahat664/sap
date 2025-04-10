@@ -734,6 +734,15 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
   }
 
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
+
   onSearchInputChange($event: any) {
     const value = $event.target.value;
     this.searchSubject.next(value); // Trigger the Subject when input changes

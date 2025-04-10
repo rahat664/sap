@@ -343,15 +343,17 @@ img:hover {
   margin-bottom: 1rem;
 }
 
-.cdk-overlay-connected-position-bounding-box {
-  height: auto !important;
-  width: auto !important;
-  min-height: 100% !important;
-  min-width: 100% !important;
-}
 
 .mat-mdc-form-field-icon-suffix{
   margin-bottom: 12px !important;
 }
+
+body.custom-overlay-bounding-box {
+  .cdk-overlay-connected-position-bounding-box {
+    height: auto !important;
+    width: auto !important;
+  }
+}
+
 
 

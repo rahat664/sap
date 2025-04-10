@@ -59,6 +59,7 @@ export interface TripEvent {
 }
 
 export interface TripData {
+  sourceOfTruck: string;
   tripType: string;
   tripCancellationReason: any;
   id: number;

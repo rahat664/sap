@@ -820,4 +820,13 @@ export class ManageTripComponent implements OnInit {
     this.tripService.anotherStatusCalled.next(true);
     this.getTripList();
   }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
 }
