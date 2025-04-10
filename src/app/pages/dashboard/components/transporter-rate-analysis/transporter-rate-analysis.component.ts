@@ -87,6 +87,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
     timer(100).subscribe(() => {
       this.routerSubs = this.activatedRoute.queryParams.subscribe(params => {
         this.paymentType = params['paymentType'] ? params['paymentType'] : '';
+        this.tripType = params['tripType'] ? params['tripType'] : '';
         this.customerCode = params['customerCode']
           ? params['customerCode']
           : '';

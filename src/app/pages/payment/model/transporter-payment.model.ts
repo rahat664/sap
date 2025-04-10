@@ -1,5 +1,6 @@
 // trip.model.ts (Trip Data Model)
 export interface TransporterPayment {
+  transporterPaymentStatus: string;
   id: number;
   tripId: string;
   customerName: string;

@@ -215,36 +215,51 @@ export class PaymentComponent {
   }
 
   onfilterApply() {
-    this.filterApplied = true;
-    this.filterOpened = false;
-    this.loading = true;
-    this.transportersPaymentList = []
-    this.page = 0;
-    this.size = 30;
-    this.trip.getTransporterPaymentList(
-      this.page,
-      this.size,
-      this.filterData.tripStatus,
-      this.filterData.startDate,
-      this.filterData.endDate,
-      this.filterData.tripId,
-      this.filterData.customerCode,
-      this.filterData.paymentStatus,
-      this.filterData.loadingDistrict,
+    if(
+      this.filterData.tripStatus ||
+      this.filterData.startDate ||
+      this.filterData.endDate ||
+      this.filterData.tripId ||
+      this.filterData.customerCode ||
+      this.filterData.paymentStatus ||
+      this.filterData.loadingDistrict ||
       this.filterData.unloadingDistrict
-    ).subscribe(
-      (res: any) => {
-        this.transportersPaymentList = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.paymentData = res.data.paymentData;
-        this.totalTrips = res.data.totalItems;
-        this.loading = false;
-      },
-      (error: any) => {
-        this.loading = false;
-        console.error('Error fetching transporter payment list:', error);
-      }
-    );
+    ) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.loading = true;
+      this.transportersPaymentList = []
+      this.page = 0;
+      this.size = 30;
+      this.trip.getTransporterPaymentList(
+        this.page,
+        this.size,
+        this.filterData.tripStatus,
+        this.filterData.startDate,
+        this.filterData.endDate,
+        this.filterData.tripId,
+        this.filterData.customerCode,
+        this.filterData.paymentStatus,
+        this.filterData.loadingDistrict,
+        this.filterData.unloadingDistrict
+      ).subscribe(
+        (res: any) => {
+          this.transportersPaymentList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.paymentData = res.data.paymentData;
+          this.totalTrips = res.data.totalItems;
+          this.loading = false;
+        },
+        (error: any) => {
+          this.loading = false;
+          console.error('Error fetching transporter payment list:', error);
+        }
+      );
+    } else {
+      this.filterApplied = false;
+      return;
+    }
+
   }
 
   onFilterData($event: any) {
@@ -259,6 +274,7 @@ export class PaymentComponent {
     if (this.filterData.startDate) parts.push(`From: ${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}`);
     if (this.filterData.endDate) parts.push(`To: ${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}`);
     if (this.filterData.paymentStatus) parts.push(`Payment Status: ${this.filterData.paymentStatus}`);
+    if (this.filterData.tripStatus) parts.push(`Trip Status: ${this.filterData.tripStatus}`);
     if (this.filterData.tripId) parts.push(`Trip ID: ${this.filterData.tripId}`);
     if (this.filterData.loadingDistrict) parts.push(`Loading District: ${this.filterData.loadingDistrict}`);
     if (this.filterData.unloadingDistrict) parts.push(`Unloading District: ${this.filterData.unloadingDistrict}`);

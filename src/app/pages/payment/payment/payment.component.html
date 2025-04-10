@@ -14,7 +14,7 @@
       </div>
     </div>
     <div *ngIf="filterApplied" class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
-      <span class="text-xs text-not-black">Showing result for {{filterSummary}}</span>
+      <span class="text-xs text-not-black">Showing results for {{filterSummary}}</span>
       <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
     </div>
 
@@ -68,12 +68,13 @@
         <th class="text-left">Date</th>
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
-        <th class="text-center">Status</th>
-        <th class="text-center whitespace-nowrap">Trip cost(৳)</th>
+        <th class="text-center">Trip Status</th>
+        <th class="text-center">Payment Status</th>
+        <th class="text-center whitespace-nowrap">Trip Cost(৳)</th>
         <th class="text-center whitespace-nowrap">Paid(৳)</th>
-        <th class="text-center whitespace-nowrap">Paid on</th>
+        <th class="text-center whitespace-nowrap">Paid On</th>
         <th class="text-center whitespace-nowrap">Payable(৳)</th>
-        <th class="text-center whitespace-nowrap w-[10%]"></th>
+        <th class="text-center whitespace-nowrap w-[10%] "></th>
       </tr>
       <tr>
         <th class="custom-border" [colSpan]="12"></th>
@@ -105,6 +106,7 @@
           </p></td>
 
           <td class="text-center">{{ transporter.status }}</td>
+          <td class="text-center">{{ transporter.transporterPaymentStatus !== null ? transporter.transporterPaymentStatus : 'Unpaid'  }}</td>
           <td class="text-center">
             {{
               (transporter.transporterRate !== null ? (transporter.transporterRate|number) : 'N/A')
@@ -121,7 +123,7 @@
           <td class="text-center">
             {{ countDueAmount(transporter) }}
           </td>
-          <td class="text-center">
+          <td class="text-center whitespace-nowrap">
             <button *ngIf="countDueAmount(transporter) !== 'N/A' && Number(countDueAmount(transporter)) > 0"
                     (click)="onClickPayNow(transporter)"
                     type="button"

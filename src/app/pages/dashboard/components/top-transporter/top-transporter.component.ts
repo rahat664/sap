@@ -60,7 +60,7 @@ export class TopTransporterComponent implements OnInit {
 
   private getTopTransporters() {
     this.service
-      .getTopTransporters(this.fromDate, this.toDate, this.sortBy, this.customerCode, this.paymentType)
+      .getTopTransporters(this.fromDate, this.toDate, this.sortBy, this.customerCode, this.paymentType, this.tripType)
       .subscribe(
         (res: any) => {
           this.topTransporter = res.data.content;

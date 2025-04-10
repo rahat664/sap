@@ -148,8 +148,8 @@ export class PaymentFilterComponent {
     const filterData = {
       startDate: this.startDate,
       endDate: this.endDate,
-      paymentStatus: this.paymentStatusPlaceholder,
-      tripStatus: this.tripStatusPlaceholder,
+      paymentStatus: this.paymentStatusPlaceholder === 'All' ? '' : this.paymentStatusPlaceholder,
+      tripStatus: this.tripStatusPlaceholder === 'All' ? '' : this.tripStatusPlaceholder,
       tripId: this.tripId,
       searchName: this.searchName,
       customerCode: this.customerCode,
@@ -336,6 +336,10 @@ export class PaymentFilterComponent {
           x.selected = false;
         }
       });
+      if (filterData.tripStatus === '') {
+        this.tripStatusPlaceholder = 'All';
+
+      }
       this.paymentStatusOptionsArray.forEach(x => {
         if (x.value === filterData.paymentStatus) {
           x.selected = true;
@@ -344,6 +348,9 @@ export class PaymentFilterComponent {
           x.selected = false;
         }
       });
+      if (filterData.paymentStatus === '') {
+        this.paymentStatusPlaceholder = 'All';
+      }
       this.selectedButton = filterData.selectedButton;
       if (this.selectedButton) {
         this.dateText = true
