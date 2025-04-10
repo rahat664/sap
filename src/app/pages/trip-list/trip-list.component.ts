@@ -643,6 +643,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
       tripId: this.tripId,
       transporterName: this.transporterName,
       paymentType: this.paymentTypeValue,
+      tripType: this.tripTypeValue
     }
     this.service.getTripReport(
       params
