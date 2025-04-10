@@ -398,6 +398,7 @@
         <th class="text-left whitespace-nowrap">Loading Point</th>
         <th class="text-left whitespace-nowrap">Unloading Point</th>
         <th class="text-left whitespace-nowrap">Payment Type</th>
+        <th class="text-left whitespace-nowrap">Trip Type</th>
         <th class="text-center whitespace-nowrap">Hardcopy</th>
         <th class="text-center whitespace-nowrap">Softcopy</th>
         <th class="text-center whitespace-nowrap">Due Days</th>
@@ -463,6 +464,7 @@
             </p>
           </td>
           <td class="whitespace-nowrap">{{ getNameFromEnum(trip.paymentType) }}</td>
+          <td class="whitespace-nowrap">{{ getTripNameFromEnum(trip.tripType) }}</td>
           <td class="whitespace-nowrap text-center">
                   <span *ngIf="trip.challanHardCopyReceivedAt">{{
                       trip.challanHardCopyReceivedAt | date: 'dd MMM,yyyy h:mm a'

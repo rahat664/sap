@@ -41,7 +41,7 @@ import { TruckDocumentType } from '../../shared/Enums/registration_type';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
-import { PaymentType } from '../../shared/Enums/payment-type';
+import { PaymentType, TripType } from '../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -951,8 +951,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   uploadAbleTripId: any;
   tripTypePlaceholder: string = '';
   tripTypeOptionsArray: CustomInputSelectModel[] = [
-    {id: 1, value: 'PROJECT', selected: false, showname: 'Project'},
-    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial'},
+    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
+    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
   ];
 
   onClickClearCompany() {
@@ -1058,6 +1058,17 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         );
       }
     } else {
+      return 'N/A';
+    }
+  }
+
+  getTripNameFromEnum(paymentType: string) {
+    if (paymentType === TripType.COMMERCIAL) {
+      return 'Commercial Logistics';
+    } else if (paymentType === TripType.PROJECT) {
+      return 'Project Logistics';
+    }else
+    {
       return 'N/A';
     }
   }

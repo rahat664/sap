@@ -38,7 +38,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
 import { UserService } from '../profiles/services/user.service';
-import { PaymentType } from '../../shared/Enums/payment-type';
+import { PaymentType, TripType } from '../../shared/Enums/payment-type';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
@@ -586,8 +586,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
   protected readonly Math = Math;
   excelLoading: boolean = false;
   tripTypeOptionsArray: CustomInputSelectModel[] = [
-    {id: 1, value: 'PROJECT', selected: false, showname: 'Project'},
-    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial'},
+    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
+    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
   ];
   tripTypePlaceholder: string;
 
@@ -628,6 +628,16 @@ export class TripListComponent implements OnInit, AfterViewInit {
     }else
      {
       return 'Cash & Invoice';
+    }
+  }
+  getTripNameFromEnum(paymentType: string) {
+    if (paymentType === TripType.COMMERCIAL) {
+      return 'Commercial Logistics';
+    } else if (paymentType === TripType.PROJECT) {
+      return 'Project Logistics';
+    }else
+     {
+      return 'N/A';
     }
   }
 

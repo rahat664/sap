@@ -77,8 +77,8 @@ export class DashboardComponent implements OnInit {
   paymentTypeValue: string = '';
    tripTypeFilter: number = 0;
   tripTypeOptionsArray: CustomInputSelectModel[] = [
-    {id: 1, value: 'PROJECT', selected: false, showname: 'Project'},
-    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial'},
+    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
+    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
   ];
   tripTypePlaceholder: string = '';
    tripTypeValue: string;

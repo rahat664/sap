@@ -295,6 +295,7 @@
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
         <th class="text-left whitespace-nowrap">Payment Type</th>
+        <th class="text-left whitespace-nowrap">Trip Type</th>
         <th class="text-left">Status</th>
         <!--        <th class="text-left" *ngIf="!isAdmin()">Trip Fare</th>-->
         <th class="text-left" *ngIf="isAdmin()">CR(৳)</th>
@@ -303,7 +304,7 @@
         <th class="text-left" *ngIf="isAdmin()">Profit Margin</th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="isAdmin() ? 12 : 8"></th>
+        <th class="custom-border" [colSpan]="isAdmin() ? 13 : 9"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -348,6 +349,7 @@
             </p>
           </td>
           <td class="whitespace-nowrap">{{ getNameFromEnum(trip.paymentType) }}</td>
+          <td class="whitespace-nowrap">{{ getTripNameFromEnum(trip.tripType) }}</td>
           <td>{{ trip.status }}</td>
           <td *ngIf="isAdmin()">
             {{

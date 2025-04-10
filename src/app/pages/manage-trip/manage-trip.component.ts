@@ -130,8 +130,8 @@ export class ManageTripComponent implements OnInit {
   tripTypeFilter: number = 0;
   tripTypePlaceholder: string = '';
   tripTypeOptionsArray: CustomInputSelectModel[] = [
-    {id: 1, value: 'PROJECT', selected: false, showname: 'Project'},
-    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial'},
+    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
+    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
   ];
   tripTypeValue: string = '';
 
