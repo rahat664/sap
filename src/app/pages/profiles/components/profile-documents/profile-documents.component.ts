@@ -46,7 +46,7 @@ export class ProfileDocumentsComponent {
   ) {}
 
   viewAllDocument() {
-    sessionStorage.setItem('documentId', this.transporterId);
+    localStorage.setItem('documentId', this.transporterId);
     this.router.navigate(['/profile/document-viewer'], {
       state: {
         documents: this.documents,
@@ -193,7 +193,7 @@ export class ProfileDocumentsComponent {
   }
 
   checkDocumentType(documentType: any) {
-    const doc = JSON.parse(sessionStorage.getItem(documentType));
+    const doc = JSON.parse(localStorage.getItem(documentType));
     return {
       uploaded: !!doc,
       preview: doc ? doc[0].base64 : null,
@@ -233,9 +233,9 @@ export class ProfileDocumentsComponent {
   getDateFromSessionStorage(name) {
     switch (name) {
       case 'Trade License':
-        return sessionStorage.getItem('tradelicenseexpiry');
+        return localStorage.getItem('tradelicenseexpiry');
       case 'Agreement':
-        return sessionStorage.getItem('agreementexpiry');
+        return localStorage.getItem('agreementexpiry');
         default:
           return null;
     }

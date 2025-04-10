@@ -353,18 +353,18 @@ export class DocumentUploadComponent {
         // check there is any document on the sessionStorage if found then store a previous and current document in the sessionStorage
 
         const isAlreadyStored = JSON.parse(
-          sessionStorage.getItem(`${this.imageType}`)
+          localStorage.getItem(`${this.imageType}`)
         );
         if (isAlreadyStored) {
           const previousDoc = JSON.parse(
-            sessionStorage.getItem(`${this.imageType}`)
+            localStorage.getItem(`${this.imageType}`)
           );
           previousDoc.forEach(document => {
             doc.push(document);
           });
-          sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
+          localStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
         } else {
-          sessionStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
+          localStorage.setItem(`${this.imageType}`, JSON.stringify(doc));
         }
         this.router.navigate([this.returnUrl]);
       }, 500);
@@ -375,6 +375,6 @@ export class DocumentUploadComponent {
   onDateChange($event: Event) {
     const date = $event.target['value'];
     this.expiryDate = this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss');
-    sessionStorage.setItem(`${this.imageType.toLocaleLowerCase().replace(/\s/g,'')}expiry`, this.expiryDate);
+    localStorage.setItem(`${this.imageType.toLocaleLowerCase().replace(/\s/g,'')}expiry`, this.expiryDate);
   }
 }
