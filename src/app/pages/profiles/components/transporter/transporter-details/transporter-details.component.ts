@@ -243,13 +243,13 @@ export class TransporterDetailsComponent {
   }
 
   retrieveFilesForUpload() {
-    // Retrieve all file data from sessionStorage
-    const profileFiles = sessionStorage.getItem('Transporter Image');
-    const nidFrontFiles = sessionStorage.getItem('NID Front');
-    const nidBackFiles = sessionStorage.getItem('NID Back');
-    const tradeLicenseFiles = sessionStorage.getItem('Trade License');
-    const agreementFiles = sessionStorage.getItem('Agreement');
-    const otherFiles = sessionStorage.getItem('Other');
+    // Retrieve all file data from localStorage
+    const profileFiles = localStorage.getItem('Transporter Image');
+    const nidFrontFiles = localStorage.getItem('NID Front');
+    const nidBackFiles = localStorage.getItem('NID Back');
+    const tradeLicenseFiles = localStorage.getItem('Trade License');
+    const agreementFiles = localStorage.getItem('Agreement');
+    const otherFiles = localStorage.getItem('Other');
 
     // Function to reconstruct files from stored base64
     const reconstructFiles = (storedFiles: string | null) => {
@@ -363,9 +363,9 @@ export class TransporterDetailsComponent {
   private getExpiryFromSessionStorage(name: string) {
     switch (name) {
       case 'Trade License':
-        return sessionStorage.getItem('tradelicenseexpiry');
+        return localStorage.getItem('tradelicenseexpiry');
       case 'Agreement':
-        return sessionStorage.getItem('agreementexpiry');
+        return localStorage.getItem('agreementexpiry');
       default:
         return null;
     }

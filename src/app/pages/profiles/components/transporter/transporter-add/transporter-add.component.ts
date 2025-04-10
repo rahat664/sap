@@ -104,7 +104,7 @@ export class TransporterAddComponent implements OnInit {
   ngOnInit() {
     this.shared.validateInterNationalPhoneNumber();
     this.initializeForm();
-    const isFromDocumentSave = sessionStorage.getItem('isFromDocumentSave');
+    const isFromDocumentSave = localStorage.getItem('isFromDocumentSave');
     if (isFromDocumentSave) {
       this.loadPreviousPayload();
     }
@@ -216,13 +216,13 @@ export class TransporterAddComponent implements OnInit {
   }
 
   retrieveFilesForUpload() {
-    // Retrieve all file data from sessionStorage
-    const profileFiles = sessionStorage.getItem('Transporter Image');
-    const nidFrontFiles = sessionStorage.getItem('NID Front');
-    const nidBackFiles = sessionStorage.getItem('NID Back');
-    const tradeLicenseFiles = sessionStorage.getItem('Trade License');
-    const agreementFiles = sessionStorage.getItem('Agreement');
-    const otherFiles = sessionStorage.getItem('Other');
+    // Retrieve all file data from localStorage
+    const profileFiles = localStorage.getItem('Transporter Image');
+    const nidFrontFiles = localStorage.getItem('NID Front');
+    const nidBackFiles = localStorage.getItem('NID Back');
+    const tradeLicenseFiles = localStorage.getItem('Trade License');
+    const agreementFiles = localStorage.getItem('Agreement');
+    const otherFiles = localStorage.getItem('Other');
 
     // Function to reconstruct files from stored base64
     const reconstructFiles = (storedFiles: string | null) => {
@@ -353,7 +353,7 @@ export class TransporterAddComponent implements OnInit {
   }
 
   private loadPreviousPayload() {
-    const payload = JSON.parse(sessionStorage.getItem('transporterPayload'));
+    const payload = JSON.parse(localStorage.getItem('transporterPayload'));
     this.preferredPaymentMethod = payload.defaultPaymentMethod?.paymentMethod;
     this.transporterAddForm.patchValue({
       name: payload.name,
@@ -417,18 +417,18 @@ export class TransporterAddComponent implements OnInit {
           this.transporterAddForm.get('mfsType').value;
       }
 
-      sessionStorage.setItem('isFromDocumentSave', String(true));
+      localStorage.setItem('isFromDocumentSave', String(true));
 
-      sessionStorage.setItem('transporterPayload', JSON.stringify(payload));
+      localStorage.setItem('transporterPayload', JSON.stringify(payload));
     }
   }
 
   private getExpiryFromSessionStorage(name: string) {
     switch (name) {
       case 'Trade License':
-        return sessionStorage.getItem('tradelicenseexpiry');
+        return localStorage.getItem('tradelicenseexpiry');
       case 'Agreement':
-        return sessionStorage.getItem('agreementexpiry');
+        return localStorage.getItem('agreementexpiry');
       default:
         return null;
     }

@@ -247,6 +247,8 @@ export class AppComponent implements OnInit, OnDestroy {
           localStorage.removeItem('Other');
           localStorage.removeItem('transporterPayload');
           localStorage.removeItem('isFromDocumentSave');
+          localStorage.removeItem('tradelicenseexpiry');
+          localStorage.removeItem('agreementexpiry');
         }
       }
     });
