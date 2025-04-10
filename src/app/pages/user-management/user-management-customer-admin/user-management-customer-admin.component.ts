@@ -270,7 +270,7 @@ export class UserManagementCustomerAdminComponent implements OnInit {
   }
 
   performChangeStatus(id: number, status: string) {
-    this.service.changeStatus(this.id, this.status).subscribe({
+    this.service.changeStatus(id, status).subscribe({
       next: (response: any) => {
         this.loading = false;
         this.toastr.showSuccess(response);
