@@ -769,11 +769,10 @@ export class DialogDataComponent implements OnInit {
   }
 
   onSelectTruckSource($event: number) {
-
-    this.tripUpdateForm.get('source').setValue(this.truckSourcePlaceholder);
     this.truckSourcePlaceholder = this.truckSourceList.find(
       option => option.id === $event
     ).value;
+    this.tripUpdateForm.get('source').setValue(this.truckSourcePlaceholder);
     this.truckSourceList.forEach(option => {
       option.selected = option.id === $event;
     });
