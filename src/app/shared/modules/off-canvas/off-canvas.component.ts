@@ -163,7 +163,7 @@ export class OffCanvasComponent {
     if (transporter.transporterRate !== null) {
       const dueAmount =
         transporter.transporterRate - transporter.paymentAmountToTransporter;
-      return dueAmount > 0 ? dueAmount + '(৳)' : 0 + '(৳)';
+      return dueAmount > 0 ? dueAmount  : 0;
     } else {
       return 'N/A';
     }

@@ -121,7 +121,7 @@
             {{ transporter.lastPaymentDateToTransporter ? (transporter.lastPaymentDateToTransporter | date: 'dd MMM yyyy') : 'N/A' }}
           </td>
           <td class="text-center">
-            {{ countDueAmount(transporter) }}
+            {{ countDueAmount(transporter) !== 'N/A' ? (countDueAmount(transporter) | number) : countDueAmount(transporter) }}
           </td>
           <td class="text-center whitespace-nowrap">
             <button *ngIf="countDueAmount(transporter) !== 'N/A' && Number(countDueAmount(transporter)) > 0"

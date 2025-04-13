@@ -48,7 +48,7 @@
           <div class="flex justify-between items-center mx-6 border-line py-2">
             <span class="text-body text-not-black">Payable</span>
             <span class="text body text-not-black">{{
-                countDueAmount(transporterDetails)
+                countDueAmount(transporterDetails) !== 'N/A' ? (countDueAmount(transporterDetails) | number) + '(৳)' : countDueAmount(transporterDetails)
               }}</span>
           </div>
         </div>
