@@ -648,6 +648,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
       from: this.from,
       to: this.to,
       status: this.status,
+      customerNameOrPhone: this.searchName,
       searchValue: this.searchValue,
       truckType: this.truckType,
       tripId: this.tripId,
