@@ -377,4 +377,13 @@ export class DocumentUploadComponent {
     this.expiryDate = this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss');
     localStorage.setItem(`${this.imageType.toLocaleLowerCase().replace(/\s/g,'')}expiry`, this.expiryDate);
   }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
 }
