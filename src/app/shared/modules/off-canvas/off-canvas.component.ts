@@ -115,7 +115,7 @@ export class OffCanvasComponent {
               width: '21.375rem',
               data: {
                 title: 'Success',
-                text: `Your ${this.amount}(৳) payment(${this.paymentStatus})  for the trip #${this.transporterDetails?.tripId} has been completed`,
+                text: `Your ${this.amount}(৳) payment(${this.paymentStatus})  for the trip ${this.transporterDetails?.tripId} has been completed`,
                 buttonText: 'Okay',
               },
             })

@@ -47,7 +47,7 @@
         </div>
         <div class="border-t border-dashed border-line pt-2 flex justify-between font-semibold">
           <span>Payable</span>
-          <span>{{countDueAmount(transporterDetails) !== 'N/A' ? countDueAmount(transporterDetails) + '(৳)' : countDueAmount(transporterDetails)}}</span>
+          <span>{{countDueAmount(transporterDetails) !== 'N/A' ? (countDueAmount(transporterDetails) | number) + '(৳)' : countDueAmount(transporterDetails)}}</span>
         </div>
       </div>
 
