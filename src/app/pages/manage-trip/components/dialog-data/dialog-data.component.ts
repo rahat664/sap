@@ -288,7 +288,7 @@ export class DialogDataComponent implements OnInit {
         const body: any = {};
         body.transporterCode = this.tripUpdateForm.get('transporterCode').value;
         body.transporterRate = this.tripUpdateForm.get('transporterRate').value;
-        body.source = this.tripUpdateForm.get('source').value;
+        body.sourceOfTruck = this.tripUpdateForm.get('source').value;
         body.driverCode = this.tripUpdateForm.get('driverCode').value;
         body.driverName = this.tripUpdateForm.get('driverName').value;
         body.driverPhone = this.tripUpdateForm.get('driverPhone').value;
