@@ -80,7 +80,18 @@ export class PaymentComponent {
         this.page++;
         this.size = 30;
         this.loading = false;
-        this.trip.getTransporterPaymentList(this.page, this.size).subscribe(
+        this.trip.getTransporterPaymentList(
+          this.page,
+          this.size,
+          this.filterData.tripStatus,
+          this.filterData.startDate,
+          this.filterData.endDate,
+          this.filterData.tripId,
+          this.filterData.customerCode,
+          this.filterData.paymentStatus,
+          this.filterData.loadingDistrict,
+          this.filterData.unloadingDistrict
+        ).subscribe(
           (res: any) => {
             this.transportersPaymentList.push(...res.data.responses);
           },
