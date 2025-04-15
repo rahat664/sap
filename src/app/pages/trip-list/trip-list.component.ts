@@ -40,30 +40,25 @@ import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
 import { UserService } from '../profiles/services/user.service';
 import { PaymentType, TripType } from '../../shared/Enums/payment-type';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
+import { TripListFilterComponent } from './components/trip-list-filter/trip-list-filter.component';
+import { PaymentFilterComponent } from '../payment/payment-filter/payment-filter.component';
 
 @Component({
   selector: 'app-trip-list',
   imports: [
     NgIf,
-    NgClass,
     ReactiveFormsModule,
     NgSelectModule,
     NgForOf,
     DatePipe,
-    CustomInputComponent,
     FormsModule,
     ButtonChipsComponent,
     ScrollByButtonDirective,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
-    GetClickEventDirective,
     LoadingComponent,
-    MatAutocompleteTrigger,
-    MatAutocomplete,
-    MatOption,
-    MatFormField,
-    MatInput,
     numberPipe,
+    TripListFilterComponent,
   ],
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.scss'],
@@ -73,7 +68,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
   protected transporterName: string;
   protected transporterSuggestions: any[];
   transporterSearchSubject = new Subject<string>();
-  filterOpened = true;
+  filterOpened = false;
   filterForm: FormGroup;
   isDateOpened = false;
   tripList: Trip[] = [];
@@ -82,7 +77,12 @@ export class TripListComponent implements OnInit, AfterViewInit {
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
     { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
-    { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
+    {
+      id: 3,
+      value: 'CASH_AND_INVOICE',
+      selected: false,
+      showname: 'Cash & Invoice',
+    },
     { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
   ];
   paymentTypePlaceholder: string = '';
@@ -363,7 +363,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
       this.searchFilter +
       this.tripFilter +
       this.transporterFilter +
-      this.paymentFilter + this.tripTypeFilter
+      this.paymentFilter +
+      this.tripTypeFilter
     );
   }
 
@@ -390,7 +391,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.tripTypePlaceholder = '';
     this.tripTypeFilter = 0;
     this.tripSuggestions = [];
-    this.searchTransporter= '';
+    this.searchTransporter = '';
     this.searchId = '';
     this.filterForm.reset();
     this.loading = true;
@@ -586,10 +587,17 @@ export class TripListComponent implements OnInit, AfterViewInit {
   protected readonly Math = Math;
   excelLoading: boolean = false;
   tripTypeOptionsArray: CustomInputSelectModel[] = [
-    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
-    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
+    { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
+    {
+      id: 2,
+      value: 'COMMERCIAL',
+      selected: false,
+      showname: 'Commercial Logistics',
+    },
   ];
   tripTypePlaceholder: string;
+  filterApplied: any;
+  filterSummary: string;
 
   onSelectPayment($event: number) {
     this.paymentFilter = 1;
@@ -625,8 +633,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
       return 'Invoice';
     } else if (paymentType === PaymentType.COMMISSION) {
       return 'Commission';
-    }else
-     {
+    } else {
       return 'Cash & Invoice';
     }
   }
@@ -635,8 +642,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
       return 'Commercial Logistics';
     } else if (paymentType === TripType.PROJECT) {
       return 'Project Logistics';
-    }else
-     {
+    } else {
       return 'N/A';
     }
   }
@@ -653,28 +659,29 @@ export class TripListComponent implements OnInit, AfterViewInit {
       tripId: this.tripId,
       transporterName: this.transporterName,
       paymentType: this.paymentTypeValue,
-      tripType: this.tripTypeValue
-    }
-    this.service.getTripReport(
-      params
-    ).subscribe((response: any) => {
-      if (response) {
-        const url = window.URL.createObjectURL(response)
-        const a = document.createElement('a');
-        document.body.appendChild(a);
-        a.style.display = 'none';
-        a.href = url;
-        // download link with formated timestamp
-        a.download = `TripReport_${new Date().getTime()}.xlsx`;
-        a.click();
+      tripType: this.tripTypeValue,
+    };
+    this.service.getTripReport(params).subscribe(
+      (response: any) => {
+        if (response) {
+          const url = window.URL.createObjectURL(response);
+          const a = document.createElement('a');
+          document.body.appendChild(a);
+          a.style.display = 'none';
+          a.href = url;
+          // download link with formated timestamp
+          a.download = `TripReport_${new Date().getTime()}.xlsx`;
+          a.click();
+          this.excelLoading = false;
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        }
+      },
+      error => {
         this.excelLoading = false;
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        this.toaster.showError(error.message);
       }
-    }, error => {
-      this.excelLoading = false;
-      this.toaster.showError(error.message);
-    });
+    );
   }
   updateOverLayStyle(isSpecial: boolean) {
     const className = 'custom-overlay-bounding-box';
@@ -683,5 +690,19 @@ export class TripListComponent implements OnInit, AfterViewInit {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true;
+  }
+
+  onCLickClearAll() {}
+
+  onFilterData($event: any) {
+
+  }
+
+  onfilterApply() {
+
   }
 }
