@@ -22,6 +22,7 @@ export interface tripDocument {
 }
 
 export interface Notes {
+  lcNumber: any;
   id: number;
   note: string;
   createdAt: string;

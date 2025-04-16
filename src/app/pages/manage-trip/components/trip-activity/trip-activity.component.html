@@ -122,7 +122,7 @@
                 <div class="flex flex-col space-y-1">
                   <h1
                     class="text-body_title leading-body_title font-semibold text-not-black">
-                    Note | {{ singleNote.createdAt | date: 'h:mm; d MMM yyyy' }}
+                    Note | {{ singleNote.createdAt | date: 'h:mm; d MMM yyyy' }} <span *ngIf="singleNote?.lcNumber">| {{singleNote?.lcNumber}}</span>
                   </h1>
                   <span class="text-body text-not-black">{{
                       singleNote?.note
