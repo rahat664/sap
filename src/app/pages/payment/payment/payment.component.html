@@ -65,6 +65,7 @@
       <tr class="whitespace-nowrap bg-white text-not-black">
         <th class="text-left bg-white sticky left-0">Trip No.</th>
         <th class="text-left">Company</th>
+        <th class="text-left">Transporter</th>
         <th class="text-left">Date</th>
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
@@ -77,7 +78,7 @@
         <th class="text-center whitespace-nowrap w-[10%] "></th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="12"></th>
+        <th class="custom-border" [colSpan]="13"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -86,7 +87,10 @@
           <td class="whitespace-nowrap text-link cursor-pointer">
             <a (click)="onClickTripId(transporter)">{{ transporter.tripId }}</a>
           </td>
-          <td class="whitespace-nowrap">{{ transporter.customerName }}</td>
+          <td>{{ transporter.customerName }}</td>
+          <td class="{{!transporter.transporterName ? 'text-line' : ''}}">
+            {{ transporter.transporterName ? transporter.transporterName : 'Not assigned' }}
+          </td>
           <td class="whitespace-nowrap">{{ transporter.tripStartDatetime | date: 'dd MMM yyyy' }}</td>
           <td class="text-left"><p>
             {{ getLoadingPointsName(transporter.tripPoints)[0]?.pointName }}

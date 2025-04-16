@@ -283,6 +283,7 @@ export class TripService {
     to?: string,
     tripId?: string,
     customerCode?: string,
+    transporterNameOrPhone?: string,
     transporterPaymentStatus?: string,
     loadingDistrict?: string,
     unloadingDistrict?: string
@@ -303,6 +304,9 @@ export class TripService {
     }
     if (customerCode) {
       params = params.set('customerCode', customerCode);
+    }
+    if (transporterNameOrPhone) {
+      params = params.set('transporterNameOrPhone', transporterNameOrPhone);
     }
      if (transporterPaymentStatus) {
       params = params.set('transporterPaymentStatus', transporterPaymentStatus);

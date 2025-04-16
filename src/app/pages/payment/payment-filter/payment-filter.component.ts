@@ -19,6 +19,7 @@ import { districts } from '../../../shared/models/ditrict-with-latlng.model';
 import { debounceTime, Subject } from 'rxjs';
 import { CustomerService } from '../../profiles/services/customer.service';
 import { TripService } from '../../trip-list/services/trip.service';
+import { UserService } from '../../profiles/services/user.service';
 
 @Component({
   selector: 'app-payment-filter',
@@ -127,13 +128,15 @@ export class PaymentFilterComponent {
   @Output() filterData: EventEmitter<any> = new EventEmitter<any>();
   searchSubject = new Subject<string>();
   customerSearchSubject = new Subject<string>();
+  transporterSearchSubject = new Subject<string>()
   isSearchedMenuOpened: boolean;
   isTripSearchedMenuOpened: boolean;
   customerCode: string;
   picker: any;
   event: any;
+  transporterName: string = '';
 
-  constructor(private datePipe: DatePipe, private customer: CustomerService, private trip: TripService) {
+  constructor(private datePipe: DatePipe, private customer: CustomerService, private trip: TripService, private transporter: UserService) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performSearch(searchText);
     });
@@ -141,6 +144,11 @@ export class PaymentFilterComponent {
       .pipe(debounceTime(1000))
       .subscribe(searchText => {
         this.performCustomerSearch(searchText);
+      });
+    this.transporterSearchSubject
+      .pipe(debounceTime(1000))
+      .subscribe(searchText => {
+        this.performTransporterSearch(searchText);
       });
   }
 
@@ -153,6 +161,7 @@ export class PaymentFilterComponent {
       tripId: this.tripId,
       searchName: this.searchName,
       customerCode: this.customerCode,
+      transporterName: this.transporterName,
       searchId: this.searchId,
       loadingDistrict: this.loadingDistrict,
       unloadingDistrict: this.unloadingDistrict,
@@ -304,6 +313,8 @@ export class PaymentFilterComponent {
   protected districts = [];
   loadingDistrict: any;
   unloadingDistrict: any;
+  searchTransporter: string = ''
+  transporterSuggestions: any;
 
   onLoadingDistrictChange($event: MatSelectChange) {
 
@@ -328,6 +339,8 @@ export class PaymentFilterComponent {
       this.unloadingDistrict = filterData.unloadingDistrict;
       this.paymentStatusPlaceholder = filterData.paymentStatus;
       this.tripStatusPlaceholder = filterData.tripStatus;
+      this.searchTransporter = filterData.transporterName;
+      this.transporterName = filterData.transporterName;
       this.tripStatusOptionsArray.forEach(x => {
         if (x.value === filterData.tripStatus) {
           x.selected = true;
@@ -414,5 +427,44 @@ export class PaymentFilterComponent {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  onKeyUpTransporterSearch($event: any) {
+    const value = $event.target.value;
+    this.transporterSearchSubject.next(value); // Trigger the Subject when input changes
+  }
+
+  onClickTransporterSearchSuggestion(result: any) {
+    this.transporterName = result.name;
+    this.searchTransporter = result.name;
+    this.transporterSuggestions = [];
+    this.isTripSearchedMenuOpened = false;
+  }
+  private performTransporterSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.transporter
+        .getTransporter(0, 100, searchText)
+        .subscribe((transporter: any) => {
+          this.transporterSuggestions = transporter.data;
+          if (this.transporterSuggestions.length === 0) {
+            this.transporterSuggestions.push('No transporter found');
+          }
+        });
+    } else {
+      this.resetTransporterSearch();
+    }
+  }
+
+  private resetTransporterSearch() {
+    this.isTripSearchedMenuOpened = false;
+    this.transporterName = '';
+    this.transporterSuggestions = [];
+    this.transporterSuggestions.push('No transporter found');
+  }
+
+  onClickClearTransporter() {
+    this.transporterName = '';
+    this.searchTransporter = '';
+    this.transporterSuggestions = [];
   }
 }

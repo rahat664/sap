@@ -88,6 +88,7 @@ export class PaymentComponent {
           this.filterData.endDate,
           this.filterData.tripId,
           this.filterData.customerCode,
+          this.filterData.transporterName,
           this.filterData.paymentStatus,
           this.filterData.loadingDistrict,
           this.filterData.unloadingDistrict
@@ -183,6 +184,7 @@ export class PaymentComponent {
         this.filterData.endDate,
         this.filterData.tripId,
         this.filterData.customerCode,
+        this.filterData.transporterName,
         this.filterData.paymentStatus,
         this.filterData.loadingDistrict,
         this.filterData.unloadingDistrict).subscribe(
@@ -234,7 +236,8 @@ export class PaymentComponent {
       this.filterData.customerCode ||
       this.filterData.paymentStatus ||
       this.filterData.loadingDistrict ||
-      this.filterData.unloadingDistrict
+      this.filterData.unloadingDistrict ||
+      this.filterData.transporterName
     ) {
       this.filterApplied = true;
       this.filterOpened = false;
@@ -250,6 +253,7 @@ export class PaymentComponent {
         this.filterData.endDate,
         this.filterData.tripId,
         this.filterData.customerCode,
+        this.filterData.transporterName,
         this.filterData.paymentStatus,
         this.filterData.loadingDistrict,
         this.filterData.unloadingDistrict
@@ -282,6 +286,7 @@ export class PaymentComponent {
     const parts: string[] = [];
 
     if (this.filterData.searchName) parts.push(`Company: ${this.filterData.searchName}`);
+    if(this.filterData.transporterName) parts.push(`Transporter: ${this.filterData.transporterName}`);
     if (this.filterData.startDate) parts.push(`From: ${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}`);
     if (this.filterData.endDate) parts.push(`To: ${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}`);
     if (this.filterData.paymentStatus) parts.push(`Payment Status: ${this.filterData.paymentStatus}`);
