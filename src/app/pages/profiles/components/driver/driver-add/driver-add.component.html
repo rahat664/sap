@@ -134,6 +134,7 @@
                     >{{ option.name }}</span
                     >
                     <mat-form-field
+                      (mouseenter)="updateOverLayStyle(false)"
                       *ngIf="option?.expiryAvailable"
                       class="example-full-width flex-1 custom"
                       appearance="outline"

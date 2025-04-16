@@ -39,7 +39,8 @@
             <label for="customerName" class="form-label text-body"
             >Customer Name</label
             >
-            <mat-form-field appearance="outline" id="customerName">
+            <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)" appearance="outline" id="customerName">
               <input
                 readonly
                 matInput
@@ -54,6 +55,7 @@
               mat-button
               [matMenuTriggerFor]="dateAndTime">
               <mat-form-field
+                (mouseenter)="updateOverLayStyle(false)"
                 appearance="outline"
                 id="date"
                 class="example-full-width w-full">
@@ -118,6 +120,7 @@
                   >Loading Point</label
                   >
                   <mat-form-field
+                    (mouseenter)="updateOverLayStyle(false)"
                     appearance="outline"
                     class="example-full-width"
                     [ngClass]="{
@@ -197,6 +200,7 @@
                     >Loading District</label
                     >
                     <mat-form-field
+                      (mouseenter)="updateOverLayStyle(false)"
                       appearance="outline"
                       class="example-full-width"
                       [ngClass]="{
@@ -324,6 +328,7 @@
                   >Loading Point</label
                   >
                   <mat-form-field
+                    (mouseenter)="updateOverLayStyle(false)"
                     appearance="outline"
                     class="example-full-width"
                     [ngClass]="{
@@ -395,6 +400,7 @@
                     >Loading District</label
                     >
                     <mat-form-field
+                      (mouseenter)="updateOverLayStyle(false)"
                       appearance="outline"
                       class="example-full-width"
                       [ngClass]="{
@@ -514,6 +520,7 @@
                   >Unloading Point</label
                   >
                   <mat-form-field
+                    (mouseenter)="updateOverLayStyle(false)"
                     appearance="outline"
                     class="example-full-width"
                     [ngClass]="{
@@ -585,6 +592,7 @@
                     >Unloading District</label
                     >
                     <mat-form-field
+                      (mouseenter)="updateOverLayStyle(false)"
                       appearance="outline"
                       class="example-full-width"
                       [ngClass]="{
@@ -827,7 +835,8 @@
             </div>
             <div class="flex flex-col space-y-1 w-full">
               <label for="goods" class="form-label text-body">Goods Type</label>
-              <mat-form-field appearance="outline" class="example-full-width">
+              <mat-form-field
+                (mouseenter)="updateOverLayStyle(false)" appearance="outline" class="example-full-width">
                 <input
                   id="goods"
                   type="text"
@@ -933,6 +942,7 @@
               >Name</label
               >
               <mat-form-field
+                (mouseenter)="updateOverLayStyle(false)"
                 appearance="outline"
                 class="example-full-width w-full">
                 <input
@@ -1098,6 +1108,7 @@
               >Name</label
               >
               <mat-form-field
+                (mouseenter)="updateOverLayStyle(false)"
                 appearance="outline"
                 class="example-full-width w-full">
                 <input
@@ -1123,7 +1134,8 @@
               <label for="driverMobile" class="text-body text-secondary"
               >Mobile Number</label
               >
-              <mat-form-field disabled id="driverMobile" appearance="outline">
+              <mat-form-field
+                (mouseenter)="updateOverLayStyle(false)" disabled id="driverMobile" appearance="outline">
                 <input
                   formControlName="driverPhone"
                   [disabled]="true"
@@ -1161,6 +1173,7 @@
               >Name</label
               >
               <mat-form-field
+                (mouseenter)="updateOverLayStyle(false)"
                 appearance="outline"
                 class="example-full-width w-full"
                 [class.error]="
@@ -1197,7 +1210,8 @@
               <label for="driverMobile" class="text-body text-secondary"
               >Mobile Number</label
               >
-              <mat-form-field disabled id="helperMobile" appearance="outline">
+              <mat-form-field
+                disabled id="helperMobile" appearance="outline">
                 <input
                   formControlName="helperPhone"
                   [disabled]="true"

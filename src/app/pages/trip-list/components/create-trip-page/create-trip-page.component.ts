@@ -851,4 +851,13 @@ export class CreateTripPageComponent implements OnInit {
   removeUnloadingPoint(index: number) {
     this.unloadingPoints.removeAt(index);
   }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
 }

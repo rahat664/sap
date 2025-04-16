@@ -325,4 +325,13 @@ export class NewTripComponent implements OnInit, OnDestroy {
     this.isTemplateEnabled = false;
     this.templates = [];
   }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
 }

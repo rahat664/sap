@@ -592,4 +592,13 @@ export class TripListComponent implements OnInit, AfterViewInit {
       return 'Cash & Invoice';
     }
   }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
 }

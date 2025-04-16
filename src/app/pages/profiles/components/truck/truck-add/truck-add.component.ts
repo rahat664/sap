@@ -791,4 +791,13 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
   }
 
   protected readonly event = event;
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
 }

@@ -65,6 +65,7 @@
           >Company name</label
           >
           <mat-form-field
+            (mouseenter)="updateOverLayStyle(false)"
             appearance="outline"
             class="example-full-width relative   filter">
             <input
@@ -98,7 +99,8 @@
           <label class="text-body text-web-text-secondary px-2"
           >Transporter Name
           </label>
-          <mat-form-field appearance="outline" class="example-full-width filter">
+          <mat-form-field
+            (mouseenter)="updateOverLayStyle(false)" appearance="outline" class="example-full-width filter">
             <input
               type="text"
               matInput
@@ -127,6 +129,7 @@
         <div class="flex flex-col space-y-1 w-[14.375rem]">
           <label class="text-body text-web-text-secondary px-2">Trip ID</label>
           <mat-form-field
+            (mouseenter)="updateOverLayStyle(false)"
             appearance="outline"
             class="example-full-width relative filter">
             <input

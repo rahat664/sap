@@ -73,6 +73,7 @@
                   >Loading Point</label
                   >
                   <mat-form-field
+                    (mouseenter)="updateOverLayStyle(false)"
                     appearance="outline"
                     class="example-full-width"
                     [ngClass]="{
@@ -88,7 +89,7 @@
                       formControlName="pointName"
                       (keyup)="onKeyUpLoadingPoint($event, i)"
                       [matAutocomplete]="auto"/>
-                    <mat-autocomplete #auto="matAutocomplete">
+                    <mat-autocomplete  #auto="matAutocomplete">
                       @for (option of loadingSuggestions; track option) {
                         <mat-option
                           *ngIf="
@@ -144,6 +145,7 @@
                     >Loading District</label
                     >
                     <mat-form-field
+                      (mouseenter)="updateOverLayStyle(false)"
                       appearance="outline"
                       class="example-full-width"
                       [ngClass]="{
@@ -260,6 +262,7 @@
                   >Unloading Point</label
                   >
                   <mat-form-field
+                    (mouseenter)="updateOverLayStyle(false)"
                     appearance="outline"
                     class="example-full-width"
                     [ngClass]="{
@@ -330,6 +333,7 @@
                     >Unloading District</label
                     >
                     <mat-form-field
+                      (mouseenter)="updateOverLayStyle(false)"
                       appearance="outline"
                       class="example-full-width"
                       [ngClass]="{
@@ -582,7 +586,8 @@
             </div>
             <div class="flex flex-col space-y-1 w-full">
               <label for="goods" class="form-label text-body">Goods Type</label>
-              <mat-form-field appearance="outline" class="example-full-width">
+              <mat-form-field
+                (mouseenter)="updateOverLayStyle(false)" appearance="outline" class="example-full-width">
                 <input
                   id="goods"
                   type="text"

@@ -1096,4 +1096,13 @@ export class TripUpdateComponent implements OnInit {
         this.datePipe.transform(this.selectedDate, 'd MMM yyyy, hh:mm a')
       );
   }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
 }

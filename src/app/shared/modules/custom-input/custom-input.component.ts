@@ -334,4 +334,16 @@ export class CustomInputComponent implements OnInit, OnChanges {
       }, 0);
     }
   }
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
+
+  onMouseEnter($event: any) {
+    this.updateOverLayStyle(true);
+  }
 }

@@ -733,4 +733,13 @@ export class DialogDataComponent implements OnInit {
     const text = parts.join(', ') + ` have been assigned to trip ${res.tripId}`;
     return text;
   }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
 }
