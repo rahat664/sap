@@ -1,0 +1,142 @@
+<div
+  class="fixed top-0 right-0 w-[26rem] bg-white  h-full flex flex-col z-50 shadow-lg justify-between px-8 pb-6 overflow-auto transform transition-transform translate-x-0">
+  <div class="flex flex-col justify-between h-full">
+    <div
+      class="flex flex-col">
+      <div class="sticky z-50 top-0 mb-4">
+        <div class="flex items-center justify-between py-6 sticky z-50 bg-white top-0">
+          <h2 class="text-h3 leading-h3 font-semibold">Payment Details</h2>
+          <button (click)="onClose()" class="text-gray-500 hover:text-black">
+            <i class="fal fa-times text-xl text-primary"></i>
+          </button>
+        </div>
+        <div class="flex flex-col space-y-0.5 text-left px-4 py-3 bg-app-bg rounded-lg relative">
+          <span class="text-not-black text-xs font-semibold">Trip no: {{ transporterDetails?.tripId }}</span>
+          <span class="text-body_title leading-body_title font-semibold  text-not-black">{{getTruckFullRegistrationNumber(transporterDetails.truck)}}</span>
+          <span class="text-body text-secondary">{{transporterDetails?.customerName}}</span>
+          <span class="text-body text-secondary">{{transporterDetails?.tripStartDatetime | date : 'dd MMM, yyyy'}}</span>
+          <div class="px-4 py-0.5 absolute top-2 right-2 rounded-full {{getBgColor(transporterDetails.transporterPaymentStatus)}} ">
+            <span class="text-xs text-white font-semibold">{{transporterDetails?.transporterPaymentStatus}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-4">
+        <div class="flex flex-col space-y-2 bg-app-bg p-4 rounded-lg">
+          <div class="flex space-x-3 items-center">
+            <img
+              loading="lazy"
+              class="w-6 notPreview h-6"
+              src="assets/svg/loading.svg"/>
+            <h1
+              class="text-body_title leading-body_title text-not-black font-semibold">
+              Loading Point{{
+                getLoadingPoint(transporterDetails.tripPoints)?.length > 1 ? 's' : ''
+              }}
+              <span *ngIf="getLoadingPoint(transporterDetails.tripPoints)?.length > 1">
+              ({{ getLoadingPoint(transporterDetails.tripPoints)?.length }})
+            </span>
+            </h1>
+          </div>
+          <div class="ml-2 flex flex-col space-y-4">
+            <ng-container
+              *ngFor="let point of getLoadingPoint(transporterDetails.tripPoints)">
+              <div class="step">
+                <div class="circle">
+                  <img
+                    src="assets/svg/circle.svg"
+                    class="notPreview"
+                    alt="loading"/>
+                </div>
+                <div
+                  class="flex items-center justify-between text-body text-not-black">
+                  <p class="w-full">
+                    {{ point.pointName }}
+                  </p>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2 bg-app-bg p-4 rounded-lg">
+          <div class="flex space-x-3 items-center">
+            <img
+              loading="lazy"
+              class="w-6 h-6 notPreview"
+              src="assets/svg/locinfo.svg"/>
+            <h1
+              class="text-body_title leading-body_title text-not-black font-semibold">
+              Unloading Point{{
+                getUnloadingPoint(transporterDetails.tripPoints)?.length > 1 ? 's' : ''
+              }}
+              <span *ngIf="getUnloadingPoint(transporterDetails.tripPoints)?.length > 1"
+              >({{ getUnloadingPoint(transporterDetails.tripPoints)?.length }})</span
+              >
+            </h1>
+          </div>
+          <div class="ml-2 flex flex-col space-y-4">
+            <ng-container
+              *ngFor="let point of getUnloadingPoint(transporterDetails.tripPoints)">
+              <div class="step">
+                <div class="circle">
+                  <img
+                    src="assets/svg/circle.svg"
+                    class="notPreview"
+                    alt="loading"/>
+                </div>
+                <div
+                  class="flex items-center justify-between text-body text-not-black">
+                  <p class="w-full">
+                    {{ point.pointName }}
+                  </p>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+      </div>
+      <div class="h-64 w-full flex items-center justify-center" *ngIf="loading">
+        <app-loading></app-loading>
+      </div>
+      <div class="border border-gray-200 rounded-xl p-4 space-y-3 text-sm text-not-black mt-8" *ngIf="!loading">
+        <div class="flex justify-between font-semibold text-base">
+          <span>Transporter Rate</span>
+          <span>{{
+              (transporterDetails.transporterRate !== null ? (transporterDetails.transporterRate|number) + '(৳)' : 'N/A')
+            }}</span>
+        </div>
+        <div class="border-t border-dashed border-line pt-2 text-not-black">
+          <div class="flex justify-between font-semibold">
+            <span>Paid</span>
+            <span>{{
+                (transporterDetails.paymentAmountToTransporter !== null ? (transporterDetails.paymentAmountToTransporter|number) + '(৳)' : 'N/A')
+              }}</span>
+          </div>
+          <div class="mt-2 space-y-2 text-secondary flex flex-col">
+            <ng-container *ngFor="let paymentDetail of transporterPaymentDetails">
+              <div class="grid grid-cols-3 items-center">
+                <span>{{paymentDetail.paymentMethod}} {{paymentDetail?.financialInstituteName ? '(' + paymentDetail.financialInstituteName + ')' : ''}}</span>
+                <span class="text-center">{{paymentDetail.paymentDate | date: 'dd MMM yyyy'}}</span>
+                <span class="text-right">{{
+                    (paymentDetail.amount !== null ? (paymentDetail.amount|number) + '(৳)' : 'N/A')
+                  }}</span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="border-t border-dashed border-line pt-2 flex justify-between font-semibold">
+          <span>Payable</span>
+          <span>{{countDueAmount(transporterDetails) !== 'N/A' ? (countDueAmount(transporterDetails) | number) + '(৳)' : countDueAmount(transporterDetails)}}</span>
+        </div>
+      </div>
+
+    </div>
+    <p *ngIf="countDueAmount(transporterDetails) !== 'N/A' && Number(countDueAmount(transporterDetails)) === 0" class=" w-full justify-self-end text-center pb-6 text-green">
+      Payment completed!
+    </p>
+    <div class="w-full pb-6" *ngIf="countDueAmount(transporterDetails) !== 'N/A' && Number(countDueAmount(transporterDetails)) > 0">
+      <button class="bg-primary text-white rounded-lg py-2 font-semibold w-full" (click)="onPayNow()">Make Payment
+      </button>
+    </div>
+  </div>
+</div>

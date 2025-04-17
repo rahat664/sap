@@ -1,9 +1,9 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   inject,
   OnInit,
-  AfterViewInit,
 } from '@angular/core';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
@@ -41,7 +41,7 @@ import { TruckDocumentType } from '../../shared/Enums/registration_type';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
-import { PaymentType } from '../../shared/Enums/payment-type';
+import { PaymentType, TripType } from '../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -98,9 +98,12 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   paymentFilter: number = 0;
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-    { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
-    { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
+    { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
+    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
   ];
+  tripTypeFilter: number = 0;
+   tripTypeValue: string = '';
 
   get tripSuggestions(): any {
     return this._tripSuggestions;
@@ -206,7 +209,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.truck.getTruckList(0, 100, searchText).subscribe((truck: any) => {
         this.truckRegSuggestions = truck.data.responses;
         if (this.truckRegSuggestions.length === 0) {
-          this.truckRegSuggestions.push('No trip found');
+          this.truckRegSuggestions.push('No truck found');
         }
       });
     } else {
@@ -219,9 +222,9 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.transporter
         .getTransporter(0, 100, searchText)
         .subscribe((transporter: any) => {
-          this.transporterSuggestions = transporter.data.responses;
+          this.transporterSuggestions = transporter.data;
           if (this.transporterSuggestions.length === 0) {
-            this.transporterSuggestions.push('No trip found');
+            this.transporterSuggestions.push('No transporter found');
           }
         });
     } else {
@@ -235,7 +238,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.page = 0;
     this.size = 30;
     this.tripIdSuggestions = [];
-    this.tripIdSuggestions.push('No trip found');
+    this.tripIdSuggestions.push('No trip id found');
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
     this.tripFilter = 0;
@@ -259,7 +262,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.page = 0;
     this.size = 30;
     this.transporterSuggestions = [];
-    this.transporterSuggestions.push('No trip found');
+    this.transporterSuggestions.push('No transporter found');
     this.trip.anotherStatusCalled.next(true);
     this.getTripList();
     this.transporterFilter = 0;
@@ -370,7 +373,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         this.to,
         this.truckRegistrationId,
         this.transporterName,
-        this.paymentTypeValue
+        this.paymentTypeValue,
+        this.tripTypeValue
       )
       .subscribe(
         (trip: any) => {
@@ -524,6 +528,51 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
 
   checkDueDays(trip: Trip) {
     const tripCompletedDate = new Date(trip.tripEndedAt);
+
+    if (trip.challanStatus === 'Pending') {
+      const currentDate = new Date();
+      // set tripCompletedDate to 12:00:00 AM and currentDate to 12:00:00 AM
+      tripCompletedDate.setHours(0, 0, 0, 0);
+      currentDate.setHours(0, 0, 0, 0);
+      const diffTime = Math.abs(
+        currentDate.getTime() - tripCompletedDate.getTime()
+      );
+      return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    } else {
+      if (trip.firstChallanUploadedDate || trip.challanStatusUpdatedAt) {
+        // set tripCompletedDate to 12:00:00 AM
+        tripCompletedDate.setHours(0, 0, 0, 0);
+        if (trip.firstChallanUploadedDate) {
+          const firstChallanUploadedDate = new Date(
+            trip.firstChallanUploadedDate
+          );
+          // set firstChallanUploadedDate to 12:00:00 AM
+          firstChallanUploadedDate.setHours(0, 0, 0, 0);
+          const diffTime = Math.abs(
+            firstChallanUploadedDate.getTime() - tripCompletedDate.getTime()
+          );
+          return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        } else {
+          const challanStatusUpdatedDate = new Date(
+            trip.challanStatusUpdatedAt
+          );
+          // set challanStatusUpdatedDate to 12:00:00 AM
+          challanStatusUpdatedDate.setHours(0, 0, 0, 0);
+          const diffTime = Math.abs(
+            challanStatusUpdatedDate.getTime() - tripCompletedDate.getTime()
+          );
+          return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        }
+      } else {
+        // set tripCompletedDate to 12:00:00 AM and currentDate to 12:00:00 AM
+        const currentDate = new Date();
+        const diffTime = Math.abs(
+          currentDate.getTime() - tripCompletedDate.getTime()
+        );
+        return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      }
+    }
+
     if (trip.challanStatusUpdatedAt) {
       const challanStatusUpdatedDate = new Date(trip.challanStatusUpdatedAt);
       return this.datePipe.transform(
@@ -579,7 +628,9 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.searchFilter +
       this.tripFilter +
       this.truckFilter +
-      this.transporterFilter + this.paymentFilter
+      this.transporterFilter +
+      this.paymentFilter +
+        this.tripTypeFilter
     );
   }
 
@@ -607,6 +658,12 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.tripSuggestions = [];
     this.loading = true;
     this.chalanStatus = '';
+    this.searchTransporter= '';
+    this.searchRegistationId='';
+    this.tripTypeFilter=0;
+    this.tripTypePlaceholder = '';
+    this.tripTypeValue = '';
+    this.searchId = '';
     this.status = 'Completed';
     this.activatedChallanStatus = 'Completed';
     this.trip.anotherStatusCalled.next(true);
@@ -675,6 +732,15 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     }
     this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
     this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+  }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
   }
 
   onSearchInputChange($event: any) {
@@ -883,6 +949,11 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
 
   protected readonly localStorage = localStorage;
   uploadAbleTripId: any;
+  tripTypePlaceholder: string = '';
+  tripTypeOptionsArray: CustomInputSelectModel[] = [
+    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
+    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
+  ];
 
   onClickClearCompany() {
     this.customerCode = '';
@@ -932,13 +1003,26 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.getTripList();
   }
 
-
   onSelectPayment($event: number) {
     this.paymentFilter = 1;
     this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
     this.paymentTypePlaceholder =
       this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.paymentTypeValue = this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    this.paymentTypeValue =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.trip.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+  onSelectTrip($event: number) {
+    this.tripTypeFilter = 1;
+    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.tripTypePlaceholder =
+      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.tripTypeValue =
+      this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
     this.page = 0;
     this.size = 30;
     this.loading = true;
@@ -951,17 +1035,41 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       return 'Cash';
     } else if (paymentType === PaymentType.INVOICE) {
       return 'Invoice';
+    } else if (paymentType === PaymentType.COMMISSION) {
+      return 'Commission';
     } else {
       return 'Cash & Invoice';
     }
   }
 
-  updateOverLayStyle(isSpecial: boolean) {
-    const className = 'custom-overlay-bounding-box';
-    if (isSpecial) {
-      document.body.classList.add(className);
+  checkReceivedDays(trip: Trip) {
+    if (trip.firstChallanUploadedDate || trip.challanStatusUpdatedAt) {
+      if (trip.firstChallanUploadedDate) {
+        const firstChallanUploadedDate = new Date(trip.firstChallanUploadedDate);
+        return this.datePipe.transform(
+          firstChallanUploadedDate,
+          'dd MMM,yyyy h:mm a'
+        );
+      } else {
+        const challanStatusUpdatedDate = new Date(trip.challanStatusUpdatedAt);
+        return this.datePipe.transform(
+          challanStatusUpdatedDate,
+          'dd MMM,yyyy h:mm a'
+        );
+      }
     } else {
-      document.body.classList.remove(className);
+      return 'N/A';
+    }
+  }
+
+  getTripNameFromEnum(paymentType: string) {
+    if (paymentType === TripType.COMMERCIAL) {
+      return 'Commercial Logistics';
+    } else if (paymentType === TripType.PROJECT) {
+      return 'Project Logistics';
+    }else
+    {
+      return 'N/A';
     }
   }
 }

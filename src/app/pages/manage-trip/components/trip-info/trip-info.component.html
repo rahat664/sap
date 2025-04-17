@@ -256,6 +256,21 @@
           <img
             loading="lazy"
             class="w-6 h-6 notPreview"
+            src="assets/svg/truckinfo.svg"/>
+          <h1
+            class="text-body_title leading-body_title text-not-black font-semibold">
+            Truck Source
+          </h1>
+        </div>
+        <h1 class="text-body text-wrap text-web-text-secondary">
+          {{ tripDetails.sourceOfTruck ? tripDetails.sourceOfTruck : 'N/A' }}
+        </h1>
+      </div>
+      <div class="flex flex-col space-y-2">
+        <div class="flex space-x-3 items-center">
+          <img
+            loading="lazy"
+            class="w-6 h-6 notPreview"
             src="assets/svg/goodsinfo.svg"/>
           <h1
             class="text-body_title leading-body_title text-not-black font-semibold">
@@ -278,7 +293,7 @@
           </h1>
         </div>
         <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
-          {{ Number(tripDetails.customerRate) | number }} ৳
+          {{ tripDetails.customerRate !== null ? (tripDetails.customerRate | number) : 'N/A'}} ৳
         </h1>
       </div>
       <div class="flex flex-col space-y-2">
@@ -309,14 +324,14 @@
           <img
             loading="lazy"
             class="h-6 w-6 notPreview"
-            src="assets/svg/payment-type.svg"/>
+            src="assets/svg/EpaymenType.svg"/>
           <h1
             class="text-body_title leading-body_title text-not-black font-semibold">
-            Payment type
+            Trip & payment type
           </h1>
         </div>
         <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
-          {{ getNameFromEnum(tripDetails.paymentType) }}
+          {{getTripTypeFromEnum(tripDetails.tripType)}}, {{ getNameFromEnum(tripDetails.paymentType) }}
         </h1>
       </div>
       <div
@@ -356,7 +371,7 @@
           </h1>
         </div>
         <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">
-          {{ Number(tripDetails.transporterRate) | number }} ৳
+          {{tripDetails.transporterRate !== null ? (tripDetails.transporterRate | number) +' ৳' :  'N/A' }}
         </h1>
       </div>
 

@@ -114,6 +114,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.geoLocation.getCurrentPosition();
     this.setCurrentLocationInStorage();
     this.checkInputListener();
+    this.checkWhichRouteWeAreOn();
   }
 
   /**
@@ -232,5 +233,24 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   isSupportPage() {
     return this.router.url === '/support';
+  }
+
+  private checkWhichRouteWeAreOn() {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        if (this.router.url !== '/profile/transporter/add' && this.router.url !== '/profile/document-upload' && !(this.router.url.startsWith('/profile/transporter') && this.router.url.endsWith('/details'))) {
+          localStorage.removeItem('Transporter Image');
+          localStorage.removeItem('NID Front');
+          localStorage.removeItem('NID Back');
+          localStorage.removeItem('Trade License');
+          localStorage.removeItem('Agreement');
+          localStorage.removeItem('Other');
+          localStorage.removeItem('transporterPayload');
+          localStorage.removeItem('isFromDocumentSave');
+          localStorage.removeItem('tradelicenseexpiry');
+          localStorage.removeItem('agreementexpiry');
+        }
+      }
+    });
   }
 }

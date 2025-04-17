@@ -202,6 +202,7 @@ export class GlobalImageUploadComponent implements OnChanges, AfterViewInit {
       if (this.imageTypes.length === 1) {
         this.activatedImageType = this.imageTypes[0].viewValue;
         this.updateActiveDocumentIndex();
+        console.log(this.activatedDocument)
       }
     }
   }

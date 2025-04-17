@@ -2,8 +2,8 @@ thead {
   @apply sticky top-0;
 }
 
-.border {
-  @apply h-[1px] p-0 bg-[#A1D5DE];
+.custom-border {
+  @apply h-[1px] p-0 bg-[#A1D5DE] sticky top-0;
 }
 
 tbody > tr {
@@ -14,3 +14,10 @@ th,
 td {
   @apply p-4;
 }
+table {
+  border-collapse: separate;
+}
+td {
+  border-bottom: 1px solid #E8F1F3;
+}
+

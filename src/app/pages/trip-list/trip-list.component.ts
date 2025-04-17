@@ -25,7 +25,7 @@ import { statusButtons } from './models/status-buttons';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 import { CustomerService } from '../profiles/services/customer.service';
 import { Trip } from '../auth/models/response/trip';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
 import {
   MatAutocomplete,
@@ -38,7 +38,8 @@ import { debounceTime, Subject } from 'rxjs';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
 import { UserService } from '../profiles/services/user.service';
-import { PaymentType } from '../../shared/Enums/payment-type';
+import { PaymentType, TripType } from '../../shared/Enums/payment-type';
+import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-trip-list',
@@ -80,8 +81,9 @@ export class TripListComponent implements OnInit, AfterViewInit {
   dateOptionArray: CustomInputSelectModel[] = [];
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-    { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
-    { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
+    { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
+    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
   ];
   paymentTypePlaceholder: string = '';
   paymentTypeValue: string = '';
@@ -123,7 +125,9 @@ export class TripListComponent implements OnInit, AfterViewInit {
   customerSearchSubject = new Subject<string>();
   searchId: any;
   searchTransporter: any;
-   paymentFilter: number = 0;
+  paymentFilter: number = 0;
+  tripTypeValue: string = '';
+  tripTypeFilter: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -133,7 +137,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
     private shared: DriverEditSharedService,
     private router: Router,
     private transporter: UserService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private toaster: HandleToastrService
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -143,9 +148,11 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performSearch(searchText);
     });
-    this.customerSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performCustomerSearch(searchText);
-    });
+    this.customerSearchSubject
+      .pipe(debounceTime(1000))
+      .subscribe(searchText => {
+        this.performCustomerSearch(searchText);
+      });
     this.transporterSearchSubject
       .pipe(debounceTime(1000))
       .subscribe(searchText => {
@@ -181,7 +188,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
       this.transporter
         .getTransporter(0, 100, searchText)
         .subscribe((transporter: any) => {
-          this.transporterSuggestions = transporter.data.responses;
+          this.transporterSuggestions = transporter.data;
           if (this.transporterSuggestions.length === 0) {
             this.transporterSuggestions.push('No transporter found');
           }
@@ -221,7 +228,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
         null,
         null,
         this.transporterName,
-        this.paymentTypeValue
+        this.paymentTypeValue,
+        this.tripTypeValue
       )
       .subscribe(
         (trip: any) => {
@@ -354,7 +362,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
       this.dateFilter +
       this.searchFilter +
       this.tripFilter +
-      this.transporterFilter + this.paymentFilter
+      this.transporterFilter +
+      this.paymentFilter + this.tripTypeFilter
     );
   }
 
@@ -373,10 +382,16 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.transporterName = '';
     this.transporterFilter = 0;
     this.searchName = '';
+    this.searchName = '';
     this.from = '';
     this.to = '';
     this.inputPlaceholder = '';
+    this.tripTypeValue = '';
+    this.tripTypePlaceholder = '';
+    this.tripTypeFilter = 0;
     this.tripSuggestions = [];
+    this.searchTransporter= '';
+    this.searchId = '';
     this.filterForm.reset();
     this.loading = true;
     this.service.anotherStatusCalled.next(true);
@@ -569,13 +584,33 @@ export class TripListComponent implements OnInit, AfterViewInit {
   }
 
   protected readonly Math = Math;
+  excelLoading: boolean = false;
+  tripTypeOptionsArray: CustomInputSelectModel[] = [
+    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
+    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
+  ];
+  tripTypePlaceholder: string;
 
   onSelectPayment($event: number) {
     this.paymentFilter = 1;
     this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
     this.paymentTypePlaceholder =
       this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.paymentTypeValue = this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    this.paymentTypeValue =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    this.service.anotherStatusCalled.next(true);
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.getTripList();
+  }
+  onSelectTrip($event: number) {
+    this.tripTypeFilter = 1;
+    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.tripTypePlaceholder =
+      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.tripTypeValue =
+      this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
     this.service.anotherStatusCalled.next(true);
     this.page = 0;
     this.size = 30;
@@ -588,11 +623,60 @@ export class TripListComponent implements OnInit, AfterViewInit {
       return 'Cash';
     } else if (paymentType === PaymentType.INVOICE) {
       return 'Invoice';
-    } else {
+    } else if (paymentType === PaymentType.COMMISSION) {
+      return 'Commission';
+    }else
+     {
       return 'Cash & Invoice';
     }
   }
+  getTripNameFromEnum(paymentType: string) {
+    if (paymentType === TripType.COMMERCIAL) {
+      return 'Commercial Logistics';
+    } else if (paymentType === TripType.PROJECT) {
+      return 'Project Logistics';
+    }else
+     {
+      return 'N/A';
+    }
+  }
 
+  onClickGenerateReport() {
+    this.excelLoading = true;
+    const params = {
+      customerCode: this.customerCode,
+      from: this.from,
+      to: this.to,
+      status: this.status,
+      customerNameOrPhone: this.searchName,
+      searchValue: this.searchValue,
+      truckType: this.truckType,
+      tripId: this.tripId,
+      transporterNameOrPhone: this.transporterName,
+      paymentType: this.paymentTypeValue,
+      tripType: this.tripTypeValue
+    }
+    this.service.getTripReport(
+      params
+    ).subscribe((response: any) => {
+      if (response) {
+        const url = window.URL.createObjectURL(response)
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.style.display = 'none';
+        a.href = url;
+        // download link with formated timestamp
+        a.download = `TripReport_${new Date().getTime()}.xlsx`;
+        a.click();
+        this.excelLoading = false;
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }
+    }, error => {
+      this.excelLoading = false;
+      this.toaster.showError(error.message);
+    });
+  }
   updateOverLayStyle(isSpecial: boolean) {
     const className = 'custom-overlay-bounding-box';
     if (isSpecial) {

@@ -74,6 +74,25 @@ export class TripActivityComponent implements OnInit, OnChanges, AfterViewInit {
     this.trip.getAllTripEvent(tripId, 'Loading').subscribe((res: any) => {
       this.loadingEventsLoaded = true;
       this.loadingEvents = res.data;
+      this.loadingEvents.forEach((e: any) => {
+        if (e.eventTypeId === 14) {
+          if (e.subTripPointEvents.length > 0) {
+            e.subTripPointEvents.forEach((eve: any) => {
+              if (e.tripDocuments) {
+                eve.tripDocuments['subtitle'] = eve.eventName;
+                e.tripDocuments.push(...eve.tripDocuments);
+              } else {
+                e.tripDocuments = eve.tripDocuments;
+              }
+              if (e.notes) {
+                e.notes.push(...eve.notes);
+              } else {
+                e.notes = eve.notes;
+              }
+            })
+          }
+        }
+      })
       if (this.loadingEvents.length > 0) {
         this.changeTripLoadingEvent(this.loadingEvents[0]);
       } else {
@@ -185,7 +204,7 @@ export class TripActivityComponent implements OnInit, OnChanges, AfterViewInit {
 
   checkThatFileIsImageOrPdf(file: any) {
     // check if the file is an image or a pdf file
-    if (file.includes('pdf')) {
+    if (file?.includes('pdf')) {
       return 'pdf';
     } else {
       return 'image';

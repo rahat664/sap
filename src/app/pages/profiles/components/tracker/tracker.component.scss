@@ -2,8 +2,8 @@ thead {
   @apply sticky top-0 z-10;
 }
 
-.border {
-  @apply h-[1px] p-0 bg-[#A1D5DE];
+.custom-border {
+  @apply h-[1px] p-0 bg-[#A1D5DE] w-full sticky top-0;
 }
 
 tbody > tr {
@@ -13,8 +13,4 @@ tbody > tr {
 th,
 td {
   @apply p-4;
-}
-
-.custom-border {
-  border: 1px solid #a5b8bb;
 }

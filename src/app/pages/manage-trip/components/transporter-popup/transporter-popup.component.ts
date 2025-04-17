@@ -51,8 +51,8 @@ export class TransporterPopupComponent implements OnInit {
     this.user
       .getTransporter(this.page, this.size, this.searchValue)
       .subscribe((res: any) => {
-        this.transporterList = res.data.responses;
-        this.totalPages = res.data.totalPages;
+        this.transporterList = res.data;
+        this.totalPages = res.meta.totalPageCount;
         this.loading = false;
       });
   }
@@ -114,8 +114,8 @@ export class TransporterPopupComponent implements OnInit {
       .getTransporter(this.page, this.size, this.searchValue)
       .pipe(debounceTime(1000))
       .subscribe((res: any) => {
-        this.transporterList.push(...res.data.responses);
-        this.totalPages = res.data.totalPages;
+        this.transporterList.push(...res.data);
+        this.totalPages = res.meta.totalPageCount;
       });
   }
 }

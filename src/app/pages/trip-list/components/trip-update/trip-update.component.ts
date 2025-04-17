@@ -43,6 +43,9 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { paymentType, paymentTypes, tripType, tripTypes } from '../../../auth/models/response/trip';
+import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
+import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 
 @Component({
   selector: 'app-trip-update',
@@ -69,8 +72,8 @@ import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
     TimePickerComponent,
     FallbackImagePipe,
     ImageErrorDirective,
-    MatRadioButton,
-    MatRadioGroup,
+    CustomInputComponent,
+    GetClickEventDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './trip-update.component.html',
@@ -136,11 +139,16 @@ export class TripUpdateComponent implements OnInit {
               customerRate: this.tripUpdateForm.get('customerRate').value,
               note: this.tripUpdateForm.get('note').value,
               paymentType: this.tripUpdateForm.get('paymentType').value,
+              tripType: this.tripUpdateForm.get('tripType').value,
               points: [
                 ...this.tripUpdateForm.get('loadingPoints').value,
                 ...this.tripUpdateForm.get('unloadingPoints').value,
               ],
             };
+
+            if (this.truckSourcePlaceholder ) {
+              body['sourceOfTruck'] = this.truckSourcePlaceholder;
+            }
             if (
               this.tripUpdateForm.get('truckId').value &&
               this.tripUpdateForm.get('truckId').value !== tripData.truck?.id
@@ -457,8 +465,10 @@ export class TripUpdateComponent implements OnInit {
       goodsId: [''],
       goodsName: [''],
       paymentType: [''],
+      tripType: [''],
       customerRate: [null],
       note: [''],
+      source: [''],
       loadingPoints: this.fb.array([this.createLoadingPoint()]),
       unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
       transporterCode: [''],
@@ -547,7 +557,7 @@ export class TripUpdateComponent implements OnInit {
     const value = ($event.target as HTMLInputElement).value;
     if (value.length > 0) {
       this.user.getTransporter(0, 100, value).subscribe((res: any) => {
-        this.transporterSuggestion = res.data.responses;
+        this.transporterSuggestion = res.data;
       });
     }
   }
@@ -828,11 +838,9 @@ export class TripUpdateComponent implements OnInit {
           this.tripUpdateForm.get('transporterName').setValue(transporter.name);
           this.tripUpdateForm
             .get('transporterPhone')
-            .setValue(transporter.phone);
+            .setValue(transporter.contactPersonNumber);
           this.tripUpdateForm.get('transporterRate').setValue(transporter.rate);
-          this.tripUpdateForm
-            .get('transporterCode')
-            .setValue(transporter.userId);
+          this.tripUpdateForm.get('transporterCode').setValue(transporter.code);
         } else {
           this.tripUpdateForm.get('transporterName').setValue('');
           this.tripUpdateForm.get('transporterPhone').setValue('');
@@ -905,7 +913,10 @@ export class TripUpdateComponent implements OnInit {
 
   onClickTransporterSearchSuggestion(option: any) {
     this.tripUpdateForm.get('transporterName').setValue(option.name);
-    this.tripUpdateForm.get('transporterPhone').setValue(option.phone);
+    this.tripUpdateForm
+      .get('transporterPhone')
+      .setValue(option.contactPersonNumber);
+    this.tripUpdateForm.get('transporterCode').setValue(option.code);
   }
 
   onClickDriverSearchSuggestion(option: any) {
@@ -936,10 +947,28 @@ export class TripUpdateComponent implements OnInit {
         .get('truckCapacityInTon')
         .setValue(tripData.truckCapacityInTon);
       this.tripUpdateForm.get('paymentType').setValue(tripData.paymentType);
+      this.paymentType.forEach((paymentType: any) => {
+        paymentType.active = false;
+        if (paymentType.enumName === tripData.paymentType) {
+          paymentType.active = paymentType.enumName === tripData.paymentType;
+        }
+      });
+      this.tripUpdateForm.get('tripType').setValue(tripData.tripType);
+      this.tripTypes.forEach((tripType: any) => {
+        tripType.active = tripType.enumName === tripData.tripType;
+      });
       this.tripUpdateForm.get('goodsId').setValue(tripData.good?.id);
       this.tripUpdateForm.get('goodsName').setValue(tripData.good?.name);
       this.tripUpdateForm.get('customerRate').setValue(tripData.customerRate);
       this.tripUpdateForm.get('note').setValue(tripData.note);
+      this.tripUpdateForm.get('source').setValue(tripData?.sourceOfTruck)
+      this.truckSourceList.forEach((source: any) => {
+        source.active = source.value === tripData?.sourceOfTruck
+      })
+      this.truckSourcePlaceholder = this.truckSourceList.find(
+        option => option.value === tripData?.sourceOfTruck
+      )?.value;
+
       this.tripUpdateForm
         .get('transporterName')
         .setValue(tripData.transporterName);
@@ -1097,6 +1126,104 @@ export class TripUpdateComponent implements OnInit {
       );
   }
 
+  protected readonly tripTypes: tripType[] = tripTypes;
+  protected readonly paymentType: paymentType[] = paymentTypes;
+
+  truckSourceList: CustomInputSelectModel[] = [
+    {
+      id: 1,
+      value: 'Owner',
+      showname: 'Owner',
+      selected: false,
+    },
+    {
+      id: 2,
+      value: 'Agency',
+      showname: 'Agency',
+      selected: true,
+    },
+    {
+      id: 3,
+      value: 'Driver',
+      showname: 'Driver',
+      selected: false,
+    },
+    {
+      id: 4,
+      value: 'Others',
+      showname: 'Others',
+      selected: false,
+    },
+  ];
+  truckSourcePlaceholder: string = '';
+
+  onSelectTruckSource($event: number) {
+    this.truckSourcePlaceholder = this.truckSourceList.find(
+      option => option.id === $event
+    ).value;
+    this.tripUpdateForm.get('source').setValue(this.truckSourcePlaceholder);
+    this.truckSourceList.forEach(option => {
+      option.selected = option.id === $event;
+    });
+  }
+
+  onTripTypeClick(type: tripType) {
+    switch (type.id) {
+      case 1:
+        this.tripUpdateForm.get('tripType').setValue('COMMERCIAL');
+        this.tripTypes.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        );
+        break;
+      case 2:
+        this.tripUpdateForm.get('tripType').setValue('PROJECT');
+        this.tripTypes.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        );
+        break;
+      default:
+        this.tripUpdateForm.get('tripType').setValue('COMMERCIAL');
+        this.tripTypes.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        );
+        break;
+    }
+  }
+
+  onPaymentTypeClick(type: paymentType) {
+    switch (type.id) {
+      case 1:
+        this.tripUpdateForm.get('paymentType').setValue('CASH');
+        this.paymentType.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        );
+        break;
+      case 2:
+        this.tripUpdateForm.get('paymentType').setValue('INVOICE');
+        this.paymentType.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        );
+        break;
+      case 3:
+        this.tripUpdateForm.get('paymentType').setValue('CASH_AND_INVOICE');
+        this.paymentType.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        );
+        break;
+      case 4:
+        this.tripUpdateForm.get('paymentType').setValue('COMMISSION');
+        this.paymentType.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        );
+        break;
+      default:
+        this.tripUpdateForm.get('paymentType').setValue('INVOICE');
+        this.paymentType.forEach(
+          (element: any) => (element.active = element.id === type.id)
+        );
+        break;
+    }
+  }
   updateOverLayStyle(isSpecial: boolean) {
     const className = 'custom-overlay-bounding-box';
     if (isSpecial) {

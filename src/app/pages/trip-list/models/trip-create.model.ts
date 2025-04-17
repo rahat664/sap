@@ -20,4 +20,5 @@ export class TripCreate {
   note: string;
   paymentType: string;
   points: Point[];
+  tripType: string;
 }

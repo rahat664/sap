@@ -115,7 +115,7 @@
         </div>
       </div>
       <div class="w-full p-4">
-        <div>
+        <div class="flex flex-col space-y-4">
           <div class="flex space-x-3 items-center">
             <img src="assets/svg/truckinfo.svg" alt="" class="notPreview"/>
             <span class="text-h2 leading-h2 font-semibold"
@@ -127,6 +127,7 @@
             >Truck Registration Number</label
             >
             <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)"
               appearance="outline"
               class="example-full-width w-full">
               <input

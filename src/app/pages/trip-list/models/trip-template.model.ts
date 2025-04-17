@@ -20,4 +20,5 @@ export class TripTemplate {
   note: string;
   paymentType: string;
   points: Point[];
+  tripType: string;
 }

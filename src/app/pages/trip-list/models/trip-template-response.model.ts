@@ -32,4 +32,5 @@ export class TripTemplateResponse {
   note: string;
   points: Point[];
   paymentType: string;
+  tripType: string;
 }

@@ -10,16 +10,43 @@
   </div>
   <div class="p-4">
     <form [formGroup]="templateForm" class="rounded-lg bg-white w-full">
-      <div class="flex w-full items-center justify-center text-h2 leading-h2 font-semibold text-not-black py-2">
-        <div class="flex space-x-3 items-center">
-          <label><sup>*</sup>Payment type</label>
-          <mat-radio-group
-            aria-label="Select an option"
-            formControlName="paymentType">
-            <mat-radio-button value="CASH">Cash</mat-radio-button>
-            <mat-radio-button value="INVOICE">Invoice</mat-radio-button>
-            <mat-radio-button value="BOTH">Cash and invoice</mat-radio-button>
-          </mat-radio-group>
+
+      <div class="mx-8 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
+        <div class="flex items-center space-x-3">
+          <img
+            loading="lazy"
+            class="notPreview"
+            src="assets/svg/EpaymenType.svg"
+            alt="candt"/>
+          <span class="text-h2 leading-h2 font-semibold"
+          >Trip & Payment Type</span
+          >
+        </div>
+        <div class="grid lg:grid-cols-2 gap-4 w-full">
+          <div class="flex flex-col space-y-1 w-full">
+            <label for="customerName" class="form-label text-body"
+            >Trip Type</label
+            >
+            <div class="h-[56px] w-full border-line rounded-lg flex  items-center bg-input">
+              <div class="flex space-x-2 px-4 py-2 items-center">
+                <button *ngFor="let type of tripTypes" class="py-1.5 px-2 rounded-full {{type.active ? 'bg-green border-none text-white' : 'bg-transparent border border-line text-not-black'}}" (click)="onTripTypeClick(type)">
+                  <span>{{type.name}}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col space-y-1 w-full">
+            <label for="customerName" class="form-label text-body"
+            >Payment Type</label
+            >
+            <div class="h-[56px] w-full border-line rounded-lg flex  items-center bg-input">
+              <div class="flex space-x-2 px-4 py-2 items-center">
+                <button *ngFor="let type of paymentType" class="py-1.5 px-2 rounded-full {{type.active ? 'bg-green border-none text-white' : 'bg-transparent border border-line text-not-black'}}" (click)="onPaymentTypeClick(type)">
+                  <span>{{type.name}}</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="mx-8 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
@@ -89,7 +116,7 @@
                       formControlName="pointName"
                       (keyup)="onKeyUpLoadingPoint($event, i)"
                       [matAutocomplete]="auto"/>
-                    <mat-autocomplete  #auto="matAutocomplete">
+                    <mat-autocomplete #auto="matAutocomplete">
                       @for (option of loadingSuggestions; track option) {
                         <mat-option
                           *ngIf="
@@ -587,7 +614,7 @@
             <div class="flex flex-col space-y-1 w-full">
               <label for="goods" class="form-label text-body">Goods Type</label>
               <mat-form-field
-                (mouseenter)="updateOverLayStyle(false)" appearance="outline" class="example-full-width">
+                (mouseenter)="updateOverLayStyle(false)"  appearance="outline" class="example-full-width">
                 <input
                   id="goods"
                   type="text"

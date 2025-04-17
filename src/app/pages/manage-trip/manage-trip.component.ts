@@ -123,9 +123,17 @@ export class ManageTripComponent implements OnInit {
   paymentFilter: number = 0;
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-    { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
-    { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
+    { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
+    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
   ];
+  tripTypeFilter: number = 0;
+  tripTypePlaceholder: string = '';
+  tripTypeOptionsArray: CustomInputSelectModel[] = [
+    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
+    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
+  ];
+  tripTypeValue: string = '';
 
   constructor(
     private tripService: TripService,
@@ -215,7 +223,8 @@ export class ManageTripComponent implements OnInit {
         null,
         null,
         null,
-        this.paymentTypeValue
+        this.paymentTypeValue,
+        this.tripTypeValue,
       )
       .pipe(finalize(() => (this.loading = false)))
       .subscribe(
@@ -525,6 +534,9 @@ export class ManageTripComponent implements OnInit {
     this.truckType = '';
     this.customerCode = '';
     this.paymentTypePlaceholder = '';
+    this.tripTypeValue = '';
+    this.tripTypeFilter = 0;
+    this.tripTypePlaceholder = '';
     this.filterOpen = false;
     this.page = 0;
     this.tripService.anotherStatusCalled.next(true);
@@ -657,11 +669,6 @@ export class ManageTripComponent implements OnInit {
   }
 
   onClickFilterOpen() {
-    this.paymentTypeOptionsArray = [
-      { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-      { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
-      { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
-    ]
     this.truckType = [];
     this.customers = [];
     this.selectedButton = '';
@@ -673,7 +680,7 @@ export class ManageTripComponent implements OnInit {
     this.filterLength = 0;
     this.filterOpen = true;
 
-    if (this.filterValues.length > 0 || this.paymentFilter > 0) {
+    if (this.filterValues.length > 0 || this.paymentFilter > 0 || this.tripTypeFilter > 0) {
       this.filterValues.forEach((element: any) => {
         const selectedVehicle = this.vehicleTypeList.find(
           (value: any) => value.name === element
@@ -738,9 +745,12 @@ export class ManageTripComponent implements OnInit {
           );
         }
       });
-      this.filterLength = this.filterValues.length + this.paymentFilter;
+      this.filterLength = this.filterValues.length + this.paymentFilter + this.tripTypeFilter;
       this.paymentTypePlaceholder = this.paymentTypeOptionsArray.find(
         x => x.value === this.paymentTypeValue
+      )?.showname;
+      this.tripTypePlaceholder = this.tripTypeOptionsArray.find(
+        x => x.value === this.tripTypeValue
       )?.showname;
     } else {
       this.truckType = [];
@@ -778,10 +788,32 @@ export class ManageTripComponent implements OnInit {
     this.paymentTypeValue = this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
   }
 
+  onSelectTrip($event: number) {
+    if (this.tripTypeFilter === 0) {
+      this.filterLength += 1;
+    }
+    this.tripTypeFilter = 1;
+    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.tripTypePlaceholder =
+      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.tripTypeValue = this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
+  }
+
   onClickClosePaymentType() {
     this.paymentTypePlaceholder = '';
     this.paymentTypeValue = '';
     this.paymentFilter = 0;
+    this.filterLength -= 1;
+    this.page = 0;
+    this.size = 30;
+    this.tripService.anotherStatusCalled.next(true);
+    this.getTripList();
+  }
+
+  onClickCloseTripType() {
+    this.tripTypePlaceholder = '';
+    this.tripTypeValue = '';
+    this.tripTypeFilter = 0;
     this.filterLength -= 1;
     this.page = 0;
     this.size = 30;

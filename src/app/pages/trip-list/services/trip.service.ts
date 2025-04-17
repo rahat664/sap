@@ -31,6 +31,8 @@ export class TripService {
   vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
   districtUrl = `${environment.backendUrl}/api/districts`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
+  reportUrl = `${environment.backendUrl}/api/trip/report`;
+
   locationSuggestionsUrl = `${environment.locationUrl}/api/location-notes/search-autocomplete`;
   trackByRegistationUrl = `${environment.locationUrl}/api/locations/filter`;
   tripPointEventsUrl = `${environment.backendUrl}/api/tripPointEvents`;
@@ -41,6 +43,7 @@ export class TripService {
   bottomHeight: BehaviorSubject<string> = new BehaviorSubject('0px');
   anotherStatusCalled: BehaviorSubject<boolean> = new BehaviorSubject(false);
   historyApi = `${environment.locationUrl}/api/locations/histories`;
+  transporterPaymentUrl = `${environment.backendUrl}/api/transporter-payment`;
 
   constructor(
     private http: HttpClient,
@@ -63,7 +66,8 @@ export class TripService {
     challanTo?: string,
     truckRegId?: string,
     transporterNameOrPhone?: string,
-    paymentType?: string
+    paymentType?: string,
+    tripType?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -113,6 +117,8 @@ export class TripService {
     }
     if (paymentType) {
       params = params.set('paymentType', paymentType);
+    } if (tripType) {
+      params = params.set('tripType', tripType);
     }
 
     return this.http.get(`${this.url}`, { params });
@@ -253,5 +259,70 @@ export class TripService {
     return this.http.get(
       `${this.historyApi}?from=${from}&to=${to}&vehicleRegId=${vehicleRegId}`
     );
+  }
+
+  getTripReport(params?: any) {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.keys(params).forEach((key) => {
+        if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+          httpParams = httpParams.set(key, params[key]);
+        }
+      });
+    }
+
+    return this.http.get(`${this.reportUrl}`, { params: httpParams, responseType: 'blob' });
+  }
+
+  getTransporterPaymentList(
+    page: number,
+    size: number,
+    status?: string,
+    from?: string,
+    to?: string,
+    tripId?: string,
+    customerCode?: string,
+    transporterNameOrPhone?: string,
+    transporterPaymentStatus?: string,
+    loadingDistrict?: string,
+    unloadingDistrict?: string
+  ) {
+    let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+
+    if (status) {
+      params = params.set('status', status);
+    }
+    if (from) {
+      params = params.set('from', from);
+    }
+    if (to) {
+      params = params.set('to', to);
+    }
+    if (tripId) {
+      params = params.set('tripId', tripId);
+    }
+    if (customerCode) {
+      params = params.set('customerCode', customerCode);
+    }
+    if (transporterNameOrPhone) {
+      params = params.set('transporterNameOrPhone', transporterNameOrPhone);
+    }
+     if (transporterPaymentStatus) {
+      params = params.set('transporterPaymentStatus', transporterPaymentStatus);
+    } if (loadingDistrict) {
+      params = params.set('loadingDistrict', loadingDistrict);
+    } if (unloadingDistrict) {
+      params = params.set('unloadingDistrict', unloadingDistrict);
+    }
+    return this.http.get(`${this.transporterPaymentUrl}`, { params });
+  }
+
+  paymentTransporter(body) {
+    return this.http.post(`${this.transporterPaymentUrl}/bulk-payment`, body);
+  }
+
+  getPaymentDetails(tripId: string) {
+    return this.http.get(`${this.transporterPaymentUrl}/trip/${tripId}`);
   }
 }

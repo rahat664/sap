@@ -86,11 +86,11 @@
           [ngClass]="{
             'text-red':
               tripDetails?.status === 'Cancelled' &&
-              onlyStatusTripEvents?.length == 2,
+              onlyStatusTripEvents?.length === 2,
           }"
         >{{
             tripDetails?.status === 'Cancelled' &&
-            onlyStatusTripEvents?.length == 2
+            onlyStatusTripEvents?.length === 2
               ? 'Cancelled'
               : 'Booked'
           }}</span

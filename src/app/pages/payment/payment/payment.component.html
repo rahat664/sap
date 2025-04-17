@@ -1,0 +1,179 @@
+<div class="p-2 flex flex-col space-y-3 " [ngClass]="{'pointer-events-none opacity-70': isOffCanvasVisible}">
+  <div
+    appGetElementHeight
+    (height)="height = $event"
+    class="flex flex-col space-y-3">
+    <div
+      class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem] space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      <div class="flex items-center justify-between w-full">
+        <h1 class="text-h1 leading-h1 font-semibold">Transporter Payment</h1>
+        <div (click)="onClickFilterOpen()" class="flex space-x-1 cursor-pointer text-h2_medium text-primary">
+          <img class="notPreview" src="assets/svg/filter.svg" alt="">
+          <p>Filter</p>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="filterApplied" class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
+      <span class="text-xs text-not-black">Showing results for {{filterSummary}}</span>
+      <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
+    </div>
+
+
+    <!--  summary section-->
+    <div class="py-5 grid grid-cols-4 bg-white rounded-lg">
+      <div class="w-full flex items-center justify-center  border-r border-line">
+        <div class="flex flex-col space-y-3 py-1.5">
+          <span class="text-body text-secondary">Total trip</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">{{ totalTrips | number }}</span>
+        </div>
+      </div>
+      <div class="w-full flex items-center justify-center  border-r border-line">
+        <div class="flex flex-col space-y-3 py-1.5">
+          <span class="text-body text-not-primary">Transporter Rate(৳)</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">{{
+              paymentData?.totalTransportRate | number
+            }}</span>
+        </div>
+      </div>
+      <div class="w-full flex items-center justify-center  border-r border-line">
+        <div class="flex flex-col space-y-3 py-1.5">
+          <span class="text-body text-green">Paid(৳)</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">
+            {{ paymentData?.totalPaid | number}}
+          </span>
+        </div>
+      </div>
+      <div class="w-full flex items-center justify-center ">
+        <div class="flex flex-col space-y-3 py-1.5">
+          <span class="text-body text-red">Due(৳)</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">{{
+              paymentData?.totalUnpaid | number
+            }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    appGiveMaxHeight
+    [totalPage]="totalPages"
+    (inBottomEnd)="onBottom($event)"
+    [anotherItemsHeight]="height"
+    class="bg-white w-full relative rounded-lg overflow-auto">
+    <table
+      class="table-auto w-full text-body_title leading-body_title rounded-sm">
+      <thead class="bg-white">
+      <tr class="whitespace-nowrap bg-white text-not-black">
+        <th class="text-left bg-white sticky left-0">Trip No.</th>
+        <th class="text-left">Company</th>
+        <th class="text-left">Transporter</th>
+        <th class="text-left">Date</th>
+        <th class="text-left">Loading Point</th>
+        <th class="text-left">Unloading Point</th>
+        <th class="text-center">Trip Status</th>
+        <th class="text-center">Payment Status</th>
+        <th class="text-center whitespace-nowrap">Trip Cost(৳)</th>
+        <th class="text-center whitespace-nowrap">Paid(৳)</th>
+        <th class="text-center whitespace-nowrap">Paid On</th>
+        <th class="text-center whitespace-nowrap">Payable(৳)</th>
+        <th class="text-center whitespace-nowrap w-[10%] "></th>
+      </tr>
+      <tr>
+        <th class="custom-border" [colSpan]="13"></th>
+      </tr>
+      </thead>
+      <tbody class="text-web-text-secondary">
+      <ng-container *ngFor="let transporter of transportersPaymentList">
+        <tr>
+          <td class="whitespace-nowrap text-link cursor-pointer">
+            <a (click)="onClickTripId(transporter)">{{ transporter.tripId }}</a>
+          </td>
+          <td>{{ transporter.customerName }}</td>
+          <td class="{{!transporter.transporterName ? 'text-line' : ''}}">
+            {{ transporter.transporterName ? transporter.transporterName : 'Not assigned' }}
+          </td>
+          <td class="whitespace-nowrap">{{ transporter.tripStartDatetime | date: 'dd MMM yyyy' }}</td>
+          <td class="text-left"><p>
+            {{ getLoadingPointsName(transporter.tripPoints)[0]?.pointName }}
+            <span
+              class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+              *ngIf="getLoadingPointsName(transporter.tripPoints)?.length > 1">
+                  +{{ getLoadingPointsName(transporter.tripPoints)?.length - 1 }}</span
+            >
+          </p></td>
+          <td class="text-left"><p>
+            {{ getUnloadingPointsName(transporter.tripPoints)[0]?.pointName }}
+            <span
+              class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+              *ngIf="getUnloadingPointsName(transporter.tripPoints)?.length > 1">
+                  +{{ getUnloadingPointsName(transporter.tripPoints)?.length - 1 }}</span
+            >
+          </p></td>
+
+          <td class="text-center">{{ transporter.status }}</td>
+          <td >
+            <div class="px-4 py-0.5 text-white text-center rounded-full {{getBgColor(transporter.transporterPaymentStatus)}} ">
+              {{ transporter.transporterPaymentStatus !== null ? transporter.transporterPaymentStatus : 'Unpaid'  }}
+            </div>
+          </td>
+          <td class="text-center">
+            {{
+              (transporter.transporterRate !== null ? (transporter.transporterRate|number) : 'N/A')
+            }}
+          </td>
+          <td class="text-center">
+            {{
+              (transporter.paymentAmountToTransporter !== null ? (transporter.paymentAmountToTransporter|number) : 'N/A')
+            }}
+          </td>
+          <td class="text-center whitespace-nowrap">
+            {{ transporter.lastPaymentDateToTransporter ? (transporter.lastPaymentDateToTransporter | date: 'dd MMM yyyy') : 'N/A' }}
+          </td>
+          <td class="text-center">
+            {{ countDueAmount(transporter) !== 'N/A' ? (countDueAmount(transporter) | number) : countDueAmount(transporter) }}
+          </td>
+          <td class="text-center whitespace-nowrap">
+            <button *ngIf="countDueAmount(transporter) !== 'N/A' && Number(countDueAmount(transporter)) > 0"
+                    (click)="onClickPayNow(transporter)"
+                    type="button"
+                    class="px-[0.875rem] py-[0.375rem] text-primary border border-primary rounded">
+              <span class="text-body">Pay now</span>
+            </button>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <tr *ngIf="transportersPaymentList?.length === 0">
+          <td class="text-center" [colSpan]="13">
+            <div
+              class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img
+                loading="lazy"
+                src="assets/svg/no-data.svg"
+                class="notPreview"
+                alt="nodata"/>
+              <p
+                class="text-body_title leading-body_title text-secondary font-semibold">
+                No Data Found
+              </p>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" [colSpan]="13">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+<app-off-canvas (isPaymentSuccessful)="onPaymentSucceful($event)" [transporterDetails]="selectedTransporter"
+                *ngIf="isOffCanvasVisible" (closeCanvas)="hideOffCanvas()"></app-off-canvas>
+<app-payment-details (paymentFromDetatils)="onPaymentFromDetails()" [transporterDetails]="selectedTransporter"
+                     *ngIf="paymentDetailsOpened" (closeCanvas)="hideDetails()"></app-payment-details>
+<app-payment-filter (filterData)="onFilterData($event)" (filterApplied)="onfilterApply()"
+                    (filterClosed)="onFilterClose()" *ngIf="filterOpened"></app-payment-filter>
+

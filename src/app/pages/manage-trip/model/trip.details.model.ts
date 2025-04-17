@@ -10,6 +10,7 @@ export interface Good {
 }
 
 export interface Truck {
+  source: string;
   id: number;
   name: string | null;
   registrationZone: string;
@@ -58,6 +59,8 @@ export interface TripEvent {
 }
 
 export interface TripData {
+  sourceOfTruck: string;
+  tripType: string;
   tripCancellationReason: any;
   id: number;
   tripId: string;
