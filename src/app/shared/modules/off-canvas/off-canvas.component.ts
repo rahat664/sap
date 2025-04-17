@@ -3,7 +3,7 @@ import { MatRadioButton, MatRadioChange, MatRadioGroup } from '@angular/material
 import { MatFormField } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
-import { DecimalPipe, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, DecimalPipe, NgForOf, NgIf } from '@angular/common';
 import { TransporterPayment } from '../../../pages/payment/model/transporter-payment.model';
 import { numberPipe } from '../../pipes/number-seperator.pipe';
 import { tripTypes } from '../../../pages/auth/models/response/trip';
@@ -33,6 +33,7 @@ import { CustomInputSelectModel } from '../custom-input/custom-input-select.mode
     ReactiveFormsModule,
     CustomInputComponent,
     GetClickEventDirective,
+    DatePipe,
   ],
   templateUrl: './off-canvas.component.html',
   styleUrl: './off-canvas.component.scss',
@@ -78,11 +79,7 @@ export class OffCanvasComponent {
 
   onPayNow() {
     this.paymentButtonTriggered = true;
-    if (
-      this.amount > 0 &&
-      this.selectedPaymentMethod &&
-      this.paymentStatus
-    ) {
+    if (this.amount > 0 && this.selectedPaymentMethod && this.paymentStatus) {
       const paymentData = {
         tripIds: [this.transporterDetails.tripId],
         amount: this.amount,
@@ -95,7 +92,8 @@ export class OffCanvasComponent {
         }
         if (this.accountNumber) {
           paymentData['accountNumber'] = this.accountNumber;
-        } if (this.accountName) {
+        }
+        if (this.accountName) {
           paymentData['accountName'] = this.accountName;
         }
       }
@@ -103,7 +101,8 @@ export class OffCanvasComponent {
       if (this.selectedPaymentMethod === 'MFS') {
         if (this.financialInstituteName) {
           paymentData['financialInstituteName'] = this.financialInstituteName;
-        } if (this.accountNumber) {
+        }
+        if (this.accountNumber) {
           paymentData['accountNumber'] = this.accountNumber;
         }
       }
@@ -163,7 +162,7 @@ export class OffCanvasComponent {
     if (transporter.transporterRate !== null) {
       const dueAmount =
         transporter.transporterRate - transporter.paymentAmountToTransporter;
-      return dueAmount > 0 ? dueAmount  : 0;
+      return dueAmount > 0 ? dueAmount : 0;
     } else {
       return 'N/A';
     }
@@ -187,12 +186,49 @@ export class OffCanvasComponent {
   }
   mfsTypePlaceholder: string = '';
 
-
   onSelectMFSType($event: number) {
     this.mfsTypePlaceholder = this.mfsService.find(
       method => method.id === $event
     ).value;
     this.financialInstituteName = this.mfsTypePlaceholder;
     this.mfsService.forEach(method => (method.selected = method.id === $event));
+  }
+  getLoadingPoint(
+    tripPoints: Array<{
+      id: number;
+      pointDistrict: string;
+      pointName: string;
+      pointType: string;
+      pointLat: number;
+      pointLon: number;
+    }>
+  ) {
+    return tripPoints.filter(point => point.pointType === 'Loading');
+  }
+
+  getUnloadingPoint(
+    tripPoints: Array<{
+      id: number;
+      pointDistrict: string;
+      pointName: string;
+      pointType: string;
+      pointLat: number;
+      pointLon: number;
+    }>
+  ) {
+    return tripPoints.filter(point => point.pointType === 'Unloading');
+  }
+
+  getBgColor(status: string) {
+    switch (status) {
+      case 'Paid':
+        return 'bg-green';
+      case 'Partial':
+        return 'bg-another';
+      case 'Unpaid':
+        return 'bg-red';
+      default:
+        return 'bg-red';
+    }
   }
 }

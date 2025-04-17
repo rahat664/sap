@@ -5,6 +5,7 @@ import { TripService } from '../../trip-list/services/trip.service';
 import { DatePipe, DecimalPipe, NgForOf, NgIf } from '@angular/common';
 import { LoadingComponent } from '../../../shared/modules/loading/loading.component';
 import { numberPipe } from '../../../shared/pipes/number-seperator.pipe';
+import { TripPoint } from '../../manage-trip/model/trip.details.model';
 
 @Component({
   selector: 'app-payment-details',
@@ -25,7 +26,8 @@ export class PaymentDetailsComponent {
   @Input() transporterDetails: TransporterPayment;
   loading: boolean;
   transporterPaymentDetails: TransporterPaymentDetails[] = [];
-  @Output() paymentFromDetatils: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+  @Output() paymentFromDetatils: EventEmitter<boolean> =
+    new EventEmitter<boolean>(false);
 
   onClose() {
     this.closeCanvas.emit();
@@ -84,6 +86,45 @@ export class PaymentDetailsComponent {
   protected readonly Number = Number;
 
   onPayNow() {
-    this.paymentFromDetatils.emit(true)
+    this.paymentFromDetatils.emit(true);
+  }
+
+  getLoadingPoint(
+    tripPoints: Array<{
+      id: number;
+      pointDistrict: string;
+      pointName: string;
+      pointType: string;
+      pointLat: number;
+      pointLon: number;
+    }>
+  ) {
+    return tripPoints.filter(point => point.pointType === 'Loading');
+  }
+
+  getUnloadingPoint(
+    tripPoints: Array<{
+      id: number;
+      pointDistrict: string;
+      pointName: string;
+      pointType: string;
+      pointLat: number;
+      pointLon: number;
+    }>
+  ) {
+    return tripPoints.filter(point => point.pointType === 'Unloading');
+  }
+
+  getBgColor(status: string) {
+    switch (status) {
+      case 'Paid':
+        return 'bg-green';
+      case 'Partial':
+        return 'bg-another';
+      case 'Unpaid':
+        return 'bg-red';
+      default:
+        return 'bg-red';
+    }
   }
 }

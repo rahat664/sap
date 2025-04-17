@@ -174,10 +174,10 @@ export class PaymentComponent {
 
   onPaymentSucceful($event: boolean) {
     if ($event) {
-      this.transportersPaymentList = [];
       this.page = 0;
-      this.loading = true;
       this.size = 30;
+      this.loading = true;
+      this.transportersPaymentList = [];
       this.trip.getTransporterPaymentList(this.page, this.size,
         this.filterData.tripStatus,
         this.filterData.startDate,
@@ -319,5 +319,18 @@ export class PaymentComponent {
         console.error('Error fetching transporter payment list:', error);
       }
     );
+  }
+
+  getBgColor(status: string) {
+    switch (status) {
+      case 'Paid':
+        return 'bg-green';
+      case 'Partial':
+        return 'bg-another';
+      case 'Unpaid':
+        return 'bg-red';
+      default:
+        return 'bg-red';
+    }
   }
 }

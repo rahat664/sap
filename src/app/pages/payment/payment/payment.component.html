@@ -110,7 +110,11 @@
           </p></td>
 
           <td class="text-center">{{ transporter.status }}</td>
-          <td class="text-center">{{ transporter.transporterPaymentStatus !== null ? transporter.transporterPaymentStatus : 'Unpaid'  }}</td>
+          <td >
+            <div class="px-4 py-0.5 text-white text-center rounded-full {{getBgColor(transporter.transporterPaymentStatus)}} ">
+              {{ transporter.transporterPaymentStatus !== null ? transporter.transporterPaymentStatus : 'Unpaid'  }}
+            </div>
+          </td>
           <td class="text-center">
             {{
               (transporter.transporterRate !== null ? (transporter.transporterRate|number) : 'N/A')
@@ -137,9 +141,27 @@
           </td>
         </tr>
       </ng-container>
+      <ng-container *ngIf="!loading">
+        <tr *ngIf="transportersPaymentList?.length === 0">
+          <td class="text-center" [colSpan]="13">
+            <div
+              class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img
+                loading="lazy"
+                src="assets/svg/no-data.svg"
+                class="notPreview"
+                alt="nodata"/>
+              <p
+                class="text-body_title leading-body_title text-secondary font-semibold">
+                No Data Found
+              </p>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="12">
+          <td class="h-full" [colSpan]="13">
             <app-loading></app-loading>
           </td>
         </tr>
