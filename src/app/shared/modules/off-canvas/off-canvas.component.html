@@ -3,13 +3,13 @@
   <div class="flex flex-col space-y-2">
     <div
       class="h-full flex flex-col">
-      <div class="flex items-center justify-between py-6 sticky z-50 bg-white top-0">
-        <h2 class="text-h3 leading-h3 font-semibold">Payment Details</h2>
-        <button (click)="onClose()" class="text-gray-500 hover:text-black">
-          <i class="fal fa-times text-xl text-primary"></i>
-        </button>
-      </div>
-      <div class="flex flex-col space-y-4">
+      <div class="sticky z-50 top-0 mb-4">
+        <div class="flex items-center justify-between py-6 sticky z-50 bg-white top-0">
+          <h2 class="text-h3 leading-h3 font-semibold">Payment Details</h2>
+          <button (click)="onClose()" class="text-gray-500 hover:text-black">
+            <i class="fal fa-times text-xl text-primary"></i>
+          </button>
+        </div>
         <div class="flex flex-col space-y-0.5 text-left px-4 py-3 bg-app-bg rounded-lg relative">
           <span class="text-not-black text-xs font-semibold">Trip no: {{ transporterDetails?.tripId }}</span>
           <span class="text-body_title leading-body_title font-semibold  text-not-black">{{getTruckFullRegistrationNumber(transporterDetails.truck)}}</span>
@@ -19,6 +19,8 @@
             <span class="text-xs text-white font-semibold">{{transporterDetails?.transporterPaymentStatus}}</span>
           </div>
         </div>
+      </div>
+      <div class="flex flex-col space-y-4">
         <div class="flex flex-col space-y-2 bg-app-bg p-4 rounded-lg">
           <div class="flex space-x-3 items-center">
             <img
