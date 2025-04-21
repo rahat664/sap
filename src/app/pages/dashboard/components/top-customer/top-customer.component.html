@@ -26,11 +26,11 @@
         <ng-container *ngFor="let customer of topCustomer">
           <div
             class="grid grid-cols-4 items-center w-full text-body text-not-black">
-            <div class="flex space-x-3 items-center">
+            <div class="flex w-full space-x-3 items-center">
               <div
                 class="text-body_title text-white flex justify-center items-center h-[1.75rem] w-[1.75rem] rounded-full {{
                 getBackgroundColor(customer.customerName[0].toLocaleLowerCase())
-              }} font-semibold">
+              }} font-semibold ">
                 <span>{{ customer.customerName[0].toLocaleUpperCase() }}</span>
               </div>
               <span class="flex-1">{{ customer.customerName }}</span>

@@ -22,6 +22,7 @@ import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom
 import { DateEnum } from '../trip-list/Enum/date.enum';
 import { debounceTime, Subject } from 'rxjs';
 import { CustomerService } from '../profiles/services/customer.service';
+import { ToggleResponsiveService } from '../../shared/services/toggle-responsive-services/toggle-responsive.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -86,7 +87,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private customer: CustomerService,
     private datePipe: DatePipe,
-    private router: Router
+    private router: Router,
+    private mobileViewService: ToggleResponsiveService,
   ) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performSearch(searchText);
@@ -108,6 +110,9 @@ export class DashboardComponent implements OnInit {
     });
     this.selectedCompanies = [];
     this.inputPlaceholder='';
+    this.mobileViewService.isMobileDevice.subscribe(isMobileDevice => {
+      this.filterOpened = !isMobileDevice;
+    })
   }
 
   @HostListener('window:popstate', ['$event'])
