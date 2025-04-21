@@ -97,6 +97,7 @@
               <div class="grid grid-cols-5 w-full gap-3">
                 <div class="flex flex-col w-full col-span-2">
                   <app-custom-input
+                    [isFilterMenu]="false"
                     class="w-full"
                     appGetClickEvent
                     [isError]="registrationErrorMessage !== ''"
@@ -114,6 +115,7 @@
                 </div>
                 <div class="flex flex-col">
                   <app-custom-input
+                    [isFilterMenu]="false"
                     class="w-full"
                     appGetClickEvent
                     [isError]="registrationErrorMessage !== ''"
