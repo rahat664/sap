@@ -57,7 +57,7 @@
         placeholder="Transporter">
         <mat-option
           *ngFor="let transporter of transporterLists"
-          [value]="transporter?.name"
+          [value]="transporter?.code"
         >{{ transporter?.name }}
         </mat-option>
       </mat-select>
