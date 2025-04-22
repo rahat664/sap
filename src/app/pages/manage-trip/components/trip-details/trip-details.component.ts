@@ -41,7 +41,6 @@ import { ManualTrackingComponent } from '../manual-tracking/manual-tracking.comp
     MatButtonModule,
     MatMenu,
     MatMenuItem,
-
     MatMenuTrigger
   ],
   templateUrl: './trip-details.component.html',
