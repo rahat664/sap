@@ -24,26 +24,30 @@ body {
 
 /* modal.component.css */
 
-/* Hide the default scrollbar */
+/* Hide only the vertical scrollbar */
 ::-webkit-scrollbar {
   display: none;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Set the background color of the scrollbar track */
+/* Optional: Still style the horizontal scrollbar */
+::-webkit-scrollbar:horizontal {
+  display: block;
+  height: .25rem; /* Customize height */
 }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888; /* Set the color of the scrollbar thumb */
-  border-radius: 0.188rem; /* Set the border radius of the scrollbar thumb */
+::-webkit-scrollbar-track:horizontal {
+  background: #f1f1f1;
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Set the color of the scrollbar thumb on hover */
+::-webkit-scrollbar-thumb:horizontal {
+  background: #888;
+  border-radius: 0.188rem;
 }
+
+::-webkit-scrollbar-thumb:horizontal:hover {
+  background: #555;
+}
+
 
 //
 //input::placeholder {
@@ -339,9 +343,17 @@ img:hover {
   margin-bottom: 1rem;
 }
 
+
+.mat-mdc-form-field-icon-suffix{
+  margin-bottom: 12px !important;
+}
+
 body.custom-overlay-bounding-box {
   .cdk-overlay-connected-position-bounding-box {
     height: auto !important;
     width: auto !important;
   }
 }
+
+
+

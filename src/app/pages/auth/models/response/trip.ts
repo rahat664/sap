@@ -1,6 +1,9 @@
 import { TripPoint } from '../../../manage-trip/model/trip.details.model';
 
 export interface Trip {
+  sourceOfTruck: string;
+  firstChallanUploadedDate: string;
+  tripType: string;
   paymentType: string;
   challanReceivedFromDTOList: challanReceivedFromDTOList[];
   id: number;
@@ -59,4 +62,61 @@ export interface Truck {
   registrationSerial?: string; // Make optional as it's missing
   registrationNum?: string; // Make optional as it's missing
   fullRegistrationNumber?: string; // Make optional as it's missing
+  source?: string;
 }
+
+export interface tripType {
+  id: number;
+  name: string;
+  active: boolean;
+  enumName: string; // Added field for enum name
+}
+
+export interface paymentType {
+  id: number;
+  name: string;
+  active: boolean;
+  enumName?: string; // Added field for enum name
+}
+
+export const tripTypes: tripType[] = [
+  {
+    id: 1,
+    name: 'Commercial Logistics',
+    active: false,
+    enumName: 'COMMERCIAL'
+  },
+  {
+    id: 2,
+    name: 'Project Logistics',
+    active: false,
+    enumName: 'PROJECT'
+  }
+];
+
+export const paymentTypes: paymentType[] = [
+  {
+    id:1,
+    name: 'Cash',
+    active: false,
+    enumName: 'CASH'
+  },
+  {
+    id: 2,
+    name: 'Invoice',
+    active: true,
+    enumName: 'INVOICE'
+  },
+  {
+    id: 3,
+    name: 'Cash & Invoice',
+    active: false,
+    enumName: 'CASH_AND_INVOICE'
+  },
+  {
+    id: 4,
+    name: 'Commission',
+    active: false,
+    enumName: 'COMMISSION'
+  }
+];

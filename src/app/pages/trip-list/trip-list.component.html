@@ -5,7 +5,19 @@
     class="flex flex-col space-y-3">
     <div
       class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem] space-y-3 lg:space-y-0 lg:flex-row justify-between">
-      <h1 class="text-h1 leading-h1 font-semibold">Trip List</h1>
+      <div class="flex justify-between w-full items-center">
+        <h1 class="text-h1 leading-h1 font-semibold">Trip List</h1>
+        <button *ngIf="isAdmin()"
+          (click)="onClickGenerateReport()"
+          class="px-16 flex space-x-4 items-center py-3 lg:py-2 border border-primary text-primary rounded-lg">
+          <i
+            *ngIf="excelLoading"
+            class="fas fa-spinner fa-spin text-primary text-xl"></i>
+          <span>
+            Export in Excel
+          </span>
+        </button>
+      </div>
     </div>
     <!--  filter section-->
     <div class="w-full bg-white rounded-lg">
@@ -36,8 +48,8 @@
       </button>
       <div
         *ngIf="filterOpened"
-        class="pt-3 pb-4 px-2 flex items-center space-x-4">
-        <div class="flex flex-col space-y-1 w-[14.375rem]">
+        class="pt-3 pb-4 px-2 grid grid-cols-6 gap-3">
+        <div class="flex flex-col space-y-1 w-full">
           <label class="text-body text-web-text-secondary px-2">Date</label>
           <app-custom-input
             class=""
@@ -51,7 +63,7 @@
             [options]="dateOptionArray"
             (selectedId)="onSelectDate($event)"></app-custom-input>
         </div>
-        <div class="flex flex-col space-y-1 w-[14.375rem]">
+        <div class="flex flex-col space-y-1 w-full">
           <label class="text-body text-web-text-secondary px-2">Payment Type</label>
           <app-custom-input
             appGetClickEvent
@@ -60,14 +72,23 @@
             inputPlaceholder="Select Payment type"
             (selectedId)="onSelectPayment($event)"></app-custom-input>
         </div>
-        <div class="flex flex-col space-y-1 w-[14.375rem]">
+        <div class="flex flex-col space-y-1 w-full">
+          <label class="text-body text-web-text-secondary px-2">Trip Type</label>
+          <app-custom-input
+            appGetClickEvent
+            [inputSearch]="tripTypePlaceholder"
+            [options]="tripTypeOptionsArray"
+            inputPlaceholder="Select Payment type"
+            (selectedId)="onSelectTrip($event)"></app-custom-input>
+        </div>
+        <div class="flex flex-col space-y-1 w-full">
           <label class="text-body text-web-text-secondary px-2"
           >Company name</label
           >
           <mat-form-field
             (mouseenter)="updateOverLayStyle(false)"
             appearance="outline"
-            class="example-full-width relative   filter">
+            class="example-full-width relative filter">
             <input
               id="customerName"
               type="text"
@@ -95,7 +116,7 @@
             </button>
           </mat-form-field>
         </div>
-        <div class="flex flex-col space-y-1 w-[14.375rem]">
+        <div class="flex flex-col space-y-1 w-full">
           <label class="text-body text-web-text-secondary px-2"
           >Transporter Name
           </label>
@@ -126,7 +147,7 @@
             </button>
           </mat-form-field>
         </div>
-        <div class="flex flex-col space-y-1 w-[14.375rem]">
+        <div class="flex flex-col space-y-1 w-full">
           <label class="text-body text-web-text-secondary px-2">Trip ID</label>
           <mat-form-field
             (mouseenter)="updateOverLayStyle(false)"
@@ -274,6 +295,7 @@
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
         <th class="text-left whitespace-nowrap">Payment Type</th>
+        <th class="text-left whitespace-nowrap">Trip Type</th>
         <th class="text-left">Status</th>
         <!--        <th class="text-left" *ngIf="!isAdmin()">Trip Fare</th>-->
         <th class="text-left" *ngIf="isAdmin()">CR(৳)</th>
@@ -282,7 +304,7 @@
         <th class="text-left" *ngIf="isAdmin()">Profit Margin</th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="isAdmin() ? 12 : 8"></th>
+        <th class="custom-border" [colSpan]="isAdmin() ? 13 : 9"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -327,16 +349,17 @@
             </p>
           </td>
           <td class="whitespace-nowrap">{{ getNameFromEnum(trip.paymentType) }}</td>
+          <td class="whitespace-nowrap">{{ getTripNameFromEnum(trip.tripType) }}</td>
           <td>{{ trip.status }}</td>
           <td *ngIf="isAdmin()">
             {{
-              (trip.customerRate ? trip.customerRate : 0) | number
+              (trip.customerRate !== null ? (trip.customerRate | number) : 'N/A')
             }}
           </td>
           <td *ngIf="isAdmin()">
             {{
-              (trip.transporterRate ? trip.transporterRate : 0)
-                | number
+              (trip.transporterRate !== null ? (trip.transporterRate|number) : 'N/A')
+
             }}
           </td>
           <td *ngIf="isAdmin()">

@@ -2,11 +2,18 @@
   <h1 class="text-h3 leading-h3 font-semibold text-not-black px-6 py-4">
     Truck
   </h1>
-  <button
-    class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
-    (click)="closeDialog()">
-    <i class="fal fa-times"></i>
-  </button>
+  <div class="flex space-x-4">
+    <button
+      class="text-bold  px-2 py-1 my-2 border-primary border rounded-full hover:bg-input flex items-center justify-center"
+      routerLink="/profile/truck/add" (click)="informParent()" >
+      Add Truck
+    </button>
+    <button
+      class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
+      (click)="closeDialog()">
+      <i class="fal fa-times"></i>
+    </button>
+  </div>
 </div>
 <div class="sticky top-9 px-6 py-4">
   <div class="relative">
@@ -34,6 +41,11 @@
   class="w-full h-full flex flex-col justify-center items-center">
   <i class="fas fa-spinner fa-spin text-primary text-4xl"></i>
   <span class="text-center w-full text-secondary">Loading...</span>
+</div>
+
+<div *ngIf="!loading && truckList?.length === 0" class="w-full h-full flex flex-col justify-center items-center">
+  <img src="assets/svg/no-data.svg" class="notPreview" alt="noData"/>
+  <span class="text-center w-full text-secondary">No data found</span>
 </div>
 
 <div

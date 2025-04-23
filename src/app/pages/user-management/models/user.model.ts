@@ -31,14 +31,18 @@ export class UserModel {
     nidFront: string;
     other: string;
   };
-  paymentMethod: {
+  defaultPaymentMethod: {
+    id: number;
     userId: string;
-    bankName: string;
+    paymentMethod: string;
+    name: string;
     bankAccNo: string;
     branchName: string;
     accHolderName: string;
-    paymentMethod: string;
-  };
+    accType: string;
+    createdBy: string;
+    updatedBy: string | null;
+  }
   documentsList: TruckDocument[];
   createdByUser: CreatedByUser;
   PaymentMethod: string;
@@ -53,5 +57,15 @@ export class UserModel {
   rejectedReason: string;
   grossProfit: number;
   numberOfTrips: number;
+  rank: Rank;
+  createdAt: string;
+  contactPersonNumber: string;
+  code: any;
+}
+
+export interface Rank {
+  transporterCode: string;
   rank: number;
+  grossProfit: number;
+  numberOfTrips: number;
 }

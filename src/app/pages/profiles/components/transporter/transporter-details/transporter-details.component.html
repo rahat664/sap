@@ -1,0 +1,361 @@
+<div class="mx-3 ">
+  <div class="pt-3 bg-app-bg sticky top-[4rem] z-50">
+    <div class="bg-white flex items-center justify-between p-4 rounded-lg ">
+      <h1 class="text-h1 leading-h1 font-semibold">
+        {{ isInEditMode ? 'Edit Transporter' : 'Transporter Details' }}
+      </h1>
+      <div class="flex space-x-4 items-center">
+        <button
+          *ngIf="isInEditMode"
+          (click)="onClickUpdate()"
+          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
+          <span>Update</span>
+        </button>
+        <button
+          *ngIf="isInEditMode"
+          (click)="onClickCancel()"
+          class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
+          <span>Cancel</span>
+        </button>
+<!--        <button-->
+<!--          *ngIf="-->
+<!--            !isInEditMode-->
+<!--          "-->
+<!--          (click)="onClickApprove(transporter)"-->
+<!--          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">-->
+<!--          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>-->
+<!--          <span>Approve</span>-->
+<!--        </button>-->
+<!--        <button-->
+<!--          *ngIf="!isInEditMode"-->
+<!--          (click)="onClickReject(transporter)"-->
+<!--          class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">-->
+<!--          <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>-->
+<!--          <span>Reject</span>-->
+<!--        </button>-->
+        <button
+          (click)="onClickEdit()"
+          *ngIf="!isInEditMode"
+          class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
+          <i class="far fa-pen text-primary"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <form [formGroup]="transporterUpdateForm" class="grid mt-3 grid-cols-2 gap-3 text-body_title text-web-text-secondary">
+    <div class="flex flex-col space-y-3">
+      <div class="bg-white rounded-lg p-4">
+        <div class="flex space-x-3 items-center mb-4">
+          <img class="notPreview" src="assets/svg/transporter-info.svg" alt="transporter-info" />
+          <h1 class="text-h2 leading-h2 font-semibold text-not-black">Transporter info</h1>
+        </div>
+        <div class="w-full grid grid-cols-2 gap-3">
+          <ng-container *ngIf="!isInEditMode">
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-secondary font-normal">Name</span>
+              <span
+                class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.name }}</span>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-secondary font-normal">Mobile no.</span>
+              <span
+                class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.contactPersonNumber }}</span>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-secondary font-normal">Truck stand</span>
+              <span
+                class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.truckStand }}</span>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <span class="text-body text-secondary font-normal">Preferred payment</span>
+              <span
+                class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod }}</span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="isInEditMode">
+            <div class="flex flex-col space-y-1">
+              <label for="name">Transporter name</label>
+              <mat-form-field
+                appearance="outline"
+                class="example-full-width"
+                [ngClass]="{
+            error:
+              transporterUpdateForm.get('name').invalid &&
+              transporterUpdateForm.get('name').touched,
+          }">
+                <input
+                  id="name"
+                  [minLength]="2"
+                  [maxLength]="50"
+                  type="text"
+                  matInput
+                  formControlName="name"
+                  placeholder="Enter Transporter Name" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="contactPersonName">Contact person name</label>
+              <mat-form-field
+                appearance="outline"
+                class="example-full-width"
+                [ngClass]="{
+            error:
+              transporterUpdateForm.get('contactPersonName').invalid &&
+              transporterUpdateForm.get('contactPersonName').touched,
+          }">
+                <input
+                  id="contactPersonName"
+                  [minLength]="2"
+                  [maxLength]="50"
+                  type="text"
+                  matInput
+                  formControlName="contactPersonName"
+                  placeholder="Enter Contact Person Name" />
+              </mat-form-field>
+            </div>
+            <div class="flex flex-col ">
+              <ngx-material-intl-tel-input
+                [includeDialCode]="false"
+                class="customize"
+                id="phoneNumber"
+                [textLabels]="textLabels"
+                [autoSelectedCountry]="CountryISO.Bangladesh"
+                [preferredCountries]="[CountryISO.Bangladesh]"
+                [fieldControl]="phoneNumber"
+                [numberValidation]="true"
+                [hidePhoneIcon]="true"
+                [required]="true"
+                [autoIpLookup]="false"
+                [ngClass]="{
+            customError:
+              transporterUpdateForm.get('phone').invalid &&
+              transporterUpdateForm.get('phone').touched,
+          }"></ngx-material-intl-tel-input>
+              <!--        error-message-->
+              <div>
+          <span
+            *ngIf="
+              transporterUpdateForm.get('phone').touched &&
+              transporterUpdateForm.get('phone').invalid
+            "
+            class="text-red text-xs">
+            <span>Phone number is required</span>
+          </span>
+              </div>
+            </div>
+            <div class="flex flex-col space-y-1">
+              <label for="truckStand">Truck Stand</label>
+              <mat-form-field
+                appearance="outline"
+                class="example-full-width"
+                [ngClass]="{
+            error:
+              transporterUpdateForm.get('truckStand').invalid &&
+              transporterUpdateForm.get('truckStand').touched,
+          }">
+                <input
+                  id="truckStand"
+                  type="text"
+                  matInput
+                  formControlName="truckStand"
+                  placeholder="Enter Truck Stand" />
+              </mat-form-field>
+              <div
+                *ngIf="
+            transporterUpdateForm.get('truckStand').touched &&
+            transporterUpdateForm.get('truckStand').invalid
+          "
+                class="text-red text-xs">
+                <span>Truck stand is required</span>
+              </div>
+              <!--        error-message-->
+            </div>
+
+            <div class="flex flex-col space-y-1 w-full col-span-2">
+              <label for="note">Note (Optional)</label>
+              <textarea
+                placeholder="Enter Note"
+                class="bg-input rounded-lg p-4 border border-disabled"
+                id="note"
+                formControlName="note"></textarea>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <app-profile-documents documentName="Transporter’s documents" (uploadButtonTriggered)="onUploadButtonTriggered($event)" [isInEditMode]="isInEditMode" [transporterId]="transporter?.code" [documentTypes]="transporterFileType" [documents]="transporterDocuments" ></app-profile-documents>
+    </div>
+    <div class="p-4 bg-white rounded-lg" *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Cash'|| isInEditMode ">
+      <div class="flex space-x-3 items-center mb-4">
+        <img class="notPreview" src="assets/svg/payment-info.svg" alt="payment-info" />
+        <h1 class="text-h2 leading-h2 font-semibold text-not-black">Payment info</h1>
+      </div>
+      <div class="border border-x-disabled rounded-lg overflow-hidden" *ngIf="!isInEditMode">
+        <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+          <div class="flex space-x-3 items-center">
+            <img
+              src="assets/svg/{{transporter?.defaultPaymentMethod?.paymentMethod === 'Bank' ? 'bank' : 'mobile'}}.svg"
+              class="notPreview" alt="payment" />
+            <h1
+              class="text-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod }}</h1>
+          </div>
+          <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
+            <i class="fal fa-angle-down text-xl"></i>
+          </button>
+        </div>
+        <div class="py-3 px-12 grid grid-cols-2 gap-4 bg-[#FDFFFF]">
+          <div class="flex flex-col space-y-1 col-span-2">
+        <span
+          class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.name }}</span>
+            <span class="text-body text-secondary font-normal"
+                  *ngIf="transporter?.defaultPaymentMethod?.paymentMethod === 'Bank'">{{ transporter?.defaultPaymentMethod?.branchName }}
+              branch</span>
+            <span class="text-body text-secondary font-normal"
+                  *ngIf="transporter?.defaultPaymentMethod?.paymentMethod !== 'Bank'">MFS service</span>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <span class="text-body text-secondary font-normal">Account number</span>
+            <span
+              class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.bankAccNo }}</span>
+          </div>
+          <div class="flex flex-col space-y-1">
+        <span
+          class="text-body text-secondary font-normal">{{ transporter?.defaultPaymentMethod?.paymentMethod === 'Bank' ? 'Account name' : 'Account type' }}</span>
+            <span
+              class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod === 'Bank' ? transporter?.defaultPaymentMethod?.accHolderName : transporter?.defaultPaymentMethod.accType }}</span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isInEditMode" class="flex flex-col space-y-4">
+        <div class="border border-x-disabled rounded-lg overflow-hidden">
+          <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/bank.svg" class="notPreview" alt="bank" />
+              <h1
+                class="text-body_title font-semibold text-not-black">Bank</h1>
+            </div>
+            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
+              <i class="fal fa-angle-down text-xl"></i>
+            </button>
+          </div>
+          <div class="{{preferredPaymentMethod === 'Bank' ? 'py-3' : 'py-1'}} px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
+            <ng-container *ngIf="preferredPaymentMethod === 'Bank'">
+              <div class="flex flex-col space-y-1 col-span-2">
+                <label for="bankName">Bank Name</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                  <input
+                    id="bankName"
+                    type="text"
+                    matInput
+                    formControlName="bankName"
+                    placeholder="Enter Bank Name" />
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label for="bankBranch">Branch</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                  <input
+                    id="bankBranch"
+                    type="text"
+                    matInput
+                    formControlName="bankBranch"
+                    placeholder="Enter Branch" />
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label for="bankAccountName">Account Name</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                  <input
+                    id="bankAccountName"
+                    type="text"
+                    matInput
+                    formControlName="bankAccountName"
+                    placeholder="Enter Account Name" />
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1 col-span-2">
+                <label for="bankAccountNumber">Account Number</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                  <input
+                    id="bankAccountNumber"
+                    type="text"
+                    matInput
+                    formControlName="bankAccountNumber"
+                    placeholder="Enter Account Number" />
+                </mat-form-field>
+              </div>
+            </ng-container>
+            <mat-radio-button  [checked]="preferredPaymentMethod === 'Bank'"  (change)="setPreferredPaymentMethod($any($event), 'Bank')">
+              Set as preferred
+            </mat-radio-button>
+          </div>
+        </div>
+        <div class="border border-x-disabled rounded-lg overflow-hidden">
+          <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/mobile.svg" class="notPreview" alt="MFS" />
+              <h1
+                class="text-body_title font-semibold text-not-black">MFS</h1>
+            </div>
+            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
+              <i class="fal fa-angle-down text-xl"></i>
+            </button>
+          </div>
+          <div class="{{preferredPaymentMethod === 'MFS' ? 'py-3' : 'py-1'}} px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
+            <ng-container *ngIf="preferredPaymentMethod === 'MFS'">
+              <div class="flex flex-col space-y-1">
+                <label for="mfservice">MFS Service</label>
+                <app-custom-input
+                  id="mfservice"
+                  [isFilterMenu]="false"
+                  [inputSearch]="mfsTypePlaceholder"
+                  [options]="mfsService"
+                  inputPlaceholder="Select MFS Service"
+                  appGetClickEvent
+                  (selectedId)="onSelectMFSType($event)"></app-custom-input>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label for="bankBranch">MFS Type</label>
+                <app-custom-input
+                  id="accountType"
+                  [isFilterMenu]="false"
+                  [inputSearch]="bkashPaymentTypePlaceholder"
+                  [options]="bkashPaymentMethod"
+                  inputPlaceholder="Select Account Type"
+                  appGetClickEvent
+                  (selectedId)="onSelectBkashType($event)"></app-custom-input>
+              </div>
+              <div class="flex flex-col space-y-1 col-span-2">
+                <label for="mfsNumber">Account Number</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                  <input
+                    id="mfsNumber"
+                    type="text"
+                    matInput
+                    formControlName="mfsNumber"
+                    placeholder="Enter Account Number" />
+                </mat-form-field>
+              </div>
+            </ng-container>
+            <mat-radio-button [checked]="preferredPaymentMethod === 'MFS'"  (change)="setPreferredPaymentMethod($any($event), 'MFS')">
+              Set as preferred
+            </mat-radio-button>
+          </div>
+        </div>
+        <div class="border border-x-disabled rounded-lg overflow-hidden">
+          <div class="flex justify-between px-3 py-2.5 items-center bg-input">
+            <div class="flex space-x-3 items-center">
+              <img src="assets/svg/cash.svg" class="notPreview" alt="Cash" />
+              <h1
+                class="text-body_title font-semibold text-not-black">Cash</h1>
+            </div>
+          </div>
+          <mat-radio-button [checked]="preferredPaymentMethod === 'Cash'" class="px-2" (change)="setPreferredPaymentMethod($any($event), 'Cash')">
+            Set as preferred
+          </mat-radio-button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+

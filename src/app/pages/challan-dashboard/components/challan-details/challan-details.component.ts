@@ -14,6 +14,7 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
+import { PaymentType, TripType } from '../../../../shared/Enums/payment-type';
 
 @Component({
   selector: 'app-challan-details',
@@ -60,7 +61,7 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
   ngOnInit() {
     const isFromBack = !!localStorage.getItem('isBack');
     if (!isFromBack) {
-      // if store the data in local storage remove it
+      // if store the data in local storage, remove it
       sessionStorage.removeItem('singleTrip');
       sessionStorage.removeItem('loadingEvents');
       sessionStorage.removeItem('unloadingEvents');
@@ -136,15 +137,58 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
     }
   }
 
-  getDueDays(singleTrip: Trip) {
-    const tripCompletedDate = new Date(singleTrip?.tripEndedAt);
-    if (singleTrip?.challanStatusUpdatedAt) {
-      const challanStatusUpdatedDate = new Date(
-        singleTrip?.challanStatusUpdatedAt
+  getDueDays(trip: Trip) {
+    const tripCompletedDate = new Date(trip.tripEndedAt);
+
+    if (trip.challanStatus === 'Pending') {
+      const currentDate = new Date();
+      // set tripCompletedDate to 12:00:00 AM and currentDate to 12:00:00 AM
+      tripCompletedDate.setHours(0, 0, 0, 0);
+      currentDate.setHours(0, 0, 0, 0);
+      const diffTime = Math.abs(
+        currentDate.getTime() - tripCompletedDate.getTime()
       );
+      return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    } else {
+      if (trip.firstChallanUploadedDate || trip.challanStatusUpdatedAt) {
+        // set tripCompletedDate to 12:00:00 AM
+        tripCompletedDate.setHours(0, 0, 0, 0);
+        if (trip.firstChallanUploadedDate) {
+          const firstChallanUploadedDate = new Date(
+            trip.firstChallanUploadedDate
+          );
+          // set firstChallanUploadedDate to 12:00:00 AM
+          firstChallanUploadedDate.setHours(0, 0, 0, 0);
+          const diffTime = Math.abs(
+            firstChallanUploadedDate.getTime() - tripCompletedDate.getTime()
+          );
+          return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        } else {
+          const challanStatusUpdatedDate = new Date(
+            trip.challanStatusUpdatedAt
+          );
+          // set challanStatusUpdatedDate to 12:00:00 AM
+          challanStatusUpdatedDate.setHours(0, 0, 0, 0);
+          const diffTime = Math.abs(
+            challanStatusUpdatedDate.getTime() - tripCompletedDate.getTime()
+          );
+          return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        }
+      } else {
+        // set tripCompletedDate to 12:00:00 AM and currentDate to 12:00:00 AM
+        const currentDate = new Date();
+        const diffTime = Math.abs(
+          currentDate.getTime() - tripCompletedDate.getTime()
+        );
+        return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      }
+    }
+
+    if (trip.challanStatusUpdatedAt) {
+      const challanStatusUpdatedDate = new Date(trip.challanStatusUpdatedAt);
       return this.datePipe.transform(
         challanStatusUpdatedDate,
-        'dd MMM yyyy, h:mm a'
+        'dd MMM,yyyy h:mm a'
       );
     } else {
       // return due days from trip end date
@@ -440,4 +484,29 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
         return 'Receiving Time';
     }
   }
+
+  getNameFromEnum(paymentType: string) {
+    if (paymentType === PaymentType.CASH) {
+      return 'Cash';
+    } else if (paymentType === PaymentType.INVOICE) {
+      return 'Invoice';
+    }else if (paymentType === PaymentType.CASH_AND_INVOICE) {
+      return 'Cash & Invoice';
+    } else if (paymentType === PaymentType.COMMISSION) {
+      return 'Commission';
+    }
+    else {
+      return 'N/A';
+    }
+  }
+  getTripTypeFromEnum(tripType: string) {
+    if (tripType === TripType.COMMERCIAL) {
+      return 'Commercial Logistics';
+    } else if (tripType === TripType.PROJECT) {
+      return 'Project Logistics';
+    } else {
+      return 'N/A';
+    }
+  }
+
 }

@@ -8,4 +8,5 @@ export class CustomerCreateModel {
   customerCode: string;
   sendEmail: boolean;
   note: string;
+  tripType: string;
 }

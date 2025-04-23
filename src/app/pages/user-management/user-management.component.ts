@@ -70,7 +70,7 @@ export class UserManagementComponent implements OnInit {
   loading = false;
   elementHeight: any;
   page = 0;
-  totalPages: number;
+  totalPages: number = 0;
   statusValue = 'Active';
   searchValue = '';
   departmentFilter = '';
@@ -218,6 +218,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   onBottom(isBottom: boolean): void {
+    console.log(isBottom)
     if (isBottom && this.page < this.totalPages - 1) {
       this.page++;
       this.scrolledData();
@@ -252,14 +253,23 @@ export class UserManagementComponent implements OnInit {
   }
 
   private scrolledData(): void {
-    this.getUserList();
+    // update the data when the user scrolls to the bottom of the page
+    this.service.getUsers({
+      page: this.page,
+      size: this.size,
+      status: this.statusValue || null,
+      search: this.searchValue || null,
+      department: this.departmentFilter || null,
+    }).subscribe((res: any) => {
+      this.Users = [...this.Users, ...res.data.responses];
+    })
   }
 
   onClickClear(): void {
     this.searchValue = '';
     this.Users = [];
     this.getUserList();
-  }
+  }cus
 
   private updateSelectedOptions(
     array: CustomInputSelectModel[],

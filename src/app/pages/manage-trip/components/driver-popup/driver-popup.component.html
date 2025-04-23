@@ -2,11 +2,18 @@
   <h1 class="text-h3 leading-h3 font-semibold text-not-black px-6 py-4">
     Driver
   </h1>
+  <div class="flex space-x-4">
+    <button
+      class="text-bold  px-2 py-1 my-2 border-primary border rounded-full hover:bg-input flex items-center justify-center"
+      routerLink="/profile/driver/add" (click)="informParent()" >
+      Add Driver
+    </button>
   <button
     class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
     (click)="closeDialog()">
     <i class="fal fa-times"></i>
   </button>
+  </div>
 </div>
 <div class="sticky top-9 px-6 py-4">
   <div class="relative">

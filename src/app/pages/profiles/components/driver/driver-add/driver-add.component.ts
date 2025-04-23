@@ -1,4 +1,4 @@
- import {
+import {
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -564,6 +564,7 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
       },
     });
   }
+
   updateOverLayStyle(isSpecial: boolean) {
     const className = 'custom-overlay-bounding-box';
     if (isSpecial) {

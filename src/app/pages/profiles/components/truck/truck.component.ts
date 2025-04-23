@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
@@ -9,10 +8,8 @@ import {
   NgClass,
   NgForOf,
   NgIf,
-  NgOptimizedImage,
 } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TransporterAddComponent } from '../transporter/transporter-add/transporter-add.component';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TruckService } from './services/truck.service';
 import { Router, RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
@@ -20,10 +17,7 @@ import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/
 import { FileUploadPopupComponent } from './file-upload-popup/file-upload-popup.component';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
-import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { debounceTime } from 'rxjs';
-import { CheckListPopupComponent } from '../../../../shared/modal/check-list-popup/check-list-popup.component';
-import { PreHireChecklistComponent } from './pre-hire-checklist/pre-hire-checklist.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TruckDocument, TruckModel } from './models/truck.model';
 import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
@@ -33,6 +27,7 @@ import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-appr
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatButton } from '@angular/material/button';
 import { PreHireChecklistPopupComponent } from './pre-hire-checklist-popup/pre-hire-checklist-popup.component';
+import { DateEnum } from '../../../trip-list/Enum/date.enum';
 
 @Component({
   selector: 'app-truck',
@@ -76,26 +71,54 @@ export class TruckComponent implements OnInit {
   firstColumnHeight: any;
   filterOpened = true;
   statusInputPlaceholder: string;
+  filterForm: FormGroup
   statusOptionsArray: CustomInputSelectModel[] = [
     { id: 0, value: 'All', selected: false },
     { id: 1, value: 'Approved', selected: false },
     { id: 2, value: 'Pending', selected: false },
     { id: 3, value: 'Rejected', selected: false },
   ];
+  private isDateOpened: boolean;
+  dateOpened: boolean;
+  private from: any;
+  private to: any;
+  dateFilter: number = 0;
+  inputPlaceholder: any;
+   dateOptionArray: CustomInputSelectModel[];
 
   constructor(
     private service: TruckService,
     private toastr: HandleToastrService,
     private shared: DriverEditSharedService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private datePipe: DatePipe
+  ) {
+    this.filterForm = this.formBuilder.group({
+      search: [''],
+      startDate: [''],
+      endDate: [''],
+    });
+  }
 
   ngOnInit(): void {
+    this.generateDateOptionsArray()
     this.truckList = [];
     this.getTruckList();
     this.makeSureUploadCompletedOrNot();
     this.onSelectStatus(0);
   }
+
+  private generateDateOptionsArray() {
+    this.dateOptionArray = [
+      { id: DateEnum.Today, value: 'Today', selected: false },
+      { id: DateEnum.LastSevenDays, value: 'Last 7 days', selected: false },
+      { id: DateEnum.LastFifteenDays, value: 'Last 15 days', selected: false },
+      { id: DateEnum.LastThirtyDays, value: 'Last 30 days', selected: false },
+      { id: DateEnum.Custom, value: 'Custom', selected: false },
+    ];
+  }
+
 
   private getTruckList() {
     this.page = 0;
@@ -103,7 +126,7 @@ export class TruckComponent implements OnInit {
     if (this.searchValue) {
       //subscribe with debounced time
       this.service
-        .getTruckList(this.page, this.size, this.searchValue)
+        .getTruckList(this.page, this.size, this.searchValue, this.statusInputPlaceholder == 'All' ? '' : this.statusInputPlaceholder, null, null, null, this.from, this.to)
         .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.truckList = res.data.responses;
@@ -111,7 +134,8 @@ export class TruckComponent implements OnInit {
           this.loading = false;
         });
     } else {
-      this.service.getTruckList(this.page, this.size).subscribe((res: any) => {
+      this.service.getTruckList(this.page, this.size, null, this.statusInputPlaceholder == 'All' ? '' : this.statusInputPlaceholder, null, null, null, this.from, this.to)
+        .subscribe((res: any) => {
         this.truckList = res.data.responses;
         this.totalPages = res.data.totalPages;
         this.loading = false;
@@ -191,7 +215,12 @@ export class TruckComponent implements OnInit {
             this.searchValue,
             this.statusInputPlaceholder == 'All'
               ? ''
-              : this.statusInputPlaceholder
+              : this.statusInputPlaceholder,
+            null,
+            null,
+            null,
+            this.from,
+            this.to
           )
           .pipe(debounceTime(1000))
           .subscribe((res: any) => {
@@ -205,7 +234,12 @@ export class TruckComponent implements OnInit {
             null,
             this.statusInputPlaceholder == 'All'
               ? ''
-              : this.statusInputPlaceholder
+              : this.statusInputPlaceholder,
+            null,
+            null,
+            null,
+            this.from,
+            this.to
           )
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
@@ -392,7 +426,13 @@ export class TruckComponent implements OnInit {
     this.statusOptionsArray.forEach(option => {
       option.selected = false;
     });
-    this.statusInputPlaceholder = '';
+    this.dateFilter = 0;
+    this.from = '';
+    this.to = '';
+    this.filterForm.get('startDate')?.setValue('');
+    this.filterForm.get('endDate')?.setValue('');
+    this.inputPlaceholder = ''
+    this.statusInputPlaceholder = 'All';
     this.page = 0;
     this.size = 30;
     this.getTruckList();
@@ -452,4 +492,63 @@ export class TruckComponent implements OnInit {
     );
   }
   protected readonly localStorage = localStorage;
+
+  onSelectedToDate($event: string) {
+    this.filterForm.get('endDate')?.setValue($event);
+    this.from = this.filterForm.get('startDate')?.value || '';
+    this.to = this.filterForm.get('endDate')?.value || '';
+    this.dateOpened = false;
+    this.isDateOpened = false;
+    this.page = 0;
+    this.size = 30;
+    this.getTruckList();
+  }
+
+  onSelectedFromDate($event: string) {
+    this.filterForm.get('startDate')?.setValue($event);
+  }
+
+  onSelectDate($event: number) {
+    this.dateFilter = 1;
+    if ($event === DateEnum.Custom) {
+      this.shared.closeInputSelect.next(true);
+    } else {
+      this.shared.closeInputSelect.next(false);
+      this.inputPlaceholder =
+        this.dateOptionArray.find(x => x.id === $event)?.value || '';
+      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
+      this.setDateRange($event);
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getTruckList();
+    }
+  }
+
+  private setDateRange(dateEnum: DateEnum) {
+    const fromDate = new Date();
+    // to date should be yesterday
+    const toDate = new Date();
+    switch (dateEnum) {
+      case DateEnum.Today:
+        fromDate.setDate(fromDate.getDate());
+        toDate.setDate(toDate.getDate());
+        break;
+      case DateEnum.LastSevenDays:
+        // shouldn't be count today
+        fromDate.setDate(fromDate.getDate() - 7);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastFifteenDays:
+        fromDate.setDate(fromDate.getDate() - 15);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+      case DateEnum.LastThirtyDays:
+        fromDate.setDate(fromDate.getDate() - 30);
+        toDate.setDate(toDate.getDate() - 1);
+        break;
+    }
+    this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
+    this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+  }
 }

@@ -24,6 +24,7 @@ import { DriverEditSharedService } from '../../profiles/services/driver-edit-sha
 import { CustomerService } from '../../profiles/services/customer.service';
 import { UserCustomerAdminCreateComponent } from '../user-customer-admin-create/user-customer-admin-create.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmUpdateComponent } from '../../manage-trip/components/confirm-update/confirm-update.component';
 
 @Component({
   selector: 'app-user-management-customer-admin',
@@ -222,25 +223,22 @@ export class UserManagementCustomerAdminComponent implements OnInit {
     this.selectedId = id;
   }
 
-  changeStatus(id: number, name: string, status: string) {
-    this.userName = null;
-    this.id = null;
-    this.status = '';
-    this.buttonText = '';
-    this.userName = name;
-    this.id = id;
-    this.status = status;
-    this.buttonText = status;
-    this.actionOpened = false;
-    if (status == 'Inactive') {
-      this.confirmOpened = true;
-    }
-    if (status == 'Active') {
-      this.confirmOpened = true;
-    }
-    if (status == 'Removed') {
-      this.confirmOpened = true;
-    }
+  changeStatus(id: number, name: string, status: string): void {
+    this.dialog
+      .open(ConfirmUpdateComponent, {
+        width: '21.375rem',
+        data: {
+          title: 'Change Status',
+          text: `Are you sure you want to ${status} ${name}?`,
+          buttonText: status,
+        },
+      })
+      .afterClosed()
+      .subscribe(result => {
+        if (result === 'updated') {
+          this.performChangeStatus(id, status);
+        }
+      });
   }
 
   onCreateUser($event: boolean) {
@@ -271,8 +269,8 @@ export class UserManagementCustomerAdminComponent implements OnInit {
     }
   }
 
-  performChangeStatus() {
-    this.service.changeStatus(this.id, this.status).subscribe({
+  performChangeStatus(id: number, status: string) {
+    this.service.changeStatus(id, status).subscribe({
       next: (response: any) => {
         this.loading = false;
         this.toastr.showSuccess(response);
@@ -291,7 +289,7 @@ export class UserManagementCustomerAdminComponent implements OnInit {
         this.getUserList();
       },
       error: err => {
-        this.toastr.showError(err);
+        this.toastr.showError(err.message);
       },
     });
   }

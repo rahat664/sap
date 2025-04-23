@@ -40,6 +40,12 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import {
+  paymentType,
+  paymentTypes,
+  tripType,
+  tripTypes,
+} from '../../../auth/models/response/trip';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -65,8 +71,6 @@ import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
     MatTooltip,
     FallbackImagePipe,
     ImageErrorDirective,
-    MatRadioGroup,
-    MatRadioButton,
   ],
   providers: [
     provideNativeDateAdapter(),
@@ -124,6 +128,7 @@ export class CreateTripPageComponent implements OnInit {
       this.tripDataModel.goodsName = this.tripForm.get('goodsName').value;
       this.tripDataModel.customerRate = this.tripForm.get('customerRate').value;
       this.tripDataModel.paymentType = this.tripForm.get('paymentType').value;
+      this.tripDataModel.tripType = this.tripForm.get('tripType').value;
       this.tripDataModel.note = this.tripForm.get('note').value;
       this.tripDataModel.points = [
         ...this.tripForm.get('loadingPoints').value,
@@ -254,6 +259,14 @@ export class CreateTripPageComponent implements OnInit {
     this.isFromTemplate = isFromTemplate;
     if (isFromTemplate) {
       this.setTheValuesFromTemplate();
+    } else {
+      this.tripForm.get('tripType').setValue(
+        JSON.parse(
+          localStorage.getItem('selectedCustomer')
+        ).tripType);
+      this.tripTypes.forEach(element => {
+        element.active = element.enumName === this.tripForm.get('tripType').value;
+      })
     }
     if (isFromBackEdit) {
       this.setBackEditValues();
@@ -367,6 +380,7 @@ export class CreateTripPageComponent implements OnInit {
       truckCapacityInTon: ['', Validators.required],
       goodsId: [''],
       paymentType: ['INVOICE', Validators.required],
+      tripType: ['', Validators.required],
       goodsName: ['', Validators.required],
       customerRate: [null],
       note: [''],
@@ -638,6 +652,13 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm.get('customerRate').setValue(template.customerRate);
     this.tripForm.get('note').setValue(template.note);
     this.tripForm.get('paymentType').setValue(template.paymentType);
+    this.paymentType.forEach(element => {
+      element.active = element.enumName === template.paymentType;
+    })
+    this.tripForm.get('tripType').setValue(template.tripType);
+    this.tripTypes.forEach(element => {
+      element.active = element.enumName === template.tripType;
+    })
     const templateLoadingPoints = template.points.filter(
       point => point.pointType === 'Loading'
     );
@@ -750,6 +771,13 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm.get('numOfTrucks').setValue(tripData.numOfTrucks);
     this.tripForm.get('truckSize').setValue(tripData.truckSize);
     this.tripForm.get('paymentType').setValue(tripData.paymentType);
+    this.tripForm.get('tripType').setValue(tripData.paymentType);
+    this.paymentType.forEach((paymentType: any) => {
+      paymentType.active = paymentType.enumName === tripData.paymentType;
+    })
+    this.tripTypes.forEach((tripType: any) => {
+      tripType.active = tripType.enumName === tripData.tripType;
+    })
     this.tripForm
       .get('truckCapacityInTon')
       .setValue(tripData.truckCapacityInTon);
@@ -807,6 +835,8 @@ export class CreateTripPageComponent implements OnInit {
   }
 
   protected readonly Number = Number;
+  tripTypes: tripType[] = tripTypes;
+  paymentType: paymentType[] = paymentTypes;
 
   private createLoadingPoint() {
     return this.fb.group({
@@ -850,6 +880,61 @@ export class CreateTripPageComponent implements OnInit {
 
   removeUnloadingPoint(index: number) {
     this.unloadingPoints.removeAt(index);
+  }
+
+  onTripTypeClick(type: tripType) {
+    switch (type.id) {
+      case 1:
+        this.tripForm.get('tripType').setValue('COMMERCIAL');
+        this.tripTypes.forEach(element => {
+          element.active = element.id === 1;
+        })
+        break;
+      case 2:
+        this.tripForm.get('tripType').setValue('PROJECT');
+        this.tripTypes.forEach(element => {
+          element.active = element.id === 2;
+        })
+        break;
+      default:
+        this.tripForm.get('tripType').setValue('COMMERCIAL');
+        break;
+    }
+  }
+
+  onPaymentTypeClick(type: paymentType) {
+    switch (type.id) {
+      case 1:
+        this.tripForm.get('paymentType').setValue('CASH');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 1;
+        })
+        break;
+      case 2:
+        this.tripForm.get('paymentType').setValue('INVOICE');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 2;
+        })
+        break;
+      case 3:
+        this.tripForm.get('paymentType').setValue('CASH_AND_INVOICE');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 3;
+        })
+        break;
+      case 4:
+        this.tripForm.get('paymentType').setValue('COMMISSION');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 4;
+        })
+        break;
+      default:
+        this.tripForm.get('paymentType').setValue('INVOICE');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 2;
+        })
+        break;
+    }
   }
 
   updateOverLayStyle(isSpecial: boolean) {

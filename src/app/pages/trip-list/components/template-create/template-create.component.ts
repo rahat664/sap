@@ -39,6 +39,7 @@ import { TripTemplate } from '../../models/trip-template.model';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { paymentType, paymentTypes, tripType, tripTypes } from '../../../auth/models/response/trip';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -53,6 +54,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     );
   }
 }
+
 
 @Component({
   selector: 'app-template-create',
@@ -69,8 +71,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatError,
     FallbackImagePipe,
     ImageErrorDirective,
-    MatRadioButton,
-    MatRadioGroup,
   ],
   templateUrl: './template-create.component.html',
   styleUrl: './template-create.component.scss',
@@ -113,11 +113,18 @@ export class TemplateCreateComponent implements OnInit {
     this.selectedCustomer = JSON.parse(
       localStorage.getItem('selectedCustomer')
     );
+
     if (this.selectedCustomer) {
       this.customerName = this.selectedCustomer.name;
       this.templateForm
         .get('customerCode')
         .setValue(this.selectedCustomer.customerCode);
+      this.templateForm.get('tripType').setValue(
+        this.selectedCustomer.tripType
+      )
+      this.tripTypes.forEach((tripType) => {
+        tripType.active = tripType.enumName === this.selectedCustomer.tripType;
+      })
     }
   }
 
@@ -153,6 +160,7 @@ export class TemplateCreateComponent implements OnInit {
       this.tripTemplateData.goodsId = this.templateForm.get('goodsId').value;
       this.tripTemplateData.goodsName =
         this.templateForm.get('goodsName').value;
+      this.tripTemplateData.tripType = this.templateForm.get('tripType').value;
       this.tripTemplateData.customerRate =
         this.templateForm.get('customerRate').value;
       this.tripTemplateData.note = this.templateForm.get('note').value;
@@ -440,6 +448,7 @@ export class TemplateCreateComponent implements OnInit {
       customerRate: [null],
       note: [''],
       paymentType: ['INVOICE'],
+      tripType: [''],
       loadingPoints: this.fb.array([this.createLoadingPoint()]),
       unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
       tripTemplateName: [''],
@@ -566,6 +575,64 @@ export class TemplateCreateComponent implements OnInit {
   isAdmin() {
     const role = localStorage.getItem('role');
     return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
+
+  protected readonly tripTypes = tripTypes;
+  protected readonly paymentType = paymentTypes;
+
+  onTripTypeClick(type: tripType) {
+    switch (type.id) {
+      case 1:
+        this.templateForm.get('tripType').setValue('COMMERCIAL');
+        this.tripTypes.forEach(element => {
+          element.active = element.id === 1;
+        })
+        break;
+      case 2:
+        this.templateForm.get('tripType').setValue('PROJECT');
+        this.tripTypes.forEach(element => {
+          element.active = element.id === 2;
+        })
+        break;
+      default:
+        this.templateForm.get('tripType').setValue('COMMERCIAL');
+        break;
+    }
+  }
+
+  onPaymentTypeClick(type: paymentType) {
+    switch (type.id) {
+      case 1:
+        this.templateForm.get('paymentType').setValue('CASH');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 1;
+        })
+        break;
+      case 2:
+        this.templateForm.get('paymentType').setValue('INVOICE');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 2;
+        })
+        break;
+      case 3:
+        this.templateForm.get('paymentType').setValue('CASH_AND_INVOICE');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 3;
+        })
+        break;
+      case 4:
+        this.templateForm.get('paymentType').setValue('COMMISSION');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 4;
+        })
+        break;
+      default:
+        this.templateForm.get('paymentType').setValue('INVOICE');
+        this.paymentType.forEach(element => {
+          element.active = element.id === 2;
+        })
+        break;
+    }
   }
 
   updateOverLayStyle(isSpecial: boolean) {

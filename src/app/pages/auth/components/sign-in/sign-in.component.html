@@ -10,7 +10,7 @@
         alt="loginLogo"/>
     </div>
   </div>
-  <div class="h-screen w-[32rem]">
+  <div class="h-screen w-full lg:w-[32rem]">
     <div
       class="flex flex-col h-[calc(100vh-2.5rem)] w-full pb-12 justify-center px-12 items-start text-center md:text-left">
       <h1 *ngIf="!otpScreen" class="text-h1 leading-h1 font-semibold pb-10">
@@ -30,11 +30,11 @@
           </button>
         </div>
       </div>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-[23.5rem]">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full lg:w-[23.5rem]">
         <div
           *ngIf="usingEmail"
           class="mb-4 flex flex-col space-y-2 text-secondary w-full">
-          <label for="email" class="form-label">User Email</label>
+          <label for="email" class="form-label text-left">User Email</label>
           <mat-form-field appearance="outline" class="example-full-width">
             <input
               id="email"
@@ -47,13 +47,13 @@
           <div
             id="emailError"
             *ngIf="email?.invalid && email?.touched"
-            class="text-red text-xs">
+            class="text-red text-xs text-left">
             {{ getEmailError() }}
           </div>
         </div>
         <div
           *ngIf="!usingEmail && !otpScreen"
-          class="mb-4 flex flex-col space-y-2 text-secondary w-full">
+          class="mb-4 flex flex-col space-y-2 text-secondary text-left w-full">
           <ngx-material-intl-tel-input
             [includeDialCode]="false"
             #numberInput
@@ -125,7 +125,7 @@
         <div
           *ngIf="usingEmail"
           class="mb-6 flex flex-col space-y-2 text-secondary w-full">
-          <label for="password" class="form-label">Password</label>
+          <label for="password" class="form-label text-left">Password</label>
           <!--          password field with eye icon-->
           <div class="relative bg-input rounded-lg border-none">
             <mat-form-field
@@ -147,7 +147,7 @@
           <div
             id="passwordError"
             *ngIf="password?.invalid && password?.touched"
-            class="text-red text-xs">
+            class="text-red text-xs text-left">
             <span>{{ getPasswordError() }}</span>
           </div>
         </div>

@@ -56,6 +56,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
   datatype: string = 'daily';
   dateFilterApplied: boolean = false;
   paymentType: string = '';
+  tripType: string = '';
   private routerSubs: Subscription;
 
   constructor(
@@ -86,6 +87,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
     timer(100).subscribe(() => {
       this.routerSubs = this.activatedRoute.queryParams.subscribe(params => {
         this.paymentType = params['paymentType'] ? params['paymentType'] : '';
+        this.tripType = params['tripType'] ? params['tripType'] : '';
         this.customerCode = params['customerCode']
           ? params['customerCode']
           : '';
@@ -119,7 +121,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
 
   private getTransporterList() {
     this.user.getTransporter(0, 1000).subscribe((res: any) => {
-      this.transporterLists = res.data.responses;
+      this.transporterLists = res.data;
       // sort the transporter list by name
       this.transporterLists.sort((a, b) => {
         if (a.name < b.name) {
@@ -232,7 +234,8 @@ export class TransporterRateAnalysisComponent implements OnInit {
         this.loadingDistrict,
         this.unloadingDistrict,
         this.customerCode,
-        this.paymentType
+        this.paymentType,
+        this.tripType
       )
       .subscribe((res: any) => {
         this.parseSeriesDataAndColorsFromResponse(res.data);
@@ -446,7 +449,6 @@ export class TransporterRateAnalysisComponent implements OnInit {
         }
       }
     }
-    console.log('selected index', selectedIndex);
     return selectedIndex;
   }
 }

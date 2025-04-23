@@ -91,20 +91,28 @@
           <span>{{ getEmailErrorMessage() }}</span>
         </div>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-1 w-full">
         <label for="designation">Designation</label>
-        <input
-          appAlphabetOnly
-          placeholder="Enter Designation"
-          class="bg-input rounded-lg border-none p-4"
-          type="text"
-          id="designation"
-          formControlName="designation" />
+        <mat-form-field
+          appearance="outline"
+          class="example-full-width"
+          [ngClass]="{
+            error:
+              userForm.get('designation').invalid && userForm.get('designation').touched,
+          }">
+          <input
+            id="designation"
+            type="text"
+            matInput
+            formControlName="designation"
+            placeholder="Enter Designation"/>
+        </mat-form-field>
         <!--        error-message-->
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col space-y-1 w-full">
         <label for="email">Type</label>
         <app-custom-input
+          [isFilterMenu]="false"
           [inputSearch]="roleInputPlaceholder"
           [options]="roles"
           inputPlaceholder="Select Type"

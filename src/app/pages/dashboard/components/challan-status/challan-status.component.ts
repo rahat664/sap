@@ -22,6 +22,7 @@ export class ChallanStatusComponent implements OnInit {
   toDate: string;
   customerCode: any;
    paymentType: string = '';
+   tripType: string = '';
 
   constructor(
     private service: DashboardService,
@@ -33,6 +34,7 @@ export class ChallanStatusComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe((params) => {
       this.customerCode = params['customerCode'] ? params['customerCode'] : '';
       this.paymentType = params['paymentType'] ? params['paymentType'] : '';
+      this.tripType = params['tripType'] ? params['tripType'] : '';
       this.fromDate = params['fromDate'] ? params['fromDate'] : '';
       this.toDate = params['toDate'] ? params['toDate'] : '';
       if (!this.fromDate || !this.toDate) {
@@ -62,7 +64,7 @@ export class ChallanStatusComponent implements OnInit {
 
   private getChallanStatus() {
     this.service
-      .getChallanStatus(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType)
+      .getChallanStatus(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType, this.tripType)
       .subscribe((res: any) => {
         this.challanStatus = res.data;
       });

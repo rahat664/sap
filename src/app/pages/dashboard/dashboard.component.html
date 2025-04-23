@@ -36,8 +36,8 @@
       </button>
       <div
         *ngIf="filterOpened"
-        class="pt-3 pb-4 px-2 flex items-center space-x-4">
-        <div class="flex flex-col space-y-1 w-[20rem]">
+        class="pt-3 pb-4 px-2 flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0  lg:space-x-4">
+        <div class="flex flex-col space-y-1 w-full lg:w-[20rem]">
           <label class="text-body text-web-text-secondary px-2">Date</label>
           <app-custom-input
             class=""
@@ -52,7 +52,7 @@
             (dateEmited)="onDateEmited($event)"
             (selectedId)="onSelectDate($event)"></app-custom-input>
         </div>
-        <div class="flex flex-col space-y-1 w-[20rem]">
+        <div class="flex flex-col space-y-1 w-full lg:w-[20rem]">
           <label class="text-body text-web-text-secondary px-2">Payment Type</label>
           <app-custom-input
             appGetClickEvent
@@ -60,6 +60,15 @@
             [options]="paymentTypeOptionsArray"
             inputPlaceholder="Select Payment type"
             (selectedId)="onSelectPayment($event)"></app-custom-input>
+        </div>
+        <div class="flex flex-col space-y-1 w-full lg:w-[20rem]">
+          <label class="text-body text-web-text-secondary px-2">Trip Type</label>
+          <app-custom-input
+            appGetClickEvent
+            [inputSearch]="tripTypePlaceholder"
+            [options]="tripTypeOptionsArray"
+            inputPlaceholder="Select Trip type"
+            (selectedId)="onSelectTripType($event)"></app-custom-input>
         </div>
         <div class="flex flex-col space-y-1 w-full ">
           <label class="text-body text-web-text-secondary px-2"
@@ -115,24 +124,24 @@
       </div>
     </div>
   </div>
-  <div class="grid grid-cols-4 gap-3">
-    <div class="col-span-4 h-full rounded-lg">
+  <div class="grid lg:grid-cols-4 gap-3">
+    <div class="lg:col-span-4 h-full rounded-lg">
       <app-status-heighlight></app-status-heighlight>
     </div>
-    <div class="w-full col-span-2 h-full rounded-lg">
+    <div class="lg:w-full w-screen lg:col-span-2 h-full rounded-lg">
       <app-month-wise-revenue></app-month-wise-revenue>
     </div>
-    <div class="h-full col-span-2 bg-white rounded-lg">
+    <div class="h-full lg:w-full w-screen lg:col-span-2 bg-white rounded-lg">
       <app-challan-status></app-challan-status>
     </div>
-    <div class="h-full col-span-2  bg-white rounded-lg">
+    <div class="h-full lg:w-full w-screen lg:col-span-2  bg-white rounded-lg">
       <app-top-transporter></app-top-transporter>
     </div>
     <div
-      class="h-full w-full flex  items-start bg-white col-span-2 rounded-lg">
+      class="h-full lg:w-full w-screen flex  items-start bg-white lg:col-span-2 rounded-lg">
       <app-top-customer class="w-full"></app-top-customer>
     </div>
-    <div class="h-full col-span-4 bg-white rounded-lg">
+    <div class="h-full lg:w-full w-screen lg:col-span-4 bg-white rounded-lg">
       <app-transporter-rate-analysis></app-transporter-rate-analysis>
     </div>
   </div>

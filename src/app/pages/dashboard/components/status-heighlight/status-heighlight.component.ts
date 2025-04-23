@@ -29,7 +29,8 @@ export class StatusHeighlightComponent implements OnInit {
   driverStatistics: userStats;
   customerCode: any[];
   dateFilterAvailable: boolean;
-  paymentType: any;
+  paymentType: string = '';
+  tripType: string = '';
 
   constructor(
     private service: DashboardService,
@@ -44,6 +45,7 @@ export class StatusHeighlightComponent implements OnInit {
       this.fromDate = params['fromDate'] ? params['fromDate'] : '';
       this.toDate = params['toDate'] ? params['toDate'] : '';
       this.paymentType = params['paymentType'] ? params['paymentType'] : '';
+      this.tripType = params['tripType'] ? params['tripType'] : '';
       if (!this.fromDate || !this.toDate) {
         this.dateFilterAvailable = false;
         this.countFromDateAndToDate();
@@ -59,7 +61,7 @@ export class StatusHeighlightComponent implements OnInit {
 
   private getDashboardStats() {
     this.service
-      .getApiStats(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType)
+      .getApiStats(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType, this.tripType)
       .subscribe((res: any) => {
         if (res.status === 'OK') {
           this.dashboardStats = res.data;
@@ -73,7 +75,8 @@ export class StatusHeighlightComponent implements OnInit {
         this.fromDate,
         this.toDate,
         this.customerCode.toString(),
-        this.paymentType
+        this.paymentType,
+        this.tripType
       )
       .subscribe((res: any) => {
         if (res.status === 'OK') {
@@ -84,7 +87,7 @@ export class StatusHeighlightComponent implements OnInit {
             user => user.roleName === 'ROLE_DRIVER'
           );
           this.customerStatistics = res.data.totalUsers.find(
-            customer => customer.roleName === 'ROLE_CUSTOMER_ADMIN'
+            customer => customer.roleName === 'ROLE_CUSTOMER'
           );
         }
       });

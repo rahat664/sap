@@ -34,7 +34,7 @@
               >
             </span>
       </button>
-      <div *ngIf="filterOpened" class="pt-3 pb-4 px-2 grid grid-cols-6 gap-3">
+      <div *ngIf="filterOpened" class="pt-3 pb-4 px-2 grid grid-cols-7 gap-3">
         <div class="flex flex-col space-y-1 w-full">
           <label class="text-body text-web-text-secondary px-2">Date</label>
           <app-custom-input
@@ -56,6 +56,15 @@
             [options]="paymentTypeOptionsArray"
             inputPlaceholder="Select Payment type"
             (selectedId)="onSelectPayment($event)"></app-custom-input>
+        </div>
+        <div class="flex flex-col space-y-1 w-full">
+          <label class="text-body text-web-text-secondary px-2">Trip Type</label>
+          <app-custom-input
+            appGetClickEvent
+            [inputSearch]="tripTypePlaceholder"
+            [options]="tripTypeOptionsArray"
+            inputPlaceholder="Select Payment type"
+            (selectedId)="onSelectTrip($event)"></app-custom-input>
         </div>
         <div class="flex flex-col space-y-1 w-full">
           <label class="text-body text-web-text-secondary px-2"
@@ -377,7 +386,7 @@
     (inBottomEnd)="onBottom($event)"
     [anotherItemsHeight]="height"
     class="bg-white w-full relative rounded-lg overflow-auto">
-    <table
+    <table style=" border-collapse: separate;"
       class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
       <tr class="whitespace-nowrap bg-white text-not-black">
@@ -389,9 +398,11 @@
         <th class="text-left whitespace-nowrap">Loading Point</th>
         <th class="text-left whitespace-nowrap">Unloading Point</th>
         <th class="text-left whitespace-nowrap">Payment Type</th>
+        <th class="text-left whitespace-nowrap">Trip Type</th>
         <th class="text-center whitespace-nowrap">Hardcopy</th>
         <th class="text-center whitespace-nowrap">Softcopy</th>
         <th class="text-center whitespace-nowrap">Due Days</th>
+        <th class="text-center whitespace-nowrap">Received Date</th>
         <th
           class="text-center sticky  bg-white right-{{
                   chalanStatus !== 'Pending' && chalanStatus !== 'Approved'
@@ -401,18 +412,18 @@
           Status
         </th>
         <th
-          class="text-left w-[5rem] z-50 sticky right-0 bg-white"
+          class="text-left w-[5rem]  sticky right-0 bg-white"
           *ngIf="
                   chalanStatus !== 'Approved' && chalanStatus !== 'Pending'
                 "></th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="13"></th>
+        <th class="custom-border" [colSpan]="15"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
-        <tr *ngFor="let trip of tripList; index as i">
+        <tr *ngFor="let trip of tripList; index as i" >
           <td class="whitespace-nowrap bg-white sticky left-0">
             <a
               class="text-link cursor-pointer"
@@ -453,6 +464,7 @@
             </p>
           </td>
           <td class="whitespace-nowrap">{{ getNameFromEnum(trip.paymentType) }}</td>
+          <td class="whitespace-nowrap">{{ getTripNameFromEnum(trip.tripType) }}</td>
           <td class="whitespace-nowrap text-center">
                   <span *ngIf="trip.challanHardCopyReceivedAt">{{
                       trip.challanHardCopyReceivedAt | date: 'dd MMM,yyyy h:mm a'
@@ -464,7 +476,7 @@
                 (click)="onClickHardCopyReceive(trip.tripId)"
                 type="button"
                 class="px-[0.875rem] py-[0.375rem] text-primary border border-primary rounded">
-                <span class="text-body">Recieve</span>
+                <span class="text-body">Receive</span>
               </button>
             </div>
           </td>
@@ -493,6 +505,9 @@
           </td>
           <td class="text-center whitespace-nowrap">
             {{ checkDueDays(trip) }}
+          </td>
+          <td class="text-center whitespace-nowrap">
+            {{ checkReceivedDays(trip) }}
           </td>
           <td
             class="whitespace-nowrap sticky right-{{
@@ -576,7 +591,7 @@
         </tr>
 
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="13">
+          <td class="text-center" [colSpan]="14">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
@@ -594,7 +609,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="13">
+          <td class="h-full" [colSpan]="14">
             <app-loading></app-loading>
           </td>
         </tr>

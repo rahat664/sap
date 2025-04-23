@@ -22,6 +22,7 @@ import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom
 import { DateEnum } from '../trip-list/Enum/date.enum';
 import { debounceTime, Subject } from 'rxjs';
 import { CustomerService } from '../profiles/services/customer.service';
+import { ToggleResponsiveService } from '../../shared/services/toggle-responsive-services/toggle-responsive.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -69,16 +70,25 @@ export class DashboardComponent implements OnInit {
   paymentTypePlaceholder: string = '';
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-    { id: 2, value: 'INVOICE', selected: false , showname: 'Invoice'},
-    { id: 3, value: 'BOTH', selected: false , showname: 'Cash & Invoice'},
+    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
+    { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
+    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
   ];
   paymentFilter: number = 0;
   paymentTypeValue: string = '';
+   tripTypeFilter: number = 0;
+  tripTypeOptionsArray: CustomInputSelectModel[] = [
+    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
+    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
+  ];
+  tripTypePlaceholder: string = '';
+   tripTypeValue: string;
 
   constructor(
     private customer: CustomerService,
     private datePipe: DatePipe,
-    private router: Router
+    private router: Router,
+    private mobileViewService: ToggleResponsiveService,
   ) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performSearch(searchText);
@@ -100,6 +110,9 @@ export class DashboardComponent implements OnInit {
     });
     this.selectedCompanies = [];
     this.inputPlaceholder='';
+    this.mobileViewService.isMobileDevice.subscribe(isMobileDevice => {
+      this.filterOpened = !isMobileDevice;
+    })
   }
 
   @HostListener('window:popstate', ['$event'])
@@ -108,7 +121,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getFilterLength() {
-    return this.selectedCompanies.length + this.dateFilter + this.paymentFilter;
+    return this.selectedCompanies.length + this.dateFilter + this.paymentFilter + this.tripTypeFilter;
   }
 
   onClearFilter() {
@@ -127,12 +140,16 @@ export class DashboardComponent implements OnInit {
     this.isCustomerFilterAvailable = false;
     this.selectedCompanies = [];
     this.isDateFilterAvailable = false;
+    this.tripTypePlaceholder = '';
+    this.tripTypeValue = '';
+    this.tripTypeFilter = 0;
     this.router.navigate([], {
       queryParams: {
         customerCode: null,
         fromDate: null,
         toDate: null,
         paymentType: null,
+        tripType: null,
       },
       queryParamsHandling: 'merge',
     });
@@ -314,6 +331,21 @@ export class DashboardComponent implements OnInit {
       queryParamsHandling: 'merge',
     });
 
+  }
+
+  onSelectTripType($event: number) {
+    this.tripTypeFilter = 1;
+    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.tripTypePlaceholder =
+      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.tripTypeValue = this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
+    // set query params to the current route
+    this.router.navigate([], {
+      queryParams: {
+        tripType: this.tripTypeValue,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   updateOverLayStyle(isSpecial: boolean) {
