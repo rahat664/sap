@@ -193,6 +193,12 @@ export class DialogDataComponent implements OnInit {
           this.tripUpdateForm.get('transporterPhone').setValue('');
           this.tripUpdateForm.get('transporterCode').setValue('');
         }
+        if (transporter === 'Transporter Popup Triggered') {
+          this.tripUpdateForm.get('transporterName').setValue('');
+          this.tripUpdateForm.get('transporterPhone').setValue('');
+          this.tripUpdateForm.get('transporterCode').setValue('');
+          this.closeDialog();
+        }
       });
   }
 
@@ -228,6 +234,14 @@ export class DialogDataComponent implements OnInit {
           this.tripUpdateForm.get('registrationSerialNumber').setValue('');
           this.tripUpdateForm.get('registrationNumber').setValue('');
         }
+        if (truck === 'Truck Popup Triggered') {
+          this.tripUpdateForm.get('truckId').setValue('');
+          this.tripUpdateForm.get('registrationZone').setValue('');
+          this.tripUpdateForm.get('registrationCategory').setValue('');
+          this.tripUpdateForm.get('registrationSerialNumber').setValue('');
+          this.tripUpdateForm.get('registrationNumber').setValue('');
+          this.closeDialog();
+        }
       });
   }
 
@@ -250,6 +264,12 @@ export class DialogDataComponent implements OnInit {
           this.tripUpdateForm.get('driverCode').setValue('');
           this.tripUpdateForm.get('driverName').setValue('');
           this.tripUpdateForm.get('driverPhone').setValue('');
+        }
+        if (driver === 'Driver Popup Triggered') {
+          this.tripUpdateForm.get('driverCode').setValue('');
+          this.tripUpdateForm.get('driverName').setValue('');
+          this.tripUpdateForm.get('driverPhone').setValue('');
+          this.closeDialog();
         }
       });
   }

@@ -4,7 +4,7 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
-  HostListener,
+  HostListener, Output, EventEmitter,
 } from '@angular/core';
 import { TruckModel } from '../../../profiles/components/truck/models/truck.model';
 import { TruckService } from '../../../profiles/components/truck/services/truck.service';
@@ -13,10 +13,11 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { FormsModule } from '@angular/forms';
 import { timer } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-truck-popup',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './truck-popup.component.html',
   styleUrl: './truck-popup.component.scss',
 })
@@ -29,6 +30,7 @@ export class TruckPopupComponent implements OnInit, OnDestroy {
   ) {}
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @Output() truckPopupTriggered: EventEmitter<boolean> = new EventEmitter();
 
   truckList: TruckModel[] = [];
   loading: boolean;
@@ -127,5 +129,9 @@ export class TruckPopupComponent implements OnInit, OnDestroy {
     this.service.getTruckList(this.page, this.size).subscribe((res: any) => {
       this.truckList.push(...res.data.responses);
     });
+  }
+
+  informParent() {
+    this.dialogRef.close('Truck Popup Triggered');
   }
 }

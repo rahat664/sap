@@ -5,14 +5,11 @@ import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-driver-popup',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './driver-popup.component.html',
   styleUrl: './driver-popup.component.scss',
 })
@@ -43,7 +40,6 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
     this.getDriverList();
   }
 
-
   private getDriverList() {
     this.user
       .getDriver(this.page, this.size, this.searchValue)
@@ -53,7 +49,6 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
         this.loading = false;
       });
   }
-
 
   ngOnDestroy() {
     this.driverList = [];
@@ -84,7 +79,7 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
       this.searchValue = '';
     }
     this.driverList = [];
-    this.getDriverList()
+    this.getDriverList();
   }
 
   ngAfterViewInit() {
@@ -106,7 +101,9 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
 
   checkIfScrollAtBottom() {
     const container = this.myScrollContainer.nativeElement;
-    const atBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 10; // Small buffer
+    const atBottom =
+      container.scrollTop + container.clientHeight >=
+      container.scrollHeight - 10; // Small buffer
 
     if (atBottom) {
       this.loadMoreData();
@@ -124,5 +121,9 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
         this.driverList.push(...res.data.responses);
         this.totalPages = res.data.totalPages;
       });
+  }
+
+  informParent() {
+    this.dialogRef.close('Driver Popup Triggered')
   }
 }
