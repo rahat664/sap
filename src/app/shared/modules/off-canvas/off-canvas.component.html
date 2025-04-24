@@ -15,8 +15,10 @@
           <span class="text-body_title leading-body_title font-semibold  text-not-black">{{getTruckFullRegistrationNumber(transporterDetails.truck)}}</span>
           <span class="text-body text-secondary">{{transporterDetails?.customerName}}</span>
           <span class="text-body text-secondary">{{transporterDetails?.tripStartDatetime | date : 'dd MMM, yyyy'}}</span>
-          <div class="px-4 py-0.5 absolute top-2 right-2 rounded-full {{getBgColor(transporterDetails.transporterPaymentStatus)}} ">
-            <span class="text-xs text-white font-semibold">{{transporterDetails?.transporterPaymentStatus ? transporterDetails?.transporterPaymentStatus : 'Unpaid'}}</span>
+          <div class="px-4 py-0.5 absolute top-2 right-2 rounded-full {{ getBgColor(transporterDetails.transporterPaymentStatus, 'bg') }} {{
+                        getBgColor(transporterDetails?.transporterPaymentStatus, 'text')
+                      }}">
+            <span class="text-xs  font-semibold">{{transporterDetails?.transporterPaymentStatus ? transporterDetails?.transporterPaymentStatus : 'Unpaid'}}</span>
           </div>
         </div>
       </div>
@@ -93,6 +95,48 @@
             </ng-container>
           </div>
         </div>
+        <div class="flex flex-col space-y-1 w-full">
+          <label for="date" class="form-label text-body">Paid On</label>
+          <button
+            class="customButton"
+            mat-button
+            [matMenuTriggerFor]="dateAndTime">
+            <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)"
+              appearance="outline"
+              id="date"
+              class="example-full-width w-full">
+              <input
+                [(ngModel)]="paymentDate"
+                placeholder="Select date time"
+                matInput/>
+              <mat-datepicker-toggle matIconSuffix></mat-datepicker-toggle>
+            </mat-form-field>
+          </button>
+          <mat-menu #dateAndTime="matMenu">
+            <mat-card class="w-96" (click)="$event.stopPropagation()">
+              <mat-calendar
+                [(selected)]="selectedDate"
+                (selectedChange)="onSelect($event)"></mat-calendar>
+            </mat-card>
+            <mat-card class="w-96 mt-3 flex items-center justify-center">
+              <app-time-picker
+                (buttonDisabled)="isButtonDisabled($event)"
+                [selectedDate]="returnToInputDate"
+                (timeChange)="onTimeChange($event)"
+                (click)="$event.stopPropagation()"></app-time-picker>
+            </mat-card>
+            <button
+              matTooltip="Can't set past time, please enter valid time"
+              matTooltipPosition="above"
+              [matTooltipDisabled]="!isDisabled"
+              [disabled]="isDisabled"
+              (click)="onSelectTimeAndDate()"
+              class="py-3 mt-3 w-full px-6 text-white bg-primary rounded-lg font-semibold">
+              <span class="w-full">Set date & time</span>
+            </button>
+          </mat-menu>
+        </div>
         <div class="flex flex-col">
           <span class="text-secondary text-body"><sup>*</sup>Please chose the payment status</span>
           <mat-radio-group class="flex flex-col space-y-1" [(ngModel)]="paymentStatus" (change)="onPaymentStatusChange($event)">
@@ -133,7 +177,7 @@
         <div class="bg-input rounded-lg py-2">
           <h1 class="text-secondary  text-sm text-center w-full">Pay now(৳)</h1>
           <mat-form-field appearance="outline" class="w-full" style="outline: none !important;">
-            <input class=" text-center" matInput type="number" placeholder="Enter amount here" [(ngModel)]="amount" (input)="onPaymentAmountChange($event, transporterDetails)" />
+            <input (focusout)="onFocusOut()" class=" text-center" matInput type="number" placeholder="Enter amount here" [(ngModel)]="amount" (input)="onPaymentAmountChange($event, transporterDetails)" />
           </mat-form-field>
         </div>
         <!--        error message if amount not given or invalid-->
@@ -206,7 +250,7 @@
                       id="mfsNumber"
                       type="text"
                       matInput
-                      placeholder="Enter Bkash Number" />
+                      placeholder="Enter Number" />
                   </mat-form-field>
                 </div>
               </div>

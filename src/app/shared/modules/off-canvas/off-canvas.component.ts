@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { MatRadioButton, MatRadioChange, MatRadioGroup } from '@angular/material/radio';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { DatePipe, DecimalPipe, NgForOf, NgIf } from '@angular/common';
@@ -17,6 +17,13 @@ import { CustomInputComponent } from '../custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../directive/get-click-event.directive';
 import { bkashPaymentMethod } from '../../../pages/profiles/components/transporter/models/payment-method';
 import { CustomInputSelectModel } from '../custom-input/custom-input-select.model';
+import { MatCalendar, MatDatepickerToggle } from '@angular/material/datepicker';
+import { MatCard } from '@angular/material/card';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { TimePickerComponent } from '../time-picker/time-picker.component';
+import { MatButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-off-canvas',
@@ -34,6 +41,18 @@ import { CustomInputSelectModel } from '../custom-input/custom-input-select.mode
     CustomInputComponent,
     GetClickEventDirective,
     DatePipe,
+    MatButton,
+    MatCalendar,
+    MatCard,
+    MatDatepickerToggle,
+    MatMenu,
+    MatSuffix,
+    MatTooltip,
+    TimePickerComponent,
+    MatMenuTrigger,
+  ],
+  providers: [
+    provideNativeDateAdapter(),
   ],
   templateUrl: './off-canvas.component.html',
   styleUrl: './off-canvas.component.scss',
@@ -53,15 +72,22 @@ export class OffCanvasComponent {
   @Output() isPaymentSuccessful: EventEmitter<boolean> =
     new EventEmitter<boolean>(false);
   paymentStatus: string;
+  readonly minDate = new Date();
+  private time: any;
+  selectedDate: Date = new Date();
   amount: any;
   @Input() transporterDetails: TransporterPayment;
   paymentButtonTriggered: boolean;
   financialInstituteName: string = '';
   accountNumber: string = '';
   accountName: string = '';
+  protected returnToInputDate: any;
+  isDisabled: boolean;
+   paymentDate: any;
   constructor(
     private trip: TripService,
-    private toaster: HandleToastrService
+    private toaster: HandleToastrService,
+    private datePipe: DatePipe
   ) {}
 
   onClose() {
@@ -77,6 +103,13 @@ export class OffCanvasComponent {
     }
   }
 
+  ngOnInit() {
+    this.returnToInputDate = new Date();
+    this.paymentDate = this.datePipe.transform(
+      this.returnToInputDate, 'd MMM yyy, hh:mm a'
+    )
+  }
+
   onPayNow() {
     this.paymentButtonTriggered = true;
     if (this.amount > 0 && this.selectedPaymentMethod && this.paymentStatus) {
@@ -84,6 +117,9 @@ export class OffCanvasComponent {
         tripIds: [this.transporterDetails.tripId],
         amount: this.amount,
         paymentMethod: this.selectedPaymentMethod.toString().toUpperCase(),
+        paymentDate: this.datePipe.transform(
+          this.paymentDate, 'yyyy-MM-ddTHH:mm:ss'
+        )
       };
       if (this.selectedPaymentMethod === 'Bank') {
         // add a new property to the paymentData object
@@ -185,6 +221,7 @@ export class OffCanvasComponent {
     }
   }
   mfsTypePlaceholder: string = '';
+  paidOnDate: any;
 
   onSelectMFSType($event: number) {
     this.mfsTypePlaceholder = this.mfsService.find(
@@ -219,16 +256,68 @@ export class OffCanvasComponent {
     return tripPoints.filter(point => point.pointType === 'Unloading');
   }
 
-  getBgColor(status: string) {
-    switch (status) {
+  getBgColor(paymentStatus: string, type: string) {
+    switch (paymentStatus) {
       case 'Paid':
-        return 'bg-green';
-      case 'Partial':
-        return 'bg-another';
+        return type === 'bg' ? 'bg-[#D7F0E4]' : 'text-[#087D46]';
       case 'Unpaid':
-        return 'bg-red';
+        return type === 'bg' ? 'bg-[#FFE2DD]' : 'text-[#961801]';
+      case 'Partial':
+        return type === 'bg' ? 'bg-[#FFEED1]' : 'text-[#D38704]';
       default:
-        return 'bg-red';
+        return type === 'bg' ? 'bg-[#FFE2DD]' : 'text-[#961801]';
     }
+  }
+
+  onFocusOut() {
+    this.checkTheAmountIsFullOrPartial();
+  }
+
+  private checkTheAmountIsFullOrPartial() {
+    if (this.amount > 0) {
+      if (this.amount === this.countDueAmount(this.transporterDetails)) {
+        this.paymentStatus = 'full';
+      } else {
+        this.paymentStatus = 'partial';
+      }
+    } else {
+      this.paymentStatus = '';
+    }
+  }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
+
+  onSelect($event: any) {
+    this.selectedDate = $event;
+    this.returnToInputDate = $event;
+  }
+
+  isButtonDisabled($event: boolean) {
+    this.isDisabled = $event;
+  }
+  onTimeChange($event: any) {
+    this.time = $event;
+  }
+
+  onSelectTimeAndDate() {
+    // convert time to 24-hour format
+    const time = this.time.split(' ')[0];
+    const hour = parseInt(time.split(':')[0]);
+    const minute = parseInt(time.split(':')[1]);
+    const amOrPm = this.time.split(' ')[1];
+    const timeIn24HourFormat = amOrPm === 'PM' ? hour + 12 : hour;
+    const selectedDate = this.selectedDate;
+    selectedDate.setHours(timeIn24HourFormat, hour);
+    selectedDate.setMinutes(minute);
+    this.paymentDate = this.datePipe.transform(
+      this.selectedDate, 'd MMM yyy, hh:mm a'
+    )
   }
 }

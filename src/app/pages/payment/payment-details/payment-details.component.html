@@ -14,9 +14,11 @@
           <span class="text-not-black text-xs font-semibold">Trip no: {{ transporterDetails?.tripId }}</span>
           <span class="text-body_title leading-body_title font-semibold  text-not-black">{{getTruckFullRegistrationNumber(transporterDetails.truck)}}</span>
           <span class="text-body text-secondary">{{transporterDetails?.customerName}}</span>
-          <span class="text-body text-secondary">{{transporterDetails?.tripStartDatetime | date : 'dd MMM, yyyy'}}</span>
-          <div class="px-4 py-0.5 absolute top-2 right-2 rounded-full {{getBgColor(transporterDetails.transporterPaymentStatus)}} ">
-            <span class="text-xs text-white font-semibold">{{transporterDetails?.transporterPaymentStatus ? transporterDetails?.transporterPaymentStatus : 'Unpaid'}}</span>
+          <span class="text-body text-secondary">{{transporterDetails?.tripStartDatetime | date : 'dd MMM, yyyy h:mm a'}}</span>
+          <div class="px-4 py-0.5 absolute top-2 right-2 rounded-full {{ getBgColor(transporterDetails.transporterPaymentStatus, 'bg') }} {{
+                        getBgColor(transporterDetails?.transporterPaymentStatus, 'text')
+                      }} ">
+            <span class="text-xs font-semibold">{{transporterDetails?.transporterPaymentStatus ? transporterDetails?.transporterPaymentStatus : 'Unpaid'}}</span>
           </div>
         </div>
       </div>
@@ -116,7 +118,7 @@
             <ng-container *ngFor="let paymentDetail of transporterPaymentDetails">
               <div class="grid grid-cols-3 items-center">
                 <span>{{paymentDetail.paymentMethod}} {{paymentDetail?.financialInstituteName ? '(' + paymentDetail.financialInstituteName + ')' : ''}}</span>
-                <span class="text-center">{{paymentDetail.paymentDate | date: 'dd MMM yyyy'}}</span>
+                <span class="text-center">{{paymentDetail.paymentDate | date: 'dd MMM, yyyy h:mm a'}}</span>
                 <span class="text-right">{{
                     (paymentDetail.amount !== null ? (paymentDetail.amount|number) + '(৳)' : 'N/A')
                   }}</span>
