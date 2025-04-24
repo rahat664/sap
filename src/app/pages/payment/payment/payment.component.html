@@ -75,7 +75,7 @@
         <th class="text-center whitespace-nowrap">Paid(৳)</th>
         <th class="text-center whitespace-nowrap">Paid On</th>
         <th class="text-center whitespace-nowrap">Payable(৳)</th>
-        <th class="text-center whitespace-nowrap w-[10%] "></th>
+        <th class="text-center whitespace-nowrap w-[10%] sticky right-0 bg-white"></th>
       </tr>
       <tr>
         <th class="custom-border" [colSpan]="13"></th>
@@ -111,7 +111,9 @@
 
           <td class="text-center">{{ transporter.status }}</td>
           <td >
-            <div class="px-4 py-0.5 text-white text-center rounded-full {{getBgColor(transporter.transporterPaymentStatus)}} ">
+            <div class="px-4 py-0.5  text-center rounded-full {{ getBgColor(transporter.transporterPaymentStatus, 'bg') }} {{
+                        getBgColor(transporter?.transporterPaymentStatus, 'text')
+                      }} ">
               {{ transporter.transporterPaymentStatus !== null ? transporter.transporterPaymentStatus : 'Unpaid'  }}
             </div>
           </td>
@@ -131,7 +133,7 @@
           <td class="text-center">
             {{ countDueAmount(transporter) !== 'N/A' ? (countDueAmount(transporter) | number) : countDueAmount(transporter) }}
           </td>
-          <td class="text-center whitespace-nowrap">
+          <td class="text-center whitespace-nowrap bg-white sticky right-0">
             <button *ngIf="countDueAmount(transporter) !== 'N/A' && Number(countDueAmount(transporter)) > 0"
                     (click)="onClickPayNow(transporter)"
                     type="button"
@@ -141,8 +143,8 @@
           </td>
         </tr>
       </ng-container>
-      <ng-container *ngIf="!loading">
-        <tr *ngIf="transportersPaymentList?.length === 0">
+      <ng-container *ngIf="!loading && transportersPaymentList?.length === 0">
+        <tr>
           <td class="text-center" [colSpan]="13">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">

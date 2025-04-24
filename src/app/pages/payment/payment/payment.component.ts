@@ -321,16 +321,18 @@ export class PaymentComponent {
     );
   }
 
-  getBgColor(status: string) {
-    switch (status) {
+
+
+  getBgColor(paymentStatus: string, type: string) {
+    switch (paymentStatus) {
       case 'Paid':
-        return 'bg-green';
-      case 'Partial':
-        return 'bg-another';
+        return type === 'bg' ? 'bg-[#D7F0E4]' : 'text-[#087D46]';
       case 'Unpaid':
-        return 'bg-red';
+        return type === 'bg' ? 'bg-[#FFE2DD]' : 'text-[#961801]';
+      case 'Partial':
+        return type === 'bg' ? 'bg-[#FFEED1]' : 'text-[#D38704]';
       default:
-        return 'bg-red';
+        return type === 'bg' ? 'bg-[#FFE2DD]' : 'text-[#961801]';
     }
   }
 }
