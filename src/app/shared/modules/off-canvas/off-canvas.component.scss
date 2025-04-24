@@ -1,3 +1,32 @@
+.step {
+  display: flex;
+  align-items: center;
+  position: relative;
+  @apply space-x-6
+    /* Space between steps */
+  ;
+}
+
+.step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 4px; /* Adjust based on circle size and spacing */
+  top: 53%;
+  height: calc(100% + 16px);
+  width: 1px; /* Width of the dashed line */
+  border-left: 1px dashed #e5eaeb; /* Dashed border style */
+  z-index: 0; /* Ensure the line is behind the circles */
+}
+
+.circle {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%; /* Color of the circle */
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+
 
 .customButton {
   display: block;
@@ -27,37 +56,3 @@
   margin-bottom: 44px !important;
 }
 
-.step {
-  display: flex;
-  align-items: center;
-  position: relative;
-  @apply space-x-6
-    /* Space between steps */
-  ;
-}
-
-::ng-deep .step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 4px; /* Adjust based on circle size and spacing */
-  top: 53%;
-  height: calc(100% + 16px);
-  width: 1px; /* Width of the dashed line */
-  border-left: 1px dashed #e5eaeb; /* Dashed border style */
-  z-index: 0; /* Ensure the line is behind the circles */
-}
-
-
-
-.circle {
-  margin-top: 1.25rem;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%; /* Color of the circle */
-  position: absolute;
-  left: 0;
-  z-index: 1;
-}
-.p {
-  margin: 0;
-}
