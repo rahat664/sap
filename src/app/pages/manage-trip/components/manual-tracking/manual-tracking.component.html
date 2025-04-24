@@ -11,7 +11,7 @@
             </div>
             <div class="flex mt-[-10px] flex-col space-y-1 text-start">
             <span class="font-semibold text-lg text-not-black text-body_title leading-body_title">{{manualTracking?.location ? manualTracking?.location : 'No location'}}</span>
-              <p class="text-sm line-clamp-2 {{manualTracking?.incidentOccurred ? 'text-red' : 'text-web-text-secondary'}}">{{
+              <p class="text-sm {{manualTracking?.incidentOccurred ? 'text-red' : 'text-web-text-secondary'}}">{{
                   manualTracking?.note ? manualTracking?.note : 'No note'
                 }}</p>
               <ng-container *ngIf="manualTracking?.documents && manualTracking?.documents?.length > 0">
