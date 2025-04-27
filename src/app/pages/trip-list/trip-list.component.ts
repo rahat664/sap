@@ -21,15 +21,10 @@ import { GetElementHeightDirective } from '../../shared/directive/get-element-he
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
 import { statusButtons } from './models/status-buttons';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
-import { CustomerService } from '../profiles/services/customer.service';
 import { Trip } from '../auth/models/response/trip';
 import { Router } from '@angular/router';
-import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
-
-import { debounceTime, Subject } from 'rxjs';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
-import { UserService } from '../profiles/services/user.service';
 import { PaymentType, TripType } from '../../shared/Enums/payment-type';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 import { TripListFilterComponent } from './components/trip-list-filter/trip-list-filter.component';
