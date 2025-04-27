@@ -63,7 +63,8 @@
             <label for="customerName" class="form-label text-body"
             >Customer Name</label
             >
-            <mat-form-field appearance="outline" id="customerName">
+            <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)" appearance="outline" id="customerName">
               <input
                 readonly
                 matInput
@@ -78,6 +79,7 @@
               mat-button
               [matMenuTriggerFor]="dateAndTime">
               <mat-form-field
+                (mouseenter)="updateOverLayStyle(false)"
                 appearance="outline"
                 id="date"
                 class="example-full-width w-full">
@@ -615,6 +617,7 @@
             >Number of vehicle</label
             >
             <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)"
               appearance="outline"
               id="numOfVehicle"
               [ngClass]="{
@@ -664,6 +667,7 @@
             >Truck Size (Feet)</label
             >
             <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)"
               appearance="outline"
               id="size"
               [ngClass]="{
@@ -714,6 +718,7 @@
             >Truck Capacity (Ton)</label
             >
             <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)"
               appearance="outline"
               id="capacity"
               [ngClass]="{
@@ -832,6 +837,7 @@
               <!--Add a bdt icon at the end of the input-->
               <div class="relative bg-input rounded-lg border-none">
                 <mat-form-field
+                  (mouseenter)="updateOverLayStyle(false)"
                   class="w-full"
                   appearance="outline"
                   id="customerRate"
@@ -896,6 +902,7 @@
             >Template Name</label
             >
             <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)"
               appearance="outline"
               id="templateName"
               [ngClass]="{

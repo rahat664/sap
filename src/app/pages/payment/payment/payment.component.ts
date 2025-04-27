@@ -80,7 +80,19 @@ export class PaymentComponent {
         this.page++;
         this.size = 30;
         this.loading = false;
-        this.trip.getTransporterPaymentList(this.page, this.size).subscribe(
+        this.trip.getTransporterPaymentList(
+          this.page,
+          this.size,
+          this.filterData.tripStatus,
+          this.filterData.startDate,
+          this.filterData.endDate,
+          this.filterData.tripId,
+          this.filterData.customerCode,
+          this.filterData.transporterName,
+          this.filterData.paymentStatus,
+          this.filterData.loadingDistrict,
+          this.filterData.unloadingDistrict
+        ).subscribe(
           (res: any) => {
             this.transportersPaymentList.push(...res.data.responses);
           },
@@ -162,16 +174,17 @@ export class PaymentComponent {
 
   onPaymentSucceful($event: boolean) {
     if ($event) {
-      this.transportersPaymentList = [];
       this.page = 0;
-      this.loading = true;
       this.size = 30;
+      this.loading = true;
+      this.transportersPaymentList = [];
       this.trip.getTransporterPaymentList(this.page, this.size,
         this.filterData.tripStatus,
         this.filterData.startDate,
         this.filterData.endDate,
         this.filterData.tripId,
         this.filterData.customerCode,
+        this.filterData.transporterName,
         this.filterData.paymentStatus,
         this.filterData.loadingDistrict,
         this.filterData.unloadingDistrict).subscribe(
@@ -223,7 +236,8 @@ export class PaymentComponent {
       this.filterData.customerCode ||
       this.filterData.paymentStatus ||
       this.filterData.loadingDistrict ||
-      this.filterData.unloadingDistrict
+      this.filterData.unloadingDistrict ||
+      this.filterData.transporterName
     ) {
       this.filterApplied = true;
       this.filterOpened = false;
@@ -239,6 +253,7 @@ export class PaymentComponent {
         this.filterData.endDate,
         this.filterData.tripId,
         this.filterData.customerCode,
+        this.filterData.transporterName,
         this.filterData.paymentStatus,
         this.filterData.loadingDistrict,
         this.filterData.unloadingDistrict
@@ -271,6 +286,7 @@ export class PaymentComponent {
     const parts: string[] = [];
 
     if (this.filterData.searchName) parts.push(`Company: ${this.filterData.searchName}`);
+    if(this.filterData.transporterName) parts.push(`Transporter: ${this.filterData.transporterName}`);
     if (this.filterData.startDate) parts.push(`From: ${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}`);
     if (this.filterData.endDate) parts.push(`To: ${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}`);
     if (this.filterData.paymentStatus) parts.push(`Payment Status: ${this.filterData.paymentStatus}`);
@@ -303,5 +319,20 @@ export class PaymentComponent {
         console.error('Error fetching transporter payment list:', error);
       }
     );
+  }
+
+
+
+  getBgColor(paymentStatus: string, type: string) {
+    switch (paymentStatus) {
+      case 'Paid':
+        return type === 'bg' ? 'bg-[#D7F0E4]' : 'text-[#087D46]';
+      case 'Unpaid':
+        return type === 'bg' ? 'bg-[#FFE2DD]' : 'text-[#961801]';
+      case 'Partial':
+        return type === 'bg' ? 'bg-[#FFEED1]' : 'text-[#D38704]';
+      default:
+        return type === 'bg' ? 'bg-[#FFE2DD]' : 'text-[#961801]';
+    }
   }
 }

@@ -1,4 +1,4 @@
-<div class="px-6 pb-5 bg-white rounded-lg flex flex-col space-y-3 relative">
+<div class="px-6 pb-5 custom-scroll bg-white rounded-lg flex flex-col space-y-3 relative">
   <div class="flex justify-between items-end z-0">
     <h2 class="text-h2 leading-h2 font-semibold text-not-black pt-5">
       Transporter Rate Analysis
@@ -26,8 +26,8 @@
     <!--      </mat-form-field>-->
     <!--    </div>-->
   </div>
-  <div class="flex space-x-3 items-center">
-    <mat-form-field appearance="outline" class="w-[12rem] filter">
+  <div class="flex flex-col space-y-2 lg:space-y-0 lg:flex-row lg:space-x-3 items-center">
+    <mat-form-field appearance="outline" class="w-full lg:w-[12rem] filter">
       <mat-select
         [(ngModel)]="chartType"
         placeholder="Chart"
@@ -38,7 +38,7 @@
         <mat-option value="low">Lowest rate</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[12rem] filter">
+    <mat-form-field appearance="outline" class="w-full lg:w-[12rem] filter">
       <mat-select
         [(ngModel)]="vehicleType"
         (selectionChange)="onVehicleTypeChange($event)"
@@ -50,19 +50,19 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[12rem] filter">
+    <mat-form-field appearance="outline" class="lg:w-[12rem] w-full filter">
       <mat-select
         [(ngModel)]="transporter"
         (selectionChange)="onTransporterChange($event)"
         placeholder="Transporter">
         <mat-option
           *ngFor="let transporter of transporterLists"
-          [value]="transporter?.userId"
+          [value]="transporter?.code"
         >{{ transporter?.name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[12rem] filter">
+    <mat-form-field appearance="outline" class="w-full lg:w-[12rem] filter">
       <mat-select
         [(ngModel)]="loadingDistrict"
         (selectionChange)="onLoadingDistrictChange($event)"
@@ -72,7 +72,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[13rem] filter">
+    <mat-form-field appearance="outline" class="w-full lg:w-[13rem] filter">
       <mat-select
         [(ngModel)]="unloadingDistrict"
         (selectionChange)="onUnloadingDistrictChange($event)"
@@ -82,7 +82,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-[13rem] filter">
+    <mat-form-field appearance="outline" class="w-full lg:w-[13rem] filter">
       <mat-select
         [(ngModel)]="datatype"
         (selectionChange)="onDataTypeChange($event)"

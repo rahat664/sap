@@ -1,21 +1,58 @@
 <body>
 <header>
-  <h1>Ecoflit Support</h1>
+  <h1>ECOFLIT Support</h1>
 </header>
 <main>
   <section id="faq">
     <h2>Frequently Asked Questions (FAQ)</h2>
     <div class="faq-item">
-      <h3>How to use Ecoflit?</h3>
+      <h3>How to use ECOFLIT?</h3>
+      <div class="faq-subsection">
+        <h4>App Version</h4>
+        <ol>
+          <li>Open the Google Play Store / App Store.</li>
+          <li>Search for "ECOFLIT" in the search bar.</li>
+          <li>
+            Select the ECOFLIT app or
+            <a
+              href="https://play.google.com/store/apps/details?id=snz.ecoflit&hl=en"
+              target="_blank"
+            >click here</a
+            >.
+          </li>
+          <li>
+            Select the ECOFLIT app or
+            <a
+              href="https://apps.apple.com/us/app/ecoflit/id6737822726"
+              target="_blank"
+            >click here</a
+            > on IOS.
+          </li>
+          <li>Tap the Install button.</li>
+          <li>Follow on-screen instructions to complete the installation.</li>
+        </ol>
+      </div>
+      <div class="faq-subsection">
+        <h4>Web Version</h4>
+        <p>
+          For customers:
+          <a href="https://ecoflit.com/" target="_blank"
+          >https://ecoflit.com/</a
+          >
+        </p>
+      </div>
+    </div>
+    <div class="faq-item-eco">
+      <h3>How to use ECOTRUK?</h3>
       <div class="faq-subsection">
         <h4>App Version</h4>
         <ol>
           <li>Open the Google Play Store (for Android devices).</li>
-          <li>Search for "Ecoflit" in the search bar.</li>
+          <li>Search for "ECOTRUK" in the search bar.</li>
           <li>
-            Select the Ecoflit app or
+            Select the ECOTRUK app or
             <a
-              href="https://play.google.com/store/apps/details?id=snz.ecoflit&hl=en"
+              href="https://play.google.com/store/apps/details?id=snz.ecotruk"
               target="_blank"
             >click here</a
             >.
@@ -26,15 +63,6 @@
         <p>
           <strong>Note:</strong> The app will soon be available for iOS
           devices.
-        </p>
-      </div>
-      <div class="faq-subsection">
-        <h4>Web Version</h4>
-        <p>
-          For customers:
-          <a href="https://ecoflit.com/" target="_blank"
-          >https://ecoflit.com/</a
-          >
         </p>
       </div>
     </div>
@@ -53,8 +81,25 @@
       </ul>
     </div>
 
+    <div class="faq-item-eco">
+      <h3>How will a new customer/user log in on ECOTRUK?</h3>
+      <ul>
+        <li>
+          <strong>Mobile number & OTP:</strong> Log in using a mobile number
+          and verify via OTP.
+        </li>
+      </ul>
+    </div>
+
     <div class="faq-item">
       <h3>Can I change my password?</h3>
+      <p>
+        No, currently passwords cannot be changed. This feature will be
+        available soon.
+      </p>
+    </div>
+    <div class="faq-item-eco">
+      <h3>Can I change my password on ECOTRUK?</h3>
       <p>
         No, currently passwords cannot be changed. This feature will be
         available soon.
@@ -87,10 +132,35 @@
         </li>
       </ol>
     </div>
+    <div class="faq-item-eco">
+      <h3>
+        How can a customer/admin give account access to other team members on ECOTRUK?
+      </h3>
+      <p>
+        Currently this feature is not available.
+      </p>
+    </div>
   </section>
 
   <section id="contact">
-    <h2>Contact Us</h2>
+    <!-- Contact Form -->
+    <h2>Send Us a Message</h2>
+    <form id="contact-form" action="/submit-form" method="POST">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" required placeholder="Enter your name" />
+
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="email" required placeholder="Enter your email" />
+
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" name="subject" required placeholder="Subject of your message" />
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" required placeholder="Write your message here..."></textarea>
+
+      <button type="button" (click)="onFormSubmit()">Send Message</button>
+    </form>
+    <h2 class="pt-2">Contact Us</h2>
     <p>Need help? Reach out to our support team:</p>
     <ul>
       <li>
@@ -112,11 +182,11 @@
     </ul>
     <p>
       We are committed to resolving your queries promptly. Thank you for
-      choosing Ecoflit!
+      choosing ECOFLIT!
     </p>
   </section>
 </main>
 <footer>
-  <p>&copy; {{ newDate | date: 'yyyy' }} Ecoflit. All rights reserved.</p>
+  <p>&copy; {{ newDate | date: 'yyyy' }} ECOFLIT. All rights reserved.</p>
 </footer>
 </body>

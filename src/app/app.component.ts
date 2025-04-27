@@ -16,18 +16,17 @@ import {
 } from '@angular/router';
 import { LayoutComponent } from './core/layout/layout.component';
 import { initFlowbite } from 'flowbite';
-import { TopbarComponent } from './core/layout/topbar/topbar.component';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './pages/auth/services/auth.service';
 import { ImageGalleryService } from './shared/services/image-gallery/image-gallery.service';
 import { ImageGalleryComponent } from './shared/modules/image-gallery/image-gallery.component';
-import { ImagePopupComponent } from './shared/modal/image-popup/image-popup.component';
 import { HandleToastrService } from './shared/services/handle-toastr/handle-toastr.service';
 import { GeolocationService } from './shared/services/location/geolocation.service';
 import { filter } from 'rxjs';
 import { DriverEditSharedService } from './pages/profiles/services/driver-edit-shared.service';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadingService } from './shared/services/loading/loading.service';
+import { ToggleResponsiveService } from './shared/services/toggle-responsive-services/toggle-responsive.service';
 
 /**
  * The main application component.
@@ -67,7 +66,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private geoLocation: GeolocationService,
     private shared: DriverEditSharedService,
     private renderer: Renderer2,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private mobileViewServices: ToggleResponsiveService,
   ) {
     this.setUrlWiseFavicon()
     this.router.events.subscribe(event => {
@@ -115,6 +115,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.setCurrentLocationInStorage();
     this.checkInputListener();
     this.checkWhichRouteWeAreOn();
+    this.detectIsMobileDevice();
   }
 
   /**
@@ -252,5 +253,22 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  private detectIsMobileDevice() {
+    // Check if the user agent string contains 'Mobi'
+    const isMobile = /Mobi/.test(navigator.userAgent);
+    // Check if the user agent string contains 'Android'
+    const isAndroid = /Android/.test(navigator.userAgent);
+    // Check if the user agent string contains 'iPhone'
+    const isiPhone = /iPhone/.test(navigator.userAgent);
+    //if any of the upper condition is true then set the isMobileDevice to true and turn side bar to false
+    if (isMobile || isAndroid || isiPhone) {
+      this.mobileViewServices.isMobileDevice.next(true)
+      localStorage.setItem('isMobileDevice', 'true');
+    } else {
+      localStorage.setItem('isMobileDevice', 'false');
+      this.mobileViewServices.isMobileDevice.next(false)
+    }
   }
 }

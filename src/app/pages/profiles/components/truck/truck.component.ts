@@ -215,7 +215,12 @@ export class TruckComponent implements OnInit {
             this.searchValue,
             this.statusInputPlaceholder == 'All'
               ? ''
-              : this.statusInputPlaceholder
+              : this.statusInputPlaceholder,
+            null,
+            null,
+            null,
+            this.from,
+            this.to
           )
           .pipe(debounceTime(1000))
           .subscribe((res: any) => {
@@ -229,7 +234,12 @@ export class TruckComponent implements OnInit {
             null,
             this.statusInputPlaceholder == 'All'
               ? ''
-              : this.statusInputPlaceholder
+              : this.statusInputPlaceholder,
+            null,
+            null,
+            null,
+            this.from,
+            this.to
           )
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);

@@ -27,13 +27,13 @@
               class="notPreview"
               *ngIf="event.tripDocuments"
               src="assets/svg/available.svg"
-              alt=""/>
+              alt="" />
             <img
               loading="lazy"
               class="notPreview"
               *ngIf="!event.tripDocuments"
               src="assets/svg/not-available.svg"
-              alt=""/>
+              alt="" />
             <span
               class="text-body_title leading-body_title text-not-black font-semibold"
             >{{ event?.eventName }}</span
@@ -45,7 +45,7 @@
             *ngIf="imageToShow.length == 0 && loadingEventsLoaded"
             class="w-full h-full flex items-center justify-center">
             <div class="flex flex-col space-y-3">
-              <img loading="lazy" src="assets/svg/no-data.svg" alt=""/>
+              <img class="notPreview" loading="lazy" src="assets/svg/no-data.svg" alt="" />
               <h1
                 class="text-body_title leading-body_title text-secondary text-center font-semibold">
                 No Data Available
@@ -95,14 +95,14 @@
                     (click)="$event.stopPropagation(); onClickImage(item.url, 'pdf', 'loading')"
                     class="h-full w-full"
                     src="assets/svg/pdf.svg"
-                    alt=""/>
+                    alt="" />
                   <img
                     *ngIf="checkThatFileIsImageOrPdf(item.url) !== 'pdf'"
                     loading="lazy"
                     class="w-full h-full"
                     [src]="item.url ? item.url : 'assets/images/dummy.jpg' | fallbackImage"
                     appImageError
-                    alt=""/>
+                    alt="" />
                 </div>
               </div>
             </div>
@@ -122,7 +122,7 @@
                 <div class="flex flex-col space-y-1">
                   <h1
                     class="text-body_title leading-body_title font-semibold text-not-black">
-                    Note | {{ singleNote.createdAt | date: 'h:mm; d MMM yyyy' }}
+                    Note | {{ singleNote.createdAt | date: 'h:mm; d MMM yyyy' }} <span *ngIf="singleNote?.lcNumber">| {{singleNote?.lcNumber}}</span>
                   </h1>
                   <span class="text-body text-not-black">{{
                       singleNote?.note
@@ -169,13 +169,13 @@
               class="notPreview"
               *ngIf="event.tripDocuments"
               src="assets/svg/available.svg"
-              alt=""/>
+              alt="" />
             <img
               loading="lazy"
               class="notPreview"
               *ngIf="!event.tripDocuments"
               src="assets/svg/not-available.svg"
-              alt=""/>
+              alt="" />
             <span
               class="text-body_title leading-body_title text-not-black font-semibold"
             >{{ event?.eventName }}</span
@@ -187,7 +187,7 @@
             *ngIf="unloadImageToShow.length == 0 && unloadingEventsLoaded"
             class="w-full h-full flex items-center justify-center">
             <div class="flex flex-col space-y-3">
-              <img loading="lazy" src="assets/svg/no-data.svg" alt=""/>
+              <img class="notPreview" loading="lazy" src="assets/svg/no-data.svg" alt="" />
               <h1
                 class="text-body_title leading-body_title text-secondary text-center font-semibold">
                 No Data Available
@@ -237,14 +237,14 @@
                     (click)="$event.stopPropagation(); onClickImage(item.url, 'pdf', 'unloading')"
                     class="h-full w-full"
                     src="assets/svg/pdf.svg"
-                    alt=""/>
+                    alt="" />
                   <img
                     *ngIf="checkThatFileIsImageOrPdf(item.url) !== 'pdf'"
                     loading="lazy"
                     class="w-full h-full"
                     [src]="item.url ? item.url : 'assets/images/dummy.jpg' | fallbackImage"
                     appImageError
-                    alt=""/>
+                    alt="" />
                 </div>
               </div>
             </div>

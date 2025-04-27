@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ToggleResponsiveService {
   isSidebarOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isMobileDevice: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor() {}
 }

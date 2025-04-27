@@ -24,14 +24,14 @@
       <div class="w-full flex items-center justify-center  border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-secondary">Total trip</span>
-          <span class="text-h1 font-semibold leading-h1 text-not-black">{{ totalTrips }}</span>
+          <span class="text-h1 font-semibold leading-h1 text-not-black">{{ totalTrips | number }}</span>
         </div>
       </div>
       <div class="w-full flex items-center justify-center  border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-not-primary">Transporter Rate(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">{{
-              paymentData?.totalTransportRate
+              paymentData?.totalTransportRate | number
             }}</span>
         </div>
       </div>
@@ -39,7 +39,7 @@
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-green">Paid(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">
-            {{ paymentData?.totalPaid }}
+            {{ paymentData?.totalPaid | number}}
           </span>
         </div>
       </div>
@@ -47,7 +47,7 @@
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-red">Due(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">{{
-              paymentData?.totalUnpaid
+              paymentData?.totalUnpaid | number
             }}</span>
         </div>
       </div>
@@ -65,6 +65,7 @@
       <tr class="whitespace-nowrap bg-white text-not-black">
         <th class="text-left bg-white sticky left-0">Trip No.</th>
         <th class="text-left">Company</th>
+        <th class="text-left">Transporter</th>
         <th class="text-left">Date</th>
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
@@ -74,10 +75,10 @@
         <th class="text-center whitespace-nowrap">Paid(৳)</th>
         <th class="text-center whitespace-nowrap">Paid On</th>
         <th class="text-center whitespace-nowrap">Payable(৳)</th>
-        <th class="text-center whitespace-nowrap w-[10%] "></th>
+        <th class="text-center whitespace-nowrap w-[10%] sticky right-0 bg-white"></th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="12"></th>
+        <th class="custom-border" [colSpan]="13"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -86,7 +87,10 @@
           <td class="whitespace-nowrap text-link cursor-pointer">
             <a (click)="onClickTripId(transporter)">{{ transporter.tripId }}</a>
           </td>
-          <td class="whitespace-nowrap">{{ transporter.customerName }}</td>
+          <td>{{ transporter.customerName }}</td>
+          <td class="{{!transporter.transporterName ? 'text-line' : ''}}">
+            {{ transporter.transporterName ? transporter.transporterName : 'Not assigned' }}
+          </td>
           <td class="whitespace-nowrap">{{ transporter.tripStartDatetime | date: 'dd MMM yyyy' }}</td>
           <td class="text-left"><p>
             {{ getLoadingPointsName(transporter.tripPoints)[0]?.pointName }}
@@ -106,7 +110,15 @@
           </p></td>
 
           <td class="text-center">{{ transporter.status }}</td>
-          <td class="text-center">{{ transporter.transporterPaymentStatus !== null ? transporter.transporterPaymentStatus : 'Unpaid'  }}</td>
+          <td >
+            <div class="w-full flex items-center justify-center">
+              <div class="px-4 min-w-[70%] py-0.5  text-center rounded-full {{ getBgColor(transporter.transporterPaymentStatus, 'bg') }} {{
+                        getBgColor(transporter?.transporterPaymentStatus, 'text')
+                      }}">
+                {{ transporter.transporterPaymentStatus !== null ? transporter.transporterPaymentStatus : 'Unpaid'  }}
+              </div>
+            </div>
+          </td>
           <td class="text-center">
             {{
               (transporter.transporterRate !== null ? (transporter.transporterRate|number) : 'N/A')
@@ -121,9 +133,9 @@
             {{ transporter.lastPaymentDateToTransporter ? (transporter.lastPaymentDateToTransporter | date: 'dd MMM yyyy') : 'N/A' }}
           </td>
           <td class="text-center">
-            {{ countDueAmount(transporter) }}
+            {{ countDueAmount(transporter) !== 'N/A' ? (countDueAmount(transporter) | number) : countDueAmount(transporter) }}
           </td>
-          <td class="text-center whitespace-nowrap">
+          <td class="text-center whitespace-nowrap bg-white sticky right-0">
             <button *ngIf="countDueAmount(transporter) !== 'N/A' && Number(countDueAmount(transporter)) > 0"
                     (click)="onClickPayNow(transporter)"
                     type="button"
@@ -133,9 +145,27 @@
           </td>
         </tr>
       </ng-container>
+      <ng-container *ngIf="!loading && transportersPaymentList?.length === 0">
+        <tr>
+          <td class="text-center" [colSpan]="13">
+            <div
+              class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img
+                loading="lazy"
+                src="assets/svg/no-data.svg"
+                class="notPreview"
+                alt="nodata"/>
+              <p
+                class="text-body_title leading-body_title text-secondary font-semibold">
+                No Data Found
+              </p>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="12">
+          <td class="h-full" [colSpan]="13">
             <app-loading></app-loading>
           </td>
         </tr>

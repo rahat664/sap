@@ -1,19 +1,141 @@
 <div
-  class="fixed top-0 right-0 w-[26rem] bg-white  h-full flex flex-col z-50 shadow-lg justify-between px-8 pb-6 overflow-auto transform transition-transform translate-x-0">
+  class="fixed z-50 top-0 right-0 w-[26rem] bg-white  h-full flex flex-col  shadow-lg justify-between px-8 pb-6 overflow-auto transform transition-transform translate-x-0">
   <div class="flex flex-col space-y-2">
     <div
       class="h-full flex flex-col">
-      <div class="flex items-center justify-between py-6 sticky bg-white top-0">
-        <h2 class="text-h3 leading-h3 font-semibold">Payment Details</h2>
-        <button (click)="onClose()" class="text-gray-500 hover:text-black">
-          <i class="fal fa-times text-xl text-primary"></i>
-        </button>
-      </div>
-      <div class="flex flex-col space-y-4">
-        <div class="flex flex-col space-y-0.5 text-left px-4 py-3 bg-app-bg rounded-lg">
+      <div class="sticky z-50 top-0 mb-4">
+        <div class="flex items-center justify-between py-6 sticky z-50 bg-white top-0">
+          <h2 class="text-h3 leading-h3 font-semibold">Payment Details</h2>
+          <button (click)="onClose()" class="text-gray-500 hover:text-black">
+            <i class="fal fa-times text-xl text-primary"></i>
+          </button>
+        </div>
+        <div class="flex flex-col space-y-0.5 text-left px-4 py-3 bg-app-bg rounded-lg relative">
           <span class="text-not-black text-xs font-semibold">Trip no: {{ transporterDetails?.tripId }}</span>
           <span class="text-body_title leading-body_title font-semibold  text-not-black">{{getTruckFullRegistrationNumber(transporterDetails.truck)}}</span>
           <span class="text-body text-secondary">{{transporterDetails?.customerName}}</span>
+          <span class="text-body text-secondary">{{transporterDetails?.tripStartDatetime | date : 'dd MMM, yyyy'}}</span>
+          <div class="px-4 py-0.5 absolute top-2 right-2 rounded-full {{ getBgColor(transporterDetails.transporterPaymentStatus, 'bg') }} {{
+                        getBgColor(transporterDetails?.transporterPaymentStatus, 'text')
+                      }}">
+            <span class="text-xs  font-semibold">{{transporterDetails?.transporterPaymentStatus ? transporterDetails?.transporterPaymentStatus : 'Unpaid'}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-4">
+        <div class="flex flex-col space-y-2 bg-app-bg p-4 rounded-lg">
+          <div class="flex space-x-3 items-center">
+            <img
+              loading="lazy"
+              class="w-6 notPreview h-6"
+              src="assets/svg/loading.svg"/>
+            <h1
+              class="text-body_title leading-body_title text-not-black font-semibold">
+              Loading Point{{
+                getLoadingPoint(transporterDetails.tripPoints)?.length > 1 ? 's' : ''
+              }}
+              <span *ngIf="getLoadingPoint(transporterDetails.tripPoints)?.length > 1">
+              ({{ getLoadingPoint(transporterDetails.tripPoints)?.length }})
+            </span>
+            </h1>
+          </div>
+          <div class="ml-2 flex flex-col space-y-4">
+            <ng-container
+              *ngFor="let point of getLoadingPoint(transporterDetails.tripPoints)">
+              <div class="step">
+                <div class="circle">
+                  <img
+                    src="assets/svg/circle.svg"
+                    class="notPreview"
+                    alt="loading"/>
+                </div>
+                <div
+                  class="flex items-center justify-between text-body text-not-black">
+                  <p class="w-full">
+                    {{ point.pointName }}
+                  </p>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2 bg-app-bg p-4 rounded-lg">
+          <div class="flex space-x-3 items-center">
+            <img
+              loading="lazy"
+              class="w-6 h-6 notPreview"
+              src="assets/svg/locinfo.svg"/>
+            <h1
+              class="text-body_title leading-body_title text-not-black font-semibold">
+              Unloading Point{{
+                getUnloadingPoint(transporterDetails.tripPoints)?.length > 1 ? 's' : ''
+              }}
+              <span *ngIf="getUnloadingPoint(transporterDetails.tripPoints)?.length > 1"
+              >({{ getUnloadingPoint(transporterDetails.tripPoints)?.length }})</span
+              >
+            </h1>
+          </div>
+          <div class="ml-2 flex flex-col space-y-4">
+            <ng-container
+              *ngFor="let point of getUnloadingPoint(transporterDetails.tripPoints)">
+              <div class="step">
+                <div class="circle">
+                  <img
+                    src="assets/svg/circle.svg"
+                    class="notPreview"
+                    alt="loading"/>
+                </div>
+                <div
+                  class="flex items-center justify-between text-body text-not-black">
+                  <p class="w-full">
+                    {{ point.pointName }}
+                  </p>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="flex flex-col space-y-1 w-full">
+          <label for="date" class="form-label text-body">Paid On</label>
+          <button
+            class="customButton"
+            mat-button
+            [matMenuTriggerFor]="dateAndTime">
+            <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)"
+              appearance="outline"
+              id="date"
+              class="example-full-width w-full">
+              <input
+                [(ngModel)]="paymentDate"
+                placeholder="Select date time"
+                matInput/>
+              <mat-datepicker-toggle matIconSuffix></mat-datepicker-toggle>
+            </mat-form-field>
+          </button>
+          <mat-menu #dateAndTime="matMenu">
+            <mat-card class="w-96" (click)="$event.stopPropagation()">
+              <mat-calendar
+                [(selected)]="selectedDate"
+                (selectedChange)="onSelect($event)"></mat-calendar>
+            </mat-card>
+            <mat-card class="w-96 mt-3 flex items-center justify-center">
+              <app-time-picker
+                (buttonDisabled)="isButtonDisabled($event)"
+                [selectedDate]="returnToInputDate"
+                (timeChange)="onTimeChange($event)"
+                (click)="$event.stopPropagation()"></app-time-picker>
+            </mat-card>
+            <button
+              matTooltip="Can't set past time, please enter valid time"
+              matTooltipPosition="above"
+              [matTooltipDisabled]="!isDisabled"
+              [disabled]="isDisabled"
+              (click)="onSelectTimeAndDate()"
+              class="py-3 mt-3 w-full px-6 text-white bg-primary rounded-lg font-semibold">
+              <span class="w-full">Set date & time</span>
+            </button>
+          </mat-menu>
         </div>
         <div class="flex flex-col">
           <span class="text-secondary text-body"><sup>*</sup>Please chose the payment status</span>
@@ -48,14 +170,14 @@
           <div class="flex justify-between items-center mx-6 border-line py-2">
             <span class="text-body text-not-black">Payable</span>
             <span class="text body text-not-black">{{
-                countDueAmount(transporterDetails)
+                countDueAmount(transporterDetails) !== 'N/A' ? (countDueAmount(transporterDetails) | number) + '(৳)' : countDueAmount(transporterDetails)
               }}</span>
           </div>
         </div>
         <div class="bg-input rounded-lg py-2">
           <h1 class="text-secondary  text-sm text-center w-full">Pay now(৳)</h1>
           <mat-form-field appearance="outline" class="w-full" style="outline: none !important;">
-            <input class=" text-center" matInput type="number" placeholder="Enter amount here" [(ngModel)]="amount" (input)="onPaymentAmountChange($event, transporterDetails)" />
+            <input (focusout)="onFocusOut()" class=" text-center" matInput type="number" placeholder="Enter amount here" [(ngModel)]="amount" (input)="onPaymentAmountChange($event, transporterDetails)" />
           </mat-form-field>
         </div>
         <!--        error message if amount not given or invalid-->
@@ -73,7 +195,7 @@
               <div class="flex items-center w-full space-x-3 py-2 px-3 bg-input rounded-lg">
                 <mat-radio-button class="text-not-black" [value]="method.name">
                 </mat-radio-button>
-                <img src="assets/svg/{{method.icon}}">
+                <img class="notPreview" src="assets/svg/{{method.icon}}">
                 <span class="text-body_title font-medium leading-body_title text-not-black">{{method.name}}</span>
               </div>
               <div *ngIf="selectedPaymentMethod === 'Bank' && method.name === 'Bank'">
@@ -128,7 +250,7 @@
                       id="mfsNumber"
                       type="text"
                       matInput
-                      placeholder="Enter Bkash Number" />
+                      placeholder="Enter Number" />
                   </mat-form-field>
                 </div>
               </div>

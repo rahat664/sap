@@ -262,13 +262,7 @@
             >
             <span
               class="text-body_title leading-body_title text-not-black font-semibold"
-            >{{ singleTrip?.challanReceivedFromDTOList[0]?.name ? singleTrip?.challanReceivedFromDTOList[0].name : (singleTrip?.paymentType === 'CASH' || singleTrip?.paymentType === 'COMMISSION' ? 'System' : 'N/A')}}</span
-            >
-            <span *ngIf="singleTrip?.challanReceivedFromDTOList?.length > 0"
-              class="text-body_title leading-body_title text-not-black font-semibold"
-            >{{
-                singleTrip?.challanReceivedFromDTOList[0]?.phoneNumber
-              }}</span
+            >{{ singleTrip?.challanStatusUpdatedBy ? singleTrip?.challanStatusUpdatedBy : (singleTrip?.paymentType === 'CASH' || singleTrip?.paymentType === 'COMMISSION' ? 'System' : 'N/A')}}</span
             >
           </div>
         </div>

@@ -657,7 +657,7 @@ export class CreateTripPageComponent implements OnInit {
     })
     this.tripForm.get('tripType').setValue(template.tripType);
     this.tripTypes.forEach(element => {
-      element.active = element.name === template.tripType;
+      element.active = element.enumName === template.tripType;
     })
     const templateLoadingPoints = template.points.filter(
       point => point.pointType === 'Loading'

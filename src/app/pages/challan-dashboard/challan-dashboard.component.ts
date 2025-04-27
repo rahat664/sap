@@ -514,13 +514,13 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   getBgColor(challanStatus: string, type: string) {
     switch (challanStatus) {
       case 'Pending':
-        return type === 'bg' ? 'bg-[#F0F3F3]' : 'text-[#066A78]';
+        return type === 'bg' ? 'bg-[#E9FCFE]' : 'text-[#066A78]';
       case 'Approved':
-        return type === 'bg' ? 'bg-[#E4F3EC]' : 'text-[#087D46]';
+        return type === 'bg' ? 'bg-[#D7F0E4]' : 'text-[#087D46]';
       case 'Rejected':
-        return type === 'bg' ? 'bg-[#F9EBE9]' : 'text-[#961801]';
+        return type === 'bg' ? 'bg-[#FFE2DD]' : 'text-[#961801]';
       case 'In-Progress':
-        return type === 'bg' ? 'bg-[#FCF5E9]' : 'text-[#D38704]';
+        return type === 'bg' ? 'bg-[#FFEED1]' : 'text-[#D38704]';
       default:
         return type === 'bg' ? 'bg-[#FCF5E9]' : 'text-[#D38704]';
     }

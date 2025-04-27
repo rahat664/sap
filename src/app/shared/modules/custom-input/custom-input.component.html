@@ -2,6 +2,7 @@
 >
   <mat-form-field  class="w-full  {{isFilterMenu ? 'filter' : ''}}" appearance="outline">
     <mat-select
+      (mouseenter)="onMouseEnter($event)"
       #select
       (selectionChange)="onClickOption($event, select)"
       [(value)]="selectedValue"

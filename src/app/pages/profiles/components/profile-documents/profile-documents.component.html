@@ -36,7 +36,7 @@
                         ).isExpired
                           ? 'text-red'
                           : 'text-not-black'
-                      }} text-body" *ngIf="doc?.expiryAvailable && !fromAddDocument"
+                      }} text-body" *ngIf="doc?.expiryAvailable && !fromAddDocument && categorizedDocuments[doc.documentType]?.length > 0"
             >{{ checkDateIsExpiredOrNot(categorizedDocuments[doc.documentType][categorizedDocuments[doc.documentType]?.length - 1]?.expiryDate).text }}</span><span
               class="{{
                         checkDateIsExpiredOrNot(getDateFromSessionStorage(doc.name)

@@ -193,6 +193,12 @@ export class DialogDataComponent implements OnInit {
           this.tripUpdateForm.get('transporterPhone').setValue('');
           this.tripUpdateForm.get('transporterCode').setValue('');
         }
+        if (transporter === 'Transporter Popup Triggered') {
+          this.tripUpdateForm.get('transporterName').setValue('');
+          this.tripUpdateForm.get('transporterPhone').setValue('');
+          this.tripUpdateForm.get('transporterCode').setValue('');
+          this.closeDialog();
+        }
       });
   }
 
@@ -228,6 +234,14 @@ export class DialogDataComponent implements OnInit {
           this.tripUpdateForm.get('registrationSerialNumber').setValue('');
           this.tripUpdateForm.get('registrationNumber').setValue('');
         }
+        if (truck === 'Truck Popup Triggered') {
+          this.tripUpdateForm.get('truckId').setValue('');
+          this.tripUpdateForm.get('registrationZone').setValue('');
+          this.tripUpdateForm.get('registrationCategory').setValue('');
+          this.tripUpdateForm.get('registrationSerialNumber').setValue('');
+          this.tripUpdateForm.get('registrationNumber').setValue('');
+          this.closeDialog();
+        }
       });
   }
 
@@ -250,6 +264,12 @@ export class DialogDataComponent implements OnInit {
           this.tripUpdateForm.get('driverCode').setValue('');
           this.tripUpdateForm.get('driverName').setValue('');
           this.tripUpdateForm.get('driverPhone').setValue('');
+        }
+        if (driver === 'Driver Popup Triggered') {
+          this.tripUpdateForm.get('driverCode').setValue('');
+          this.tripUpdateForm.get('driverName').setValue('');
+          this.tripUpdateForm.get('driverPhone').setValue('');
+          this.closeDialog();
         }
       });
   }
@@ -288,7 +308,7 @@ export class DialogDataComponent implements OnInit {
         const body: any = {};
         body.transporterCode = this.tripUpdateForm.get('transporterCode').value;
         body.transporterRate = this.tripUpdateForm.get('transporterRate').value;
-        body.source = this.tripUpdateForm.get('source').value;
+        body.sourceOfTruck = this.tripUpdateForm.get('source').value;
         body.driverCode = this.tripUpdateForm.get('driverCode').value;
         body.driverName = this.tripUpdateForm.get('driverName').value;
         body.driverPhone = this.tripUpdateForm.get('driverPhone').value;
@@ -769,14 +789,21 @@ export class DialogDataComponent implements OnInit {
   }
 
   onSelectTruckSource($event: number) {
-
-    this.tripUpdateForm.get('source').setValue(this.truckSourcePlaceholder);
     this.truckSourcePlaceholder = this.truckSourceList.find(
       option => option.id === $event
     ).value;
+    this.tripUpdateForm.get('source').setValue(this.truckSourcePlaceholder);
     this.truckSourceList.forEach(option => {
       option.selected = option.id === $event;
     });
   }
 
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
 }

@@ -60,6 +60,7 @@ export class UserModel {
   rank: Rank;
   createdAt: string;
   contactPersonNumber: string;
+  code: any;
 }
 
 export interface Rank {

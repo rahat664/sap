@@ -24,6 +24,7 @@ import { TripService } from '../../../trip-list/services/trip.service';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { ConfirmCancelComponent } from '../confirm-cancel/confirm-cancel.component';
 import { Router } from '@angular/router';
+import { ManualTrackingComponent } from '../manual-tracking/manual-tracking.component';
 
 @Component({
   selector: 'app-trip-details',
@@ -41,6 +42,7 @@ import { Router } from '@angular/router';
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
+    ManualTrackingComponent,
   ],
   templateUrl: './trip-details.component.html',
   styleUrl: './trip-details.component.scss',

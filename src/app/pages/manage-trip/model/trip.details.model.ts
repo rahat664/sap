@@ -52,10 +52,24 @@ export interface TripPoint {
 }
 
 export interface TripEvent {
+  documents: eventDocuments[];
   id: number;
   name: string;
   createdAt: string;
   updatedAt: string;
+  createdBy: string;
+  eventType: string;
+  incidentOccurred: boolean;
+  location: string;
+  note: string;
+}
+export interface eventDocuments {
+  preSignedFileUrl: any;
+  id: number;
+  fileUrl: string;
+  documentType: string;
+  relatedEntityId: number;
+  relatedEntityName: string;
 }
 
 export interface TripData {

@@ -12,8 +12,6 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { GetOutsideModalClickDirective } from '../../../shared/directive/get-outside-modal-click.directive';
-import { FallbackImagePipe } from '../../../shared/pipes/fallback-image.pipe';
-import { ImageErrorDirective } from '../../../shared/directive/image-error.directive';
 
 @Component({
   selector: 'app-sidebar',
@@ -57,6 +55,13 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
         }, 0);
       }
     });
+    this.subs = this.mobileViewService.isMobileDevice.subscribe(value => {
+      if (value) {
+        this.willShow = value
+      } else  {
+        this.willShow = value
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -92,5 +97,9 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
 
   isCustomerAdmin() {
     return localStorage.getItem('role').includes('ROLE_CUSTOMER_ADMIN');
+  }
+
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
   }
 }

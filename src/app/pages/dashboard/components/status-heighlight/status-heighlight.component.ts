@@ -87,7 +87,7 @@ export class StatusHeighlightComponent implements OnInit {
             user => user.roleName === 'ROLE_DRIVER'
           );
           this.customerStatistics = res.data.totalUsers.find(
-            customer => customer.roleName === 'ROLE_CUSTOMER_ADMIN'
+            customer => customer.roleName === 'ROLE_CUSTOMER'
           );
         }
       });

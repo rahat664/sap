@@ -5,14 +5,11 @@ import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-transporter-popup',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './transporter-popup.component.html',
   styleUrl: './transporter-popup.component.scss',
 })
@@ -57,7 +54,6 @@ export class TransporterPopupComponent implements OnInit {
       });
   }
 
-
   onSelectTransporter(transporter: any) {
     this.dialogRef.close(transporter);
   }
@@ -99,7 +95,9 @@ export class TransporterPopupComponent implements OnInit {
 
   checkIfScrollAtBottom() {
     const container = this.myScrollContainer.nativeElement;
-    const atBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 10; // Small buffer
+    const atBottom =
+      container.scrollTop + container.clientHeight >=
+      container.scrollHeight - 10; // Small buffer
 
     if (atBottom) {
       this.loadMoreData();
@@ -117,5 +115,9 @@ export class TransporterPopupComponent implements OnInit {
         this.transporterList.push(...res.data);
         this.totalPages = res.meta.totalPageCount;
       });
+  }
+
+  informParent() {
+    this.dialogRef.close('Transporter Popup Triggered')
   }
 }
