@@ -8,7 +8,7 @@
       <div class="flex justify-between w-full items-center">
         <h1 class="text-h1 leading-h1 font-semibold">Trip List</h1>
         <div class="flex space-x-2 items-center">
-          <button
+          <button *ngIf="isAdmin()"
             (click)="onClickGenerateReport()"
             class="px-16 flex space-x-4 items-center py-3 lg:py-2 border border-primary text-primary rounded-lg">
             <i
@@ -18,7 +18,7 @@
             Export in Excel
           </span>
           </button>
-          <button (click)="onClickFilterOpen()" class="flex space-x-1 cursor-pointer text-h2_medium text-primary">
+          <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1  text-h2_medium text-primary">
             <img class="notPreview" src="assets/svg/filter.svg" alt="">
             <p>Filter</p>
           </button>
@@ -26,7 +26,7 @@
       </div>
     </div>
     <div *ngIf="filterApplied" class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
-      <span class="text-xs text-not-black">Showing results for {{filterSummary}}</span>
+      <span class="text-xs text-not-black">Showing results for <span [innerHTML]="filterSummary"></span></span>
       <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
     </div>
     <!--  summary section-->
@@ -54,25 +54,27 @@
           >({{ summary.trips ? summary.trips : 0 }} trips)</span
           >
         </h1>
-        <div
-          class="flex justify-between space-x-16 items-center text-web-text-secondary py-4 px-3 border-b border-[#F0F0F0]">
-          <span>Customer Rate (CR)</span>
-          <span>{{ (summary.crs ? Math.round(summary.crs) : 0) | number }} ৳</span>
-        </div>
-        <div
-          class="flex justify-between items-center py-4 px-3 text-web-text-secondary border-b border-[#F0F0F0]">
-          <span>Transporter Rate (TR)</span>
-          <span>{{ (summary.trs ? Math.round(summary.trs) : 0) | number }} ৳</span>
-        </div>
-        <div
-          class="flex justify-between items-center text-web-text-secondary py-4 px-3 border-b border-[#F0F0F0]">
-          <span>Gross Profit (GP)</span>
-          <span>{{ (summary.gps ? Math.round(summary.gps) : 0) | number }} ৳</span>
-        </div>
-        <div
-          class="flex justify-between items-center text-web-text-secondary py-4 px-3">
-          <span>Profit Margin</span>
-          <span>{{ (summary.pms ? summary.pms : 0) | number }}%</span>
+        <div class="flex flex-col space-y-1 py-2">
+          <div
+            class="flex justify-between  items-center text-web-text-secondary py-2 px-4 rounded-lg bg-input">
+            <span>Customer Rate (CR)</span>
+            <span>{{ (summary.crs ? Math.round(summary.crs) : 0) | number }} ৳</span>
+          </div>
+          <div
+            class="flex justify-between items-center text-web-text-secondary py-2 px-4 rounded-lg bg-input">
+            <span>Transporter Rate (TR)</span>
+            <span>{{ (summary.trs ? Math.round(summary.trs) : 0) | number }} ৳</span>
+          </div>
+          <div
+            class="flex justify-between items-center text-web-text-secondary py-2 px-4 rounded-lg bg-input">
+            <span>Gross Profit (GP)</span>
+            <span>{{ (summary.gps ? Math.round(summary.gps) : 0) | number }} ৳</span>
+          </div>
+          <div
+            class="flex justify-between items-center text-web-text-secondary py-2 px-4 rounded-lg bg-input">
+            <span>Profit Margin</span>
+            <span>{{ (summary.pms ? summary.pms : 0) | number }}%</span>
+          </div>
         </div>
       </div>
       <div
@@ -254,4 +256,4 @@
     </table>
   </div>
 </div>
-<app-trip-list-filter (filterData)="onFilterData($event)" (filterApplied)="onfilterApply()" (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-trip-list-filter>
+<app-trip-list-filter (filterData)="onFilterData($event)" (filterApplied)="onFilterApply()" (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-trip-list-filter>

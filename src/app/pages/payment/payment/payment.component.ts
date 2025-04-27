@@ -272,7 +272,20 @@ export class PaymentComponent {
       );
     } else {
       this.filterApplied = false;
-      return;
+      this.loading = true
+      this.trip.getTransporterPaymentList(this.page, this.size).subscribe(
+        (res: any) => {
+          this.transportersPaymentList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.paymentData = res.data.paymentData;
+          this.totalTrips = res.data.totalItems;
+          this.loading = false;
+        },
+        (error: any) => {
+          this.loading = false;
+          console.error('Error fetching transporter payment list:', error);
+        }
+      );
     }
 
   }

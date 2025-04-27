@@ -12,12 +12,15 @@ import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
-import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
 import { MatInput } from '@angular/material/input';
 import { Subject } from 'rxjs';
 import { CustomerService } from '../../../profiles/services/customer.service';
 import { CustomerModel } from '../../../profiles/components/customer/model/customer.model';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { MatSelect } from '@angular/material/select';
 import { TripService } from '../../services/trip.service';
 import { UserService } from '../../../profiles/services/user.service';
 
@@ -74,34 +77,33 @@ export class TripListFilterComponent {
   previousFilterLength: number = 0;
   filterLength: number = 0;
   paymentStatusPlaceholder: string = '';
-  paymentStatusOptionsArray: CustomInputSelectModel[] = [
+  paymentTypeOptionsArray: CustomInputSelectModel[] = [
     {
-      id: 1,
+      id: 0,
       value: '',
       selected: true,
       showname: 'All',
     },
-    {
-      id: 2,
-      value: 'paid',
-      selected: false,
-      showname: 'Paid',
-    },
+    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
+    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
     {
       id: 3,
-      value: 'Partial',
+      value: 'CASH_AND_INVOICE',
       selected: false,
-      showname: 'Partial',
+      showname: 'Cash & Invoice',
     },
-    {
-      id: 4,
-      value: 'unpaid',
-      selected: false,
-      showname: 'Unpaid',
-    },
+    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
   ];
+  paymentTypePlaceholder: string = '';
+  paymentTypeValue: string = '';
   tripTypePlaceholder: string = '';
   tripTypeOptionsArray: CustomInputSelectModel[] = [
+    {
+      id: 0,
+      value: '',
+      selected: true,
+      showname: 'All',
+    },
     { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
     {
       id: 2,
@@ -127,6 +129,8 @@ export class TripListFilterComponent {
   searchId: any;
   tripIdSuggestions: any = [];
   tripId: any;
+  truckName: any;
+  selectedTruckValues: any = [];
 
   constructor(
     private datePipe: DatePipe,
@@ -147,6 +151,7 @@ export class TripListFilterComponent {
 
   ngOnInit() {
     this.getVehicleTypeList();
+    this.getDataFromLocalStorage();
   }
 
   onClose() {
@@ -158,17 +163,26 @@ export class TripListFilterComponent {
     const filterData = {
       startDate: this.startDate,
       endDate: this.endDate,
-      paymentStatus: this.paymentStatusPlaceholder,
-      tripType: this.tripTypePlaceholder,
+      paymentType: this.paymentTypeOptionsArray.find(
+        x => x.showname === this.paymentTypePlaceholder
+      )?.value,
+      paymentStatus: this.paymentTypePlaceholder,
+      tripType: this.tripTypeOptionsArray.find(
+        x => x.showname === this.tripTypePlaceholder
+      )?.value,
+      tripTypeName: this.tripTypePlaceholder,
       customerCode: this.customerCodes,
       customerName: this.customerNames,
       truckType: this.truckType,
+      customers: this.customers,
       transporterName: this.transporterName,
       tripId: this.tripId,
+      selectedButton: this.selectedButton,
+      selectedTruckValues: this.selectedTruckValues,
     };
-    localStorage.setItem('filterData', JSON.stringify(filterData));
-    this.filterApplied.emit(true);
+    localStorage.setItem('tripFilterData', JSON.stringify(filterData));
     this.filterData.emit(filterData);
+    this.filterApplied.emit(true);
     this.filterClosed.emit();
     this.updateOverLayStyle(false);
   }
@@ -232,6 +246,7 @@ export class TripListFilterComponent {
     this.startDate = ($event.target as HTMLInputElement).value;
     this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
   }
+
   onChangeEndDate($event: any) {
     if ($event.target.value) {
       this.endDate = ($event.target as HTMLInputElement).value;
@@ -252,9 +267,11 @@ export class TripListFilterComponent {
   }
 
   onSelectPayment($event: number) {
-    this.paymentStatusOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.paymentStatusPlaceholder =
-      this.paymentStatusOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
+    this.paymentTypePlaceholder =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
+    this.paymentTypeValue =
+      this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
   }
 
   onSelectTrip($event: number) {
@@ -282,8 +299,9 @@ export class TripListFilterComponent {
         .subscribe((company: any) => {
           this.companySuggestions = company.data.content;
           // remove selected customers from the suggestions
-          this.companySuggestions = this.companySuggestions.filter(
-            (company: any) => !this.customerCodes.includes(company.customerCode)
+          this.companySuggestions = this.companySuggestions?.filter(
+            (company: any) =>
+              !this.customerCodes?.includes(company.customerCode)
           );
           if (this.companySuggestions.length === 0) {
             this.companySuggestions.push('No customer found');
@@ -302,8 +320,8 @@ export class TripListFilterComponent {
 
   onClickCustomerSearchSuggestion(option: any) {
     this.customers.push(option);
-    this.customerCodes.push(option.customerCode);
-    this.customerNames.push(option.name);
+    this.customerCodes?.push(option.customerCode);
+    this.customerNames?.push(option.name);
     this.customerName = '';
     this.filterLength += 1;
     this.previousFilterLength += 1;
@@ -312,13 +330,13 @@ export class TripListFilterComponent {
   onClickCloseCustomer(customer: CustomerModel) {
     this.filterLength -= 1;
     this.previousFilterLength -= 1;
-    this.customerCodes = this.customerCodes.filter(
+    this.customerCodes = this.customerCodes?.filter(
       (value: any) => value !== customer.customerCode
     );
-    this.customerNames = this.customerNames.filter(
+    this.customerNames = this.customerNames?.filter(
       (value: any) => value !== customer.name
     );
-    this.customers = this.customers.filter(
+    this.customers = this.customers?.filter(
       (value: any) => value.id !== customer.id
     );
   }
@@ -333,7 +351,19 @@ export class TripListFilterComponent {
   }
 
   onChangeTruckType($event: any) {
+    this.selectedTruckValues = [];
     this.truckType = $event.value;
+    if (this.truckType) {
+      for (let i = 0; i < this.truckType.length; i++) {
+        this.vehicleTypeList.forEach((element: any) => {
+          if (element.id === this.truckType[i]) {
+            this.selectedTruckValues.push(element.name);
+          }
+        });
+      }
+    } else {
+      this.selectedTruckValues = [];
+    }
     this.filterLength = this.previousFilterLength + this.truckType?.length;
   }
 
@@ -369,6 +399,7 @@ export class TripListFilterComponent {
     this.transporterSuggestions = [];
     this.transporterSuggestions.push('No transporter found');
   }
+
   onClickTransporterSearchSuggestion(result: any) {
     this.transporterName = result.name;
     this.searchTransporter = result.name;
@@ -387,7 +418,6 @@ export class TripListFilterComponent {
   }
 
   onClickTripSearchSuggestion(option: any) {
-
     this.tripId = option.tripId;
     this.searchId = option.tripId;
     this.tripIdSuggestions = [];
@@ -416,5 +446,42 @@ export class TripListFilterComponent {
     this.tripId = '';
     this.tripIdSuggestions = [];
     this.tripIdSuggestions.push('No trip id found');
+  }
+
+  private getDataFromLocalStorage() {
+    const tripFilterData = JSON.parse(localStorage.getItem('tripFilterData'));
+    if (tripFilterData) {
+      this.startDate = tripFilterData?.startDate;
+      this.endDate = tripFilterData?.endDate;
+      this.selectedButton = tripFilterData?.selectedButton;
+      if (this.selectedButton) {
+        this.dateText = true;
+      }
+      this.paymentTypePlaceholder = tripFilterData?.paymentStatus === '' ?  'All' : tripFilterData?.paymentStatus;
+      this.tripTypePlaceholder = tripFilterData?.tripType === '' ?  'All' : tripFilterData?.tripType;
+      if (tripFilterData?.customerCode > 0) {
+        this.customerCodes = tripFilterData?.customerCode;
+        this.customerNames = tripFilterData?.customerName;
+        this.customers = tripFilterData?.customers;
+      }
+      this.customers = tripFilterData?.customers || [];
+      if (tripFilterData?.truckType?.length > 0) {
+        this.truckType = tripFilterData?.truckType;
+        if (this.truckType) {
+          for (let i = 0; i < this.truckType.length; i++) {
+            this.vehicleTypeList.forEach((element: any) => {
+              if (element.id === this.truckType[i]) {
+                this.selectedTruckValues.push(element.name);
+              }
+            });
+          }
+        }
+      }
+      this.transporterName = tripFilterData?.transporterName;
+      this.searchTransporter = tripFilterData?.transporterName;
+      this.tripId = tripFilterData?.tripId;
+      this.searchId = tripFilterData?.searchId;
+      localStorage.removeItem('tripFilterData');
+    }
   }
 }

@@ -879,42 +879,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
 
   protected readonly truckEnum = TruckDocumentType;
 
-  checkDocumentIsAvailableOrNot(tripId: string): any {
-    const loadingEvents = [];
-    const unloadingEvents = [];
-    this.trip
-      .getAllTripEvent(tripId, 'Loading')
-      .pipe(
-        mergeMap((loadingRes: any) => {
-          const loadingEvents = loadingRes.data.filter(
-            event => event.eventName === 'Upload loading challan'
-          );
-          return this.trip.getAllTripEvent(tripId, 'Unloading').pipe(
-            mergeMap((unloadingRes: any) => {
-              const unloadingEvents = unloadingRes.data.filter(
-                event => event.eventName === 'Upload unloading challan'
-              );
-              return of({ loadingEvents, unloadingEvents });
-            })
-          );
-        })
-      )
-      .subscribe(({ loadingEvents, unloadingEvents }) => {
-        const allEvents = [...loadingEvents, ...unloadingEvents];
-        //concat two event
-        // concat two tripDocuments
-        const documents = [];
-        allEvents.map(event => {
-          event.tripDocuments?.map(doc => {
-            documents.push({
-              document: doc,
-              event: event,
-            });
-          });
-        });
-        return documents.length > 0;
-      });
-  }
 
   onFileChange($event: Event, tripId: string) {
     const input = $event.target as HTMLInputElement;

@@ -13,27 +13,19 @@ import {
 } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TripService } from './services/trip.service';
-import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { DateEnum } from './Enum/date.enum';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { ButtonChipsComponent } from './modules/button-chips/button-chips.component';
 import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
-import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
 import { statusButtons } from './models/status-buttons';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 import { CustomerService } from '../profiles/services/customer.service';
 import { Trip } from '../auth/models/response/trip';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';
-import {
-  MatAutocomplete,
-  MatAutocompleteTrigger,
-  MatOption,
-} from '@angular/material/autocomplete';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+
 import { debounceTime, Subject } from 'rxjs';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
@@ -41,7 +33,6 @@ import { UserService } from '../profiles/services/user.service';
 import { PaymentType, TripType } from '../../shared/Enums/payment-type';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 import { TripListFilterComponent } from './components/trip-list-filter/trip-list-filter.component';
-import { PaymentFilterComponent } from '../payment/payment-filter/payment-filter.component';
 
 @Component({
   selector: 'app-trip-list',
@@ -64,38 +55,20 @@ import { PaymentFilterComponent } from '../payment/payment-filter/payment-filter
   styleUrls: ['./trip-list.component.scss'],
 })
 export class TripListComponent implements OnInit, AfterViewInit {
-  private transporterFilter = 0;
+  filterApplied: boolean = false;
   protected transporterName: string;
-  protected transporterSuggestions: any[];
-  transporterSearchSubject = new Subject<string>();
   filterOpened = false;
   filterForm: FormGroup;
-  isDateOpened = false;
   tripList: Trip[] = [];
   inputPlaceholder = '';
   dateOptionArray: CustomInputSelectModel[] = [];
-  paymentTypeOptionsArray: CustomInputSelectModel[] = [
-    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
-    {
-      id: 3,
-      value: 'CASH_AND_INVOICE',
-      selected: false,
-      showname: 'Cash & Invoice',
-    },
-    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
-  ];
-  paymentTypePlaceholder: string = '';
   paymentTypeValue: string = '';
   searchValue = '';
   from = '';
   to = '';
   status = '';
-  tripSuggestions: any[] = [];
-  isSearchedMenuOpened = false;
   searchName = '';
   dateFilter = 0;
-  searchFilter = 0;
   summary = {
     trips: 0,
     trs: 0,
@@ -119,24 +92,18 @@ export class TripListComponent implements OnInit, AfterViewInit {
   tripFilter = 0;
   size = 0;
   anotherStatusCalled: boolean;
-  customerCode: any;
-  truckType: string;
-  searchSubject = new Subject<string>();
-  customerSearchSubject = new Subject<string>();
+  customerCode: any[] = [];
+  truckType: any[] = [];
   searchId: any;
-  searchTransporter: any;
   paymentFilter: number = 0;
   tripTypeValue: string = '';
-  tripTypeFilter: number = 0;
+  filterData: any = {};
 
   constructor(
     private formBuilder: FormBuilder,
     private service: TripService,
     private datePipe: DatePipe,
-    private customer: CustomerService,
-    private shared: DriverEditSharedService,
     private router: Router,
-    private transporter: UserService,
     private cd: ChangeDetectorRef,
     private toaster: HandleToastrService
   ) {
@@ -145,19 +112,6 @@ export class TripListComponent implements OnInit, AfterViewInit {
       startDate: [''],
       endDate: [''],
     });
-    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performSearch(searchText);
-    });
-    this.customerSearchSubject
-      .pipe(debounceTime(1000))
-      .subscribe(searchText => {
-        this.performCustomerSearch(searchText);
-      });
-    this.transporterSearchSubject
-      .pipe(debounceTime(1000))
-      .subscribe(searchText => {
-        this.performTransporterSearch(searchText);
-      });
   }
 
   ngAfterViewInit(): void {
@@ -165,6 +119,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    localStorage.removeItem('tripFilterData')
     if (localStorage.getItem('filter')) {
       this.status = localStorage.getItem('filter') || '';
       this.statusButtons.forEach(x => (x.isActive = x.name === this.status));
@@ -183,44 +138,17 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.generateDateOptionsArray();
   }
 
-  private performTransporterSearch(searchText: string) {
-    if (searchText?.length > 0) {
-      this.transporter
-        .getTransporter(0, 100, searchText)
-        .subscribe((transporter: any) => {
-          this.transporterSuggestions = transporter.data;
-          if (this.transporterSuggestions.length === 0) {
-            this.transporterSuggestions.push('No transporter found');
-          }
-        });
-    } else {
-      this.resetTransporterSearch();
-    }
-  }
-
-  private resetTransporterSearch() {
-    this.isTripSearchedMenuOpened = false;
-    this.transporterName = '';
-    this.page = 0;
-    this.size = 30;
-    this.transporterSuggestions = [];
-    this.transporterSuggestions.push('No transporter found');
-    this.service.anotherStatusCalled.next(true);
-    this.getTripList();
-    this.transporterFilter = 0;
-  }
-
   private getTripList() {
     this.service
       .getTrips(
         this.page,
         this.size,
-        this.customerCode,
+        this.customerCode?.toString(),
         this.from,
         this.to,
         this.status,
         this.searchValue,
-        this.truckType,
+        this.truckType?.toString(),
         this.tripId,
         null,
         null,
@@ -241,51 +169,6 @@ export class TripListComponent implements OnInit, AfterViewInit {
       );
   }
 
-  onSelectDate($event: number) {
-    this.dateFilter = 1;
-    if ($event === DateEnum.Custom) {
-      this.shared.closeInputSelect.next(true);
-    } else {
-      this.shared.closeInputSelect.next(false);
-      this.inputPlaceholder =
-        this.dateOptionArray.find(x => x.id === $event)?.value || '';
-      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
-      this.setDateRange($event);
-      this.page = 0;
-      this.size = 30;
-      this.loading = true;
-      this.service.anotherStatusCalled.next(true);
-      this.getTripList();
-    }
-  }
-
-  private setDateRange(dateEnum: DateEnum) {
-    const fromDate = new Date();
-    // to date should be yesterday
-    const toDate = new Date();
-    switch (dateEnum) {
-      case DateEnum.Today:
-        fromDate.setDate(fromDate.getDate());
-        toDate.setDate(toDate.getDate());
-        break;
-      case DateEnum.LastSevenDays:
-        // shouldn't be count today
-        fromDate.setDate(fromDate.getDate() - 7);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-      case DateEnum.LastFifteenDays:
-        fromDate.setDate(fromDate.getDate() - 15);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-      case DateEnum.LastThirtyDays:
-        fromDate.setDate(fromDate.getDate() - 30);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-    }
-    this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
-    this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
-  }
-
   private generateDateOptionsArray() {
     this.dateOptionArray = [
       { id: DateEnum.Today, value: 'Today', selected: false },
@@ -296,144 +179,12 @@ export class TripListComponent implements OnInit, AfterViewInit {
     ];
   }
 
-  onSearchInputChange($event: any) {
-    const value = $event.target.value;
-    this.searchSubject.next(value); // Trigger the Subject when input changes
-  }
-
-  performSearch(value: string) {
-    if (value?.length > 0) {
-      this.customer.searchCustomer(0, 100, value).subscribe((company: any) => {
-        this.tripSuggestions = company.data.content;
-        if (this.tripSuggestions.length === 0) {
-          this.tripSuggestions.push('No customer found');
-        }
-        this.isSearchedMenuOpened = true;
-      });
-    } else {
-      this.resetSearch();
-    }
-  }
-
-  resetSearch() {
-    this.isSearchedMenuOpened = false;
-    this.customerCode = '';
-    this.searchValue = '';
-    this.page = 0;
-    this.size = 30;
-    this.tripSuggestions = ['No customer found'];
-    this.service.anotherStatusCalled.next(true);
-    this.getTripList();
-    this.searchFilter = 0;
-  }
-
-  onSelectedToDate($event: string) {
-    this.filterForm.get('endDate')?.setValue($event);
-    this.from = this.filterForm.get('startDate')?.value || '';
-    this.to = this.filterForm.get('endDate')?.value || '';
-    this.dateOpened = false;
-    this.isDateOpened = false;
-    this.page = 0;
-    this.size = 30;
-    this.service.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onSelectedFromDate($event: string) {
-    this.filterForm.get('startDate')?.setValue($event);
-  }
-
-  onClickSearchSuggestion(result: any) {
-    this.searchFilter = 1;
-    this.loading = true;
-    this.page = 0;
-    this.customerCode = result.customerCode;
-    this.searchName = result.name;
-    this.searchValue = result.name;
-    this.tripSuggestions = [];
-    this.isSearchedMenuOpened = false;
-    this.size = 30;
-    this.service.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  getFilterLength() {
-    return (
-      this.dateFilter +
-      this.searchFilter +
-      this.tripFilter +
-      this.transporterFilter +
-      this.paymentFilter +
-      this.tripTypeFilter
-    );
-  }
-
-  onClearFilter() {
-    this.paymentTypePlaceholder = '';
-    this.paymentTypeValue = '';
-    this.paymentFilter = 0;
-    this.customerCode = '';
-    this.tripId = '';
-    this.page = 0;
-    this.size = 30;
-    this.searchFilter = 0;
-    this.dateFilter = 0;
-    this.tripFilter = 0;
-    this.searchValue = '';
-    this.transporterName = '';
-    this.transporterFilter = 0;
-    this.searchName = '';
-    this.searchName = '';
-    this.from = '';
-    this.to = '';
-    this.inputPlaceholder = '';
-    this.tripTypeValue = '';
-    this.tripTypePlaceholder = '';
-    this.tripTypeFilter = 0;
-    this.tripSuggestions = [];
-    this.searchTransporter = '';
-    this.searchId = '';
-    this.filterForm.reset();
-    this.loading = true;
-    this.service.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
   onStatusClick(tripStatus: string) {
     this.loading = true;
     this.page = 0;
     this.size = 30;
     this.status = tripStatus !== 'All' ? tripStatus : '';
     this.statusButtons.forEach(x => (x.isActive = x.name === tripStatus));
-    this.service.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onKeyUpTransporterSearch($event: any) {
-    const value = $event.target.value;
-    this.transporterSearchSubject.next(value); // Trigger the Subject when input changes
-  }
-
-  onClickTransporterSearchSuggestion(result: any) {
-    this.transporterFilter = 1;
-    this.page = 0;
-    this.transporterName = result.name;
-    this.searchTransporter = result.name;
-    this.transporterSuggestions = [];
-    this.isTripSearchedMenuOpened = false;
-    this.loading = true;
-    this.service.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickClearTransporter() {
-    this.transporterName = '';
-    this.searchTransporter = '';
-    this.transporterFilter = 0;
-    this.transporterSuggestions = [];
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
     this.service.anotherStatusCalled.next(true);
     this.getTripList();
   }
@@ -454,14 +205,6 @@ export class TripListComponent implements OnInit, AfterViewInit {
       : 'N/A';
   }
 
-  onClickFilterOpened() {
-    this.filterOpened = !this.filterOpened;
-    this.dateOpened = false;
-    this.isDateOpened = false;
-    this.isSearchedMenuOpened = false;
-    this.shared.closeInputSelect.next(false);
-  }
-
   onBottom($event: boolean) {
     if (!$event) {
       this.service.anotherStatusCalled.next(false);
@@ -477,16 +220,6 @@ export class TripListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onMaxHeightCross($event: boolean) {
-    // setTimeout(() => {
-    //   if (!$event && this.totalPages > 1 && this.page < 1) {
-    //     this.page = 1;
-    //     this.loading = false;
-    //     this.getTripList();
-    //   }
-    // }, 1000);
-  }
-
   private updateTripList(trip: any) {
     this.loading = false;
     if (this.page === 0) {
@@ -498,23 +231,6 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.totalPages = trip.data.totalPages;
     this.statusButtons.forEach(x => (x.count = trip.data.statusCount[x.name]));
     this.loading = false;
-  }
-
-  onKeyUpTripSearch($event: any) {
-    const value = $event.target.value;
-    this.customerSearchSubject.next(value); // Trigger the Subject when input changes
-  }
-
-  onClickTripSearchSuggestion(result: any) {
-    this.tripFilter = 1;
-    this.page = 0;
-    this.tripId = result.tripId;
-    this.searchId = result.tripId;
-    this.tripIdSuggestions = [];
-    this.isTripSearchedMenuOpened = false;
-    this.loading = true;
-    this.service.anotherStatusCalled.next(true);
-    this.getTripList();
   }
 
   isAdmin() {
@@ -560,30 +276,6 @@ export class TripListComponent implements OnInit, AfterViewInit {
     return tripPoints.filter(trip => trip.pointType === 'Unloading');
   }
 
-  onClickClearCompany() {
-    this.searchName = '';
-    this.searchValue = '';
-    this.customerCode = '';
-    this.searchFilter = 0;
-    this.page = 0;
-    this.size = 30;
-    this.tripSuggestions = [];
-    this.loading = true;
-    this.service.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickClearTripId() {
-    this.searchId = '';
-    this.tripId = '';
-    this.page = 0;
-    this.tripIdSuggestions = [];
-    this.size = 30;
-    this.loading = true;
-    this.service.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
   protected readonly Math = Math;
   excelLoading: boolean = false;
   tripTypeOptionsArray: CustomInputSelectModel[] = [
@@ -595,36 +287,6 @@ export class TripListComponent implements OnInit, AfterViewInit {
       showname: 'Commercial Logistics',
     },
   ];
-  tripTypePlaceholder: string;
-  filterApplied: any;
-  filterSummary: string;
-
-  onSelectPayment($event: number) {
-    this.paymentFilter = 1;
-    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.paymentTypePlaceholder =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.paymentTypeValue =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
-    this.service.anotherStatusCalled.next(true);
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.getTripList();
-  }
-  onSelectTrip($event: number) {
-    this.tripTypeFilter = 1;
-    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.tripTypePlaceholder =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.tripTypeValue =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
-    this.service.anotherStatusCalled.next(true);
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.getTripList();
-  }
 
   getNameFromEnum(paymentType: string) {
     if (paymentType === PaymentType.CASH) {
@@ -637,6 +299,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
       return 'Cash & Invoice';
     }
   }
+
   getTripNameFromEnum(paymentType: string) {
     if (paymentType === TripType.COMMERCIAL) {
       return 'Commercial Logistics';
@@ -684,26 +347,110 @@ export class TripListComponent implements OnInit, AfterViewInit {
       }
     );
   }
-  updateOverLayStyle(isSpecial: boolean) {
-    const className = 'custom-overlay-bounding-box';
-    if (isSpecial) {
-      document.body.classList.add(className);
-    } else {
-      document.body.classList.remove(className);
-    }
-  }
 
   onClickFilterOpen() {
     this.filterOpened = true;
   }
 
-  onCLickClearAll() {}
+  onCLickClearAll() {
+    this.filterOpened = false;
+    this.filterApplied = false;
+    this.page = 0;
+    this.size = 30;
+    this.customerCode = [];
+    this.tripId = '';
+    this.truckType = [];
+    this.transporterName = '';
+    this.paymentTypeValue = '';
+    this.tripTypeValue = '';
+    this.from = '';
+    this.to = '';
+    this.loading = true;
+    this.tripList = [];
+    localStorage.removeItem('tripFilterData');
+    this.filterForm.reset();
+    this.getTripList();
+  }
 
   onFilterData($event: any) {
-
+    this.filterData = $event;
   }
 
-  onfilterApply() {
-
+  onFilterApply() {
+    if (
+      this.filterData?.startDate ||
+      this.filterData?.endDate ||
+      this.filterData?.paymentType ||
+      this.filterData?.tripType ||
+      this.filterData?.customerCode?.length > 0 ||
+      this.filterData?.truckType?.length > 0 ||
+      this.filterData?.tripId ||
+      this.filterData?.transporterName
+    ) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.tripList = [];
+      this.from = this.filterData.startDate;
+      this.to = this.filterData.endDate;
+      this.customerCode = this.filterData.customerCode;
+      this.tripId = this.filterData.tripId;
+      this.truckType = this.filterData.truckType;
+      this.transporterName = this.filterData.transporterName;
+      this.paymentTypeValue = this.filterData.paymentType;
+      this.tripTypeValue = this.filterData.tripType;
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.service.anotherStatusCalled.next(true);
+      this.getTripList();
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.filterApplied = false;
+      this.loading = true;
+      this.page = 0;
+      this.size = 30;
+      this.customerCode = [];
+      this.tripId = '';
+      this.truckType = [];
+      this.transporterName = '';
+      this.paymentTypeValue = '';
+      this.tripTypeValue = '';
+      this.from = '';
+      this.to = '';
+      this.filterForm.reset();
+      this.getTripList();
+    }
   }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+
+    if (this.filterData.searchName)
+      parts.push(`Company: <b>${this.filterData.searchName}</b>`);
+    if (this.filterData.transporterName)
+      parts.push(`Transporter: <b>${this.filterData.transporterName}</b>`);
+    if (this.filterData.startDate)
+      parts.push(
+        `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.endDate)
+      parts.push(
+        `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.paymentType)
+      parts.push(`Payment Type: <b>${this.filterData.paymentStatus}</b>`);
+    if (this.filterData.tripType)
+      parts.push(`Trip type: <b>${this.filterData.tripTypeName}</b>`);
+    if (this.filterData.tripId)
+      parts.push(`Trip ID: <b>${this.filterData.tripId}</b>`);
+    if (this.filterData?.customerCode?.length > 0) {
+      parts.push(`Customer Code: <b>${this.filterData.customerName?.toString()}</b>`);
+    }
+    if (this.filterData?.truckType?.length > 0) {
+      parts.push(`Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`);
+    }
+
+    return parts.join(', ');
+  }
+
 }
