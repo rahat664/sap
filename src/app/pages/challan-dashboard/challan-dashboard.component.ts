@@ -789,7 +789,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     if (this.filterData.tripId)
       parts.push(`Trip ID: <b>${this.filterData.tripId}</b>`);
     if (this.filterData?.customerCode?.length > 0) {
-      parts.push(`Customer Code: <b>${this.filterData.customerName?.toString()}</b>`);
+      parts.push(`Company: <b>${this.filterData.customerName?.toString()}</b>`);
     }
     if (this.filterData?.truckType?.length > 0) {
       parts.push(`Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`);

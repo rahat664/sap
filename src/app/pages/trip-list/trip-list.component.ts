@@ -419,9 +419,6 @@ export class TripListComponent implements OnInit, AfterViewInit {
 
   get filterSummary(): string {
     const parts: string[] = [];
-
-    if (this.filterData.searchName)
-      parts.push(`Company: <b>${this.filterData.searchName}</b>`);
     if (this.filterData.transporterName)
       parts.push(`Transporter: <b>${this.filterData.transporterName}</b>`);
     if (this.filterData.startDate)
@@ -439,7 +436,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
     if (this.filterData.tripId)
       parts.push(`Trip ID: <b>${this.filterData.tripId}</b>`);
     if (this.filterData?.customerCode?.length > 0) {
-      parts.push(`Customer Code: <b>${this.filterData.customerName?.toString()}</b>`);
+      parts.push(`Company: <b>${this.filterData.customerName?.toString()}</b>`);
     }
     if (this.filterData?.truckType?.length > 0) {
       parts.push(`Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`);

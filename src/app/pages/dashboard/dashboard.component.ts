@@ -236,7 +236,7 @@ export class DashboardComponent implements OnInit {
     if (this.filterData.tripType)
       parts.push(`Trip type: <b>${this.filterData.tripTypeName}</b>`);
     if (this.filterData?.customerCode?.length > 0) {
-      parts.push(`Customer Code: <b>${this.filterData.customerName?.toString()}</b>`);
+      parts.push(`Company: <b>${this.filterData.customerName?.toString()}</b>`);
     }
     if (this.filterData?.truckType?.length > 0) {
       parts.push(`Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`);

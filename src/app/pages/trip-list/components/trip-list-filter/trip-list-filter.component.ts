@@ -459,7 +459,7 @@ export class TripListFilterComponent {
       }
       this.paymentTypePlaceholder = tripFilterData?.paymentStatus === '' ?  'All' : tripFilterData?.paymentStatus;
       this.tripTypePlaceholder = tripFilterData?.tripType === '' ?  'All' : tripFilterData?.tripType;
-      if (tripFilterData?.customerCode > 0) {
+      if (tripFilterData?.customerCode?.length > 0) {
         this.customerCodes = tripFilterData?.customerCode;
         this.customerNames = tripFilterData?.customerName;
         this.customers = tripFilterData?.customers;
@@ -481,7 +481,6 @@ export class TripListFilterComponent {
       this.searchTransporter = tripFilterData?.transporterName;
       this.tripId = tripFilterData?.tripId;
       this.searchId = tripFilterData?.searchId;
-      localStorage.removeItem('tripFilterData');
     }
   }
 }
