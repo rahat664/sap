@@ -25,6 +25,7 @@ import { CustomerService } from '../../profiles/services/customer.service';
 import { UserCustomerAdminCreateComponent } from '../user-customer-admin-create/user-customer-admin-create.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmUpdateComponent } from '../../manage-trip/components/confirm-update/confirm-update.component';
+import { UserFilterComponent } from '../user-filter/user-filter.component';
 
 @Component({
   selector: 'app-user-management-customer-admin',
@@ -42,6 +43,7 @@ import { ConfirmUpdateComponent } from '../../manage-trip/components/confirm-upd
     NgIf,
     CommonModule,
     MatMenuTrigger,
+    UserFilterComponent,
   ],
   templateUrl: './user-management-customer-admin.component.html',
   styleUrl: './user-management-customer-admin.component.scss',
@@ -81,6 +83,8 @@ export class UserManagementCustomerAdminComponent implements OnInit {
   searchValue: string;
   departmentFilter: string;
   size = 30;
+  filterApplied: boolean = true;
+  filterData: any = {};
 
   constructor(
     private service: UserService,
@@ -98,6 +102,7 @@ export class UserManagementCustomerAdminComponent implements OnInit {
       item.selected = item.value === this.statusValue;
     });
     this.departmentFilter = '';
+    localStorage.removeItem('tripFilterData');
     this.getUserList();
   }
 
@@ -350,5 +355,60 @@ export class UserManagementCustomerAdminComponent implements OnInit {
     const phone = createdByPhone.slice(3);
     // copy the phone number to the clipboard
     this.service.copyToClipboard(phone);
+  }
+
+  onFilterData($event: any) {
+    this.filterData = $event;
+  }
+
+  onFilterApply() {
+    if (this.filterData?.status || this.filterData?.department) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.statusValue = this.filterData?.status;
+      this.departmentFilter = this.filterData?.department;
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getUserList();
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.filterApplied = false;
+      this.Users = [];
+      this.statusValue = '';
+      this.departmentFilter = '';
+      this.loading = true;
+      this.page = 0;
+      this.size = 30;
+      this.getUserList();
+    }
+  }
+  get filterSummary(): string {
+    const parts: string[] = [];
+
+    if (this.filterData.status || this.statusValue)
+      parts.push(
+        `Status: <b>${this.filterData.status ? this.filterData.status : this.statusValue}</b>`
+      );
+    if (this.filterData.department)
+      parts.push(`Department: <b>${this.filterData.department}</b>`);
+
+    return parts.join(', ');
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true;
+  }
+
+  onCLickClearAll() {
+    localStorage.removeItem('tripFilterData');
+    this.filterApplied = true;
+    this.Users = [];
+    this.statusValue = 'Active';
+    this.departmentFilter = '';
+    this.loading = true;
+    this.page = 0;
+    this.size = 30;
+    this.getUserList();
   }
 }

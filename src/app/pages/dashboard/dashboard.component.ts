@@ -7,22 +7,14 @@ import { TopTransporterComponent } from './components/top-transporter/top-transp
 import { TopCustomerComponent } from './components/top-customer/top-customer.component';
 import { Router } from '@angular/router';
 import { TransporterRateAnalysisComponent } from './components/transporter-rate-analysis/transporter-rate-analysis.component';
-import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { FormsModule } from '@angular/forms';
-import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
-import {
-  MatAutocomplete,
-  MatAutocompleteTrigger,
-  MatOption,
-} from '@angular/material/autocomplete';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { DatePipe, NgClass, NgIf } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { DateEnum } from '../trip-list/Enum/date.enum';
 import { debounceTime, Subject } from 'rxjs';
 import { CustomerService } from '../profiles/services/customer.service';
 import { ToggleResponsiveService } from '../../shared/services/toggle-responsive-services/toggle-responsive.service';
+import { DashboardFilterComponent } from './components/dashboard-filter/dashboard-filter.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,24 +26,16 @@ import { ToggleResponsiveService } from '../../shared/services/toggle-responsive
     TopTransporterComponent,
     TopCustomerComponent,
     TransporterRateAnalysisComponent,
-    CustomInputComponent,
     FormsModule,
-    GetClickEventDirective,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
-    MatFormField,
-    MatInput,
-    MatOption,
     NgIf,
-    NgClass,
+    DashboardFilterComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
   height: any;
-  filterOpened: boolean = true;
-  isDateOpened: boolean;
+  filterOpened: boolean = false;
   dateOpened: boolean;
   inputPlaceholder: string = '';
   dateOptionArray: CustomInputSelectModel[];
@@ -61,34 +45,32 @@ export class DashboardComponent implements OnInit {
   searchSubject = new Subject<string>();
   tripSuggestions: any[] = [];
   searchValue: any;
-  customerCode: any;
+  customerCode: any[] = [];
   searchName: any;
   searchFilter: number = 0;
   selectedCompanies: any[] = [];
   isDateFilterAvailable: boolean;
   isCustomerFilterAvailable: boolean;
-  paymentTypePlaceholder: string = '';
-  paymentTypeOptionsArray: CustomInputSelectModel[] = [
-    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
-    { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
-    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
-  ];
   paymentFilter: number = 0;
   paymentTypeValue: string = '';
-   tripTypeFilter: number = 0;
+  tripTypeFilter: number = 0;
   tripTypeOptionsArray: CustomInputSelectModel[] = [
-    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
-    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
+    { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
+    {
+      id: 2,
+      value: 'COMMERCIAL',
+      selected: false,
+      showname: 'Commercial Logistics',
+    },
   ];
-  tripTypePlaceholder: string = '';
-   tripTypeValue: string;
+  tripTypeValue: string;
+  filterData: any;
+  filterApplied: boolean;
 
   constructor(
     private customer: CustomerService,
     private datePipe: DatePipe,
     private router: Router,
-    private mobileViewService: ToggleResponsiveService,
   ) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performSearch(searchText);
@@ -96,6 +78,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    localStorage.removeItem('tripFilterData');
     this.isCustomerFilterAvailable = false;
     this.isDateFilterAvailable = false;
     this.generateDateOptionsArray();
@@ -105,65 +88,42 @@ export class DashboardComponent implements OnInit {
         customerCode: null,
         fromDate: null,
         toDate: null,
-      },
-      queryParamsHandling: 'merge',
-    });
-    this.selectedCompanies = [];
-    this.inputPlaceholder='';
-    this.mobileViewService.isMobileDevice.subscribe(isMobileDevice => {
-      this.filterOpened = !isMobileDevice;
-    })
-  }
-
-  @HostListener('window:popstate', ['$event'])
-  onPopState(event: any) {
-    this.onClearFilter();
-  }
-
-  getFilterLength() {
-    return this.selectedCompanies.length + this.dateFilter + this.paymentFilter + this.tripTypeFilter;
-  }
-
-  onClearFilter() {
-    this.dateOpened = false;
-    this.isDateOpened = false;
-    this.searchName = '';
-    this.searchValue = '';
-    this.customerCode = '';
-    this.inputPlaceholder = '';
-    this.paymentTypePlaceholder = '';
-    this.tripSuggestions = []
-    this.paymentTypeValue = '';
-    this.dateFilter = 0;
-    this.searchFilter = 0;
-    this.paymentFilter = 0;
-    this.isCustomerFilterAvailable = false;
-    this.selectedCompanies = [];
-    this.isDateFilterAvailable = false;
-    this.tripTypePlaceholder = '';
-    this.tripTypeValue = '';
-    this.tripTypeFilter = 0;
-    this.router.navigate([], {
-      queryParams: {
-        customerCode: null,
-        fromDate: null,
-        toDate: null,
         paymentType: null,
         tripType: null,
+        truckTypeId: null,
       },
       queryParamsHandling: 'merge',
     });
+    this.selectedCompanies = [];
+    this.inputPlaceholder = '';
+  }
+
+
+
+  getFilterLength() {
+    return (
+      this.selectedCompanies.length +
+      this.dateFilter +
+      this.paymentFilter +
+      this.tripTypeFilter
+    );
   }
 
   performSearch(value: string) {
     if (value?.length > 0) {
       this.customer.searchCustomer(0, 100, value).subscribe((company: any) => {
         this.tripSuggestions = company.data.content;
-        if (this.tripSuggestions.length > 0 && this.selectedCompanies.length > 0) {
+        if (
+          this.tripSuggestions.length > 0 &&
+          this.selectedCompanies.length > 0
+        ) {
           this.tripSuggestions = this.tripSuggestions.filter(
-            (suggestion) =>
-              !this.selectedCompanies.some((selected: any)=> selected.customerCode === suggestion.customerCode)
-          )
+            suggestion =>
+              !this.selectedCompanies.some(
+                (selected: any) =>
+                  selected.customerCode === suggestion.customerCode
+              )
+          );
         }
         if (this.tripSuggestions.length === 0) {
           this.tripSuggestions.push('No customer found');
@@ -172,16 +132,6 @@ export class DashboardComponent implements OnInit {
     } else {
       this.resetSearch();
     }
-  }
-
-  onClickFilterOpened() {
-    this.filterOpened = !this.filterOpened;
-    this.dateOpened = false;
-    this.isDateOpened = false;
-  }
-
-  onSelectedFromDate($event: string) {
-    this.fromDate = $event;
   }
 
   private generateDateOptionsArray() {
@@ -194,159 +144,17 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
-  onSelectedToDate($event: string) {
-    this.toDate = $event;
-    this.dateOpened = false;
-    this.isDateOpened = false;
-    this.isDateFilterAvailable = true;
-  }
 
-  onSelectDate($event: number) {
-    this.dateFilter = 1;
-    if ($event === DateEnum.Custom) {
-      this.isDateFilterAvailable = false;
-    } else {
-      this.inputPlaceholder =
-        this.dateOptionArray.find(x => x.id === $event)?.value || '';
-      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
-      this.setDateRange($event);
-      this.isDateFilterAvailable = true;
-    }
-  }
-
-  private setDateRange(dateEnum: DateEnum) {
-    const fromDate = new Date();
-    // to date should be yesterday
-    const toDate = new Date();
-    switch (dateEnum) {
-      case DateEnum.Today:
-        fromDate.setDate(fromDate.getDate());
-        toDate.setDate(toDate.getDate());
-        break;
-      case DateEnum.LastSevenDays:
-        // shouldn't be count today
-        fromDate.setDate(fromDate.getDate() - 7);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-      case DateEnum.LastFifteenDays:
-        fromDate.setDate(fromDate.getDate() - 15);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-      case DateEnum.LastThirtyDays:
-        fromDate.setDate(fromDate.getDate() - 30);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-    }
-    this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
-    this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
-    // set query params to the current route
-    this.router.navigate([], {
-      queryParams: {
-        fromDate: this.fromDate,
-        toDate: this.toDate,
-      },
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  onSearchInputChange($event: any) {
-    const value = $event.target.value;
-    this.searchSubject.next(value); // Trigger the Subject when input changes
-  }
 
   private resetSearch() {
     this.searchFilter = 0;
-    this.customerCode = '';
+    this.customerCode = [];
     this.searchName = '';
     this.searchValue = '';
     this.tripSuggestions = [];
   }
 
-  onClickClearCompany() {
-    this.searchFilter = 0;
-    this.customerCode = '';
-    this.searchName = '';
-    this.searchValue = '';
-    this.tripSuggestions = [];
-  }
 
-  onClickSearchSuggestion(option: any) {
-    this.searchFilter = 1;
-    this.selectedCompanies.push({
-      customerCode: option.customerCode,
-      name: option.name,
-    });
-    this.searchName = '';
-    this.tripSuggestions = [];
-    this.searchValue = '';
-    // set query params to the current route
-    this.router.navigate([], {
-      queryParams: {
-        customerCode: this.selectedCompanies
-          .map(company => company.customerCode)
-          .join(','),
-      },
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  onClickRemoveCompany(selectedCompany: any) {
-    this.selectedCompanies = this.selectedCompanies.filter(
-      company => company.customerCode !== selectedCompany.customerCode
-    );
-    // set query params to the current route
-    this.router.navigate([], {
-      queryParams: {
-        customerCode: this.selectedCompanies
-          .map(company => company.customerCode)
-          .join(','),
-      },
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  onDateEmited($event: boolean) {
-    if ($event) {
-      this.router.navigate([], {
-        queryParams: {
-          fromDate: this.fromDate,
-          toDate: this.toDate,
-        },
-        queryParamsHandling: 'merge',
-      });
-    }
-  }
-
-  onSelectPayment($event: number) {
-    this.paymentFilter = 1;
-    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.paymentTypePlaceholder =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.paymentTypeValue = this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
-    // set query params to the current route
-    this.router.navigate([], {
-      queryParams: {
-        paymentType: this.paymentTypeValue,
-      },
-      queryParamsHandling: 'merge',
-    });
-
-  }
-
-  onSelectTripType($event: number) {
-    this.tripTypeFilter = 1;
-    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.tripTypePlaceholder =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.tripTypeValue = this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
-    // set query params to the current route
-    this.router.navigate([], {
-      queryParams: {
-        tripType: this.tripTypeValue,
-      },
-      queryParamsHandling: 'merge',
-    });
-  }
 
   updateOverLayStyle(isSpecial: boolean) {
     const className = 'custom-overlay-bounding-box';
@@ -355,5 +163,110 @@ export class DashboardComponent implements OnInit {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  onFilterData($event: any) {
+    this.filterData = $event;
+  }
+
+  onFilterApply() {
+    if (
+      this.filterData?.startDate ||
+      this.filterData?.endDate ||
+      this.filterData?.paymentType ||
+      this.filterData?.tripType ||
+      this.filterData?.customerCode?.length > 0 ||
+      this.filterData?.truckType?.length > 0
+    ) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.fromDate = this.filterData.startDate;
+      this.toDate = this.filterData.endDate;
+      this.customerCode = this.filterData.customerCode;
+      this.paymentTypeValue = this.filterData.paymentType;
+      this.tripTypeValue = this.filterData.tripType;
+      this.router.navigate([], {
+        queryParams: {
+          fromDate: this.fromDate,
+          toDate: this.toDate,
+          customerCode: this.customerCode?.toString(),
+          paymentType: this.paymentTypeValue,
+          tripType: this.tripTypeValue,
+          truckTypeId: this.filterData?.truckType?.toString(),
+        },
+        queryParamsHandling: 'merge',
+      })
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.filterApplied = false;
+      this.customerCode = [];
+      this.paymentTypeValue = '';
+      this.tripTypeValue = '';
+      this.fromDate = '';
+      this.toDate = '';
+      this.router.navigate([], {
+        queryParams: {
+          fromDate: null,
+          toDate: null,
+          customerCode: null,
+          paymentType: null,
+          tripType: null,
+          truckTypeId: null,
+        },
+        queryParamsHandling: 'merge',
+      });
+    }
+  }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+
+    if (this.filterData.searchName)
+      parts.push(`Company: <b>${this.filterData.searchName}</b>`);
+    if (this.filterData.startDate)
+      parts.push(
+        `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.endDate)
+      parts.push(
+        `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.paymentType)
+      parts.push(`Payment Type: <b>${this.filterData.paymentStatus}</b>`);
+    if (this.filterData.tripType)
+      parts.push(`Trip type: <b>${this.filterData.tripTypeName}</b>`);
+    if (this.filterData?.customerCode?.length > 0) {
+      parts.push(`Customer Code: <b>${this.filterData.customerName?.toString()}</b>`);
+    }
+    if (this.filterData?.truckType?.length > 0) {
+      parts.push(`Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`);
+    }
+
+    return parts.join(', ');
+  }
+
+  onCLickClearAll() {
+    localStorage.removeItem('tripFilterData');
+    this.filterApplied = false;
+    this.customerCode = [];
+    this.paymentTypeValue = '';
+    this.tripTypeValue = '';
+    this.fromDate = '';
+    this.toDate = '';
+    this.router.navigate([], {
+      queryParams: {
+        fromDate: null,
+        toDate: null,
+        customerCode: null,
+        paymentType: null,
+        tripType: null,
+        truckTypeId: null,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true
   }
 }

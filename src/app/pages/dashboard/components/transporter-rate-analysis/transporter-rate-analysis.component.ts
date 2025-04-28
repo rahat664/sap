@@ -58,6 +58,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
   paymentType: string = '';
   tripType: string = '';
   private routerSubs: Subscription;
+  tripTypeId: any;
 
   constructor(
     private trip: TripService,
@@ -88,6 +89,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
       this.routerSubs = this.activatedRoute.queryParams.subscribe(params => {
         this.paymentType = params['paymentType'] ? params['paymentType'] : '';
         this.tripType = params['tripType'] ? params['tripType'] : '';
+        this.tripTypeId = params['tripTypeId'] ? params['tripTypeId'] : '';
         this.customerCode = params['customerCode']
           ? params['customerCode']
           : '';
@@ -235,7 +237,8 @@ export class TransporterRateAnalysisComponent implements OnInit {
         this.unloadingDistrict,
         this.customerCode,
         this.paymentType,
-        this.tripType
+        this.tripType,
+        this.tripTypeId.toString(),
       )
       .subscribe((res: any) => {
         this.parseSeriesDataAndColorsFromResponse(res.data);

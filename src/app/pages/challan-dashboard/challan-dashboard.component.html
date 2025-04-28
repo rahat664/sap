@@ -215,6 +215,7 @@
         <th class="text-left whitespace-nowrap">Trip Date</th>
         <th class="text-left" *ngIf="isAdmin()">Company</th>
         <th class="text-left">Transporter</th>
+        <th class="text-left">Vehicle Type</th>
         <th class="text-left">Truck Number</th>
         <th class="text-left whitespace-nowrap">Loading Point</th>
         <th class="text-left whitespace-nowrap">Unloading Point</th>
@@ -239,7 +240,7 @@
                 "></th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="15"></th>
+        <th class="custom-border" [colSpan]="16"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -258,6 +259,9 @@
           <td class="whitespace-nowrap">{{ trip.customerName }}</td>
           <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin()">
             {{ trip.transporterName ? trip.transporterName : 'Transporter not assigned' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.vehicleCategory?.name ? 'text-line' : ''}}" *ngIf="isAdmin()">
+            {{ trip.vehicleCategory?.name ? trip.vehicleCategory?.name : 'Vehicle not available' }}
           </td>
           <td class="whitespace-nowrap {{!trip.truck ? 'text-line' : ''}}">
             {{ getFullRegistrationNumber(trip.truck) }}
@@ -412,7 +416,7 @@
         </tr>
 
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="14">
+          <td class="text-center" [colSpan]="16">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
@@ -430,7 +434,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="14">
+          <td class="h-full" [colSpan]="16">
             <app-loading></app-loading>
           </td>
         </tr>

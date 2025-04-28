@@ -28,6 +28,8 @@ import {
   TruckDocumentType,
 } from '../../../../shared/Enums/registration_type';
 import { DateEnum } from '../../../trip-list/Enum/date.enum';
+import { TruckFilterComponent } from '../truck/truck-filter/truck-filter.component';
+import { DriverFilterComponent } from './driver-filter/driver-filter.component';
 
 @Component({
   selector: 'app-driver',
@@ -48,6 +50,8 @@ import { DateEnum } from '../../../trip-list/Enum/date.enum';
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
+    TruckFilterComponent,
+    DriverFilterComponent,
   ],
   templateUrl: './driver.component.html',
   styleUrl: './driver.component.scss',
@@ -68,6 +72,8 @@ export class DriverComponent implements OnInit {
   private to: any;
   filterForm: FormGroup;
   isDateOpened: boolean;
+  filterApplied: boolean = false;
+  filterData: any = {};
 
   constructor(
     private user: UserService,
@@ -84,7 +90,7 @@ export class DriverComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.generateDateOptionsArray()
+    this.generateDateOptionsArray();
     this.onSelectStatus(0);
     this.driverList = [];
     this.getDriverList();
@@ -146,7 +152,7 @@ export class DriverComponent implements OnInit {
   isNewOpen: any;
   singleDriver: any;
   statusInputPlaceholder: any;
-  filterOpened = true;
+  filterOpened = false;
   statusOptionsArray: CustomInputSelectModel[] = [
     { id: 0, value: 'All', selected: false },
     { id: 1, value: 'Approved', selected: false },
@@ -271,6 +277,7 @@ export class DriverComponent implements OnInit {
     // copy the phone number to the clipboard
     this.user.copyToClipboard(phone);
   }
+
   onClickFilterOpened() {
     this.filterOpened = !this.filterOpened;
   }
@@ -284,7 +291,7 @@ export class DriverComponent implements OnInit {
     this.to = '';
     this.filterForm.get('startDate')?.setValue('');
     this.filterForm.get('endDate')?.setValue('');
-    this.inputPlaceholder = ''
+    this.inputPlaceholder = '';
     this.statusInputPlaceholder = 'All';
     this.page = 0;
     this.size = 30;
@@ -506,7 +513,6 @@ export class DriverComponent implements OnInit {
     }
   }
 
-
   private setDateRange(dateEnum: DateEnum) {
     const fromDate = new Date();
     // to date should be yesterday
@@ -532,5 +538,75 @@ export class DriverComponent implements OnInit {
     }
     this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
     this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true;
+  }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+    if (this.filterData.startDate)
+      parts.push(
+        `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.endDate)
+      parts.push(
+        `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.statusInputPlaceholder)
+      parts.push(
+        `Payment Type: <b>${this.filterData.statusInputPlaceholder}</b>`
+      );
+
+    return parts.join(', ');
+  }
+
+  onFilterApply() {
+    if (
+      this.filterData?.startDate ||
+      this.filterData?.endDate ||
+      this.filterData?.statusInputPlaceholder
+    ) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.from = this.filterData.startDate;
+      this.to = this.filterData.endDate;
+      this.statusInputPlaceholder = this.filterData.statusInputPlaceholder;
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getDriverList();
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.filterApplied = false;
+      this.loading = true;
+      this.page = 0;
+      this.size = 30;
+      this.from = '';
+      this.to = '';
+      this.statusInputPlaceholder = '';
+      this.filterForm.reset();
+      this.getDriverList();
+    }
+  }
+
+  onCLickClearAll() {
+    localStorage.removeItem('tripFilterData');
+    this.filterForm.reset();
+    this.filterApplied = false;
+    this.filterData = {};
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.from = '';
+    this.to = '';
+    this.inputPlaceholder = '';
+    this.statusInputPlaceholder = '';
+    this.getDriverList();
+  }
+
+  onFilterData($event: any) {
+    this.filterData = $event;
   }
 }

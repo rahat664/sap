@@ -143,6 +143,7 @@
         <th class="text-left whitespace-nowrap">Trip Date</th>
         <th class="text-left" *ngIf="isAdmin()">Company</th>
         <th class="text-left" *ngIf="isAdmin()">Transporter</th>
+        <th class="text-left" >Vehicle Type</th>
         <th class="text-left">Loading Point</th>
         <th class="text-left">Unloading Point</th>
         <th class="text-left whitespace-nowrap">Payment Type</th>
@@ -155,7 +156,7 @@
         <th class="text-left" *ngIf="isAdmin()">Profit Margin</th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="isAdmin() ? 13 : 9"></th>
+        <th class="custom-border" [colSpan]="isAdmin() ? 14 : 10"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -176,6 +177,9 @@
           </td>
           <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin()">
             {{ trip.transporterName ? trip.transporterName : 'Not assigned' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.vehicleCategory?.name ? 'text-line' : ''}}" *ngIf="isAdmin()">
+            {{ trip.vehicleCategory?.name ? trip.vehicleCategory?.name : 'Not available' }}
           </td>
           <td class="whitespace-nowrap">
             <p>
@@ -229,7 +233,7 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="isAdmin() ? 12 : 8">
+          <td class="text-center" [colSpan]="isAdmin() ? 14 : 10">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
@@ -247,7 +251,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="isAdmin() ? 12 : 8">
+          <td class="h-full" [colSpan]="isAdmin() ? 14 : 10">
             <app-loading></app-loading>
           </td>
         </tr>

@@ -19,6 +19,8 @@ import { Router, RouterLink } from '@angular/router';
 import { DateEnum } from '../../../trip-list/Enum/date.enum';
 import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
+import { UserFilterComponent } from '../../../user-management/user-filter/user-filter.component';
+import { TransporterFilterComponent } from './transporter-filter/transporter-filter.component';
 
 @Component({
   selector: 'app-transporter',
@@ -36,6 +38,8 @@ import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/
     CustomInputComponent,
     NgClass,
     GetClickEventDirective,
+    UserFilterComponent,
+    TransporterFilterComponent,
   ],
   templateUrl: './transporter.component.html',
   styleUrl: './transporter.component.scss',
@@ -52,9 +56,10 @@ export class TransporterComponent implements OnInit {
   size = 20;
   from: string;
   to: string;
-  filterForm: FormGroup
-  inputPlaceholder: string  = '';
-  private isDateOpened: boolean;
+  filterForm: FormGroup;
+  inputPlaceholder: string = '';
+  isDateOpened: boolean;
+  filterData: any = {};
 
   constructor(
     private service: UserService,
@@ -108,6 +113,7 @@ export class TransporterComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    localStorage.removeItem('tripFilterData');
     this.page = 0;
     this.size = 20;
     this.generateDateOptionsArray();
@@ -118,7 +124,13 @@ export class TransporterComponent implements OnInit {
     this.loading = true;
     if (this.searchValue) {
       this.service
-        .getTransporter(this.page, this.size, this.searchValue, this.from, this.to)
+        .getTransporter(
+          this.page,
+          this.size,
+          this.searchValue,
+          this.from,
+          this.to
+        )
         .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.transporterList = res.data;
@@ -150,13 +162,12 @@ export class TransporterComponent implements OnInit {
     this.getTransporterList();
   }
 
-
   protected readonly Math = Math;
-  filterOpened: boolean = true;
+  filterOpened: boolean = false;
   dateFilter: number = 0;
   dateOpened: boolean;
   dateOptionArray: CustomInputSelectModel[];
-
+  filterApplied: boolean = false;
 
   copyNumber($event, createdByPhone: string) {
     $event.stopPropagation();
@@ -222,7 +233,6 @@ export class TransporterComponent implements OnInit {
     }
   }
 
-
   private setDateRange(dateEnum: DateEnum) {
     const fromDate = new Date();
     // to date should be yesterday
@@ -248,5 +258,62 @@ export class TransporterComponent implements OnInit {
     }
     this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
     this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true;
+  }
+
+  onCLickClearAll() {
+    localStorage.removeItem('tripFilterData');
+    this.filterForm.reset();
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.from = '';
+    this.to = '';
+    this.inputPlaceholder = '';
+    this.getTransporterList();
+  }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+    if (this.filterData.startDate)
+      parts.push(
+        `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.endDate)
+      parts.push(
+        `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
+      );
+
+    return parts.join(', ');
+  }
+
+  onFilterApply() {
+    if (this.filterData?.startDate || this.filterData?.endDate) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.from = this.filterData.startDate;
+      this.to = this.filterData.endDate;
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getTransporterList();
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.filterApplied = false;
+      this.loading = true;
+      this.page = 0;
+      this.size = 30;
+      this.from = '';
+      this.to = '';
+      this.filterForm.reset();
+      this.getTransporterList();
+    }
+  }
+
+  onFilterData($event: any) {
+    this.filterData = $event;
   }
 }

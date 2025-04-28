@@ -32,53 +32,15 @@
           <i class="fas fa-plus-circle"></i>
           <span class="hidden lg:block">Add Customer</span>
         </button>
+        <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1  text-h2_medium text-primary">
+          <img class="notPreview" src="assets/svg/filter.svg" alt="">
+          <p>Filter</p>
+        </button>
       </div>
     </div>
-
-    <div class="w-full bg-white rounded-lg">
-      <button
-        class="flex px-2 py-1 space-x-3 items-center w-full"
-        [ngClass]="{ 'border-b-2 border-[#0CD5F0]': filterOpened }">
-        <i
-          (click)="onClickFilterOpened()"
-          *ngIf="!filterOpened"
-          class="fas fa-caret-down text-input-hint text-xl"></i>
-        <i
-          (click)="onClickFilterOpened()"
-          *ngIf="filterOpened"
-          class="fas fa-caret-up text-input-hint text-xl"></i>
-        <span class="text-not-black text-body_title leading-body_title"
-        >Filter
-          <span  *ngIf="dateFilter"
-          >({{ dateFilter }})</span
-          >
-          <span *ngIf="dateFilter" class="text-input-hint px-3"
-          >|</span
-          >
-          <a
-            *ngIf="dateFilter"
-            (click)="onClearFilter()"
-            class="text-red"
-          >Clear all</a
-          >
-        </span>
-      </button>
-      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
-        <div class="flex flex-col space-y-1 w-[14.375rem]">
-          <label class="text-body text-web-text-secondary px-2">Date</label>
-          <app-custom-input
-            class=""
-            appGetClickEvent
-            (clickedElement)="dateOpened = $event"
-            [inputSearch]="inputPlaceholder"
-            (selectedFromDate)="onSelectedFromDate($event)"
-            (selectedToDate)="onSelectedToDate($event)"
-            (selectedFromDateToToDate)="inputPlaceholder = $event"
-            inputPlaceholder="Select Date"
-            [options]="dateOptionArray"
-            (selectedId)="onSelectDate($event)"></app-custom-input>
-        </div>
-      </div>
+    <div *ngIf="filterApplied" class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
+      <span class="text-xs text-not-black">Showing results for <span [innerHTML]="filterSummary"></span></span>
+      <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
     </div>
   </div>
   <div
@@ -194,3 +156,7 @@
     </table>
   </div>
 </div>
+
+<app-customer-filter (filterData)="onFilterData($event)" (filterApplied)="onFilterApply()" (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-customer-filter>
+
+
