@@ -159,7 +159,6 @@ export class ChallanDashboardFilterComponent {
 
   ngOnInit() {
     this.getVehicleTypeList();
-    this.getDataFromLocalStorage();
   }
 
   onClose() {
@@ -396,6 +395,7 @@ export class ChallanDashboardFilterComponent {
 
   private getVehicleTypeList() {
     this.tripService.getVehicleTypeList().subscribe((res: any) => {
+      this.getDataFromLocalStorage();
       this.vehicleTypeList = res.data;
     });
   }

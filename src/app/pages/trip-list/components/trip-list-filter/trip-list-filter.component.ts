@@ -151,7 +151,6 @@ export class TripListFilterComponent {
 
   ngOnInit() {
     this.getVehicleTypeList();
-    this.getDataFromLocalStorage();
   }
 
   onClose() {
@@ -369,6 +368,7 @@ export class TripListFilterComponent {
 
   private getVehicleTypeList() {
     this.tripService.getVehicleTypeList().subscribe((res: any) => {
+      this.getDataFromLocalStorage();
       this.vehicleTypeList = res.data;
     });
   }
