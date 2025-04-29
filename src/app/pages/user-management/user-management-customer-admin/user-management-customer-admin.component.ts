@@ -30,9 +30,7 @@ import { UserFilterComponent } from '../user-filter/user-filter.component';
 @Component({
   selector: 'app-user-management-customer-admin',
   imports: [
-    CustomInputComponent,
     DatePipe,
-    GetClickEventDirective,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
     LoadingComponent,

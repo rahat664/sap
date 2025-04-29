@@ -34,8 +34,6 @@ import { DriverFilterComponent } from './driver-filter/driver-filter.component';
 @Component({
   selector: 'app-driver',
   imports: [
-    CustomInputComponent,
-    GetClickEventDirective,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
     NgForOf,
@@ -50,7 +48,6 @@ import { DriverFilterComponent } from './driver-filter/driver-filter.component';
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
-    TruckFilterComponent,
     DriverFilterComponent,
   ],
   templateUrl: './driver.component.html',

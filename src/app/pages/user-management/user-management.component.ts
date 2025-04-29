@@ -35,7 +35,6 @@ import { UserFilterComponent } from './user-filter/user-filter.component';
   imports: [
     MatButtonModule,
     MatMenuModule,
-    CustomInputComponent,
     CommonModule,
     ReactiveFormsModule,
     DatePipe,

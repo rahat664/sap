@@ -34,8 +34,6 @@ import { TruckFilterComponent } from './truck-filter/truck-filter.component';
 @Component({
   selector: 'app-truck',
   imports: [
-    CustomInputComponent,
-    GetClickEventDirective,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
     NgForOf,
@@ -51,7 +49,6 @@ import { TruckFilterComponent } from './truck-filter/truck-filter.component';
     NgClass,
     MatMenuItem,
     MatButton,
-    UserFilterComponent,
     TruckFilterComponent,
   ],
   templateUrl: './truck.component.html',
