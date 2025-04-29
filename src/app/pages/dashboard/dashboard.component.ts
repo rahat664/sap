@@ -175,7 +175,7 @@ export class DashboardComponent implements OnInit {
       this.filterData?.endDate ||
       this.filterData?.paymentType ||
       this.filterData?.tripType ||
-      this.filterData?.customerCode?.length > 0 ||
+      this.filterData?.customerCode ||
       this.filterData?.truckType?.length > 0
     ) {
       this.filterApplied = true;

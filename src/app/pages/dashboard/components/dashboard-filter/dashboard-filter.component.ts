@@ -392,7 +392,7 @@ export class DashboardFilterComponent {
           ? 'All'
           : tripFilterData?.paymentStatus;
       this.tripTypePlaceholder =
-        tripFilterData?.tripType === '' ? 'All' : tripFilterData?.tripType;
+        tripFilterData?.tripTypeName === '' ? 'All' : tripFilterData?.tripTypeName;
       if (tripFilterData?.customerCode?.length > 0) {
         this.customerCodes = tripFilterData?.customerCode;
         this.customerNames = tripFilterData?.customerName;

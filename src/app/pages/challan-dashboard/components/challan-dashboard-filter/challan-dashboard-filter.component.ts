@@ -496,7 +496,7 @@ export class ChallanDashboardFilterComponent {
         this.dateText = true;
       }
       this.paymentTypePlaceholder = tripFilterData?.paymentStatus === '' ?  'All' : tripFilterData?.paymentStatus;
-      this.tripTypePlaceholder = tripFilterData?.tripType === '' ?  'All' : tripFilterData?.tripType;
+      this.tripTypePlaceholder = tripFilterData?.tripTypeName === '' ?  'All' : tripFilterData?.tripTypeName;
       if (tripFilterData?.customerCode?.length > 0) {
         this.customerCodes = tripFilterData?.customerCode;
         this.customerNames = tripFilterData?.customerName;
