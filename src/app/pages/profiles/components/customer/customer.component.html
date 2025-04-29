@@ -10,12 +10,12 @@
         <div class="relative">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <img src="assets/svg/search.svg" class="notPreview" alt="search"/>
+            <img src="assets/svg/search.svg" class="notPreview" alt="search" />
           </div>
-            <button
-                    (click)="onClickClear()"
-                    *ngIf="searchValue"
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <button
+            (click)="onClickClear()"
+            *ngIf="searchValue"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center">
             <i class="far fa-times text-gray-500 text-xs"></i>
           </button>
           <input
@@ -38,7 +38,8 @@
         </button>
       </div>
     </div>
-    <div *ngIf="filterApplied" class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
+    <div *ngIf="filterApplied"
+         class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
       <span class="text-xs text-not-black">Showing results for <span [innerHTML]="filterSummary"></span></span>
       <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
     </div>
@@ -51,112 +52,117 @@
     <table class="table-auto w-full rounded-lg text-body_title">
       <thead class="z-50">
       <tr class="whitespace-nowrap bg-white">
-          <th class="text-left sticky left-0 w-[20rem]  bg-white">Company name</th>
-          <th class="text-center sticky left-[20rem]  bg-white">Customer code</th>
-          <th class="whitespace-nowrap">Created On</th>
-          <th class="text-left">Contact person</th>
-          <th class="text-left">Mobile</th>
-          <th class="text-left">Email</th>
-          <th class="text-left whitespace-nowrap">Address</th>
-          <th class="text-left">No of Trips</th>
-          <th class="text-left">Gross Profit (৳)</th>
-          <th class="text-left">Rank</th>
-          <!--          <th style="width: 5%"></th>-->
+        <th class="text-left sticky left-0 w-[20rem]  bg-white">Company name</th>
+        <th class="text-center sticky left-[20rem]  bg-white">Customer code</th>
+        <th class="whitespace-nowrap">Created On</th>
+        <th class="text-left">Contact person</th>
+        <th class="text-left">Preferred Trip Type</th>
+        <th class="text-left">Mobile</th>
+        <th class="text-left">Email</th>
+        <th class="text-left whitespace-nowrap">Address</th>
+        <th class="text-left">No of Trips</th>
+        <th class="text-left">Gross Profit (৳)</th>
+        <th class="text-left">Rank</th>
+        <!--          <th style="width: 5%"></th>-->
       </tr>
       <tr>
-          <th class="custom-border" colspan="10"></th>
+        <th class="custom-border" colspan="11"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
-          <tr *ngFor="let customer of customers">
-              <td class="whitespace-nowrap sticky left-0 w-[20rem] bg-white">
-                  <div class="flex items-center space-x-4 w-full">
-                      <div
-                              class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
+        <tr *ngFor="let customer of customers">
+          <td class="whitespace-nowrap sticky left-0 w-[20rem] bg-white">
+            <div class="flex items-center space-x-4 w-full">
+              <div
+                class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
                   <span class="text-white  font-bold capitalize">{{
                       customer.name[0]
-                      }}</span>
-                      </div>
-                      <span class="flex-1">{{ customer.name }}</span>
-                  </div>
-              </td>
-              <td class="text-center sticky left-[20rem] bg-white">{{ customer.customerCode }}</td>
-              <td class="text-center whitespace-nowrap">
-                  {{
-                  customer.creationDate
-                    ? (customer.creationDate | date: 'd MMM yyyy')
-                    : ''
-                  }}
-              </td>
-              <td>
-                  <span>{{ customer?.contactPerson }}</span>
-              </td>
-              <td>
-                  <a
-                          class="cursor-pointer"
-                          (click)="copyNumber($event, customer.phone)"
-                  >{{ customer.phone }}</a
-                  >
-              </td>
-              <td>
-                  <a href="mailto:{{ customer.email }}">{{ customer.email }}</a>
-              </td>
-              <td class="whitespace-nowrap">{{ customer.address }}</td>
-              <td>
-                  {{
-                  customer.numberOfTrips != null ? customer.numberOfTrips : '0'
-                  }}
-              </td>
-              <td>
-                  {{
-                  customer.grossProfit != null
-                    ? (customer.grossProfit | number)
-                    : '0'
-                  }}
-              </td>
-              <td>
-                  {{
-                  customer.rank != null && customer.rank > 0
-                    ? customer.rank
-                    : 'N/A'
-                  }}
-              </td>
-              <!--            <td>-->
-              <!--              <i class="fas fa-ellipsis-v"></i>-->
-              <!--            </td>-->
-          </tr>
+                    }}</span>
+              </div>
+              <span class="flex-1">{{ customer.name }}</span>
+            </div>
+          </td>
+          <td class="text-center sticky left-[20rem] bg-white">{{ customer.customerCode }}</td>
+          <td class="text-center whitespace-nowrap">
+            {{
+              customer.creationDate
+                ? (customer.creationDate | date: 'd MMM yyyy')
+                : ''
+            }}
+          </td>
+          <td>
+            <span>{{ customer?.contactPerson }}</span>
+          </td>
+          <td>
+            <span>{{ customer?.tripType === 'PROJECT' ? 'Project Logistics' : 'Commercial Logistics' }}</span>
+          </td>
+          <td>
+            <a
+              class="cursor-pointer"
+              (click)="copyNumber($event, customer.phone)"
+            >{{ customer.phone }}</a
+            >
+          </td>
+          <td>
+            <a href="mailto:{{ customer.email }}">{{ customer.email }}</a>
+          </td>
+          <td class="whitespace-nowrap">{{ customer.address }}</td>
+          <td>
+            {{
+              customer.numberOfTrips !== null ? customer.numberOfTrips : '0'
+            }}
+          </td>
+          <td>
+            {{
+              customer.grossProfit !== null
+                ? (customer.grossProfit | number)
+                : '0'
+            }}
+          </td>
+          <td>
+            {{
+              customer.rank !== null && customer.rank > 0
+                ? customer.rank
+                : 'N/A'
+            }}
+          </td>
+          <!--            <td>-->
+          <!--              <i class="fas fa-ellipsis-v"></i>-->
+          <!--            </td>-->
+        </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
-          <tr *ngIf="customers?.length === 0">
-              <td class="text-center" colspan="10">
-                  <div
-                          class="w-full flex flex-col space-y-3 justify-center items-center">
-                      <img
-                              loading="lazy"
-                              src="assets/svg/no-data.svg"
-                              class="notPreview"
-                              alt="nodata"/>
-                      <p
-                              class="text-body_title leading-body_title text-secondary font-semibold">
-                          No Data Found
-                      </p>
-                  </div>
-              </td>
-          </tr>
+        <tr *ngIf="customers?.length === 0">
+          <td class="text-center" colspan="10">
+            <div
+              class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img
+                loading="lazy"
+                src="assets/svg/no-data.svg"
+                class="notPreview"
+                alt="nodata" />
+              <p
+                class="text-body_title leading-body_title text-secondary font-semibold">
+                No Data Found
+              </p>
+            </div>
+          </td>
+        </tr>
       </ng-container>
       <ng-container *ngIf="loading">
-          <tr>
-              <td class="h-full" colspan="10">
-                  <app-loading></app-loading>
-              </td>
-          </tr>
+        <tr>
+          <td class="h-full" colspan="10">
+            <app-loading></app-loading>
+          </td>
+        </tr>
       </ng-container>
       </tbody>
     </table>
   </div>
 </div>
 
-<app-customer-filter (filterData)="onFilterData($event)" (filterApplied)="onFilterApply()" (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-customer-filter>
+<app-customer-filter (filterData)="onFilterData($event)" (filterApplied)="onFilterApply()"
+                     (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-customer-filter>
 
 
