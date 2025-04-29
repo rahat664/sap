@@ -368,8 +368,8 @@ export class TripListFilterComponent {
 
   private getVehicleTypeList() {
     this.tripService.getVehicleTypeList().subscribe((res: any) => {
-      this.getDataFromLocalStorage();
       this.vehicleTypeList = res.data;
+      this.getDataFromLocalStorage();
     });
   }
 
