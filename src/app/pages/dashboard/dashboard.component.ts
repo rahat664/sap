@@ -187,12 +187,12 @@ export class DashboardComponent implements OnInit {
       this.tripTypeValue = this.filterData.tripType;
       this.router.navigate([], {
         queryParams: {
-          fromDate: this.fromDate,
-          toDate: this.toDate,
-          customerCode: this.customerCode?.toString(),
-          paymentType: this.paymentTypeValue,
-          tripType: this.tripTypeValue,
-          truckTypeId: this.filterData?.truckType?.toString(),
+          fromDate: this.fromDate ? this.fromDate : null,
+          toDate: this.toDate ? this.toDate : null,
+          customerCode: this.customerCode?.toString() ? this.customerCode?.toString() : null,
+          paymentType: this.paymentTypeValue ? this.paymentTypeValue : null,
+          tripType: this.tripTypeValue ? this.tripTypeValue : null,
+          truckTypeId: this.filterData?.truckType?.toString() ? this.filterData?.truckType?.toString() : null,
         },
         queryParamsHandling: 'merge',
       })
