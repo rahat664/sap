@@ -124,6 +124,7 @@
                 (buttonDisabled)="isButtonDisabled($event)"
                 [selectedDate]="returnToInputDate"
                 (timeChange)="onTimeChange($event)"
+                [fromModal]="true"
                 (click)="$event.stopPropagation()"></app-time-picker>
             </mat-card>
             <button
