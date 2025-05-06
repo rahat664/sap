@@ -64,6 +64,7 @@ export interface TripEvent {
   note: string;
 }
 export interface eventDocuments {
+  preSignedFileUrl: string;
   id: number;
   fileUrl: string;
   documentType: string;

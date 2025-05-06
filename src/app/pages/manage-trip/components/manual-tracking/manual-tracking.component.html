@@ -20,7 +20,7 @@
                 <div  class="grid grid-cols-3 gap-4">
                   <ng-container *ngFor="let document of manualTracking?.documents">
                     <div class="w-40 h-[7.5rem] rounded-lg overflow-hidden" >
-                      <img [src]="document?.fileUrl" class="w-full h-full object-cover" alt="image">
+                      <img [src]="document?.preSignedFileUrl" class="w-full h-full object-cover" alt="image">
                     </div>
                   </ng-container>
                 </div>
