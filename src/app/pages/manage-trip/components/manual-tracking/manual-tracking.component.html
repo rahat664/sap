@@ -2,24 +2,23 @@
   <div class="mx-48 my-8 bg-app-bg rounded-lg min-h-[63vh] overflow-y-auto" >
     <div *ngIf="manualTrackingEvents?.length > 0" class="px-20 py-14">
       <ng-container *ngFor="let manualTracking of manualTrackingEvents; index as i">
-        <div class="flex space-x-8 items-start">
-          <span class="text-sm mt-[-6px] w-1/5 font-semibold text-not-black text-body_title leading-body_title">{{ manualTracking?.createdAt | date : 'dd MMM yyy, h:mm a' }}</span>
-          <div class="relative  pl-6 {{i === manualTrackingEvents?.length - 1 ? 'border-transparent' : 'border-green'}} border-l-2 border-dotted border-green pb-6">
+        <div class="grid grid-cols-4 gap-4 items-start">
+          <span class="text-sm mt-[-6px]  font-semibold text-not-black text-body_title leading-body_title">{{ manualTracking?.createdAt | date : 'dd MMM yyy, h:mm a' }}</span>
+          <div class="relative col-span-3  pl-6 {{i === manualTrackingEvents?.length - 1 ? 'border-transparent' : 'border-green'}} border-l-2 border-dotted border-green pb-6">
             <div *ngIf="!manualTracking?.incidentOccurred" class="absolute left-[-5px] top-0 bg-white rounded-full ring ring-green w-2 h-2"></div>
             <div *ngIf="manualTracking?.incidentOccurred" class="absolute left-[-9px] top-[-4px]">
               <img src="./assets/svg/siren.svg" class="notPreview" alt="red-alert">
             </div>
             <div class="flex mt-[-10px] flex-col space-y-1 text-start">
-            <span class="font-semibold text-lg text-gray-800">{{
-                manualTracking?.location ? manualTracking?.location : 'No location'
-              }}</span>
-              <p class="text-sm line-clamp-2 {{manualTracking?.incidentOccurred ? 'text-red' : 'text-web-text-secondary'}}">{{
+            <span class="font-semibold text-lg text-not-black text-body_title leading-body_title">{{manualTracking?.location ? manualTracking?.location : 'No location'}}</span>
+              <p class="text-sm {{manualTracking?.incidentOccurred ? 'text-red' : 'text-web-text-secondary'}}">{{
                   manualTracking?.note ? manualTracking?.note : 'No note'
                 }}</p>
               <ng-container *ngIf="manualTracking?.documents && manualTracking?.documents?.length > 0">
-                <div  class="grid grid-cols-3 gap-4">
+                <div  class="grid grid-cols-2 gap-4">
                   <ng-container *ngFor="let document of manualTracking?.documents">
-                    <div class="w-40 h-[7.5rem] rounded-lg overflow-hidden" >
+
+                    <div class="w-40 h-[7.5rem] rounded-lg overflow-hidden border border-line" >
                       <img [src]="document?.preSignedFileUrl" class="w-full h-full object-cover" alt="image">
                     </div>
                   </ng-container>

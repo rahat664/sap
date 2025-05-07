@@ -199,9 +199,6 @@
             <h1
               class="text-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod }}</h1>
           </div>
-          <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
-            <i class="fal fa-angle-down text-xl"></i>
-          </button>
         </div>
         <div class="py-3 px-12 grid grid-cols-2 gap-4 bg-[#FDFFFF]">
           <div class="flex flex-col space-y-1 col-span-2">
@@ -234,9 +231,6 @@
               <h1
                 class="text-body_title font-semibold text-not-black">Bank</h1>
             </div>
-            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
-              <i class="fal fa-angle-down text-xl"></i>
-            </button>
           </div>
           <div class="{{preferredPaymentMethod === 'Bank' ? 'py-3' : 'py-1'}} px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
             <ng-container *ngIf="preferredPaymentMethod === 'Bank'">
@@ -297,9 +291,6 @@
               <h1
                 class="text-body_title font-semibold text-not-black">MFS</h1>
             </div>
-            <button type="button" class="w-5 h-5 rounded-sm flex justify-center items-center">
-              <i class="fal fa-angle-down text-xl"></i>
-            </button>
           </div>
           <div class="{{preferredPaymentMethod === 'MFS' ? 'py-3' : 'py-1'}} px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
             <ng-container *ngIf="preferredPaymentMethod === 'MFS'">
