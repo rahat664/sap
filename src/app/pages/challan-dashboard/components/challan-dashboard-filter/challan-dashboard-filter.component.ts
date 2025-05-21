@@ -38,8 +38,6 @@ import { TruckService } from '../../../profiles/components/truck/services/truck.
     NgIf,
     MatDateRangeInput,
     MatFormFieldModule,
-    CustomInputComponent,
-    GetClickEventDirective,
     MatAutocomplete,
     MatInput,
     MatAutocompleteTrigger,

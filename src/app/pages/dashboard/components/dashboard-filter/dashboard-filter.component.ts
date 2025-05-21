@@ -1,12 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ChallanDashboardFilterComponent } from '../../../challan-dashboard/components/challan-dashboard-filter/challan-dashboard-filter.component';
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
-import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
-import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
-import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
-import { MatMenu, MatMenuItem } from '@angular/material/menu';
-import { RouterLink } from '@angular/router';
-import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import {
@@ -19,8 +13,6 @@ import {
   MatDatepickerToggle,
   MatDateRangeInput,
   MatDateRangePicker,
-  MatEndDate,
-  MatStartDate,
 } from '@angular/material/datepicker';
 import { MatInput, MatSuffix } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -49,8 +41,6 @@ import { CustomerModel } from '../../../profiles/components/customer/model/custo
     NgIf,
     MatDateRangeInput,
     MatFormFieldModule,
-    CustomInputComponent,
-    GetClickEventDirective,
     MatAutocomplete,
     MatInput,
     MatAutocompleteTrigger,

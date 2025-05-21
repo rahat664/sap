@@ -52,7 +52,7 @@
       </mat-menu>
     </div>
   </div>
-  <div *ngIf="!minimized && !expanded" class="border-t border-line">
+  <div *ngIf="!minimized && !expanded" class="{{expanded ? '' : 'border-t'}} border-line">
     <div class="flex justify-between items-center px-6 py-4">
       <h1 class="text-body text-secondary">Trip timeline</h1>
       <div class="flex space-x-3">
@@ -181,7 +181,7 @@
       </div>
     </div>
   </div>
-  <div class="border-t border-line">
+  <div >
     <div *ngIf="expanded && !minimized" class="px-[3.75rem] py-2">
       <div class="border border-line rounded-lg">
         <mat-tab-group>

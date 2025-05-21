@@ -38,8 +38,6 @@ import { UserService } from '../../../profiles/services/user.service';
     NgIf,
     MatDateRangeInput,
     MatFormFieldModule,
-    CustomInputComponent,
-    GetClickEventDirective,
     MatAutocomplete,
     MatInput,
     MatAutocompleteTrigger,

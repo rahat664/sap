@@ -57,8 +57,6 @@ import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom
     ReactiveFormsModule,
     MatSelect,
     FormsModule,
-    CustomInputComponent,
-    GetClickEventDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
