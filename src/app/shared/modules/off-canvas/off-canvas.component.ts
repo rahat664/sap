@@ -300,7 +300,7 @@ export class OffCanvasComponent {
   }
 
   isButtonDisabled($event: boolean) {
-    this.isDisabled = $event;
+    this.isDisabled = $event
   }
   onTimeChange($event: any) {
     this.time = $event;

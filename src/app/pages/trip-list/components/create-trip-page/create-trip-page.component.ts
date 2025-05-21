@@ -647,8 +647,8 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm
       .get('truckCapacityInTon')
       .setValue(template.truckCapacityInTon);
-    this.tripForm.get('goodsId').setValue(template.good.id);
-    this.tripForm.get('goodsName').setValue(template.good.name);
+    this.tripForm.get('goodsId').setValue(template.good?.id);
+    this.tripForm.get('goodsName').setValue(template.good?.name);
     this.tripForm.get('customerRate').setValue(template.customerRate);
     this.tripForm.get('note').setValue(template.note);
     this.tripForm.get('paymentType').setValue(template.paymentType);
