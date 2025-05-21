@@ -183,8 +183,8 @@ export class DashboardComponent implements OnInit {
       this.fromDate = this.filterData.startDate;
       this.toDate = this.filterData.endDate;
       this.customerCode = this.filterData.customerCode;
-      this.paymentTypeValue = this.filterData.paymentType;
-      this.tripTypeValue = this.filterData.tripType;
+      this.paymentTypeValue = this.filterData.paymentType?.toString();
+      this.tripTypeValue = this.filterData.tripType?.toString();
       this.router.navigate([], {
         queryParams: {
           fromDate: this.fromDate ? this.fromDate : null,
@@ -231,10 +231,10 @@ export class DashboardComponent implements OnInit {
       parts.push(
         `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
       );
-    if (this.filterData.paymentType)
-      parts.push(`Payment Type: <b>${this.filterData.paymentStatus}</b>`);
-    if (this.filterData.tripType)
-      parts.push(`Trip type: <b>${this.filterData.tripTypeName}</b>`);
+    if (this.filterData?.paymentType?.length > 0)
+      parts.push(`Payment Type: <b>${this.filterData.selectedPaymentValue.toString()}</b>`);
+    if (this.filterData.tripType?.length > 0)
+      parts.push(`Trip type: <b>${this.filterData.selectedTripValue.toString()}</b>`);
     if (this.filterData?.customerCode?.length > 0) {
       parts.push(`Company: <b>${this.filterData.customerName?.toString()}</b>`);
     }

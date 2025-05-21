@@ -78,12 +78,6 @@ export class TripListFilterComponent {
   filterLength: number = 0;
   paymentStatusPlaceholder: string = '';
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
-    {
-      id: 0,
-      value: '',
-      selected: true,
-      showname: 'All',
-    },
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
     { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
     {
@@ -98,12 +92,6 @@ export class TripListFilterComponent {
   paymentTypeValue: string = '';
   tripTypePlaceholder: string = '';
   tripTypeOptionsArray: CustomInputSelectModel[] = [
-    {
-      id: 0,
-      value: '',
-      selected: true,
-      showname: 'All',
-    },
     { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
     {
       id: 2,
@@ -131,6 +119,8 @@ export class TripListFilterComponent {
   tripId: any;
   truckName: any;
   selectedTruckValues: any = [];
+  private selectedTripValue: any[] = [];
+  private selectedPaymentValue: any[] = [];
 
   constructor(
     private datePipe: DatePipe,
@@ -162,14 +152,8 @@ export class TripListFilterComponent {
     const filterData = {
       startDate: this.startDate,
       endDate: this.endDate,
-      paymentType: this.paymentTypeOptionsArray.find(
-        x => x.showname === this.paymentTypePlaceholder
-      )?.value,
-      paymentStatus: this.paymentTypePlaceholder,
-      tripType: this.tripTypeOptionsArray.find(
-        x => x.showname === this.tripTypePlaceholder
-      )?.value,
-      tripTypeName: this.tripTypePlaceholder,
+      tripType: this.tripTypeValue,
+      paymentType: this.paymentTypeValue,
       customerCode: this.customerCodes,
       customerName: this.customerNames,
       truckType: this.truckType,
@@ -178,6 +162,8 @@ export class TripListFilterComponent {
       tripId: this.tripId,
       selectedButton: this.selectedButton,
       selectedTruckValues: this.selectedTruckValues,
+      selectedTripValue: this.selectedTripValue,
+      selectedPaymentValue: this.selectedPaymentValue,
     };
     localStorage.setItem('tripFilterData', JSON.stringify(filterData));
     this.filterData.emit(filterData);
@@ -457,8 +443,6 @@ export class TripListFilterComponent {
       if (this.selectedButton) {
         this.dateText = true;
       }
-      this.paymentTypePlaceholder = tripFilterData?.paymentStatus === '' ?  'All' : tripFilterData?.paymentStatus;
-      this.tripTypePlaceholder = tripFilterData?.tripTypeName === '' ?  'All' : tripFilterData?.tripTypeName;
       if (tripFilterData?.customerCode?.length > 0) {
         this.customerCodes = tripFilterData?.customerCode;
         this.customerNames = tripFilterData?.customerName;
@@ -477,10 +461,66 @@ export class TripListFilterComponent {
           }
         }
       }
+      if (tripFilterData?.paymentType?.length > 0) {
+        this.paymentTypeValue = tripFilterData?.paymentType;
+        if (this.paymentTypeValue) {
+          for (let i = 0; i < this.paymentTypeValue.length; i++) {
+            this.paymentTypeOptionsArray.forEach((element: any) => {
+              if (element.id === this.paymentTypeValue[i]) {
+                this.selectedPaymentValue.push(element.showname);
+              }
+            });
+          }
+        }
+      }
+
+      if (tripFilterData?.tripType?.length > 0) {
+        this.tripTypeValue = tripFilterData?.tripType;
+        if (this.tripTypeValue) {
+          for (let i = 0; i < this.tripTypeValue.length; i++) {
+            this.tripTypeOptionsArray.forEach((element: any) => {
+              if (element.id === this.tripTypeValue[i]) {
+                this.selectedTripValue.push(element.showname);
+              }
+            });
+          }
+        }
+      }
       this.transporterName = tripFilterData?.transporterName;
       this.searchTransporter = tripFilterData?.transporterName;
       this.tripId = tripFilterData?.tripId;
       this.searchId = tripFilterData?.searchId;
+    }
+  }
+
+  onChangePaymentType($event: any) {
+    this.selectedPaymentValue = [];
+    this.paymentTypeValue = $event.value;
+    if (this.paymentTypeValue) {
+      for (let i = 0; i < this.paymentTypeValue.length; i++) {
+        this.paymentTypeOptionsArray.forEach((element: any) => {
+          if (element.value === this.paymentTypeValue[i]) {
+            this.selectedPaymentValue.push(element.showname);
+          }
+        });
+      }
+    } else {
+      this.selectedPaymentValue = [];
+    }
+  }
+  onChangeTripType($event: any) {
+    this.selectedTripValue = [];
+    this.tripTypeValue = $event.value;
+    if (this.tripTypeValue) {
+      for (let i = 0; i < this.tripTypeValue.length; i++) {
+        this.tripTypeOptionsArray.forEach((element: any) => {
+          if (element.value === this.tripTypeValue[i]) {
+            this.selectedTripValue.push(element.showname);
+          }
+        });
+      }
+    } else {
+      this.selectedTripValue = [];
     }
   }
 }

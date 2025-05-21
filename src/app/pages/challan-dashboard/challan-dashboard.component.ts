@@ -225,12 +225,12 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       .getTrips(
         this.page,
         this.size,
-        this.customerCode.toString(),
+        this.customerCode?.toString(),
         null,
         null,
         this.status,
         this.tripId,
-        this.truckType.toString(),
+        this.truckType?.toString(),
         null,
         this.chalanStatus,
         this.challanHardCopyReceived,
@@ -238,7 +238,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         this.to,
         this.truckRegistrationId,
         this.transporterName,
-        this.paymentTypeValue,
+        this.paymentTypeValue?.toString(),
         this.tripTypeValue
       )
       .subscribe(
@@ -720,8 +720,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     if (
       this.filterData?.startDate ||
       this.filterData?.endDate ||
-      this.filterData?.paymentType ||
-      this.filterData?.tripType ||
+      this.filterData?.paymentType?.length > 0 ||
+      this.filterData?.tripType?.length > 0 ||
       this.filterData?.customerCode?.length > 0 ||
       this.filterData?.truckType?.length > 0 ||
       this.filterData?.tripId ||
@@ -737,8 +737,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.tripId = this.filterData.tripId;
       this.truckType = this.filterData.truckType;
       this.transporterName = this.filterData.transporterName;
-      this.paymentTypeValue = this.filterData.paymentType;
-      this.tripTypeValue = this.filterData.tripType;
+      this.paymentTypeValue = this.filterData.paymentType.toString();
+      this.tripTypeValue = this.filterData.tripType.toString();
       this.truckRegistrationId = this.filterData.truckRegistrationId;
       this.page = 0;
       this.size = 30;
@@ -782,10 +782,10 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       parts.push(
         `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
       );
-    if (this.filterData.paymentType)
-      parts.push(`Payment Type: <b>${this.filterData.paymentStatus}</b>`);
-    if (this.filterData.tripType)
-      parts.push(`Trip type: <b>${this.filterData.tripTypeName}</b>`);
+    if (this.filterData?.paymentType?.length > 0)
+      parts.push(`Payment Type: <b>${this.filterData.selectedPaymentValue?.toString()}</b>`);
+    if (this.filterData?.tripType?.length > 0)
+      parts.push(`Trip type: <b>${this.filterData.selectedTripValue?.toString()}</b>`);
     if (this.filterData.tripId)
       parts.push(`Trip ID: <b>${this.filterData.tripId}</b>`);
     if (this.filterData?.customerCode?.length > 0) {
@@ -799,7 +799,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         `Truck Registration ID: <b>${this.filterData.truckRegistrationId}</b>`
       );
     }
-
     return parts.join(', ');
   }
 

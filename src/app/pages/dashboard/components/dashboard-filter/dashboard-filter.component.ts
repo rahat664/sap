@@ -86,12 +86,6 @@ export class DashboardFilterComponent {
   filterLength: number = 0;
   paymentStatusPlaceholder: string = '';
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
-    {
-      id: 0,
-      value: '',
-      selected: true,
-      showname: 'All',
-    },
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
     { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
     {
@@ -106,12 +100,6 @@ export class DashboardFilterComponent {
   paymentTypeValue: string = '';
   tripTypePlaceholder: string = '';
   tripTypeOptionsArray: CustomInputSelectModel[] = [
-    {
-      id: 0,
-      value: '',
-      selected: true,
-      showname: 'All',
-    },
     { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
     {
       id: 2,
@@ -137,12 +125,10 @@ export class DashboardFilterComponent {
   searchId: any;
   tripIdSuggestions: any = [];
   tripId: any;
-  truckName: any;
   selectedTruckValues: any = [];
-  truckSearchSubject = new Subject<string>();
-  truckRegSuggestions: any[] = [];
   truckRegistrationId: string;
-  searchRegistationId: any;
+  private selectedTripValue: any[] = [];
+  private selectedPaymentValue: any[] = [];
 
   constructor(
     private datePipe: DatePipe,
@@ -164,25 +150,53 @@ export class DashboardFilterComponent {
     this.filterClosed.emit();
   }
 
+  onChangePaymentType($event: any) {
+    this.selectedPaymentValue = [];
+    this.paymentTypeValue = $event.value;
+    if (this.paymentTypeValue) {
+      for (let i = 0; i < this.paymentTypeValue.length; i++) {
+        this.paymentTypeOptionsArray.forEach((element: any) => {
+          if (element.value === this.paymentTypeValue[i]) {
+            this.selectedPaymentValue.push(element.showname);
+          }
+        });
+      }
+    } else {
+      this.selectedPaymentValue = [];
+    }
+  }
+  onChangeTripType($event: any) {
+    this.selectedTripValue = [];
+    this.tripTypeValue = $event.value;
+    if (this.tripTypeValue) {
+      for (let i = 0; i < this.tripTypeValue.length; i++) {
+        this.tripTypeOptionsArray.forEach((element: any) => {
+          if (element.value === this.tripTypeValue[i]) {
+            this.selectedTripValue.push(element.showname);
+          }
+        });
+      }
+    } else {
+      this.selectedTripValue = [];
+    }
+  }
+
+
   onApplyFilter() {
     // emit the filter data and store it to local storage
     const filterData = {
       startDate: this.startDate,
       endDate: this.endDate,
-      paymentType: this.paymentTypeOptionsArray.find(
-        x => x.showname === this.paymentTypePlaceholder
-      )?.value,
-      paymentStatus: this.paymentTypePlaceholder,
-      tripType: this.tripTypeOptionsArray.find(
-        x => x.showname === this.tripTypePlaceholder
-      )?.value,
-      tripTypeName: this.tripTypePlaceholder,
+      paymentType: this.paymentTypeValue,
+      tripType: this.tripTypeValue,
       customerCode: this.customerCodes,
       customerName: this.customerNames,
       truckType: this.truckType,
       customers: this.customers,
       selectedButton: this.selectedButton,
       selectedTruckValues: this.selectedTruckValues,
+      selectedPaymentValue: this.selectedPaymentValue,
+      selectedTripValue: this.selectedTripValue,
     };
     localStorage.setItem('tripFilterData', JSON.stringify(filterData));
     this.filterData.emit(filterData);
@@ -406,6 +420,31 @@ export class DashboardFilterComponent {
             this.vehicleTypeList.forEach((element: any) => {
               if (element.id === this.truckType[i]) {
                 this.selectedTruckValues.push(element.name);
+              }
+            });
+          }
+        }
+      }
+      if (tripFilterData?.paymentType?.length > 0) {
+        this.paymentTypeValue = tripFilterData?.paymentType;
+        if (this.paymentTypeValue) {
+          for (let i = 0; i < this.paymentTypeValue.length; i++) {
+            this.paymentTypeOptionsArray.forEach((element: any) => {
+              if (element.id === this.paymentTypeValue[i]) {
+                this.selectedPaymentValue.push(element.showname);
+              }
+            });
+          }
+        }
+      }
+
+      if (tripFilterData?.tripType?.length > 0) {
+        this.tripTypeValue = tripFilterData?.tripType;
+        if (this.tripTypeValue) {
+          for (let i = 0; i < this.tripTypeValue.length; i++) {
+            this.tripTypeOptionsArray.forEach((element: any) => {
+              if (element.id === this.tripTypeValue[i]) {
+                this.selectedTripValue.push(element.showname);
               }
             });
           }

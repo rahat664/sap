@@ -51,23 +51,39 @@
             </mat-form-field>
           </ng-container>
         </div>
-        <div class="flex flex-col space-y-2 w-full">
-          <label class="text-body text-web-text-secondary ">Payment Type</label>
-          <app-custom-input
-            appGetClickEvent
-            [inputSearch]="paymentTypePlaceholder"
-            [options]="paymentTypeOptionsArray"
-            inputPlaceholder="Select Payment type"
-            (selectedId)="onSelectPayment($event)"></app-custom-input>
+        <div class="flex flex-col space-y-1 w-full">
+          <label class="text-base text-secondary">Payment Type</label>
+          <mat-form-field appearance="outline" class="filter">
+            <mat-select
+              [(ngModel)]="paymentTypeValue"
+              (selectionChange)="onChangePaymentType($event)"
+              multiple
+              placeholder="Choose Payment Type">
+              @for (paymentType of paymentTypeOptionsArray; track paymentType) {
+                <mat-option [value]="paymentType.value">{{
+                    paymentType.showname
+                  }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
         </div>
-        <div class="flex flex-col space-y-2 w-full">
-          <label class="text-body text-web-text-secondary">Trip Type</label>
-          <app-custom-input
-            appGetClickEvent
-            [inputSearch]="tripTypePlaceholder"
-            [options]="tripTypeOptionsArray"
-            inputPlaceholder="Select Trip type"
-            (selectedId)="onSelectTrip($event)"></app-custom-input>
+        <div class="flex flex-col space-y-1 w-full">
+          <label class="text-base text-secondary">Trip Type</label>
+          <mat-form-field appearance="outline" class="filter">
+            <mat-select
+              [(ngModel)]="tripTypeValue"
+              (selectionChange)="onChangeTripType($event)"
+              multiple
+              placeholder="Choose Trip Type">
+              @for (tripType of tripTypeOptionsArray; track tripType) {
+                <mat-option [value]="tripType.value">{{
+                    tripType.showname
+                  }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
         </div>
         <div class="flex flex-col space-y-2 w-full">
           <label class="text-base text-secondary">Company name</label>
