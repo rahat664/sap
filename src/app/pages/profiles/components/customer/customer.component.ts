@@ -52,7 +52,7 @@ export class CustomerComponent implements OnInit {
   private isDateOpened: boolean;
   dateOptionArray: CustomInputSelectModel[];
   filterApplied: boolean = false;
-   filterData: any = {};
+  filterData: any = {};
 
   constructor(
     private service: CustomerService,
@@ -82,6 +82,7 @@ export class CustomerComponent implements OnInit {
       { id: DateEnum.Custom, value: 'Custom', selected: false },
     ];
   }
+
   getCustomer() {
     this.loading = true;
     this.service
@@ -245,6 +246,7 @@ export class CustomerComponent implements OnInit {
     this.size = 30;
     this.getCustomer();
   }
+
   onSelectDate($event: number) {
     this.dateFilter = 1;
     if ($event === DateEnum.Custom) {
@@ -322,14 +324,11 @@ export class CustomerComponent implements OnInit {
   }
 
   onFilterData($event: any) {
-    this.filterData =  $event;
+    this.filterData = $event;
   }
 
   onFilterApply() {
-    if (
-      this.filterData?.startDate ||
-      this.filterData?.endDate
-    ) {
+    if (this.filterData?.startDate || this.filterData?.endDate) {
       this.filterApplied = true;
       this.filterOpened = false;
       this.customers = [];
@@ -349,6 +348,23 @@ export class CustomerComponent implements OnInit {
       this.to = '';
       this.filterForm.reset();
       this.getCustomer();
+    }
+  }
+
+  getPaymentTypeName(paymentType: string | undefined) {
+    if (paymentType) {
+      switch (paymentType) {
+        case 'CASH':
+          return 'Cash';
+        case 'COMMISSION':
+          return 'Commission';
+        case 'INVOICE':
+          return 'Invoice';
+        default:
+          return 'Cash & Invoice';
+      }
+    } else {
+      return 'Not available';
     }
   }
 }

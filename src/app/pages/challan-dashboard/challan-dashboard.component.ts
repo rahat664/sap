@@ -230,7 +230,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         null,
         this.status,
         this.tripId,
-        null,
+        this.truckType.toString(),
         null,
         this.chalanStatus,
         this.challanHardCopyReceived,

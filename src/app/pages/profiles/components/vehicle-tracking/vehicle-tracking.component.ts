@@ -366,7 +366,7 @@ export class VehicleTrackingComponent implements OnInit {
         '',
         null,
         true,
-        null,
+        this.transporterName,
         this.condition !== 'All' ? this.condition : ''
       )
       .subscribe((truck: any) => {

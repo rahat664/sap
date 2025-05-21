@@ -57,6 +57,7 @@
         <th class="whitespace-nowrap">Created On</th>
         <th class="text-left">Contact person</th>
         <th class="text-left">Preferred Trip Type</th>
+        <th class="text-left">Preferred Payment Type</th>
         <th class="text-left">Mobile</th>
         <th class="text-left">Email</th>
         <th class="text-left whitespace-nowrap">Address</th>
@@ -96,6 +97,9 @@
           </td>
           <td>
             <span>{{ customer?.tripType === 'PROJECT' ? 'Project Logistics' : 'Commercial Logistics' }}</span>
+          </td>
+          <td>
+            <span>{{getPaymentTypeName(customer?.preferredPaymentType)}}</span>
           </td>
           <td>
             <a

@@ -125,6 +125,12 @@ export class TemplateCreateComponent implements OnInit {
       this.tripTypes.forEach((tripType) => {
         tripType.active = tripType.enumName === this.selectedCustomer.tripType;
       })
+      this.templateForm.get('paymentType').setValue(
+        this.selectedCustomer.preferredPaymentType
+      )
+      this.paymentType.forEach((paymentType) => {
+        paymentType.active = paymentType.enumName === this.selectedCustomer.preferredPaymentType;
+      })
     }
   }
 
@@ -180,7 +186,11 @@ export class TemplateCreateComponent implements OnInit {
           if (res.status === 'OK') {
             this.handleToaster.showSuccess('Template created successfully');
             this.router.navigate(['/trip-create/customerselection']);
+          } else {
+            this.handleToaster.showError(res.message);
           }
+        }, error => {
+          this.handleToaster.showError(error.error.message);
         });
     }
   }

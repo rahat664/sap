@@ -339,6 +339,7 @@ export class UserManagementComponent implements OnInit {
     localStorage.removeItem('tripFilterData');
     this.filterApplied = true;
     this.Users = [];
+    this.filterData = {};
     this.statusValue = 'Active';
     this.departmentFilter = '';
     this.loading = true;

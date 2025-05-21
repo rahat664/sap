@@ -17,4 +17,5 @@ export class CustomerModel {
   rank: number;
   numberOfTrips: string;
   tripType: string;
+  preferredPaymentType: string;
 }
