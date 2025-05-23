@@ -352,6 +352,9 @@ body.custom-overlay-bounding-box {
   .cdk-overlay-connected-position-bounding-box {
     height: auto !important;
     width: auto !important;
+    .mat-mdc-select-panel {
+      overflow: visible !important;
+    }
   }
 }
 
