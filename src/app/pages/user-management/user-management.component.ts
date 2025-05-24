@@ -114,13 +114,6 @@ export class UserManagementComponent implements OnInit {
     this.roleInputPlaceholder = '';
     this.statusOptionsArray.forEach(item => (item.selected = false));
     this.roleOptionsArray.forEach(item => (item.selected = false));
-    localStorage.setItem(
-      'tripFilterData',
-      JSON.stringify({
-        status: 'Active',
-        department: this.departmentFilter,
-      })
-    )
   }
 
   onSelectStatus(id: number): void {
@@ -356,6 +349,13 @@ export class UserManagementComponent implements OnInit {
     this.loading = true;
     this.page = 0;
     this.size = 30;
+    localStorage.setItem(
+      'tripFilterData',
+      JSON.stringify({
+        status: 'Active',
+        department: this.departmentFilter,
+      })
+    )
     this.getUserList();
   }
 }
