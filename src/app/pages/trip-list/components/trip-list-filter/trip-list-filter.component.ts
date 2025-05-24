@@ -464,7 +464,7 @@ export class TripListFilterComponent {
         if (this.paymentTypeValue) {
           for (let i = 0; i < this.paymentTypeValue.length; i++) {
             this.paymentTypeOptionsArray.forEach((element: any) => {
-              if (element.id === this.paymentTypeValue[i]) {
+              if (element.value === this.paymentTypeValue[i]) {
                 this.selectedPaymentValue.push(element.showname);
               }
             });
@@ -477,7 +477,7 @@ export class TripListFilterComponent {
         if (this.tripTypeValue) {
           for (let i = 0; i < this.tripTypeValue.length; i++) {
             this.tripTypeOptionsArray.forEach((element: any) => {
-              if (element.id === this.tripTypeValue[i]) {
+              if (element.value === this.tripTypeValue[i]) {
                 this.selectedTripValue.push(element.showname);
               }
             });
@@ -487,7 +487,7 @@ export class TripListFilterComponent {
       this.transporterName = tripFilterData?.transporterName;
       this.searchTransporter = tripFilterData?.transporterName;
       this.tripId = tripFilterData?.tripId;
-      this.searchId = tripFilterData?.searchId;
+      this.searchId = tripFilterData?.tripId;
     }
   }
 

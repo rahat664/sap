@@ -50,9 +50,9 @@
               src="assets/svg/filter.svg"
               alt="filter"/>
             <span
-              *ngIf="filterValues.length + paymentFilter + tripTypeFilter > 0"
+              *ngIf="filterValues.length  > 0"
               class="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red text-white text-xs font-semibold rounded-full h-4 w-4 flex items-center justify-center">
-              {{ filterValues.length + paymentFilter + tripTypeFilter }}
+              {{ filterValues.length }}
             </span>
           </div>
         </button>
@@ -238,7 +238,7 @@
               <ng-container *ngFor="let customer of customers">
                 <div
                   class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint whitespace-nowrap">
-                  <span>{{ customer.name }}</span>
+                  <span>{{ customer?.name }}</span>
                   <a
                     (click)="onClickCloseCustomer(customer)"
                     class="cursor-pointer"

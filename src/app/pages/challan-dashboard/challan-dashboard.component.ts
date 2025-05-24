@@ -737,8 +737,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.tripId = this.filterData.tripId;
       this.truckType = this.filterData.truckType;
       this.transporterName = this.filterData.transporterName;
-      this.paymentTypeValue = this.filterData.paymentType.toString();
-      this.tripTypeValue = this.filterData.tripType.toString();
+      this.paymentTypeValue = this.filterData.paymentType?.toString();
+      this.tripTypeValue = this.filterData.tripType?.toString();
       this.truckRegistrationId = this.filterData.truckRegistrationId;
       this.page = 0;
       this.size = 30;

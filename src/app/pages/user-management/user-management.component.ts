@@ -52,7 +52,7 @@ export class UserManagementComponent implements OnInit {
   filterOpened = false;
   statusFilter = 0;
   roleFilter = 0;
-  statusInputPlaceholder = 'Active';
+  statusInputPlaceholder = '';
   roleInputPlaceholder = '';
   statusOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'Active', selected: true },
@@ -88,6 +88,10 @@ export class UserManagementComponent implements OnInit {
 
   ngOnInit() {
     localStorage.removeItem('tripFilterData')
+    localStorage.setItem('tripFilterData', JSON.stringify({
+      status: 'Active',
+      department: this.departmentFilter,
+    }));
     this.resetFilters();
     this.getUserList();
   }

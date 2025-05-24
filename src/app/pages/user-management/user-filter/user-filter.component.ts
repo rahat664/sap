@@ -47,7 +47,7 @@ export class UserFilterComponent {
     {
       id: 0,
       value: '',
-      selected: true,
+      selected: false,
       showname: 'All',
     },
     { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
@@ -76,7 +76,7 @@ export class UserFilterComponent {
   departmentFilter: string = '';
   statusOpened: boolean;
   roleOpened: boolean;
-  statusValue: string = 'Active';
+  statusValue: string = '';
 
   constructor(
   ) {
@@ -120,12 +120,18 @@ export class UserFilterComponent {
       if (tripFilterData?.status) {
         this.statusValue = tripFilterData?.status;
         this.statusInputPlaceholder = tripFilterData?.status;
+        this.updateSelectedOptions(this.statusOptionsArray, tripFilterData?.status);
       }
       if (tripFilterData?.department) {
         this.departmentFilter = tripFilterData?.department;
         this.roleInputPlaceholder = tripFilterData?.department;
       }
       localStorage.removeItem('tripFilterData');
+    } else {
+      this.statusInputPlaceholder = 'All';
+      this.roleInputPlaceholder = '';
+      this.statusValue = '';
+      this.updateSelectedOptions(this.statusOptionsArray, 4);
     }
   }
 

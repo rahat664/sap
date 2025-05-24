@@ -121,8 +121,8 @@ export class ChallanDashboardFilterComponent {
   truckRegSuggestions: any[] = [];
    truckRegistrationId: string;
    searchRegistationId: any;
-   selectedPaymentValue: any[];
-   selectedTripValue: any[];
+   selectedPaymentValue: any[] = [];
+   selectedTripValue: any[] = [];
 
   constructor(
     private datePipe: DatePipe,
@@ -276,25 +276,6 @@ export class ChallanDashboardFilterComponent {
     }
   }
 
-  onSelectPayment($event: number) {
-    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.paymentTypePlaceholder =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.paymentTypeValue =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
-  }
-
-  onSelectTrip($event: number) {
-    if (this.tripTypeFilter === 0) {
-      this.filterLength += 1;
-    }
-    this.tripTypeFilter = 1;
-    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.tripTypePlaceholder =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.tripTypeValue =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
-  }
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {
     const searchText = ($event.target as HTMLInputElement).value;
@@ -534,7 +515,7 @@ export class ChallanDashboardFilterComponent {
         if (this.paymentTypeValue) {
           for (let i = 0; i < this.paymentTypeValue.length; i++) {
             this.paymentTypeOptionsArray.forEach((element: any) => {
-              if (element.id === this.paymentTypeValue[i]) {
+              if (element.value === this.paymentTypeValue[i]) {
                 this.selectedPaymentValue.push(element.showname);
               }
             });
@@ -547,7 +528,7 @@ export class ChallanDashboardFilterComponent {
         if (this.tripTypeValue) {
           for (let i = 0; i < this.tripTypeValue.length; i++) {
             this.tripTypeOptionsArray.forEach((element: any) => {
-              if (element.id === this.tripTypeValue[i]) {
+              if (element.value === this.tripTypeValue[i]) {
                 this.selectedTripValue.push(element.showname);
               }
             });
@@ -557,7 +538,7 @@ export class ChallanDashboardFilterComponent {
       this.transporterName = tripFilterData?.transporterName;
       this.searchTransporter = tripFilterData?.transporterName;
       this.tripId = tripFilterData?.tripId;
-      this.searchId = tripFilterData?.searchId;
+      this.searchId = tripFilterData?.tripId;
       this.truckRegistrationId = tripFilterData?.truckRegistrationId;
       this.searchRegistationId = tripFilterData?.truckRegistrationId;
       localStorage.removeItem('tripFilterData');

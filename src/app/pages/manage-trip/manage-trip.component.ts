@@ -731,24 +731,24 @@ export class ManageTripComponent implements OnInit {
         const selectedVehicle = this.vehicleTypeList.find(
           (value: any) => value.name === element
         );
-        const selectedPayment = this.paymentTypeOptionsArray.find(
-          (value: any) => value.value === element
-        )
-        const selectedTripType = this.tripTypeOptionsArray.find(
-          (value: any) => value.value === element
-        );
-
 
         if (selectedVehicle) {
           this.truckType.push(selectedVehicle.id);
         }
-        if (selectedPayment) {
-          this.paymentTypeValue.push(selectedPayment.value);
-          this.paymentTypePlaceholder = selectedPayment.showname;
+
+        else if (this.tripTypeOptionsArray.some(((value: any) => value.showname === element))) {
+          this.tripTypeValue.push(
+            this.tripTypeOptionsArray.find(
+              (value: any) => value.showname === element
+            ).value
+          );
         }
-        if (selectedTripType) {
-          this.tripTypeValue.push(selectedTripType.value);
-          this.tripTypePlaceholder = selectedTripType.showname;
+        else if (this.paymentTypeOptionsArray.some(((value: any) => value.showname === element))) {
+          this.paymentTypeValue.push(
+            this.paymentTypeOptionsArray.find(
+              (value: any) => value.showname === element
+            ).value
+          );
         }
 
         else if (this.buttonName.includes(element)) {
