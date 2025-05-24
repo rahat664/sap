@@ -289,7 +289,7 @@
                 [(ngModel)]="tripTypeValue"
                 (selectionChange)="onChangeTripType($event)"
                 multiple
-                placeholder="Choose Truck Type">
+                placeholder="Choose Trip Type">
                 @for (tripType of tripTypeOptionsArray; track tripType) {
                   <mat-option [value]="tripType.value">{{
                       tripType.showname
