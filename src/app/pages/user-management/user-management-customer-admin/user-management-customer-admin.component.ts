@@ -101,6 +101,13 @@ export class UserManagementCustomerAdminComponent implements OnInit {
     });
     this.departmentFilter = '';
     localStorage.removeItem('tripFilterData');
+    localStorage.setItem(
+      'tripFilterData',
+      JSON.stringify({
+        status: 'Active',
+        department: this.departmentFilter,
+      })
+    )
     this.getUserList();
   }
 
@@ -407,6 +414,13 @@ export class UserManagementCustomerAdminComponent implements OnInit {
     this.loading = true;
     this.page = 0;
     this.size = 30;
+    localStorage.setItem(
+      'tripFilterData',
+      JSON.stringify({
+        status: 'Active',
+        department: this.departmentFilter,
+      })
+    )
     this.getUserList();
   }
 }
