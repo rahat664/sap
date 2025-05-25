@@ -139,49 +139,68 @@
       class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white z-50">
       <tr class="whitespace-nowrap bg-white text-not-black">
-        <th class="text-left sticky left-0 bg-white">Trip Number</th>
-        <th class="text-left whitespace-nowrap">Trip Date</th>
-        <th class="text-left" *ngIf="isAdmin()">Company</th>
-        <th class="text-left" *ngIf="isAdmin()">Transporter</th>
-        <th class="text-left" >Vehicle Type</th>
-        <th class="text-left">Loading Point</th>
-        <th class="text-left">Unloading Point</th>
-        <th class="text-left whitespace-nowrap">Payment Type</th>
-        <th class="text-left whitespace-nowrap">Trip Type</th>
-        <th class="text-left">Status</th>
+        <th  class="text-left sticky left-0 bg-white" *ngIf="isColumnVisible('tripId')">Trip Number</th>
+        <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('tripDate')">Trip Date</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('company')">Customer</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('transporter')">Transporter</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('vehicleType')">Vehicle Type</th>
+        <th class="text-left" *ngIf="isColumnVisible('loadingPoint')">Loading Point</th>
+        <th class="text-left" *ngIf="isColumnVisible('unloadingPoint')">Unloading Point</th>
+        <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('paymentType')">Payment Type</th>
+        <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('tripType')">Trip Type</th>
+        <th class="text-left" *ngIf="isColumnVisible('status')">Status</th>
         <!--        <th class="text-left" *ngIf="!isAdmin()">Trip Fare</th>-->
-        <th class="text-left" *ngIf="isAdmin()">CR(৳)</th>
-        <th class="text-left" *ngIf="isAdmin()">TR(৳)</th>
-        <th class="text-left" *ngIf="isAdmin()">GP(৳)</th>
-        <th class="text-left" *ngIf="isAdmin()">Profit Margin</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('cr')">CR(৳)</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('tr')">TR(৳)</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('gp')">GP(৳)</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('profitMargin')">Profit Margin(%)</th>
+        <th class="sticky right-0 bg-white">
+          <button mat-button [matMenuTriggerFor]="menu">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <mat-menu #menu="matMenu" class="px-8">
+            <mat-checkbox [indeterminate]="isIndeterminate" (click)="$event.stopPropagation()"  (change)="toggleAllColumns()" [(ngModel)]="showAll">Show all</mat-checkbox>
+            <div (click)="$event.stopPropagation()" class="flex flex-col" *ngFor="let column of columnToggles">
+              <mat-checkbox [(ngModel)]="column.visible" (change)="onToggleColumn(column.key, column.visible)">
+                {{ column.label }}
+              </mat-checkbox>
+            </div>
+<!--            apply-button -->
+            <button
+              (click)="applyColumnSettings();menu.closed "
+              class="text-primary py-1 w-full font-semibold text-center rounded-lg border border-primary">
+              Apply
+            </button>
+          </mat-menu>
+        </th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="isAdmin() ? 14 : 10"></th>
+        <th class="custom-border" [colSpan]="isAdmin() ? 15 : 11"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
         <tr *ngFor="let trip of tripList; index as i">
-          <td class="whitespace-nowrap sticky left-0 bg-white">
+          <td class="whitespace-nowrap sticky left-0 bg-white" *ngIf="isColumnVisible('tripId')">
             <a
               class="text-link cursor-pointer"
               (click)="onClickTripNumber(trip.tripId)">
               {{ trip.tripId }}
             </a>
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('tripDate')">
             {{ trip.tripStartDatetime | date: 'd MMM yyyy' }}
           </td>
-          <td class="whitespace-nowrap" *ngIf="isAdmin()">
-            {{ trip.customerName }}
+          <td class="whitespace-nowrap" *ngIf="isAdmin() && isColumnVisible('company')">
+            {{ trip.customerName ? trip.customerName : 'Not available' }}
           </td>
-          <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin()">
+          <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('transporter')">
             {{ trip.transporterName ? trip.transporterName : 'Not assigned' }}
           </td>
-          <td class="whitespace-nowrap {{!trip.vehicleCategory?.name ? 'text-line' : ''}}" *ngIf="isAdmin()">
+          <td class="whitespace-nowrap {{!trip.vehicleCategory?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('vehicleType')">
             {{ trip.vehicleCategory?.name ? trip.vehicleCategory?.name : 'Not available' }}
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('loadingPoint')">
             <p>
               {{ getLoadingPointsName(trip.tripPoints)[0]?.pointName }}
               <span
@@ -191,7 +210,7 @@
               >
             </p>
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('unloadingPoint')">
             <p>
               {{ getUnloadingPointsName(trip.tripPoints)[0]?.pointName }}
               <span
@@ -203,37 +222,40 @@
               >
             </p>
           </td>
-          <td class="whitespace-nowrap">{{ getNameFromEnum(trip.paymentType) }}</td>
-          <td class="whitespace-nowrap">{{ getTripNameFromEnum(trip.tripType) }}</td>
-          <td>{{ trip.status }}</td>
-          <td *ngIf="isAdmin()">
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('paymentType')">
+            {{ getNameFromEnum(trip.paymentType) }}</td>
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('tripType')">
+            {{ getTripNameFromEnum(trip.tripType) }}</td>
+          <td *ngIf="isColumnVisible('status')">
+            {{ trip.status }}</td>
+          <td *ngIf="isAdmin() && isColumnVisible('cr')">
             {{
               (trip.customerRate !== null ? (trip.customerRate | number) : 'N/A')
             }}
           </td>
-          <td *ngIf="isAdmin()">
+          <td *ngIf="isAdmin() && isColumnVisible('tr')">
             {{
-              (trip.transporterRate !== null ? (trip.transporterRate|number) : 'N/A')
-
+              (trip.transporterRate !== null ? (trip.transporterRate | number) : 'N/A')
             }}
           </td>
-          <td *ngIf="isAdmin()">
+          <td *ngIf="isAdmin() && isColumnVisible('gp')">
             {{
               getCountOfGp(trip) === 'N/A'
                 ? 'N/A'
                 : (getCountOfGp(trip) | number)
             }}
           </td>
-          <td *ngIf="isAdmin()">
+          <td *ngIf="isAdmin() && isColumnVisible('profitMargin')">
             {{
               (trip.customerRate > 0 && trip.transporterRate ? (trip.profitMargin | number)+ '%'  : "N/A")
             }}
           </td>
+          <td></td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="isAdmin() ? 14 : 10">
+          <td class="text-center" [colSpan]="isAdmin() ? 15 : 11">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
@@ -251,7 +273,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="isAdmin() ? 14 : 10">
+          <td class="h-full" [colSpan]="isAdmin() ? 15 : 11">
             <app-loading></app-loading>
           </td>
         </tr>

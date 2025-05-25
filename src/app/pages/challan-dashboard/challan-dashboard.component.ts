@@ -36,6 +36,9 @@ import { PaymentType, TripType } from '../../shared/Enums/payment-type';
 import {
   ChallanDashboardFilterComponent
 } from './components/challan-dashboard-filter/challan-dashboard-filter.component';
+import {MatCheckbox} from "@angular/material/checkbox";
+
+const STORAGE_KEY = 'trip-list-column-settings';
 
 @Component({
   selector: 'app-challan-dashboard',
@@ -55,14 +58,12 @@ import {
     RouterLink,
     numberPipe,
     ChallanDashboardFilterComponent,
+    MatCheckbox,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
 })
 export class ChallanDashboardComponent implements OnInit, AfterViewInit {
-  private dateFilter = 0;
-  private searchFilter = 0;
-  private tripFilter = 0;
   private customerCode: any[] = [];
   private to: string;
   private from: string;
@@ -70,8 +71,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   filterForm: FormGroup;
   protected truckRegistrationId: string;
   protected transporterName: string;
-  private transporterFilter = 0;
-  private truckFilter = 0;
   protected truckRegSuggestions: any[] = [];
   protected transporterSuggestions: any[];
   searchRegistationId: any;
@@ -96,15 +95,27 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   tripTypeValue: string = '';
   filterData: any = {};
   filterApplied: boolean = false;
-   truckType: any[] = [];
+  truckType: any[] = [];
+  showAll: boolean = true;
+  isIndeterminate: boolean = false;
+  columnToggles: any[] = [
+    { key: 'tripId', label: 'Trip Number', visible: true },
+    {key:'tripDate', label: 'Trip Date', visible: true},
+    { key: 'company', label: 'Company', visible: true },
+    {key: 'transporter', label: 'Transporter', visible: true},
+    {key: 'vehicleType', label: 'Vehicle Type', visible: true},
+    {key: 'truckNumber', label: 'Truck Number', visible: true},
+    { key: 'loadingPoint', label: 'Loading Point', visible: true },
+    { key: 'unloadingPoint', label: 'Unloading Point', visible: true },
+    {key: 'paymentType', label: 'Payment Type', visible: true},
+    {key: 'tripType', label: 'Trip Type', visible: true},
+    {key: 'hardCopy', label: 'Hard Copy', visible: true},
+    {key: 'softCopy', label: 'Soft Copy', visible: true},
+    {key: 'dueDays', label: 'Due Days', visible: true},
+    {key: 'receivedDate', label: 'Received Date', visible: true},
+    {key: 'challanStatus', label: 'Status', visible: true},
+  ];
 
-  get tripSuggestions(): any {
-    return this._tripSuggestions;
-  }
-
-  set tripSuggestions(value: any) {
-    this._tripSuggestions = value;
-  }
 
   height: any = '0px';
   pendingChallanAmount = 0;
@@ -135,17 +146,10 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   challanHardCopyReceived: boolean;
   readonly dialog = inject(MatDialog);
   filterOpened = false;
-  dateOpened: boolean;
   inputPlaceholder: string;
-  dateOptionArray: CustomInputSelectModel[];
   searchName: any;
-  private _tripSuggestions: any;
   tripId: any;
   tripIdSuggestions: any;
-  searchSubject = new Subject<string>();
-  customerSearchSubject = new Subject<string>();
-  truckSearchSubject = new Subject<string>();
-  transporterSearchSubject = new Subject<string>();
 
   constructor(
     private datePipe: DatePipe,
@@ -153,10 +157,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     private trip: TripService,
     private number: DecimalPipe,
     private formBuilder: FormBuilder,
-    private customer: CustomerService,
-    private shared: DriverEditSharedService,
-    private transporter: UserService,
-    private truck: TruckService,
     private router: Router,
     private toastr: HandleToastrService,
     private cd: ChangeDetectorRef
@@ -168,9 +168,9 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-
   ngOnInit() {
     localStorage.removeItem('tripFilterData');
+    this.loadColumnSettings();
     this.activatedChallanStatus = 'Completed';
     this.chalanStatus = '';
     this.status = 'Completed';
@@ -488,21 +488,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   }
 
 
-
-  onClickTruckSearchSuggestion(result: any) {
-    this.chalanStatus = '';
-    this.status = 'Completed';
-    this.activatedChallanStatus = 'Completed';
-    this.truckFilter = 1;
-    this.page = 0;
-    this.truckRegistrationId = result.fullRegistrationNumber;
-    this.searchRegistationId = result.fullRegistrationNumber;
-    this.truckRegSuggestions = [];
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
   onClickSoftCopyView(tripId: string) {
     this.trip
       .getAllTripEvent(tripId, 'Loading')
@@ -592,81 +577,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       showname: 'Commercial Logistics',
     },
   ];
-
-  onClickClearCompany() {
-    this.customerCode = [];
-    this.searchValue = '';
-    this.searchName = '';
-    this.page = 0;
-    this.size = 30;
-    this.searchFilter = 0;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickClearTruck() {
-    this.truckRegistrationId = '';
-    this.searchRegistationId = '';
-    this.truckRegSuggestions = [];
-    this.truckFilter = 0;
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickClearTransporter() {
-    this.transporterName = '';
-    this.searchTransporter = '';
-    this.transporterFilter = 0;
-    this.transporterSuggestions = [];
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickClearTripId() {
-    this.tripId = '';
-    this.searchId = '';
-    this.tripIdSuggestions = [];
-    this.tripFilter = 0;
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onSelectPayment($event: number) {
-    this.paymentFilter = 1;
-    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.paymentTypePlaceholder =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.paymentTypeValue =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-  onSelectTrip($event: number) {
-    this.tripTypeFilter = 1;
-    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.tripTypePlaceholder =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.tripTypeValue =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
 
   getNameFromEnum(paymentType: string) {
     if (paymentType === PaymentType.CASH) {
@@ -764,7 +674,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   }
 
   onClickFilterOpen() {
-    this.filterOpened = true
+    this.filterOpened = true;
   }
 
   get filterSummary(): string {
@@ -783,16 +693,22 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
       );
     if (this.filterData?.paymentType?.length > 0)
-      parts.push(`Payment Type: <b>${this.filterData.selectedPaymentValue?.toString()}</b>`);
+      parts.push(
+        `Payment Type: <b>${this.filterData.selectedPaymentValue?.toString()}</b>`
+      );
     if (this.filterData?.tripType?.length > 0)
-      parts.push(`Trip type: <b>${this.filterData.selectedTripValue?.toString()}</b>`);
+      parts.push(
+        `Trip type: <b>${this.filterData.selectedTripValue?.toString()}</b>`
+      );
     if (this.filterData.tripId)
       parts.push(`Trip ID: <b>${this.filterData.tripId}</b>`);
     if (this.filterData?.customerCode?.length > 0) {
       parts.push(`Company: <b>${this.filterData.customerName?.toString()}</b>`);
     }
     if (this.filterData?.truckType?.length > 0) {
-      parts.push(`Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`);
+      parts.push(
+        `Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`
+      );
     }
     if (this.filterData.truckRegistrationId) {
       parts.push(
@@ -820,5 +736,53 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.filterForm.reset();
     localStorage.removeItem('tripFilterData');
     this.getTripList();
+  }
+
+  toggleAllColumns() {
+    this.columnToggles.forEach(col => (col.visible = this.showAll));
+    this.updateShowAllState();
+    this.applyColumnSettings(); // <- Save to localStorage
+  }
+
+  onToggleColumn(key: string, visible: boolean) {
+    const column = this.columnToggles.find(col => col.key === key);
+    if (column) {
+      column.visible = visible;
+      this.updateShowAllState();
+      this.applyColumnSettings(); // <- Save to localStorage
+    }
+  }
+
+  updateShowAllState() {
+    const visibleCount = this.columnToggles.filter(c => c.visible).length;
+    const total = this.columnToggles.length;
+
+    this.showAll = visibleCount === total;
+    this.isIndeterminate = visibleCount > 0 && visibleCount < total;
+  }
+
+  applyColumnSettings() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.columnToggles));
+  }
+
+  isColumnVisible(key: string): boolean {
+    return this.columnToggles.find(col => col.key === key)?.visible ?? false;
+  }
+
+  loadColumnSettings() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        this.columnToggles = this.columnToggles.map(col => {
+          const savedCol = parsed.find((c: any) => c.key === col.key);
+          return savedCol ? { ...col, visible: savedCol.visible } : col;
+        });
+        this.showAll = this.columnToggles.every(col => col.visible);
+      } catch (e) {
+        console.error('Failed to load column settings from localStorage:', e);
+      }
+      this.updateShowAllState();
+    }
   }
 }

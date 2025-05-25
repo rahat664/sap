@@ -11,23 +11,28 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { TripService } from './services/trip.service';
 import { DateEnum } from './Enum/date.enum';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
-import { ButtonChipsComponent } from './modules/button-chips/button-chips.component';
-import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
-import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
-import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
 import { statusButtons } from './models/status-buttons';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 import { Trip } from '../auth/models/response/trip';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
 import { PaymentType, TripType } from '../../shared/Enums/payment-type';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 import { TripListFilterComponent } from './components/trip-list-filter/trip-list-filter.component';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatButton } from '@angular/material/button';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { ButtonChipsComponent } from './modules/button-chips/button-chips.component';
+import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
+import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
+import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
+
+const STORAGE_KEY = 'trip-list-column-settings';
 
 @Component({
   selector: 'app-trip-list',
@@ -45,11 +50,32 @@ import { TripListFilterComponent } from './components/trip-list-filter/trip-list
     LoadingComponent,
     numberPipe,
     TripListFilterComponent,
+    MatMenu,
+    MatCheckbox,
+    MatButton,
+    MatMenuTrigger,
   ],
   templateUrl: './trip-list.component.html',
   styleUrls: ['./trip-list.component.scss'],
 })
 export class TripListComponent implements OnInit, AfterViewInit {
+  showAll = true;
+  columnToggles = [
+    { key: 'tripId', label: 'Trip Number', visible: true },
+    { key: 'tripDate', label: 'Trip Date', visible: true },
+    { key: 'company', label: 'Company', visible: true },
+    { key: 'transporter', label: 'Transporter', visible: true },
+    { key: 'vehicleType', label: 'Vehicle Type', visible: true },
+    { key: 'loadingPoint', label: 'Loading Point', visible: true },
+    { key: 'unloadingPoint', label: 'Unloading Point', visible: true },
+    { key: 'paymentType', label: 'Payment Type', visible: true },
+    { key: 'tripType', label: 'Trip Type', visible: true },
+    { key: 'status', label: 'Status', visible: true },
+    { key: 'cr', label: 'CR', visible: true },
+    { key: 'tr', label: 'TR', visible: true },
+    { key: 'gp', label: 'GP', visible: true },
+    { key: 'profitMargin', label: 'Profit Margin', visible: true },
+  ];
   filterApplied: boolean = false;
   protected transporterName: string;
   filterOpened = false;
@@ -93,6 +119,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
   paymentFilter: number = 0;
   tripTypeValue: string = '';
   filterData: any = {};
+  isIndeterminate: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -114,7 +141,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    localStorage.removeItem('tripFilterData')
+    this.loadColumnSettings();
+    localStorage.removeItem('tripFilterData');
     if (localStorage.getItem('filter')) {
       this.status = localStorage.getItem('filter') || '';
       this.statusButtons.forEach(x => (x.isActive = x.name === this.status));
@@ -430,19 +458,72 @@ export class TripListComponent implements OnInit, AfterViewInit {
         `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
       );
     if (this.filterData?.paymentType?.length > 0)
-      parts.push(`Payment Type: <b>${this.filterData.selectedPaymentValue?.toString()}</b>`);
+      parts.push(
+        `Payment Type: <b>${this.filterData.selectedPaymentValue?.toString()}</b>`
+      );
     if (this.filterData?.tripType?.length > 0)
-      parts.push(`Trip type: <b>${this.filterData.selectedTripValue?.toString()}</b>`);
+      parts.push(
+        `Trip type: <b>${this.filterData.selectedTripValue?.toString()}</b>`
+      );
     if (this.filterData.tripId)
       parts.push(`Trip ID: <b>${this.filterData.tripId}</b>`);
     if (this.filterData?.customerCode?.length > 0) {
       parts.push(`Company: <b>${this.filterData.customerName?.toString()}</b>`);
     }
     if (this.filterData?.truckType?.length > 0) {
-      parts.push(`Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`);
+      parts.push(
+        `Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`
+      );
     }
 
     return parts.join(', ');
   }
 
+  toggleAllColumns() {
+    this.columnToggles.forEach(col => (col.visible = this.showAll));
+    this.updateShowAllState();
+    this.applyColumnSettings(); // <- Save to localStorage
+  }
+
+  onToggleColumn(key: string, visible: boolean) {
+    const column = this.columnToggles.find(col => col.key === key);
+    if (column) {
+      column.visible = visible;
+      this.updateShowAllState();
+      this.applyColumnSettings(); // <- Save to localStorage
+    }
+  }
+
+  updateShowAllState() {
+    const visibleCount = this.columnToggles.filter(c => c.visible).length;
+    const total = this.columnToggles.length;
+
+    this.showAll = visibleCount === total;
+    this.isIndeterminate = visibleCount > 0 && visibleCount < total;
+  }
+
+  applyColumnSettings() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.columnToggles));
+  }
+
+  isColumnVisible(key: string): boolean {
+    return this.columnToggles.find(col => col.key === key)?.visible ?? false;
+  }
+
+  loadColumnSettings() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        this.columnToggles = this.columnToggles.map(col => {
+          const savedCol = parsed.find((c: any) => c.key === col.key);
+          return savedCol ? { ...col, visible: savedCol.visible } : col;
+        });
+        this.showAll = this.columnToggles.every(col => col.visible);
+      } catch (e) {
+        console.error('Failed to load column settings from localStorage:', e);
+      }
+      this.updateShowAllState();
+    }
+  }
 }
