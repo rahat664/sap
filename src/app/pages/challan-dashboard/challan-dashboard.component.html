@@ -223,7 +223,7 @@
         <th class="text-left" *ngIf="isColumnVisible('vehicleType')">
           Vehicle Type</th>
         <th class="text-left" *ngIf="isColumnVisible('truckNumber')">
-          Vehicle Number</th>
+          Truck Number</th>
         <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('loadingPoint')">
           Loading Point</th>
         <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('unloadingPoint')">
@@ -321,7 +321,7 @@
           </td>
           <td class="whitespace-nowrap" *ngIf="isColumnVisible('tripType')">
             {{ getTripNameFromEnum(trip.tripType) }}</td>
-          <td class="whitespace-nowrap text-center" *ngIf="isColumnVisible('hardcopy')">
+          <td class="whitespace-nowrap text-center" *ngIf="isColumnVisible('hardCopy')">
                   <span *ngIf="trip.challanHardCopyReceivedAt">{{
                       trip.challanHardCopyReceivedAt | date: 'dd MMM,yyyy h:mm a'
                     }}</span>
@@ -336,7 +336,7 @@
               </button>
             </div>
           </td>
-          <td class="text-center whitespace-nowrap" *ngIf="isColumnVisible('softcopy')">
+          <td class="text-center whitespace-nowrap" *ngIf="isColumnVisible('softCopy')">
             <a
               *ngIf="trip.challanStatus !== 'Pending'"
               (click)="onClickSoftCopyView(trip.tripId)"
