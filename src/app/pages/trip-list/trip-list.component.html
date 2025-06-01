@@ -143,13 +143,13 @@
         <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('tripDate')">Trip Date</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('company')">Customer</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('transporter')">Transporter</th>
+        <th class="text-left" *ngIf="isColumnVisible('loadingPoint')">Loading Point</th>
+        <th class="text-left" *ngIf="isColumnVisible('unloadingPoint')">Unloading Point</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('truckNumber')">Truck Number</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('truckType')">Truck Type</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('driverName')">Driver Name</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('driverPhone')">Driver Phone</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('goods')">Goods</th>
-        <th class="text-left" *ngIf="isColumnVisible('loadingPoint')">Loading Point</th>
-        <th class="text-left" *ngIf="isColumnVisible('unloadingPoint')">Unloading Point</th>
         <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('paymentType')">Payment Type</th>
         <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('tripType')">Trip Type</th>
         <th class="text-left" *ngIf="isColumnVisible('status')">Status</th>
@@ -179,7 +179,7 @@
         </th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="isAdmin() ? 15 : 11"></th>
+        <th class="custom-border" [colSpan]="isAdmin() ? 19 : 15"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -200,21 +200,6 @@
           </td>
           <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('transporter')">
             {{ trip.transporterName ? trip.transporterName : 'Not assigned' }}
-          </td>
-          <td class="whitespace-nowrap {{!trip.truck?.fullRegistrationNumber ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('truckNumber')">
-            {{ trip.truck?.fullRegistrationNumber ? trip.truck?.fullRegistrationNumber : 'Not available' }}
-          </td>
-          <td class="whitespace-nowrap {{!trip.vehicleCategory?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('truckType')">
-            {{ trip.vehicleCategory?.name ? trip.vehicleCategory?.name : 'Not available' }}
-          </td>
-          <td class="whitespace-nowrap {{!trip.driver?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('driverName')">
-            {{ trip.driver?.name ? trip.driver?.name : 'Not available' }}
-          </td>
-          <td class="whitespace-nowrap {{!trip.driver?.phone ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('driverPhone')">
-            {{ trip.driver?.phone ? trip.driver?.phone : 'Not available' }}
-          </td>
-          <td class="whitespace-nowrap {{!trip.good?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('goods')">
-            {{ trip.good?.name ? trip.good?.name : 'Not available' }}
           </td>
           <td class="whitespace-nowrap" *ngIf="isColumnVisible('loadingPoint')">
             <p>
@@ -238,6 +223,21 @@
               >
             </p>
           </td>
+          <td class="whitespace-nowrap {{!trip.truck?.fullRegistrationNumber ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('truckNumber')">
+            {{ trip.truck?.fullRegistrationNumber ? trip.truck?.fullRegistrationNumber : 'Not available' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.vehicleCategory?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('truckType')">
+            {{ trip.vehicleCategory?.name ? trip.vehicleCategory?.name : 'Not available' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.driver?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('driverName')">
+            {{ trip.driver?.name ? trip.driver?.name : 'Not available' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.driver?.phone ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('driverPhone')">
+            {{ trip.driver?.phone ? trip.driver?.phone : 'Not available' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.good?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('goods')">
+            {{ trip.good?.name ? trip.good?.name : 'Not available' }}
+          </td>
           <td class="whitespace-nowrap" *ngIf="isColumnVisible('paymentType')">
             {{ getNameFromEnum(trip.paymentType) }}</td>
           <td class="whitespace-nowrap" *ngIf="isColumnVisible('tripType')">
@@ -255,15 +255,11 @@
             }}
           </td>
           <td *ngIf="isAdmin() && isColumnVisible('gp')">
-            {{
-              getCountOfGp(trip) === 'N/A'
-                ? 'N/A'
-                : (getCountOfGp(trip) | number)
-            }}
+            {{trip.grossProfit !== null ? (trip.grossProfit | number) : 'N/A'}}
           </td>
           <td *ngIf="isAdmin() && isColumnVisible('profitMargin')">
             {{
-              (trip.customerRate > 0 && trip.transporterRate ? (trip.profitMargin | number)+ '%'  : "N/A")
+              trip.profitMargin !== null ? (trip.profitMargin | number)+ '%' : 'N/A'
             }}
           </td>
           <td></td>
@@ -271,7 +267,7 @@
       </ng-container>
       <ng-container *ngIf="!loading">
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="isAdmin() ? 15 : 11">
+          <td class="text-center" [colSpan]="isAdmin() ? 19 : 15">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
@@ -289,7 +285,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="isAdmin() ? 15 : 11">
+          <td class="h-full" [colSpan]="isAdmin() ? 19 : 15">
             <app-loading></app-loading>
           </td>
         </tr>
