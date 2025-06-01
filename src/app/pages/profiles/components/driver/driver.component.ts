@@ -228,7 +228,9 @@ export class DriverComponent implements OnInit {
           null,
           this.statusInputPlaceholder === 'All'
             ? ''
-            : this.statusInputPlaceholder
+            : this.statusInputPlaceholder,
+          this.from,
+          this.to
         )
         .subscribe((res: any) => {
           this.driverList.push(...res.data.responses);
@@ -553,7 +555,7 @@ export class DriverComponent implements OnInit {
       );
     if (this.filterData.statusInputPlaceholder)
       parts.push(
-        `Payment Type: <b>${this.filterData.statusInputPlaceholder}</b>`
+        `Driver Status: <b>${this.filterData.statusInputPlaceholder}</b>`
       );
 
     return parts.join(', ');

@@ -93,14 +93,14 @@ export class TransporterComponent implements OnInit {
       this.page++;
       if (this.searchValue) {
         this.service
-          .getTransporter(this.page, this.size, this.searchValue)
+          .getTransporter(this.page, this.size, this.searchValue, this.from, this.to)
           .pipe(debounceTime(1000))
           .subscribe((res: any) => {
             this.transporterList.push(...res.data);
           });
       } else {
         this.service
-          .getTransporter(this.page, this.size)
+          .getTransporter(this.page, this.size, null, this.from, this.to)
           .subscribe((res: any) => {
             this.transporterList.push(...res.data);
           });
@@ -263,6 +263,8 @@ export class TransporterComponent implements OnInit {
   onCLickClearAll() {
     localStorage.removeItem('tripFilterData');
     this.filterForm.reset();
+    this.filterData = {};
+    this.filterApplied = false;
     this.page = 0;
     this.size = 30;
     this.loading = true;

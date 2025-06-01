@@ -597,7 +597,7 @@ export class TruckComponent implements OnInit {
       );
     if (this.filterData.statusInputPlaceholder)
       parts.push(
-        `Payment Type: <b>${this.filterData.statusInputPlaceholder}</b>`
+        `Truck Status: <b>${this.filterData.statusInputPlaceholder}</b>`
       );
 
     return parts.join(', ');

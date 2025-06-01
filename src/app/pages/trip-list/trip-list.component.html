@@ -143,7 +143,11 @@
         <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('tripDate')">Trip Date</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('company')">Customer</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('transporter')">Transporter</th>
-        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('vehicleType')">Vehicle Type</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('truckNumber')">Truck Number</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('truckType')">Truck Type</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('driverName')">Driver Name</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('driverPhone')">Driver Phone</th>
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('goods')">Goods</th>
         <th class="text-left" *ngIf="isColumnVisible('loadingPoint')">Loading Point</th>
         <th class="text-left" *ngIf="isColumnVisible('unloadingPoint')">Unloading Point</th>
         <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('paymentType')">Payment Type</th>
@@ -197,8 +201,20 @@
           <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('transporter')">
             {{ trip.transporterName ? trip.transporterName : 'Not assigned' }}
           </td>
-          <td class="whitespace-nowrap {{!trip.vehicleCategory?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('vehicleType')">
+          <td class="whitespace-nowrap {{!trip.truck?.fullRegistrationNumber ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('truckNumber')">
+            {{ trip.truck?.fullRegistrationNumber ? trip.truck?.fullRegistrationNumber : 'Not available' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.vehicleCategory?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('truckType')">
             {{ trip.vehicleCategory?.name ? trip.vehicleCategory?.name : 'Not available' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.driver?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('driverName')">
+            {{ trip.driver?.name ? trip.driver?.name : 'Not available' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.driver?.phone ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('driverPhone')">
+            {{ trip.driver?.phone ? trip.driver?.phone : 'Not available' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.good?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('goods')">
+            {{ trip.good?.name ? trip.good?.name : 'Not available' }}
           </td>
           <td class="whitespace-nowrap" *ngIf="isColumnVisible('loadingPoint')">
             <p>

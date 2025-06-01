@@ -1,6 +1,7 @@
 import { TripPoint } from '../../../manage-trip/model/trip.details.model';
 
 export interface Trip {
+  driver: Driver;
   sourceOfTruck: string;
   firstChallanUploadedDate: string;
   tripType: string;
@@ -37,6 +38,17 @@ export interface Trip {
   challanHardCopyReceivedAt: string | null; // Added field for hard copy receipt timestamp
   challanHardCopyReceivedBy: string | null; // Added field for who received hard copy
   incidentOccurred: boolean; // Added field for incident occurrence
+}
+
+export interface Driver {
+  id: number;
+  userId: string;
+  name: string;
+  phone: string;
+  email: string;
+  userShortCode: string;
+  enabled: boolean;
+  roles: string[];
 }
 
 export interface challanReceivedFromDTOList {
