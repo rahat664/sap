@@ -102,6 +102,18 @@ export const routes: Routes = [
       tripList: tripListResolver,
     },
   },
+  {
+    path: 'manage-bid',
+    title: 'Manage Bid',
+    loadComponent: () =>
+      import('./pages/manage-bid/manage-bid.component').then(
+        c => c.ManageBidComponent
+      ),
+    canActivate: [authGuard],
+    resolve: {
+      tripList: tripListResolver,
+    },
+  },
   // create trip with query params not id with scenerio
   {
     path: 'trip-create/create',
