@@ -7,4 +7,5 @@ export const environment = {
   locationUrl: 'https://location-service-dev.snztech.world',
   API_KEY: 'AIzaSyC2rHKS9XgtjpFkAukMms8AtyTFvJwVLLc',
   placesApiUrl: 'https://maps.googleapis.com/maps/api/place',
+  bidUrl: 'http://3.109.87.202:8084/bidding-service',
 };

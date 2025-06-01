@@ -1,0 +1,36 @@
+<button
+  [ngClass]="{ 'border border-primary': isActivated }"
+  class="bg-white p-4 w-full flex flex-col text-left rounded-2xl space-y-3 max-w-96">
+  <div class="flex justify-between items-start w-full">
+    <div class="flex flex-col space-y-1 items-start">
+      <span
+        class="text-body_title leading-body_title text-not-black font-semibold"
+      >{{ sessionBid?.availableTripId }}</span
+      >
+      <span class="text-body text-secondary">{{ sessionBid }}</span>
+    </div>
+    <div
+      class="flex items-center space-x-1">
+      <img src="./assets/svg/manage-bid-select.svg" class="notPreview" alt="select" />
+      <span>
+      {{ sessionBid?.numberOfBids > 1 ? sessionBid?.numberOfBids + ' Bids' : sessionBid?.numberOfBids + ' Bid' }}
+      </span>
+    </div>
+  </div>
+  <div class="flex flex-col space-y-3 items-start text-xs">
+    <span class="text-secondary">{{
+        sessionBid?.tripStartTime | date: 'd MMM,yyyy, h:mm a'
+      }}</span>
+    <div class="flex flex-col space-y-3 text-not-black text-start">
+      <span class="text-secondary text-start" >
+        {{sessionBid?.title}}
+      </span>
+    </div>
+
+    <div>
+      <span class="text-secondary text-start">
+        {{ sessionBid?.truckType }}
+      </span>
+    </div>
+  </div>
+</button>

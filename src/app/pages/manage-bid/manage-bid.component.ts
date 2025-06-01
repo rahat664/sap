@@ -38,10 +38,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
   selector: 'app-manage-bid',
   imports: [
     FormsModule,
-    GMapComponent,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
-    MapButtonsComponent,
     MatAutocomplete,
     MatAutocompleteTrigger,
     MatDateRangeInput,
@@ -57,7 +55,6 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     NgForOf,
     NgIf,
     TripCardComponent,
-    TripDetailsComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-bid.component.html',
