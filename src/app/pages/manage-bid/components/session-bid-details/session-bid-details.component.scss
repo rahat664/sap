@@ -1,0 +1,27 @@
+::ng-deep thead {
+  @apply sticky top-0;
+}
+
+.custom-border {
+  @apply h-[1px] p-0 bg-[#A1D5DE] sticky top-0;
+}
+
+tbody > tr {
+  @apply border-b border-[#E8F1F3] last:border-b-0;
+}
+
+th,
+td {
+  @apply p-4;
+}
+table {
+  border-collapse: separate;
+}
+td {
+  border-bottom: 1px solid #E8F1F3;
+}
+
+::ng-deep .mat-mdc-menu-panel {
+  background: white !important;
+}
+

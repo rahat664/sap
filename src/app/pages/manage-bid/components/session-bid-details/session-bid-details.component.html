@@ -1,0 +1,99 @@
+<div class="flex flex-col space-y-3 mr-4">
+  <div class="bg-white rounded-lg p-6 grid grid-col-2">
+    <div class=" flex flex-col space-y-3">
+      <div class="flex justify-between items-start w-full">
+        <div class="flex flex-col space-y-1 items-start">
+      <span
+        class="text-body_title leading-body_title text-not-black font-semibold"
+      >Trip no: {{ sessionBid?.availableTripId }}</span
+      >
+          <span
+            class="text-body_title leading-body_title text-not-black font-semibold">{{ sessionBid?.customerName }}</span>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-3 items-start text-xs">
+        <div
+          class="flex items-center space-x-2">
+          <img src="./assets/svg/datetime.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
+          <span class="text-secondary">{{
+              sessionBid?.tripStartTime | date: 'd MMM,yyyy, h:mm a'
+            }}</span>
+        </div>
+        <div
+          class="flex items-center space-x-2">
+          <img src="./assets/svg/bid-location.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
+          <span class="text-secondary text-start">
+        {{ sessionBid?.title }}
+      </span>
+        </div>
+        <div
+          class="flex items-center space-x-2">
+          <img src="./assets/svg/bid-truck.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
+          <span class="text-secondary text-start">
+        {{ sessionBid?.truckType }}
+      </span>
+        </div>
+        <div
+          class="flex items-center space-x-2">
+          <img src="./assets/svg/goodsinfo.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
+          <span class="text-secondary text-start">
+        {{ sessionBid?.goods }}
+      </span>
+        </div>
+        <div
+          class="flex items-center space-x-2">
+          <img src="./assets/svg/cr.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
+          <span class="text-secondary text-start">
+        {{ sessionBid?.customerRate | number}} ৳
+      </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white rounded-lg p-4 flex flex-col space-y-3">
+    <div>
+      <span class="text-body_title leading-body_title text-not-black font-semibold">Available bids {{sessionBid.numberOfBids > 0 ? '(' + sessionBid.numberOfBids + ')' : ''}}</span>
+    </div>
+    <div class="border border-[#A1D5DE] rounded-lg overflow-y-auto min-h-[56vh]">
+      <table
+        class="table-auto w-full text-body_title leading-body_title rounded-sm">
+        <thead class="bg-white z-50">
+        <tr class="whitespace-nowrap  bg-white text-not-black">
+          <th class="px-4 py-2 text-left">Rank</th>
+          <th class="px-4 py-2 text-left">Transporter</th>
+          <th class="px-4 py-2 text-left">Mobile</th>
+          <th class="px-4 py-2 text-left">No of truck</th>
+          <th class="px-4 py-2 text-left">Bid per truck(৳)</th>
+          <th class="px-4 py-2 text-left"></th>
+          <th class="px-4 py-2 text-left"></th>
+        </tr>
+        <tr>
+          <th class="custom-border" [colSpan]="7"></th>
+        </tr>
+        </thead>
+        <tbody class="text-web-text-secondary">
+        <tr *ngFor="let bid of sessionBid?.bids; let i = index">
+          <td >{{ i + 1 }}</td>
+          <td>{{ bid.transporterId }}</td>
+          <td >{{ bid.transporterId }}</td>
+          <td >{{ bid.submittedNumberOfTruck }}</td>
+          <td >{{ bid.amount | number }} ৳</td>
+          <td >
+            <button
+              (click)="editBid(bid)"
+              >
+              <img src="assets/svg/edit.svg">
+            </button>
+          </td>
+          <td >
+            <button
+              (click)="acceptBid(bid)"
+              class="rounded-lg px-3 py-1.5 text-xs font-semibold bg-red-500 text-white">
+              Remove
+            </button>
+          </td>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

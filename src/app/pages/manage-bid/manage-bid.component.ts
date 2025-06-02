@@ -33,6 +33,10 @@ import { ToggleResponsiveService } from '../../shared/services/toggle-responsive
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { CustomerModel } from '../profiles/components/customer/model/customer.model';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { BidCardComponent } from './components/bid-card/bid-card.component';
+import { BidService } from './services/bid.service';
+import { SessionModel } from './models/session.model';
+import { SessionBidDetailsComponent } from './components/session-bid-details/session-bid-details.component';
 
 @Component({
   selector: 'app-manage-bid',
@@ -54,7 +58,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatSuffix,
     NgForOf,
     NgIf,
-    TripCardComponent,
+    BidCardComponent,
+    SessionBidDetailsComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-bid.component.html',
@@ -77,7 +82,7 @@ export class ManageBidComponent {
   truckType: any[] = [];
   paymentTypeValue: any[] = [];
   tripTypeValue: any[] = [];
-  totalPages: any;
+  totalPages: number = 0;
   statusButtons = statusButtons;
   truckRegistrationNumbers: string;
   truckerEnabled: boolean = false;
@@ -138,13 +143,24 @@ export class ManageBidComponent {
   tripTypeFilter: number = 0;
   tripTypePlaceholder: string = '';
   customerName: string = '';
-   companySuggestions: any[] = [];
+  companySuggestions: any[] = [];
+  sortingButtons: any[] = [
+    { id: 1, name: 'All Unassigned', value: '', selected: true },
+    { id: 2, name: 'Bidded', value: 'Bidded', selected: false },
+    { id: 3, name: 'Unbidded', value: 'Unbidded', selected: false },
+  ];
+  totalBids: SessionModel[] = [];
+  bidPage: number = 0;
+  bidSize: number = 20;
+  bidLoading: boolean = false;
+  totalBidOfSession: SessionModel = {} as SessionModel;
 
   constructor(
     private tripService: TripService,
     private datePipe: DatePipe,
     private customer: CustomerService,
-    private toggleMobileViewService: ToggleResponsiveService
+    private toggleMobileViewService: ToggleResponsiveService,
+    private bidService: BidService
   ) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       if (searchText) {
@@ -153,7 +169,7 @@ export class ManageBidComponent {
         this.page = 0;
         this.size = 30;
         this.tripService.anotherStatusCalled.next(true);
-        this.getTripList();
+        this.getBidList();
       }
     });
   }
@@ -163,50 +179,9 @@ export class ManageBidComponent {
     this.customerSelected = false;
     this.triggerFromParentName = 'All';
     this.isTriggerFromParent = false;
-    if (localStorage.getItem('fromTripListTripId')) {
-      this.tripId = localStorage.getItem('fromTripListTripId');
-      this.getTripDetails(this.tripId);
-      this.searchValue = this.tripId;
-      this.getTruckTrackers(
-        localStorage.getItem('fromTripListTruckRegistrationNumber')
-      );
-      localStorage.removeItem('fromTripListTripId');
-      localStorage.removeItem('fromTripListTruckRegistrationNumber');
-    }
-
-    this.tripService.anotherStatusCalled.subscribe(value => {
-      this.anotherStatusCalled = value;
-    });
-
-    this.getTripList();
+    this.getBidList();
     this.getVehicleTypeList();
     this.activatedId = null;
-    localStorage.removeItem('tripId');
-    this.tripService.reloadManageTripPage.subscribe(value => {
-      if (value) {
-        this.page = 0;
-        this.size = 30;
-        this.searchValue = '';
-        // clear the filter values
-        this.filterValues = [];
-        this.selectedButton = '';
-        this.startDate = '';
-        this.endDate = '';
-        this.dateText = '';
-        this.customDateText = '';
-        this.selectedTruckValues = [];
-        this.truckType = [];
-        this.customerCodes = [];
-        this.customerNames = [];
-        this.customers = [];
-        this.customerSelected = false;
-        this.filterLength = 0;
-        this.previousFilterLength = 0;
-        this.filterHeight = '0px';
-        this.tripService.anotherStatusCalled.next(true);
-        this.getTripList();
-      }
-    });
   }
 
   onClickClear() {
@@ -215,57 +190,31 @@ export class ManageBidComponent {
     this.size = 30;
     this.tripService.anotherStatusCalled.next(true);
     this.filterLength = 0;
-    this.getTripList();
+    this.getBidList();
   }
 
-  private getTripList() {
+  private getBidList() {
     this.page == 0 ? (this.loading = true) : (this.loading = false);
-    this.tripService
-      .getTrips(
-        this.page,
-        this.size,
-        this.customerCodes?.toString(),
-        this.startDate,
-        this.endDate,
-        this.status,
-        this.searchValue,
-        this.truckType?.toString(),
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        this.paymentTypeValue?.toString(),
-        this.tripTypeValue?.toString()
-      )
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe(
-        (trip: any) => {
-          this.updateTripList(trip);
-        },
-        error => {
-          this.loading = false;
-        }
-      );
-  }
 
-  private updateTripList(trip: any) {
-    this.totalPages = trip.data.totalPages;
-    this.retriveStatusButtons(trip.data.statusCount);
-    if (this.page === 0) {
-      this.tripList = trip.data.responses;
-      this.getTruckTrackers(
-        this.getTruckRegistrationNumber(this.tripList[0].truck)
-      );
-      this.getTripDetails(this.tripList[0].tripId);
-      this.activatedId = this.tripList[0].tripId;
-      this.tripStatus = this.tripList[0].status;
-      this.activatedTruckSizeInFeet = Number(this.tripList[0].truckSize);
-    } else {
-      this.tripList.push(...trip.data.responses);
+    const meta = {
+      page: this.page,
+      limit: this.size,
+    };
+    const body = {};
+
+    if (this.status) {
+      body['status'] = [this.status];
     }
+
+    this.bidService
+      .getSessionBids(body, meta)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe((bid: any) => {
+        this.totalBids = bid.data.contents;
+        this.activatedId = this.totalBids[0]?.availableTripId;
+        this.totalPages = bid.meta.totalPageCount;
+        this.getBidDetails(this.totalBids[0]?.id);
+      });
   }
 
   private retriveStatusButtons(statusCount: any) {
@@ -349,7 +298,7 @@ export class ManageBidComponent {
     this.page = 0;
     this.size = 30;
     this.tripService.anotherStatusCalled.next(true);
-    this.getTripList();
+    this.getBidList();
   }
 
   onClickFilterOpen() {
@@ -544,7 +493,7 @@ export class ManageBidComponent {
     this.page = 0;
     this.size = 30;
     this.tripService.anotherStatusCalled.next(true);
-    this.getTripList();
+    this.getBidList();
   }
 
   onScrollEnd($event: boolean) {
@@ -557,7 +506,7 @@ export class ManageBidComponent {
         this.page++;
         this.size = 30;
         this.loading = false;
-        this.getTripList();
+        this.getBidList();
       }
     }
   }
@@ -619,7 +568,7 @@ export class ManageBidComponent {
     this.filterOpen = false;
     this.page = 0;
     this.tripService.anotherStatusCalled.next(true);
-    this.getTripList();
+    this.getBidList();
   }
 
   onClickFilterClose() {
@@ -776,7 +725,8 @@ export class ManageBidComponent {
 
   onChangePaymentType($event: any) {
     this.paymentTypeValue = $event.value;
-    this.filterLength = this.previousFilterLength + this.paymentTypeValue?.length;
+    this.filterLength =
+      this.previousFilterLength + this.paymentTypeValue?.length;
   }
 
   onClickApply() {
@@ -827,12 +777,10 @@ export class ManageBidComponent {
     this.size = 30;
     this.filterOpen = false;
     this.tripService.anotherStatusCalled.next(true);
-    this.getTripList();
+    this.getBidList();
   }
 
-  onClearInput($event: boolean) {
-
-  }
+  onClearInput($event: boolean) {}
 
   onClickButton(event: any) {
     this.tripStatusFilter(event.name);
@@ -841,6 +789,38 @@ export class ManageBidComponent {
     this.page = 0;
     this.status = name === 'All' ? '' : name;
     this.tripService.anotherStatusCalled.next(true);
-    this.getTripList();
+    this.getBidList();
+  }
+
+  onSortingChange(id) {
+    this.sortingButtons.forEach(button => {
+      if (button.id === id) {
+        button.selected = true;
+        this.status = button.value;
+      } else {
+        button.selected = false;
+      }
+    });
+    this.page = 0;
+    this.size = 30;
+    this.tripService.anotherStatusCalled.next(true);
+    this.getBidList();
+  }
+
+  private getBidDetails(id: number | undefined) {
+    if (!id) {
+      return;
+    }
+    this.bidPage === 0 ? (this.bidLoading = true) : (this.bidLoading = false);
+    this.bidService
+      .getSessionBidById(id)
+      .pipe(
+        finalize(() => {
+          this.bidLoading = false;
+        })
+      )
+      .subscribe((res: any) => {
+        this.totalBidOfSession = res.data;
+      });
   }
 }
