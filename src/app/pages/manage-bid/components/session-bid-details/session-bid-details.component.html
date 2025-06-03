@@ -53,9 +53,19 @@
   <ng-container *ngIf="!isInEditMode">
     <div class="bg-white rounded-lg p-4 flex flex-col space-y-3">
       <ng-container *ngIf="sessionBid?.bids && sessionBid?.bids.length > 0 ">
-        <div>
+        <div class="flex justify-between items-center">
         <span
           class="text-body_title leading-body_title text-not-black font-semibold">Available bids {{ sessionBid.numberOfBids > 0 ? '(' + sessionBid.numberOfBids + ')' : '' }}</span>
+          <button
+            mat-button
+            [matMenuTriggerFor]="menu">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button
+              mat-menu-item
+              (click)="bookManually(sessionBid.availableTripId)">Book manually</button>
+          </mat-menu>
         </div>
         <div class="border border-[#A1D5DE] rounded-lg overflow-y-auto max-h-[56vh] ">
           <table
@@ -144,8 +154,8 @@
             <label for="currentBid" class="text-not-black text-body_title leading-body_title font-semibold">Current bid</label>
             <div id="currentBid" class="p-4 bg-app-bg rounded-lg flex justify-between">
               <div class="flex space-y-1 flex-col">
-                <span class="text-not-black text-body_title leading-body_title font-semibold">{{ sessionBid?.bids[0]?.amount | number }} ৳</span>
-                <span class="text-secondary text-xs">{{sessionBid?.bids[0]?.submittedNumberOfTruck}} {{sessionBid.truckType.split(',')[0]}}</span>
+                <span class="text-not-black text-body_title leading-body_title font-semibold">{{ selectedBid?.amount | number }} ৳</span>
+                <span class="text-secondary text-xs">{{selectedBid?.submittedNumberOfTruck}} {{sessionBid.truckType.split(',')[0]}}</span>
               </div>
               <div class="flex space-y-1 flex-col">
                 <span class="text-not-black text-body_title leading-body_title font-semibold">{{ sessionBid?.bids[0]?.amount | number }} ৳</span>

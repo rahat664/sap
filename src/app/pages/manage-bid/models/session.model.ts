@@ -25,7 +25,7 @@ export interface SessionModel {
   bids: Bid[]; // You can replace `any` with a specific `Bid` interface if available
 }
 
-interface Bid {
+export interface Bid {
   id: number;
   createdAt: string; // ISO datetime
   updatedAt: string;
