@@ -823,4 +823,10 @@ export class ManageBidComponent {
         this.totalBidOfSession = res.data;
       });
   }
+
+  onClickBid(bid: SessionModel) {
+    this.getBidDetails(bid.id);
+    this.activatedId = bid.availableTripId;
+    this.updateOverLayStyle(true);
+  }
 }

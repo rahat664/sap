@@ -21,7 +21,7 @@
         <div class="relative w-full">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <img src="assets/svg/search.svg" class="notPreview" alt="search"/>
+            <img src="assets/svg/search.svg" class="notPreview" alt="search" />
           </div>
           <button
             type="button"
@@ -48,7 +48,7 @@
               loading="lazy"
               class="notPreview"
               src="assets/svg/filter.svg"
-              alt="filter"/>
+              alt="filter" />
             <span
               *ngIf="filterValues.length  > 0"
               class="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red text-white text-xs font-semibold rounded-full h-4 w-4 flex items-center justify-center">
@@ -62,8 +62,10 @@
         <div class="flex flex-col space-y-1">
           <label class="text-not-black">Sort by</label>
           <div class="flex space-x-2">
-            <button type="button" (click)="onSortingChange(button.id)" class="px-4 py-1 rounded-full {{button?.selected ? 'bg-primary text-white': 'border border-primary text-secondary'}}"  *ngFor="let button of sortingButtons">
-              {{button.name}}
+            <button type="button" (click)="onSortingChange(button.id)"
+                    class="px-4 py-1 rounded-full {{button?.selected ? 'bg-primary text-white': 'border border-primary text-secondary'}}"
+                    *ngFor="let button of sortingButtons">
+              {{ button.name }}
             </button>
           </div>
         </div>
@@ -93,7 +95,8 @@
         (inBottomEnd)="onScrollEnd($event)"
         [totalPage]="totalPages"
         [anotherItemsHeight]="customizedHeight(height, filterHeight)">
-        <app-bid-card [isActivated]="bid.availableTripId === activatedId" *ngFor="let bid of totalBids" [sessionBid]="bid"></app-bid-card>
+        <app-bid-card (click)="onClickBid(bid)" [isActivated]="bid.availableTripId === activatedId" *ngFor="let bid of totalBids"
+                      [sessionBid]="bid"></app-bid-card>
       </div>
     </div>
     <div
@@ -111,7 +114,7 @@
           loading="lazy"
           src="assets/svg/no-data.svg"
           class="notPreview"
-          alt="nodata"/>
+          alt="nodata" />
         <p
           class="text-body_title leading-body_title text-secondary font-semibold">
           No Data Found
@@ -170,14 +173,14 @@
                     [(ngModel)]="startDate"
                     (selectionchange)="onChangeStartDate($event)"
                     matStartDate
-                    placeholder="Start date"/>
+                    placeholder="Start date" />
                   <input
                     [disabled]="!customSelected"
                     (focus)="picker.open()"
                     [(ngModel)]="endDate"
                     (selectionchange)="onChangeEndDate($event)"
                     matEndDate
-                    placeholder="End date"/>
+                    placeholder="End date" />
                 </mat-date-range-input>
                 <mat-datepicker-toggle
                   matIconSuffix
@@ -200,7 +203,7 @@
                 matInput
                 (keyup)="onKeyUpCustomerSearch($event)"
                 placeholder="Select company name"
-                [matAutocomplete]="customerSug"/>
+                [matAutocomplete]="customerSug" />
               <mat-autocomplete #customerSug="matAutocomplete">
                 @for (option of companySuggestions; track option) {
                   <mat-option
