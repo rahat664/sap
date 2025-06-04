@@ -1,0 +1,35 @@
+
+<div class="sticky top-0 flex items-start justify-between bg-white z-50">
+  <h1 class="text-h3 leading-h3 font-semibold text-not-black px-6 py-4"></h1>
+  <button
+    class="text-bold h-8 w-8 m-2 rounded-full hover:bg-input flex items-center justify-center"
+    (click)="closeDialog()">
+    <i class="fal fa-times"></i>
+  </button>
+</div>
+<div class="w-full h-full flex flex-col p-4 pt-0">
+  <div class="flex flex-col space-y-4 items-center">
+    <div class="mb-4">
+      <img
+        src="assets/svg/success.svg"
+        alt="warning"
+        loading="lazy"
+        class="notPreview"/>
+    </div>
+    <h1
+      class="text-h3 leading-h3 text-center text-not-black font-bold">
+      Confirm bid
+    </h1>
+   <div class="w-full border border-line rounded-lg">
+     <div *ngFor="let field of confirmBidFields; index as i" class="flex justify-between items-center px-6 py-2.5 border-b  border-line last:border-none" >
+       <span class="text-secondary">{{ field.label }}:</span>
+       <span class="text-not-black">{{ field.value ? field.value : 'N/A' }}</span>
+     </div>
+   </div>
+    <button
+      class="bg-primary w-full text-white rounded-lg p-4 mt-4 whitespace-nowrap"
+      (click)="dismissModal()">
+      {{ data?.buttonText }}
+    </button>
+  </div>
+</div>

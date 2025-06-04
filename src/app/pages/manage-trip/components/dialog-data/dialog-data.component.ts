@@ -333,6 +333,7 @@ export class DialogDataComponent implements OnInit {
                 .afterClosed()
                 .subscribe(() => {
                   this.trip.reloadManageTripPage.next(true);
+                  this.loading = false;
                 });
             } else if (res.status == 'BAD REQUEST') {
               this.dialog.open(ErrorModalComponent, {
@@ -342,6 +343,9 @@ export class DialogDataComponent implements OnInit {
                   text: res.message,
                   buttonText: 'Okay',
                 },
+              }).afterClosed().subscribe(() => {
+                this.trip.reloadManageTripPage.next(true)
+                this.loading = false;
               });
             } else {
               this.dialog.open(ErrorModalComponent, {
@@ -351,6 +355,9 @@ export class DialogDataComponent implements OnInit {
                   text: 'Something went wrong',
                   buttonText: 'Okay',
                 },
+              }).afterClosed().subscribe(() => {
+                this.trip.reloadManageTripPage.next(true)
+                this.loading = false;
               });
             }
           },
@@ -362,6 +369,9 @@ export class DialogDataComponent implements OnInit {
                 text: error.error.message,
                 buttonText: 'Okay',
               },
+            }).afterClosed().subscribe(() => {
+              this.trip.reloadManageTripPage.next(true);
+              this.loading = false;
             });
           }
         );

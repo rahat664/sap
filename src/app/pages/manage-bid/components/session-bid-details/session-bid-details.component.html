@@ -1,0 +1,342 @@
+<div class="flex flex-col space-y-3 mr-4">
+  <div class="bg-white rounded-lg p-6 grid grid-col-2">
+    <div class=" flex flex-col space-y-3">
+      <div class="flex justify-between items-start w-full">
+        <div class="flex flex-col space-y-1 items-start">
+      <span
+        class="text-body_title leading-body_title text-not-black font-semibold"
+      >Trip no: {{ sessionBid?.availableTripId }}</span
+      >
+          <span
+            class="text-body_title leading-body_title text-not-black font-semibold">{{ sessionBid?.customerName }}</span>
+        </div>
+      </div>
+      <div class="flex flex-col space-y-3 items-start text-xs">
+        <div
+          class="flex items-center space-x-2">
+          <img src="./assets/svg/datetime.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
+          <span class="text-secondary">{{
+              sessionBid?.tripStartTime | date: 'd MMM,yyyy, h:mm a'
+            }}</span>
+        </div>
+        <div
+          class="flex items-center space-x-2">
+          <img src="./assets/svg/bid-location.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
+          <span class="text-secondary text-start">
+        {{ sessionBid?.title }}
+      </span>
+        </div>
+        <div
+          class="flex items-center space-x-2">
+          <img src="./assets/svg/bid-truck.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
+          <span class="text-secondary text-start">
+        {{ sessionBid?.truckType }}
+      </span>
+        </div>
+        <div
+          class="flex items-center space-x-2">
+          <img src="./assets/svg/goodsinfo.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
+          <span class="text-secondary text-start">
+        Goods Type: {{ sessionBid?.goods }}
+      </span>
+        </div>
+        <div
+          class="flex items-center space-x-2">
+          <img src="./assets/svg/cr.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
+          <span class="text-secondary text-start">
+        CR: {{ sessionBid?.customerRate | number }} ৳
+      </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="!isInEditMode && sessionBid?.status !== 'Accepted'">
+    <div class="bg-white rounded-lg p-4 flex flex-col space-y-3">
+      <ng-container *ngIf="sessionBid?.bids && sessionBid?.bids.length > 0 ">
+        <div class="flex justify-between items-center">
+        <span
+          class="text-body_title leading-body_title text-not-black font-semibold">Available bids {{ sessionBid.numberOfBids > 0 ? '(' + sessionBid.numberOfBids + ')' : '' }}</span>
+          <button
+            mat-button
+            [matMenuTriggerFor]="menu">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button
+              mat-menu-item
+              (click)="bookManually(sessionBid.availableTripId)">Book manually
+            </button>
+          </mat-menu>
+        </div>
+        <div class="border border-[#A1D5DE] rounded-lg overflow-y-auto max-h-[56vh] ">
+          <table
+            class="table-auto w-full text-body_title leading-body_title rounded-sm">
+            <thead class="bg-white z-50">
+            <tr class="whitespace-nowrap  bg-white text-not-black">
+              <th class="px-4 py-2 text-center">Rank</th>
+              <th class="px-4 py-2 text-center">Transporter</th>
+              <th class="px-4 py-2 text-center">Mobile</th>
+              <th class="px-4 py-2 text-center">No of truck</th>
+              <th class="px-4 py-2 text-center">Bid per truck(৳)</th>
+              <th class="px-4 py-2 text-center"></th>
+              <th class="px-4 py-2 text-center"></th>
+            </tr>
+            <tr>
+              <th class="custom-border" [colSpan]="7"></th>
+            </tr>
+            </thead>
+            <tbody class="text-web-text-secondary">
+            <tr *ngFor="let bid of sessionBid?.bids; let i = index">
+              <td class="whitespace-nowrap">
+                <div class="flex items-center justify-center w-full h-full">
+                  <p
+                    class="w-8 h-8 flex items-center justify-center text-white rounded-full shadow-lg {{getBackgroundColor(bid?.amount, sessionBid?.profitExpectation, sessionBid?.customerRate)}}">
+                    <span class="text-body_title leading-body_title font-semibold">{{ bid.rank }}</span>
+                  </p>
+                </div>
+              </td>
+              <td class="text-center">{{ bid.transporterName }}</td>
+              <td class="text-center">{{ bid.transporterPhoneNumber }}</td>
+              <td class="text-center"> {{ bid.submittedNumberOfTruck }}</td>
+              <td class="text-center">
+                <div class="flex items-center justify-center w-full h-full">
+                  <div class="flex space-x-1 items-center">
+                    <span>{{ bid.amount | number }}</span>
+                    <img
+                      matTooltipClass="custom-tooltip" matTooltipPosition="below"
+                      matTooltip="{{bid.remarks ? bid.remarks : 'Not available'}}" class="notPreview"
+                      *ngIf="bid.remarks" src="assets/svg/status-refresh.svg">
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="flex w-full items-center justify-center">
+                  <button
+                    (click)="editBid(bid)"
+                  >
+                    <img class="notPreview" src="assets/svg/edit.svg">
+                  </button>
+                </div>
+              </td>
+              <td>
+                <div class="flex w-full items-center justify-center">
+                  <button
+                    (click)="acceptBid(bid)"
+                    class="rounded-lg px-3 py-1.5 text-xs font-semibold text-primary border border-primary">
+                    Accept bid
+                  </button>
+                </div>
+              </td>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="sessionBid?.bids && sessionBid?.bids.length === 0">
+        <div class="min-h-[60vh] max-h-[60vh] flex items-center justify-center">
+          <div class="flex flex-col space-y-3">
+            <img src="assets/svg/no-bid.svg" class="notPreview">
+            <div class="text-center flex flex-col space-y-1">
+              <p class="text-not-black font-semibold">No bids yet!</p>
+              <p class="text-secondary">Please come again later and check</p>
+              <span>or</span>
+            </div>
+            <button
+              class="px-16 py-4 text-center text-primary text-[1.125rem] font-semibold border border-primary rounded-lg"
+              (click)="bookManually(sessionBid.availableTripId)">
+              Book manually
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="isInEditMode && sessionBid?.status !== 'Accepted'">
+    <div class=" max-h-[60vh] bg-white rounded-lg">
+      <div class="flex justify-between border-b border-line items-center p-4">
+        <h1 class="text-not-black text-body_title leading-body_title font-semibold">Update bid</h1>
+        <div class="flex space-x-3 items-center">
+          <button (click)="onUpdateBid()" class="bg-primary rounded-lg px-6 py-2 text-white text-center">Update bid
+          </button>
+          <button (click)="isInEditMode = false"><i class="fal fa-times text-2xl"></i></button>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col space-y-3 p-4 border-r border-line">
+          <div class="flex flex-col space-y-1">
+            <label for="currentBid" class="text-not-black text-body_title leading-body_title font-semibold">Current
+              bid</label>
+            <div id="currentBid" class="p-4 bg-app-bg rounded-lg flex justify-between">
+              <div class="flex space-y-1 flex-col">
+                <span
+                  class="text-not-black text-body_title leading-body_title font-semibold">{{ selectedBid?.amount | number }}
+                  ৳</span>
+                <span
+                  class="text-secondary text-xs">{{ selectedBid?.submittedNumberOfTruck }} {{ sessionBid.truckType.split(',')[0] }}</span>
+              </div>
+              <div class="flex space-y-1 flex-col">
+                <span
+                  class="text-not-black text-body_title leading-body_title font-semibold">{{ sessionBid?.bids[0]?.amount | number }}
+                  ৳</span>
+                <span
+                  class="text-secondary text-xs">{{ sessionBid?.bids[0]?.submittedNumberOfTruck }} {{ sessionBid.truckType.split(',')[0] }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <label for="updateBid" class="text-not-black text-body_title leading-body_title font-semibold">Update your
+              bid</label>
+            <div id="updateBid" class="flex flex-col space-y-3">
+              <div class="p-4 bg-input rounded-lg">
+                <div class="flex space-y-1 flex-col">
+                  <span class="text-secondary text-xs">Number of truck</span>
+                  <input
+                    type="number"
+                    [(ngModel)]="selectedBidNumberOfTruck"
+                    class="w-full border-none rounded-lg focus:outline-none bg-input focus:border-primary"
+                    placeholder="Enter number of truck" />
+                </div>
+              </div>
+              <div class="p-4 bg-input rounded-lg">
+                <div class="flex space-y-1 flex-col">
+                  <span class="text-secondary text-xs">Bid per amount</span>
+                  <input
+                    type="number"
+                    [(ngModel)]="selectedBidAmount"
+                    class="w-full border-none  rounded-lg focus:outline-none bg-input focus:border-primary"
+                    placeholder="Enter bid amount" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pr-4 py-4">
+          <div class="flex flex-col space-y-1">
+            <label for="bidReason" class="text-not-black text-body_title leading-body_title font-semibold">Reason of bid
+              updates<sup>*</sup></label>
+            <div id="bidReason" class="flex flex-col space-y-1">
+              <mat-checkbox (change)="onChangeReason($event)"
+                             class="text-secondary"
+                            value="Transporter asked me to do this">
+                Transporter asked me to do this
+              </mat-checkbox>
+              <mat-checkbox (change)="onChangeReason($event)" class="text-secondary" value="I can't disclose this issue"
+                            >
+                I can't disclose this issue
+              </mat-checkbox>
+              <mat-checkbox (change)="onChangeReason($event)" class="text-secondary" value="My life my rules"
+                           >
+                My life my rules
+              </mat-checkbox>
+              <mat-checkbox (change)="onChangeReason($event)" class="text-secondary" value="Others"
+                            >
+                Others
+              </mat-checkbox>
+              <textarea *ngIf="selectedBidReason === 'Others'" [(ngModel)]="selectedBidReasonTextArea"
+                        class="w-full h-24 p-2 bg-input rounded-lg focus:outline-none focus:border-primary"
+                        placeholder="Please specify your reason">
+
+              </textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!isInEditMode && sessionBid?.status === 'Accepted'">
+    <div class="bg-white rounded-lg p-4 flex flex-col space-y-3">
+      <div class="flex justify-between items-center">
+        <div class="flex space-x-2 items-center">
+          <img src="assets/svg/bid-winner.svg" class="notPreview">
+          <span
+            class="text-body_title leading-body_title text-not-black font-semibold">Accepted bid</span>
+        </div>
+        <span class="text-secondary text-xs">
+          {{ getAcceptedBidFromBids(sessionBid?.bids)[0].acceptedOn | date: 'd MMM, yyyy, h:mm a' }}
+        </span>
+      </div>
+      <div class="border border-[#A1D5DE] rounded-lg overflow-y-auto max-h-[56vh] ">
+        <table
+          class="table-auto w-full text-body_title leading-body_title rounded-sm">
+          <thead class="bg-white z-50">
+          <tr class="whitespace-nowrap  bg-white text-not-black">
+            <th class="px-4 py-2 text-center">Rank</th>
+            <th class="px-4 py-2 text-center">Transporter</th>
+            <th class="px-4 py-2 text-center">Mobile</th>
+            <th class="px-4 py-2 text-center">No of truck</th>
+            <th class="px-4 py-2 text-center">Bid per truck(৳)</th>
+            <th class="px-4 py-2 text-center"></th>
+            <th class="px-4 py-2 text-center"></th>
+          </tr>
+          <tr>
+            <th class="custom-border" [colSpan]="7"></th>
+          </tr>
+          </thead>
+          <tbody class="text-web-text-secondary">
+          <tr *ngFor="let bid of getAcceptedBidFromBids(sessionBid?.bids); let i = index">
+            <td class="whitespace-nowrap">
+              <div class="flex items-center justify-center w-full h-full">
+                <p
+                  class="w-8 h-8 flex items-center justify-center text-white rounded-full shadow-lg {{getBackgroundColor(bid?.amount, sessionBid?.profitExpectation, sessionBid?.customerRate)}}">
+                  <span class="text-body_title leading-body_title font-semibold">{{ bid.rank }}</span>
+                </p>
+              </div>
+            </td>
+            <td class="text-center">{{ bid.transporterName }}</td>
+            <td class="text-center">{{ bid.transporterPhoneNumber }}</td>
+            <td class="text-center"> {{ bid.submittedNumberOfTruck }}</td>
+            <td class="text-center"> {{ bid.amount | number }}</td>
+            <td></td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg p-4 flex flex-col space-y-3" *ngIf="getNotAcceptedBid(sessionBid?.bids).length > 0">
+      <div class="flex justify-between items-center">
+        <div class="flex space-x-2 items-center">
+          <span
+            class="text-body_title leading-body_title text-not-black font-semibold">Rejected bid
+            ({{ sessionBid?.bids?.length - getAcceptedBidFromBids(sessionBid?.bids).length }})</span>
+        </div>
+      </div>
+      <div class="border border-[#A1D5DE] rounded-lg overflow-y-auto max-h-[56vh] ">
+        <table
+          class="table-auto w-full text-body_title leading-body_title rounded-sm">
+          <thead class="bg-white z-50">
+          <tr class="whitespace-nowrap  bg-white text-not-black">
+            <th class="px-4 py-2 text-center">Rank</th>
+            <th class="px-4 py-2 text-center">Transporter</th>
+            <th class="px-4 py-2 text-center">Mobile</th>
+            <th class="px-4 py-2 text-center">No of truck</th>
+            <th class="px-4 py-2 text-center">Bid per truck(৳)</th>
+            <th class="px-4 py-2 text-center"></th>
+            <th class="px-4 py-2 text-center"></th>
+          </tr>
+          <tr>
+            <th class="custom-border" [colSpan]="7"></th>
+          </tr>
+          </thead>
+          <tbody class="text-web-text-secondary">
+          <tr *ngFor="let bid of getNotAcceptedBid(sessionBid?.bids); let i = index">
+            <td class="whitespace-nowrap">
+              <div class="flex items-center justify-center w-full h-full">
+                <p
+                  class="w-8 h-8 flex items-center justify-center text-white rounded-full shadow-lg {{getBackgroundColor(bid?.amount, sessionBid?.profitExpectation, sessionBid?.customerRate)}}">
+                  <span class="text-body_title leading-body_title font-semibold">{{ bid.rank }}</span>
+                </p>
+              </div>
+            </td>
+            <td class="text-center">{{ bid.transporterName }}</td>
+            <td class="text-center">{{ bid.transporterPhoneNumber }}</td>
+            <td class="text-center"> {{ bid.submittedNumberOfTruck }}</td>
+            <td class="text-center"> {{ bid.amount | number }}</td>
+            <td></td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+</div>

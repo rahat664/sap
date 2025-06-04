@@ -1,0 +1,809 @@
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { GMapComponent } from '../../shared/modules/g-map/g-map.component';
+import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
+import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
+import { MapButtonsComponent } from '../manage-trip/components/map-buttons/map-buttons.component';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+  MatOption,
+} from '@angular/material/autocomplete';
+import {
+  MatDatepickerToggle,
+  MatDateRangeInput,
+  MatDateRangePicker,
+  MatEndDate,
+  MatStartDate,
+} from '@angular/material/datepicker';
+import { MatInput, MatSuffix } from '@angular/material/input';
+import { DatePipe, NgForOf, NgIf } from '@angular/common';
+import { TripCardComponent } from '../../shared/modules/trip-card/trip-card.component';
+import { TripDetailsComponent } from '../manage-trip/components/trip-details/trip-details.component';
+import { MatSelect } from '@angular/material/select';
+import { MatFormField } from '@angular/material/form-field';
+import { TripService } from '../trip-list/services/trip.service';
+import { finalize } from 'rxjs/operators';
+import { statusButtons } from '../trip-list/models/status-buttons';
+import { Trip, Truck } from '../auth/models/response/trip';
+import { TripData, TripPoint } from '../manage-trip/model/trip.details.model';
+import { debounceTime, Subject } from 'rxjs';
+import { CustomerService } from '../profiles/services/customer.service';
+import { ToggleResponsiveService } from '../../shared/services/toggle-responsive-services/toggle-responsive.service';
+import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
+import { CustomerModel } from '../profiles/components/customer/model/customer.model';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { BidCardComponent } from './components/bid-card/bid-card.component';
+import { BidService } from './services/bid.service';
+import { SessionModel } from './models/session.model';
+import { SessionBidDetailsComponent } from './components/session-bid-details/session-bid-details.component';
+import { LoadingComponent } from '../../shared/modules/loading/loading.component';
+
+@Component({
+  selector: 'app-manage-bid',
+  imports: [
+    FormsModule,
+    GetElementHeightDirective,
+    GiveMaxHeightDirective,
+    MatAutocomplete,
+    MatAutocompleteTrigger,
+    MatFormField,
+    MatInput,
+    MatOption,
+    NgForOf,
+    NgIf,
+    BidCardComponent,
+    SessionBidDetailsComponent,
+    LoadingComponent,
+  ],
+  providers: [provideNativeDateAdapter()],
+  templateUrl: './manage-bid.component.html',
+  styleUrl: './manage-bid.component.scss',
+})
+export class ManageBidComponent {
+  searchSubject = new Subject<string>();
+  height: any;
+  tripList: Trip[] = [];
+  filterOpen: boolean = false;
+  searchValue: string = '';
+  page: number = 0;
+  size: number = 30;
+  filterLength: number = 0;
+  loading: boolean = false;
+  customerCodes: any[] = [];
+  startDate: string = '';
+  endDate: string = '';
+  status: string[] = ['Bidded', 'Unbidded'];
+  truckType: any[] = [];
+  paymentTypeValue: any[] = [];
+  tripTypeValue: any[] = [];
+  totalPages: number = 0;
+  statusButtons = statusButtons;
+  truckRegistrationNumbers: string;
+  truckerEnabled: boolean = false;
+  truckLocationPosition: { lng: number; lat: number } = {} as any;
+  startingPosition: { lng: number; lat: number }[] = [];
+  destinationPosition: { lng: number; lat: number }[] = [];
+  activatedId: string = '';
+  singleTripDetails: TripData;
+  tripStatus: string = '';
+  activatedTruckSizeInFeet: number = 0;
+  customers: any[] = [];
+  selectedButton: string = '';
+  customerCode: any = '';
+  dateText: string = '';
+  customerNames: any[] = [];
+  filterValues: any[] = [];
+  vehicleTypeList: any[] = [];
+  buttonName: any[] = [
+    'Today',
+    'Last 7 Days',
+    'Last 15 Days',
+    'Last 30 Days',
+    'Custom',
+  ];
+  tripTypeOptionsArray: CustomInputSelectModel[] = [
+    { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
+    {
+      id: 2,
+      value: 'COMMERCIAL',
+      selected: false,
+      showname: 'Commercial Logistics',
+    },
+  ];
+  paymentTypeOptionsArray: CustomInputSelectModel[] = [
+    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
+    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
+    {
+      id: 3,
+      value: 'CASH_AND_INVOICE',
+      selected: false,
+      showname: 'Cash & Invoice',
+    },
+    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
+  ];
+  dateSelected: boolean = false;
+  customerSelected: boolean = false;
+  triggerFromParentName: string = '';
+  isTriggerFromParent: boolean = false;
+  tripId: string;
+  anotherStatusCalled: boolean = false;
+  previousFilterLength: number = 0;
+  customDateText: string = '';
+  selectedTruckValues: any[] = [];
+  filterHeight: string = '0px';
+  customSelected: boolean = false;
+  paymentFilter: number = 0;
+  paymentTypePlaceholder: string = '';
+  tripTypeFilter: number = 0;
+  tripTypePlaceholder: string = '';
+  customerName: string = '';
+  companySuggestions: any[] = [];
+  sortingButtons: any[] = [
+    {
+      id: 1,
+      name: 'All Unassigned',
+      value: 'Bidded, Unbidded',
+      selected: true,
+    },
+    { id: 2, name: 'Bidded', value: 'Bidded', selected: false },
+    { id: 3, name: 'Unbidded', value: 'Unbidded', selected: false },
+  ];
+  totalBids: SessionModel[] = [];
+  bidPage: number = 0;
+  bidSize: number = 20;
+  bidLoading: boolean = false;
+  totalBidOfSession: SessionModel = {} as SessionModel;
+
+  constructor(
+    private tripService: TripService,
+    private datePipe: DatePipe,
+    private customer: CustomerService,
+    private toggleMobileViewService: ToggleResponsiveService,
+    private bidService: BidService
+  ) {
+    this.tripService.reloadManageTripPage.subscribe((res: boolean)=> {
+      if (res) {
+        this.page = 0;
+        this.size = 30;
+        this.filterLength = 0;
+        this.filterValues = [];
+        this.searchValue = '';
+        this.tripService.anotherStatusCalled.next(true);
+        this.getBidList();
+      }
+    })
+    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
+      if (searchText) {
+        this.performSearch(searchText);
+      } else {
+        this.searchValue = searchText;
+        this.page = 0;
+        this.size = 30;
+        this.tripService.anotherStatusCalled.next(true);
+        this.getBidList();
+      }
+    });
+  }
+
+  ngOnInit() {
+    this.dateSelected = false;
+    this.customerSelected = false;
+    this.triggerFromParentName = 'All';
+    this.isTriggerFromParent = false;
+    this.getBidList();
+    this.getVehicleTypeList();
+    this.activatedId = null;
+  }
+
+  onClickClear() {
+    this.searchValue = '';
+    this.page = 0;
+    this.size = 30;
+    this.tripService.anotherStatusCalled.next(true);
+    this.filterLength = 0;
+    this.getBidList();
+  }
+
+  private getBidList() {
+    this.page == 0 ? (this.loading = true) : (this.loading = false);
+
+    const meta = {
+      page: this.page,
+      limit: this.size,
+    };
+    const body = {};
+
+    if (this.status) {
+      body['status'] = this.status;
+    }
+
+    if (this.customerCodes.length > 0) {
+      body['customerCode'] = this.customerCodes;
+    }
+
+    if (this.searchValue) {
+      body['searchKey'] = this.searchValue;
+    }
+
+    this.bidService
+      .getSessionBids(body, meta)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe((bid: any) => {
+        this.totalBids = bid.data.contents;
+        this.activatedId = this.totalBids[0]?.availableTripId;
+        this.totalPages = bid.meta.totalPageCount;
+        this.getBidDetails(this.totalBids[0]?.id);
+      });
+  }
+
+  private retriveStatusButtons(statusCount: any) {
+    this.statusButtons.forEach(button => {
+      button.count = statusCount[button.name];
+    });
+  }
+
+  private getTruckTrackers(truckRegistrationNumber: string) {
+    this.truckRegistrationNumbers = truckRegistrationNumber;
+    if (truckRegistrationNumber) {
+      this.tripService.getSensorData(truckRegistrationNumber).subscribe(
+        (res: any) => {
+          if (res.data) {
+            this.truckerEnabled = true;
+            this.truckLocationPosition = {
+              lng: res.data?.lng,
+              lat: res.data?.lat,
+            };
+          } else {
+            this.truckerEnabled = false;
+            this.truckLocationPosition = {
+              lng: 0,
+              lat: 0,
+            };
+          }
+        },
+        error => {
+          this.truckerEnabled = false;
+          this.truckLocationPosition = {
+            lng: 0,
+            lat: 0,
+          };
+        }
+      );
+    }
+  }
+
+  getTruckRegistrationNumber(truck: Truck) {
+    if (truck) {
+      return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial}-${truck.registrationNum}`;
+    } else {
+      return 'Not Assigned';
+    }
+  }
+
+  private getTripDetails(tripId: string) {
+    localStorage.setItem('tripId', tripId);
+    if (tripId) {
+      this.tripService.getTripDetailsByTripId(tripId).subscribe(
+        (trip: any) => {
+          this.singleTripDetails = trip.data;
+          this.startingPosition = [];
+          this.destinationPosition = [];
+          // store starting and destination position
+          this.singleTripDetails.tripPoints.forEach((point: TripPoint) => {
+            if (point.pointType === 'Loading') {
+              this.startingPosition.push({
+                lng: point.pointLon,
+                lat: point.pointLat,
+              });
+            } else if (point.pointType === 'Unloading') {
+              this.destinationPosition.push({
+                lng: point.pointLon,
+                lat: point.pointLat,
+              });
+            }
+          });
+        },
+        error => {}
+      );
+    }
+  }
+
+  onKeyUpSearch(event: KeyboardEvent) {
+    this.searchSubject.next((event.target as HTMLInputElement).value);
+  }
+
+  private performSearch(searchText: string) {
+    this.searchValue = searchText;
+    this.page = 0;
+    this.size = 30;
+    this.tripService.anotherStatusCalled.next(true);
+    this.getBidList();
+  }
+
+  onClickFilterOpen() {
+    this.truckType = [];
+    this.customers = [];
+    this.selectedButton = '';
+    this.startDate = '';
+    this.endDate = '';
+    this.dateText = '';
+    this.customerCodes = [];
+    this.customerNames = [];
+    this.filterLength = 0;
+    this.filterOpen = true;
+    this.tripTypeValue = [];
+    this.paymentTypeValue = [];
+
+    if (this.filterValues.length > 0) {
+      this.filterValues.forEach((element: any) => {
+        const selectedVehicle = this.vehicleTypeList.find(
+          (value: any) => value.name === element
+        );
+
+        if (selectedVehicle) {
+          this.truckType.push(selectedVehicle.id);
+        } else if (
+          this.tripTypeOptionsArray.some(
+            (value: any) => value.showname === element
+          )
+        ) {
+          this.tripTypeValue.push(
+            this.tripTypeOptionsArray.find(
+              (value: any) => value.showname === element
+            ).value
+          );
+        } else if (
+          this.paymentTypeOptionsArray.some(
+            (value: any) => value.showname === element
+          )
+        ) {
+          this.paymentTypeValue.push(
+            this.paymentTypeOptionsArray.find(
+              (value: any) => value.showname === element
+            ).value
+          );
+        } else if (this.buttonName.includes(element)) {
+          this.selectedButton = element;
+          this.dateText = element;
+          this.dateSelected = true;
+          if (element === 'Today') {
+            this.startDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+            this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+          } else if (element === 'Last 7 Days') {
+            this.startDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 7)),
+              'yyyy-MM-dd'
+            );
+            // end date should be yesterday
+            this.endDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 1)),
+              'yyyy-MM-dd'
+            );
+          } else if (element === 'Last 15 Days') {
+            this.startDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 15)),
+              'yyyy-MM-dd'
+            );
+            // end date should be yesterday
+            this.endDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 1)),
+              'yyyy-MM-dd'
+            );
+          } else if (element === 'Last 30 Days') {
+            this.startDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 30)),
+              'yyyy-MM-dd'
+            );
+            // end date should be yesterday
+            this.endDate = this.datePipe.transform(
+              new Date(new Date().setDate(new Date().getDate() - 1)),
+              'yyyy-MM-dd'
+            );
+          }
+        } else if (element.includes('-')) {
+          this.customSelected = true;
+          this.customDateText = element;
+          this.selectedButton = 'Custom';
+          this.dateSelected = true;
+          const dates = element.split(' - ');
+          this.startDate = dates[0];
+          this.endDate = dates[1];
+        } else {
+          this.customer.searchCustomer(0, 1000, element, null).subscribe(
+            (res: any) => {
+              this.customers.push(res.data.content[0]);
+              this.customerCodes.push(res.data.content[0].customerCode);
+              this.customerNames.push(res.data.content[0].name);
+              this.customerSelected = true;
+            },
+            error => {}
+          );
+        }
+      });
+      this.filterLength = this.filterValues.length;
+    } else {
+      this.truckType = [];
+      this.selectedButton = '';
+      this.dateSelected = false;
+      this.startDate = '';
+      this.endDate = '';
+      this.customerNames = [];
+      this.customerCodes = [];
+      this.customers = [];
+      this.customerSelected = false;
+      this.filterLength = 0;
+      this.previousFilterLength = 0;
+      this.tripTypeValue = [];
+      this.paymentTypeValue = [];
+    }
+  }
+
+  private getVehicleTypeList() {
+    this.tripService.getVehicleTypeList().subscribe((res: any) => {
+      this.vehicleTypeList = res.data;
+    });
+  }
+
+  onClickCloseFilter(filter: any) {
+    this.dateSelected = false;
+    this.filterValues = this.filterValues.filter(
+      (value: any) => value !== filter
+    );
+    if (this.customerNames.includes(filter)) {
+      const customerCode = this.customers.find(
+        (element: any) => element.name === filter
+      ).customerCode;
+      this.customers = this.customers.filter(
+        (value: any) => value.name !== filter
+      );
+      // find customer code from customer
+
+      this.customerCodes = this.customerCodes.filter(
+        (value: any) => value !== customerCode
+      );
+      this.customerNames = this.customerNames.filter(
+        (value: any) => value !== filter
+      );
+      this.customerSelected = false;
+      this.customerCode = '';
+      this.previousFilterLength -= 1;
+      this.customerName = '';
+    } else if (filter === this.dateText) {
+      this.selectedButton = '';
+      this.dateSelected = false;
+      this.startDate = '';
+      this.endDate = '';
+      this.previousFilterLength -= 1;
+    } else if (filter === this.customDateText) {
+      this.selectedButton = '';
+      this.dateSelected = false;
+      this.startDate = '';
+      this.endDate = '';
+      this.previousFilterLength -= 1;
+    } else {
+      const filterId = this.vehicleTypeList.find(
+        (element: any) => element.name === filter
+      )?.id;
+      const tripFilterId = this.tripTypeOptionsArray.find(
+        (element: any) => element.showname === filter
+      )?.value;
+      const paymentFilterId = this.paymentTypeOptionsArray.find(
+        (element: any) => element.showname === filter
+      )?.value;
+      if (filterId) {
+        this.truckType = this.truckType.filter(
+          (value: any) => value !== filterId
+        );
+      } else if (tripFilterId) {
+        this.tripTypeValue = this.tripTypeValue.filter(
+          (value: any) => value !== filterId
+        );
+      } else if (paymentFilterId) {
+        this.paymentTypeValue = this.paymentTypeValue.filter(
+          (value: any) => value !== filterId
+        );
+      }
+    }
+
+    this.filterLength -= 1;
+    if (this.filterLength === 0) {
+      this.filterHeight = '0px';
+    }
+    this.page = 0;
+    this.size = 30;
+    this.tripService.anotherStatusCalled.next(true);
+    this.getBidList();
+  }
+
+  onScrollEnd($event: boolean) {
+    if (!$event) {
+      this.tripService.anotherStatusCalled.next(false);
+    }
+    if ($event && this.page < this.totalPages - 1) {
+      if (this.anotherStatusCalled) {
+      } else {
+        this.page++;
+        this.size = 30;
+        this.loading = false;
+        this.getBidList();
+      }
+    }
+  }
+
+  customizedHeight(height: any, customHeight: any) {
+    let heightValue = 0;
+    let customHeightValue = 0;
+    if (height) {
+      heightValue = height.split('px')[0];
+    }
+    if (customHeight) {
+      customHeightValue = customHeight.split('px')[0];
+    }
+    const totalHeight =
+      Number(heightValue) +
+      Number(customHeightValue) -
+      (customHeightValue > 0 ? 20 : 32);
+    return totalHeight + 'px';
+  }
+
+  onclickTripCard(
+    tripId: string,
+    truckRegistrationNumber: string,
+    status: string,
+    truckSizeInFeet: string
+  ) {
+    if (localStorage.getItem('expanded')) {
+      localStorage.setItem('expanded', 'false');
+    }
+    this.tripStatus = status;
+    this.activatedId = tripId;
+    this.activatedTruckSizeInFeet = Number(truckSizeInFeet);
+    this.getTripDetails(tripId);
+    this.getTruckTrackers(truckRegistrationNumber);
+  }
+
+  onClickClearAll() {
+    this.dateSelected = false;
+    this.customSelected = false;
+    this.customerCodes = [];
+    this.customerNames = [];
+    this.customers = [];
+    this.paymentTypeValue = [];
+    this.paymentFilter = 0;
+    this.dateText = '';
+    this.filterValues = [];
+    this.selectedButton = '';
+    this.filterHeight = '0px';
+    this.previousFilterLength = 0;
+    this.filterLength = 0;
+    this.startDate = '';
+    this.endDate = '';
+    this.truckType = [];
+    this.customerCode = '';
+    this.paymentTypePlaceholder = '';
+    this.tripTypeValue = [];
+    this.tripTypeFilter = 0;
+    this.tripTypePlaceholder = '';
+    this.filterOpen = false;
+    this.page = 0;
+    this.tripService.anotherStatusCalled.next(true);
+    this.getBidList();
+  }
+
+  onClickFilterClose() {
+    this.filterOpen = false;
+  }
+
+  onClickFilterButton(event: any, picker: any) {
+    this.selectedButton = event;
+    if (event === 'Custom') {
+      this.startDate = '';
+      this.endDate = '';
+      this.customSelected = true;
+      this.dateSelected = false;
+      picker.open();
+    } else {
+      this.customSelected = false;
+      this.dateText = event;
+      picker.close();
+      if (event === 'Today') {
+        this.startDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+        this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+        this.dateText = event;
+      } else if (event === 'Last 7 Days') {
+        this.startDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 7)),
+          'yyyy-MM-dd'
+        );
+        // end date should be yesterday
+        this.endDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 1)),
+          'yyyy-MM-dd'
+        );
+        this.dateText = event;
+      } else if (event === 'Last 15 Days') {
+        this.startDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 15)),
+          'yyyy-MM-dd'
+        );
+        // end date should be yesterday
+        this.endDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 1)),
+          'yyyy-MM-dd'
+        );
+        this.dateText = event;
+      } else if (event === 'Last 30 Days') {
+        this.startDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 30)),
+          'yyyy-MM-dd'
+        );
+        // end date should be yesterday
+        this.endDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 1)),
+          'yyyy-MM-dd'
+        );
+        this.dateText = event;
+      }
+    }
+  }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
+
+  onChangeStartDate($event: Event) {
+    this.startDate = ($event.target as HTMLInputElement).value;
+    this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
+  }
+
+  onChangeEndDate($event: any) {
+    if ($event.target.value) {
+      this.endDate = ($event.target as HTMLInputElement).value;
+      this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
+      this.customDateText = `${this.startDate} - ${this.endDate}`;
+      if (!this.dateSelected) {
+        this.previousFilterLength += 1;
+        this.filterLength += 1;
+      }
+      this.dateSelected = true;
+    } else {
+      this.endDate = '';
+      if (this.dateSelected && this.filterLength > 1) {
+        this.filterLength -= 1;
+        this.previousFilterLength -= 1;
+      }
+    }
+  }
+
+  isAdmin() {
+    return (
+      localStorage.getItem('role').includes('ROLE_KAM') ||
+      localStorage.getItem('role').includes('ROLE_ADMIN')
+    );
+  }
+
+  onKeyUpCustomerSearch($event: KeyboardEvent) {
+    this.companySuggestions = [];
+    const target = $event.target as HTMLInputElement;
+    if (target.value.length > 0) {
+      this.customer
+        .searchCustomer(0, 1000, target.value, null)
+        .subscribe((company: any) => {
+          this.companySuggestions = company.data.content;
+          if (this.customers.length > 0) {
+            this.companySuggestions = this.companySuggestions.filter(
+              (value: any) =>
+                !this.customers.some(
+                  (customer: any) => customer.id === value.id
+                )
+            );
+          }
+        });
+    } else {
+      this.companySuggestions = [];
+    }
+  }
+
+  onClickCustomerSearchSuggestion(option: CustomerModel) {
+    this.customers.push(option);
+    this.customerCodes.push(option.customerCode);
+    this.customerNames.push(option.name);
+    this.customerName = '';
+    this.filterLength += 1;
+    this.previousFilterLength += 1;
+  }
+
+  onClickCloseCustomer(customer: CustomerModel) {
+    this.filterLength -= 1;
+    this.previousFilterLength -= 1;
+    this.customerCodes = this.customerCodes.filter(
+      (value: any) => value !== customer.customerCode
+    );
+    this.customerNames = this.customerNames.filter(
+      (value: any) => value !== customer.name
+    );
+    this.customers = this.customers.filter(
+      (value: any) => value.id !== customer.id
+    );
+  }
+
+  onChangeTruckType($event: any) {
+    this.truckType = $event.value;
+    this.filterLength = this.previousFilterLength + this.truckType?.length;
+  }
+
+  onChangeTripType($event: any) {
+    this.tripTypeValue = $event.value;
+    this.filterLength = this.previousFilterLength + this.tripTypeValue?.length;
+  }
+
+  onChangePaymentType($event: any) {
+    this.paymentTypeValue = $event.value;
+    this.filterLength =
+      this.previousFilterLength + this.paymentTypeValue?.length;
+  }
+
+  onClickApply() {
+    this.filterValues = [];
+    this.selectedTruckValues = [];
+    if (this.customerNames.length > 0) {
+      this.customerNames.forEach((element: any) => {
+        this.filterValues.push(element);
+      });
+    }
+    this.page = 0;
+    this.size = 30;
+    this.filterOpen = false;
+    this.tripService.anotherStatusCalled.next(true);
+    this.getBidList();
+  }
+
+  onSortingChange(id) {
+    this.sortingButtons.forEach(button => {
+      if (button.id === id) {
+        button.selected = true;
+        this.status = [];
+        if (id === 1) {
+          this.status = ['Bidded', 'Unbidded'];
+        } else {
+          this.status.push(button.value);
+        }
+      } else {
+        button.selected = false;
+      }
+    });
+    this.page = 0;
+    this.size = 30;
+    this.tripService.anotherStatusCalled.next(true);
+    this.getBidList();
+  }
+
+  private getBidDetails(id: number | undefined) {
+    if (!id) {
+      return;
+    }
+    this.bidPage === 0 ? (this.bidLoading = true) : (this.bidLoading = false);
+    this.bidService
+      .getSessionBidById(id)
+      .pipe(
+        finalize(() => {
+          this.bidLoading = false;
+        })
+      )
+      .subscribe((res: any) => {
+        this.totalBidOfSession = res.data;
+      });
+  }
+
+  onClickBid(bid: SessionModel) {
+    this.getBidDetails(bid.id);
+    this.activatedId = bid.availableTripId;
+    this.updateOverLayStyle(true);
+  }
+}

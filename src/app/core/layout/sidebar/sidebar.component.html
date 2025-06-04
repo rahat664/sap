@@ -87,6 +87,26 @@
           <li>
             <a
               (click)="clearSelectedTemplate()"
+              routerLink="/manage-bid"
+              routerLinkActive="active"
+              class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
+              <img
+                height="24"
+                width="24"
+                loading="lazy"
+                class="notPreview"
+                src="assets/svg/manage-bid-{{
+                  isActive('/manage-bid') ? 'select' : 'deselect'
+                }}.svg"
+                alt=""/>
+              <span class="ml-3 flex-1 font-semibold whitespace-nowrap"
+              >Manage Bid</span
+              >
+            </a>
+          </li>
+          <li>
+            <a
+              (click)="clearSelectedTemplate()"
               routerLink="/manage-trip"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
