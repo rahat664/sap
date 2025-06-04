@@ -55,7 +55,7 @@ export class BidService {
   }
 
   acceptBid(body: any) {
-    return this.http.post(
+    return this.http.put(
       `${this.bidUrl}/bid/accept-bid`,
       body
     );

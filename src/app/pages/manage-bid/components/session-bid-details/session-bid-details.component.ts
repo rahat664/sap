@@ -12,6 +12,7 @@ import { SuccessModalComponent } from '../../../../shared/modules/success-modal/
 import { ErrorModalComponent } from '../../../../shared/modules/error-modal/error-modal.component';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-session-bid-details',
@@ -26,6 +27,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
     MatMenu,
     MatMenuTrigger,
     MatMenuItem,
+    MatTooltip,
   ],
   templateUrl: './session-bid-details.component.html',
   styleUrl: './session-bid-details.component.scss',
@@ -39,6 +41,7 @@ export class SessionBidDetailsComponent {
   selectedBidReason: any;
   selectedBidReasonText: any;
   selectedBid: Bid;
+  selectedBidReasonTextArea: string = '';
 
   editBid(bid: Bid) {
     this.selectedBidNumberOfTruck = bid.submittedNumberOfTruck;
@@ -125,12 +128,18 @@ export class SessionBidDetailsComponent {
     profitExpectation: number | undefined,
     customerRate: number | undefined
   ) {
-    if (amount > customerRate) {
-      return 'bg-red';
-    } else if (amount <= profitExpectation) {
+    const profit = (customerRate || 0) - (amount || 0);
+    // Calculate expected profit based on the profit expectation which is a percentage
+    const expectedProfit =
+      ((profitExpectation || 0) * (customerRate || 0)) / 100;
+    console.log(profit, expectedProfit);
+
+    if (profit >= expectedProfit) {
       return 'bg-green';
-    } else {
+    } else if (profit < expectedProfit && profit >= 0) {
       return 'bg-another';
+    } else {
+      return 'bg-red';
     }
   }
 
@@ -148,19 +157,139 @@ export class SessionBidDetailsComponent {
     });
   }
 
-  onUpdateBid() {}
+  onUpdateBid() {
+    if (!this.selectedBid) {
+      this.dialog.open(ErrorModalComponent, {
+        data: {
+          title: 'Update Failed',
+          text: 'No bid selected for update.',
+          buttonText: 'Close',
+        },
+      });
+      return;
+    }
+
+    const body = {
+      id: this.selectedBid.id,
+      submittedNumberOfTruck: this.selectedBidNumberOfTruck,
+      amount: this.selectedBidAmount,
+      remarks: this.selectedBidReasonText || this.selectedBidReason,
+    };
+
+    if (this.selectedBidReasonTextArea) {
+      body.remarks =  body.remarks + `, Others: ${this.selectedBidReasonTextArea}`;
+    }
+
+    this.bidService.updateBid(body).subscribe({
+      next: (res: any) => {
+        if (res.status === 'OK') {
+          this.dialog
+            .open(SuccessModalComponent, {
+              data: {
+                title: 'Bid Updated',
+                text: `You have updated the bid successfully `,
+                buttonText: 'Okay',
+              },
+            })
+            .afterClosed()
+            .subscribe(() => {
+              this.isInEditMode = false;
+              this.selectedBid = null;
+              this.selectedBidNumberOfTruck = 0;
+              this.selectedBidAmount = 0;
+              this.selectedBidReason = null;
+              this.selectedBidReasonText = null;
+              this.trip.reloadManageTripPage.next(false);
+              this.bidService.getSessionBidById(this.sessionBid.id).subscribe({
+                next: (updatedSession: any) => {
+                  this.sessionBid = updatedSession.data;
+                },
+                error: err => {
+                  console.error('Error fetching updated session bid:', err);
+                },
+              })
+            });
+        } else {
+          this.dialog
+            .open(ErrorModalComponent, {
+              data: {
+                title: 'Update Failed',
+                text:
+                  res.message || 'Failed to update the bid. Please try again.',
+                buttonText: 'Close',
+              },
+            })
+            .afterClosed()
+            .subscribe(() => {
+              this.isInEditMode = false;
+              this.selectedBid = null;
+              this.selectedBidNumberOfTruck = 0;
+              this.selectedBidAmount = 0;
+              this.selectedBidReason = null;
+              this.selectedBidReasonText = null;
+              this.trip.reloadManageTripPage.next(false);
+            });
+        }
+      },
+      error: err => {
+        this.dialog
+          .open(ErrorModalComponent, {
+            data: {
+              title: 'Update Failed',
+              text:
+                err.error?.message ||
+                'Failed to update the bid. Please try again.',
+              buttonText: 'Close',
+            },
+          })
+          .afterClosed()
+          .subscribe(() => {
+            this.isInEditMode = false;
+            this.selectedBid = null;
+            this.selectedBidNumberOfTruck = 0;
+            this.selectedBidAmount = 0;
+            this.selectedBidReason = null;
+            this.selectedBidReasonText = null;
+            this.trip.reloadManageTripPage.next(false);
+          });
+      },
+    });
+  }
 
   onChangeReason($event: MatCheckboxChange) {
     if ($event.checked) {
       this.selectedBidReason = $event.source.value;
       if (this.selectedBidReason !== 'Others') {
-        this.selectedBidReasonText = $event.source.value;
-      } else {
-        this.selectedBidReasonText = '';
+        // join the selected reason with a comma
+        this.selectedBidReasonText = this.selectedBidReason
+          ? this.selectedBidReasonText
+            ? `${this.selectedBidReasonText}, ${this.selectedBidReason}`
+            : this.selectedBidReason
+          : '';
       }
     } else {
       this.selectedBidReason = null;
       this.selectedBidReasonText = null;
     }
+  }
+
+  getAcceptedBidFromBids(bids: Bid[] | undefined) {
+    if (!bids || bids.length === 0) {
+      return null;
+    }
+    const acceptedBid: Bid = bids.find(bid => bid.status === 'Accepted');
+    // return array of accepted bids
+    return acceptedBid ? [acceptedBid] : [];
+  }
+
+  getNotAcceptedBid(bids: Bid[] | undefined) {
+    if (!bids || bids.length === 0) {
+      return [];
+    }
+    const notAcceptedBids: Bid[] = bids.filter(
+      bid => bid.status !== 'Accepted'
+    );
+    // return array of not accepted bids
+    return notAcceptedBids ? notAcceptedBids : [];
   }
 }

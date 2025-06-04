@@ -25,3 +25,11 @@ td {
   background: white !important;
 }
 
+::ng-deep .custom-tooltip {
+  white-space: normal;
+  max-width: 2000px;
+  min-width: 200px;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 4px;
+}

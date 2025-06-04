@@ -11,11 +11,11 @@ import { NgForOf } from '@angular/common';
 export class BidAcceptPopupComponent {
   confirmBidFields: any[] = [
     { label: 'Transporter', value: this.data?.bid?.transporterName},
-    {label: 'Mobile', value: this.data?.bid?.mobile},
+    {label: 'Mobile', value: this.data?.bid?.transporterPhoneNumber},
     {label: 'Truck Type', value: this.data?.truckType},
     {label: 'No. of truck', value: this.data?.bid?.submittedNumberOfTruck},
     {label: 'Bid per truck', value: this.data?.bid?.amount + '৳'},
-    {label: 'Total Bid Amount', value: this.data?.bid?.amount + '৳'},
+    {label: 'Total Bid Amount', value: this.data?.bid?.amount * this.data?.bid?.submittedNumberOfTruck + '৳'},
 
   ];
   constructor(

@@ -26,6 +26,7 @@ export interface SessionModel {
 }
 
 export interface Bid {
+  remarks: string;
   id: number;
   createdAt: string; // ISO datetime
   updatedAt: string;
@@ -35,9 +36,13 @@ export interface Bid {
   acceptedNumberOfTruck: number;
   pendingNumberOfTruck: number;
   rejectedNumberOfTruck: number;
+  transporterName: string;
+  transporterPhoneNumber: string;
   truckType: string;
   rank: number;
   transporterId: number;
+  acceptedBy: string;
+  acceptedOn: string; // ISO datetime
   status: 'Placed' | 'Accepted' | 'Rejected' | 'Pending' | string; // Extend as needed
 }
 
