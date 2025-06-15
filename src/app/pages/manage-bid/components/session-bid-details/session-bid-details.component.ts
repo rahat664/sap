@@ -13,6 +13,8 @@ import { ErrorModalComponent } from '../../../../shared/modules/error-modal/erro
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
+import { Trip } from '../../../auth/models/response/trip';
+import { TripData, TripPoint } from '../../../manage-trip/model/trip.details.model';
 
 @Component({
   selector: 'app-session-bid-details',
@@ -35,6 +37,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 export class SessionBidDetailsComponent {
   readonly dialog = inject(MatDialog);
   @Input() sessionBid: SessionModel = {} as SessionModel;
+  @Input() tripDetails: TripData = null;
   isInEditMode: boolean = false;
   selectedBidNumberOfTruck: number = 0;
   selectedBidAmount: number = 0;
@@ -291,5 +294,12 @@ export class SessionBidDetailsComponent {
     );
     // return array of not accepted bids
     return notAcceptedBids ? notAcceptedBids : [];
+  }
+
+  getLoadingPoints(tripPoints: TripPoint[]) {
+    return tripPoints.filter(trip => trip.pointType === 'Loading');
+  }
+  getUnLoadingPoints(tripPoints: TripPoint[]) {
+    return tripPoints.filter(trip => trip.pointType === 'Unloading');
   }
 }

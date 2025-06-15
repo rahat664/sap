@@ -199,7 +199,7 @@
     </div>
   </div>
   <div class="w-full h-[calc(100vh-6.1rem)] flex-1 relative rounded-lg mt-4">
-    <app-session-bid-details *ngIf="!bidLoading" [sessionBid]="totalBidOfSession"></app-session-bid-details>
+    <app-session-bid-details *ngIf="!bidLoading" [tripDetails]="singleTripDetails" [sessionBid]="totalBidOfSession"></app-session-bid-details>
     <app-loading *ngIf="bidLoading"></app-loading>
   </div>
 </div>

@@ -152,7 +152,7 @@ export class ManageBidComponent {
   totalBids: SessionModel[] = [];
   bidPage: number = 0;
   bidSize: number = 20;
-  bidLoading: boolean = false;
+  bidLoading: boolean = true;
   totalBidOfSession: SessionModel = {} as SessionModel;
 
   constructor(
@@ -233,6 +233,7 @@ export class ManageBidComponent {
         this.totalBids = bid.data.contents;
         this.activatedId = this.totalBids[0]?.availableTripId;
         this.totalPages = bid.meta.totalPageCount;
+        this.getTripDetails(this.totalBids[0]?.availableTripId);
         this.getBidDetails(this.totalBids[0]?.id);
       });
   }
@@ -802,6 +803,7 @@ export class ManageBidComponent {
   }
 
   onClickBid(bid: SessionModel) {
+    this.getTripDetails(bid.availableTripId)
     this.getBidDetails(bid.id);
     this.activatedId = bid.availableTripId;
     this.updateOverLayStyle(true);
