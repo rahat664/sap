@@ -10,5 +10,5 @@ export const environment = {
   // locationUrl: 'http://65.0.112.219:8082',
   API_KEY: 'AIzaSyA2o390_V2B8OO77wWQMP-hP22fIdVtw4w',
   placesApiUrl: 'https://places.googleapis.com/v1/places:autocomplete',
-  bidUrl: 'https://bidding-service-qa.snztech.world'
+  bidUrl: 'https://bidding-service-qa.snztech.world/bidding-service'
 };
