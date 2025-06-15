@@ -224,7 +224,6 @@ export class UserManagementComponent implements OnInit {
   }
 
   onBottom(isBottom: boolean): void {
-    console.log(isBottom);
     if (isBottom && this.page < this.totalPages - 1) {
       this.page++;
       this.scrolledData();

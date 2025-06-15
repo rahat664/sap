@@ -22,6 +22,5 @@ export class ManualTrackingComponent {
     this.manualTrackingEvents = this.tripDetails?.tripEvents.filter(
       (event: TripEvent) => event.eventType === 'MANUAL_TRACKING'
     );
-    console.log(this.manualTrackingEvents);
   }
 }

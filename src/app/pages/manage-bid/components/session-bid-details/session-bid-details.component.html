@@ -24,11 +24,11 @@
             <img src="assets/svg/start.svg" alt="loading"/>
           </div>
           <p class="w-full">
-            {{ getLoadingPoints(tripDetails.tripPoints)[0]?.pointName }}
+            {{ getLoadingPoints(tripDetails?.tripPoints)[0]?.pointName }}
             <span
               class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
-              *ngIf="getLoadingPoints(tripDetails.tripPoints).length > 1">
-            +{{ getLoadingPoints(tripDetails.tripPoints).length - 1 }}</span
+              *ngIf="getLoadingPoints(tripDetails?.tripPoints)?.length > 1">
+            +{{ getLoadingPoints(tripDetails?.tripPoints)?.length - 1 }}</span
             >
           </p>
         </div>
@@ -37,11 +37,11 @@
             <img src="assets/svg/end.svg" alt="loading"/>
           </div>
           <p class="w-full">
-            {{ getUnLoadingPoints(tripDetails.tripPoints)[0]?.pointName }}
+            {{ getUnLoadingPoints(tripDetails?.tripPoints)[0]?.pointName }}
             <span
               class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
-              *ngIf="getUnLoadingPoints(tripDetails.tripPoints).length > 1">
-            +{{ getLoadingPoints(tripDetails.tripPoints).length - 1 }}</span
+              *ngIf="getUnLoadingPoints(tripDetails?.tripPoints).length > 1">
+            +{{ getLoadingPoints(tripDetails?.tripPoints).length - 1 }}</span
             >
           </p>
         </div>

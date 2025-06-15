@@ -291,7 +291,7 @@ export class ManageBidComponent {
           this.startingPosition = [];
           this.destinationPosition = [];
           // store starting and destination position
-          this.singleTripDetails.tripPoints.forEach((point: TripPoint) => {
+          this.singleTripDetails?.tripPoints.forEach((point: TripPoint) => {
             if (point.pointType === 'Loading') {
               this.startingPosition.push({
                 lng: point.pointLon,

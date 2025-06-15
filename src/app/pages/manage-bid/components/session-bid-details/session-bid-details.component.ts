@@ -135,7 +135,6 @@ export class SessionBidDetailsComponent {
     // Calculate expected profit based on the profit expectation which is a percentage
     const expectedProfit =
       ((profitExpectation || 0) * (customerRate || 0)) / 100;
-    console.log(profit, expectedProfit);
 
     if (profit >= expectedProfit) {
       return 'bg-green';
@@ -297,9 +296,9 @@ export class SessionBidDetailsComponent {
   }
 
   getLoadingPoints(tripPoints: TripPoint[]) {
-    return tripPoints.filter(trip => trip.pointType === 'Loading');
+    return tripPoints ? tripPoints.filter(trip => trip.pointType === 'Loading') : []
   }
   getUnLoadingPoints(tripPoints: TripPoint[]) {
-    return tripPoints.filter(trip => trip.pointType === 'Unloading');
+    return tripPoints ?  tripPoints.filter(trip => trip.pointType === 'Unloading') : []
   }
 }
