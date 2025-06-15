@@ -540,20 +540,20 @@ export class TemplateCreateComponent implements OnInit {
 
   private createLoadingPoint() {
     return this.fb.group({
-      pointDistrict: [''],
-      pointName: [''],
-      pointLat: [''],
-      pointLon: [''],
+      pointDistrict: [null],
+      pointName: [null],
+      pointLat: [null],
+      pointLon: [null],
       pointType: ['Loading'],
     });
   }
 
   private createUnloadingPoint() {
     return this.fb.group({
-      pointDistrict: [''],
-      pointName: [''],
-      pointLat: [''],
-      pointLon: [''],
+      pointDistrict: [null],
+      pointName: [null],
+      pointLat: [null],
+      pointLon: [null],
       pointType: ['Unloading'],
     });
   }

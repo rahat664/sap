@@ -590,22 +590,22 @@ export class TemplateUpdateComponent implements OnInit {
 
   private createLoadingPoint() {
     return this.fb.group({
-      id: [''],
-      pointDistrict: [''],
-      pointName: [''],
-      pointLat: [''],
-      pointLon: [''],
+      id: [null],
+      pointDistrict: [null],
+      pointName: [null],
+      pointLat: [null],
+      pointLon: [null],
       pointType: ['Loading'],
     });
   }
 
   private createUnloadingPoint() {
     return this.fb.group({
-      id: [''],
-      pointDistrict: [''],
-      pointName: [''],
-      pointLat: [''],
-      pointLon: [''],
+      id: [null],
+      pointDistrict: [null],
+      pointName: [null],
+      pointLat: [null],
+      pointLon: [null],
       pointType: ['Unloading'],
     });
   }
