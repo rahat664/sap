@@ -309,7 +309,7 @@ export class CreateTripPageComponent implements OnInit {
           localStorage.getItem('selectedTemplate')
         );
         this.vehicleTypeList.forEach((element: any) => {
-          if (element.id == selectedTemplate.vehicleCategory.id) {
+          if (element.id == selectedTemplate?.vehicleCategory?.id) {
             element.selected = true;
           }
         });

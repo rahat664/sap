@@ -170,10 +170,22 @@ export class TemplateCreateComponent implements OnInit {
       this.tripTemplateData.customerRate =
         this.templateForm.get('customerRate').value;
       this.tripTemplateData.note = this.templateForm.get('note').value;
-      this.tripTemplateData.points = [
-        ...this.templateForm.get('loadingPoints').value,
-        ...this.templateForm.get('unloadingPoints').value,
-      ];
+      const loadingPoints = this.templateForm.get('loadingPoints').value;
+      const unloadingPoints = this.templateForm.get('unloadingPoints').value;
+
+      const allPoints = [...loadingPoints, ...unloadingPoints];
+
+// Check if a point has all the required fields filled
+      const isValidPoint = (point: any) => {
+        return point.pointDistrict && point.pointName && point.pointLat && point.pointLon;
+      };
+
+// Filter out only valid points
+      const validPoints = allPoints.filter(isValidPoint);
+
+      this.tripTemplateData.points = validPoints.length > 0 ? validPoints : null;
+      ;
+
       this.tripTemplateData.paymentType = this.templateForm.get('paymentType').value;
       this.checkCacheDataAndUpdate(
         this.tripTemplateData.numOfTrucks,
@@ -540,20 +552,20 @@ export class TemplateCreateComponent implements OnInit {
 
   private createLoadingPoint() {
     return this.fb.group({
-      pointDistrict: [null],
-      pointName: [null],
-      pointLat: [null],
-      pointLon: [null],
+      pointDistrict: [''],
+      pointName: [''],
+      pointLat: [''],
+      pointLon: [''],
       pointType: ['Loading'],
     });
   }
 
   private createUnloadingPoint() {
     return this.fb.group({
-      pointDistrict: [null],
-      pointName: [null],
-      pointLat: [null],
-      pointLon: [null],
+      pointDistrict: [''],
+      pointName: [''],
+      pointLat: [''],
+      pointLon: [''],
       pointType: ['Unloading'],
     });
   }
