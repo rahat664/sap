@@ -19,31 +19,34 @@
               sessionBid?.tripStartTime | date: 'd MMM,yyyy, h:mm a'
             }}</span>
         </div>
-        <div class="step">
-          <div class="circle">
-            <img src="assets/svg/start.svg" alt="loading"/>
-          </div>
-          <p class="w-full">
-            {{ getLoadingPoints(tripDetails?.tripPoints)[0]?.pointName }}
-            <span
-              class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
-              *ngIf="getLoadingPoints(tripDetails?.tripPoints)?.length > 1">
-            +{{ getLoadingPoints(tripDetails?.tripPoints)?.length - 1 }}</span
-            >
-          </p>
-        </div>
-        <div class="step">
-          <div class="circle">
-            <img src="assets/svg/end.svg" alt="loading"/>
-          </div>
-          <p class="w-full">
-            {{ getUnLoadingPoints(tripDetails?.tripPoints)[0]?.pointName }}
-            <span
-              class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
-              *ngIf="getUnLoadingPoints(tripDetails?.tripPoints).length > 1">
+
+        <div class="flex flex-col space-y-3 text-not-black text-start">
+          <div class="step">
+            <div class="circle">
+              <img src="assets/svg/start.svg" alt="loading" />
+            </div>
+            <p class="w-full">
+              {{ getLoadingPoints(tripDetails?.tripPoints)[0]?.pointName }}
+              <span
+                class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+                *ngIf="getLoadingPoints(tripDetails?.tripPoints).length > 1">
             +{{ getLoadingPoints(tripDetails?.tripPoints).length - 1 }}</span
-            >
-          </p>
+              >
+            </p>
+          </div>
+          <div class="step">
+            <div class="circle">
+              <img src="assets/svg/end.svg" alt="loading" />
+            </div>
+            <p class="w-full">
+              {{ getUnLoadingPoints(tripDetails?.tripPoints)[0]?.pointName }}
+              <span
+                class="bg-not-black inline-block py-0.5 px-2 rounded-lg text-white"
+                *ngIf="getUnLoadingPoints(tripDetails?.tripPoints).length > 1">
+            +{{ getUnLoadingPoints(tripDetails?.tripPoints).length - 1 }}</span
+              >
+            </p>
+          </div>
         </div>
         <div
           class="flex items-center space-x-2">
@@ -70,7 +73,7 @@
     </div>
   </div>
   <ng-container *ngIf="!isInEditMode && sessionBid?.status !== 'Accepted'">
-    <div class="bg-white rounded-lg p-4 flex flex-col space-y-3">
+    <div class="bg-white rounded-lg p-4 flex flex-col space-y-3 overflow-y-auto min-h-[56vh]">
       <ng-container *ngIf="sessionBid?.bids && sessionBid?.bids.length > 0 ">
         <div class="flex justify-between items-center">
         <span
@@ -87,10 +90,10 @@
             </button>
           </mat-menu>
         </div>
-        <div class="border border-[#A1D5DE] rounded-lg overflow-y-auto max-h-[56vh] ">
+        <div class="border border-[#A1D5DE] rounded-lg overflow-y-auto max-h-[56vh]">
           <table
             class="table-auto w-full text-body_title leading-body_title rounded-sm">
-            <thead class="bg-white z-50">
+            <thead class="bg-white z-40">
             <tr class="whitespace-nowrap  bg-white text-not-black">
               <th class="px-4 py-2 text-center">Rank</th>
               <th class="px-4 py-2 text-center">Transporter</th>
@@ -110,21 +113,39 @@
                 <div class="flex items-center justify-center w-full h-full">
                   <p
                     class="w-8 h-8 flex items-center justify-center text-white rounded-full shadow-lg {{getBackgroundColor(bid?.amount, sessionBid?.profitExpectation, sessionBid?.customerRate)}}">
-                    <span class="text-body_title leading-body_title font-semibold">{{ bid.rank }}</span>
+                    <span class="text-body_title leading-body_title font-semibold">{{ i + 1 }}</span>
                   </p>
                 </div>
               </td>
               <td class="text-center">{{ bid.transporterName }}</td>
               <td class="text-center">{{ bid.transporterPhoneNumber }}</td>
               <td class="text-center"> {{ bid.submittedNumberOfTruck }}</td>
-              <td class="text-center">
-                <div class="flex items-center justify-center w-full h-full">
-                  <div class="flex space-x-1 items-center">
+              <td class="text-center relative">
+                <div class="flex items-center  justify-center w-full h-full">
+                  <div class="flex space-x-1 items-center ">
                     <span>{{ bid.amount | number }}</span>
-                    <img
-                      matTooltipClass="custom-tooltip" matTooltipPosition="below"
-                      matTooltip="{{bid.remarks ? bid.remarks : 'Not available'}}" class="notPreview"
-                      *ngIf="bid.remarks" src="assets/svg/status-refresh.svg">
+                    <!--                    <img-->
+                    <!--                      matTooltipClass="custom-tooltip" matTooltipPosition="below"-->
+                    <!--                      matTooltip="{{bid.remarks ? bid.remarks : 'Not available'}}" class="notPreview"-->
+                    <!--                      *ngIf="bid.remarks" src="assets/svg/status-refresh.svg">-->
+                    <div  *ngIf="bid.remarks" class="group flex items-center justify-center w-6 h-6">
+                      <!-- Green Circle -->
+                      <div class="w-4 h-4 rounded-full bg-green-500 cursor-pointer">
+                        <img src="assets/svg/status-refresh.svg" class="notPreview">
+                      </div>
+
+                      <!-- Tooltip -->
+                      <div
+                        class="tooltip absolute w-[45vw] border border-line  mb-2 right-1/2  hidden group-hover:flex flex-col items-start p-2 max-w-xs bg-white text-sm text-gray-800 rounded-md shadow-lg z-50">
+                        <div class="h-16 overflow-y-auto text-left">
+                          <div class="text-xs text-secondary mb-1">{{bid?.updatedAt | date : 'dd MMM yyyy; h:mm a'}}</div>
+                          <div class="font-normal text-[0.875rem] text-not-black text-left">{{bid?.remarks ? bid.remarks : 'Not available'}}</div>
+                        </div>
+                        <!-- Tooltip arrow -->
+                        <div
+                          class="absolute top-1/2 left-full transform -translate-x-1/2 border-t border-r border-line -translate-y-1/2 w-6 h-6 bg-white rotate-45 -z-10"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </td>
@@ -151,7 +172,7 @@
         </div>
       </ng-container>
       <ng-container *ngIf="sessionBid?.bids && sessionBid?.bids.length === 0">
-        <div class="min-h-[60vh] max-h-[60vh] flex items-center justify-center">
+        <div class="min-h-[56vh] max-h-[56vh] flex items-center justify-center">
           <div class="flex flex-col space-y-3">
             <img src="assets/svg/no-bid.svg" class="notPreview">
             <div class="text-center flex flex-col space-y-1">
@@ -234,23 +255,23 @@
               updates<sup>*</sup></label>
             <div id="bidReason" class="flex flex-col space-y-1">
               <mat-checkbox (change)="onChangeReason($event)"
-                             class="text-secondary"
+                            class="text-secondary"
                             value="Transporter asked me to do this">
                 Transporter asked me to do this
               </mat-checkbox>
               <mat-checkbox (change)="onChangeReason($event)" class="text-secondary" value="I can't disclose this issue"
-                            >
+              >
                 I can't disclose this issue
               </mat-checkbox>
               <mat-checkbox (change)="onChangeReason($event)" class="text-secondary" value="My life my rules"
-                           >
+              >
                 My life my rules
               </mat-checkbox>
               <mat-checkbox (change)="onChangeReason($event)" class="text-secondary" value="Others"
-                            >
+              >
                 Others
               </mat-checkbox>
-              <textarea *ngIf="selectedBidReason === 'Others'" [(ngModel)]="selectedBidReasonTextArea"
+              <textarea *ngIf="otherSelected" [(ngModel)]="selectedBidReasonTextArea"
                         class="w-full h-24 p-2 bg-input rounded-lg focus:outline-none focus:border-primary"
                         placeholder="Please specify your reason">
 
@@ -296,7 +317,7 @@
               <div class="flex items-center justify-center w-full h-full">
                 <p
                   class="w-8 h-8 flex items-center justify-center text-white rounded-full shadow-lg {{getBackgroundColor(bid?.amount, sessionBid?.profitExpectation, sessionBid?.customerRate)}}">
-                  <span class="text-body_title leading-body_title font-semibold">{{ bid.rank }}</span>
+                  <span class="text-body_title leading-body_title font-semibold">{{ i + 1}}</span>
                 </p>
               </div>
             </td>
@@ -342,7 +363,7 @@
               <div class="flex items-center justify-center w-full h-full">
                 <p
                   class="w-8 h-8 flex items-center justify-center text-white rounded-full shadow-lg {{getBackgroundColor(bid?.amount, sessionBid?.profitExpectation, sessionBid?.customerRate)}}">
-                  <span class="text-body_title leading-body_title font-semibold">{{ bid.rank }}</span>
+                  <span class="text-body_title leading-body_title font-semibold">{{ i + 1 }}</span>
                 </p>
               </div>
             </td>

@@ -22,8 +22,8 @@
     </h1>
    <div class="w-full border border-line rounded-lg">
      <div *ngFor="let field of confirmBidFields; index as i" class="flex justify-between items-center px-6 py-2.5 border-b  border-line last:border-none" >
-       <span class="text-secondary">{{ field.label }}:</span>
-       <span class="text-not-black">{{ field.value ? field.value : 'N/A' }}</span>
+       <span class="text-secondary">{{ field.label }}</span>
+       <span [ngClass]="{'font-bold': field.isBold}" class="text-not-black">{{ field.value ? field.value : 'N/A' }}</span>
      </div>
    </div>
     <button

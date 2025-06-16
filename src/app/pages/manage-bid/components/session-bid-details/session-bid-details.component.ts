@@ -29,7 +29,6 @@ import { TripData, TripPoint } from '../../../manage-trip/model/trip.details.mod
     MatMenu,
     MatMenuTrigger,
     MatMenuItem,
-    MatTooltip,
   ],
   templateUrl: './session-bid-details.component.html',
   styleUrl: './session-bid-details.component.scss',
@@ -45,6 +44,7 @@ export class SessionBidDetailsComponent {
   selectedBidReasonText: any;
   selectedBid: Bid;
   selectedBidReasonTextArea: string = '';
+   otherSelected: boolean;
 
   editBid(bid: Bid) {
     this.selectedBidNumberOfTruck = bid.submittedNumberOfTruck;
@@ -268,10 +268,22 @@ export class SessionBidDetailsComponent {
             ? `${this.selectedBidReasonText}, ${this.selectedBidReason}`
             : this.selectedBidReason
           : '';
+      } else {
+        this.otherSelected = true
       }
     } else {
-      this.selectedBidReason = null;
-      this.selectedBidReasonText = null;
+      if ($event.source.value === 'Others') {
+        this.otherSelected = false;
+        this.selectedBidReasonText = this.selectedBidReason
+      } else {
+        // remove the value from selected bid reason text
+        this.selectedBidReasonText = this.selectedBidReasonText
+          ? this.selectedBidReasonText
+              .split(',')
+              .filter(reason => reason.trim() !== $event.source.value)
+              .join(', ')
+          : '';
+      }
     }
   }
 
