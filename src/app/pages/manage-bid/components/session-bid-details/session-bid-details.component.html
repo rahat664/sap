@@ -163,7 +163,9 @@
                   <button
                     (click)="acceptBid(bid)"
                     class="rounded-lg px-3 py-1.5 text-xs font-semibold text-primary border border-primary">
-                    Accept bid
+<!--                    add a spinner -->
+                    <i *ngIf="bid.id === selectedBidId" class="fas fa-spinner fa-spin mr-2"></i>
+                    <span>Accept bid</span>
                   </button>
                 </div>
               </td>
@@ -195,7 +197,9 @@
       <div class="flex justify-between border-b border-line items-center p-4">
         <h1 class="text-not-black text-body_title leading-body_title font-semibold">Update bid</h1>
         <div class="flex space-x-3 items-center">
-          <button (click)="onUpdateBid()" class="bg-primary rounded-lg px-6 py-2 text-white text-center">Update bid
+          <button (click)="onUpdateBid()" class="bg-primary rounded-lg px-6 py-2 text-white text-center">
+            <i class="fas fa-spinner fa-spin mr-2" *ngIf="isUpdatingBid"></i>
+            <span>Update bid</span>
           </button>
           <button (click)="isInEditMode = false"><i class="fal fa-times text-2xl"></i></button>
         </div>

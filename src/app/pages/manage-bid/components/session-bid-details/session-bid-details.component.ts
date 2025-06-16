@@ -45,6 +45,8 @@ export class SessionBidDetailsComponent {
   selectedBid: Bid;
   selectedBidReasonTextArea: string = '';
    otherSelected: boolean;
+   selectedBidId: number = -1;
+  isUpdatingBid: boolean = false;
 
   editBid(bid: Bid) {
     this.selectedBidNumberOfTruck = bid.submittedNumberOfTruck;
@@ -71,6 +73,7 @@ export class SessionBidDetailsComponent {
       .afterClosed()
       .subscribe(result => {
         if (result) {
+          this.selectedBidId = bid.id;
           this.bidService.acceptBid(body).subscribe({
             next: (res: any) => {
               if (res.status === 'OK') {
@@ -86,8 +89,10 @@ export class SessionBidDetailsComponent {
                   .afterClosed()
                   .subscribe(() => {
                     this.trip.reloadManageTripPage.next(true);
+                    this.selectedBidId = -1;
                   });
               } else {
+                this.selectedBidId = -1;
                 this.dialog.open(ErrorModalComponent, {
                   data: {
                     title: 'Bid Acceptance Failed',
@@ -96,10 +101,13 @@ export class SessionBidDetailsComponent {
                       'Failed to accept the bid. Please try again.',
                     buttonText: 'Close',
                   },
+                }).afterClosed().subscribe(() => {
+                  this.trip.reloadManageTripPage.next(false);
                 });
               }
             },
             error: err => {
+              this.selectedBidId = -1;
               this.dialog.open(ErrorModalComponent, {
                 data: {
                   title: 'Bid Acceptance Failed',
@@ -108,6 +116,8 @@ export class SessionBidDetailsComponent {
                     'Failed to accept the bid. Please try again.',
                   buttonText: 'Close',
                 },
+              }).afterClosed().subscribe(() => {
+                this.trip.reloadManageTripPage.next(false);
               });
             },
           });
@@ -160,7 +170,9 @@ export class SessionBidDetailsComponent {
   }
 
   onUpdateBid() {
+    this.isUpdatingBid = true;
     if (!this.selectedBid) {
+      this.isUpdatingBid = false
       this.dialog.open(ErrorModalComponent, {
         data: {
           title: 'Update Failed',
@@ -185,6 +197,7 @@ export class SessionBidDetailsComponent {
     this.bidService.updateBid(body).subscribe({
       next: (res: any) => {
         if (res.status === 'OK') {
+          this.isUpdatingBid = false;
           this.dialog
             .open(SuccessModalComponent, {
               data: {
@@ -201,6 +214,7 @@ export class SessionBidDetailsComponent {
               this.selectedBidAmount = 0;
               this.selectedBidReason = null;
               this.selectedBidReasonText = null;
+              this.selectedBidReasonTextArea = null;
               this.trip.reloadManageTripPage.next(false);
               this.bidService.getSessionBidById(this.sessionBid.id).subscribe({
                 next: (updatedSession: any) => {
@@ -212,6 +226,7 @@ export class SessionBidDetailsComponent {
               })
             });
         } else {
+          this.isUpdatingBid = false;
           this.dialog
             .open(ErrorModalComponent, {
               data: {
@@ -229,11 +244,13 @@ export class SessionBidDetailsComponent {
               this.selectedBidAmount = 0;
               this.selectedBidReason = null;
               this.selectedBidReasonText = null;
+              this.selectedBidReasonTextArea = '';
               this.trip.reloadManageTripPage.next(false);
             });
         }
       },
       error: err => {
+        this.isUpdatingBid = false;
         this.dialog
           .open(ErrorModalComponent, {
             data: {
@@ -253,6 +270,7 @@ export class SessionBidDetailsComponent {
             this.selectedBidReason = null;
             this.selectedBidReasonText = null;
             this.trip.reloadManageTripPage.next(false);
+            this.selectedBidReasonTextArea = '';
           });
       },
     });
