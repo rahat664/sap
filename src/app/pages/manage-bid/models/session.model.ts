@@ -43,6 +43,19 @@ export interface Bid {
   transporterId: number;
   acceptedBy: string;
   acceptedOn: string; // ISO datetime
+  history: BidUpdateHistory[];
   status: 'Placed' | 'Accepted' | 'Rejected' | 'Pending' | string; // Extend as needed
+}
+
+
+export interface BidUpdateHistory {
+  createdAt: string; // ISO datetime
+  updatedAt: string; // ISO datetime
+  transporterId: number;
+  bidId: number;
+  oldValue: string;
+  newValue: string;
+  field: string;
+  remarks: string;
 }
 

@@ -128,7 +128,7 @@
                     <!--                      matTooltipClass="custom-tooltip" matTooltipPosition="below"-->
                     <!--                      matTooltip="{{bid.remarks ? bid.remarks : 'Not available'}}" class="notPreview"-->
                     <!--                      *ngIf="bid.remarks" src="assets/svg/status-refresh.svg">-->
-                    <div  *ngIf="bid.remarks" class="group flex items-center justify-center w-6 h-6">
+                    <div  *ngIf="bid?.history?.length > 0" class="group flex items-center justify-center w-6 h-6">
                       <!-- Green Circle -->
                       <div class="w-4 h-4 rounded-full bg-green-500 cursor-pointer">
                         <img src="assets/svg/status-refresh.svg" class="notPreview">
@@ -136,14 +136,21 @@
 
                       <!-- Tooltip -->
                       <div
-                        class="tooltip absolute w-[45vw] border border-line  mb-2 right-1/2  hidden group-hover:flex flex-col items-start p-2 max-w-xs bg-white text-sm text-gray-800 rounded-md shadow-lg z-50">
-                        <div class="h-16 overflow-y-auto text-left">
-                          <div class="text-xs text-secondary mb-1">{{bid?.updatedAt | date : 'dd MMM yyyy; h:mm a'}}</div>
-                          <div class="font-normal text-[0.875rem] text-not-black text-left">{{bid?.remarks ? bid.remarks : 'Not available'}}</div>
+                        class="tooltip absolute w-[45vw] border border-disabled  mb-2 right-1/2  hidden group-hover:flex flex-col items-start p-2 max-w-xs bg-white text-sm text-gray-800 rounded-md shadow-lg z-50">
+                        <div class="h-16 overflow-y-auto flex flex-col space-y-2 text-left">
+                          <ng-container *ngFor="let hist of bid?.history">
+                            <div>
+                              <div class="text-xs text-secondary mb-1 flex space-x-2 items-center">
+                                <span class="text-body_title font-semibold leading-body_title text-not-black">{{hist?.oldValue}} ৳</span>
+                                <span>{{hist?.createdAt | date : 'dd MMM yyyy; h:mm a'}}</span>
+                              </div>
+                              <div class="font-normal text-[0.875rem] text-not-black text-left">{{hist?.remarks ? hist.remarks : 'Not available'}}</div>
+                            </div>
+                          </ng-container>
                         </div>
                         <!-- Tooltip arrow -->
                         <div
-                          class="absolute top-1/2 left-full transform -translate-x-1/2 border-t border-r border-line -translate-y-1/2 w-6 h-6 bg-white rotate-45 -z-10"></div>
+                          class="absolute top-1/2 left-full transform -translate-x-1/2 border-t border-r border-disabled -translate-y-1/2 w-6 h-6 bg-white rotate-45 -z-10"></div>
                       </div>
                     </div>
                   </div>
