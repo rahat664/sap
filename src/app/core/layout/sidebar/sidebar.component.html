@@ -84,7 +84,7 @@
               <span class="ml-3 font-semibold">Create Trip</span>
             </a>
           </li>
-          <li>
+          <li *ngIf="isAdmin()">
             <a
               (click)="clearSelectedTemplate()"
               routerLink="/manage-bid"
