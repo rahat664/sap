@@ -384,6 +384,7 @@ export class DialogDataComponent implements OnInit {
       if (this.data?.trip?.truck?.id) {
         this.tripUpdateForm.get('truckId').setValue(this.data.trip.truck.id);
       }
+
       if (this.data?.trip?.driver?.userId) {
         this.tripUpdateForm
           .get('driverCode')
@@ -431,6 +432,7 @@ export class DialogDataComponent implements OnInit {
           body.helperName = this.tripUpdateForm.get('helperName').value;
           body.helperPhone = this.tripUpdateForm.get('helperPhone').value;
           body.truckId = this.tripUpdateForm.get('truckId').value;
+          body.sourceOfTruck = this.tripUpdateForm.get('source').value;
           // body.status = 'Running';
           body.tripStartedAt = this.datePipe.transform(
             new Date(),
@@ -566,6 +568,7 @@ export class DialogDataComponent implements OnInit {
         body.helperName = this.tripUpdateForm.get('helperName').value;
         body.helperPhone = this.tripUpdateForm.get('helperPhone').value;
         body.truckId = this.tripUpdateForm.get('truckId').value;
+        body.sourceOfTruck = this.tripUpdateForm.get('source').value;
         this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
           (res: any) => {
             this.loading = false;
