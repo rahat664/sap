@@ -144,7 +144,7 @@
                                 <span class="text-body_title font-semibold leading-body_title text-not-black">{{hist?.oldValue}} ৳</span>
                                 <span>{{hist?.createdAt | date : 'dd MMM yyyy; h:mm a'}}</span>
                               </div>
-                              <div class="font-normal text-[0.875rem] text-not-black text-left">{{hist?.remarks ? hist.remarks : 'Not available'}}</div>
+                              <div *ngIf="hist?.remarks" class="font-normal text-[0.875rem] text-not-black text-left">{{hist?.remarks ? hist.remarks : 'Not available'}}</div>
                             </div>
                           </ng-container>
                         </div>
