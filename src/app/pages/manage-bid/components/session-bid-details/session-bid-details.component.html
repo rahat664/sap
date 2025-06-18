@@ -226,10 +226,10 @@
               </div>
               <div class="flex space-y-1 flex-col">
                 <span
-                  class="text-not-black text-body_title leading-body_title font-semibold">{{ sessionBid?.bids[0]?.amount | number }}
-                  ৳</span>
+                  class="text-not-black text-body_title leading-body_title font-semibold">{{ selectedBid?.transporterName ? selectedBid?.transporterName : 'No Transporter' }}
+                  </span>
                 <span
-                  class="text-secondary text-xs">{{ sessionBid?.bids[0]?.submittedNumberOfTruck }} {{ sessionBid.truckType.split(',')[0] }}</span>
+                  class="text-secondary text-xs">{{ selectedBid?.transporterPhoneNumber }}</span>
               </div>
             </div>
           </div>
