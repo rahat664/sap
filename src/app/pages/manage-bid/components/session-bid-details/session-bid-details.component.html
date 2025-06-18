@@ -5,10 +5,10 @@
         <div class="flex flex-col space-y-1 items-start">
       <span
         class="text-body_title leading-body_title text-not-black font-semibold"
-      >Trip no: {{ sessionBid?.availableTripId }}</span
+      >Trip no: {{ tripDetails?.tripId }}</span
       >
           <span
-            class="text-body_title leading-body_title text-not-black font-semibold">{{ sessionBid?.customerName }}</span>
+            class="text-body_title leading-body_title text-not-black font-semibold">{{ tripDetails?.customerName }}</span>
         </div>
       </div>
       <div class="flex flex-col space-y-3 items-start text-xs">
@@ -16,7 +16,7 @@
           class="flex items-center space-x-2">
           <img src="./assets/svg/datetime.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
           <span class="text-secondary">{{
-              sessionBid?.tripStartTime | date: 'd MMM,yyyy, h:mm a'
+              tripDetails?.tripStartDatetime | date: 'd MMM,yyyy, h:mm a'
             }}</span>
         </div>
 
@@ -52,21 +52,21 @@
           class="flex items-center space-x-2">
           <img src="./assets/svg/bid-truck.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
           <span class="text-secondary text-start">
-        {{ sessionBid?.truckType }}
+        {{ tripDetails?.vehicleCategory?.name }}
       </span>
         </div>
         <div
           class="flex items-center space-x-2">
           <img src="./assets/svg/goodsinfo.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
           <span class="text-secondary text-start">
-        Goods Type: {{ sessionBid?.goods }}
+        Goods Type: {{ tripDetails?.good?.name }}
       </span>
         </div>
         <div
           class="flex items-center space-x-2">
           <img src="./assets/svg/cr.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
           <span class="text-secondary text-start">
-        CR: {{ sessionBid?.customerRate | number }} ৳
+        CR: {{ tripDetails?.customerRate | number }} ৳
       </span>
         </div>
       </div>
@@ -112,7 +112,7 @@
               <td class="whitespace-nowrap">
                 <div class="flex items-center justify-center w-full h-full">
                   <p
-                    class="w-8 h-8 flex items-center justify-center text-white rounded-full shadow-lg {{getBackgroundColor(bid?.amount, sessionBid?.profitExpectation, sessionBid?.customerRate)}}">
+                    class="w-8 h-8 flex items-center justify-center text-white rounded-full shadow-lg {{getBackgroundColor(bid?.amount, sessionBid?.profitExpectation, tripDetails?.customerRate)}}">
                     <span class="text-body_title leading-body_title font-semibold">{{ i + 1 }}</span>
                   </p>
                 </div>
