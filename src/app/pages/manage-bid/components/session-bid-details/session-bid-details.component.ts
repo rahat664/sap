@@ -198,7 +198,7 @@ export class SessionBidDetailsComponent {
 
     if (this.selectedBidReasonTextArea) {
       body.remarks =
-        body.remarks + `, Others: ${this.selectedBidReasonTextArea}`;
+        body.remarks + `\nOthers: ${this.selectedBidReasonTextArea}`;
     }
 
     this.bidService.updateBid(body).subscribe({
@@ -290,7 +290,7 @@ export class SessionBidDetailsComponent {
         // join the selected reason with a comma
         this.selectedBidReasonText = this.selectedBidReason
           ? this.selectedBidReasonText
-            ? `${this.selectedBidReasonText}, ${this.selectedBidReason}`
+            ? `${this.selectedBidReasonText}\n${this.selectedBidReason}`
             : this.selectedBidReason
           : '';
       } else {
@@ -304,9 +304,9 @@ export class SessionBidDetailsComponent {
         // remove the value from selected bid reason text
         this.selectedBidReasonText = this.selectedBidReasonText
           ? this.selectedBidReasonText
-              .split(',')
+              .split('\n')
               .filter(reason => reason.trim() !== $event.source.value)
-              .join(', ')
+              .join('\n')
           : '';
       }
     }
