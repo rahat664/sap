@@ -125,6 +125,12 @@ export class TemplateCreateComponent implements OnInit {
       this.tripTypes.forEach((tripType) => {
         tripType.active = tripType.enumName === this.selectedCustomer.tripType;
       })
+      this.templateForm.get('paymentType').setValue(
+        this.selectedCustomer.preferredPaymentType
+      )
+      this.paymentType.forEach((paymentType) => {
+        paymentType.active = paymentType.enumName === this.selectedCustomer.preferredPaymentType;
+      })
     }
   }
 
@@ -164,10 +170,22 @@ export class TemplateCreateComponent implements OnInit {
       this.tripTemplateData.customerRate =
         this.templateForm.get('customerRate').value;
       this.tripTemplateData.note = this.templateForm.get('note').value;
-      this.tripTemplateData.points = [
-        ...this.templateForm.get('loadingPoints').value,
-        ...this.templateForm.get('unloadingPoints').value,
-      ];
+      const loadingPoints = this.templateForm.get('loadingPoints').value;
+      const unloadingPoints = this.templateForm.get('unloadingPoints').value;
+
+      const allPoints = [...loadingPoints, ...unloadingPoints];
+
+// Check if a point has all the required fields filled
+      const isValidPoint = (point: any) => {
+        return point.pointDistrict && point.pointName && point.pointLat && point.pointLon;
+      };
+
+// Filter out only valid points
+      const validPoints = allPoints.filter(isValidPoint);
+
+      this.tripTemplateData.points = validPoints.length > 0 ? validPoints : null;
+      ;
+
       this.tripTemplateData.paymentType = this.templateForm.get('paymentType').value;
       this.checkCacheDataAndUpdate(
         this.tripTemplateData.numOfTrucks,
@@ -180,7 +198,11 @@ export class TemplateCreateComponent implements OnInit {
           if (res.status === 'OK') {
             this.handleToaster.showSuccess('Template created successfully');
             this.router.navigate(['/trip-create/customerselection']);
+          } else {
+            this.handleToaster.showError(res.message);
           }
+        }, error => {
+          this.handleToaster.showError(error.error.message);
         });
     }
   }

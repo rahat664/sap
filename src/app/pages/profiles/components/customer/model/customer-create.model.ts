@@ -9,4 +9,5 @@ export class CustomerCreateModel {
   sendEmail: boolean;
   note: string;
   tripType: string;
+  preferredPaymentType: string;
 }

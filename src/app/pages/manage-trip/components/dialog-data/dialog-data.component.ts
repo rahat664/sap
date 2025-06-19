@@ -333,6 +333,7 @@ export class DialogDataComponent implements OnInit {
                 .afterClosed()
                 .subscribe(() => {
                   this.trip.reloadManageTripPage.next(true);
+                  this.loading = false;
                 });
             } else if (res.status == 'BAD REQUEST') {
               this.dialog.open(ErrorModalComponent, {
@@ -342,6 +343,9 @@ export class DialogDataComponent implements OnInit {
                   text: res.message,
                   buttonText: 'Okay',
                 },
+              }).afterClosed().subscribe(() => {
+                this.trip.reloadManageTripPage.next(true)
+                this.loading = false;
               });
             } else {
               this.dialog.open(ErrorModalComponent, {
@@ -351,6 +355,9 @@ export class DialogDataComponent implements OnInit {
                   text: 'Something went wrong',
                   buttonText: 'Okay',
                 },
+              }).afterClosed().subscribe(() => {
+                this.trip.reloadManageTripPage.next(true)
+                this.loading = false;
               });
             }
           },
@@ -362,6 +369,9 @@ export class DialogDataComponent implements OnInit {
                 text: error.error.message,
                 buttonText: 'Okay',
               },
+            }).afterClosed().subscribe(() => {
+              this.trip.reloadManageTripPage.next(true);
+              this.loading = false;
             });
           }
         );
@@ -374,6 +384,7 @@ export class DialogDataComponent implements OnInit {
       if (this.data?.trip?.truck?.id) {
         this.tripUpdateForm.get('truckId').setValue(this.data.trip.truck.id);
       }
+
       if (this.data?.trip?.driver?.userId) {
         this.tripUpdateForm
           .get('driverCode')
@@ -421,6 +432,7 @@ export class DialogDataComponent implements OnInit {
           body.helperName = this.tripUpdateForm.get('helperName').value;
           body.helperPhone = this.tripUpdateForm.get('helperPhone').value;
           body.truckId = this.tripUpdateForm.get('truckId').value;
+          body.sourceOfTruck = this.tripUpdateForm.get('source').value;
           // body.status = 'Running';
           body.tripStartedAt = this.datePipe.transform(
             new Date(),
@@ -556,6 +568,7 @@ export class DialogDataComponent implements OnInit {
         body.helperName = this.tripUpdateForm.get('helperName').value;
         body.helperPhone = this.tripUpdateForm.get('helperPhone').value;
         body.truckId = this.tripUpdateForm.get('truckId').value;
+        body.sourceOfTruck = this.tripUpdateForm.get('source').value;
         this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
           (res: any) => {
             this.loading = false;

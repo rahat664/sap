@@ -27,7 +27,8 @@ export class StatusHeighlightComponent implements OnInit {
   customerStatistics: customerStats;
   transporterStatistics: userStats;
   driverStatistics: userStats;
-  customerCode: any[];
+  customerCode: any[] = [];
+  truckTypeId = [];
   dateFilterAvailable: boolean;
   paymentType: string = '';
   tripType: string = '';
@@ -41,11 +42,12 @@ export class StatusHeighlightComponent implements OnInit {
   ngOnInit(): void {
     // get data from query params
     this.activatedRoute.queryParams.subscribe((params) => {
-      this.customerCode = params['customerCode'] ? params['customerCode'] : '';
+      this.customerCode = params['customerCode'] ? params['customerCode'] : [];
       this.fromDate = params['fromDate'] ? params['fromDate'] : '';
       this.toDate = params['toDate'] ? params['toDate'] : '';
       this.paymentType = params['paymentType'] ? params['paymentType'] : '';
       this.tripType = params['tripType'] ? params['tripType'] : '';
+      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : [];
       if (!this.fromDate || !this.toDate) {
         this.dateFilterAvailable = false;
         this.countFromDateAndToDate();
@@ -61,7 +63,7 @@ export class StatusHeighlightComponent implements OnInit {
 
   private getDashboardStats() {
     this.service
-      .getApiStats(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType, this.tripType)
+      .getApiStats(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType, this.tripType, this.truckTypeId.toString())
       .subscribe((res: any) => {
         if (res.status === 'OK') {
           this.dashboardStats = res.data;
@@ -76,7 +78,8 @@ export class StatusHeighlightComponent implements OnInit {
         this.toDate,
         this.customerCode.toString(),
         this.paymentType,
-        this.tripType
+        this.tripType,
+        this.truckTypeId.toString()
       )
       .subscribe((res: any) => {
         if (res.status === 'OK') {

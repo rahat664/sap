@@ -31,53 +31,16 @@
           <i class="fas fa-plus-circle"></i>
           <span class="hidden lg:block">Add New User</span>
         </button>
+        <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1  text-h2_medium text-primary">
+          <img class="notPreview" src="assets/svg/filter.svg" alt="">
+          <p>Filter</p>
+        </button>
       </div>
     </div>
     <!--  filter section-->
-    <div class="w-full bg-white rounded-lg">
-      <button
-        class="flex px-2 py-1 space-x-3 items-center w-full"
-        [ngClass]="{ 'border-b border-[#A1D5DE]': filterOpened }">
-          <i
-                  (click)="onClickFilterOpened()"
-                  *ngIf="!filterOpened"
-                  class="fas fa-caret-down text-input-hint text-xl"></i>
-          <i
-                  (click)="onClickFilterOpened()"
-                  *ngIf="filterOpened"
-                  class="fas fa-caret-up text-input-hint text-xl"></i>
-        <span class="text-not-black text-body_title leading-body_title"
-        >Filter
-          <span *ngIf="getFilterLength() > 0"
-          >({{ statusFilter + roleFilter }})</span
-          >
-          <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3"
-          >|</span
-          >
-          <a
-            (click)="onClearFilter()"
-            *ngIf="getFilterLength() > 0"
-            class="text-red"
-          >Clear all</a
-          >
-        </span>
-      </button>
-      <div *ngIf="filterOpened" class="p-4 flex items-center space-x-3">
-        <app-custom-input
-          appGetClickEvent
-          [inputSearch]="statusInputPlaceholder"
-          (clickedElement)="onClickStatus($event)"
-          [options]="statusOptionsArray"
-          inputPlaceholder="Select Status"
-          (selectedId)="onSelectStatus($event)"></app-custom-input>
-        <app-custom-input
-          [inputSearch]="roleInputPlaceholder"
-          [options]="roleOptionsArray"
-          inputPlaceholder="Select Department"
-          appGetClickEvent
-          (clickedElement)="onClickRole($event)"
-          (selectedId)="onSelectRole($event)"></app-custom-input>
-      </div>
+    <div *ngIf="filterApplied" class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
+      <span class="text-xs text-not-black">Showing results for <span [innerHTML]="filterSummary"></span></span>
+      <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
     </div>
   </div>
   <div
@@ -200,3 +163,5 @@
     </table>
   </div>
 </div>
+<app-user-filter (filterData)="onFilterData($event)" (filterApplied)="onFilterApply()" (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-user-filter>
+

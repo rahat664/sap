@@ -38,18 +38,6 @@
         <mat-option value="low">Lowest rate</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-full lg:w-[12rem] filter">
-      <mat-select
-        [(ngModel)]="vehicleType"
-        (selectionChange)="onVehicleTypeChange($event)"
-        placeholder="Vehicle Type">
-        <mat-option
-          *ngFor="let vehicle of vehicleTypeLists"
-          [value]="vehicle?.id"
-        >{{ vehicle?.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
     <mat-form-field appearance="outline" class="lg:w-[12rem] w-full filter">
       <mat-select
         [(ngModel)]="transporter"

@@ -3,13 +3,13 @@ import { CustomInputComponent } from '../../../../shared/modules/custom-input/cu
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import {
-  DatePipe,
-  NgClass,
-  NgForOf,
-  NgIf,
-} from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { TruckService } from './services/truck.service';
 import { Router, RouterLink } from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
@@ -28,12 +28,12 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatButton } from '@angular/material/button';
 import { PreHireChecklistPopupComponent } from './pre-hire-checklist-popup/pre-hire-checklist-popup.component';
 import { DateEnum } from '../../../trip-list/Enum/date.enum';
+import { UserFilterComponent } from '../../../user-management/user-filter/user-filter.component';
+import { TruckFilterComponent } from './truck-filter/truck-filter.component';
 
 @Component({
   selector: 'app-truck',
   imports: [
-    CustomInputComponent,
-    GetClickEventDirective,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
     NgForOf,
@@ -49,6 +49,7 @@ import { DateEnum } from '../../../trip-list/Enum/date.enum';
     NgClass,
     MatMenuItem,
     MatButton,
+    TruckFilterComponent,
   ],
   templateUrl: './truck.component.html',
   styleUrl: './truck.component.scss',
@@ -69,9 +70,9 @@ export class TruckComponent implements OnInit {
   size = 30;
   truckEnum = TruckDocumentType;
   firstColumnHeight: any;
-  filterOpened = true;
-  statusInputPlaceholder: string;
-  filterForm: FormGroup
+  filterOpened = false;
+  statusInputPlaceholder: string = '';
+  filterForm: FormGroup;
   statusOptionsArray: CustomInputSelectModel[] = [
     { id: 0, value: 'All', selected: false },
     { id: 1, value: 'Approved', selected: false },
@@ -84,7 +85,8 @@ export class TruckComponent implements OnInit {
   private to: any;
   dateFilter: number = 0;
   inputPlaceholder: any;
-   dateOptionArray: CustomInputSelectModel[];
+  dateOptionArray: CustomInputSelectModel[];
+  filterData: any = {};
 
   constructor(
     private service: TruckService,
@@ -102,7 +104,7 @@ export class TruckComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.generateDateOptionsArray()
+    this.generateDateOptionsArray();
     this.truckList = [];
     this.getTruckList();
     this.makeSureUploadCompletedOrNot();
@@ -119,14 +121,25 @@ export class TruckComponent implements OnInit {
     ];
   }
 
-
   private getTruckList() {
     this.page = 0;
     this.loading = true;
     if (this.searchValue) {
       //subscribe with debounced time
       this.service
-        .getTruckList(this.page, this.size, this.searchValue, this.statusInputPlaceholder == 'All' ? '' : this.statusInputPlaceholder, null, null, null, this.from, this.to)
+        .getTruckList(
+          this.page,
+          this.size,
+          this.searchValue,
+          this.statusInputPlaceholder == 'All'
+            ? ''
+            : this.statusInputPlaceholder,
+          null,
+          null,
+          null,
+          this.from,
+          this.to
+        )
         .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.truckList = res.data.responses;
@@ -134,12 +147,25 @@ export class TruckComponent implements OnInit {
           this.loading = false;
         });
     } else {
-      this.service.getTruckList(this.page, this.size, null, this.statusInputPlaceholder == 'All' ? '' : this.statusInputPlaceholder, null, null, null, this.from, this.to)
+      this.service
+        .getTruckList(
+          this.page,
+          this.size,
+          null,
+          this.statusInputPlaceholder == 'All'
+            ? ''
+            : this.statusInputPlaceholder,
+          null,
+          null,
+          null,
+          this.from,
+          this.to
+        )
         .subscribe((res: any) => {
-        this.truckList = res.data.responses;
-        this.totalPages = res.data.totalPages;
-        this.loading = false;
-      });
+          this.truckList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
     }
   }
 
@@ -431,7 +457,7 @@ export class TruckComponent implements OnInit {
     this.to = '';
     this.filterForm.get('startDate')?.setValue('');
     this.filterForm.get('endDate')?.setValue('');
-    this.inputPlaceholder = ''
+    this.inputPlaceholder = '';
     this.statusInputPlaceholder = 'All';
     this.page = 0;
     this.size = 30;
@@ -468,6 +494,7 @@ export class TruckComponent implements OnInit {
         this.loading = false;
       });
   }
+
   private editPreHireChecklist(res: any) {
     const formData = new FormData();
     const payload: Record<string, any> = {};
@@ -491,7 +518,9 @@ export class TruckComponent implements OnInit {
       }
     );
   }
+
   protected readonly localStorage = localStorage;
+  filterApplied: boolean = false;
 
   onSelectedToDate($event: string) {
     this.filterForm.get('endDate')?.setValue($event);
@@ -550,5 +579,75 @@ export class TruckComponent implements OnInit {
     }
     this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
     this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true;
+  }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+    if (this.filterData.startDate)
+      parts.push(
+        `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.endDate)
+      parts.push(
+        `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.statusInputPlaceholder)
+      parts.push(
+        `Truck Status: <b>${this.filterData.statusInputPlaceholder}</b>`
+      );
+
+    return parts.join(', ');
+  }
+
+  onFilterApply() {
+    if (
+      this.filterData?.startDate ||
+      this.filterData?.endDate ||
+      this.filterData?.statusInputPlaceholder
+    ) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.from = this.filterData.startDate;
+      this.to = this.filterData.endDate;
+      this.statusInputPlaceholder = this.filterData.statusInputPlaceholder;
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getTruckList();
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.filterApplied = false;
+      this.loading = true;
+      this.page = 0;
+      this.size = 30;
+      this.from = '';
+      this.to = '';
+      this.statusInputPlaceholder = '';
+      this.filterForm.reset();
+      this.getTruckList();
+    }
+  }
+
+  onCLickClearAll() {
+    localStorage.removeItem('tripFilterData');
+    this.filterForm.reset();
+    this.filterApplied = false;
+    this.filterData = {};
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.from = '';
+    this.to = '';
+    this.inputPlaceholder = '';
+    this.statusInputPlaceholder = '';
+    this.getTruckList();
+  }
+
+  onFilterData($event: any) {
+    this.filterData = $event
   }
 }

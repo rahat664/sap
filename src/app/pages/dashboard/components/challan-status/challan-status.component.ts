@@ -20,9 +20,10 @@ export class ChallanStatusComponent implements OnInit {
   challanStatus: challanStatus;
   fromDate: string;
   toDate: string;
-  customerCode: any;
+  customerCode: any = [];
    paymentType: string = '';
    tripType: string = '';
+   truckTypeId: any;
 
   constructor(
     private service: DashboardService,
@@ -33,6 +34,7 @@ export class ChallanStatusComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe((params) => {
       this.customerCode = params['customerCode'] ? params['customerCode'] : '';
+      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : '';
       this.paymentType = params['paymentType'] ? params['paymentType'] : '';
       this.tripType = params['tripType'] ? params['tripType'] : '';
       this.fromDate = params['fromDate'] ? params['fromDate'] : '';
@@ -64,7 +66,7 @@ export class ChallanStatusComponent implements OnInit {
 
   private getChallanStatus() {
     this.service
-      .getChallanStatus(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType, this.tripType)
+      .getChallanStatus(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType, this.tripType, this.truckTypeId.toString())
       .subscribe((res: any) => {
         this.challanStatus = res.data;
       });

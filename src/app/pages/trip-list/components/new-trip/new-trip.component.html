@@ -114,8 +114,8 @@
                 >
               </div>
             </td>
-            <td>{{ getTripRoute(tripTemplate.points) }}</td>
-            <td>{{ tripTemplate?.good?.name }}</td>
+            <td class="{{getTripRoute(tripTemplate?.points) ? 'text-not-black' : 'text-secondary'}}">{{ getTripRoute(tripTemplate?.points) ? getTripRoute(tripTemplate?.points) : 'Route not found' }}</td>
+            <td class="{{tripTemplate?.good?.name ? 'text-not-black' : 'text-secondary'}}">{{ tripTemplate?.good?.name ? tripTemplate?.good?.name : 'No goods selected' }}</td>
             <td>
               <button mat-button [matMenuTriggerFor]="menu">
                 <i class="fas fa-ellipsis-v"></i>

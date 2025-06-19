@@ -27,6 +27,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
+import { TripPoint } from '../../../manage-trip/model/trip.details.model';
 
 @Component({
   selector: 'app-new-trip',
@@ -165,9 +166,15 @@ export class NewTripComponent implements OnInit, OnDestroy {
     });
   }
 
-  getTripRoute(templatePoints: any) {
-    if (templatePoints[0].pointName && templatePoints[1].pointName) {
-      return templatePoints[0].pointName + ' to ' + templatePoints[1].pointName;
+  getTripRoute(templatePoints: TripPoint[]) {
+    const loadingPoints = templatePoints.filter(template => template.pointType === 'Loading');
+    const unloadingPoints = templatePoints.filter(template => template.pointType === 'Unloading');
+    if (loadingPoints.length > 0 && unloadingPoints.length > 0) {
+      return loadingPoints[0]?.pointName + ' to ' + unloadingPoints[0].pointName;
+    } else if (loadingPoints.length > 0 && unloadingPoints.length <= 0) {
+      return loadingPoints[0]?.pointName;
+    } else if (unloadingPoints.length > 0 && loadingPoints.length <=0) {
+      return unloadingPoints[0]?.pointName;
     } else {
       return '';
     }

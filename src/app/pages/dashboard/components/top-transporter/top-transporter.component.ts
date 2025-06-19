@@ -35,6 +35,7 @@ export class TopTransporterComponent implements OnInit {
   customerCode: string;
   paymentType: string = '';
   tripType: string = '';
+  truckTypeId: any;
 
   constructor(
     private service: DashboardService,
@@ -47,6 +48,7 @@ export class TopTransporterComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.customerCode = params['customerCode'] ? params['customerCode'] : '';
       this.paymentType = params['paymentType'] ? params['paymentType'] : '';
+      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : '';
       this.tripType = params['tripType'] ? params['tripType'] : '';
       if (params['fromDate'] && params['toDate']) {
         this.fromDate = params['fromDate'];
@@ -60,7 +62,7 @@ export class TopTransporterComponent implements OnInit {
 
   private getTopTransporters() {
     this.service
-      .getTopTransporters(this.fromDate, this.toDate, this.sortBy, this.customerCode, this.paymentType, this.tripType)
+      .getTopTransporters(this.fromDate, this.toDate, this.sortBy, this.customerCode, this.paymentType, this.tripType, this.truckTypeId.toString())
       .subscribe(
         (res: any) => {
           this.topTransporter = res.data.content;

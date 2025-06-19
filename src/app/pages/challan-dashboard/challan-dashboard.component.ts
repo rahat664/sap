@@ -5,20 +5,11 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { DatePipe, DecimalPipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
-import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
-import {
-  MatAutocomplete,
-  MatAutocompleteTrigger,
-  MatOption,
-} from '@angular/material/autocomplete';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
 import { ChallanDashboardService } from './challan-dashboard.service';
 import { TripService } from '../trip-list/services/trip.service';
 import { Trip, Truck } from '../auth/models/response/trip';
@@ -42,22 +33,21 @@ import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { HandleToastrService } from '../../shared/services/handle-toastr/handle-toastr.service';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
 import { PaymentType, TripType } from '../../shared/Enums/payment-type';
+import {
+  ChallanDashboardFilterComponent
+} from './components/challan-dashboard-filter/challan-dashboard-filter.component';
+import {MatCheckbox} from "@angular/material/checkbox";
+
+const STORAGE_KEY = 'trip-list-column-settings';
 
 @Component({
   selector: 'app-challan-dashboard',
   imports: [
-    CustomInputComponent,
     DatePipe,
     FormsModule,
-    GetClickEventDirective,
     GetElementHeightDirective,
     GiveMaxHeightDirective,
     LoadingComponent,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
-    MatFormField,
-    MatInput,
-    MatOption,
     NgForOf,
     NgIf,
     NgClass,
@@ -67,26 +57,20 @@ import { PaymentType, TripType } from '../../shared/Enums/payment-type';
     MatMenuTrigger,
     RouterLink,
     numberPipe,
+    ChallanDashboardFilterComponent,
+    MatCheckbox,
   ],
   templateUrl: './challan-dashboard.component.html',
   styleUrl: './challan-dashboard.component.scss',
 })
 export class ChallanDashboardComponent implements OnInit, AfterViewInit {
-  private dateFilter = 0;
-  private searchFilter = 0;
-  private tripFilter = 0;
-  private customerCode: string;
+  private customerCode: any[] = [];
   private to: string;
   private from: string;
   searchValue: string;
   filterForm: FormGroup;
-  private isSearchedMenuOpened: boolean;
-  private isTripSearchedMenuOpened: boolean;
-  private isDateOpened: boolean;
   protected truckRegistrationId: string;
   protected transporterName: string;
-  private transporterFilter = 0;
-  private truckFilter = 0;
   protected truckRegSuggestions: any[] = [];
   protected transporterSuggestions: any[];
   searchRegistationId: any;
@@ -99,19 +83,39 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
     { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
-    { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
+    {
+      id: 3,
+      value: 'CASH_AND_INVOICE',
+      selected: false,
+      showname: 'Cash & Invoice',
+    },
     { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
   ];
   tripTypeFilter: number = 0;
-   tripTypeValue: string = '';
+  tripTypeValue: string = '';
+  filterData: any = {};
+  filterApplied: boolean = false;
+  truckType: any[] = [];
+  showAll: boolean = true;
+  isIndeterminate: boolean = false;
+  columnToggles: any[] = [
+    { key: 'tripId', label: 'Trip Number', visible: true },
+    {key:'tripDate', label: 'Trip Date', visible: true},
+    { key: 'company', label: 'Company', visible: true },
+    {key: 'transporter', label: 'Transporter', visible: true},
+    {key: 'vehicleType', label: 'Vehicle Type', visible: true},
+    {key: 'truckNumber', label: 'Truck Number', visible: true},
+    { key: 'loadingPoint', label: 'Loading Point', visible: true },
+    { key: 'unloadingPoint', label: 'Unloading Point', visible: true },
+    {key: 'paymentType', label: 'Payment Type', visible: true},
+    {key: 'tripType', label: 'Trip Type', visible: true},
+    {key: 'hardCopy', label: 'Hard Copy', visible: true},
+    {key: 'softCopy', label: 'Soft Copy', visible: true},
+    {key: 'dueDays', label: 'Due Days', visible: true},
+    {key: 'receivedDate', label: 'Received Date', visible: true},
+    {key: 'challanStatus', label: 'Status', visible: true},
+  ];
 
-  get tripSuggestions(): any {
-    return this._tripSuggestions;
-  }
-
-  set tripSuggestions(value: any) {
-    this._tripSuggestions = value;
-  }
 
   height: any = '0px';
   pendingChallanAmount = 0;
@@ -141,18 +145,11 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   status: string;
   challanHardCopyReceived: boolean;
   readonly dialog = inject(MatDialog);
-  filterOpened = true;
-  dateOpened: boolean;
+  filterOpened = false;
   inputPlaceholder: string;
-  dateOptionArray: CustomInputSelectModel[];
   searchName: any;
-  private _tripSuggestions: any;
   tripId: any;
   tripIdSuggestions: any;
-  searchSubject = new Subject<string>();
-  customerSearchSubject = new Subject<string>();
-  truckSearchSubject = new Subject<string>();
-  transporterSearchSubject = new Subject<string>();
 
   constructor(
     private datePipe: DatePipe,
@@ -160,10 +157,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     private trip: TripService,
     private number: DecimalPipe,
     private formBuilder: FormBuilder,
-    private customer: CustomerService,
-    private shared: DriverEditSharedService,
-    private transporter: UserService,
-    private truck: TruckService,
     private router: Router,
     private toastr: HandleToastrService,
     private cd: ChangeDetectorRef
@@ -173,145 +166,17 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       startDate: [''],
       endDate: [''],
     });
-    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performSearch(searchText);
-    });
-    this.customerSearchSubject
-      .pipe(debounceTime(1000))
-      .subscribe(searchText => {
-        this.performCustomerSearch(searchText);
-      });
-    this.truckSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performTruckSearch(searchText);
-    });
-    this.transporterSearchSubject
-      .pipe(debounceTime(1000))
-      .subscribe(searchText => {
-        this.performTransporterSearch(searchText);
-      });
-  }
-
-  private performCustomerSearch(searchText: string) {
-    if (searchText?.length > 0) {
-      this.trip.getTripSuggestions(searchText).subscribe((trip: any) => {
-        this.tripIdSuggestions = trip.responses;
-        if (this.tripIdSuggestions.length === 0) {
-          this.tripIdSuggestions.push('No trip found');
-        }
-      });
-    } else {
-      this.resetTripIdSearch();
-    }
-  }
-
-  private performTruckSearch(searchText: string) {
-    if (searchText?.length > 0) {
-      this.truck.getTruckList(0, 100, searchText).subscribe((truck: any) => {
-        this.truckRegSuggestions = truck.data.responses;
-        if (this.truckRegSuggestions.length === 0) {
-          this.truckRegSuggestions.push('No truck found');
-        }
-      });
-    } else {
-      this.resetTruckSearch();
-    }
-  }
-
-  private performTransporterSearch(searchText: string) {
-    if (searchText?.length > 0) {
-      this.transporter
-        .getTransporter(0, 100, searchText)
-        .subscribe((transporter: any) => {
-          this.transporterSuggestions = transporter.data;
-          if (this.transporterSuggestions.length === 0) {
-            this.transporterSuggestions.push('No transporter found');
-          }
-        });
-    } else {
-      this.resetTransporterSearch();
-    }
-  }
-
-  private resetTripIdSearch() {
-    this.isTripSearchedMenuOpened = false;
-    this.tripId = '';
-    this.page = 0;
-    this.size = 30;
-    this.tripIdSuggestions = [];
-    this.tripIdSuggestions.push('No trip id found');
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-    this.tripFilter = 0;
-  }
-
-  private resetTruckSearch() {
-    this.isTripSearchedMenuOpened = false;
-    this.truckRegistrationId = '';
-    this.page = 0;
-    this.size = 30;
-    this.truckRegSuggestions = [];
-    this.truckRegSuggestions.push('No truck found');
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-    this.truckFilter = 0;
-  }
-
-  private resetTransporterSearch() {
-    this.isTripSearchedMenuOpened = false;
-    this.transporterName = '';
-    this.page = 0;
-    this.size = 30;
-    this.transporterSuggestions = [];
-    this.transporterSuggestions.push('No transporter found');
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-    this.transporterFilter = 0;
-  }
-
-  private generateDateOptionsArray() {
-    this.dateOptionArray = [
-      { id: DateEnum.Today, value: 'Today', selected: false },
-      { id: DateEnum.LastSevenDays, value: 'Last 7 days', selected: false },
-      { id: DateEnum.LastFifteenDays, value: 'Last 15 days', selected: false },
-      { id: DateEnum.LastThirtyDays, value: 'Last 30 days', selected: false },
-      { id: DateEnum.Custom, value: 'Custom', selected: false },
-    ];
-  }
-
-  performSearch(value: string) {
-    if (value?.length > 0) {
-      this.customer.searchCustomer(0, 100, value).subscribe((company: any) => {
-        this.tripSuggestions = company.data.content;
-        if (this.tripSuggestions.length === 0) {
-          this.tripSuggestions.push('No customer found');
-        }
-        this.isSearchedMenuOpened = true;
-      });
-    } else {
-      this.resetSearch();
-    }
-  }
-
-  resetSearch() {
-    this.isSearchedMenuOpened = false;
-    this.customerCode = '';
-    this.searchValue = '';
-    this.page = 0;
-    this.size = 30;
-    this.tripSuggestions = ['No customer found'];
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-    this.searchFilter = 0;
   }
 
   ngOnInit() {
+    localStorage.removeItem('tripFilterData');
+    this.loadColumnSettings();
     this.activatedChallanStatus = 'Completed';
     this.chalanStatus = '';
     this.status = 'Completed';
     this.getFromDateAndToDate();
     this.loading = true;
     this.anotherStatusCalled = false;
-    this.generateDateOptionsArray();
     this.getTripList();
     const isFromBack = localStorage.getItem('isBack');
     if (isFromBack !== 'true') {
@@ -360,12 +225,12 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       .getTrips(
         this.page,
         this.size,
-        this.customerCode,
+        this.customerCode?.toString(),
         null,
         null,
         this.status,
         this.tripId,
-        null,
+        this.truckType?.toString(),
         null,
         this.chalanStatus,
         this.challanHardCopyReceived,
@@ -373,7 +238,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         this.to,
         this.truckRegistrationId,
         this.transporterName,
-        this.paymentTypeValue,
+        this.paymentTypeValue?.toString(),
         this.tripTypeValue
       )
       .subscribe(
@@ -622,216 +487,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       });
   }
 
-  getFilterLength() {
-    return (
-      this.dateFilter +
-      this.searchFilter +
-      this.tripFilter +
-      this.truckFilter +
-      this.transporterFilter +
-      this.paymentFilter +
-        this.tripTypeFilter
-    );
-  }
-
-  onClearFilter() {
-    this.customerCode = '';
-    this.tripId = '';
-    this.page = 0;
-    this.size = 30;
-    this.searchFilter = 0;
-    this.dateFilter = 0;
-    this.transporterFilter = 0;
-    this.paymentFilter = 0;
-    this.paymentTypePlaceholder = '';
-    this.paymentTypeValue = '';
-    this.truckFilter = 0;
-    this.tripFilter = 0;
-    this.searchValue = '';
-    this.searchName = '';
-    this.from = '';
-    this.to = '';
-    this.truckRegistrationId = '';
-    this.transporterName = '';
-    this.filterForm.reset();
-    this.inputPlaceholder = '';
-    this.tripSuggestions = [];
-    this.loading = true;
-    this.chalanStatus = '';
-    this.searchTransporter= '';
-    this.searchRegistationId='';
-    this.tripTypeFilter=0;
-    this.tripTypePlaceholder = '';
-    this.tripTypeValue = '';
-    this.searchId = '';
-    this.status = 'Completed';
-    this.activatedChallanStatus = 'Completed';
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onSelectedFromDate($event: string) {
-    this.filterForm.get('startDate')?.setValue($event);
-  }
-
-  onSelectedToDate($event: string) {
-    this.filterForm.get('endDate')?.setValue($event);
-    this.from = this.filterForm.get('startDate')?.value || '';
-    this.to = this.filterForm.get('endDate')?.value || '';
-    this.dateOpened = false;
-    this.isDateOpened = false;
-    this.page = 0;
-    this.size = 30;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onSelectDate($event: number) {
-    this.chalanStatus = '';
-    this.status = 'Completed';
-    this.activatedChallanStatus = 'Completed';
-    this.dateFilter = 1;
-    if ($event === DateEnum.Custom) {
-      this.shared.closeInputSelect.next(true);
-    } else {
-      this.shared.closeInputSelect.next(false);
-      this.inputPlaceholder =
-        this.dateOptionArray.find(x => x.id === $event)?.value || '';
-      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
-      this.setDateRange($event);
-      this.page = 0;
-      this.size = 30;
-      this.loading = true;
-      this.trip.anotherStatusCalled.next(true);
-      this.getTripList();
-    }
-  }
-
-  private setDateRange(dateEnum: DateEnum) {
-    const fromDate = new Date();
-    // to date should be yesterday
-    const toDate = new Date();
-    switch (dateEnum) {
-      case DateEnum.Today:
-        fromDate.setDate(fromDate.getDate());
-        toDate.setDate(toDate.getDate());
-        break;
-      case DateEnum.LastSevenDays:
-        // shouldn't be count today
-        fromDate.setDate(fromDate.getDate() - 7);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-      case DateEnum.LastFifteenDays:
-        fromDate.setDate(fromDate.getDate() - 15);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-      case DateEnum.LastThirtyDays:
-        fromDate.setDate(fromDate.getDate() - 30);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-    }
-    this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
-    this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
-  }
-
-  updateOverLayStyle(isSpecial: boolean) {
-    const className = 'custom-overlay-bounding-box';
-    if (isSpecial) {
-      document.body.classList.add(className);
-    } else {
-      document.body.classList.remove(className);
-    }
-  }
-
-  onSearchInputChange($event: any) {
-    const value = $event.target.value;
-    this.searchSubject.next(value); // Trigger the Subject when input changes
-  }
-
-  onClickSearchSuggestion(result: any) {
-    this.chalanStatus = '';
-    this.status = 'Completed';
-    this.activatedChallanStatus = 'Completed';
-    this.searchFilter = 1;
-    this.loading = true;
-    this.page = 0;
-    this.customerCode = result.customerCode;
-    this.searchName = result.name;
-    this.searchValue = result.name;
-    this.tripSuggestions = [];
-    this.isSearchedMenuOpened = false;
-    this.size = 30;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onKeyUpTripSearch($event: any) {
-    const value = $event.target.value;
-    this.customerSearchSubject.next(value); // Trigger the Subject when input changes
-  }
-
-  onKeyUpTruckSearch($event: any) {
-    const value = $event.target.value;
-    this.truckSearchSubject.next(value); // Trigger the Subject when input changes
-  }
-
-  onKeyUpTransporterSearch($event: any) {
-    const value = $event.target.value;
-    this.transporterSearchSubject.next(value); // Trigger the Subject when input changes
-  }
-
-  onClickTripSearchSuggestion(result: any) {
-    this.chalanStatus = '';
-    this.status = 'Completed';
-    this.activatedChallanStatus = 'Completed';
-    this.tripFilter = 1;
-    this.page = 0;
-    this.tripId = result.tripId;
-    this.searchId = result.tripId;
-    this.tripIdSuggestions = [];
-    this.isTripSearchedMenuOpened = false;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickTruckSearchSuggestion(result: any) {
-    this.chalanStatus = '';
-    this.status = 'Completed';
-    this.activatedChallanStatus = 'Completed';
-    this.truckFilter = 1;
-    this.page = 0;
-    this.truckRegistrationId = result.fullRegistrationNumber;
-    this.searchRegistationId = result.fullRegistrationNumber;
-    this.truckRegSuggestions = [];
-    this.isTripSearchedMenuOpened = false;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickTransporterSearchSuggestion(result: any) {
-    this.chalanStatus = '';
-    this.status = 'Completed';
-    this.activatedChallanStatus = 'Completed';
-    this.transporterFilter = 1;
-    this.page = 0;
-    this.transporterName = result.name;
-    this.searchTransporter = result.name;
-    this.transporterSuggestions = [];
-    this.isTripSearchedMenuOpened = false;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickFilterOpened() {
-    this.filterOpened = !this.filterOpened;
-    this.dateOpened = false;
-    this.isDateOpened = false;
-    this.isSearchedMenuOpened = false;
-    this.shared.closeInputSelect.next(false);
-  }
 
   onClickSoftCopyView(tripId: string) {
     this.trip
@@ -879,43 +534,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
 
   protected readonly truckEnum = TruckDocumentType;
 
-  checkDocumentIsAvailableOrNot(tripId: string): any {
-    const loadingEvents = [];
-    const unloadingEvents = [];
-    this.trip
-      .getAllTripEvent(tripId, 'Loading')
-      .pipe(
-        mergeMap((loadingRes: any) => {
-          const loadingEvents = loadingRes.data.filter(
-            event => event.eventName === 'Upload loading challan'
-          );
-          return this.trip.getAllTripEvent(tripId, 'Unloading').pipe(
-            mergeMap((unloadingRes: any) => {
-              const unloadingEvents = unloadingRes.data.filter(
-                event => event.eventName === 'Upload unloading challan'
-              );
-              return of({ loadingEvents, unloadingEvents });
-            })
-          );
-        })
-      )
-      .subscribe(({ loadingEvents, unloadingEvents }) => {
-        const allEvents = [...loadingEvents, ...unloadingEvents];
-        //concat two event
-        // concat two tripDocuments
-        const documents = [];
-        allEvents.map(event => {
-          event.tripDocuments?.map(doc => {
-            documents.push({
-              document: doc,
-              event: event,
-            });
-          });
-        });
-        return documents.length > 0;
-      });
-  }
-
   onFileChange($event: Event, tripId: string) {
     const input = $event.target as HTMLInputElement;
     const files = input.files;
@@ -951,84 +569,14 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   uploadAbleTripId: any;
   tripTypePlaceholder: string = '';
   tripTypeOptionsArray: CustomInputSelectModel[] = [
-    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
-    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
+    { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
+    {
+      id: 2,
+      value: 'COMMERCIAL',
+      selected: false,
+      showname: 'Commercial Logistics',
+    },
   ];
-
-  onClickClearCompany() {
-    this.customerCode = '';
-    this.searchValue = '';
-    this.searchName = '';
-    this.page = 0;
-    this.size = 30;
-    this.searchFilter = 0;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickClearTruck() {
-    this.truckRegistrationId = '';
-    this.searchRegistationId = '';
-    this.truckRegSuggestions = [];
-    this.truckFilter = 0;
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickClearTransporter() {
-    this.transporterName = '';
-    this.searchTransporter = '';
-    this.transporterFilter = 0;
-    this.transporterSuggestions = [];
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onClickClearTripId() {
-    this.tripId = '';
-    this.searchId = '';
-    this.tripIdSuggestions = [];
-    this.tripFilter = 0;
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-
-  onSelectPayment($event: number) {
-    this.paymentFilter = 1;
-    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.paymentTypePlaceholder =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.paymentTypeValue =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
-  onSelectTrip($event: number) {
-    this.tripTypeFilter = 1;
-    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.tripTypePlaceholder =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.tripTypeValue =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
-    this.page = 0;
-    this.size = 30;
-    this.loading = true;
-    this.trip.anotherStatusCalled.next(true);
-    this.getTripList();
-  }
 
   getNameFromEnum(paymentType: string) {
     if (paymentType === PaymentType.CASH) {
@@ -1045,7 +593,9 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   checkReceivedDays(trip: Trip) {
     if (trip.firstChallanUploadedDate || trip.challanStatusUpdatedAt) {
       if (trip.firstChallanUploadedDate) {
-        const firstChallanUploadedDate = new Date(trip.firstChallanUploadedDate);
+        const firstChallanUploadedDate = new Date(
+          trip.firstChallanUploadedDate
+        );
         return this.datePipe.transform(
           firstChallanUploadedDate,
           'dd MMM,yyyy h:mm a'
@@ -1067,9 +617,172 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       return 'Commercial Logistics';
     } else if (paymentType === TripType.PROJECT) {
       return 'Project Logistics';
-    }else
-    {
+    } else {
       return 'N/A';
+    }
+  }
+
+  onFilterData($event: any) {
+    this.filterData = $event;
+  }
+
+  onFilterApply() {
+    if (
+      this.filterData?.startDate ||
+      this.filterData?.endDate ||
+      this.filterData?.paymentType?.length > 0 ||
+      this.filterData?.tripType?.length > 0 ||
+      this.filterData?.customerCode?.length > 0 ||
+      this.filterData?.truckType?.length > 0 ||
+      this.filterData?.tripId ||
+      this.filterData?.transporterName ||
+      this.filterData?.truckRegistrationId
+    ) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.tripList = [];
+      this.from = this.filterData.startDate;
+      this.to = this.filterData.endDate;
+      this.customerCode = this.filterData.customerCode;
+      this.tripId = this.filterData.tripId;
+      this.truckType = this.filterData.truckType;
+      this.transporterName = this.filterData.transporterName;
+      this.paymentTypeValue = this.filterData.paymentType?.toString();
+      this.tripTypeValue = this.filterData.tripType?.toString();
+      this.truckRegistrationId = this.filterData.truckRegistrationId;
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getTripList();
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.filterApplied = false;
+      this.loading = true;
+      this.page = 0;
+      this.size = 30;
+      this.customerCode = [];
+      this.tripId = '';
+      this.truckType = [];
+      this.transporterName = '';
+      this.paymentTypeValue = '';
+      this.tripTypeValue = '';
+      this.from = '';
+      this.to = '';
+      this.filterForm.reset();
+      this.getTripList();
+    }
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true;
+  }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+
+    if (this.filterData.searchName)
+      parts.push(`Company: <b>${this.filterData.searchName}</b>`);
+    if (this.filterData.transporterName)
+      parts.push(`Transporter: <b>${this.filterData.transporterName}</b>`);
+    if (this.filterData.startDate)
+      parts.push(
+        `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.endDate)
+      parts.push(
+        `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData?.paymentType?.length > 0)
+      parts.push(
+        `Payment Type: <b>${this.filterData.selectedPaymentValue?.toString()}</b>`
+      );
+    if (this.filterData?.tripType?.length > 0)
+      parts.push(
+        `Trip type: <b>${this.filterData.selectedTripValue?.toString()}</b>`
+      );
+    if (this.filterData.tripId)
+      parts.push(`Trip ID: <b>${this.filterData.tripId}</b>`);
+    if (this.filterData?.customerCode?.length > 0) {
+      parts.push(`Company: <b>${this.filterData.customerName?.toString()}</b>`);
+    }
+    if (this.filterData?.truckType?.length > 0) {
+      parts.push(
+        `Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`
+      );
+    }
+    if (this.filterData.truckRegistrationId) {
+      parts.push(
+        `Truck Registration ID: <b>${this.filterData.truckRegistrationId}</b>`
+      );
+    }
+    return parts.join(', ');
+  }
+
+  onCLickClearAll() {
+    this.filterOpened = false;
+    this.filterApplied = false;
+    this.loading = true;
+    this.page = 0;
+    this.size = 30;
+    this.customerCode = [];
+    this.tripId = '';
+    this.truckType = [];
+    this.transporterName = '';
+    this.paymentTypeValue = '';
+    this.tripTypeValue = '';
+    this.truckRegistrationId = '';
+    this.from = '';
+    this.to = '';
+    this.filterForm.reset();
+    localStorage.removeItem('tripFilterData');
+    this.getTripList();
+  }
+
+  toggleAllColumns() {
+    this.columnToggles.forEach(col => (col.visible = this.showAll));
+    this.updateShowAllState();
+    this.applyColumnSettings(); // <- Save to localStorage
+  }
+
+  onToggleColumn(key: string, visible: boolean) {
+    const column = this.columnToggles.find(col => col.key === key);
+    if (column) {
+      column.visible = visible;
+      this.updateShowAllState();
+      this.applyColumnSettings(); // <- Save to localStorage
+    }
+  }
+
+  updateShowAllState() {
+    const visibleCount = this.columnToggles.filter(c => c.visible).length;
+    const total = this.columnToggles.length;
+
+    this.showAll = visibleCount === total;
+    this.isIndeterminate = visibleCount > 0 && visibleCount < total;
+  }
+
+  applyColumnSettings() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.columnToggles));
+  }
+
+  isColumnVisible(key: string): boolean {
+    return this.columnToggles.find(col => col.key === key)?.visible ?? false;
+  }
+
+  loadColumnSettings() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        this.columnToggles = this.columnToggles.map(col => {
+          const savedCol = parsed.find((c: any) => c.key === col.key);
+          return savedCol ? { ...col, visible: savedCol.visible } : col;
+        });
+        this.showAll = this.columnToggles.every(col => col.visible);
+      } catch (e) {
+        console.error('Failed to load column settings from localStorage:', e);
+      }
+      this.updateShowAllState();
     }
   }
 }

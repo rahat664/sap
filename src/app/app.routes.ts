@@ -102,6 +102,18 @@ export const routes: Routes = [
       tripList: tripListResolver,
     },
   },
+  {
+    path: 'manage-bid',
+    title: 'Manage Bid',
+    loadComponent: () =>
+      import('./pages/manage-bid/manage-bid.component').then(
+        c => c.ManageBidComponent
+      ),
+    canActivate: [authGuard],
+    resolve: {
+      tripList: tripListResolver,
+    },
+  },
   // create trip with query params not id with scenerio
   {
     path: 'trip-create/create',
@@ -114,7 +126,7 @@ export const routes: Routes = [
   },
   {
     path: 'trip-create/overview',
-    title: 'Create Trip',
+    title: 'Create Trip Overview',
     loadComponent: () =>
       import(
         './pages/trip-list/components/trip-create-overview/trip-create-overview.component'
@@ -132,7 +144,7 @@ export const routes: Routes = [
   },
   {
     path: 'trip-create/create-trip-template',
-    title: 'Create Trip',
+    title: 'Create Trip Template',
     loadComponent: () =>
       import(
         './pages/trip-list/components/template-create/template-create.component'
@@ -141,7 +153,7 @@ export const routes: Routes = [
   },
   {
     path: 'update-trip-template',
-    title: 'Update Trip',
+    title: 'Update Trip Template',
     loadComponent: () =>
       import(
         './pages/trip-list/components/template-update/template-update.component'
@@ -162,7 +174,7 @@ export const routes: Routes = [
   },
   {
     path: 'user-management-customer',
-    title: 'User Management',
+    title: 'User Management Customer',
     loadComponent: () =>
       import(
         './pages/user-management/user-management-customer-admin/user-management-customer-admin.component'
