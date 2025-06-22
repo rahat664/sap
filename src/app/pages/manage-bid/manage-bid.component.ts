@@ -85,7 +85,7 @@ export class ManageBidComponent {
   startingPosition: { lng: number; lat: number }[] = [];
   destinationPosition: { lng: number; lat: number }[] = [];
   activatedId: string = '';
-  singleTripDetails: TripData;
+  singleTripDetails: TripData = {} as TripData;
   tripStatus: string = '';
   activatedTruckSizeInFeet: number = 0;
   customers: any[] = [];
@@ -230,57 +230,29 @@ export class ManageBidComponent {
       .getSessionBids(body, meta)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe((bid: any) => {
+        this.loading = false
         this.totalBids = bid.data.contents;
-        this.activatedId = this.totalBids[0]?.availableTripId;
-        this.totalPages = bid.meta.totalPageCount;
-        this.getTripDetails(this.totalBids[0]?.availableTripId);
-        this.getBidDetails(this.totalBids[0]?.id);
+        if (this.totalBids.length === 0) {
+          this.bidLoading = false;
+        } else {
+          this.activatedId = this.totalBids[0]?.availableTripId;
+          this.totalPages = bid.meta.totalPageCount;
+          this.getTripDetails(this.totalBids[0]?.availableTripId);
+          this.getBidDetails(this.totalBids[0]?.id);
+        }
+      }, error => {
+        this.loading = false;
+        this.totalBids = [];
+        this.totalPages = 0;
+        this.activatedId = '';
+        this.singleTripDetails = {} as TripData;
+        this.startingPosition = [];
+        this.destinationPosition = [];
+        this.bidLoading = false;
       });
   }
 
-  private retriveStatusButtons(statusCount: any) {
-    this.statusButtons.forEach(button => {
-      button.count = statusCount[button.name];
-    });
-  }
 
-  private getTruckTrackers(truckRegistrationNumber: string) {
-    this.truckRegistrationNumbers = truckRegistrationNumber;
-    if (truckRegistrationNumber) {
-      this.tripService.getSensorData(truckRegistrationNumber).subscribe(
-        (res: any) => {
-          if (res.data) {
-            this.truckerEnabled = true;
-            this.truckLocationPosition = {
-              lng: res.data?.lng,
-              lat: res.data?.lat,
-            };
-          } else {
-            this.truckerEnabled = false;
-            this.truckLocationPosition = {
-              lng: 0,
-              lat: 0,
-            };
-          }
-        },
-        error => {
-          this.truckerEnabled = false;
-          this.truckLocationPosition = {
-            lng: 0,
-            lat: 0,
-          };
-        }
-      );
-    }
-  }
-
-  getTruckRegistrationNumber(truck: Truck) {
-    if (truck) {
-      return `${truck.registrationZone} ${truck.registrationCategory} ${truck.registrationSerial}-${truck.registrationNum}`;
-    } else {
-      return 'Not Assigned';
-    }
-  }
 
   private getTripDetails(tripId: string) {
     localStorage.setItem('tripId', tripId);
@@ -548,21 +520,7 @@ export class ManageBidComponent {
     return totalHeight + 'px';
   }
 
-  onclickTripCard(
-    tripId: string,
-    truckRegistrationNumber: string,
-    status: string,
-    truckSizeInFeet: string
-  ) {
-    if (localStorage.getItem('expanded')) {
-      localStorage.setItem('expanded', 'false');
-    }
-    this.tripStatus = status;
-    this.activatedId = tripId;
-    this.activatedTruckSizeInFeet = Number(truckSizeInFeet);
-    this.getTripDetails(tripId);
-    this.getTruckTrackers(truckRegistrationNumber);
-  }
+
 
   onClickClearAll() {
     this.dateSelected = false;

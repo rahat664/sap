@@ -72,7 +72,7 @@
       </div>
     </div>
     <div
-      *ngIf="!loading && !filterOpen"
+      *ngIf="!loading && !filterOpen && totalBids.length > 0"
       class="flex flex-col py-1 space-y-4 min-w-96">
       <div
         *ngIf="filterLength > 0"
@@ -108,7 +108,7 @@
     </div>
     <div
       class="flex items-center justify-center h-[calc(100vh-11.7rem)] min-w-96"
-      *ngIf="!loading && totalBids.length <= 0 && !filterOpen">
+      *ngIf="!loading && totalBids.length === 0 && !filterOpen">
       <div class="w-full flex flex-col space-y-3 justify-center items-center">
         <img
           loading="lazy"
