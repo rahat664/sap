@@ -1,15 +1,16 @@
 <div>
-  <div class="mx-4 py-2 flex justify-between items-center sticky top-16">
+  <div class="mx-4 py-2 flex justify-between items-center sticky top-16 bg-white">
     <h1 class="text-h1 leading-h1 font-semibold">New Trip</h1>
     <button
-      class="bg-primary text-white rounded-lg px-12 py-2"
+      class="bg-primary text-white rounded-lg px-4 lg:px-12 py-2"
       (click)="onCreateTrip()">
-      Create Trip
+      <span class="hidden lg:inline">Create Trip</span>
+      <i class="fas fa-plus text-white text-xs lg:hidden"></i>
     </button>
   </div>
-  <div class="px-4 h-[calc(100vh-9rem)] overflow-y-auto">
+  <div class="lg:px-4 h-[calc(100vh-9rem)] overflow-y-auto">
     <form [formGroup]="tripForm" class="rounded-lg bg-white w-full">
-      <div class="mx-8 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
+      <div class="lg:mx-8 mx-4 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
         <div class="flex items-center space-x-3">
           <img
             loading="lazy"
@@ -25,8 +26,8 @@
             <label for="customerName" class="form-label text-body"
             >Trip Type</label
             >
-            <div class="h-[56px] w-full border-line rounded-lg flex  items-center bg-input">
-              <div class="flex space-x-2 px-4 py-2 items-center">
+            <div class="lg:h-[56px] w-full border-line rounded-lg flex  items-center bg-input">
+              <div class="flex gap-2 px-4 py-2 items-center flex-wrap">
                 <button *ngFor="let type of tripTypes" class="py-1.5 px-2 rounded-full {{type.active ? 'bg-green border-none text-white' : 'bg-transparent border border-line text-not-black'}}" (click)="onTripTypeClick(type)">
                   <span>{{type.name}}</span>
                 </button>
@@ -37,8 +38,8 @@
             <label for="customerName" class="form-label text-body"
             >Payment Type</label
             >
-            <div class="h-[56px] w-full border-line rounded-lg flex  items-center bg-input">
-              <div class="flex space-x-2 px-4 py-2 items-center">
+            <div class="lg:h-[56px] w-full border-line rounded-lg flex  items-center bg-input">
+              <div class="flex gap-2 px-4 py-2 items-center flex-wrap">
                 <button *ngFor="let type of paymentType" class="py-1.5 px-2 rounded-full {{type.active ? 'bg-green border-none text-white' : 'bg-transparent border border-line text-not-black'}}" (click)="onPaymentTypeClick(type)">
                   <span>{{type.name}}</span>
                 </button>
@@ -47,7 +48,7 @@
           </div>
         </div>
       </div>
-      <div class="mx-8 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
+      <div class="mx-4 lg:mx-8 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
         <div class="flex items-center space-x-3">
           <img
             loading="lazy"
@@ -117,7 +118,7 @@
           </div>
         </div>
       </div>
-      <div class="mx-8 flex flex-col space-y-4 py-8 border-b-2 border-input">
+      <div class="mx-4 lg:mx-8 flex flex-col space-y-4 py-8 border-b-2 border-input">
         <div class="flex items-center space-x-3">
           <img
             loading="lazy"

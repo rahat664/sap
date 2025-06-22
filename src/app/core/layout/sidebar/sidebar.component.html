@@ -33,6 +33,7 @@
           </li>
           <li *ngIf="isAdmin()">
             <a
+              (click)="ifInMobileDevice()"
               routerLink="/dashboard"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
@@ -51,6 +52,7 @@
           <li *ngIf="isAdmin()">
             <a
               routerLink="/challan-management"
+              (click)="ifInMobileDevice()"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img
@@ -69,7 +71,7 @@
             <a
               routerLink="/trip-create/customerselection"
               routerLinkActive="active"
-              (click)="clearSelectedTemplate()"
+              (click)="clearSelectedTemplate(); ifInMobileDevice()"
               [routerLinkActiveOptions]="{ exact: true }"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
               <img
@@ -86,7 +88,7 @@
           </li>
           <li *ngIf="isAdmin()">
             <a
-              (click)="clearSelectedTemplate()"
+              (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/manage-bid"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
@@ -106,7 +108,7 @@
           </li>
           <li>
             <a
-              (click)="clearSelectedTemplate()"
+              (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/manage-trip"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
@@ -126,7 +128,7 @@
           </li>
           <li>
             <a
-              (click)="clearSelectedTemplate()"
+              (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/trip-list"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
@@ -145,7 +147,7 @@
           </li>
           <li *ngIf="isAdmin()">
             <a
-              (click)="clearSelectedTemplate()"
+              (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/transporter-payment"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
@@ -162,10 +164,9 @@
               >
             </a>
           </li>
-
           <li *ngIf="isAdmin()">
             <a
-              (click)="clearSelectedTemplate()"
+              (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/user-management"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
@@ -185,7 +186,7 @@
           </li>
           <li *ngIf="!isAdmin() && isCustomerAdmin()">
             <a
-              (click)="clearSelectedTemplate()"
+              (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/user-management-customer"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
@@ -240,6 +241,7 @@
               *ngIf="dropdownOpen">
               <li>
                 <a
+                  (click)="ifInMobileDevice()"
                   routerLink="/profile/customer"
                   routerLinkActive="active"
                   class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
@@ -248,6 +250,7 @@
               </li>
               <li>
                 <a
+                  (click)="ifInMobileDevice()"
                   routerLink="/profile/transporter"
                   routerLinkActive="active"
                   class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
@@ -256,6 +259,7 @@
               </li>
               <li>
                 <a
+                  (click)="ifInMobileDevice()"
                   routerLink="/profile/truck"
                   routerLinkActive="active"
                   class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
@@ -264,6 +268,7 @@
               </li>
               <li>
                 <a
+                  (click)="ifInMobileDevice()"
                   routerLink="/profile/driver"
                   routerLinkActive="active"
                   class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
@@ -272,6 +277,7 @@
               </li>
               <li>
                 <a
+                  (click)="ifInMobileDevice()"
                   routerLink="/profile/tracker"
                   routerLinkActive="active"
                   class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
@@ -282,6 +288,7 @@
           </li>
           <li *ngIf="isAdmin()">
             <a
+              (click)="ifInMobileDevice()"
               routerLink="/vehicle-tracking"
               routerLinkActive="active"
               class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group">
