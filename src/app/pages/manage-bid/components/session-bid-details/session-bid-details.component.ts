@@ -36,7 +36,7 @@ import { TripData, TripPoint } from '../../../manage-trip/model/trip.details.mod
 export class SessionBidDetailsComponent {
   readonly dialog = inject(MatDialog);
   @Input() sessionBid: SessionModel = {} as SessionModel;
-  @Input() tripDetails: TripData = null;
+  @Input() tripDetails: TripData = {} as TripData;
   isInEditMode: boolean = false;
   selectedBidNumberOfTruck: number = 0;
   selectedBidAmount: number = 0;
@@ -47,12 +47,26 @@ export class SessionBidDetailsComponent {
   otherSelected: boolean;
   selectedBidId: number = -1;
   isUpdatingBid: boolean = false;
+  noTripDetails: boolean = false;
+   noSessionBid: boolean = false;
 
   editBid(bid: Bid) {
     this.selectedBidNumberOfTruck = bid.submittedNumberOfTruck;
     this.selectedBidAmount = bid.amount;
     this.selectedBid = bid;
     this.isInEditMode = true;
+  }
+
+  ngOnChanges() {
+    // check tripDetails is not empty object
+    this.noTripDetails = !(this.tripDetails && Object.keys(this.tripDetails).length > 0);
+    this.noSessionBid = !(this.sessionBid && Object.keys(this.sessionBid).length > 0);
+  }
+
+  ngOnInit() {
+
+    this.noTripDetails = !(this.tripDetails && Object.keys(this.tripDetails).length > 0);
+    this.noSessionBid = !(this.sessionBid && Object.keys(this.sessionBid).length > 0);
   }
 
   acceptBid(bid: Bid) {
