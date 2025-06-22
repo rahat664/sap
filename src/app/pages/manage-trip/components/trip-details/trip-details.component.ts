@@ -159,7 +159,7 @@ export class TripDetailsComponent implements OnInit, OnChanges {
           if (event.name === 'Trip cancelled' || event.name == 'Cancelled') {
             onlyStatusTripEvents.push(event);
           } else if (
-            event.name === 'Trip booked' ||
+            (event.name === 'Trip booked' || event.name === 'Trip booked (Bid accepted)') ||
             event.name === 'Trip started' ||
             event.name === 'Trip completed' ||
             event.name === 'Trip created'
