@@ -206,8 +206,9 @@
 <div *ngIf="mobileDeviceDetails" class="lg:hidden w-full h-[calc(100vh-6.1rem)] flex-1 relative rounded-lg mt-4">
   <button
     (click)="onClickBack()"
-    class="absolute top-4 right-4 z-10 bg-white rounded-full h-12 w-12 shadow-md">
+    class="absolute top-4 right-4 z-10 bg-white rounded-full flex space-x-2 items-center px-4 py-2 shadow-md">
     <i class="fas fa-arrow-left text-primary"></i>
+    <span class="">Back to list</span>
   </button>
   <app-session-bid-details *ngIf="!bidLoading" [tripDetails]="singleTripDetails" [sessionBid]="totalBidOfSession"></app-session-bid-details>
   <app-loading *ngIf="bidLoading"></app-loading>

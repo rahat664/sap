@@ -25,6 +25,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { ConfirmCancelComponent } from '../confirm-cancel/confirm-cancel.component';
 import { Router } from '@angular/router';
 import { ManualTrackingComponent } from '../manual-tracking/manual-tracking.component';
+import { SessionModel } from '../../../manage-bid/models/session.model';
 
 @Component({
   selector: 'app-trip-details',
@@ -127,8 +128,8 @@ export class TripDetailsComponent implements OnInit, OnChanges {
   onCLickMinimize() {
     this.minimized = true;
     this.expanded = false;
-    this.mobileToggleService.isSidebarOpen.next(false);
-    this.foldUnfoldChange.emit(false);
+    this.isMobileDevice() ? this.mobileToggleService.isSidebarOpen.next(true) : this.mobileToggleService.isSidebarOpen.next(false);
+
   }
 
   ngOnChanges(simpleChanges: any) {
@@ -214,7 +215,7 @@ export class TripDetailsComponent implements OnInit, OnChanges {
   onClickFold() {
     this.expanded = false;
     this.minimized = false;
-    this.mobileToggleService.isSidebarOpen.next(false);
+    this.isMobileDevice() ? this.mobileToggleService.isSidebarOpen.next(true) : this.mobileToggleService.isSidebarOpen.next(false);
     this.foldUnfoldChange.emit(false);
   }
 
@@ -338,5 +339,9 @@ export class TripDetailsComponent implements OnInit, OnChanges {
         event.cancelled = false;
       }
     });
+  }
+
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
   }
 }

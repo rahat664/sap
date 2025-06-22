@@ -33,6 +33,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
+import { SessionModel } from '../manage-bid/models/session.model';
 
 @Component({
   selector: 'app-manage-trip',
@@ -132,6 +133,7 @@ export class ManageTripComponent implements OnInit {
     {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
   ];
   tripTypeValue: any[] = [];
+  mobileDeviceDetails: boolean = false;
 
   constructor(
     private tripService: TripService,
@@ -261,6 +263,7 @@ export class ManageTripComponent implements OnInit {
     this.activatedTruckSizeInFeet = Number(truckSizeInFeet);
     this.getTripDetails(tripId);
     this.getTruckTrackers(truckRegistrationNumber);
+    this.mobileDeviceDetails = !!this.isMobileDevice();
   }
 
   private retriveStatusButtons(statusCount: any) {
@@ -869,5 +872,23 @@ export class ManageTripComponent implements OnInit {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
+  }
+
+  onClickBack() {
+    this.updateOverLayStyle(false);
+    this.mobileDeviceDetails = false;
+    this.activatedId = '';
+    this.singleTripDetails = {} as TripData;
+    this.startingPosition = [];
+    this.destinationPosition = [];
+    this.truckLocationPosition = {} as any;
+    this.tripList = [];
+    this.page = 0;
+    this.size = 20;
+    this.getTripList();
   }
 }
