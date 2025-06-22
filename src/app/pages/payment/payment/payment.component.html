@@ -20,14 +20,14 @@
 
 
     <!--  summary section-->
-    <div class="py-5 grid grid-cols-4 bg-white rounded-lg">
-      <div class="w-full flex items-center justify-center  border-r border-line">
+    <div class="py-5 grid grid-cols-2 lg:grid-cols-4 bg-white rounded-lg">
+      <div class="w-full flex items-center px-4 py-2 lg:py-0 lg:px-0 lg:justify-center border-b lg:border-b-0 border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-secondary">Total trip</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">{{ totalTrips | number }}</span>
         </div>
       </div>
-      <div class="w-full flex items-center justify-center  border-r border-line">
+      <div class="w-full flex items-center lg:justify-center px-4 py-2 lg:py-0 lg:px-0 border-b lg:border-b-0 lg:border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-not-primary">Transporter Rate(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">{{
@@ -35,7 +35,7 @@
             }}</span>
         </div>
       </div>
-      <div class="w-full flex items-center justify-center  border-r border-line">
+      <div class="w-full flex items-center lg:justify-center py-2 lg:py-0 px-4 lg:px-0 border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-green">Paid(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">
@@ -43,7 +43,7 @@
           </span>
         </div>
       </div>
-      <div class="w-full flex items-center justify-center ">
+      <div class="w-full flex items-center lg:justify-center px-4 py-2 lg:py-0 lg:px-0">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-red">Due(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">{{
@@ -84,7 +84,7 @@
       <tbody class="text-web-text-secondary">
       <ng-container *ngFor="let transporter of transportersPaymentList">
         <tr>
-          <td class="whitespace-nowrap text-link cursor-pointer">
+          <td class="whitespace-nowrap text-link cursor-pointer sticky left-0 bg-white">
             <a (click)="onClickTripId(transporter)">{{ transporter.tripId }}</a>
           </td>
           <td>{{ transporter.customerName }}</td>
