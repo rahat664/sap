@@ -10,13 +10,14 @@
         <div class="flex space-x-2 items-center">
           <button *ngIf="isAdmin()"
             (click)="onClickGenerateReport()"
-            class="px-16 flex space-x-4 items-center py-3 lg:py-2 border border-primary text-primary rounded-lg">
+            class="px-4 lg:px-16 flex lg:space-x-4 items-center py-3 lg:py-2 border border-primary text-primary rounded-lg">
             <i
               *ngIf="excelLoading"
               class="fas fa-spinner fa-spin text-primary text-xl"></i>
-            <span>
-            Export in Excel
+            <span class="hidden lg:inline">
+                  Export in Excel
           </span>
+            <i  class="fas fa-file-excel lg:hidden text-primary text-xl"></i>
           </button>
           <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1  text-h2_medium text-primary">
             <img class="notPreview" src="assets/svg/filter.svg" alt="">
@@ -30,7 +31,7 @@
       <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
     </div>
     <!--  summary section-->
-    <div class="flex space-x-3 w-full">
+    <div class="flex flex-col space-y-2 lg:space-y-0 lg:flex-row space-x-0 lg:space-x-3 w-full">
       <!--      <div *ngIf="!isAdmin()"-->
       <!--           class="bg-white rounded-lg min-h-[11.75rem] flex justify-center items-center text-body_title leading-body_title px-4 py-8 whitespace-nowrap w-[23.75rem]">-->
       <!--        <div class="flex flex-col space-y-[1.375rem] text-center">-->
@@ -46,7 +47,7 @@
       <!--      </div>-->
       <div
         *ngIf="isAdmin()"
-        class="bg-white rounded-lg text-body_title leading-body_title pt-4 px-3 whitespace-nowrap w-96">
+        class="bg-white rounded-lg text-body_title leading-body_title pt-4 px-3 whitespace-nowrap w-full lg:w-96 ">
         <h1 class="font-semibold px-3">
           <span class="text-not-black text-body_title"> Summary </span>
           <span
@@ -78,7 +79,7 @@
         </div>
       </div>
       <div
-        class="overflow-hidden relative p-4 w-full rounded-lg min-h-44 bg-white">
+        class="overflow-hidden relative p-4 w-full rounded-lg lg:min-h-44 bg-white">
         <div
           appScrollByButton
           (isVisible)="scrollable = $event"
