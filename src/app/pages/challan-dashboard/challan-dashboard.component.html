@@ -271,7 +271,7 @@
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
-      <ng-container *ngIf="!loading">
+      <ng-container *ngIf="!loading && tripList?.length > 0">
         <tr *ngFor="let trip of tripList; index as i">
           <td class="whitespace-nowrap bg-white sticky left-0" *ngIf="isColumnVisible('tripId')">
             <a
@@ -441,8 +441,9 @@
             </mat-menu>
           </td>
         </tr>
-
-        <tr *ngIf="tripList?.length === 0">
+      </ng-container>
+      <ng-container *ngIf="tripList?.length === 0 && !loading" >
+        <tr >
           <td class="text-center" [colSpan]="16">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">

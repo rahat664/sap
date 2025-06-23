@@ -57,6 +57,56 @@
           </div>
         </button>
       </div>
+      <div *ngIf="!filterOpen && !loading"
+        class="overflow-hidden lg:hidden relative p-4 w-full rounded-lg lg:min-h-44 bg-white">
+        <div
+          appScrollByButton
+          (isVisible)="scrollable = $event"
+          [rightButtonClicked]="rightButtonClicked"
+          [leftButtonClicked]="leftButtonClicked"
+          class="h-full overflow-hidden">
+          <div class="flex relative space-x-4 pt-8 items-center h-full">
+            <ng-container *ngFor="let item of statusButtons">
+              <app-button-chips
+                [isDisabled]="loading"
+                [count]="item.count"
+                [Status]="item.name"
+                (click)="onClickButton(item.name)"
+                [isActive]="item.isActive"></app-button-chips>
+            </ng-container>
+          </div>
+        </div>
+        <!--        <p class="absolute left-4 top-4"><span class="text-body_title font-semibold text-not-black">Total </span><span-->
+        <!--          class="text-web-text-secondary text-body_title">-->
+        <!--          ({{ statusButtons[0].count ? statusButtons[0].count : '0' }} trips)-->
+        <!--        </span></p>-->
+        <div
+          *ngIf="scrollable"
+          class="absolute top-4 right-4 flex space-x-1 items-center">
+          <button
+            data-direction="left"
+            (click)="onClickLeftButton()"
+            [disabled]="!rightButtonClicked"
+            class="{{
+              rightButtonClicked
+                ? 'text-white bg-primary'
+                : 'text-disabled bg-input-hint'
+            }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
+            <i class="fal fa-angle-left text-xl"></i>
+          </button>
+          <button
+            data-direction="right"
+            (click)="onClickRightButton()"
+            [disabled]="rightButtonClicked"
+            class="{{
+              rightButtonClicked
+                ? 'text-disabled bg-input-hint'
+                : 'text-white bg-primary'
+            }} flex items-center justify-center rounded-full h-[1.25rem] w-[1.25rem]">
+            <i class="fal fa-angle-right text-xl"></i>
+          </button>
+        </div>
+      </div>
     </div>
     <div
       *ngIf="!loading && !filterOpen"

@@ -8,15 +8,17 @@
         <button
           *ngIf="isInEditMode"
           (click)="onClickSave()"
-          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          class="px-4 lg:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span>Save</span>
+          <span class="hidden lg:inline"></span>
+          <i class="fas fa-check text-white lg:hidden"></i>
         </button>
         <button
           *ngIf="isInEditMode"
           (click)="onClickCancel()"
-          class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
-          <span>Cancel</span>
+          class="px-4 lg:px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
+          <span class="hidden lg:inline">Cancel</span>
+          <i class="fas fa-times text-blue lg:hidden"></i>
         </button>
         <button
           *ngIf="
@@ -25,16 +27,18 @@
               driverDetails?.approveStatus === 'Rejected')
           "
           (click)="onClickApprove(driverDetails)"
-          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          class="px-4 lg:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span>Approve</span>
+          <span class="hidden lg:inline">Approve</span>
+          <i class="fas fa-check text-white lg:hidden"></i>
         </button>
         <button
           *ngIf="!isInEditMode && driverDetails?.approveStatus === 'Pending'"
           (click)="onClickReject(driverDetails)"
-          class="px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
+          class="px-4 lg:px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span>Reject</span>
+          <span class="hidden lg:inline">Reject</span>
+          <i class="fas fa-times text-red lg:hidden"></i>
         </button>
         <button
           (click)="onClickEdit()"

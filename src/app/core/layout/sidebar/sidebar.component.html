@@ -8,29 +8,8 @@
     class="relative flex-1 flex flex-col min-h-full border-r border-app-bg bg-white pt-0 pb-20">
     <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
       <div class="flex-1 px-8 bg-white divide-y space-y-1">
-        <ul class="space-y-3 pb-2">
-          <li>
-            <form action="#" method="GET" class="lg:hidden">
-              <label for="mobile-search" class="sr-only">Search</label>
-              <div class="relative">
-                <div
-                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <img
-                    [src]="'assets/svg/search.svg'"
-                    height=""
-                    width=""
-                    class="notPreview"
-                    alt="search"/>
-                </div>
-                <input
-                  type="text"
-                  name="email"
-                  id="mobile-search"
-                  class="bg-gray-50 border-none text-gray-900 text-sm rounded-lg focus:ring-cyan-600 block w-full pl-10 p-2.5"
-                  placeholder="Search" />
-              </div>
-            </form>
-          </li>
+        <ul class="space-y-3 pb-2 max-h-[calc(100vh-14rem)] overflow-y-auto">
+
           <li *ngIf="isAdmin()">
             <a
               (click)="ifInMobileDevice()"

@@ -30,6 +30,8 @@ import { PreHireChecklistPopupComponent } from './pre-hire-checklist-popup/pre-h
 import { DateEnum } from '../../../trip-list/Enum/date.enum';
 import { UserFilterComponent } from '../../../user-management/user-filter/user-filter.component';
 import { TruckFilterComponent } from './truck-filter/truck-filter.component';
+import { TripData } from '../../../manage-trip/model/trip.details.model';
+import { SessionModel } from '../../../manage-bid/models/session.model';
 
 @Component({
   selector: 'app-truck',
@@ -210,7 +212,7 @@ export class TruckComponent implements OnInit {
     }
 
     this.dialog.open(FileUploadPopupComponent, {
-      width: '40%',
+      width: this.isMobileDevice() ? '90%' : '40%',
       data: {
         filetype: this.newDriverFileType,
         fromPopup: true,
@@ -219,6 +221,11 @@ export class TruckComponent implements OnInit {
       },
     });
   }
+
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
+  }
+
 
   private makeSureUploadCompletedOrNot() {
     this.shared.completeTruckUpload.subscribe((res: boolean) => {

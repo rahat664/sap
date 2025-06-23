@@ -8,15 +8,17 @@
         <button
           *ngIf="isInEditMode"
           (click)="onClickUpdate()"
-          class="px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          class="px-4 lg:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span>Update</span>
+          <span class="hidden lg:inline">Update</span>
+          <i class="fas fa-save text-white lg:hidden"></i>
         </button>
         <button
           *ngIf="isInEditMode"
           (click)="onClickCancel()"
-          class="px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
-          <span>Cancel</span>
+          class="px-4 lg:px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
+          <span class="hidden lg:inline">Cancel</span>
+          <i class="fas fa-times text-blue lg:hidden"></i>
         </button>
 <!--        <button-->
 <!--          *ngIf="-->
@@ -43,15 +45,14 @@
       </div>
     </div>
   </div>
-  <form [formGroup]="transporterUpdateForm" class="grid mt-3 grid-cols-2 gap-3 text-body_title text-web-text-secondary">
+  <form [formGroup]="transporterUpdateForm" class="grid mt-3 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
     <div class="flex flex-col space-y-3">
       <div class="bg-white rounded-lg p-4">
         <div class="flex space-x-3 items-center mb-4">
           <img class="notPreview" src="assets/svg/transporter-info.svg" alt="transporter-info" />
           <h1 class="text-h2 leading-h2 font-semibold text-not-black">Transporter info</h1>
         </div>
-        <div class="w-full grid grid-cols-2 gap-3">
-          <ng-container *ngIf="!isInEditMode">
+        <div class="w-full grid grid-cols-2 gap-3" *ngIf="!isInEditMode">
             <div class="flex flex-col space-y-1">
               <span class="text-body text-secondary font-normal">Name</span>
               <span
@@ -72,8 +73,8 @@
               <span
                 class="text-body_title leading-body_title font-semibold text-not-black">{{ transporter?.defaultPaymentMethod?.paymentMethod }}</span>
             </div>
-          </ng-container>
-          <ng-container *ngIf="isInEditMode">
+        </div>
+        <div class="w-full grid lg:grid-cols-2 gap-3" *ngIf="isInEditMode">
             <div class="flex flex-col space-y-1">
               <label for="name">Transporter name</label>
               <mat-form-field
@@ -172,7 +173,7 @@
               <!--        error-message-->
             </div>
 
-            <div class="flex flex-col space-y-1 w-full col-span-2">
+            <div class="flex flex-col space-y-1 w-full lg:col-span-2">
               <label for="note">Note (Optional)</label>
               <textarea
                 placeholder="Enter Note"
@@ -180,7 +181,6 @@
                 id="note"
                 formControlName="note"></textarea>
             </div>
-          </ng-container>
         </div>
       </div>
       <app-profile-documents documentName="Transporter’s documents" (uploadButtonTriggered)="onUploadButtonTriggered($event)" [isInEditMode]="isInEditMode" [transporterId]="transporter?.code" [documentTypes]="transporterFileType" [documents]="transporterDocuments" ></app-profile-documents>
