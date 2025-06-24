@@ -290,7 +290,7 @@ export class ManageTripComponent implements OnInit {
   }
 
   onClickButton(event: any) {
-    this.tripStatusFilter(event.name);
+    this.tripStatusFilter(event.name ? event.name : event);
   }
 
   onClickFilterButton(event: any, picker: any) {
@@ -349,6 +349,10 @@ export class ManageTripComponent implements OnInit {
   private tripStatusFilter(name: string) {
     this.page = 0;
     this.status = name === 'All' ? '' : name;
+    // make the status button active
+    this.statusButtons.forEach(button => {
+      button.isActive = button.name === name;
+    });
     this.tripService.anotherStatusCalled.next(true);
     this.getTripList();
   }
