@@ -20,3 +20,7 @@ table {
 td {
   border-bottom: 1px solid #E8F1F3;
 }
+
+::ng-deep .mat-mdc-menu-panel {
+  background: white !important;
+}

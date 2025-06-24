@@ -267,6 +267,14 @@ export class CreateTripPageComponent implements OnInit {
       this.tripTypes.forEach(element => {
         element.active = element.enumName === this.tripForm.get('tripType').value;
       })
+      this.tripForm.get('paymentType').setValue(
+        JSON.parse(
+          localStorage.getItem('selectedCustomer')
+        ).preferredPaymentType);
+      this.paymentType.forEach(element => {
+        element.active = element.enumName === this.tripForm.get('paymentType').value;
+      })
+
     }
     if (isFromBackEdit) {
       this.setBackEditValues();
@@ -301,7 +309,7 @@ export class CreateTripPageComponent implements OnInit {
           localStorage.getItem('selectedTemplate')
         );
         this.vehicleTypeList.forEach((element: any) => {
-          if (element.id == selectedTemplate.vehicleCategory.id) {
+          if (element.id == selectedTemplate?.vehicleCategory?.id) {
             element.selected = true;
           }
         });

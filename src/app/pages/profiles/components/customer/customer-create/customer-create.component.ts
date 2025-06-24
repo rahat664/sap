@@ -27,7 +27,7 @@ import {
 } from 'ngx-material-intl-tel-input';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MatRadioButton, MatRadioChange } from '@angular/material/radio';
+import {MatRadioButton, MatRadioChange, MatRadioGroup} from '@angular/material/radio';
 import { tripTypes } from '../../../../auth/models/response/trip';
 
 @Component({
@@ -42,6 +42,7 @@ import { tripTypes } from '../../../../auth/models/response/trip';
     NgClass,
     MatCheckbox,
     MatRadioButton,
+    MatRadioGroup,
   ],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss',
@@ -55,6 +56,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   );
   sendEmail = false;
   customerCodeLoading: boolean;
+   customerPaymentType: any;
 
   constructor(
     private fb: FormBuilder,
@@ -90,6 +92,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       address: [null],
       note: [null],
       tripType: ['', [Validators.required]],
+      preferredPaymentType: ['', [Validators.required]],
     });
   }
 
@@ -110,6 +113,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       this.customerModel.address = this.customerForm.get('address').value;
       this.customerModel.note = this.customerForm.get('note').value;
       this.customerModel.tripType = this.customerForm.get('tripType').value;
+      this.customerModel.preferredPaymentType = this.customerForm.get('preferredPaymentType').value;
       this.customerModel.sendEmail = this.sendEmail;
       this.service
         .customerCodeValidation(this.customerModel.customerCode)
@@ -306,11 +310,18 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     this.sendEmail = !!$any.checked;
   }
 
-  onSelectTripType($event: MatRadioChange, type: string) {
-    this.customerTripType = type
-    this.customerForm.get('tripType').setValue(type);
+  onSelectTripType(event: MatRadioChange) {
+    const type = event.value;
+    this.customerTripType = type;
+    this.customerForm.get('tripType')?.setValue(type);
   }
 
   protected readonly tripTypes = tripTypes;
   customerTripType: string = '';
+
+  onSelectPaymentType(event: MatRadioChange) {
+    const type = event.value;
+    this.customerPaymentType = type;
+    this.customerForm.get('preferredPaymentType')?.setValue(type);
+  }
 }

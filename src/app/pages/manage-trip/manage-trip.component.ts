@@ -57,8 +57,6 @@ import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom
     ReactiveFormsModule,
     MatSelect,
     FormsModule,
-    CustomInputComponent,
-    GetClickEventDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
@@ -119,7 +117,7 @@ export class ManageTripComponent implements OnInit {
   activatedTruckSizeInFeet = 0;
   truckerEnabled: boolean;
   paymentTypePlaceholder: string = '';
-  paymentTypeValue: string = '';
+  paymentTypeValue: any[] = [];
   paymentFilter: number = 0;
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
@@ -133,7 +131,7 @@ export class ManageTripComponent implements OnInit {
     {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
     {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
   ];
-  tripTypeValue: string = '';
+  tripTypeValue: any[] = [];
 
   constructor(
     private tripService: TripService,
@@ -210,12 +208,12 @@ export class ManageTripComponent implements OnInit {
       .getTrips(
         this.page,
         this.size,
-        this.customerCodes.toString(),
+        this.customerCodes?.toString(),
         this.startDate,
         this.endDate,
         this.status,
         this.searchValue,
-        this.truckType,
+        this.truckType?.toString(),
         null,
         null,
         null,
@@ -223,8 +221,8 @@ export class ManageTripComponent implements OnInit {
         null,
         null,
         null,
-        this.paymentTypeValue,
-        this.tripTypeValue,
+        this.paymentTypeValue?.toString(),
+        this.tripTypeValue?.toString(),
       )
       .pipe(finalize(() => (this.loading = false)))
       .subscribe(
@@ -484,6 +482,16 @@ export class ManageTripComponent implements OnInit {
     this.filterLength = this.previousFilterLength + this.truckType?.length;
   }
 
+  onChangeTripType($event: any) {
+    this.tripTypeValue = $event.value;
+    this.filterLength = this.previousFilterLength + this.tripTypeValue?.length;
+  }
+
+  onChangePaymentType($event: any) {
+    this.paymentTypeValue = $event.value;
+    this.filterLength = this.previousFilterLength + this.paymentTypeValue?.length;
+  }
+
   onClickApply() {
     this.filterValues = [];
     this.selectedTruckValues = [];
@@ -508,6 +516,26 @@ export class ManageTripComponent implements OnInit {
         });
       }
     }
+
+    if (this.tripTypeValue) {
+      for (let i = 0; i < this.tripTypeValue.length; i++) {
+        this.tripTypeOptionsArray.forEach((element: any) => {
+          if (element.value === this.tripTypeValue[i]) {
+            this.filterValues.push(element.showname);
+          }
+        });
+      }
+    }
+
+    if (this.paymentTypeValue) {
+      for (let i = 0; i < this.paymentTypeValue.length; i++) {
+        this.paymentTypeOptionsArray.forEach((element: any) => {
+          if (element.value === this.paymentTypeValue[i]) {
+            this.filterValues.push(element.showname);
+          }
+        });
+      }
+    }
     this.page = 0;
     this.size = 30;
     this.filterOpen = false;
@@ -521,7 +549,7 @@ export class ManageTripComponent implements OnInit {
     this.customerCodes = [];
     this.customerNames = [];
     this.customers = [];
-    this.paymentTypeValue = '';
+    this.paymentTypeValue = [];
     this.paymentFilter = 0;
     this.dateText = '';
     this.filterValues = [];
@@ -534,7 +562,7 @@ export class ManageTripComponent implements OnInit {
     this.truckType = '';
     this.customerCode = '';
     this.paymentTypePlaceholder = '';
-    this.tripTypeValue = '';
+    this.tripTypeValue = [];
     this.tripTypeFilter = 0;
     this.tripTypePlaceholder = '';
     this.filterOpen = false;
@@ -645,13 +673,29 @@ export class ManageTripComponent implements OnInit {
       this.startDate = '';
       this.endDate = '';
       this.previousFilterLength -= 1;
-    } else {
+    } else{
       const filterId = this.vehicleTypeList.find(
         (element: any) => element.name === filter
-      ).id;
-      this.truckType = this.truckType.filter(
-        (value: any) => value !== filterId
-      );
+      )?.id;
+      const tripFilterId = this.tripTypeOptionsArray.find(
+        (element: any) => element.showname === filter
+      )?.value;
+      const paymentFilterId = this.paymentTypeOptionsArray.find(
+        (element: any) => element.showname === filter
+      )?.value;
+      if (filterId) {
+        this.truckType = this.truckType.filter(
+          (value: any) => value !== filterId
+        );
+      } else if (tripFilterId) {
+        this.tripTypeValue = this.tripTypeValue.filter(
+          (value: any) => value !== filterId
+        );
+      } else if (paymentFilterId) {
+        this.paymentTypeValue = this.paymentTypeValue.filter(
+          (value: any) => value !== filterId
+        );
+      }
     }
 
     this.filterLength -= 1;
@@ -679,15 +723,35 @@ export class ManageTripComponent implements OnInit {
     this.customerNames = [];
     this.filterLength = 0;
     this.filterOpen = true;
+    this.tripTypeValue = [];
+    this.paymentTypeValue = [];
 
-    if (this.filterValues.length > 0 || this.paymentFilter > 0 || this.tripTypeFilter > 0) {
+    if (this.filterValues.length > 0) {
       this.filterValues.forEach((element: any) => {
         const selectedVehicle = this.vehicleTypeList.find(
           (value: any) => value.name === element
         );
+
         if (selectedVehicle) {
           this.truckType.push(selectedVehicle.id);
-        } else if (this.buttonName.includes(element)) {
+        }
+
+        else if (this.tripTypeOptionsArray.some(((value: any) => value.showname === element))) {
+          this.tripTypeValue.push(
+            this.tripTypeOptionsArray.find(
+              (value: any) => value.showname === element
+            ).value
+          );
+        }
+        else if (this.paymentTypeOptionsArray.some(((value: any) => value.showname === element))) {
+          this.paymentTypeValue.push(
+            this.paymentTypeOptionsArray.find(
+              (value: any) => value.showname === element
+            ).value
+          );
+        }
+
+        else if (this.buttonName.includes(element)) {
           this.selectedButton = element;
           this.dateText = element;
           this.dateSelected = true;
@@ -745,13 +809,7 @@ export class ManageTripComponent implements OnInit {
           );
         }
       });
-      this.filterLength = this.filterValues.length + this.paymentFilter + this.tripTypeFilter;
-      this.paymentTypePlaceholder = this.paymentTypeOptionsArray.find(
-        x => x.value === this.paymentTypeValue
-      )?.showname;
-      this.tripTypePlaceholder = this.tripTypeOptionsArray.find(
-        x => x.value === this.tripTypeValue
-      )?.showname;
+      this.filterLength = this.filterValues.length
     } else {
       this.truckType = [];
       this.selectedButton = '';
@@ -764,6 +822,8 @@ export class ManageTripComponent implements OnInit {
       this.customerSelected = false;
       this.filterLength = 0;
       this.previousFilterLength = 0;
+      this.tripTypeValue = [];
+      this.paymentTypeValue = [];
     }
   }
 
@@ -777,31 +837,12 @@ export class ManageTripComponent implements OnInit {
     this.getTripList();
   }
 
-  onSelectPayment($event: number) {
-    if (this.paymentFilter === 0) {
-      this.filterLength += 1;
-    }
-    this.paymentFilter = 1;
-    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.paymentTypePlaceholder =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.paymentTypeValue = this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
-  }
 
-  onSelectTrip($event: number) {
-    if (this.tripTypeFilter === 0) {
-      this.filterLength += 1;
-    }
-    this.tripTypeFilter = 1;
-    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.tripTypePlaceholder =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.tripTypeValue = this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
-  }
+
 
   onClickClosePaymentType() {
     this.paymentTypePlaceholder = '';
-    this.paymentTypeValue = '';
+    this.paymentTypeValue = [];
     this.paymentFilter = 0;
     this.filterLength -= 1;
     this.page = 0;
@@ -812,7 +853,7 @@ export class ManageTripComponent implements OnInit {
 
   onClickCloseTripType() {
     this.tripTypePlaceholder = '';
-    this.tripTypeValue = '';
+    this.tripTypeValue = [];
     this.tripTypeFilter = 0;
     this.filterLength -= 1;
     this.page = 0;

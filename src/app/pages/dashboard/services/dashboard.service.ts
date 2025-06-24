@@ -13,7 +13,14 @@ export class DashboardService {
 
   constructor(private http: HttpClient) {}
 
-  getApiStats(from: string, to: string, customerCode?: string,paymentType?: string, tripType?: string) {
+  getApiStats(
+    from: string,
+    to: string,
+    customerCode?: string,
+    paymentType?: string,
+    tripType?: string,
+    truckTypeId?: string
+  ) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
@@ -22,14 +29,27 @@ export class DashboardService {
     }
     if (paymentType) {
       params.set('paymentType', paymentType);
-    } if (tripType) {
+    }
+    if (tripType) {
       params.set('tripType', tripType);
     }
-    return this.http.get(`${this._dashboardUrl}/statistics?${params.toString()}`);
+    if (truckTypeId) {
+      params.set('truckTypeId', truckTypeId);
+    }
+    return this.http.get(
+      `${this._dashboardUrl}/statistics?${params.toString()}`
+    );
   }
 
-
-  getDateWiseTripCount(from: string, to: string, type: string, customerCode?: string, paymentType?: string, tripType?: string) {
+  getDateWiseTripCount(
+    from: string,
+    to: string,
+    type: string,
+    customerCode?: string,
+    paymentType?: string,
+    tripType?: string,
+    truckTypeId?: string
+  ) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
@@ -39,15 +59,24 @@ export class DashboardService {
     }
     if (paymentType) {
       params.set('paymentType', paymentType);
-    } if (tripType) {
+    }
+    if (tripType) {
       params.set('tripType', tripType);
+    }
+    if (truckTypeId) {
+      params.set('truckTypeId', truckTypeId);
     }
     return this.http.get(`${this._dateWiseTripCountUrl}?${params.toString()}`);
   }
 
-
-
-  getCustomerStats(from: string, to: string, customerCode?: string, paymentType?: string, tripType?: string) {
+  getCustomerStats(
+    from: string,
+    to: string,
+    customerCode?: string,
+    paymentType?: string,
+    tripType?: string,
+    truckTypeId?: string
+  ) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
@@ -56,13 +85,26 @@ export class DashboardService {
     }
     if (paymentType) {
       params.set('paymentType', paymentType);
-    } if (tripType) {
+    }
+    if (tripType) {
       params.set('tripType', tripType);
     }
-    return this.http.get(`${this._customerStatsUrl}/stats?${params.toString()}`);
+    if (truckTypeId) {
+      params.set('truckTypeId', truckTypeId);
+    }
+    return this.http.get(
+      `${this._customerStatsUrl}/stats?${params.toString()}`
+    );
   }
 
-  getChallanStatus(from: string, to: string, customerCode?: string, paymentType?: string, tripType?:string) {
+  getChallanStatus(
+    from: string,
+    to: string,
+    customerCode?: string,
+    paymentType?: string,
+    tripType?: string,
+    truckTypeId?: string
+  ) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
@@ -71,10 +113,16 @@ export class DashboardService {
     }
     if (paymentType) {
       params.set('paymentType', paymentType);
-    } if (tripType) {
+    }
+    if (tripType) {
       params.set('tripType', tripType);
     }
-    return this.http.get(`${this._dashboardUrl}/challan-status?${params.toString()}`);
+    if (truckTypeId) {
+      params.set('truckTypeId', truckTypeId);
+    }
+    return this.http.get(
+      `${this._dashboardUrl}/challan-status?${params.toString()}`
+    );
   }
 
   getTripCountByStatus(from: string, to: string, customerCode?: string) {
@@ -84,10 +132,20 @@ export class DashboardService {
     if (customerCode) {
       params.set('customerCode', customerCode);
     }
-    return this.http.get(`${this._dashboardUrl}/trips-count-by-status?${params.toString()}`);
+    return this.http.get(
+      `${this._dashboardUrl}/trips-count-by-status?${params.toString()}`
+    );
   }
 
-  getTopTransporters(from: string, to: string, sortBy: string = 'grossProfit', customerCode?: string, paymentType?: string, tripType?: string) {
+  getTopTransporters(
+    from: string,
+    to: string,
+    sortBy: string = 'grossProfit',
+    customerCode?: string,
+    paymentType?: string,
+    tripType?: string,
+    truckTypeId?: string
+  ) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
@@ -98,14 +156,26 @@ export class DashboardService {
     }
     if (paymentType) {
       params.set('paymentType', paymentType);
-    } if (tripType) {
+    }
+    if (tripType) {
       params.set('tripType', tripType);
     }
-    return this.http.get(`${this._dashboardUrl}/top-transporters?${params.toString()}`);
-
+    if (truckTypeId) {
+      params.set('truckTypeId', truckTypeId);
+    }
+    return this.http.get(
+      `${this._dashboardUrl}/top-transporters?${params.toString()}`
+    );
   }
 
-  getTopCustomers(from: string, to: string, sortBy: string = 'grossProfit', paymentType?: string, tripType?: string) {
+  getTopCustomers(
+    from: string,
+    to: string,
+    sortBy: string = 'grossProfit',
+    paymentType?: string,
+    tripType?: string,
+    truckTypeId?: string
+  ) {
     const params = new URLSearchParams();
     params.set('from', from);
     params.set('to', to);
@@ -113,10 +183,16 @@ export class DashboardService {
     params.set('size', '5');
     if (paymentType) {
       params.set('paymentType', paymentType);
-    } if (tripType) {
+    }
+    if (tripType) {
       params.set('tripType', tripType);
     }
-    return this.http.get(`${this._dashboardUrl}/top-customers?${params.toString()}`);
+    if (truckTypeId) {
+      params.set('truckTypeId', truckTypeId);
+    }
+    return this.http.get(
+      `${this._dashboardUrl}/top-customers?${params.toString()}`
+    );
   }
 
   getTransporterRateAnalysisData(
@@ -129,7 +205,8 @@ export class DashboardService {
     unloadingPointDistrictName?: string,
     customerCode?: string,
     paymentType?: string,
-    tripType?: string
+    tripType?: string,
+    tripTypeId?: string
   ) {
     const params = new URLSearchParams();
     if (type) {
@@ -158,8 +235,12 @@ export class DashboardService {
     }
     if (paymentType) {
       params.set('paymentType', paymentType);
-    } if (tripType) {
+    }
+    if (tripType) {
       params.set('tripType', tripType);
+    }
+    if (tripTypeId) {
+      params.set('tripTypeId', tripTypeId);
     }
 
     return this.http.get(

@@ -34,6 +34,7 @@ export class MonthWiseRevenueComponent implements OnInit {
   customerCode: string = '';
   paymentType: string = '';
   tripType: string = '';
+  truckTypeId: any;
 
   constructor(
     private service: DashboardService,
@@ -50,6 +51,7 @@ export class MonthWiseRevenueComponent implements OnInit {
       this.customerCode = params['customerCode'] ? params['customerCode'] : '';
       this.paymentType = params['paymentType'] ? params['paymentType'] : '';
       this.tripType = params['tripType'] ? params['tripType'] : '';
+      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : '';
       if (!params['fromDate'] || !params['toDate']) {
         this.months = [];
         this.getLastSixMonthNames();
@@ -254,7 +256,8 @@ export class MonthWiseRevenueComponent implements OnInit {
         this.datatype,
         this.customerCode,
         this.paymentType,
-        this.tripType
+        this.tripType,
+        this.truckTypeId
       )
       .subscribe((res: any) => {
         const createdTrips = [];
