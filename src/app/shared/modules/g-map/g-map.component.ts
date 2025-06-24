@@ -1231,16 +1231,16 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     return `
-      <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0;">
+      <div style="display: flex; justify-content: space-between; align-items: start; padding: 1rem 0; margin-right: 0.75rem;">
         <div class="flex flex-col space-y-1">
           <div style="font-weight: 500; font-size: 14px; line-height: 20px">${this.truckFullRegistrationNumber}</div>
-          <div style="font-size: 12px; color: #777777">${data?.address ? data?.address : 'Unknown location'}</div>
+          <div style="font-size: 12px; color: #777777">${data?.addressName ? data?.addressName : 'Unknown location'}</div>
         </div>
         <button id="closeBtn" style="background: transparent; border: none; cursor: pointer;">
           <i class="far fa-times cursor-pointer"></i>
         </button>
       </div>
-      <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424">
+      <div  id="info-body" style="background: #F5FBFC; margin-right:0.75rem; padding: 0.5rem; font-size: 12px; color: #242424">
         <table id="info-table" style="width: 100%;">
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Time<td>:</td></td><td class="col-span-4">${time}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${data?.stopDuration ? data?.stopDuration : 'N/A'}</td></tr>
