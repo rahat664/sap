@@ -173,20 +173,42 @@
           id="note"
           formControlName="note"></textarea>
       </div>
-      <div class="flex flex-col space-y-1 w-full lg:col-span-2">
-        <label for="address">Preferred trip type</label>
-        <div class="flex space-x-2 items-center">
-          <mat-radio-button (change)="onSelectTripType($event,'COMMERCIAL')">Commercial Logistics</mat-radio-button>
-          <mat-radio-button (change)="onSelectTripType($event, 'PROJECT')">
-            Projects Logistics
-          </mat-radio-button>
-        </div>
-        <div *ngIf="customerForm.get('tripType').touched && customerForm.get('tripType').invalid"  class="text-red text-xs">
-          <span>
-            <span>Preferred trip type is required</span>
-          </span>
+      <div class="flex flex-col space-y-1 w-full">
+        <label for="preferredPaymentType">Preferred payment type</label>
+        <mat-radio-group id="preferredPaymentType" class="flex flex-col"
+          formControlName="preferredPaymentType"
+          (change)="onSelectPaymentType($event)"
+        >
+          <mat-radio-button value="CASH">Cash</mat-radio-button>
+          <mat-radio-button value="INVOICE">Invoice</mat-radio-button>
+          <mat-radio-button value="CASH_AND_INVOICE">Cash & Invoice</mat-radio-button>
+          <mat-radio-button value="COMMISSION">Commission</mat-radio-button>
+        </mat-radio-group>
+        <div
+          *ngIf="customerForm.get('preferredPaymentType')?.touched && customerForm.get('preferredPaymentType')?.invalid"
+          class="text-red text-xs"
+        >
+          <span>Preferred payment type is required</span>
         </div>
       </div>
+
+      <div class="flex flex-col space-y-1 w-full">
+        <label for="tripType">Preferred trip type</label>
+        <mat-radio-group id="tripType"
+          formControlName="tripType"
+          (change)="onSelectTripType($event)"
+        >
+          <mat-radio-button value="COMMERCIAL">Commercial Logistics</mat-radio-button>
+          <mat-radio-button value="PROJECT">Projects Logistics</mat-radio-button>
+        </mat-radio-group>
+        <div
+          *ngIf="customerForm.get('tripType')?.touched && customerForm.get('tripType')?.invalid"
+          class="text-red text-xs"
+        >
+          <span>Preferred trip type is required</span>
+        </div>
+      </div>
+
       <div class="flex flex-col space-y-2 w-full col-span-2">
         <mat-checkbox (change)="toggleSendEmail($any($event))">
           Send email to customer

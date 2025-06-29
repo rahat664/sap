@@ -13,6 +13,8 @@
   font-family: 'Inter', sans-serif !important;
 }
 
+
+
 body {
   @apply bg-app-bg;
 }
@@ -336,6 +338,7 @@ img:hover {
 }
 
 .filter .mat-mdc-form-field-infix {
+  min-height: 2.5rem !important;
   padding: 0.25rem 0 !important;
 }
 
@@ -353,7 +356,8 @@ body.custom-overlay-bounding-box {
     height: auto !important;
     width: auto !important;
     .mat-mdc-select-panel {
-      overflow: visible !important;
+      overflow-y: scroll;
+
     }
   }
 }

@@ -5,197 +5,19 @@
     class="flex flex-col space-y-3">
     <div
       class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem] space-y-3 lg:space-y-0 lg:flex-row justify-between">
-      <h1 class="text-h1 leading-h1 font-semibold">Challan management</h1>
-    </div>
-
-    <div class="w-full bg-white rounded-lg">
-      <button
-        class="flex px-2 py-1 space-x-4 items-center w-full"
-        [ngClass]="{ 'border-b border-[#A1D5DE]': filterOpened }">
-        <i
-          (click)="onClickFilterOpened()"
-          *ngIf="!filterOpened"
-          class="fas fa-caret-down text-input-hint text-xl"></i>
-        <i
-          (click)="onClickFilterOpened()"
-          *ngIf="filterOpened"
-          class="fas fa-caret-up text-input-hint text-xl"></i>
-        <span class="text-not-black text-h2_medium font-semibold"
-        >Filter
-              <span *ngIf="getFilterLength() > 0">({{ getFilterLength() }})</span>
-              <span *ngIf="getFilterLength() > 0" class="text-input-hint px-3"
-              >|</span
-              >
-              <a
-                (click)="onClearFilter()"
-                *ngIf="getFilterLength() > 0"
-                class="text-red text-h2_medium font-semibold"
-              >Clear all</a
-              >
-            </span>
-      </button>
-      <div *ngIf="filterOpened" class="pt-3 pb-4 px-2 grid grid-cols-7 gap-3">
-        <div class="flex flex-col space-y-1 w-full">
-          <label class="text-body text-web-text-secondary px-2">Date</label>
-          <app-custom-input
-            appGetClickEvent
-            (clickedElement)="dateOpened = $event"
-            [inputSearch]="inputPlaceholder"
-            (selectedFromDate)="onSelectedFromDate($event)"
-            (selectedToDate)="onSelectedToDate($event)"
-            (selectedFromDateToToDate)="inputPlaceholder = $event"
-            inputPlaceholder="Select Date"
-            [options]="dateOptionArray"
-            (selectedId)="onSelectDate($event)"></app-custom-input>
-        </div>
-        <div class="flex flex-col space-y-1 w-full">
-          <label class="text-body text-web-text-secondary px-2">Payment Type</label>
-          <app-custom-input
-            appGetClickEvent
-            [inputSearch]="paymentTypePlaceholder"
-            [options]="paymentTypeOptionsArray"
-            inputPlaceholder="Select Payment type"
-            (selectedId)="onSelectPayment($event)"></app-custom-input>
-        </div>
-        <div class="flex flex-col space-y-1 w-full">
-          <label class="text-body text-web-text-secondary px-2">Trip Type</label>
-          <app-custom-input
-            appGetClickEvent
-            [inputSearch]="tripTypePlaceholder"
-            [options]="tripTypeOptionsArray"
-            inputPlaceholder="Select Payment type"
-            (selectedId)="onSelectTrip($event)"></app-custom-input>
-        </div>
-        <div class="flex flex-col space-y-1 w-full">
-          <label class="text-body text-web-text-secondary px-2"
-          >Company Name</label
-          >
-          <mat-form-field
-            (mouseenter)="updateOverLayStyle(false)"
-            appearance="outline"
-            class="example-full-width relative filter">
-            <input
-              id="customerName"
-              type="text"
-              matInput
-              (keyup)="onSearchInputChange($event)"
-              [(ngModel)]="searchName"
-              placeholder="Enter Company Name"
-              [matAutocomplete]="auto" />
-            <mat-autocomplete #auto="matAutocomplete">
-              @for (option of tripSuggestions; track option) {
-                <mat-option
-                  (click)="onClickSearchSuggestion(option)"
-                  [value]="option.name"
-                >{{ option.name ? option.name : option }}
-                </mat-option>
-              }
-            </mat-autocomplete>
-            <button
-              type="button"
-              (click)="onClickClearCompany()"
-              *ngIf="searchValue"
-              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
-              <i class="far fa-times text-gray-500 text-xs"></i>
-            </button>
-          </mat-form-field>
-        </div>
-
-        <div class="flex flex-col space-y-1 w-full">
-          <label class="text-body text-web-text-secondary px-2"
-          >Transporter Name
-          </label>
-          <mat-form-field
-            (mouseenter)="updateOverLayStyle(false)" appearance="outline" class="example-full-width filter">
-            <input
-              type="text"
-              matInput
-              (keyup)="onKeyUpTransporterSearch($event)"
-              [(ngModel)]="searchTransporter"
-              placeholder="Enter Transporter Name"
-              [matAutocomplete]="transporter" />
-            <mat-autocomplete #transporter="matAutocomplete">
-              @for (option of transporterSuggestions; track option) {
-                <mat-option
-                  (click)="onClickTransporterSearchSuggestion(option)"
-                  [value]="option.name"
-                >{{ option.name ? option.name : option }}
-                </mat-option>
-              }
-            </mat-autocomplete>
-            <button
-              type="button"
-              (click)="onClickClearTransporter()"
-              *ngIf="transporterName"
-              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
-              <i class="far fa-times text-gray-500 text-xs"></i>
-            </button>
-          </mat-form-field>
-        </div>
-        <div class="flex flex-col space-y-1 w-full">
-          <label class="text-body text-web-text-secondary px-2">Truck </label>
-          <mat-form-field
-            (mouseenter)="updateOverLayStyle(false)"
-            appearance="outline"
-            class="example-full-width relative filter">
-            <input
-              type="text"
-              matInput
-              (keyup)="onKeyUpTruckSearch($event)"
-              [(ngModel)]="searchRegistationId"
-              placeholder="Enter Truck ID"
-              [matAutocomplete]="truck" />
-            <mat-autocomplete #truck="matAutocomplete">
-              @for (option of truckRegSuggestions; track option) {
-                <mat-option
-                  (click)="onClickTruckSearchSuggestion(option)"
-                  [value]="option.fullRegistrationNumber"
-                >{{ option.fullRegistrationNumber ? option.fullRegistrationNumber : option }}
-                </mat-option>
-              }
-            </mat-autocomplete>
-            <button
-              type="button"
-              (click)="onClickClearTruck()"
-              *ngIf="truckRegistrationId"
-              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
-              <i class="far fa-times text-gray-500 text-xs"></i>
-            </button>
-          </mat-form-field>
-        </div>
-        <div class="flex flex-col space-y-1 w-full">
-          <label class="text-body text-web-text-secondary px-2">Trip ID</label>
-          <mat-form-field
-            (mouseenter)="updateOverLayStyle(false)" appearance="outline" class="example-full-width filter">
-            <input
-              style="padding-right: 20px"
-              type="text"
-              matInput
-              (keyup)="onKeyUpTripSearch($event)"
-              [(ngModel)]="searchId"
-              placeholder="Enter Trip Number"
-              [matAutocomplete]="trip" />
-            <mat-autocomplete #trip="matAutocomplete">
-              @for (option of tripIdSuggestions; track option) {
-                <mat-option
-                  (click)="onClickTripSearchSuggestion(option)"
-                  [value]="option.tripId"
-                >{{ option.tripId ? option.tripId : option }}
-                </mat-option>
-              }
-            </mat-autocomplete>
-            <button
-              type="button"
-              (click)="onClickClearTripId()"
-              *ngIf="tripId"
-              class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center">
-              <i class="far fa-times text-gray-500 text-xs"></i>
-            </button>
-          </mat-form-field>
-        </div>
+      <div class="flex justify-between w-full items-center">
+        <h1 class="text-h1 leading-h1 font-semibold">Challan management</h1>
+        <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1  text-h2_medium text-primary">
+          <img class="notPreview" src="assets/svg/filter.svg" alt="">
+          <p>Filter</p>
+        </button>
       </div>
     </div>
-
+    <div *ngIf="filterApplied"
+         class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
+      <span class="text-xs text-not-black">Showing results for <span [innerHTML]="filterSummary"></span></span>
+      <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
+    </div>
     <!--  summary section-->
     <div class="grid grid-cols-10 w-full gap-2 min-h-[10.5rem]">
       <div class="col-span-4 w-full bg-white rounded-lg p-2">
@@ -210,7 +32,7 @@
               <img
                 class="notPreview"
                 src="assets/svg/pending-challan.svg"
-                alt="pending-challan" />
+                alt="pending-challan"/>
             </div>
             <div class="flex flex-col text-left space-y-2">
               <h1 class="font-bold text-h1 leading-h1 text-not-black">
@@ -237,7 +59,7 @@
                 <img
                   class="notPreview"
                   src="assets/svg/received.svg"
-                  alt="received" />
+                  alt="received"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">
@@ -261,7 +83,7 @@
                 <img
                   class="notPreview"
                   src="assets/svg/in-progress.svg"
-                  alt="pending-challan" />
+                  alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">
@@ -285,7 +107,7 @@
                 <img
                   class="notPreview"
                   src="assets/svg/approved.svg"
-                  alt="pending-challan" />
+                  alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">
@@ -309,7 +131,7 @@
                 <img
                   class="notPreview"
                   src="assets/svg/rejected.svg"
-                  alt="pending-challan" />
+                  alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">
@@ -337,7 +159,7 @@
                 <img
                   class="notPreview"
                   src="assets/svg/completed_trip.svg"
-                  alt="pending-challan" />
+                  alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">
@@ -363,7 +185,7 @@
                   src="assets/svg/hardcopy.svg"
                   alt="pending-challan"
                   height="40"
-                  width="40" />
+                  width="40"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
                 <h1 class="font-bold text-h1 leading-h1 text-not-black">
@@ -387,61 +209,92 @@
     [anotherItemsHeight]="height"
     class="bg-white w-full relative rounded-lg overflow-auto">
     <table style=" border-collapse: separate;"
-      class="table-auto w-full text-body_title leading-body_title rounded-sm">
+           class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
       <tr class="whitespace-nowrap bg-white text-not-black">
-        <th class="text-left bg-white sticky left-0">Trip Number</th>
-        <th class="text-left whitespace-nowrap">Trip Date</th>
-        <th class="text-left" *ngIf="isAdmin()">Company</th>
-        <th class="text-left">Transporter</th>
-        <th class="text-left">Truck Number</th>
-        <th class="text-left whitespace-nowrap">Loading Point</th>
-        <th class="text-left whitespace-nowrap">Unloading Point</th>
-        <th class="text-left whitespace-nowrap">Payment Type</th>
-        <th class="text-left whitespace-nowrap">Trip Type</th>
-        <th class="text-center whitespace-nowrap">Hardcopy</th>
-        <th class="text-center whitespace-nowrap">Softcopy</th>
-        <th class="text-center whitespace-nowrap">Due Days</th>
-        <th class="text-center whitespace-nowrap">Received Date</th>
+        <th class="text-left bg-white sticky left-0" *ngIf="isColumnVisible('tripId')">
+          Trip Number </th>
+        <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('tripDate')">
+          Trip Date
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('company')">
+          Company</th>
+        <th class="text-left" *ngIf=" isColumnVisible('transporter')">
+          Transporter</th>
+        <th class="text-left" *ngIf="isColumnVisible('vehicleType')">
+          Vehicle Type</th>
+        <th class="text-left" *ngIf="isColumnVisible('truckNumber')">
+          Truck Number</th>
+        <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('loadingPoint')">
+          Loading Point</th>
+        <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('unloadingPoint')">
+          Unloading Point</th>
+        <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('paymentType')">
+          Payment Type</th>
+        <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('tripType')">
+          Trip Type</th>
+        <th class="text-center whitespace-nowrap" *ngIf="isColumnVisible('hardCopy')">
+          Hardcopy</th>
+        <th class="text-center whitespace-nowrap" *ngIf="isColumnVisible('softCopy')">
+          Softcopy</th>
+        <th class="text-center whitespace-nowrap" *ngIf="isColumnVisible('dueDays')">
+          Due Days </th>
+        <th class="text-center whitespace-nowrap" *ngIf="isColumnVisible('receivedDate')">
+          Received Date </th>
         <th
-          class="text-center sticky  bg-white right-{{
-                  chalanStatus !== 'Pending' && chalanStatus !== 'Approved'
-                    ? '[5rem]'
-                    : '0'
-                }}">
+          class="text-center sticky  bg-white right-[5rem]" *ngIf="isColumnVisible('challanStatus')">
           Status
         </th>
         <th
           class="text-left w-[5rem]  sticky right-0 bg-white"
-          *ngIf="
-                  chalanStatus !== 'Approved' && chalanStatus !== 'Pending'
-                "></th>
+        >
+          <button mat-button [matMenuTriggerFor]="menu">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <mat-menu #menu="matMenu" class="px-8">
+            <mat-checkbox [indeterminate]="isIndeterminate" (click)="$event.stopPropagation()"  (change)="toggleAllColumns()" [(ngModel)]="showAll">Show all</mat-checkbox>
+            <div (click)="$event.stopPropagation()" class="flex flex-col" *ngFor="let column of columnToggles">
+              <mat-checkbox [(ngModel)]="column.visible" (change)="onToggleColumn(column.key, column.visible)">
+                {{ column.label }}
+              </mat-checkbox>
+            </div>
+            <!--            apply-button -->
+            <button
+              (click)="applyColumnSettings();menu.closed "
+              class="text-primary py-1 w-full font-semibold text-center rounded-lg border border-primary">
+              Apply
+            </button>
+          </mat-menu>
+        </th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="15"></th>
+        <th class="custom-border" [colSpan]="16"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
-        <tr *ngFor="let trip of tripList; index as i" >
-          <td class="whitespace-nowrap bg-white sticky left-0">
+        <tr *ngFor="let trip of tripList; index as i">
+          <td class="whitespace-nowrap bg-white sticky left-0" *ngIf="isColumnVisible('tripId')">
             <a
               class="text-link cursor-pointer"
               routerLink="/challan-management/{{ trip.tripId }}/details">
               {{ trip.tripId }}
             </a>
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('tripDate')">
             {{ trip.tripStartDatetime | date: 'd MMM yyyy' }}
           </td>
-          <td class="whitespace-nowrap">{{ trip.customerName }}</td>
-          <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin()">
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('company')">
+            {{ trip.customerName }}</td>
+          <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('transporter')">
             {{ trip.transporterName ? trip.transporterName : 'Transporter not assigned' }}
           </td>
-          <td class="whitespace-nowrap {{!trip.truck ? 'text-line' : ''}}">
+          <td class="whitespace-nowrap {{!trip.vehicleCategory?.name ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('vehicleType')">
+            {{ trip.vehicleCategory?.name ? trip.vehicleCategory?.name : 'Vehicle not available' }}
+          </td>
+          <td class="whitespace-nowrap {{!trip.truck ? 'text-line' : ''}}" *ngIf="isColumnVisible('truckNumber')">
             {{ getFullRegistrationNumber(trip.truck) }}
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('loadingPoint')">
             <p>
               {{ getLoadingPointsName(trip.tripPoints)[0]?.pointName }}
               <span
@@ -451,7 +304,7 @@
               >
             </p>
           </td>
-          <td class="whitespace-nowrap">
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('unloadingPoint')">
             <p>
               {{ getUnloadingPointsName(trip.tripPoints)[0]?.pointName }}
               <span
@@ -463,9 +316,12 @@
               >
             </p>
           </td>
-          <td class="whitespace-nowrap">{{ getNameFromEnum(trip.paymentType) }}</td>
-          <td class="whitespace-nowrap">{{ getTripNameFromEnum(trip.tripType) }}</td>
-          <td class="whitespace-nowrap text-center">
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('paymentType')">
+            {{ getNameFromEnum(trip.paymentType) }}
+          </td>
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('tripType')">
+            {{ getTripNameFromEnum(trip.tripType) }}</td>
+          <td class="whitespace-nowrap text-center" *ngIf="isColumnVisible('hardCopy')">
                   <span *ngIf="trip.challanHardCopyReceivedAt">{{
                       trip.challanHardCopyReceivedAt | date: 'dd MMM,yyyy h:mm a'
                     }}</span>
@@ -480,7 +336,7 @@
               </button>
             </div>
           </td>
-          <td class="text-center whitespace-nowrap">
+          <td class="text-center whitespace-nowrap" *ngIf="isColumnVisible('softCopy')">
             <a
               *ngIf="trip.challanStatus !== 'Pending'"
               (click)="onClickSoftCopyView(trip.tripId)"
@@ -500,21 +356,17 @@
                 multiple
                 accept="image/*, application/pdf"
                 (change)="onFileChange($event, trip.tripId)"
-                class="hidden w-full" />
+                class="hidden w-full"/>
             </ng-container>
           </td>
-          <td class="text-center whitespace-nowrap">
+          <td class="text-center whitespace-nowrap" *ngIf="isColumnVisible('dueDays')">
             {{ checkDueDays(trip) }}
           </td>
-          <td class="text-center whitespace-nowrap">
+          <td class="text-center whitespace-nowrap" *ngIf="isColumnVisible('receivedDate')">
             {{ checkReceivedDays(trip) }}
           </td>
           <td
-            class="whitespace-nowrap sticky right-{{
-                    chalanStatus !== 'Approved' && chalanStatus !== 'Pending'
-                      ? '[5rem]'
-                      : '0'
-                  }} w-full bg-white z-20">
+            class="whitespace-nowrap sticky right-[5rem] w-full bg-white z-20" *ngIf="isColumnVisible('challanStatus')">
             <div class="w-full flex justify-center items-center">
               <p
                 class="px-4 py-1 {{ getBgColor(trip.challanStatus, 'bg') }} {{
@@ -582,7 +434,7 @@
                     src="./assets/svg/edit.svg"
                     alt=""
                     height="18"
-                    width="18" />
+                    width="18"/>
                   <span>Edit</span>
                 </div>
               </button>
@@ -591,14 +443,14 @@
         </tr>
 
         <tr *ngIf="tripList?.length === 0">
-          <td class="text-center" [colSpan]="14">
+          <td class="text-center" [colSpan]="16">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
                 loading="lazy"
                 src="assets/svg/no-data.svg"
                 class="notPreview"
-                alt="nodata" />
+                alt="nodata"/>
               <p
                 class="text-body_title leading-body_title text-secondary font-semibold">
                 No Data Found
@@ -609,7 +461,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="14">
+          <td class="h-full" [colSpan]="16">
             <app-loading></app-loading>
           </td>
         </tr>
@@ -618,3 +470,5 @@
     </table>
   </div>
 </div>
+<app-challan-dashboard-filter (filterData)="onFilterData($event)" (filterApplied)="onFilterApply()"
+                              (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-challan-dashboard-filter>

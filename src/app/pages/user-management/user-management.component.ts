@@ -27,20 +27,21 @@ import { DriverEditSharedService } from '../profiles/services/driver-edit-shared
 import { ConfirmUpdateComponent } from '../manage-trip/components/confirm-update/confirm-update.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { TripListFilterComponent } from '../trip-list/components/trip-list-filter/trip-list-filter.component';
+import { UserFilterComponent } from './user-filter/user-filter.component';
 
 @Component({
   selector: 'app-user-management',
   imports: [
     MatButtonModule,
     MatMenuModule,
-    CustomInputComponent,
     CommonModule,
     ReactiveFormsModule,
     DatePipe,
     LoadingComponent,
     GiveMaxHeightDirective,
-    GetClickEventDirective,
     GetElementHeightDirective,
+    UserFilterComponent,
   ],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.scss'],
@@ -48,10 +49,10 @@ import { MatMenuModule } from '@angular/material/menu';
 export class UserManagementComponent implements OnInit {
   @ViewChild('scrollContainer') scrollContainer: ElementRef;
   readonly dialog = inject(MatDialog);
-  filterOpened = true;
+  filterOpened = false;
   statusFilter = 0;
   roleFilter = 0;
-  statusInputPlaceholder = 'Active';
+  statusInputPlaceholder = '';
   roleInputPlaceholder = '';
   statusOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'Active', selected: true },
@@ -75,6 +76,8 @@ export class UserManagementComponent implements OnInit {
   searchValue = '';
   departmentFilter = '';
   size = 30;
+  filterData: any = {};
+  filterApplied: boolean = true;
 
   constructor(
     private service: UserService,
@@ -84,13 +87,16 @@ export class UserManagementComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    localStorage.removeItem('tripFilterData')
+    localStorage.setItem('tripFilterData', JSON.stringify({
+      status: 'Active',
+      department: this.departmentFilter,
+    }));
     this.resetFilters();
     this.getUserList();
   }
 
-  getFilterLength(): number {
-    return this.statusFilter + this.roleFilter;
-  }
+
 
   onClearFilter(): void {
     this.resetFilters();
@@ -218,7 +224,6 @@ export class UserManagementComponent implements OnInit {
   }
 
   onBottom(isBottom: boolean): void {
-    console.log(isBottom)
     if (isBottom && this.page < this.totalPages - 1) {
       this.page++;
       this.scrolledData();
@@ -254,22 +259,25 @@ export class UserManagementComponent implements OnInit {
 
   private scrolledData(): void {
     // update the data when the user scrolls to the bottom of the page
-    this.service.getUsers({
-      page: this.page,
-      size: this.size,
-      status: this.statusValue || null,
-      search: this.searchValue || null,
-      department: this.departmentFilter || null,
-    }).subscribe((res: any) => {
-      this.Users = [...this.Users, ...res.data.responses];
-    })
+    this.service
+      .getUsers({
+        page: this.page,
+        size: this.size,
+        status: this.statusValue || null,
+        search: this.searchValue || null,
+        department: this.departmentFilter || null,
+      })
+      .subscribe((res: any) => {
+        this.Users = [...this.Users, ...res.data.responses];
+      });
   }
 
   onClickClear(): void {
     this.searchValue = '';
     this.Users = [];
     this.getUserList();
-  }cus
+  }
+  cus;
 
   private updateSelectedOptions(
     array: CustomInputSelectModel[],
@@ -284,5 +292,69 @@ export class UserManagementComponent implements OnInit {
     const phone = createdByPhone.slice(3);
     // copy the phone number to the clipboard
     this.service.copyToClipboard(phone);
+  }
+
+  onFilterData($event: any) {
+    this.filterData =  $event
+  }
+
+  onFilterApply() {
+    if (
+      this.filterData?.status ||
+      this.filterData?.department
+    ) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.statusValue = this.filterData?.status;
+      this.departmentFilter = this.filterData?.department;
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getUserList();
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.filterApplied = false;
+      this.Users = [];
+      this.statusValue = '';
+      this.departmentFilter = '';
+      this.loading = true;
+      this.page = 0;
+      this.size = 30;
+      this.getUserList();
+    }
+  }
+  get filterSummary(): string {
+    const parts: string[] = [];
+
+    if (this.filterData.status || this.statusValue)
+      parts.push(`Status: <b>${this.filterData.status ? this.filterData.status : this.statusValue}</b>`);
+    if (this.filterData.department)
+      parts.push(`Department: <b>${this.filterData.department}</b>`);
+
+    return parts.join(', ');
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true
+  }
+
+  onCLickClearAll() {
+    localStorage.removeItem('tripFilterData');
+    this.filterApplied = true;
+    this.Users = [];
+    this.filterData = {};
+    this.statusValue = 'Active';
+    this.departmentFilter = '';
+    this.loading = true;
+    this.page = 0;
+    this.size = 30;
+    localStorage.setItem(
+      'tripFilterData',
+      JSON.stringify({
+        status: 'Active',
+        department: this.departmentFilter,
+      })
+    )
+    this.getUserList();
   }
 }

@@ -1,0 +1,70 @@
+::ng-deep thead {
+  @apply sticky top-0;
+}
+
+.custom-border {
+  @apply h-[1px] p-0 bg-[#A1D5DE] sticky top-0;
+}
+
+tbody > tr {
+  @apply border-b border-[#E8F1F3] last:border-b-0;
+}
+
+th,
+td {
+  @apply p-4;
+}
+table {
+  border-collapse: separate;
+}
+td {
+  border-bottom: 1px solid #E8F1F3;
+}
+
+::ng-deep .mat-mdc-menu-panel {
+  background: white !important;
+}
+
+::ng-deep .custom-tooltip {
+  white-space: normal;
+  max-width: 2000px;
+  min-width: 200px;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  position: relative;
+  @apply space-x-6
+    /* Space between steps */
+  ;
+}
+
+.step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 6px; /* Adjust based on circle size and spacing */
+  top: 53%;
+  height: 100%;
+  width: 1px; /* Width of the dashed line */
+  border-left: 1px dashed #e5eaeb; /* Dashed border style */
+  z-index: 0; /* Ensure the line is behind the circles */
+}
+
+.circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%; /* Color of the circle */
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+
+p {
+  margin: 0;
+}
+
+

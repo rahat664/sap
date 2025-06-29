@@ -50,9 +50,9 @@
               src="assets/svg/filter.svg"
               alt="filter"/>
             <span
-              *ngIf="filterValues.length + paymentFilter + tripTypeFilter > 0"
+              *ngIf="filterValues.length  > 0"
               class="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red text-white text-xs font-semibold rounded-full h-4 w-4 flex items-center justify-center">
-              {{ filterValues.length + paymentFilter + tripTypeFilter }}
+              {{ filterValues.length }}
             </span>
           </div>
         </button>
@@ -238,7 +238,7 @@
               <ng-container *ngFor="let customer of customers">
                 <div
                   class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint whitespace-nowrap">
-                  <span>{{ customer.name }}</span>
+                  <span>{{ customer?.name }}</span>
                   <a
                     (click)="onClickCloseCustomer(customer)"
                     class="cursor-pointer"
@@ -249,7 +249,7 @@
             </div>
           </div>
           <div class="flex flex-col space-y-1 w-full">
-            <label class="text-base text-secondary">Truck type</label>
+            <label class="text-base text-secondary">Vehicle type</label>
             <mat-form-field appearance="outline" class="filter">
               <mat-select
                 [(ngModel)]="truckType"
@@ -266,22 +266,38 @@
             </mat-form-field>
           </div>
           <div class="flex flex-col space-y-1 w-full">
-            <label class="text-body text-web-text-secondary px-2">Payment Type</label>
-            <app-custom-input
-              appGetClickEvent
-              [inputSearch]="paymentTypePlaceholder"
-              [options]="paymentTypeOptionsArray"
-              inputPlaceholder="Select Payment type"
-              (selectedId)="onSelectPayment($event)"></app-custom-input>
+            <label class="text-base text-secondary">Payment type</label>
+            <mat-form-field appearance="outline" class="filter">
+              <mat-select
+                [(ngModel)]="paymentTypeValue"
+                (selectionChange)="onChangePaymentType($event)"
+                multiple
+                placeholder="Choose Payment Type">
+                @for (paymentType of paymentTypeOptionsArray; track paymentType) {
+                  <mat-option [value]="paymentType.value">{{
+                      paymentType.showname
+                    }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
           </div>
           <div class="flex flex-col space-y-1 w-full">
-            <label class="text-body text-web-text-secondary px-2">Trip Type</label>
-            <app-custom-input
-              appGetClickEvent
-              [inputSearch]="tripTypePlaceholder"
-              [options]="tripTypeOptionsArray"
-              inputPlaceholder="Select Trip type"
-              (selectedId)="onSelectTrip($event)"></app-custom-input>
+            <label class="text-base text-secondary">Trip type</label>
+            <mat-form-field appearance="outline" class="filter">
+              <mat-select
+                [(ngModel)]="tripTypeValue"
+                (selectionChange)="onChangeTripType($event)"
+                multiple
+                placeholder="Choose Trip Type">
+                @for (tripType of tripTypeOptionsArray; track tripType) {
+                  <mat-option [value]="tripType.value">{{
+                      tripType.showname
+                    }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
           </div>
         </div>
         <button

@@ -842,10 +842,6 @@ export class TripUpdateComponent implements OnInit {
           this.tripUpdateForm.get('transporterRate').setValue(transporter.rate);
           this.tripUpdateForm.get('transporterCode').setValue(transporter.code);
         } else {
-          this.tripUpdateForm.get('transporterName').setValue('');
-          this.tripUpdateForm.get('transporterPhone').setValue('');
-          this.tripUpdateForm.get('transporterRate').setValue('');
-          this.tripUpdateForm.get('transporterCode').setValue('');
         }
       });
   }
@@ -863,9 +859,6 @@ export class TripUpdateComponent implements OnInit {
           this.tripUpdateForm.get('driverName').setValue(driver.name);
           this.tripUpdateForm.get('driverPhone').setValue(driver.phone);
         } else {
-          this.tripUpdateForm.get('driverCode').setValue('');
-          this.tripUpdateForm.get('driverName').setValue('');
-          this.tripUpdateForm.get('driverPhone').setValue('');
         }
       });
   }
@@ -902,11 +895,6 @@ export class TripUpdateComponent implements OnInit {
             .get('registrationNumber')
             .setValue(truck.registrationNum);
         } else {
-          this.tripUpdateForm.get('truckId').setValue('');
-          this.tripUpdateForm.get('registrationZone').setValue('');
-          this.tripUpdateForm.get('registrationCategory').setValue('');
-          this.tripUpdateForm.get('registrationSerialNumber').setValue('');
-          this.tripUpdateForm.get('registrationNumber').setValue('');
         }
       });
   }
@@ -1086,9 +1074,7 @@ export class TripUpdateComponent implements OnInit {
           this.tripUpdateForm.get('helperName').setValue(helper.name);
           this.tripUpdateForm.get('helperPhone').setValue(helper.phone);
         } else {
-          this.tripUpdateForm.get('helperCode').setValue('');
-          this.tripUpdateForm.get('helperName').setValue('');
-          this.tripUpdateForm.get('helperPhone').setValue('');
+
         }
       });
   }

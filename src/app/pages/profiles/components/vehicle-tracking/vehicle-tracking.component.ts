@@ -17,6 +17,8 @@ import { TruckModel } from '../truck/models/truck.model';
 import { GeolocationService } from '../../../../shared/services/location/geolocation.service';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
+import { TripListFilterComponent } from '../../../trip-list/components/trip-list-filter/trip-list-filter.component';
+import { VehicleTrackingFilterComponent } from './vehicle-tracking-filter/vehicle-tracking-filter.component';
 
 @Component({
   selector: 'app-vehicle-tracking',
@@ -25,14 +27,10 @@ import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-he
     GetElementHeightDirective,
     NgIf,
     CommonModule,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
-    MatFormField,
-    MatInput,
-    MatOption,
     TruckingMapComponent,
     LoadingComponent,
     GiveMaxHeightDirective,
+    VehicleTrackingFilterComponent,
   ],
   templateUrl: './vehicle-tracking.component.html',
   styleUrl: './vehicle-tracking.component.scss',
@@ -40,7 +38,7 @@ import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-he
 export class VehicleTrackingComponent implements OnInit {
   height: string;
   totalPages = 0;
-  filterOpened = true;
+  filterOpened = false;
   transporterFilterCount = 0;
   truckFilterCount = 0;
   transporterName = '';
@@ -124,6 +122,8 @@ export class VehicleTrackingComponent implements OnInit {
   truckListLoading = false;
   selectedTruckNumber = '';
   singleTruckButtonDisable: boolean;
+   filterData: any = {};
+   filterApplied: boolean = false;
 
   constructor(
     private truck: TruckService,
@@ -138,9 +138,11 @@ export class VehicleTrackingComponent implements OnInit {
       .subscribe(searchText => {
         this.performTransporterSearch(searchText);
       });
-    this.allTruckSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performAllTruckSearch(searchText);
-    });
+    this.allTruckSearchSubject
+      .pipe(debounceTime(1000))
+      .subscribe(searchText => {
+        this.performAllTruckSearch(searchText);
+      });
     this.loadGoogleMapsScript();
   }
 
@@ -364,7 +366,7 @@ export class VehicleTrackingComponent implements OnInit {
         '',
         null,
         true,
-        null,
+        this.transporterName,
         this.condition !== 'All' ? this.condition : ''
       )
       .subscribe((truck: any) => {
@@ -457,4 +459,62 @@ export class VehicleTrackingComponent implements OnInit {
     this.allTruckList = [];
     this.searchTruckValue = '';
   }
+
+  onFilterData($event: any) {
+    this.filterData = $event;
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true;
+  }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+
+    if (this.filterData.transporterName)
+      parts.push(
+        `Payment Type: <b>${this.filterData.transporterName}</b>`
+      );
+
+    return parts.join(', ');
+  }
+
+  onFilterApply() {
+    if (
+      this.filterData?.transporterName
+    ) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.transporterName = this.filterData.transporterName;
+      this.page = 0;
+      this.size = 30;
+      this.truckLocationPosition = [];
+      this.trackerEnabledTrucks = [];
+      this.getTruckList();
+      this.onClickTruckList();
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.page = 0;
+      this.size = 30;
+      this.truckLocationPosition = [];
+      this.trackerEnabledTrucks = [];
+      this.transporterName = '';
+      this.getTruckList();
+      this.onClickTruckList();
+    }
+  }
+
+  onCLickClearAll() {
+    localStorage.removeItem('tripFilterData');
+    this.filterApplied = false;
+    this.filterData = {};
+    this.page = 0;
+    this.size = 30;
+    this.truckLocationPosition = [];
+    this.transporterName = '';
+    this.trackerEnabledTrucks = [];
+    this.getTruckList();
+    this.onClickTruckList();
+  }
+
 }

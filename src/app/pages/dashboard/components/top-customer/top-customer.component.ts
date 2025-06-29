@@ -35,6 +35,7 @@ export class TopCustomerComponent implements OnInit {
   customerFilterEnabled: boolean = false;
   paymentType: string = '';
   tripType: string = '';
+  truckTypeId: any;
 
   constructor(
     private datePipe: DatePipe,
@@ -47,6 +48,7 @@ export class TopCustomerComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.paymentType = params['paymentType'] ? params['paymentType'] : '';
       this.tripType = params['tripType'] ? params['tripType'] : '';
+      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : '';
       this.customerFilterEnabled = !!params['customerCode'];
       if (params['fromDate'] && params['toDate']) {
         this.fromDate = params['fromDate'];
@@ -70,7 +72,7 @@ export class TopCustomerComponent implements OnInit {
 
   private getTopCustomers() {
     this.service
-      .getTopCustomers(this.fromDate, this.toDate, this.sortBy, this.paymentType,this.tripType)
+      .getTopCustomers(this.fromDate, this.toDate, this.sortBy, this.paymentType,this.tripType, this.truckTypeId.toString())
       .subscribe(
         (res: any) => {
           this.topCustomer = res.data.content;

@@ -15,6 +15,8 @@ import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
 import { DateEnum } from '../../../trip-list/Enum/date.enum';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
+import { UserFilterComponent } from '../../../user-management/user-filter/user-filter.component';
+import { CustomerFilterComponent } from './customer-filter/customer-filter.component';
 
 @Component({
   selector: 'app-customer',
@@ -25,8 +27,7 @@ import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/
     LoadingComponent,
     FormsModule,
     numberPipe,
-    CustomInputComponent,
-    GetClickEventDirective,
+    CustomerFilterComponent,
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss',
@@ -41,17 +42,24 @@ export class CustomerComponent implements OnInit {
   totalPages: number;
   searchValue: any;
   readonly dialog = inject(MatDialog);
-  filterOpened: boolean = true;
+  filterOpened: boolean = false;
   dateFilter: number = 0;
   dateOpened: boolean;
   inputPlaceholder: string = '';
-  filterForm: FormGroup
+  filterForm: FormGroup;
   private from: any;
   private to: any;
   private isDateOpened: boolean;
   dateOptionArray: CustomInputSelectModel[];
+  filterApplied: boolean = false;
+  filterData: any = {};
 
-  constructor(private service: CustomerService,private formBuilder: FormBuilder, private shared: DriverEditSharedService, private datePipe: DatePipe) {
+  constructor(
+    private service: CustomerService,
+    private formBuilder: FormBuilder,
+    private shared: DriverEditSharedService,
+    private datePipe: DatePipe
+  ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
       startDate: [''],
@@ -60,6 +68,7 @@ export class CustomerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    localStorage.removeItem('tripFilterData');
     this.generateDateOptionsArray();
     this.getCustomer();
   }
@@ -73,13 +82,16 @@ export class CustomerComponent implements OnInit {
       { id: DateEnum.Custom, value: 'Custom', selected: false },
     ];
   }
+
   getCustomer() {
     this.loading = true;
-    this.service.searchCustomer(this.page, this.size, null, null, this.from,this.to).subscribe((res: any) => {
-      this.customers = res.data.content;
-      this.totalPages = res.data.totalPages;
-      this.loading = false;
-    });
+    this.service
+      .searchCustomer(this.page, this.size, null, null, this.from, this.to)
+      .subscribe((res: any) => {
+        this.customers = res.data.content;
+        this.totalPages = res.data.totalPages;
+        this.loading = false;
+      });
   }
 
   onClickAddCustomer() {
@@ -107,7 +119,14 @@ export class CustomerComponent implements OnInit {
       if (target?.length == 11) {
         if (this.checkIfAllInputIsNumber(target)) {
           this.service
-            .searchCustomer(this.page, this.size, null, target, this.from, this.to)
+            .searchCustomer(
+              this.page,
+              this.size,
+              null,
+              target,
+              this.from,
+              this.to
+            )
             .subscribe((res: any) => {
               this.customers = res.data.content;
               this.totalPages = res.data.totalPages;
@@ -115,7 +134,14 @@ export class CustomerComponent implements OnInit {
             });
         } else {
           this.service
-            .searchCustomer(this.page, this.size, target, null, this.from, this.to)
+            .searchCustomer(
+              this.page,
+              this.size,
+              target,
+              null,
+              this.from,
+              this.to
+            )
             .subscribe((res: any) => {
               this.customers = res.data.content;
               this.totalPages = res.data.totalPages;
@@ -146,7 +172,14 @@ export class CustomerComponent implements OnInit {
       this.page = this.page + 1;
       if (this.checkIfAllInputIsNumber(this.searchValue)) {
         this.service
-          .searchCustomer(this.page, this.size, null, this.searchValue, this.from, this.to)
+          .searchCustomer(
+            this.page,
+            this.size,
+            null,
+            this.searchValue,
+            this.from,
+            this.to
+          )
           .subscribe((res: any) => {
             this.customers = res.data.content;
             this.totalPages = res.data.totalPages;
@@ -154,7 +187,14 @@ export class CustomerComponent implements OnInit {
           });
       } else {
         this.service
-          .searchCustomer(this.page, this.size, this.searchValue, null, this.from, this.to)
+          .searchCustomer(
+            this.page,
+            this.size,
+            this.searchValue,
+            null,
+            this.from,
+            this.to
+          )
           .subscribe((res: any) => {
             this.customers.push(...res.data.content);
             this.totalPages = res.data.totalPages;
@@ -206,6 +246,7 @@ export class CustomerComponent implements OnInit {
     this.size = 30;
     this.getCustomer();
   }
+
   onSelectDate($event: number) {
     this.dateFilter = 1;
     if ($event === DateEnum.Custom) {
@@ -222,7 +263,6 @@ export class CustomerComponent implements OnInit {
       this.getCustomer();
     }
   }
-
 
   private setDateRange(dateEnum: DateEnum) {
     const fromDate = new Date();
@@ -249,5 +289,82 @@ export class CustomerComponent implements OnInit {
     }
     this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
     this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true;
+  }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+
+    if (this.filterData.startDate)
+      parts.push(
+        `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.endDate)
+      parts.push(
+        `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
+      );
+
+    return parts.join(', ');
+  }
+
+  onCLickClearAll() {
+    this.filterOpened = false;
+    this.filterApplied = false;
+    this.filterForm.reset();
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.from = '';
+    this.to = '';
+    this.inputPlaceholder = '';
+    this.getCustomer();
+  }
+
+  onFilterData($event: any) {
+    this.filterData = $event;
+  }
+
+  onFilterApply() {
+    if (this.filterData?.startDate || this.filterData?.endDate) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.customers = [];
+      this.from = this.filterData.startDate;
+      this.to = this.filterData.endDate;
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      this.getCustomer();
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.filterApplied = false;
+      this.loading = true;
+      this.page = 0;
+      this.size = 30;
+      this.from = '';
+      this.to = '';
+      this.filterForm.reset();
+      this.getCustomer();
+    }
+  }
+
+  getPaymentTypeName(paymentType: string | undefined) {
+    if (paymentType) {
+      switch (paymentType) {
+        case 'CASH':
+          return 'Cash';
+        case 'COMMISSION':
+          return 'Commission';
+        case 'INVOICE':
+          return 'Invoice';
+        default:
+          return 'Cash & Invoice';
+      }
+    } else {
+      return 'Not available';
+    }
   }
 }
