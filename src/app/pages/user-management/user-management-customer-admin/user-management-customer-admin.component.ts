@@ -48,7 +48,7 @@ import { UserFilterComponent } from '../user-filter/user-filter.component';
 })
 export class UserManagementCustomerAdminComponent implements OnInit {
   readonly dialog = inject(MatDialog);
-  filterOpened = true;
+  filterOpened = false;
   statusFilter = 0;
   roleFilter = 0;
   statusInputPlaceholder = 'Active';

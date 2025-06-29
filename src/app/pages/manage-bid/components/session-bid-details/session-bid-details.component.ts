@@ -40,7 +40,7 @@ export class SessionBidDetailsComponent {
   isInEditMode: boolean = false;
   selectedBidNumberOfTruck: number = 0;
   selectedBidAmount: number = 0;
-  selectedBidReason: any;
+  selectedBidReason: any = null;
   selectedBidReasonText: any;
   selectedBid: Bid;
   selectedBidReasonTextArea: string = '';
@@ -55,6 +55,9 @@ export class SessionBidDetailsComponent {
     this.selectedBidAmount = bid.amount;
     this.selectedBid = bid;
     this.isInEditMode = true;
+    this.selectedBidReasonText = '';
+    this.selectedBidReasonTextArea = '';
+    this.selectedBidReason = null;
   }
 
   ngOnChanges() {
@@ -311,6 +314,7 @@ export class SessionBidDetailsComponent {
         this.otherSelected = true;
       }
     } else {
+      this.selectedBidReason = null;
       if ($event.source.value === 'Others') {
         this.otherSelected = false;
         this.selectedBidReasonText = this.selectedBidReason;
@@ -355,5 +359,12 @@ export class SessionBidDetailsComponent {
     return tripPoints
       ? tripPoints.filter(trip => trip.pointType === 'Unloading')
       : [];
+  }
+
+  isAnyThingChangedInModel() {
+    return (
+      this.selectedBidNumberOfTruck !== this.selectedBid?.submittedNumberOfTruck ||
+      this.selectedBidAmount !== this.selectedBid?.amount || this.selectedBidReason !== null
+    );
   }
 }

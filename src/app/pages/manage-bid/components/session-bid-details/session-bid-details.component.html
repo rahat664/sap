@@ -222,7 +222,7 @@
         <div class="flex justify-between border-b border-line items-center p-4">
           <h1 class="text-not-black text-body_title leading-body_title font-semibold">Update bid</h1>
           <div class="flex space-x-3 items-center">
-            <button (click)="onUpdateBid()" class="bg-primary rounded-lg px-6 py-2 text-white text-center">
+            <button [disabled]="!isAnyThingChangedInModel()" (click)="onUpdateBid()" class="bg-primary rounded-lg px-6 py-2 text-white text-center {{!isAnyThingChangedInModel() ? 'opacity-50 cursor-not-allowed' : ''}}">
               <i class="fas fa-spinner fa-spin mr-2" *ngIf="isUpdatingBid"></i>
               <span>Update bid</span>
             </button>
@@ -255,16 +255,16 @@
               <label for="updateBid" class="text-not-black text-body_title leading-body_title font-semibold">Update your
                 bid</label>
               <div id="updateBid" class="flex flex-col space-y-3">
-                <div class="p-4 bg-input rounded-lg">
-                  <div class="flex space-y-1 flex-col">
-                    <span class="text-secondary text-xs">Number of truck</span>
-                    <input
-                      type="number"
-                      [(ngModel)]="selectedBidNumberOfTruck"
-                      class="w-full border-none rounded-lg focus:outline-none bg-input focus:border-primary"
-                      placeholder="Enter number of truck" />
-                  </div>
-                </div>
+<!--                <div class="p-4 bg-input rounded-lg">-->
+<!--                  <div class="flex space-y-1 flex-col">-->
+<!--                    <span class="text-secondary text-xs">Number of truck</span>-->
+<!--                    <input-->
+<!--                      type="number"-->
+<!--                      [(ngModel)]="selectedBidNumberOfTruck"-->
+<!--                      class="w-full border-none rounded-lg focus:outline-none bg-input focus:border-primary"-->
+<!--                      placeholder="Enter number of truck" />-->
+<!--                  </div>-->
+<!--                </div>-->
                 <div class="p-4 bg-input rounded-lg">
                   <div class="flex space-y-1 flex-col">
                     <span class="text-secondary text-xs">Bid per amount</span>
