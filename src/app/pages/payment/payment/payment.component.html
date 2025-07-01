@@ -63,7 +63,7 @@
       class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
       <tr class="whitespace-nowrap bg-white text-not-black">
-        <th class="text-left bg-white sticky left-0">Trip No.</th>
+        <th class="text-left lg:bg-white lg:sticky lg:left-0">Trip No.</th>
         <th class="text-left">Company</th>
         <th class="text-left">Transporter</th>
         <th class="text-left">Date</th>
@@ -75,7 +75,7 @@
         <th class="text-center whitespace-nowrap">Paid(৳)</th>
         <th class="text-center whitespace-nowrap">Paid On</th>
         <th class="text-center whitespace-nowrap">Payable(৳)</th>
-        <th class="text-center whitespace-nowrap w-[10%] sticky right-0 bg-white"></th>
+        <th class="text-center whitespace-nowrap w-[10%] lg:sticky lg:right-0 lg:bg-white"></th>
       </tr>
       <tr>
         <th class="custom-border" [colSpan]="13"></th>
@@ -84,7 +84,7 @@
       <tbody class="text-web-text-secondary">
       <ng-container *ngFor="let transporter of transportersPaymentList">
         <tr>
-          <td class="whitespace-nowrap text-link cursor-pointer sticky left-0 bg-white">
+          <td class="whitespace-nowrap text-link cursor-pointer lg:sticky lg:left-0 lg:bg-white">
             <a (click)="onClickTripId(transporter)">{{ transporter.tripId }}</a>
           </td>
           <td>{{ transporter.customerName }}</td>
@@ -135,7 +135,7 @@
           <td class="text-center">
             {{ countDueAmount(transporter) !== 'N/A' ? (countDueAmount(transporter) | number) : countDueAmount(transporter) }}
           </td>
-          <td class="text-center whitespace-nowrap bg-white sticky right-0">
+          <td class="text-center whitespace-nowrap lg:bg-white lg:sticky lg:right-0">
             <button *ngIf="countDueAmount(transporter) !== 'N/A' && Number(countDueAmount(transporter)) > 0"
                     (click)="onClickPayNow(transporter)"
                     type="button"

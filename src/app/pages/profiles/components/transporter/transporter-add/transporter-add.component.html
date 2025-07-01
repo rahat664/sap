@@ -169,9 +169,9 @@
 <!--              <i class="fal fa-angle-down text-xl"></i>-->
 <!--            </button>-->
           </div>
-          <div class="{{preferredPaymentMethod === 'Bank' ? 'py-3' : 'py-1'}} px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]" >
+          <div class="{{preferredPaymentMethod === 'Bank' ? 'py-3' : 'py-1'}} px-2 grid lg:grid-cols-2 gap-3 bg-[#FDFFFF]" >
             <ng-container *ngIf="preferredPaymentMethod === 'Bank'">
-              <div class="flex flex-col space-y-1 col-span-2">
+              <div class="flex flex-col space-y-1 lg:col-span-2">
                 <label for="bankName">Bank Name</label>
                 <mat-form-field appearance="outline" class="example-full-width">
                   <input
@@ -204,7 +204,7 @@
                     placeholder="Enter Account Name" />
                 </mat-form-field>
               </div>
-              <div class="flex flex-col space-y-1 col-span-2">
+              <div class="flex flex-col space-y-1 lg:col-span-2">
                 <label for="bankAccountNumber">Account Number</label>
                 <mat-form-field appearance="outline" class="example-full-width">
                   <input
@@ -241,7 +241,7 @@
 <!--              <i class="fal fa-angle-down text-xl"></i>-->
 <!--            </button>-->
           </div>
-          <div class="{{preferredPaymentMethod === 'MFS' ? 'py-3' : 'py-1'}} px-2 grid grid-cols-2 gap-3 bg-[#FDFFFF]">
+          <div class="{{preferredPaymentMethod === 'MFS' ? 'py-3' : 'py-1'}} px-2 grid lg:grid-cols-2 gap-3 bg-[#FDFFFF]">
             <ng-container *ngIf="preferredPaymentMethod === 'MFS'">
               <div class="flex flex-col space-y-1">
                 <label for="mfservice">MFS Service</label>
@@ -265,7 +265,7 @@
                   appGetClickEvent
                   (selectedId)="onSelectBkashType($event)"></app-custom-input>
               </div>
-              <div class="flex flex-col space-y-1 col-span-2">
+              <div class="flex flex-col space-y-1 lg:col-span-2">
                 <label for="mfsNumber">Account Number</label>
                 <mat-form-field appearance="outline" class="example-full-width">
                   <input

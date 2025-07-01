@@ -140,7 +140,7 @@
       class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white z-50">
       <tr class="whitespace-nowrap bg-white text-not-black">
-        <th  class="text-left sticky left-0 bg-white" *ngIf="isColumnVisible('tripId')">Trip Number</th>
+        <th  class="text-left lg:sticky lg:left-0 lg:bg-white" *ngIf="isColumnVisible('tripId')">Trip Number</th>
         <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('tripDate')">Trip Date</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('company')">Customer</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('transporter')">Transporter</th>
@@ -159,7 +159,7 @@
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('tr')">TR(৳)</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('gp')">GP(৳)</th>
         <th class="text-left" *ngIf="isAdmin() && isColumnVisible('profitMargin')">Profit Margin(%)</th>
-        <th class="sticky right-0 bg-white">
+        <th class="lg:sticky lg:right-0 lg:bg-white">
           <button mat-button [matMenuTriggerFor]="menu">
             <i class="fas fa-ellipsis-v"></i>
           </button>
@@ -186,7 +186,7 @@
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
         <tr *ngFor="let trip of tripList; index as i">
-          <td class="whitespace-nowrap sticky left-0 bg-white" *ngIf="isColumnVisible('tripId')">
+          <td class="whitespace-nowrap lg:sticky lg:left-0 lg:bg-white" *ngIf="isColumnVisible('tripId')">
             <a
               class="text-link cursor-pointer"
               (click)="onClickTripNumber(trip.tripId)">
