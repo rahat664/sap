@@ -6,7 +6,7 @@
     <div
       class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem] space-y-3 lg:space-y-0 lg:flex-row justify-between">
       <div class="flex justify-between w-full items-center">
-        <h1 class="text-h1 leading-h1 font-semibold">Challan management</h1>
+        <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">Challan management</h1>
         <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1  text-h2_medium text-primary">
           <img class="notPreview" src="assets/svg/filter.svg" alt="">
           <p>Filter</p>
@@ -35,7 +35,7 @@
                 alt="pending-challan"/>
             </div>
             <div class="flex flex-col text-left space-y-2">
-              <h1 class="font-bold text-h1 leading-h1 text-not-black">
+              <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                 {{ Math.round(pendingChallanAmount) | number }} ৳
               </h1>
               <p
@@ -62,7 +62,7 @@
                   alt="received"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(receivedAmount) | number }}
                 </h1>
                 <p
@@ -86,7 +86,7 @@
                   alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(pendingAmount) | number }}
                 </h1>
                 <p
@@ -110,7 +110,7 @@
                   alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(approvedAmount) | number }}
                 </h1>
                 <p
@@ -134,7 +134,7 @@
                   alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(rejectedAmount) | number }}
                 </h1>
                 <p
@@ -162,7 +162,7 @@
                   alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(completedTrips) | number }}
                 </h1>
                 <p
@@ -188,7 +188,7 @@
                   width="40"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(hardCopyReceived) | number }}
                 </h1>
                 <p
