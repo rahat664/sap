@@ -1,13 +1,14 @@
-<div>
-  <div class="p-2 sticky top-16 bg-app-bg z-30">
+<div class="overflow-x-hidden w-full">
+  <div class="p-2 sticky bg-app-bg z-30">
     <div class="p-4 rounded-lg bg-white flex justify-between items-center">
-      <h1 class="text-h1 leading-h1 font-semibold">Add New Driver</h1>
+      <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">Add New Driver</h1>
       <div>
         <button
           (click)="onDriverSave()"
-          class="px-12 py-2 text-white bg-primary rounded-lg text-center font-semibold">
+          class="px-4 lg:px-12 py-2 text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span>Save</span>
+          <span class="hidden lg:inline-block">Save</span>
+          <i class="fas fa-save text-white lg:hidden"></i>
         </button>
       </div>
     </div>

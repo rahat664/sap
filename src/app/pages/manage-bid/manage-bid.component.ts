@@ -154,6 +154,7 @@ export class ManageBidComponent {
   bidSize: number = 20;
   bidLoading: boolean = true;
   totalBidOfSession: SessionModel = {} as SessionModel;
+  mobileDeviceDetails: boolean = false;
 
   constructor(
     private tripService: TripService,
@@ -765,5 +766,23 @@ export class ManageBidComponent {
     this.getBidDetails(bid.id);
     this.activatedId = bid.availableTripId;
     this.updateOverLayStyle(true);
+    this.mobileDeviceDetails = !!this.isMobileDevice();
+  }
+
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
+  }
+
+  onClickBack() {
+    this.updateOverLayStyle(false);
+    this.mobileDeviceDetails = false;
+    this.activatedId = '';
+    this.singleTripDetails = {} as TripData;
+    this.startingPosition = [];
+    this.destinationPosition = [];
+    this.totalBidOfSession = {} as SessionModel;
+    this.bidPage = 0;
+    this.bidSize = 20;
+    this.getBidList();
   }
 }

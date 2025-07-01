@@ -30,6 +30,8 @@ import {
 import { DateEnum } from '../../../trip-list/Enum/date.enum';
 import { TruckFilterComponent } from '../truck/truck-filter/truck-filter.component';
 import { DriverFilterComponent } from './driver-filter/driver-filter.component';
+import { TripData } from '../../../manage-trip/model/trip.details.model';
+import { SessionModel } from '../../../manage-bid/models/session.model';
 
 @Component({
   selector: 'app-driver',
@@ -173,7 +175,7 @@ export class DriverComponent implements OnInit {
     });
     this.newDriverFileType = DFT;
     this.dialog.open(FileUploadPopupComponent, {
-      width: '40%',
+      width: this.isMobileDevice() ? '90%' : '40%',
       data: {
         from: 'driver',
         filetype: this.newDriverFileType,
@@ -181,6 +183,11 @@ export class DriverComponent implements OnInit {
       },
     });
   }
+
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
+  }
+
 
   onClickNidUpload(driver: UserModel) {
     this.isNewOpen = true;
@@ -198,7 +205,7 @@ export class DriverComponent implements OnInit {
     });
     this.newDriverFileType = DFT;
     this.dialog.open(FileUploadPopupComponent, {
-      width: '40%',
+      width: this.isMobileDevice() ? '90%' : '40%',
       data: {
         from: 'driver',
         filetype: this.newDriverFileType,
@@ -471,7 +478,7 @@ export class DriverComponent implements OnInit {
     });
     this.newDriverFileType = DFT;
     this.dialog.open(FileUploadPopupComponent, {
-      width: '40%',
+      width: this.isMobileDevice() ? '90%' : '40%',
       data: {
         from: 'driver',
         filetype: this.newDriverFileType,

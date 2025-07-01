@@ -6,7 +6,7 @@
     <div
       class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem] space-y-3 lg:space-y-0 lg:flex-row justify-between">
       <div class="flex justify-between w-full items-center">
-        <h1 class="text-h1 leading-h1 font-semibold">Challan management</h1>
+        <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">Challan management</h1>
         <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1  text-h2_medium text-primary">
           <img class="notPreview" src="assets/svg/filter.svg" alt="">
           <p>Filter</p>
@@ -19,15 +19,15 @@
       <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
     </div>
     <!--  summary section-->
-    <div class="grid grid-cols-10 w-full gap-2 min-h-[10.5rem]">
-      <div class="col-span-4 w-full bg-white rounded-lg p-2">
+    <div class="grid lg:grid-cols-10 w-full gap-2 lg:min-h-[10.5rem] max-h-[40vh] lg:max-h-full overflow-auto lg:overflow-hidden">
+      <div class="lg:col-span-4 w-full bg-white rounded-lg p-2">
         <button
           (click)="onClickStatusButtons('Pending')"
           [ngClass]="{
                 'border border-[#11484F]': activatedChallanStatus === 'Pending',
               }"
           class="bg-[#005577] h-full w-full flex items-center justify-center rounded-lg bg-opacity-[5%]">
-          <div class="flex space-x-4 items-center">
+          <div class="flex space-x-4 items-center p-2">
             <div>
               <img
                 class="notPreview"
@@ -35,7 +35,7 @@
                 alt="pending-challan"/>
             </div>
             <div class="flex flex-col text-left space-y-2">
-              <h1 class="font-bold text-h1 leading-h1 text-not-black">
+              <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                 {{ Math.round(pendingChallanAmount) | number }} ৳
               </h1>
               <p
@@ -46,14 +46,14 @@
           </div>
         </button>
       </div>
-      <div class="col-span-4 bg-white w-full rounded-lg p-2">
-        <div class="grid grid-cols-3 gap-1 w-full h-full">
+      <div class="lg:col-span-4 bg-white w-full rounded-lg p-2">
+        <div class="grid lg:grid-cols-3 gap-1 w-full h-full">
           <button
             (click)="onClickStatusButtons('Received')"
             [ngClass]="{
                   'border border-link': activatedChallanStatus === 'Received',
                 }"
-            class="bg-link col-span-3 flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
+            class="bg-link lg:col-span-3 flex items-center justify-center w-full bg-opacity-[5%] py-[1.125rem] rounded-lg">
             <div class="flex space-x-4 items-center">
               <div>
                 <img
@@ -62,7 +62,7 @@
                   alt="received"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(receivedAmount) | number }}
                 </h1>
                 <p
@@ -86,7 +86,7 @@
                   alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(pendingAmount) | number }}
                 </h1>
                 <p
@@ -110,7 +110,7 @@
                   alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(approvedAmount) | number }}
                 </h1>
                 <p
@@ -134,7 +134,7 @@
                   alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(rejectedAmount) | number }}
                 </h1>
                 <p
@@ -146,7 +146,7 @@
           </button>
         </div>
       </div>
-      <div class="col-span-2 bg-white p-2 rounded-lg">
+      <div class="lg:col-span-2 bg-white p-2 rounded-lg">
         <div class="grid gap-1 w-full h-full">
           <button
             (click)="onClickStatusButtons('Completed')"
@@ -162,7 +162,7 @@
                   alt="pending-challan"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(completedTrips) | number }}
                 </h1>
                 <p
@@ -188,7 +188,7 @@
                   width="40"/>
               </div>
               <div class="flex text-left flex-col space-y-2">
-                <h1 class="font-bold text-h1 leading-h1 text-not-black">
+                <h1 class="font-bold text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black">
                   {{ Math.round(hardCopyReceived) | number }}
                 </h1>
                 <p
@@ -212,7 +212,7 @@
            class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
       <tr class="whitespace-nowrap bg-white text-not-black">
-        <th class="text-left bg-white sticky left-0" *ngIf="isColumnVisible('tripId')">
+        <th class="text-left bg-white lg:sticky lg:left-0" *ngIf="isColumnVisible('tripId')">
           Trip Number </th>
         <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('tripDate')">
           Trip Date
@@ -241,11 +241,11 @@
         <th class="text-center whitespace-nowrap" *ngIf="isColumnVisible('receivedDate')">
           Received Date </th>
         <th
-          class="text-center sticky  bg-white right-[5rem]" *ngIf="isColumnVisible('challanStatus')">
+          class="text-center lg:sticky  lg:bg-white lg:right-[5rem]" *ngIf="isColumnVisible('challanStatus')">
           Status
         </th>
         <th
-          class="text-left w-[5rem]  sticky right-0 bg-white"
+          class="text-left w-[5rem]  lg:sticky lg:right-0 lg:bg-white"
         >
           <button mat-button [matMenuTriggerFor]="menu">
             <i class="fas fa-ellipsis-v"></i>
@@ -271,9 +271,9 @@
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
-      <ng-container *ngIf="!loading">
+      <ng-container *ngIf="!loading && tripList?.length > 0">
         <tr *ngFor="let trip of tripList; index as i">
-          <td class="whitespace-nowrap bg-white sticky left-0" *ngIf="isColumnVisible('tripId')">
+          <td class="whitespace-nowrap lg:bg-white lg:sticky lg:left-0" *ngIf="isColumnVisible('tripId')">
             <a
               class="text-link cursor-pointer"
               routerLink="/challan-management/{{ trip.tripId }}/details">
@@ -366,7 +366,7 @@
             {{ checkReceivedDays(trip) }}
           </td>
           <td
-            class="whitespace-nowrap sticky right-[5rem] w-full bg-white z-20" *ngIf="isColumnVisible('challanStatus')">
+            class="whitespace-nowrap lg:sticky lg:right-[5rem] w-full lg:bg-white z-20" *ngIf="isColumnVisible('challanStatus')">
             <div class="w-full flex justify-center items-center">
               <p
                 class="px-4 py-1 {{ getBgColor(trip.challanStatus, 'bg') }} {{
@@ -377,7 +377,7 @@
             </div>
           </td>
           <td
-            class="sticky right-0 bg-white w-[5rem]"
+            class="lg:sticky lg:right-0 lg:bg-white w-[5rem]"
             *ngIf="
                     (trip.challanStatus === 'Approved' ||
                       trip.challanStatus === 'Pending') &&
@@ -390,7 +390,7 @@
                     trip.challanStatus !== 'Approved' &&
                     trip.challanStatus !== 'Pending'
                   "
-            class="sticky right-0 bg-white w-[5rem]">
+            class="lg:sticky lg:right-0 lg:bg-white w-[5rem]">
             <button
               class="{{
                       trip.challanStatus === 'Approved' ? 'invisible' : 'visible'
@@ -441,8 +441,9 @@
             </mat-menu>
           </td>
         </tr>
-
-        <tr *ngIf="tripList?.length === 0">
+      </ng-container>
+      <ng-container *ngIf="tripList?.length === 0 && !loading" >
+        <tr >
           <td class="text-center" [colSpan]="16">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">

@@ -23,7 +23,7 @@
         <div class="flex flex-col space-y-3 text-not-black text-start">
           <div class="step">
             <div class="circle">
-              <img src="assets/svg/start.svg" alt="loading" />
+              <img src="assets/svg/start.svg" class="notPreview" alt="loading" />
             </div>
             <p class="w-full">
               {{ getLoadingPoints(tripDetails?.tripPoints)[0]?.pointName }}
@@ -36,7 +36,7 @@
           </div>
           <div class="step">
             <div class="circle">
-              <img src="assets/svg/end.svg" alt="loading" />
+              <img src="assets/svg/end.svg" class="notPreview" alt="loading" />
             </div>
             <p class="w-full">
               {{ getUnLoadingPoints(tripDetails?.tripPoints)[0]?.pointName }}
@@ -175,7 +175,7 @@
                   </div>
                 </td>
                 <td>
-                  <div class="flex w-full items-center justify-center">
+                  <div class="flex w-full items-center justify-center min-h-full min-w-32">
                     <button
                       (click)="editBid(bid)"
                     >
@@ -218,18 +218,19 @@
       </div>
     </ng-container>
     <ng-container *ngIf="isInEditMode && sessionBid?.status !== 'Accepted'">
-      <div class=" max-h-[60vh] bg-white rounded-lg">
+      <div class=" lg:max-h-[60vh] bg-white rounded-lg">
         <div class="flex justify-between border-b border-line items-center p-4">
           <h1 class="text-not-black text-body_title leading-body_title font-semibold">Update bid</h1>
           <div class="flex space-x-3 items-center">
-            <button [disabled]="!isAnyThingChangedInModel()" (click)="onUpdateBid()" class="bg-primary rounded-lg px-6 py-2 text-white text-center {{!isAnyThingChangedInModel() ? 'opacity-50 cursor-not-allowed' : ''}}">
+            <button [disabled]="!isAnyThingChangedInModel()" (click)="onUpdateBid()" class="bg-primary rounded-lg px-4 lg:px-6 py-2 text-white text-center {{!isAnyThingChangedInModel() ? 'opacity-50 cursor-not-allowed' : ''}}">
               <i class="fas fa-spinner fa-spin mr-2" *ngIf="isUpdatingBid"></i>
-              <span>Update bid</span>
+              <span class="hidden lg:inline">Update bid</span>
+              <i class="lg:hidden inline fas fa-check"></i>
             </button>
             <button (click)="isInEditMode = false"><i class="fal fa-times text-2xl"></i></button>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid lg:grid-cols-2 gap-4">
           <div class="flex flex-col space-y-3 p-4 border-r border-line">
             <div class="flex flex-col space-y-1">
               <label for="currentBid" class="text-not-black text-body_title leading-body_title font-semibold">Current
@@ -278,7 +279,7 @@
               </div>
             </div>
           </div>
-          <div class="pr-4 py-4">
+          <div class="px-4 py-4">
             <div class="flex flex-col space-y-1">
               <label for="bidReason" class="text-not-black text-body_title leading-body_title font-semibold">Reason of bid
                 updates<sup>*</sup></label>

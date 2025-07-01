@@ -6,7 +6,7 @@
     <div
       class="flex flex-col py-[1.375rem] sm:py-[1.125rem] md:py-[1rem] lg:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem] space-y-3 lg:space-y-0 lg:flex-row justify-between">
       <div class="flex items-center justify-between w-full">
-        <h1 class="text-h1 leading-h1 font-semibold">Transporter Payment</h1>
+        <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">Transporter Payment</h1>
         <button (click)="onClickFilterOpen()" class="flex space-x-1 cursor-pointer text-h2_medium text-primary">
           <img class="notPreview" src="assets/svg/filter.svg" alt="">
           <p>Filter</p>
@@ -20,14 +20,14 @@
 
 
     <!--  summary section-->
-    <div class="py-5 grid grid-cols-4 bg-white rounded-lg">
-      <div class="w-full flex items-center justify-center  border-r border-line">
+    <div class="py-5 grid grid-cols-2 lg:grid-cols-4 bg-white rounded-lg">
+      <div class="w-full flex items-center px-4 py-2 lg:py-0 lg:px-0 lg:justify-center border-b lg:border-b-0 border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-secondary">Total trip</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">{{ totalTrips | number }}</span>
         </div>
       </div>
-      <div class="w-full flex items-center justify-center  border-r border-line">
+      <div class="w-full flex items-center lg:justify-center px-4 py-2 lg:py-0 lg:px-0 border-b lg:border-b-0 lg:border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-not-primary">Transporter Rate(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">{{
@@ -35,7 +35,7 @@
             }}</span>
         </div>
       </div>
-      <div class="w-full flex items-center justify-center  border-r border-line">
+      <div class="w-full flex items-center lg:justify-center py-2 lg:py-0 px-4 lg:px-0 border-r border-line">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-green">Paid(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">
@@ -43,7 +43,7 @@
           </span>
         </div>
       </div>
-      <div class="w-full flex items-center justify-center ">
+      <div class="w-full flex items-center lg:justify-center px-4 py-2 lg:py-0 lg:px-0">
         <div class="flex flex-col space-y-3 py-1.5">
           <span class="text-body text-red">Due(৳)</span>
           <span class="text-h1 font-semibold leading-h1 text-not-black">{{
@@ -63,7 +63,7 @@
       class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
       <tr class="whitespace-nowrap bg-white text-not-black">
-        <th class="text-left bg-white sticky left-0">Trip No.</th>
+        <th class="text-left lg:bg-white lg:sticky lg:left-0">Trip No.</th>
         <th class="text-left">Company</th>
         <th class="text-left">Transporter</th>
         <th class="text-left">Date</th>
@@ -75,7 +75,7 @@
         <th class="text-center whitespace-nowrap">Paid(৳)</th>
         <th class="text-center whitespace-nowrap">Paid On</th>
         <th class="text-center whitespace-nowrap">Payable(৳)</th>
-        <th class="text-center whitespace-nowrap w-[10%] sticky right-0 bg-white"></th>
+        <th class="text-center whitespace-nowrap w-[10%] lg:sticky lg:right-0 lg:bg-white"></th>
       </tr>
       <tr>
         <th class="custom-border" [colSpan]="13"></th>
@@ -84,7 +84,7 @@
       <tbody class="text-web-text-secondary">
       <ng-container *ngFor="let transporter of transportersPaymentList">
         <tr>
-          <td class="whitespace-nowrap text-link cursor-pointer">
+          <td class="whitespace-nowrap text-link cursor-pointer lg:sticky lg:left-0 lg:bg-white">
             <a (click)="onClickTripId(transporter)">{{ transporter.tripId }}</a>
           </td>
           <td>{{ transporter.customerName }}</td>
@@ -135,7 +135,7 @@
           <td class="text-center">
             {{ countDueAmount(transporter) !== 'N/A' ? (countDueAmount(transporter) | number) : countDueAmount(transporter) }}
           </td>
-          <td class="text-center whitespace-nowrap bg-white sticky right-0">
+          <td class="text-center whitespace-nowrap lg:bg-white lg:sticky lg:right-0">
             <button *ngIf="countDueAmount(transporter) !== 'N/A' && Number(countDueAmount(transporter)) > 0"
                     (click)="onClickPayNow(transporter)"
                     type="button"

@@ -1,5 +1,5 @@
-<div class="flex bg-[#EFF6F8] space-x-4">
-  <div class="flex flex-col min-w-[25rem] max-w-[25rem]">
+<div class="flex bg-[#EFF6F8] space-x-4 " *ngIf="!mobileDeviceDetails">
+  <div class="flex flex-col lg:min-w-[25rem] lg:max-w-[25rem] min-w-full ">
     <div
       class="py-4 pl-4 flex flex-col space-y-3"
       appGetElementHeight
@@ -198,8 +198,18 @@
       </div>
     </div>
   </div>
-  <div class="w-full h-[calc(100vh-6.1rem)] flex-1 relative rounded-lg mt-4">
+  <div class="hidden lg:block w-full h-[calc(100vh-6.1rem)] flex-1 relative rounded-lg mt-4">
     <app-session-bid-details *ngIf="!bidLoading" [tripDetails]="singleTripDetails" [sessionBid]="totalBidOfSession"></app-session-bid-details>
     <app-loading *ngIf="bidLoading"></app-loading>
   </div>
+</div>
+<div *ngIf="mobileDeviceDetails" class="lg:hidden w-full h-[calc(100vh-6.1rem)] flex-1 relative rounded-lg mt-4">
+  <button
+    (click)="onClickBack()"
+    class="absolute top-4 right-4 z-10 bg-white rounded-full flex space-x-2 items-center px-4 py-2 shadow-md">
+    <i class="fas fa-arrow-left text-primary"></i>
+    <span class="">Back to list</span>
+  </button>
+  <app-session-bid-details *ngIf="!bidLoading" [tripDetails]="singleTripDetails" [sessionBid]="totalBidOfSession"></app-session-bid-details>
+  <app-loading *ngIf="bidLoading"></app-loading>
 </div>

@@ -10,6 +10,8 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { TripService } from '../../pages/trip-list/services/trip.service';
+import { TripData } from '../../pages/manage-trip/model/trip.details.model';
+import { SessionModel } from '../../pages/manage-bid/models/session.model';
 
 @Directive({
   standalone: true,
@@ -90,7 +92,7 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
   }
 
   private setMaxHeight(): void {
-    const maxHeight = `calc(100vh - ${this.anotherItemsHeight} - ${this.topBarHeight})`;
+    const maxHeight = `calc(100vh - ${this.anotherItemsHeight} - ${this.topBarHeight} - ${this.isMobileDevice() ? '40px' : '0px'}) `;
     this.el.nativeElement.style.maxHeight = maxHeight;
     this.elementHeight.emit(maxHeight);
     // if div contains table, then set border
@@ -100,9 +102,15 @@ export class GiveMaxHeightDirective implements OnInit, OnDestroy {
   }
 
   private setMinHeight(): void {
-    const minHeight = `calc(100vh - ${this.anotherItemsHeight} - ${this.topBarHeight})`;
+    const minHeight = `calc(100vh - ${this.anotherItemsHeight} - ${this.topBarHeight} - ${this.isMobileDevice() ? '40px' : '0px'}) `;
     this.el.nativeElement.style.minHeight = minHeight;
+
   }
+
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
+  }
+
 
   private checkScrollPosition(event: any): void {
     this.anotherStatusCalled = false;

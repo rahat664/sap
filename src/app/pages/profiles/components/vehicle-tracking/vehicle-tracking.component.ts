@@ -19,6 +19,8 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { TripListFilterComponent } from '../../../trip-list/components/trip-list-filter/trip-list-filter.component';
 import { VehicleTrackingFilterComponent } from './vehicle-tracking-filter/vehicle-tracking-filter.component';
+import { TripData } from '../../../manage-trip/model/trip.details.model';
+import { SessionModel } from '../../../manage-bid/models/session.model';
 
 @Component({
   selector: 'app-vehicle-tracking',
@@ -130,6 +132,7 @@ export class VehicleTrackingComponent implements OnInit {
     private transporter: UserService,
     private geoLocation: GeolocationService
   ) {
+    this.isMobileDevice() ? this.trucklistOpened = false : this.trucklistOpened = true;
     this.truckSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       this.performTruckSearch(searchText);
     });
@@ -146,6 +149,10 @@ export class VehicleTrackingComponent implements OnInit {
     this.loadGoogleMapsScript();
   }
 
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
+  }
+
   private loadGoogleMapsScript() {
     this.geoLocation.loadGoogleMapsScript().then(() => {
       this.geoLocation.getCurrentPosition().then(coords => {});
@@ -153,7 +160,7 @@ export class VehicleTrackingComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.trucklistOpened = true;
+    this.isMobileDevice() ? this.trucklistOpened = false : this.trucklistOpened = true;
     this.truckLocationPosition = [];
     this.getTruckList();
     this.onClickTruckList();
@@ -358,7 +365,7 @@ export class VehicleTrackingComponent implements OnInit {
 
   onClickTruckList() {
     this.truckListLoading = true;
-    this.trucklistOpened = true;
+    this.isMobileDevice() ? this.trucklistOpened = false : this.trucklistOpened = true;
     this.truck
       .getTruckList(
         this.page,

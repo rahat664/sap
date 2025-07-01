@@ -8,7 +8,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { CustomInputSelectModel } from '../../../shared/modules/custom-input/custom-input-select.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import { roles } from '../models/role-file';
 
 @Component({
@@ -68,7 +68,7 @@ export class UserFilterComponent {
   truckType: any;
   vehicleTypeList: any[] = [];
   transporterSuggestions: any[] = [];
-  transporterName: string
+  transporterName: string;
   searchId: any;
   tripId: any;
   selectedTruckValues: any = [];
@@ -78,9 +78,7 @@ export class UserFilterComponent {
   roleOpened: boolean;
   statusValue: string = '';
 
-  constructor(
-  ) {
-  }
+  constructor() {}
 
   ngOnInit() {
     this.getDataFromLocalStorage();
@@ -103,7 +101,6 @@ export class UserFilterComponent {
     this.updateOverLayStyle(false);
   }
 
-
   updateOverLayStyle(isSpecial: boolean) {
     const className = 'custom-overlay-bounding-box';
     if (isSpecial) {
@@ -113,14 +110,16 @@ export class UserFilterComponent {
     }
   }
 
-
   private getDataFromLocalStorage() {
     const tripFilterData = JSON.parse(localStorage.getItem('tripFilterData'));
     if (tripFilterData) {
       if (tripFilterData?.status) {
         this.statusValue = tripFilterData?.status;
         this.statusInputPlaceholder = tripFilterData?.status;
-        this.updateSelectedOptions(this.statusOptionsArray, tripFilterData?.status);
+        this.updateSelectedOptions(
+          this.statusOptionsArray,
+          tripFilterData?.status
+        );
       }
       if (tripFilterData?.department) {
         this.departmentFilter = tripFilterData?.department;

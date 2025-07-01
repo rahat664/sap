@@ -17,6 +17,8 @@ import { HandleToastrService } from '../../../../../shared/services/handle-toast
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDownloadPopupComponent } from './report-download-popup/report-download-popup.component';
 import { MatTooltip } from '@angular/material/tooltip';
+import { TripData } from '../../../../manage-trip/model/trip.details.model';
+import { SessionModel } from '../../../../manage-bid/models/session.model';
 
 @Component({
   selector: 'app-report',
@@ -212,6 +214,10 @@ export class ReportComponent implements OnInit {
     }
   }
 
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
+  }
+
   onClickGenerateReport() {
     let message = '';
     if (this.selectedTruckList.length === 0) {
@@ -228,8 +234,8 @@ export class ReportComponent implements OnInit {
       this.dialog
         .open(ReportDownloadPopupComponent, {
           minWidth: '50vw',
-          maxHeight: '80vh',
-          maxWidth: '50vw',
+          maxHeight: this.isMobileDevice() ? '100vh' : '80vh',
+          maxWidth:  this.isMobileDevice() ? '100vw' : '50vw',
           minHeight: '60vh',
           data: {
             // heading will selected date and time range
