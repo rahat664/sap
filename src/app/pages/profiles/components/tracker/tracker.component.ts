@@ -60,8 +60,8 @@ export class TrackerComponent implements OnInit {
 
   loading: boolean;
   trackerList: VehicleTracker[] = [];
-  totalPages: number;
-  height: string;
+  totalPages: number = 0;
+  height: string = '0px';
   page = 0;
   size = 20;
   searchValue: string;

@@ -5,8 +5,8 @@
     class="flex flex-col space-y-3">
     <div
       class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
-      <h1 class="text-h1 leading-h1 font-semibold">Truck</h1>
-      <div class="flex space-x-4 items-center">
+      <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">Truck</h1>
+      <div class="flex space-x-2 items-center">
         <div class="relative">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -23,7 +23,7 @@
             type="text"
             name="email"
             [(ngModel)]="searchValue"
-            class="border-none text-input-hint w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
+            class="border-none text-input-hint w-full lg:w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
             placeholder="Search truck registration number"/>
         </div>
 <!--        <button-->
@@ -37,7 +37,7 @@
           routerLink="/profile/truck/add"
           class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
           <i class="fas fa-plus-circle"></i>
-          <span class="hidden lg:block">Add Truck</span>
+          <span class="hidden lg:inline">Add Truck</span>
         </button>
         <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1  text-h2_medium text-primary">
           <img class="notPreview" src="assets/svg/filter.svg" alt="">
@@ -60,7 +60,7 @@
       class="table-auto rounded-lg w-full text-body_title leading-body_title">
       <thead>
       <tr class="whitespace-nowrap bg-white">
-        <th class="text-left w-[20rem] inline-block sticky left-0 bg-white">
+        <th class="text-left w-[20rem] inline-block lg:sticky lg:left-0 lg:bg-white">
           Registration number
         </th>
         <th class="text-left w-[10rem] inline-block">Pre-hire checklist</th>
@@ -78,11 +78,11 @@
         <th class="text-center w-[10rem] inline-block">Insurance paper</th>
         <th class="text-center w-[10rem] inline-block">Others document</th>
         <th
-          class="text-center w-[10rem] inline-block z-20 sticky right-[5rem] bg-white">
+          class="text-center w-[10rem] inline-block z-20 lg:sticky lg:right-[5rem] bg-white">
           Status
         </th>
         <th
-          class="text-center w-[5rem] inline-block z-20 sticky right-0 bg-white"></th>
+          class="text-center w-[5rem] inline-block z-20 lg:sticky lg:right-0 bg-white"></th>
       </tr>
       <tr>
         <th class="border-custom" colspan="11"></th>
@@ -92,7 +92,7 @@
       <ng-container *ngIf="!loading">
         <tr *ngFor="let truck of truckList">
           <td
-            class="whitespace-nowrap w-[20rem] inline-block sticky left-0 bg-white">
+            class="whitespace-nowrap w-[20rem] inline-block lg:sticky lg:left-0 lg:bg-white">
             <div
               appGetElementHeight
               (height)="firstColumnHeight = $event"
@@ -381,7 +381,7 @@
             </div>
           </td>
           <td
-            class="whitespace-nowrap w-[10rem] inline-flex text-secondary items-center justify-center sticky text-center bg-white right-[5rem]">
+            class="whitespace-nowrap w-[10rem] inline-flex text-secondary items-center justify-center lg:sticky text-center bg-white lg:right-[5rem]">
             <div
               [style.min-height]="firstColumnHeight"
               class="flex items-center justify-center">
@@ -396,7 +396,7 @@
             </div>
           </td>
           <td
-            class="whitespace-nowrap w-[5rem] inline-block sticky text-center bg-white right-0">
+            class="whitespace-nowrap w-[5rem] inline-block lg:sticky text-center bg-white lg:right-0">
             <button
               [style.max-height]="firstColumnHeight"
               [style.min-height]="firstColumnHeight"

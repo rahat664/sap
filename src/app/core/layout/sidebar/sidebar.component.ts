@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { GetOutsideModalClickDirective } from '../../../shared/directive/get-outside-modal-click.directive';
 
+
 @Component({
   selector: 'app-sidebar',
   imports: [
@@ -102,4 +103,15 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
   isMobileDevice() {
     return localStorage.getItem('isMobileDevice') === 'true';
   }
+
+  ifInMobileDevice() {
+    if (this.isMobileDevice()) {
+      this.mobileViewService.isSidebarOpen.next(true);
+      this.willShow = true;
+    } else {
+      this.mobileViewService.isSidebarOpen.next(false);
+      this.willShow = false;
+    }
+  }
+
 }

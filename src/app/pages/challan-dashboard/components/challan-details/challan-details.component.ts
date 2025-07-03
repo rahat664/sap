@@ -15,6 +15,8 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { PaymentType, TripType } from '../../../../shared/Enums/payment-type';
+import { TripData } from '../../../manage-trip/model/trip.details.model';
+import { SessionModel } from '../../../manage-bid/models/session.model';
 
 @Component({
   selector: 'app-challan-details',
@@ -203,11 +205,16 @@ export class ChallanDetailsComponent implements OnChanges, OnInit {
 
   getFirstSixDocuments(tripDocuments: any) {
     if (tripDocuments) {
-      return tripDocuments.slice(0, 6);
+      return tripDocuments.slice(0, this.isMobileDevice() ? 2 : 5);
     } else {
       return [];
     }
   }
+
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
+  }
+
 
   onSave() {
     const requests = [];

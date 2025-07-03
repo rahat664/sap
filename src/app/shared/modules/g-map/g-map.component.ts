@@ -1240,7 +1240,7 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
           <i class="far fa-times cursor-pointer"></i>
         </button>
       </div>
-      <div  id="info-body" style="background: #F5FBFC; margin-right:0.75rem; padding: 0.5rem; font-size: 12px; color: #242424">
+      <div  id="info-body" style="background: #F5FBFC; padding: 0.5rem; font-size: 12px; color: #242424; margin-right: 0.75rem;">
         <table id="info-table" style="width: 100%;">
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Time<td>:</td></td><td class="col-span-4">${time}</td></tr>
         <tr  class="grid grid-cols-8 "><td class="col-span-3">Stop Duration<td>:</td></td><td class="col-span-4">${data?.stopDuration ? data?.stopDuration : 'N/A'}</td></tr>

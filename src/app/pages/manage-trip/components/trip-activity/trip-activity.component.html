@@ -1,7 +1,7 @@
 <div class="min-h-[70vh] overflow-y-auto max-h-[70vh]">
-  <div class="mx-16 flex flex-col space-y-3">
+  <div class=" lg:mx-16 flex flex-col space-y-3">
     <div class="flex-col flex space-y-3">
-      <div class="grid grid-cols-2 px-16 pt-4">
+      <div class="grid lg:grid-cols-2  lg:px-16 pt-4">
         <h1 class="text-h2 leading-h2 text-not-black font-semibold px-8">
           Manage Loading
         </h1>
@@ -10,9 +10,9 @@
           {{ selectedEventNameLoading }}
         </h1>
       </div>
-      <div class="px-16 grid grid-cols-2 w-full border-b border-line">
+      <div class="px-4 lg:px-16 grid lg:grid-cols-2 w-full border-b border-line">
         <div
-          class="flex flex-col w-full space-y-4 px-8 mb-6 border-r border-line"
+          class="flex flex-col w-full space-y-4 lg:px-8 mb-6 lg:border-r border-line"
           appGetElementHeight
           (height)="loadingHeight = $event">
           <button
@@ -142,7 +142,7 @@
       </div>
     </div>
     <div class="flex-col flex space-y-3">
-      <div class="grid grid-cols-2 px-16 pt-4">
+      <div class="grid lg:grid-cols-2 lg:px-16 pt-4">
         <h1 class="text-h2 leading-h2 text-not-black font-semibold px-8">
           Manage Unloading
         </h1>
@@ -151,11 +151,11 @@
           {{ selectedEventNameUnloading }}
         </h1>
       </div>
-      <div class="px-16 grid grid-cols-2 w-full border-b border-line">
+      <div class="px-4 lg:px-16 grid lg:grid-cols-2 w-full border-b border-line">
         <div
           appGetElementHeight
           (height)="unloadingHeight = $event"
-          class="flex flex-col w-full space-y-4 px-8 mb-6 border-r border-line">
+          class="flex flex-col w-full space-y-4 lg:px-8 mb-6 lg:border-r border-line">
           <button
             (click)="changeTripUnloadingEvent(event)"
             *ngFor="let event of unloadEvents"

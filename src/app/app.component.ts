@@ -115,7 +115,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.setCurrentLocationInStorage();
     this.checkInputListener();
     this.checkWhichRouteWeAreOn();
-    this.detectIsMobileDevice();
+    this.handleRouter();
   }
 
   /**
@@ -146,6 +146,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.shared.closeInputSelect.next(false);
+        this.detectIsMobileDevice();
       });
   }
 

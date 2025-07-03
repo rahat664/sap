@@ -32,6 +32,8 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
+import { TripData } from '../../model/trip.details.model';
+import { SessionModel } from '../../../manage-bid/models/session.model';
 
 @Component({
   selector: 'app-dialog-data',
@@ -177,7 +179,7 @@ export class DialogDataComponent implements OnInit {
         width: '24.125rem',
         height: '52.25rem',
         position: {
-          right: '12%',
+          right: this.isMobileDevice() ? '0' : '12%',
         },
       })
       .afterClosed()
@@ -208,7 +210,7 @@ export class DialogDataComponent implements OnInit {
         width: '24.125rem',
         height: '52.25rem',
         position: {
-          right: '12%',
+          right: this.isMobileDevice() ? '0' : '12%',
         },
       })
       .afterClosed()
@@ -251,7 +253,7 @@ export class DialogDataComponent implements OnInit {
         width: '24.125rem',
         height: '52.25rem',
         position: {
-          right: '12%',
+          right: this.isMobileDevice() ? '0' : '12%',
         },
       })
       .afterClosed()
@@ -280,7 +282,7 @@ export class DialogDataComponent implements OnInit {
         width: '24.125rem',
         height: '52.25rem',
         position: {
-          right: '12%',
+          right: this.isMobileDevice() ? '0' : '12%',
         },
       })
       .afterClosed()
@@ -818,5 +820,9 @@ export class DialogDataComponent implements OnInit {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
   }
 }

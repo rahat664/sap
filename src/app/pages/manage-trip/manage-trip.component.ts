@@ -33,6 +33,9 @@ import { debounceTime, Subject } from 'rxjs';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
+import { SessionModel } from '../manage-bid/models/session.model';
+import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
+import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
 
 @Component({
   selector: 'app-manage-trip',
@@ -57,6 +60,8 @@ import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom
     ReactiveFormsModule,
     MatSelect,
     FormsModule,
+    ButtonChipsComponent,
+    ScrollByButtonDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
@@ -64,6 +69,9 @@ import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom
 })
 export class ManageTripComponent implements OnInit {
   searchSubject = new Subject<string>();
+  rightButtonClicked = false;
+  leftButtonClicked = false;
+  scrollable = true;
   tripList: Trip[] = [];
   startingPosition: { lng: number; lat: number }[] = [];
   destinationPosition: { lng: number; lat: number }[] = [];
@@ -122,16 +130,27 @@ export class ManageTripComponent implements OnInit {
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
     { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
-    { id: 3, value: 'CASH_AND_INVOICE', selected: false, showname: 'Cash & Invoice' },
+    {
+      id: 3,
+      value: 'CASH_AND_INVOICE',
+      selected: false,
+      showname: 'Cash & Invoice',
+    },
     { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
   ];
   tripTypeFilter: number = 0;
   tripTypePlaceholder: string = '';
   tripTypeOptionsArray: CustomInputSelectModel[] = [
-    {id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics'},
-    {id: 2, value: 'COMMERCIAL', selected: false, showname: 'Commercial Logistics'},
+    { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
+    {
+      id: 2,
+      value: 'COMMERCIAL',
+      selected: false,
+      showname: 'Commercial Logistics',
+    },
   ];
   tripTypeValue: any[] = [];
+  mobileDeviceDetails: boolean = false;
 
   constructor(
     private tripService: TripService,
@@ -222,7 +241,7 @@ export class ManageTripComponent implements OnInit {
         null,
         null,
         this.paymentTypeValue?.toString(),
-        this.tripTypeValue?.toString(),
+        this.tripTypeValue?.toString()
       )
       .pipe(finalize(() => (this.loading = false)))
       .subscribe(
@@ -261,6 +280,7 @@ export class ManageTripComponent implements OnInit {
     this.activatedTruckSizeInFeet = Number(truckSizeInFeet);
     this.getTripDetails(tripId);
     this.getTruckTrackers(truckRegistrationNumber);
+    this.mobileDeviceDetails = !!this.isMobileDevice();
   }
 
   private retriveStatusButtons(statusCount: any) {
@@ -270,7 +290,7 @@ export class ManageTripComponent implements OnInit {
   }
 
   onClickButton(event: any) {
-    this.tripStatusFilter(event.name);
+    this.tripStatusFilter(event.name ? event.name : event);
   }
 
   onClickFilterButton(event: any, picker: any) {
@@ -329,6 +349,10 @@ export class ManageTripComponent implements OnInit {
   private tripStatusFilter(name: string) {
     this.page = 0;
     this.status = name === 'All' ? '' : name;
+    // make the status button active
+    this.statusButtons.forEach(button => {
+      button.isActive = button.name === name;
+    });
     this.tripService.anotherStatusCalled.next(true);
     this.getTripList();
   }
@@ -489,7 +513,8 @@ export class ManageTripComponent implements OnInit {
 
   onChangePaymentType($event: any) {
     this.paymentTypeValue = $event.value;
-    this.filterLength = this.previousFilterLength + this.paymentTypeValue?.length;
+    this.filterLength =
+      this.previousFilterLength + this.paymentTypeValue?.length;
   }
 
   onClickApply() {
@@ -673,7 +698,7 @@ export class ManageTripComponent implements OnInit {
       this.startDate = '';
       this.endDate = '';
       this.previousFilterLength -= 1;
-    } else{
+    } else {
       const filterId = this.vehicleTypeList.find(
         (element: any) => element.name === filter
       )?.id;
@@ -734,24 +759,27 @@ export class ManageTripComponent implements OnInit {
 
         if (selectedVehicle) {
           this.truckType.push(selectedVehicle.id);
-        }
-
-        else if (this.tripTypeOptionsArray.some(((value: any) => value.showname === element))) {
+        } else if (
+          this.tripTypeOptionsArray.some(
+            (value: any) => value.showname === element
+          )
+        ) {
           this.tripTypeValue.push(
             this.tripTypeOptionsArray.find(
               (value: any) => value.showname === element
             ).value
           );
-        }
-        else if (this.paymentTypeOptionsArray.some(((value: any) => value.showname === element))) {
+        } else if (
+          this.paymentTypeOptionsArray.some(
+            (value: any) => value.showname === element
+          )
+        ) {
           this.paymentTypeValue.push(
             this.paymentTypeOptionsArray.find(
               (value: any) => value.showname === element
             ).value
           );
-        }
-
-        else if (this.buttonName.includes(element)) {
+        } else if (this.buttonName.includes(element)) {
           this.selectedButton = element;
           this.dateText = element;
           this.dateSelected = true;
@@ -809,7 +837,7 @@ export class ManageTripComponent implements OnInit {
           );
         }
       });
-      this.filterLength = this.filterValues.length
+      this.filterLength = this.filterValues.length;
     } else {
       this.truckType = [];
       this.selectedButton = '';
@@ -836,9 +864,6 @@ export class ManageTripComponent implements OnInit {
     this.tripService.anotherStatusCalled.next(true);
     this.getTripList();
   }
-
-
-
 
   onClickClosePaymentType() {
     this.paymentTypePlaceholder = '';
@@ -869,5 +894,33 @@ export class ManageTripComponent implements OnInit {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  isMobileDevice() {
+    return localStorage.getItem('isMobileDevice') === 'true';
+  }
+
+  onClickBack() {
+    this.updateOverLayStyle(false);
+    this.mobileDeviceDetails = false;
+    this.activatedId = '';
+    this.singleTripDetails = {} as TripData;
+    this.startingPosition = [];
+    this.destinationPosition = [];
+    this.truckLocationPosition = {} as any;
+    this.tripList = [];
+    this.page = 0;
+    this.size = 20;
+    this.getTripList();
+  }
+
+  onClickRightButton() {
+    this.rightButtonClicked = true;
+    this.leftButtonClicked = false;
+  }
+
+  onClickLeftButton() {
+    this.leftButtonClicked = true;
+    this.rightButtonClicked = false;
   }
 }
