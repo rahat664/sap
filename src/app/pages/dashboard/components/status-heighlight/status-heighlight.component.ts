@@ -13,6 +13,7 @@ import {
 } from '../../models/dashboard-stats.model';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import {data} from "autoprefixer";
 
 @Component({
   selector: 'app-status-heighlight',
@@ -34,77 +35,25 @@ export class StatusHeighlightComponent implements OnInit {
   tripType: string = '';
 
   constructor(
-    private service: DashboardService,
-    private datePipe: DatePipe,
     private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    // get data from query params
-    this.activatedRoute.queryParams.subscribe((params) => {
-      this.customerCode = params['customerCode'] ? params['customerCode'] : [];
-      this.fromDate = params['fromDate'] ? params['fromDate'] : '';
-      this.toDate = params['toDate'] ? params['toDate'] : '';
-      this.paymentType = params['paymentType'] ? params['paymentType'] : '';
-      this.tripType = params['tripType'] ? params['tripType'] : '';
-      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : [];
-      if (!this.fromDate || !this.toDate) {
-        this.dateFilterAvailable = false;
-        this.countFromDateAndToDate();
-      } else {
-        this.dateFilterAvailable = true;
-      }
-      this.getDashboardStats();
-      this.customerStats();
-    });
-
+    this.activatedRoute.data.subscribe((data: any) => {
+      const dashboardData = data.dashboardData.data;
+      this.dashboardStats = dashboardData?.apiStats?.data;
+      this.customerStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
+        (customer: customerStats) => customer.roleName === 'ROLE_CUSTOMER'
+      );
+      this.transporterStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
+        (user: userStats) => user.roleName === 'ROLE_TRANSPORTER'
+      );
+      this.driverStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
+        (user: userStats) => user.roleName === 'ROLE_DRIVER'
+      );
+    })
   }
 
-
-  private getDashboardStats() {
-    this.service
-      .getApiStats(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType, this.tripType, this.truckTypeId.toString())
-      .subscribe((res: any) => {
-        if (res.status === 'OK') {
-          this.dashboardStats = res.data;
-        }
-      });
-  }
-
-  private customerStats() {
-    this.service
-      .getCustomerStats(
-        this.fromDate,
-        this.toDate,
-        this.customerCode.toString(),
-        this.paymentType,
-        this.tripType,
-        this.truckTypeId.toString()
-      )
-      .subscribe((res: any) => {
-        if (res.status === 'OK') {
-          this.transporterStatistics = res.data.totalUsers.find(
-            user => user.roleName === 'ROLE_TRANSPORTER'
-          );
-          this.driverStatistics = res.data.totalUsers.find(
-            user => user.roleName === 'ROLE_DRIVER'
-          );
-          this.customerStatistics = res.data.totalUsers.find(
-            customer => customer.roleName === 'ROLE_CUSTOMER'
-          );
-        }
-      });
-  }
-
-  private countFromDateAndToDate() {
-    // from date will be the starting date of the current month
-    this.fromDate = this.datePipe.transform(new Date(), 'yyyy-MM-01');
-    // to date will be the last date of the current month
-    this.toDate = this.datePipe.transform(
-      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-      'yyyy-MM-dd'
-    );
-  }
 
   protected readonly localStorage = localStorage;
   protected readonly Math = Math;

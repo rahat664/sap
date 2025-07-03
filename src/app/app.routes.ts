@@ -29,6 +29,7 @@ export const routes: Routes = [
     resolve: {
       dashboardData: dashboardDataResolver,
     },
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
   },
   {
     path: 'challan-management',
