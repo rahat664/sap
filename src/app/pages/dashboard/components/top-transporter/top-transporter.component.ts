@@ -44,20 +44,32 @@ export class TopTransporterComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loading = false;
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.customerCode = params['customerCode'] ? params['customerCode'] : '';
-      this.paymentType = params['paymentType'] ? params['paymentType'] : '';
-      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : '';
-      this.tripType = params['tripType'] ? params['tripType'] : '';
-      if (params['fromDate'] && params['toDate']) {
-        this.fromDate = params['fromDate'];
-        this.toDate = params['toDate'];
-      } else {
-        this.getFromDateToDate();
+    // this.loading = false;
+    // this.activatedRoute.queryParams.subscribe(params => {
+    //   this.customerCode = params['customerCode'] ? params['customerCode'] : '';
+    //   this.paymentType = params['paymentType'] ? params['paymentType'] : '';
+    //   this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : '';
+    //   this.tripType = params['tripType'] ? params['tripType'] : '';
+    //   if (params['fromDate'] && params['toDate']) {
+    //     this.fromDate = params['fromDate'];
+    //     this.toDate = params['toDate'];
+    //   } else {
+    //     this.getFromDateToDate();
+    //   }
+    //   this.getTopTransporters();
+    // } )
+
+    this.activatedRoute.data.subscribe(
+      (data: any) => {
+        const dashboardData = data.dashboardData.data;
+        this.topTransporter = dashboardData?.topTransporters?.data.content;
+        this.loading = false;
       }
-      this.getTopTransporters();
-    } )
+    )
+
+
+
+
   }
 
   private getTopTransporters() {

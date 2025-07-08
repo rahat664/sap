@@ -1,11 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatFormField } from '@angular/material/form-field';
-import { MatOption } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StatusCardComponent } from './status-card/status-card.component';
-import { DashboardService } from '../../services/dashboard.service';
-import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   customerStats,
   DashboardStatsModel,
@@ -13,7 +8,7 @@ import {
 } from '../../models/dashboard-stats.model';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
-import {data} from "autoprefixer";
+import {combineLatest, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-status-heighlight',
@@ -22,6 +17,7 @@ import {data} from "autoprefixer";
   styleUrl: './status-heighlight.component.scss',
 })
 export class StatusHeighlightComponent implements OnInit {
+  private destroy$ = new Subject<void>();
   fromDate: string;
   toDate: string;
   dashboardStats: DashboardStatsModel;
@@ -38,21 +34,32 @@ export class StatusHeighlightComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {}
 
+
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe((data: any) => {
-      const dashboardData = data.dashboardData.data;
-      this.dashboardStats = dashboardData?.apiStats?.data;
-      this.customerStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
-        (customer: customerStats) => customer.roleName === 'ROLE_CUSTOMER'
-      );
-      this.transporterStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
-        (user: userStats) => user.roleName === 'ROLE_TRANSPORTER'
-      );
-      this.driverStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
-        (user: userStats) => user.roleName === 'ROLE_DRIVER'
-      );
-    })
+    combineLatest([
+      this.activatedRoute.data,
+      this.activatedRoute.queryParams
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([data, params]: [any, any]) => {
+        const dashboardData = data.dashboardData.data;
+        this.dashboardStats = dashboardData?.apiStats?.data;
+        this.customerStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
+          (customer: customerStats) => customer.roleName === 'ROLE_CUSTOMER'
+        );
+        this.transporterStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
+          (user: userStats) => user.roleName === 'ROLE_TRANSPORTER'
+        );
+        this.driverStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
+          (user: userStats) => user.roleName === 'ROLE_DRIVER'
+        );
+        this.fromDate = params['fromDate'];
+        this.toDate = params['toDate'];
+        this.dateFilterAvailable = !!(this.fromDate && this.toDate);
+      });
   }
+
+
 
 
   protected readonly localStorage = localStorage;
