@@ -194,7 +194,6 @@ export class ManageTripComponent implements OnInit {
 
     this.getTripListFromResolvedState();
     this.getVehicleTypeList();
-    this.activatedId = null;
     localStorage.removeItem('tripId');
     this.tripService.reloadManageTripPage.subscribe(value => {
       if (value) {
@@ -364,11 +363,8 @@ export class ManageTripComponent implements OnInit {
     this.retriveStatusButtons(trip.data.statusCount);
     if (this.page === 0) {
       this.tripList = trip.data.responses;
-      this.getTruckTrackers(
-        this.getTruckRegistrationNumber(this.tripList[0].truck)
-      );
-      this.getTripDetails(this.tripList[0].tripId);
       this.activatedId = this.tripList[0].tripId;
+      this.getTripDetails(this.tripList[0].tripId);
       this.tripStatus = this.tripList[0].status;
       this.activatedTruckSizeInFeet = Number(this.tripList[0].truckSize);
     } else {
@@ -929,6 +925,8 @@ export class ManageTripComponent implements OnInit {
   private getTripListFromResolvedState() {
     this.activatedRoute.data.subscribe((data: { tripList: any }) => {
       this.loading = false;
+      this.page = 0;
+      this.size = 30;
       const trip = data.tripList.data
       this.updateTripList(trip)
     })

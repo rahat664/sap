@@ -171,24 +171,6 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
         const oneDayAfterTripEndedAt = new Date(
           tripEndedAt.getTime() + 24 * 60 * 60 * 1000
         );
-        this.getTripHistory(
-          'previous',
-          this.datePipe.transform(
-            oneDayBeforeTripStartedAt,
-            'yyyy-MM-ddTHH:mm:ss'
-          ),
-          this.singleTripData?.tripStartedAt
-        );
-        this.getTripHistory(
-          'current',
-          this.singleTripData?.tripStartedAt,
-          this.singleTripData?.tripEndedAt
-        );
-        this.getTripHistory(
-          'next',
-          this.singleTripData?.tripEndedAt,
-          this.datePipe.transform(oneDayAfterTripEndedAt, 'yyyy-MM-ddTHH:mm:ss')
-        );
       } else {
         if (this.lines) {
           this.lines.forEach(line => {
@@ -267,7 +249,7 @@ export class GMapComponent implements OnInit, OnChanges, OnDestroy {
     if (changes['truckLocationPosition']) {
       this.updateTruckLocation();
     }
-    if (this.tripStatus === 'Completed') {
+    if (changes['singleTripData'] && this.singleTripData.status === 'Completed') {
       // 24 hours before trip started at time
       const tripStartedAt = new Date(this.singleTripData?.tripStartedAt);
       const oneDayBeforeTripStartedAt = new Date(
