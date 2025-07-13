@@ -10,6 +10,7 @@ import { TransporterPayment } from '../model/transporter-payment.model';
 import { numberPipe } from '../../../shared/pipes/number-seperator.pipe';
 import { PaymentDetailsComponent } from '../payment-details/payment-details.component';
 import { PaymentFilterComponent } from '../payment-filter/payment-filter.component';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-payment',
@@ -54,10 +55,11 @@ export class PaymentComponent {
     private trip: TripService,
     private service: TripService,
     private datePipe: DatePipe,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.transporterPaymentList();
+    this.transporterPaymentListFromResolver();
     const paymentFilter = localStorage.getItem('paymentFilter');
     if(paymentFilter) {
       localStorage.removeItem('paymentFilter');
@@ -347,5 +349,17 @@ export class PaymentComponent {
       default:
         return type === 'bg' ? 'bg-[#FFE2DD]' : 'text-[#961801]';
     }
+  }
+
+
+  private transporterPaymentListFromResolver() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const res = data.transporterPayment.data
+      this.transportersPaymentList = res.data.responses;
+      this.totalPages = res.data.totalPages;
+      this.paymentData = res.data.paymentData;
+      this.totalTrips = res.data.totalItems;
+      this.loading = false;
+    })
   }
 }

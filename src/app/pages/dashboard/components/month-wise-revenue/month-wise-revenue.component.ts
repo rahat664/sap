@@ -43,10 +43,10 @@ export class MonthWiseRevenueComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getParamData();
+    this.getParamData('init');
   }
 
-  getParamData() {
+  getParamData(from: string) {
     this.activatedRoute.queryParams.subscribe(params => {
       this.customerCode = params['customerCode'] ? params['customerCode'] : '';
       this.paymentType = params['paymentType'] ? params['paymentType'] : '';
@@ -113,7 +113,7 @@ export class MonthWiseRevenueComponent implements OnInit {
           );
         }
       }
-      this.getMonthWiseTripCount();
+      from === 'init' ? this.getMonthWiseTripCountOnInit() : this.getMonthWiseTripCount();
     });
   }
 
@@ -190,6 +190,110 @@ export class MonthWiseRevenueComponent implements OnInit {
     this.toDate = lastSixMonths.reverse();
     this.from = this.fromDate[0];
     this.to = this.toDate[this.toDate.length - 1];
+  }
+
+  private getMonthWiseTripCountOnInit() {
+    // to date will be the given to date
+
+    if (this.datatype === 'monthly') {
+      this.createdTrips = [];
+      this.completedTrips = [];
+      this.fromDate.map((fromDate, index) => {
+        // concat the form date and to date with month name like 29-31 Jan-2025
+        const fromDateObj = new Date(fromDate);
+        const toDateObj = new Date(this.toDate[index]);
+
+        const fromDay = this.datePipe.transform(fromDateObj, 'd'); // Get day of the monthR
+        const toDay = this.datePipe.transform(toDateObj, 'd'); // Get day of the month
+        const fromMonth = this.datePipe.transform(fromDateObj, 'MMM'); // Get month name of fromDate
+        const toMonth = this.datePipe.transform(toDateObj, 'MMM'); // Get month name of toDate
+
+        // Get the last day of the month for fromDate
+        const lastDayOfFromMonth = new Date(
+          fromDateObj.getFullYear(),
+          fromDateObj.getMonth() + 1,
+          0
+        ).getDate();
+
+        // Check if both fromDate and toDate are in the same month
+        if (fromMonth === toMonth) {
+          // If the fromDate is the first day and the toDate is the last day of the same month
+          if (fromDay === '1' && toDay === lastDayOfFromMonth.toString()) {
+            // If it's the whole month, don't add month name
+            this.months[index] = `${this.months[index]}`;
+          } else {
+            // Otherwise, append the range with the month name
+            this.months[index] = `${this.months[index]}|${fromDay} - ${toDay}`;
+          }
+        } else {
+          // If the fromDate and toDate are in different months, append the full range
+          this.months[index] = `${this.months[index]}|${fromDay} - ${toDay}`;
+        }
+      });
+    } else {
+      this.months = [];
+      this.createdTrips = [];
+      this.completedTrips = [];
+      // calculate days between the from and to date
+      const fromDate = new Date(this.from);
+      const toDate = new Date(this.to);
+      const diffTime = Math.abs(toDate.getTime() - fromDate.getTime());
+      const monthNames = [];
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      for (let i = 0; i <= diffDays; i++) {
+        const date = new Date(fromDate);
+        date.setDate(date.getDate() + i);
+        monthNames.push(this.datePipe.transform(date, 'dd-MMM-yyyy'));
+      }
+      this.months =
+        this.datatype === 'daily' ? monthNames.reverse() : monthNames;
+    }
+
+    this.activatedRoute.data.subscribe((data: any) => {
+      const dashboardData = data.dashboardData.data;
+      const res = dashboardData?.tripCountByDate
+        const createdTrips = [];
+        const completedTrips = [];
+        this.months.forEach(month => {
+          let created = 0;
+          let completed = 0;
+          createdTrips.push(created);
+          completedTrips.push(completed);
+        });
+        res.data?.forEach(data => {
+          const period =
+            this.datatype === 'monthly'
+              ? this.datePipe.transform(new Date(data.period), 'MMM-yyyy')
+              : this.datePipe.transform(new Date(data.period), 'dd-MMM-yyyy');
+          if (this.datatype === 'monthly') {
+            const index = this.months.findIndex(month =>
+              month.includes(period)
+            );
+            if (index !== -1) {
+              createdTrips[index] = data.All;
+              completedTrips[index] = data.Completed;
+            }
+          } else {
+            const index = this.months.findIndex(month =>
+              month.includes(period)
+            );
+            if (index !== -1) {
+              createdTrips[index] = data.All;
+              completedTrips[index] = data.Completed;
+            }
+          }
+        });
+
+        this.createdTrips =
+          createdTrips;
+        this.completedTrips =
+          completedTrips;
+    })
+  }
+
+  changeType($event: any) {
+    this.datatype = $event.value;
+    this.getParamData('filter');
   }
 
   private getMonthWiseTripCount() {
@@ -295,12 +399,7 @@ export class MonthWiseRevenueComponent implements OnInit {
         this.createdTrips =
           createdTrips;
         this.completedTrips =
-           completedTrips;
+          completedTrips;
       });
-  }
-
-  changeType($event: any) {
-    this.datatype = $event.value;
-    this.getParamData();
   }
 }

@@ -36,6 +36,7 @@ import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom
 import { SessionModel } from '../manage-bid/models/session.model';
 import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
 import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-manage-trip',
@@ -156,7 +157,8 @@ export class ManageTripComponent implements OnInit {
     private tripService: TripService,
     private toggleMobileViewService: ToggleResponsiveService,
     private customer: CustomerService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private activatedRoute: ActivatedRoute
   ) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       if (searchText) {
@@ -190,7 +192,7 @@ export class ManageTripComponent implements OnInit {
       this.anotherStatusCalled = value;
     });
 
-    this.getTripList();
+    this.getTripListFromResolvedState();
     this.getVehicleTypeList();
     this.activatedId = null;
     localStorage.removeItem('tripId');
@@ -922,5 +924,13 @@ export class ManageTripComponent implements OnInit {
   onClickLeftButton() {
     this.leftButtonClicked = true;
     this.rightButtonClicked = false;
+  }
+
+  private getTripListFromResolvedState() {
+    this.activatedRoute.data.subscribe((data: { tripList: any }) => {
+      this.loading = false;
+      const trip = data.tripList.data
+      this.updateTripList(trip)
+    })
   }
 }

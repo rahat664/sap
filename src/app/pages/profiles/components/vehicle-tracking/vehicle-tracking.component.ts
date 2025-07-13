@@ -21,6 +21,7 @@ import { TripListFilterComponent } from '../../../trip-list/components/trip-list
 import { VehicleTrackingFilterComponent } from './vehicle-tracking-filter/vehicle-tracking-filter.component';
 import { TripData } from '../../../manage-trip/model/trip.details.model';
 import { SessionModel } from '../../../manage-bid/models/session.model';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-vehicle-tracking',
@@ -130,7 +131,8 @@ export class VehicleTrackingComponent implements OnInit {
   constructor(
     private truck: TruckService,
     private transporter: UserService,
-    private geoLocation: GeolocationService
+    private geoLocation: GeolocationService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.isMobileDevice() ? this.trucklistOpened = false : this.trucklistOpened = true;
     this.truckSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
@@ -162,8 +164,7 @@ export class VehicleTrackingComponent implements OnInit {
   ngOnInit() {
     this.isMobileDevice() ? this.trucklistOpened = false : this.trucklistOpened = true;
     this.truckLocationPosition = [];
-    this.getTruckList();
-    this.onClickTruckList();
+    this.getTruckListFromResolver();
   }
 
   onClickFilterOpened() {
@@ -297,6 +298,7 @@ export class VehicleTrackingComponent implements OnInit {
         this.condition
       )
       .subscribe((truck: any) => {
+        this.allTruckList = truck.data.responses;
         this.trackerEnabledTrucks = truck.data.responses;
         this.getCondtionCount(truck?.data?.conditionCount);
         this.getLastRecordedLocation(truck.data.responses);
@@ -494,20 +496,18 @@ export class VehicleTrackingComponent implements OnInit {
       this.filterOpened = false;
       this.transporterName = this.filterData.transporterName;
       this.page = 0;
-      this.size = 30;
+      this.size = 1000;
       this.truckLocationPosition = [];
       this.trackerEnabledTrucks = [];
       this.getTruckList();
-      this.onClickTruckList();
     } else {
       localStorage.removeItem('tripFilterData');
       this.page = 0;
-      this.size = 30;
+      this.size = 1000;
       this.truckLocationPosition = [];
       this.trackerEnabledTrucks = [];
       this.transporterName = '';
       this.getTruckList();
-      this.onClickTruckList();
     }
   }
 
@@ -516,12 +516,21 @@ export class VehicleTrackingComponent implements OnInit {
     this.filterApplied = false;
     this.filterData = {};
     this.page = 0;
-    this.size = 30;
+    this.size = 1000;
     this.truckLocationPosition = [];
     this.transporterName = '';
     this.trackerEnabledTrucks = [];
     this.getTruckList();
-    this.onClickTruckList();
   }
 
+  private getTruckListFromResolver() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      console.log(data)
+      const truck = data.vehicleTracking.data
+      this.allTruckList = truck.data.responses;
+      this.trackerEnabledTrucks = truck.data.responses;
+      this.getCondtionCount(truck?.data?.conditionCount);
+      this.getLastRecordedLocation(truck.data.responses);
+    })
+  }
 }

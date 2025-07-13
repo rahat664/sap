@@ -72,7 +72,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
 
   changeChartType($event: MatSelectChange) {
     this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData();
+    this.getTransporterRateAnalysisData('event');
   }
 
   ngOnInit() {
@@ -98,12 +98,12 @@ export class TransporterRateAnalysisComponent implements OnInit {
           this.dateFilterApplied = true;
           this.fromDate = params['fromDate'];
           this.toDate = params['toDate'];
-          this.getTransporterRateAnalysisData();
+          this.getTransporterRateAnalysisData('init');
         } else {
           this.resetColorsAndSeriesData();
           this.dateFilterApplied = false;
           this.calculateFromAndToDate();
-          this.getTransporterRateAnalysisData();
+          this.getTransporterRateAnalysisData('init');
         }
       });
     });
@@ -137,7 +137,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
     });
   }
 
-  private getTransporterRateAnalysisData() {
+  private getTransporterRateAnalysisData(callFrom: string) {
     this.categories = [];
     this.seriesdata = [];
     this.colors = [];
@@ -225,7 +225,10 @@ export class TransporterRateAnalysisComponent implements OnInit {
         }
       }
     }
+    callFrom === 'init' ? this.getDataFromResolvedData() : this.callServiceApi();
+  }
 
+  callServiceApi() {
     this.service
       .getTransporterRateAnalysisData(
         this.datatype,
@@ -244,35 +247,36 @@ export class TransporterRateAnalysisComponent implements OnInit {
       });
   }
 
-  onVehicleTypeChange($event: MatSelectChange) {
-    this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData();
+  getDataFromResolvedData() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const dashboardData = data?.dashboardData?.data;
+      const resolvedData = dashboardData?.transporterRateAnalysisData?.data;
+      if (resolvedData) {
+        this.parseSeriesDataAndColorsFromResponse(resolvedData);
+      } else {
+        this.callServiceApi();
+      }
+    });
   }
+
+
 
   onUnloadingDistrictChange($event: MatSelectChange) {
     this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData();
+    this.getTransporterRateAnalysisData('event');
   }
 
   onLoadingDistrictChange($event: MatSelectChange) {
     this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData();
+    this.getTransporterRateAnalysisData('event');
   }
 
   onTransporterChange($event: MatSelectChange) {
     this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData();
+    this.getTransporterRateAnalysisData('event');
   }
 
-  onMonthChange($event: MatSelectChange) {
-    this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData();
-  }
 
-  onYearChange($event: MatSelectChange) {
-    this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData();
-  }
 
   private parseSeriesDataAndColorsFromResponse(data) {
     if (this.chartType === 'high') {
@@ -396,7 +400,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
     this.loadingDistrict = '';
     this.unloadingDistrict = '';
     this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData();
+    this.getTransporterRateAnalysisData('event');
   }
 
   private calculateFromAndToDate() {
@@ -414,7 +418,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
   onDataTypeChange($event: any) {
     this.datatype = $event.value;
     this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData();
+    this.getTransporterRateAnalysisData('event');
   }
 
   private findIndexOfDate(date: number, datatype: string) {
@@ -427,7 +431,6 @@ export class TransporterRateAnalysisComponent implements OnInit {
         }
       }
     } else {
-      debugger;
       const monthNames = [
         'Jan',
         'Feb',

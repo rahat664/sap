@@ -4,9 +4,9 @@
     (height)="height = $event"
     class="flex flex-col space-y-3">
     <div
-      class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
+      class="flex flex-col space-y-3 md:space-y-0 md:flex-row justify-between">
       <div class="flex justify-between w-full items-center">
-        <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">Vehicle Tracking</h1>
+        <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">Vehicle Tracking</h1>
         <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1  text-h2_medium text-primary">
           <img class="notPreview" src="assets/svg/filter.svg" alt="">
           <p>Filter</p>
@@ -24,7 +24,7 @@
     <app-trucking-map
       [selectedTruck]="selectedTruckNumber"
       [truckLocationPosition]="truckLocationPosition"></app-trucking-map>
-    <div class="absolute bottom-4 lg:bottom-[93.5%] lg:top-4 left-4 flex flex-col space-y-3 lg:space-y-0 lg:flex-row lg:space-x-3 ">
+    <div class="absolute bottom-4 md:bottom-[93.5%] md:top-4 left-4 flex flex-col space-y-3 md:space-y-0 md:flex-row md:space-x-3 ">
       <ng-container *ngFor="let conditions of conditionList">
         <button
           (click)="onClickCondition(conditions)"
@@ -39,7 +39,7 @@
         </button>
       </ng-container>
     </div>
-    <div class="absolute lg:right-12 right-4 top-4 min-w-36 bg-white rounded-lg">
+    <div class="absolute md:right-12 right-4 top-4 min-w-36 bg-white rounded-lg">
       <div
         *ngIf="!trucklistOpened"
         class="flex w-full justify-between items-center px-4 py-2 rounded-lg">
@@ -51,7 +51,7 @@
           Truck list
         </h1>
       </div>
-      <div class="w-[85vw] lg:w-full px-4 py-2 rounded-lg" *ngIf="trucklistOpened">
+      <div class="w-[85vw] md:w-full px-4 py-2 rounded-lg" *ngIf="trucklistOpened">
         <div class="w-full justify-between flex items-center">
           <h1 class="text-h2 leading-h2 text-not-black font-semibold">
             Truck list
@@ -77,7 +77,7 @@
             type="text"
             name="email"
             [(ngModel)]="searchTruckValue"
-            class="border-line bg-input text-input-hint w-full lg:w-[24rem] sm:text-sm rounded-lg focus:ring-link focus:border-link block pl-10 p-2.5"
+            class="border-line bg-input text-input-hint w-full md:w-[24rem] sm:text-sm rounded-lg focus:ring-link focus:border-link block pl-10 p-2.5"
             placeholder="Enter truck registration number"/>
         </div>
         <div

@@ -25,6 +25,7 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
   const sortBy = 'grossProfit';
 
   const type = 'daily';
+  const tripCountByDateType = 'monthly'
   const selectedMonth =
     (new Date().getMonth() + 1).toString().length === 1
       ? '0' + (new Date().getMonth() + 1).toString()
@@ -55,7 +56,7 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
         apiStats: dashboardService.getApiStats(from, to, customerCode, paymentType, tripType, truckTypeId),
         customerStats: dashboardService.getCustomerStats(from, to, customerCode, paymentType, tripType, truckTypeId),
         challanStatus: dashboardService.getChallanStatus(challanFromDate, challanToDate , customerCode, paymentType, tripType, truckTypeId),
-        tripCountByDate: dashboardService.getDateWiseTripCount(from, to, type, customerCode, paymentType, tripType, truckTypeId),
+        tripCountByDate: dashboardService.getDateWiseTripCount(challanFromDate, challanToDate, tripCountByDateType, customerCode, paymentType, tripType, truckTypeId),
         topTransporters: dashboardService.getTopTransporters(challanFromDate, challanToDate, sortBy, customerCode, paymentType, tripType, truckTypeId),
         topCustomers: dashboardService.getTopCustomers(challanFromDate, challanToDate, sortBy, paymentType, tripType, truckTypeId),
         transporterRateAnalysisData:

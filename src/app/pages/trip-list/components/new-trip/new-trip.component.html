@@ -1,15 +1,15 @@
 <div class="flex flex-col space-y-3">
   <div class="flex flex-col space-y-3">
     <div class="flex mx-4 justify-between py-3 items-center">
-      <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">New Trip</h1>
+      <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">New Trip</h1>
       <button
         type="button"
         routerLink="/trip-create/create"
         *ngIf="createButtonEnabled && !isAdmin()"
         class="bg-primary text-white rounded-lg px-12 py-2 justify-self-end"
         (click)="onCreateTrip()">
-        <span class="hidden lg:inline">Create Trip</span>
-        <i class="fas fa-plus text-white text-xs lg:hidden"></i>
+        <span class="hidden md:inline">Create Trip</span>
+        <i class="fas fa-plus text-white text-xs md:hidden"></i>
       </button>
     </div>
     <div class="flex flex-col space-y-1 px-4 py-2 bg-white">
@@ -19,7 +19,7 @@
         <div class="flex flex-1 flex-col space-y-2 relative">
           <label for="customerName" class="form-label">Select Customer</label>
           <mat-form-field
-            (mouseenter)="updateOverLayStyle(false)" appearance="outline" class="example-full-width lg:w-1/3 w-full">
+            (mouseenter)="updateOverLayStyle(false)" appearance="outline" class="example-full-width md:w-1/3 w-full">
             <input
               id="customerName"
               type="text"
@@ -50,10 +50,10 @@
           type="button"
           routerLink="/trip-create/create"
           *ngIf="createButtonEnabled"
-          class="bg-primary text-white rounded-lg px-4 lg:px-12  py-2 justify-self-end"
+          class="bg-primary text-white rounded-lg px-4 md:px-12  py-2 justify-self-end"
           (click)="onCreateTrip()">
-          <span class="hidden lg:inline">Create Trip</span>
-          <i class="fas fa-plus text-white text-xs lg:hidden"></i>
+          <span class="hidden md:inline">Create Trip</span>
+          <i class="fas fa-plus text-white text-xs md:hidden"></i>
         </button>
       </div>
       <div *ngIf="favouriteCustomer?.length > 0 && !createButtonEnabled">
@@ -77,9 +77,9 @@
         type="button"
         routerLink="/trip-create/create-trip-template"
         (click)="onClickAddTemplate()"
-        class="border border-primary text-primary font-semibold rounded-lg px-4 lg:px-12 py-2">
-        <span class="hidden lg:inline">Add Template</span>
-        <i class="fas fa-plus text-primary text-xs lg:hidden"></i>
+        class="border border-primary text-primary font-semibold rounded-lg px-4 md:px-12 py-2">
+        <span class="hidden md:inline">Add Template</span>
+        <i class="fas fa-plus text-primary text-xs md:hidden"></i>
       </button>
     </div>
     <div

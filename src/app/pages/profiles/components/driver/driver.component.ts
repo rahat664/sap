@@ -6,7 +6,7 @@ import { GetClickEventDirective } from '../../../../shared/directive/get-click-e
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { UserModel } from '../../../user-management/models/user.model';
 import { UserService } from '../../services/user.service';
@@ -79,7 +79,8 @@ export class DriverComponent implements OnInit {
     private sharedService: DriverEditSharedService,
     private toastr: HandleToastrService,
     private datePipe: DatePipe,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -90,9 +91,8 @@ export class DriverComponent implements OnInit {
 
   ngOnInit(): void {
     this.generateDateOptionsArray();
-    this.onSelectStatus(0);
     this.driverList = [];
-    this.getDriverList();
+    this.getDriverListFromResolver();
     this.makeSureUploadCompletedOrNot();
   }
 
@@ -614,5 +614,14 @@ export class DriverComponent implements OnInit {
 
   onFilterData($event: any) {
     this.filterData = $event;
+  }
+
+  private getDriverListFromResolver() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const res = data.driver.data
+      this.driverList = res.data.responses;
+      this.totalPages = res.data.totalPages;
+      this.loading = false;
+    })
   }
 }

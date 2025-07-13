@@ -1,24 +1,24 @@
 <div>
   <div class="p-2 sticky top-16 bg-app-bg z-30">
     <div class="p-4 rounded-lg bg-white flex justify-between items-center">
-      <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">
+      <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">
         {{ isInEditMode ? 'Driver Edit' : 'Driver Details' }}
       </h1>
       <div class="flex space-x-4 items-center">
         <button
           *ngIf="isInEditMode"
           (click)="onClickSave()"
-          class="px-4 lg:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          class="px-4 md:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span class="hidden lg:inline"></span>
-          <i class="fas fa-check text-white lg:hidden"></i>
+          <span class="hidden md:inline"></span>
+          <i class="fas fa-check text-white md:hidden"></i>
         </button>
         <button
           *ngIf="isInEditMode"
           (click)="onClickCancel()"
-          class="px-4 lg:px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
-          <span class="hidden lg:inline">Cancel</span>
-          <i class="fas fa-times text-blue lg:hidden"></i>
+          class="px-4 md:px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
+          <span class="hidden md:inline">Cancel</span>
+          <i class="fas fa-times text-blue md:hidden"></i>
         </button>
         <button
           *ngIf="
@@ -27,18 +27,18 @@
               driverDetails?.approveStatus === 'Rejected')
           "
           (click)="onClickApprove(driverDetails)"
-          class="px-4 lg:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+          class="px-4 md:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span class="hidden lg:inline">Approve</span>
-          <i class="fas fa-check text-white lg:hidden"></i>
+          <span class="hidden md:inline">Approve</span>
+          <i class="fas fa-check text-white md:hidden"></i>
         </button>
         <button
           *ngIf="!isInEditMode && driverDetails?.approveStatus === 'Pending'"
           (click)="onClickReject(driverDetails)"
-          class="px-4 lg:px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
+          class="px-4 md:px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span class="hidden lg:inline">Reject</span>
-          <i class="fas fa-times text-red lg:hidden"></i>
+          <span class="hidden md:inline">Reject</span>
+          <i class="fas fa-times text-red md:hidden"></i>
         </button>
         <button
           (click)="onClickEdit()"
@@ -50,7 +50,7 @@
     </div>
   </div>
   <form [formGroup]="driverUpdateForm">
-    <div class="grid lg:grid-cols-2 gap-3 px-2 text-body">
+    <div class="grid md:grid-cols-2 gap-3 px-2 text-body">
       <div class="w-full flex flex-col space-y-2">
         <div
           class="border-b-2 bg-white rounded-lg border-input px-6 py-5 flex flex-col space-y-3">

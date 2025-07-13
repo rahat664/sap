@@ -1,24 +1,24 @@
 <div class="flex flex-col space-y-2">
   <div
     class="mx-3 mt-2 flex justify-between items-center rounded-lg bg-white pl-9 pr-6 py-[.875rem]">
-    <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 text-not-black font-semibold">
+    <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 text-not-black font-semibold">
       Challan Details
     </h1>
     <div class="flex space-x-2 items-center">
       <button
         *ngIf="isInEditMode"
         (click)="onSave()"
-        class="px-4 lg:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+        class="px-4 md:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
         <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-        <span class="hidden lg:inline">Save</span>
-        <i class="fas fa-save text-white lg:hidden"></i>
+        <span class="hidden md:inline">Save</span>
+        <i class="fas fa-save text-white md:hidden"></i>
       </button>
       <button
         *ngIf="isInEditMode"
         (click)="onCancel()"
-        class="px-4 lg:px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
-        <span class="hidden lg:inline">Cancel</span>
-        <i class="fas fa-times text-blue lg:hidden"></i>
+        class="px-4 md:px-[44px] py-[10.5px] text-blue border border-blue rounded-lg text-center font-semibold">
+        <span class="hidden md:inline">Cancel</span>
+        <i class="fas fa-times text-blue md:hidden"></i>
       </button>
       <button
         *ngIf="
@@ -29,9 +29,9 @@
         (click)="
           changeStatus(singleTrip?.tripId, singleTrip?.tripId, 'Approved')
         "
-        class="px-4 lg:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
-        <span class="hidden lg:inline">Approve</span>
-        <i class="fas fa-check text-white lg:hidden"></i>
+        class="px-4 md:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
+        <span class="hidden md:inline">Approve</span>
+        <i class="fas fa-check text-white md:hidden"></i>
       </button>
       <button
         *ngIf="
@@ -43,9 +43,9 @@
         (click)="
           changeStatus(singleTrip?.tripId, singleTrip?.tripId, 'Rejected')
         "
-        class="px-4 lg:px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
-        <span class="hidden lg:inline">Reject</span>
-        <i class="fas fa-times text-red lg:hidden"></i>
+        class="px-4 md:px-[44px] py-[10.5px] text-red border border-red rounded-lg text-center font-semibold">
+        <span class="hidden md:inline">Reject</span>
+        <i class="fas fa-times text-red md:hidden"></i>
       </button>
       <button
         *ngIf="!isInEditMode && singleTrip?.challanStatus !== 'Approved'"
@@ -55,7 +55,7 @@
       </button>
     </div>
   </div>
-  <div class="grid lg:grid-cols-3 gap-3 w-full" *ngIf="!loading">
+  <div class="grid md:grid-cols-3 gap-3 w-full" *ngIf="!loading">
     <div class="flex flex-col space-y-2 h-[calc(100vh-10rem)] overflow-auto">
       <div class="px-6 py-4 ml-3 bg-white rounded-lg">
         <div class="flex flex-col space-y-6">
@@ -195,7 +195,7 @@
       <div class="px-6 py-4 ml-3 bg-white rounded-lg">
         <div class="flex flex-col space-y-4 w-full">
           <h1 class="text-h2 leading-h2 font-bold">Unloading challan</h1>
-          <div class="flex flex-col lg:flex-row gap-1 justify-between items-start w-full">
+          <div class="flex flex-col md:flex-row gap-1 justify-between items-start w-full">
             <div class="flex flex-col space-y-1">
               <span class="text-body text-secondary">Status</span>
               <span
@@ -203,7 +203,7 @@
               >{{ singleTrip?.challanStatus }}</span
               >
             </div>
-            <div class="flex flex-col space-y-1 text-left lg:text-center">
+            <div class="flex flex-col space-y-1 text-left md:text-center">
               <span class="text-body text-secondary">{{
                   getTimeByChallanStatus(singleTrip?.challanStatus)
                 }}</span>
@@ -217,7 +217,7 @@
                 }}</span
               >
             </div>
-            <div class="flex flex-col space-y-1 text-left lg:text-center">
+            <div class="flex flex-col space-y-1 text-left md:text-center">
               <span class="text-body text-secondary">Due Days</span>
               <span
                 class="text-body_title leading-body_title text-not-black font-semibold"
@@ -232,7 +232,7 @@
               singleTrip?.challanReceivedFromDTOList.length > 0
             ">
             <span class="text-body text-secondary">Received By</span>
-            <div class="grid w-full lg:grid-cols-3 gap-1">
+            <div class="grid w-full md:grid-cols-3 gap-1">
               <ng-container
                 *ngFor="
                   let receivedFrom of singleTrip?.challanReceivedFromDTOList
@@ -272,7 +272,7 @@
         </div>
       </div>
     </div>
-    <div class="lg:col-span-2  h-[calc(100vh-10rem)] overflow-auto">
+    <div class="md:col-span-2  h-[calc(100vh-10rem)] overflow-auto">
       <div class="flex flex-col space-y-3">
         <div class="flex flex-col space-y-3 px-6 py-4 bg-white rounded-lg">
           <div class="flex justify-between items-center w-full min-h-10">
@@ -283,17 +283,17 @@
               <button
                 (click)="onClickAddNoteUnloading()"
                 *ngIf="!newNoteAvailableUnloading"
-                class="flex lg:space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
+                class="flex md:space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
                 <img src="assets/svg/notes.svg" class="notPreview" />
-                <span class="text-h2_regular leading-h2_regular text-link hidden lg:inline"
+                <span class="text-h2_regular leading-h2_regular text-link hidden md:inline"
                 >Add notes</span
                 >
               </button>
               <label
                 for="file-upload"
-                class="flex lg:space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
+                class="flex md:space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
                 <img src="assets/svg/upload.svg" class="notPreview" />
-                <span class="text-h2_regular leading-h2_regular text-link hidden lg:inline"
+                <span class="text-h2_regular leading-h2_regular text-link hidden md:inline"
                 >Upload</span
                 >
               </label>
@@ -420,17 +420,17 @@
               <button
                 (click)="onClickAddNoteLoading()"
                 *ngIf="!newNoteAvailableLoading"
-                class="flex lg:space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
+                class="flex md:space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
                 <img src="assets/svg/notes.svg" class="notPreview" alt="" />
-                <span class="text-h2_regular leading-h2_regular text-link hidden lg:inline"
+                <span class="text-h2_regular leading-h2_regular text-link hidden md:inline"
                 >Add notes</span
                 >
               </button>
               <label
                 for="file-upload-loading"
-                class="flex lg:space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
+                class="flex md:space-x-2 px-4 py-2 rounded-lg items-center bg-[#EEF7FD]">
                 <img src="assets/svg/upload.svg" class="notPreview" />
-                <span class="text-h2_regular leading-h2_regular text-link hidden lg:inline"
+                <span class="text-h2_regular leading-h2_regular text-link hidden md:inline"
                 >Upload</span
                 >
               </label>

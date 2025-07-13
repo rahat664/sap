@@ -218,19 +218,19 @@
       </div>
     </ng-container>
     <ng-container *ngIf="isInEditMode && sessionBid?.status !== 'Accepted'">
-      <div class=" lg:max-h-[60vh] bg-white rounded-lg">
+      <div class=" md:max-h-[60vh] bg-white rounded-lg">
         <div class="flex justify-between border-b border-line items-center p-4">
           <h1 class="text-not-black text-body_title leading-body_title font-semibold">Update bid</h1>
           <div class="flex space-x-3 items-center">
-            <button [disabled]="!isAnyThingChangedInModel()" (click)="onUpdateBid()" class="bg-primary rounded-lg px-4 lg:px-6 py-2 text-white text-center {{!isAnyThingChangedInModel() ? 'opacity-50 cursor-not-allowed' : ''}}">
+            <button [disabled]="!isAnyThingChangedInModel()" (click)="onUpdateBid()" class="bg-primary rounded-lg px-4 md:px-6 py-2 text-white text-center {{!isAnyThingChangedInModel() ? 'opacity-50 cursor-not-allowed' : ''}}">
               <i class="fas fa-spinner fa-spin mr-2" *ngIf="isUpdatingBid"></i>
-              <span class="hidden lg:inline">Update bid</span>
-              <i class="lg:hidden inline fas fa-check"></i>
+              <span class="hidden md:inline">Update bid</span>
+              <i class="md:hidden inline fas fa-check"></i>
             </button>
             <button (click)="isInEditMode = false"><i class="fal fa-times text-2xl"></i></button>
           </div>
         </div>
-        <div class="grid lg:grid-cols-2 gap-4">
+        <div class="grid md:grid-cols-2 gap-4">
           <div class="flex flex-col space-y-3 p-4 border-r border-line">
             <div class="flex flex-col space-y-1">
               <label for="currentBid" class="text-not-black text-body_title leading-body_title font-semibold">Current

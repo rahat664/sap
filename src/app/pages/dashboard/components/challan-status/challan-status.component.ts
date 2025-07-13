@@ -49,7 +49,6 @@ export class ChallanStatusComponent implements OnInit {
     this.activatedRoute.data.subscribe((data: any) => {
       const dashboardData = data.dashboardData.data;
       this.challanStatus = dashboardData?.challanStatus?.data;
-      console.log(dashboardData?.challanStatus);
     });
   }
 

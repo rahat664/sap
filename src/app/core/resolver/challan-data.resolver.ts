@@ -30,8 +30,7 @@ export const challanDataResolver: ResolveFn<Observable<any>> = (
   return loadingState.pipe(
     switchMap(() => {
       return forkJoin({
-        challanData: challanService.getChallanStatus(fromDate, toDate),
-        tripData: tripService.getTrips(page, size, status),
+        tripData: tripService.getTrips(page, size, null, null, null, status),
       }).pipe(
         map(data => {
           return {
