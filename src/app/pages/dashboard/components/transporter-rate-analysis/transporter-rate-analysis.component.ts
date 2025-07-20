@@ -249,6 +249,7 @@ export class TransporterRateAnalysisComponent implements OnInit {
 
   getDataFromResolvedData() {
     this.activatedRoute.data.subscribe((data: any) => {
+      this.seriesdata = []
       const dashboardData = data?.dashboardData?.data;
       const resolvedData = dashboardData?.transporterRateAnalysisData?.data;
       if (resolvedData) {
