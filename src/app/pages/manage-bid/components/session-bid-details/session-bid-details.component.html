@@ -110,10 +110,10 @@
               <thead class="bg-white z-40">
               <tr class="whitespace-nowrap  bg-white text-not-black">
                 <th class="px-4 py-2 text-center">Rank</th>
-                <th class="px-4 py-2 text-center">Transporter</th>
+                <th class="px-4 py-2 text-left">Transporter</th>
                 <th class="px-4 py-2 text-center">Mobile</th>
                 <th class="px-4 py-2 text-center">No of truck</th>
-                <th class="px-4 py-2 text-center">Bid per truck(৳)</th>
+                <th class="px-4 py-2 text-left">Bid per truck(৳)</th>
                 <th class="px-4 py-2 text-center"></th>
                 <th class="px-4 py-2 text-center"></th>
               </tr>
@@ -131,11 +131,11 @@
                     </p>
                   </div>
                 </td>
-                <td class="text-center">{{ bid.transporterName }}</td>
+                <td class="text-left">{{ bid.transporterName }}</td>
                 <td class="text-center">{{ bid.transporterPhoneNumber }}</td>
                 <td class="text-center"> {{ bid.submittedNumberOfTruck }}</td>
                 <td class="text-center relative">
-                  <div class="flex items-center  justify-center w-full h-full">
+                  <div class="flex items-center  justify-start w-full h-full">
                     <div class="flex space-x-1 items-center ">
                       <span>{{ bid.amount | number }}</span>
                       <!--                    <img-->
@@ -322,10 +322,10 @@
             <thead class="bg-white z-50">
             <tr class="whitespace-nowrap  bg-white text-not-black">
               <th class="px-4 py-2 text-center">Rank</th>
-              <th class="px-4 py-2 text-center">Transporter</th>
+              <th class="px-4 py-2 text-left">Transporter</th>
               <th class="px-4 py-2 text-center">Mobile</th>
               <th class="px-4 py-2 text-center">No of truck</th>
-              <th class="px-4 py-2 text-center">Bid per truck(৳)</th>
+              <th class="px-4 py-2 text-left">Bid per truck(৳)</th>
               <th class="px-4 py-2 text-center"></th>
               <th class="px-4 py-2 text-center"></th>
             </tr>
@@ -343,10 +343,10 @@
                   </p>
                 </div>
               </td>
-              <td class="text-center">{{ bid.transporterName }}</td>
+              <td class="text-left">{{ bid.transporterName }}</td>
               <td class="text-center">{{ bid.transporterPhoneNumber }}</td>
               <td class="text-center"> {{ bid.submittedNumberOfTruck }}</td>
-              <td class="text-center"> {{ bid.amount | number }}</td>
+              <td class="text-left"> {{ bid.amount | number }}</td>
               <td></td>
               <td></td>
             </tr>
