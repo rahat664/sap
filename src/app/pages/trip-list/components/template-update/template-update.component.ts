@@ -250,11 +250,7 @@ export class TemplateUpdateComponent implements OnInit {
 
   onClickLoadingSuggestion(option: any, i: number) {
     // update above functionality with form array
-    option?.locationPointName
-      ? this.loadingPoints?.controls[i]
-          ?.get('pointName')
-          .setValue(option.locationPointName)
-      : this.loadingPoints?.controls[i]
+    this.loadingPoints?.controls[i]
           ?.get('pointName')
           .setValue(option.addressText);
     if (option.district) {
@@ -301,7 +297,7 @@ export class TemplateUpdateComponent implements OnInit {
     this.unloadingPoints?.controls[i]
       ?.get('pointName')
       .setValue(
-        option.locationPointName ? option.locationPointName : option.addressText
+        option.addressText
       );
     if (option.district) {
       this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue('');
