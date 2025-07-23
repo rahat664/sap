@@ -428,7 +428,7 @@ export class CreateTripPageComponent implements OnInit {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.service
-        .getLocationSuggestions(target.value, target.value)
+        .getLocationSuggestions(target.value, this.selectedCustomer?.customerCode)
         .subscribe((res: any) => {
           this.loadingSuggestions = res.data;
         });
@@ -541,7 +541,7 @@ export class CreateTripPageComponent implements OnInit {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.service
-        .getLocationSuggestions(target.value, target.value)
+        .getLocationSuggestions(target.value,this.selectedCustomer?.customerCode)
         .subscribe((res: any) => {
           this.unloadingSuggestions = res.data;
         });
