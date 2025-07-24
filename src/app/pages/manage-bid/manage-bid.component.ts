@@ -38,6 +38,7 @@ import { BidService } from './services/bid.service';
 import { SessionModel } from './models/session.model';
 import { SessionBidDetailsComponent } from './components/session-bid-details/session-bid-details.component';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-manage-bid',
@@ -161,7 +162,8 @@ export class ManageBidComponent {
     private datePipe: DatePipe,
     private customer: CustomerService,
     private toggleMobileViewService: ToggleResponsiveService,
-    private bidService: BidService
+    private bidService: BidService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.tripService.reloadManageTripPage.subscribe((res: boolean)=> {
       if (res) {
@@ -192,7 +194,7 @@ export class ManageBidComponent {
     this.customerSelected = false;
     this.triggerFromParentName = 'All';
     this.isTriggerFromParent = false;
-    this.getBidList();
+    this.getBidListFromResolver();
     this.getVehicleTypeList();
     this.activatedId = null;
   }
@@ -784,5 +786,20 @@ export class ManageBidComponent {
     this.bidPage = 0;
     this.bidSize = 20;
     this.getBidList();
+  }
+
+  private getBidListFromResolver() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const bid = data.bidList.data;
+      this.totalBids = bid.data.contents;
+      if (this.totalBids.length === 0) {
+        this.bidLoading = false;
+      } else {
+        this.activatedId = this.totalBids[0]?.availableTripId;
+        this.totalPages = bid.meta.totalPageCount;
+        this.getTripDetails(this.totalBids[0]?.availableTripId);
+        this.getBidDetails(this.totalBids[0]?.id);
+      }
+    })
   }
 }

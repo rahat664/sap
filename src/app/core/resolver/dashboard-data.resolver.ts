@@ -13,15 +13,36 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
   const datePipe = inject(DatePipe);
 
   // Get the from and to date for the current month
-  const from = datePipe.transform(new Date(), 'yyyy-MM-01');
-  const to = datePipe.transform(new Date(), 'yyyy-MM-dd');
+  const from = route?.queryParams['fromDate'] || datePipe.transform(new Date(), 'yyyy-MM-01')
+  const to = route?.queryParams['toDate'] || datePipe.transform(
+    new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+    'yyyy-MM-dd'
+  );
+  const customerCode = route?.queryParams['customerCode'] || '';
+  const paymentType = route?.queryParams['paymentType'] || '';
+  const tripType = route?.queryParams['tripType'] || '';
+  const truckTypeId = route?.queryParams['truckTypeId'] || '';
+  const sortBy = 'grossProfit';
 
   const type = 'daily';
+  const tripCountByDateType = 'monthly'
   const selectedMonth =
     (new Date().getMonth() + 1).toString().length === 1
       ? '0' + (new Date().getMonth() + 1).toString()
       : (new Date().getMonth() + 1).toString();
   const selectedYear = new Date().getFullYear();
+  const fromDate = new Date();
+  fromDate.setFullYear(2024);
+  fromDate.setMonth(0);
+  fromDate.setDate(1);
+  const challanFromDate = route?.queryParams['fromDate'] || datePipe.transform(fromDate, 'yyyy-MM-dd');
+  // todate should be the current date
+  const toDate = new Date();
+  // to date will be the last day of the current month
+  const challanToDate = route?.queryParams['fromDate'] || datePipe.transform(
+    new Date(toDate.getFullYear(), toDate.getMonth() + 1, 0),
+    'yyyy-MM-dd'
+  );
 
   // Emit a loading state before data is resolved
   const loadingState = of({
@@ -32,14 +53,14 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
   return loadingState.pipe(
     switchMap(() => {
       return forkJoin({
-        apiStats: dashboardService.getApiStats(from, to),
-        customerStats: dashboardService.getCustomerStats(from, to),
-        challanStatus: dashboardService.getChallanStatus(from, to),
-        tripCountByStatus: dashboardService.getTripCountByStatus(from, to),
-        topTransporters: dashboardService.getTopTransporters(from, to),
-        topCustomers: dashboardService.getTopCustomers(from, to),
+        apiStats: dashboardService.getApiStats(from, to, customerCode, paymentType, tripType, truckTypeId),
+        customerStats: dashboardService.getCustomerStats(from, to, customerCode, paymentType, tripType, truckTypeId),
+        challanStatus: dashboardService.getChallanStatus(challanFromDate, challanToDate , customerCode, paymentType, tripType, truckTypeId),
+        tripCountByDate: dashboardService.getDateWiseTripCount(challanFromDate, challanToDate, tripCountByDateType, customerCode, paymentType, tripType, truckTypeId),
+        topTransporters: dashboardService.getTopTransporters(challanFromDate, challanToDate, sortBy, customerCode, paymentType, tripType, truckTypeId),
+        topCustomers: dashboardService.getTopCustomers(challanFromDate, challanToDate, sortBy, paymentType, tripType, truckTypeId),
         transporterRateAnalysisData:
-          dashboardService.getTransporterRateAnalysisData(type, from, to),
+          dashboardService.getTransporterRateAnalysisData(type, from, to, null, truckTypeId, null, null, customerCode, paymentType, tripType),
       }).pipe(
         map(data => {
           return {

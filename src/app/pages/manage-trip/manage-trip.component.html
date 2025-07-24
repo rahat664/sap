@@ -1,7 +1,7 @@
 <div *ngIf="!mobileDeviceDetails" class="flex bg-[#EFF6F8]">
-  <div class="flex flex-col w-full lg:min-w-[25rem] lg:max-w-[25rem]">
+  <div class="flex flex-col w-full md:min-w-[25rem] md:max-w-[25rem]">
     <div
-      class="py-4 pl-4 flex flex-col space-y-3"
+      class="py-4 px-4 flex flex-col space-y-3"
       appGetElementHeight
       (height)="height = $event">
       <div class="flex justify-between items-center">
@@ -58,7 +58,7 @@
         </button>
       </div>
       <div *ngIf="!filterOpen"
-        class="overflow-hidden lg:hidden relative p-4 w-full rounded-lg lg:min-h-44 bg-white">
+        class="overflow-hidden md:hidden relative p-4 w-full rounded-lg md:min-h-44 bg-white">
         <div
           appScrollByButton
           (isVisible)="scrollable = $event"
@@ -141,7 +141,7 @@
         </div>
       </div>
       <div
-        class="flex flex-col space-y-2 overflow-y-auto pl-4"
+        class="flex flex-col space-y-2 overflow-y-auto px-4"
         appGiveMaxHeight
         (inBottomEnd)="onScrollEnd($event)"
         [totalPage]="totalPages"
@@ -359,7 +359,7 @@
       </div>
     </div>
   </div>
-  <div class="hidden lg:block w-full h-[calc(100vh-4.5rem)] flex-1 relative">
+  <div class="hidden md:block w-full h-[calc(100vh-4.5rem)] flex-1 relative">
     <app-g-map
       [singleTripData]="singleTripDetails"
       [truckSizeInFeet]="activatedTruckSizeInFeet"
@@ -376,7 +376,7 @@
       [triggerFromParent]="isTriggerFromParent"
       [statusButtons]="statusButtons"
       (buttonClickEmitter)="onClickButton($event)"
-      class="hidden lg:block absolute top-0 right-1/2 transform translate-x-1/2">
+      class="hidden md:block absolute top-0 right-1/2 transform translate-x-1/2">
     </app-map-buttons>
     <app-trip-details
       appGetElementHeight
@@ -388,7 +388,7 @@
   </div>
 </div>
 
-<div *ngIf="mobileDeviceDetails" class="lg:hidden w-full h-[calc(100vh-4.5rem)] flex-1 relative">
+<div *ngIf="mobileDeviceDetails" class="md:hidden w-full h-[calc(100vh-4.5rem)] flex-1 relative">
   <button
     (click)="onClickBack()"
     class="absolute top-3 right-14 z-10 bg-white  flex space-x-2 items-center px-4 py-2 shadow-md">
@@ -411,7 +411,7 @@
     [triggerFromParent]="isTriggerFromParent"
     [statusButtons]="statusButtons"
     (buttonClickEmitter)="onClickButton($event)"
-    class="hidden lg:block absolute top-0 right-1/2 transform translate-x-1/2">
+    class="hidden md:block absolute top-0 right-1/2 transform translate-x-1/2">
   </app-map-buttons>
   <app-trip-details
     appGetElementHeight

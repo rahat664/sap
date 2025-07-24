@@ -110,10 +110,10 @@
               <thead class="bg-white z-40">
               <tr class="whitespace-nowrap  bg-white text-not-black">
                 <th class="px-4 py-2 text-center">Rank</th>
-                <th class="px-4 py-2 text-center">Transporter</th>
+                <th class="px-4 py-2 text-left">Transporter</th>
                 <th class="px-4 py-2 text-center">Mobile</th>
                 <th class="px-4 py-2 text-center">No of truck</th>
-                <th class="px-4 py-2 text-center">Bid per truck(৳)</th>
+                <th class="px-4 py-2 text-left">Bid per truck(৳)</th>
                 <th class="px-4 py-2 text-center"></th>
                 <th class="px-4 py-2 text-center"></th>
               </tr>
@@ -131,11 +131,11 @@
                     </p>
                   </div>
                 </td>
-                <td class="text-center">{{ bid.transporterName }}</td>
+                <td class="text-left">{{ bid.transporterName }}</td>
                 <td class="text-center">{{ bid.transporterPhoneNumber }}</td>
                 <td class="text-center"> {{ bid.submittedNumberOfTruck }}</td>
                 <td class="text-center relative">
-                  <div class="flex items-center  justify-center w-full h-full">
+                  <div class="flex items-center  justify-start w-full h-full">
                     <div class="flex space-x-1 items-center ">
                       <span>{{ bid.amount | number }}</span>
                       <!--                    <img-->
@@ -218,19 +218,19 @@
       </div>
     </ng-container>
     <ng-container *ngIf="isInEditMode && sessionBid?.status !== 'Accepted'">
-      <div class=" lg:max-h-[60vh] bg-white rounded-lg">
+      <div class=" md:max-h-[60vh] bg-white rounded-lg">
         <div class="flex justify-between border-b border-line items-center p-4">
           <h1 class="text-not-black text-body_title leading-body_title font-semibold">Update bid</h1>
           <div class="flex space-x-3 items-center">
-            <button [disabled]="!isAnyThingChangedInModel()" (click)="onUpdateBid()" class="bg-primary rounded-lg px-4 lg:px-6 py-2 text-white text-center {{!isAnyThingChangedInModel() ? 'opacity-50 cursor-not-allowed' : ''}}">
+            <button [disabled]="!isAnyThingChangedInModel()" (click)="onUpdateBid()" class="bg-primary rounded-lg px-4 md:px-6 py-2 text-white text-center {{!isAnyThingChangedInModel() ? 'opacity-50 cursor-not-allowed' : ''}}">
               <i class="fas fa-spinner fa-spin mr-2" *ngIf="isUpdatingBid"></i>
-              <span class="hidden lg:inline">Update bid</span>
-              <i class="lg:hidden inline fas fa-check"></i>
+              <span class="hidden md:inline">Update bid</span>
+              <i class="md:hidden inline fas fa-check"></i>
             </button>
             <button (click)="isInEditMode = false"><i class="fal fa-times text-2xl"></i></button>
           </div>
         </div>
-        <div class="grid lg:grid-cols-2 gap-4">
+        <div class="grid md:grid-cols-2 gap-4">
           <div class="flex flex-col space-y-3 p-4 border-r border-line">
             <div class="flex flex-col space-y-1">
               <label for="currentBid" class="text-not-black text-body_title leading-body_title font-semibold">Current
@@ -322,10 +322,10 @@
             <thead class="bg-white z-50">
             <tr class="whitespace-nowrap  bg-white text-not-black">
               <th class="px-4 py-2 text-center">Rank</th>
-              <th class="px-4 py-2 text-center">Transporter</th>
+              <th class="px-4 py-2 text-left">Transporter</th>
               <th class="px-4 py-2 text-center">Mobile</th>
               <th class="px-4 py-2 text-center">No of truck</th>
-              <th class="px-4 py-2 text-center">Bid per truck(৳)</th>
+              <th class="px-4 py-2 text-left">Bid per truck(৳)</th>
               <th class="px-4 py-2 text-center"></th>
               <th class="px-4 py-2 text-center"></th>
             </tr>
@@ -343,10 +343,10 @@
                   </p>
                 </div>
               </td>
-              <td class="text-center">{{ bid.transporterName }}</td>
+              <td class="text-left">{{ bid.transporterName }}</td>
               <td class="text-center">{{ bid.transporterPhoneNumber }}</td>
               <td class="text-center"> {{ bid.submittedNumberOfTruck }}</td>
-              <td class="text-center"> {{ bid.amount | number }}</td>
+              <td class="text-left"> {{ bid.amount | number }}</td>
               <td></td>
               <td></td>
             </tr>

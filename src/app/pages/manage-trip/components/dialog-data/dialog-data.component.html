@@ -20,8 +20,8 @@
       >Select from list</a
       >
     </div>
-    <div class="grid lg:grid-cols-2 gap-4">
-      <div class="flex flex-col space-y-1 lg:col-span-2 w-full">
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="flex flex-col space-y-1 md:col-span-2 w-full">
         <label for="transporterName" class="text-body text-secondary"
         >Name</label
         >
@@ -128,14 +128,14 @@
       >Select from list</a
       >
     </div>
-    <div class="grid lg:grid-cols-2 gap-4">
+    <div class="grid md:grid-cols-2 gap-4">
       <div class="flex flex-col space-y-1 col-span-2 w-full">
         <label for="truck" class="text-body text-secondary"
         >Registration Number</label
         >
-        <div id="truck" class="grid grid-cols-8 lg:grid-cols-9 gap-4">
+        <div id="truck" class="grid grid-cols-8 md:grid-cols-9 gap-4">
           <mat-form-field
-            class="col-span-4 lg:col-span-3"
+            class="col-span-4 md:col-span-3"
             appearance="outline"
             [class.error]="
               tripUpdateForm.get('truckId').invalid &&
@@ -150,7 +150,7 @@
               placeholder="Zone"/>
           </mat-form-field>
           <mat-form-field
-            class="col-span-4 lg:col-span-2"
+            class="col-span-4 md:col-span-2"
             appearance="outline"
             [class.error]="
               tripUpdateForm.get('truckId').invalid &&
@@ -165,7 +165,7 @@
               placeholder="Category"/>
           </mat-form-field>
           <mat-form-field
-            class="col-span-4 lg:col-span-2"
+            class="col-span-4 md:col-span-2"
             appearance="outline"
             id="capacity"
             [class.error]="
@@ -182,7 +182,7 @@
               placeholder="Serial"/>
           </mat-form-field>
           <mat-form-field
-            class="col-span-4 lg:col-span-2"
+            class="col-span-4 md:col-span-2"
             appearance="outline"
             [class.error]="
               tripUpdateForm.get('truckId').invalid &&
@@ -233,7 +233,7 @@
       >Select from list</a
       >
     </div>
-    <div class="grid lg:grid-cols-2 gap-4">
+    <div class="grid md:grid-cols-2 gap-4">
       <div class="flex flex-col space-y-1 w-full">
         <label for="driverName" class="text-body text-secondary">Name</label>
         <mat-form-field
@@ -309,7 +309,7 @@
       >Select from list</a
       >
     </div>
-    <div class="grid lg:grid-cols-2 gap-4">
+    <div class="grid md:grid-cols-2 gap-4">
       <div class="flex flex-col space-y-1 w-full">
         <label for="helperName" class="text-body text-secondary">Name</label>
         <mat-form-field

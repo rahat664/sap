@@ -1,24 +1,24 @@
 <div class="m-2 bg-white">
   <div class="p-4 border-b-2 border-input flex justify-between items-center">
-    <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">Add Tracker</h1>
+    <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">Add Tracker</h1>
     <div>
       <button
         (click)="onTrackerSave()"
-        class="px-4 lg:px-12 py-2 text-white bg-primary rounded-lg text-center font-semibold">
-        <span class="hidden lg:inline">Save</span>
-        <i class="fas fa-save lg:hidden"></i>
+        class="px-4 md:px-12 py-2 text-white bg-primary rounded-lg text-center font-semibold">
+        <span class="hidden md:inline">Save</span>
+        <i class="fas fa-save md:hidden"></i>
       </button>
     </div>
   </div>
   <form [formGroup]="trackerAddForm">
-    <div class="grid lg:grid-cols-2 text-body">
+    <div class="grid md:grid-cols-2 text-body">
       <div class="w-full border-r border-line p-4">
         <div class="flex space-x-3 items-center">
           <img src="assets/svg/vendor.svg" alt="" class="notPreview"/>
           <span class="text-h2 leading-h2 font-semibold">Vendor Info</span>
         </div>
-        <div class="grid lg:grid-cols-2 gap-3">
-          <div class="flex flex-col space-y-1 lg:col-span-2 py-4">
+        <div class="grid md:grid-cols-2 gap-3">
+          <div class="flex flex-col space-y-1 md:col-span-2 py-4">
             <label class="text-not-black font-semibold">Vendor Name</label>
             <mat-form-field appearance="outline">
               <mat-select
@@ -76,7 +76,7 @@
             >Password is required</span
             >
           </div>
-          <div class="flex flex-col space-y-1 lg:col-span-2">
+          <div class="flex flex-col space-y-1 md:col-span-2">
             <label class="text-not-black font-semibold">Tracker Id</label>
             <mat-form-field appearance="outline">
               <input

@@ -1,16 +1,16 @@
 <div>
   <div class="mx-4 py-2 flex justify-between items-center sticky z-50 top-16 bg-white">
-    <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">New Trip</h1>
+    <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">New Trip</h1>
     <button
-      class="bg-primary text-white rounded-lg px-4 lg:px-12 py-2"
+      class="bg-primary text-white rounded-lg px-4 md:px-12 py-2"
       (click)="onCreateTrip()">
-      <span class="hidden lg:inline">Create Trip</span>
-      <i class="fas fa-plus text-white text-xs lg:hidden"></i>
+      <span class="hidden md:inline">Create Trip</span>
+      <i class="fas fa-plus text-white text-xs md:hidden"></i>
     </button>
   </div>
-  <div class="lg:px-4 h-[calc(100vh-9rem)] overflow-y-auto">
+  <div class="md:px-4 h-[calc(100vh-9rem)] overflow-y-auto">
     <form [formGroup]="tripForm" class="rounded-lg bg-white w-full">
-      <div class="lg:mx-8 mx-4 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
+      <div class="md:mx-8 mx-4 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
         <div class="flex items-center space-x-3">
           <img
             loading="lazy"
@@ -21,12 +21,12 @@
           >Trip & Payment Type</span
           >
         </div>
-        <div class="grid lg:grid-cols-2 gap-4 w-full">
+        <div class="grid md:grid-cols-2 gap-4 w-full">
           <div class="flex flex-col space-y-1 w-full">
             <label for="customerName" class="form-label text-body"
             >Trip Type</label
             >
-            <div class="lg:h-[56px] w-full border-line rounded-lg flex  items-center bg-input">
+            <div class="md:h-[56px] w-full border-line rounded-lg flex  items-center bg-input">
               <div class="flex gap-2 px-4 py-2 items-center flex-wrap">
                 <button *ngFor="let type of tripTypes" class="py-1.5 px-2 rounded-full {{type.active ? 'bg-green border-none text-white' : 'bg-transparent border border-line text-not-black'}}" (click)="onTripTypeClick(type)">
                   <span>{{type.name}}</span>
@@ -38,7 +38,7 @@
             <label for="customerName" class="form-label text-body"
             >Payment Type</label
             >
-            <div class="lg:h-[56px] w-full border-line rounded-lg flex  items-center bg-input">
+            <div class="md:h-[56px] w-full border-line rounded-lg flex  items-center bg-input">
               <div class="flex gap-2 px-4 py-2 items-center flex-wrap">
                 <button *ngFor="let type of paymentType" class="py-1.5 px-2 rounded-full {{type.active ? 'bg-green border-none text-white' : 'bg-transparent border border-line text-not-black'}}" (click)="onPaymentTypeClick(type)">
                   <span>{{type.name}}</span>
@@ -48,7 +48,7 @@
           </div>
         </div>
       </div>
-      <div class="mx-4 lg:mx-8 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
+      <div class="mx-4 md:mx-8 flex flex-col space-y-3 pt-2 pb-8 border-b-2 border-input">
         <div class="flex items-center space-x-3">
           <img
             loading="lazy"
@@ -59,7 +59,7 @@
           >Customer and Schedule</span
           >
         </div>
-        <div class="grid lg:grid-cols-2 gap-4 w-full">
+        <div class="grid md:grid-cols-2 gap-4 w-full">
           <div class="flex flex-col space-y-1 w-full">
             <label for="customerName" class="form-label text-body"
             >Customer Name</label
@@ -118,7 +118,7 @@
           </div>
         </div>
       </div>
-      <div class="mx-4 lg:mx-8 flex flex-col space-y-4 py-8 border-b-2 border-input">
+      <div class="mx-4 md:mx-8 flex flex-col space-y-4 py-8 border-b-2 border-input">
         <div class="flex items-center space-x-3">
           <img
             loading="lazy"
@@ -139,7 +139,7 @@
                   src="assets/svg/circle.svg"
                   alt="loading"/>
               </div>
-              <div class="grid lg:grid-cols-2 gap-4 w-full">
+              <div class="grid md:grid-cols-2 gap-4 w-full">
                 <div class="flex flex-col space-y-1 w-full">
                   <label for="loadingPoint" class="form-label text-body"
                   >Loading Point</label
@@ -326,7 +326,7 @@
           </ng-container>
         </div>
       </div>
-      <div class="mx-4 lg:mx-8 flex flex-col space-y-4 py-8 border-b-2 border-input">
+      <div class="mx-4 md:mx-8 flex flex-col space-y-4 py-8 border-b-2 border-input">
         <div class="flex items-center space-x-3">
           <img
             loading="lazy"
@@ -346,7 +346,7 @@
                 <img src="assets/svg/circle.svg" alt="loading"/>
               </div>
 
-              <div class="grid lg:grid-cols-2 gap-4 w-full">
+              <div class="grid md:grid-cols-2 gap-4 w-full">
                 <div class="flex flex-col space-y-1 w-full">
                   <label for="unLoadingPoint" class="form-label text-body"
                   >Unloading Point</label
@@ -536,7 +536,7 @@
         </div>
       </div>
       <div
-        class="mx-4 lg:mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input">
+        class="mx-4 md:mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
             <img
@@ -612,7 +612,7 @@
             </div>
           </div>
         </div>
-        <div class="grid lg:grid-cols-3 gap-4 w-full relative">
+        <div class="grid md:grid-cols-3 gap-4 w-full relative">
           <div class="flex flex-col space-y-2 w-full">
             <label for="numOfVehicle" class="form-label text-body"
             >Number of vehicle</label
@@ -768,8 +768,8 @@
         </div>
       </div>
       <div
-        class="mx-4 lg:mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input">
-        <div class="grid lg:grid-cols-2 gap-4 w-full">
+        class="mx-4 md:mx-8 flex flex-col space-y-3 py-8 col-span-3 border-b-2 border-input">
+        <div class="grid md:grid-cols-2 gap-4 w-full">
           <div class="flex flex-col space-y-3">
             <div class="flex space-x-3 items-center">
               <img
@@ -875,7 +875,7 @@
           </div>
         </div>
       </div>
-      <div class="mx-4 lg:mx-8 flex flex-col space-y-3 py-8 col-span-3">
+      <div class="mx-4 md:mx-8 flex flex-col space-y-3 py-8 col-span-3">
         <div class="flex space-x-3">
           <img
             loading="lazy"
@@ -891,13 +891,13 @@
           class="w-full h-28 border border-none bg-input rounded-lg p-4"
           placeholder="Enter additional instruction"></textarea>
       </div>
-      <div class="mx-4 lg:mx-8 pb-8" *ngIf="!isFromTemplate">
+      <div class="mx-4 md:mx-8 pb-8" *ngIf="!isFromTemplate">
         <mat-checkbox (change)="toggleSaveAsTemplateInputField($any($event))">
           Save as template for future use
         </mat-checkbox>
       </div>
-      <div class="mx-4 lg:mx-8 pb-8" *ngIf="saveTemplateInputEnabled">
-        <div class="grid lg:grid-cols-2 gap-4 w-full">
+      <div class="mx-4 md:mx-8 pb-8" *ngIf="saveTemplateInputEnabled">
+        <div class="grid md:grid-cols-2 gap-4 w-full">
           <div class="flex flex-col space-y-1">
             <label class="form-label text-body" for="templateName"
             >Template Name</label

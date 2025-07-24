@@ -3,7 +3,7 @@
     <i class="fal fa-times text-primary"></i>
   </button>
   <div
-    class="p-8 hidden lg:flex items-center justify-center bg-input rounded-l-lg">
+    class="p-8 hidden md:flex items-center justify-center bg-input rounded-l-lg">
     <div>
       <img
         loading="lazy"
@@ -17,8 +17,8 @@
     <form
       [formGroup]="userForm"
       (ngSubmit)="onSave()"
-      class="w-full flex flex-col space-y-3 lg:space-y-0 lg:grid grid-cols-1 lg:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
-      <div class="flex flex-col space-y-2 w-full lg:col-span-2">
+      class="w-full flex flex-col space-y-3 md:space-y-0 md:grid grid-cols-1 md:grid-cols-2 gap-3 text-body_title text-web-text-secondary">
+      <div class="flex flex-col space-y-2 w-full md:col-span-2">
         <label for="name">Full Name</label>
         <mat-form-field
           appearance="outline"
@@ -102,7 +102,7 @@
           (clickedElement)="onClickRole($event)"
           (selectedId)="onSelectRole($event)"></app-custom-input>
       </div>
-      <div class="lg:col-span-2 py-4">
+      <div class="md:col-span-2 py-4">
         <button
           class="float-end px-12 py-2 flex justify-center items-center text-[1.125rem] rounded-lg bg-primary text-white">
           <span>Save</span>

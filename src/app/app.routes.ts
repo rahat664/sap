@@ -7,6 +7,10 @@ import { challanDataResolver } from './core/resolver/challan-data.resolver';
 import { tripListResolver } from './core/resolver/trip-list.resolver';
 import { userResolver } from './core/resolver/user.resolver';
 import { truckResolver } from './core/resolver/truck.resolver';
+import {vehicleTrackingResolver} from "./core/resolver/vehicle-tracking.resolver";
+import {customerUserResolver} from "./core/resolver/user-customer.resolver";
+import {transporterPaymentResolver} from "./core/resolver/transporter-payment.resolver";
+import {bidResolver} from "./core/resolver/bid.resolver";
 
 export const routes: Routes = [
   {
@@ -29,6 +33,7 @@ export const routes: Routes = [
     resolve: {
       dashboardData: dashboardDataResolver,
     },
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
   },
   {
     path: 'challan-management',
@@ -111,7 +116,7 @@ export const routes: Routes = [
       ),
     canActivate: [authGuard],
     resolve: {
-      tripList: tripListResolver,
+      bidList: bidResolver,
     },
   },
   // create trip with query params not id with scenerio
@@ -180,6 +185,9 @@ export const routes: Routes = [
         './pages/user-management/user-management-customer-admin/user-management-customer-admin.component'
       ).then(c => c.UserManagementCustomerAdminComponent),
     canActivate: [authGuard],
+    resolve: {
+      customerUser: customerUserResolver,
+    },
   },
   {
     path: 'profile',
@@ -223,7 +231,7 @@ export const routes: Routes = [
       ).then(c => c.VehicleTrackingComponent),
     canActivate: [authGuard],
     resolve: {
-      vehicleTracking: truckResolver,
+      vehicleTracking: vehicleTrackingResolver,
     },
   },
   {
@@ -240,6 +248,9 @@ export const routes: Routes = [
         m => m.PaymentComponent
       ),
     canActivate: [authGuard],
+    resolve: {
+      transporterPayment: transporterPaymentResolver
+    }
   },
   {
     path: '',

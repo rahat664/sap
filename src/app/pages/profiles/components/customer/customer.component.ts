@@ -17,6 +17,7 @@ import { DateEnum } from '../../../trip-list/Enum/date.enum';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { UserFilterComponent } from '../../../user-management/user-filter/user-filter.component';
 import { CustomerFilterComponent } from './customer-filter/customer-filter.component';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-customer',
@@ -58,7 +59,8 @@ export class CustomerComponent implements OnInit {
     private service: CustomerService,
     private formBuilder: FormBuilder,
     private shared: DriverEditSharedService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private activatedRoute: ActivatedRoute
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -70,7 +72,7 @@ export class CustomerComponent implements OnInit {
   ngOnInit(): void {
     localStorage.removeItem('tripFilterData');
     this.generateDateOptionsArray();
-    this.getCustomer();
+    this.getCustomerFromResolvedState();
   }
 
   private generateDateOptionsArray() {
@@ -357,6 +359,7 @@ export class CustomerComponent implements OnInit {
           return 'Cash';
         case 'COMMISSION':
           return 'Commission';
+
         case 'INVOICE':
           return 'Invoice';
         default:
@@ -365,5 +368,14 @@ export class CustomerComponent implements OnInit {
     } else {
       return 'Not available';
     }
+  }
+
+  private getCustomerFromResolvedState() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const res = data.customer.data
+      this.customers = res.data.content;
+      this.totalPages = res.data.totalPages;
+      this.loading = false;
+    })
   }
 }

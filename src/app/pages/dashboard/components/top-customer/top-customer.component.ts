@@ -9,6 +9,7 @@ import { DashboardService } from '../../services/dashboard.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
+import {Subject, takeUntil, combineLatest} from "rxjs";
 
 @Component({
   selector: 'app-top-customer',
@@ -27,6 +28,7 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
   styleUrl: './top-customer.component.scss',
 })
 export class TopCustomerComponent implements OnInit {
+  private destroy$ = new Subject<void>();
   topCustomer: TopCustomers[] = [];
   fromDate: string;
   toDate: string;
@@ -44,21 +46,30 @@ export class TopCustomerComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loading = false;
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.paymentType = params['paymentType'] ? params['paymentType'] : '';
-      this.tripType = params['tripType'] ? params['tripType'] : '';
-      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : '';
-      this.customerFilterEnabled = !!params['customerCode'];
-      if (params['fromDate'] && params['toDate']) {
-        this.fromDate = params['fromDate'];
-        this.toDate = params['toDate'];
-      } else {
-        this.getFromDateToDate();
-      }
-      this.getTopCustomers();
-    });
+
+    combineLatest([
+      this.activatedRoute.data,
+      this.activatedRoute.queryParams
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([data, params]: [any, any]) => {
+        const dashboardData = data.dashboardData.data;
+        this.topCustomer = dashboardData?.topCustomers?.data?.content || [];
+        this.fromDate = params['fromDate'] || '2024-01-01';
+        this.toDate = params['toDate'] || this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+        this.paymentType = params['paymentType'] || '';
+        this.tripType = params['tripType'] || '';
+        this.truckTypeId = params['truckTypeId'] || '';
+        this.customerFilterEnabled = !!params['customerCode'];
+        this.loading = false;
+      });
   }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
 
   private getFromDateToDate() {
     // from date will be 1 january 2024
@@ -72,7 +83,7 @@ export class TopCustomerComponent implements OnInit {
 
   private getTopCustomers() {
     this.service
-      .getTopCustomers(this.fromDate, this.toDate, this.sortBy, this.paymentType,this.tripType, this.truckTypeId.toString())
+      .getTopCustomers(this.fromDate, this.toDate, this.sortBy, this.paymentType,this.tripType, this.truckTypeId?.toString())
       .subscribe(
         (res: any) => {
           this.topCustomer = res.data.content;

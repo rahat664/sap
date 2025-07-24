@@ -4,8 +4,8 @@
     (height)="height = $event"
     class="flex flex-col space-y-3">
     <div
-      class="flex flex-col space-y-3 lg:space-y-0 lg:flex-row justify-between">
-      <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">Customer</h1>
+      class="flex flex-col space-y-3 md:space-y-0 md:flex-row justify-between">
+      <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">Customer</h1>
       <div class="flex space-x-2 items-center">
         <div class="relative">
           <div
@@ -23,14 +23,14 @@
             (keyup)="onKeyUpSearch($event)"
             type="text"
             name="search"
-            class="border-none text-input-hint w-full lg:w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
+            class="border-none text-input-hint w-full md:w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
             placeholder="Search  name, mobile, email" />
         </div>
         <button
           (click)="onClickAddCustomer()"
-          class="px-4 flex space-x-4 items-center py-3 lg:py-2 bg-primary text-white rounded-lg">
+          class="px-4 flex space-x-4 items-center py-3 md:py-2 bg-primary text-white rounded-lg">
           <i class="fas fa-plus-circle"></i>
-          <span class="hidden lg:block">Add Customer</span>
+          <span class="hidden md:block">Add Customer</span>
         </button>
         <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1  text-h2_medium text-primary">
           <img class="notPreview" src="assets/svg/filter.svg" alt="">
@@ -52,8 +52,8 @@
     <table class="table-auto w-full rounded-lg text-body_title">
       <thead class="z-50">
       <tr class="whitespace-nowrap bg-white">
-        <th class="text-left lg:sticky lg:left-0 w-[20rem] inline-block lg:bg-white">Company name</th>
-        <th class="text-center lg:sticky lg:left-[20rem]  lg:bg-white">Customer code</th>
+        <th class="text-left md:sticky md:left-0 w-[20rem] inline-block md:bg-white">Company name</th>
+        <th class="text-center md:sticky md:left-[20rem]  md:bg-white">Customer code</th>
         <th class="whitespace-nowrap">Created On</th>
         <th class="text-left">Contact person</th>
         <th class="text-left">Preferred Trip Type</th>
@@ -73,7 +73,7 @@
       <tbody class="text-web-text-secondary">
       <ng-container *ngIf="!loading">
         <tr *ngFor="let customer of customers">
-          <td class="whitespace-nowrap lg:sticky lg:left-0 lg:w-[20rem] lg:bg-white">
+          <td class="whitespace-nowrap md:sticky md:left-0 md:w-[20rem] md:bg-white">
             <div class="flex items-center space-x-4 w-full">
               <div
                 class="w-8 h-8 rounded-full bg-blue flex items-center justify-center">
@@ -84,7 +84,7 @@
               <span class="flex-1">{{ customer.name }}</span>
             </div>
           </td>
-          <td class="text-center lg:sticky lg:left-[20rem] lg:bg-white">{{ customer.customerCode }}</td>
+          <td class="text-center md:sticky md:left-[20rem] md:bg-white">{{ customer.customerCode }}</td>
           <td class="text-center whitespace-nowrap">
             {{
               customer.creationDate

@@ -163,7 +163,7 @@ export class TripDetailsComponent implements OnInit, OnChanges {
             (event.name === 'Trip booked' || event.name === 'Trip booked (Bid accepted)') ||
             event.name === 'Trip started' ||
             event.name === 'Trip completed' ||
-            event.name === 'Trip created'
+            (event.name === 'Trip created'   || event.name === 'Trip received')
           ) {
             onlyStatusTripEvents.push(event);
           }

@@ -26,6 +26,7 @@ import { UserCustomerAdminCreateComponent } from '../user-customer-admin-create/
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmUpdateComponent } from '../../manage-trip/components/confirm-update/confirm-update.component';
 import { UserFilterComponent } from '../user-filter/user-filter.component';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-user-management-customer-admin',
@@ -89,7 +90,8 @@ export class UserManagementCustomerAdminComponent implements OnInit {
     private validation: ValidationService,
     private toastr: HandleToastrService,
     private shared: DriverEditSharedService,
-    private customer: CustomerService
+    private customer: CustomerService,
+    private activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit() {
@@ -108,7 +110,7 @@ export class UserManagementCustomerAdminComponent implements OnInit {
         department: this.departmentFilter,
       })
     )
-    this.getUserList();
+    this.getUserListFromResolver();
   }
 
   getFilterLength() {
@@ -206,10 +208,10 @@ export class UserManagementCustomerAdminComponent implements OnInit {
   }
 
   private getUserList() {
-    this.customer.searchCustomer(this.page, this.size).subscribe((res: any) => {
+    const selectedCustomerCode  = localStorage.getItem('selectedCustomerCode');
       this.customer
         .getCustomerUnderCompany(
-          res.data.content[0].customerCode,
+          selectedCustomerCode,
           this.page,
           this.size,
           this.statusValue,
@@ -221,7 +223,6 @@ export class UserManagementCustomerAdminComponent implements OnInit {
           this.totalPages = res.data.totalPages;
           this.loading = false;
         });
-    });
   }
 
   actionOpen(id: number) {
@@ -408,6 +409,7 @@ export class UserManagementCustomerAdminComponent implements OnInit {
   onCLickClearAll() {
     localStorage.removeItem('tripFilterData');
     this.filterApplied = true;
+    this.filterData = {}
     this.Users = [];
     this.statusValue = 'Active';
     this.departmentFilter = '';
@@ -422,5 +424,14 @@ export class UserManagementCustomerAdminComponent implements OnInit {
       })
     )
     this.getUserList();
+  }
+
+  private getUserListFromResolver() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const res = data.customerUser.data
+      this.Users = res.data.content;
+      this.totalPages = res.data.totalPages;
+      this.loading = false;
+    })
   }
 }

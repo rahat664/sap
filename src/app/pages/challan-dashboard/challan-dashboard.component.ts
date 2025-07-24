@@ -19,7 +19,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmApproveComponent } from '../../shared/modules/confirm-approve/confirm-approve.component';
 import { ConfirmRejectComponent } from '../../shared/modules/confirm-reject/confirm-reject.component';
 import { ConfirmReceiveeComponentComponent } from '../../shared/modules/confirm-receivee-component/confirm-receivee-component.component';
-import { Router, RouterLink } from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { debounceTime, of, Subject } from 'rxjs';
 import { CustomerService } from '../profiles/services/customer.service';
@@ -159,7 +159,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private toastr: HandleToastrService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private activatedRoute: ActivatedRoute,
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -177,7 +178,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.getFromDateAndToDate();
     this.loading = true;
     this.anotherStatusCalled = false;
-    this.getTripList();
+    this.getTripListFromResolver();
     const isFromBack = localStorage.getItem('isBack');
     if (isFromBack !== 'true') {
     } else {
@@ -784,5 +785,25 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       }
       this.updateShowAllState();
     }
+  }
+
+  private getTripListFromResolver() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      this.loading = false;
+      const challanData = data?.challanData?.data;
+      const tripData = challanData?.tripData?.data;
+      this.tripList = tripData?.responses
+      this.completedTrips = tripData?.statusCount?.Completed || 0;
+      this.totalPages = tripData.totalPages;
+      this.pendingChallanText = `Pending challan value for ${this.number.transform(tripData?.challanStatusCount?.Pending) || 0} ${tripData?.challanStatusCount?.Pending === 1 ? 'trip' : 'trips'}`;
+      this.receivedAmount = tripData?.challanStatusCount?.Received || 0;
+      this.pendingAmount = tripData?.challanStatusCount['In-progress'] || 0;
+      this.approvedAmount = tripData?.challanStatusCount?.Approved || 0;
+      this.rejectedAmount = tripData?.challanStatusCount?.Rejected || 0;
+      this.pendingChallanAmount =
+        tripData?.challanStatusCount?.totalCustomerRateForPendingChallans || 0;
+      this.hardCopyReceived =
+        tripData?.challanStatusCount?.HardCopyReceived || 0;
+    })
   }
 }

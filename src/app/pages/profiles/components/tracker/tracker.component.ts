@@ -5,7 +5,7 @@ import { FileUploadPopupComponent } from '../truck/file-upload-popup/file-upload
 import { GetElementHeightDirective } from '../../../../shared/directive/get-element-height.directive';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
-import { Router, RouterLink } from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { VehicleTracker } from '../driver/models/tracker.model';
 import { TrackerService } from '../../services/tracker.service';
@@ -74,7 +74,8 @@ export class TrackerComponent implements OnInit {
     private truck: TruckService,
     private fb: FormBuilder,
     private toast: HandleToastrService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
     this.trackerUpdateForm = this.fb.group({
       truckRegNo: [''],
@@ -82,7 +83,7 @@ export class TrackerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getTrackers();
+    this.getTrackersFromResolver();
   }
 
   onBottom($event: boolean) {
@@ -200,5 +201,13 @@ export class TrackerComponent implements OnInit {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  private getTrackersFromResolver() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const res = data.tracker.data
+      this.trackerList = res.data.content;
+      this.totalPages = res.data.totalPages;
+    })
   }
 }

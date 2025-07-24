@@ -29,6 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { TripListFilterComponent } from '../trip-list/components/trip-list-filter/trip-list-filter.component';
 import { UserFilterComponent } from './user-filter/user-filter.component';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-user-management',
@@ -83,7 +84,8 @@ export class UserManagementComponent implements OnInit {
     private service: UserService,
     private validation: ValidationService,
     private toastr: HandleToastrService,
-    private shared: DriverEditSharedService
+    private shared: DriverEditSharedService,
+    private activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit() {
@@ -93,7 +95,7 @@ export class UserManagementComponent implements OnInit {
       department: this.departmentFilter,
     }));
     this.resetFilters();
-    this.getUserList();
+    this.getUserListFromResolver();
   }
 
 
@@ -356,5 +358,14 @@ export class UserManagementComponent implements OnInit {
       })
     )
     this.getUserList();
+  }
+
+  private getUserListFromResolver() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const res = data.users.data
+      this.Users = res.data.responses;
+      this.totalPages = res.data.totalPages;
+      this.loading = false;
+    })
   }
 }

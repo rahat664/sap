@@ -15,7 +15,7 @@ import { debounceTime } from 'rxjs';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { MatDialog } from '@angular/material/dialog';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
-import { Router, RouterLink } from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { DateEnum } from '../../../trip-list/Enum/date.enum';
 import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
@@ -62,7 +62,8 @@ export class TransporterComponent implements OnInit {
     private router: Router,
     private shared: DriverEditSharedService,
     private datePipe: DatePipe,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -113,7 +114,7 @@ export class TransporterComponent implements OnInit {
     this.page = 0;
     this.size = 20;
     this.generateDateOptionsArray();
-    this.getTransporterList();
+    this.getTransporterListFromResolveState();
   }
 
   private getTransporterList() {
@@ -313,5 +314,14 @@ export class TransporterComponent implements OnInit {
 
   onFilterData($event: any) {
     this.filterData = $event;
+  }
+
+  private getTransporterListFromResolveState() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const res = data.transporter.data
+      this.transporterList = res.data;
+      this.totalPages = res.meta.totalPageCount;
+      this.loading = false;
+    })
   }
 }

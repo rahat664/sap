@@ -30,12 +30,10 @@ import { CustomerService } from '../profiles/services/customer.service';
 import { MatSelect } from '@angular/material/select';
 import { CustomerModel } from '../profiles/components/customer/model/customer.model';
 import { debounceTime, Subject } from 'rxjs';
-import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
-import { GetClickEventDirective } from '../../shared/directive/get-click-event.directive';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
-import { SessionModel } from '../manage-bid/models/session.model';
 import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
 import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-manage-trip',
@@ -156,7 +154,8 @@ export class ManageTripComponent implements OnInit {
     private tripService: TripService,
     private toggleMobileViewService: ToggleResponsiveService,
     private customer: CustomerService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private activatedRoute: ActivatedRoute
   ) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       if (searchText) {
@@ -190,9 +189,8 @@ export class ManageTripComponent implements OnInit {
       this.anotherStatusCalled = value;
     });
 
-    this.getTripList();
+    this.getTripListFromResolvedState();
     this.getVehicleTypeList();
-    this.activatedId = null;
     localStorage.removeItem('tripId');
     this.tripService.reloadManageTripPage.subscribe(value => {
       if (value) {
@@ -362,11 +360,8 @@ export class ManageTripComponent implements OnInit {
     this.retriveStatusButtons(trip.data.statusCount);
     if (this.page === 0) {
       this.tripList = trip.data.responses;
-      this.getTruckTrackers(
-        this.getTruckRegistrationNumber(this.tripList[0].truck)
-      );
-      this.getTripDetails(this.tripList[0].tripId);
       this.activatedId = this.tripList[0].tripId;
+      this.getTripDetails(this.tripList[0].tripId);
       this.tripStatus = this.tripList[0].status;
       this.activatedTruckSizeInFeet = Number(this.tripList[0].truckSize);
     } else {
@@ -922,5 +917,15 @@ export class ManageTripComponent implements OnInit {
   onClickLeftButton() {
     this.leftButtonClicked = true;
     this.rightButtonClicked = false;
+  }
+
+  private getTripListFromResolvedState() {
+    this.activatedRoute.data.subscribe((data: { tripList: any }) => {
+      this.loading = false;
+      this.page = 0;
+      this.size = 30;
+      const trip = data.tripList.data
+      this.updateTripList(trip)
+    })
   }
 }

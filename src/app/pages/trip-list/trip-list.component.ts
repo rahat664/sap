@@ -17,7 +17,7 @@ import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom
 import { statusButtons } from './models/status-buttons';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 import { Trip } from '../auth/models/response/trip';
-import { Router, RouterLink } from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { TripPoint } from '../manage-trip/model/trip.details.model';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
 import { PaymentType, TripType } from '../../shared/Enums/payment-type';
@@ -131,7 +131,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
     private datePipe: DatePipe,
     private router: Router,
     private cd: ChangeDetectorRef,
-    private toaster: HandleToastrService
+    private toaster: HandleToastrService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -158,7 +159,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.loading = true;
     this.page = 0;
     this.size = 30;
-    this.getTripList();
+    this.getTripListFromResolvedState();
     this.service.anotherStatusCalled.subscribe(value => {
       this.anotherStatusCalled = value;
     });
@@ -529,5 +530,12 @@ export class TripListComponent implements OnInit, AfterViewInit {
       }
       this.updateShowAllState();
     }
+  }
+  private getTripListFromResolvedState() {
+    this.activatedRoute.data.subscribe((data: { tripList: any }) => {
+      this.loading = false;
+      const trip = data.tripList.data
+      this.updateTripList(trip)
+    })
   }
 }

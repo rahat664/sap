@@ -1,6 +1,6 @@
-<div class="lg:grid lg:grid-cols-3 flex flex-col-reverse gap-2">
+<div class="md:grid md:grid-cols-3 flex flex-col-reverse gap-2">
   <div
-    class="lg:col-span-2 flex flex-col w-full bg-black h-[calc(100vh-4.125rem)]">
+    class="md:col-span-2 flex flex-col w-full bg-black h-[calc(100vh-4.125rem)]">
     <div class="px-7 py-[1.375rem] flex justify-between bg-[#302F2F]">
       <div
         (click)="onClickBack()"
@@ -124,10 +124,10 @@
       <button
         [disabled]="isLoading"
         (click)="onClickSave()"
-        class="bg-primary py-2 text-white rounded-lg px-4 lg:px-8 text-center text-h2_medium">
+        class="bg-primary py-2 text-white rounded-lg px-4 md:px-8 text-center text-h2_medium">
         <i *ngIf="isLoading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-        <span class="hidden lg:inline">Save</span>
-        <i class="fas fa-save text-white lg:hidden"></i>
+        <span class="hidden md:inline">Save</span>
+        <i class="fas fa-save text-white md:hidden"></i>
       </button>
     </div>
     <div class="px-10 py-5 flex flex-col space-y-5">

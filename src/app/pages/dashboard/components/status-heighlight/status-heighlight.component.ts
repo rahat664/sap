@@ -1,11 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatFormField } from '@angular/material/form-field';
-import { MatOption } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StatusCardComponent } from './status-card/status-card.component';
-import { DashboardService } from '../../services/dashboard.service';
-import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   customerStats,
   DashboardStatsModel,
@@ -13,6 +8,7 @@ import {
 } from '../../models/dashboard-stats.model';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
+import {combineLatest, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-status-heighlight',
@@ -21,6 +17,7 @@ import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
   styleUrl: './status-heighlight.component.scss',
 })
 export class StatusHeighlightComponent implements OnInit {
+  private destroy$ = new Subject<void>();
   fromDate: string;
   toDate: string;
   dashboardStats: DashboardStatsModel;
@@ -34,77 +31,36 @@ export class StatusHeighlightComponent implements OnInit {
   tripType: string = '';
 
   constructor(
-    private service: DashboardService,
-    private datePipe: DatePipe,
     private activatedRoute: ActivatedRoute
   ) {}
 
+
   ngOnInit(): void {
-    // get data from query params
-    this.activatedRoute.queryParams.subscribe((params) => {
-      this.customerCode = params['customerCode'] ? params['customerCode'] : [];
-      this.fromDate = params['fromDate'] ? params['fromDate'] : '';
-      this.toDate = params['toDate'] ? params['toDate'] : '';
-      this.paymentType = params['paymentType'] ? params['paymentType'] : '';
-      this.tripType = params['tripType'] ? params['tripType'] : '';
-      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : [];
-      if (!this.fromDate || !this.toDate) {
-        this.dateFilterAvailable = false;
-        this.countFromDateAndToDate();
-      } else {
-        this.dateFilterAvailable = true;
-      }
-      this.getDashboardStats();
-      this.customerStats();
-    });
-
-  }
-
-
-  private getDashboardStats() {
-    this.service
-      .getApiStats(this.fromDate, this.toDate, this.customerCode.toString(), this.paymentType, this.tripType, this.truckTypeId.toString())
-      .subscribe((res: any) => {
-        if (res.status === 'OK') {
-          this.dashboardStats = res.data;
-        }
+    combineLatest([
+      this.activatedRoute.data,
+      this.activatedRoute.queryParams
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([data, params]: [any, any]) => {
+        const dashboardData = data.dashboardData.data;
+        this.dashboardStats = dashboardData?.apiStats?.data;
+        this.customerStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
+          (customer: customerStats) => customer.roleName === 'ROLE_CUSTOMER'
+        );
+        this.transporterStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
+          (user: userStats) => user.roleName === 'ROLE_TRANSPORTER'
+        );
+        this.driverStatistics = dashboardData?.customerStats?.data?.totalUsers.find(
+          (user: userStats) => user.roleName === 'ROLE_DRIVER'
+        );
+        this.fromDate = params['fromDate'];
+        this.toDate = params['toDate'];
+        this.dateFilterAvailable = !!(this.fromDate && this.toDate);
       });
   }
 
-  private customerStats() {
-    this.service
-      .getCustomerStats(
-        this.fromDate,
-        this.toDate,
-        this.customerCode.toString(),
-        this.paymentType,
-        this.tripType,
-        this.truckTypeId.toString()
-      )
-      .subscribe((res: any) => {
-        if (res.status === 'OK') {
-          this.transporterStatistics = res.data.totalUsers.find(
-            user => user.roleName === 'ROLE_TRANSPORTER'
-          );
-          this.driverStatistics = res.data.totalUsers.find(
-            user => user.roleName === 'ROLE_DRIVER'
-          );
-          this.customerStatistics = res.data.totalUsers.find(
-            customer => customer.roleName === 'ROLE_CUSTOMER'
-          );
-        }
-      });
-  }
 
-  private countFromDateAndToDate() {
-    // from date will be the starting date of the current month
-    this.fromDate = this.datePipe.transform(new Date(), 'yyyy-MM-01');
-    // to date will be the last date of the current month
-    this.toDate = this.datePipe.transform(
-      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-      'yyyy-MM-dd'
-    );
-  }
+
 
   protected readonly localStorage = localStorage;
   protected readonly Math = Math;

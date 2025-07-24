@@ -11,7 +11,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { TruckService } from './services/truck.service';
-import { Router, RouterLink } from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { UploadButtonComponent } from '../../../../shared/modules/upload-button/upload-button.component';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { FileUploadPopupComponent } from './file-upload-popup/file-upload-popup.component';
@@ -96,7 +96,8 @@ export class TruckComponent implements OnInit {
     private shared: DriverEditSharedService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private activatedRoute: ActivatedRoute
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -108,9 +109,8 @@ export class TruckComponent implements OnInit {
   ngOnInit(): void {
     this.generateDateOptionsArray();
     this.truckList = [];
-    this.getTruckList();
+    this.getTruckListFromResolvedState();
     this.makeSureUploadCompletedOrNot();
-    this.onSelectStatus(0);
   }
 
   private generateDateOptionsArray() {
@@ -451,25 +451,6 @@ export class TruckComponent implements OnInit {
       });
   }
 
-  onClickFilterOpened() {
-    this.filterOpened = !this.filterOpened;
-  }
-
-  onClearFilter() {
-    this.statusOptionsArray.forEach(option => {
-      option.selected = false;
-    });
-    this.dateFilter = 0;
-    this.from = '';
-    this.to = '';
-    this.filterForm.get('startDate')?.setValue('');
-    this.filterForm.get('endDate')?.setValue('');
-    this.inputPlaceholder = '';
-    this.statusInputPlaceholder = 'All';
-    this.page = 0;
-    this.size = 30;
-    this.getTruckList();
-  }
 
   onSelectStatus($event: number) {
     this.statusOptionsArray.forEach(option => {
@@ -529,64 +510,6 @@ export class TruckComponent implements OnInit {
   protected readonly localStorage = localStorage;
   filterApplied: boolean = false;
 
-  onSelectedToDate($event: string) {
-    this.filterForm.get('endDate')?.setValue($event);
-    this.from = this.filterForm.get('startDate')?.value || '';
-    this.to = this.filterForm.get('endDate')?.value || '';
-    this.dateOpened = false;
-    this.isDateOpened = false;
-    this.page = 0;
-    this.size = 30;
-    this.getTruckList();
-  }
-
-  onSelectedFromDate($event: string) {
-    this.filterForm.get('startDate')?.setValue($event);
-  }
-
-  onSelectDate($event: number) {
-    this.dateFilter = 1;
-    if ($event === DateEnum.Custom) {
-      this.shared.closeInputSelect.next(true);
-    } else {
-      this.shared.closeInputSelect.next(false);
-      this.inputPlaceholder =
-        this.dateOptionArray.find(x => x.id === $event)?.value || '';
-      this.dateOptionArray.forEach(x => (x.selected = x.id === $event));
-      this.setDateRange($event);
-      this.page = 0;
-      this.size = 30;
-      this.loading = true;
-      this.getTruckList();
-    }
-  }
-
-  private setDateRange(dateEnum: DateEnum) {
-    const fromDate = new Date();
-    // to date should be yesterday
-    const toDate = new Date();
-    switch (dateEnum) {
-      case DateEnum.Today:
-        fromDate.setDate(fromDate.getDate());
-        toDate.setDate(toDate.getDate());
-        break;
-      case DateEnum.LastSevenDays:
-        // shouldn't be count today
-        fromDate.setDate(fromDate.getDate() - 7);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-      case DateEnum.LastFifteenDays:
-        fromDate.setDate(fromDate.getDate() - 15);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-      case DateEnum.LastThirtyDays:
-        fromDate.setDate(fromDate.getDate() - 30);
-        toDate.setDate(toDate.getDate() - 1);
-        break;
-    }
-    this.from = this.datePipe.transform(fromDate, 'yyyy-MM-dd') || '';
-    this.to = this.datePipe.transform(toDate, 'yyyy-MM-dd') || '';
-  }
 
   onClickFilterOpen() {
     this.filterOpened = true;
@@ -656,5 +579,14 @@ export class TruckComponent implements OnInit {
 
   onFilterData($event: any) {
     this.filterData = $event
+  }
+
+  getTruckListFromResolvedState() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const res = data.truck.data
+      this.truckList = res.data.responses;
+      this.totalPages = res.data.totalPages;
+      this.loading = false;
+    })
   }
 }

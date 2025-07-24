@@ -9,6 +9,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
+import {combineLatest, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-top-transporter',
@@ -27,6 +28,7 @@ import { LoadingComponent } from '../../../../shared/modules/loading/loading.com
   styleUrl: './top-transporter.component.scss',
 })
 export class TopTransporterComponent implements OnInit {
+  private destroy$ = new Subject<void>();
   topTransporter: TopTransporters[] = [];
   fromDate: string;
   toDate: string;
@@ -44,25 +46,39 @@ export class TopTransporterComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loading = false;
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.customerCode = params['customerCode'] ? params['customerCode'] : '';
-      this.paymentType = params['paymentType'] ? params['paymentType'] : '';
-      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : '';
-      this.tripType = params['tripType'] ? params['tripType'] : '';
-      if (params['fromDate'] && params['toDate']) {
-        this.fromDate = params['fromDate'];
-        this.toDate = params['toDate'];
-      } else {
-        this.getFromDateToDate();
+
+    this.activatedRoute.data.subscribe(
+      (data: any) => {
+        const dashboardData = data.dashboardData.data;
+        this.topTransporter = dashboardData?.topTransporters?.data.content;
+        this.loading = false;
       }
-      this.getTopTransporters();
-    } )
+    )
+    combineLatest([
+      this.activatedRoute.data,
+      this.activatedRoute.queryParams
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([data, params]: [any, any]) => {
+      const dashboardData = data.dashboardData.data;
+      this.topTransporter = dashboardData?.topTransporters?.data.content || [];
+      this.fromDate = params['fromDate'] || '2024-01-01';
+      this.toDate = params['toDate'] || this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+      this.paymentType = params['paymentType'] || '';
+      this.tripType = params['tripType'] || '';
+      this.truckTypeId = params['truckTypeId'] || '';
+      this.loading = false;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private getTopTransporters() {
     this.service
-      .getTopTransporters(this.fromDate, this.toDate, this.sortBy, this.customerCode, this.paymentType, this.tripType, this.truckTypeId.toString())
+      .getTopTransporters(this.fromDate, this.toDate, this.sortBy, this.customerCode, this.paymentType, this.tripType, this.truckTypeId?.toString())
       .subscribe(
         (res: any) => {
           this.topTransporter = res.data.content;

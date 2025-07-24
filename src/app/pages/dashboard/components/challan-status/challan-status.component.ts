@@ -32,18 +32,23 @@ export class ChallanStatusComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe((params) => {
-      this.customerCode = params['customerCode'] ? params['customerCode'] : '';
-      this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : '';
-      this.paymentType = params['paymentType'] ? params['paymentType'] : '';
-      this.tripType = params['tripType'] ? params['tripType'] : '';
-      this.fromDate = params['fromDate'] ? params['fromDate'] : '';
-      this.toDate = params['toDate'] ? params['toDate'] : '';
-      if (!this.fromDate || !this.toDate) {
-        this.getFromDateAndToDate();
-      }
+    // this.activatedRoute.queryParams.subscribe((params) => {
+    //   this.customerCode = params['customerCode'] ? params['customerCode'] : '';
+    //   this.truckTypeId = params['truckTypeId'] ? params['truckTypeId'] : '';
+    //   this.paymentType = params['paymentType'] ? params['paymentType'] : '';
+    //   this.tripType = params['tripType'] ? params['tripType'] : '';
+    //   this.fromDate = params['fromDate'] ? params['fromDate'] : '';
+    //   this.toDate = params['toDate'] ? params['toDate'] : '';
+    //   if (!this.fromDate || !this.toDate) {
+    //     this.getFromDateAndToDate();
+    //   }
+    //
+    //   this.getChallanStatus();
+    // });
 
-      this.getChallanStatus();
+    this.activatedRoute.data.subscribe((data: any) => {
+      const dashboardData = data.dashboardData.data;
+      this.challanStatus = dashboardData?.challanStatus?.data;
     });
   }
 

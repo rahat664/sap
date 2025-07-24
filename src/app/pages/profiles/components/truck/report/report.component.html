@@ -1,7 +1,7 @@
 <div class="m-3 bg-white rounded-lg flex flex-col min-h-[calc(100vh-9rem)]">
   <div
     class="flex px-7 py-4 border-b border-line w-full justify-between items-center">
-    <h1 class="text-h1_mobile leading-h1_mobile lg:text-h1 lg:leading-h1 font-semibold">Report</h1>
+    <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">Report</h1>
     <div>
       <button
         [matTooltipDisabled]="
@@ -12,11 +12,11 @@
           fromDate == null || toDate == null || selectedTruckList.length <= 0
         "
         (click)="onClickGenerateReport()"
-        class="px-4 lg:px-16 flex space-x-2 text-white items-center bg-primary py-3 rounded-lg">
-        <span class="text-h2_medium font-medium hidden lg:inline"
+        class="px-4 md:px-16 flex space-x-2 text-white items-center bg-primary py-3 rounded-lg">
+        <span class="text-h2_medium font-medium hidden md:inline"
         >Generate report as pdf file</span
         >
-        <i class="fas fa-file-pdf text-h2_medium font-medium lg:hidden"></i>
+        <i class="fas fa-file-pdf text-h2_medium font-medium md:hidden"></i>
       </button>
     </div>
   </div>

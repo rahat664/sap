@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import {shareReplay} from "rxjs";
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,7 @@ export class DashboardService {
   private _customerStatsUrl = `${environment.userUrl}/api/customers`;
   private _transporterRateAnalysisUrl = `${environment.backendUrl}/api/trips/transporter-rate-stats`;
   private _dateWiseTripCountUrl = `${environment.backendUrl}/api/v1/dashboard/trips-status-count-by-date`;
+
 
   constructor(private http: HttpClient) {}
 
@@ -38,7 +40,7 @@ export class DashboardService {
     }
     return this.http.get(
       `${this._dashboardUrl}/statistics?${params.toString()}`
-    );
+    ).pipe(shareReplay(1));
   }
 
   getDateWiseTripCount(
@@ -66,7 +68,7 @@ export class DashboardService {
     if (truckTypeId) {
       params.set('truckTypeId', truckTypeId);
     }
-    return this.http.get(`${this._dateWiseTripCountUrl}?${params.toString()}`);
+    return this.http.get(`${this._dateWiseTripCountUrl}?${params.toString()}`).pipe(shareReplay(1));
   }
 
   getCustomerStats(
@@ -94,7 +96,7 @@ export class DashboardService {
     }
     return this.http.get(
       `${this._customerStatsUrl}/stats?${params.toString()}`
-    );
+    ).pipe(shareReplay(1));
   }
 
   getChallanStatus(
@@ -122,7 +124,7 @@ export class DashboardService {
     }
     return this.http.get(
       `${this._dashboardUrl}/challan-status?${params.toString()}`
-    );
+    ).pipe(shareReplay(1));
   }
 
   getTripCountByStatus(from: string, to: string, customerCode?: string) {
@@ -134,7 +136,7 @@ export class DashboardService {
     }
     return this.http.get(
       `${this._dashboardUrl}/trips-count-by-status?${params.toString()}`
-    );
+    ).pipe(shareReplay(1));
   }
 
   getTopTransporters(
@@ -165,7 +167,7 @@ export class DashboardService {
     }
     return this.http.get(
       `${this._dashboardUrl}/top-transporters?${params.toString()}`
-    );
+    ).pipe(shareReplay(1));
   }
 
   getTopCustomers(
@@ -192,7 +194,7 @@ export class DashboardService {
     }
     return this.http.get(
       `${this._dashboardUrl}/top-customers?${params.toString()}`
-    );
+    ).pipe(shareReplay(1));
   }
 
   getTransporterRateAnalysisData(
@@ -245,6 +247,6 @@ export class DashboardService {
 
     return this.http.get(
       `${this._transporterRateAnalysisUrl}?${params.toString()}`
-    );
+    ).pipe(shareReplay(1));
   }
 }
