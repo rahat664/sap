@@ -27,7 +27,7 @@
                 width="24"/>
               <span class="ml-3 font-semibold">Dashboard</span>
             </a>
-          </li> // have to do
+          </li>
           <li *ngIf="isAdmin() && isPermissionGranted('trip', 'manage_challan')">
             <a
               routerLink="/challan-management"
@@ -142,7 +142,7 @@
               >Transporter Payment</span
               >
             </a>
-          </li> //have to do
+          </li>
           <li *ngIf="isAdmin() &&isPermissionGranted('admin', 'view_all')">
             <a
               (click)="clearSelectedTemplate(); ifInMobileDevice()"
