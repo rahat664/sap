@@ -10,7 +10,7 @@
       <div class="flex-1 px-8 bg-white divide-y space-y-1">
         <ul class="space-y-3 pb-2 max-h-[calc(100vh-14rem)] overflow-y-auto">
 
-          <li *ngIf="isAdmin() && isPermissionGranted('dashboard', 'view_all')">
+          <li *ngIf="isAdmin() && isPermissionGranted('dashboard', 'dashboard')">
             <a
               (click)="ifInMobileDevice()"
               routerLink="/dashboard"
@@ -124,7 +124,7 @@
               >
             </a>
           </li>
-          <li *ngIf="isAdmin() && isPermissionGranted('transporter_payment', 'view_all')">
+          <li *ngIf="isAdmin() && isPermissionGranted('transporter-payment', 'transporter-payment')">
             <a
               (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/transporter-payment"
@@ -183,7 +183,7 @@
               >
             </a>
           </li>
-          <li *ngIf="isAdmin() && (isPermissionGranted('customer', 'view_all') || isPermissionGranted('transporter', 'view_all') || isPermissionGranted('truck', 'view_all') || isPermissionGranted('driver', 'view_all') || isPermissionGranted('tracker', 'view_all'))">
+          <li *ngIf="isAdmin() && (isPermissionGranted('customer', 'view_all') || isPermissionGranted('transporter', 'view_all') || isPermissionGranted('truck', 'view_all') || isPermissionGranted('driver', 'view_all') || isPermissionGranted('tracker', 'tracker'))">
             <button
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: false }"
@@ -254,7 +254,7 @@
                 >Driver</a
                 >
               </li>
-              <li *ngIf="isPermissionGranted('tracker', 'view_all')">
+              <li *ngIf="isPermissionGranted('tracker', 'tracker')">
                 <a
                   (click)="ifInMobileDevice()"
                   routerLink="/profile/tracker"
@@ -265,7 +265,7 @@
               </li>
             </ul>
           </li>
-          <li *ngIf="isAdmin() && isPermissionGranted('vehicle_tracking', 'view_all')">
+          <li *ngIf="isAdmin() && isPermissionGranted('vehicle-tracking', 'vehicle-tracking')">
             <a
               (click)="ifInMobileDevice()"
               routerLink="/vehicle-tracking"
