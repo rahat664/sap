@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { GetOutsideModalClickDirective } from '../../../shared/directive/get-outside-modal-click.directive';
+import { PermissionService } from '../../../shared/services/permission.service';
 
 
 @Component({
@@ -34,7 +35,8 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private mobileViewService: ToggleResponsiveService,
     private router: Router,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private permissionService: PermissionService
   ) {}
 
   @ViewChild('sideBar') myDiv!: ElementRef;
@@ -114,4 +116,7 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  isPermissionGranted(module:string, permission: string) {
+    return this.permissionService.isPermitted(module, permission);
+  }
 }

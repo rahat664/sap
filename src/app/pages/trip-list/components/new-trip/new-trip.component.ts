@@ -28,6 +28,7 @@ import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { TripPoint } from '../../../manage-trip/model/trip.details.model';
+import { PermissionService } from '../../../../shared/services/permission.service';
 
 @Component({
   selector: 'app-new-trip',
@@ -71,7 +72,8 @@ export class NewTripComponent implements OnInit, OnDestroy {
     private customer: CustomerService,
     private service: TripService,
     private router: Router,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
+    private permissionService: PermissionService
   ) {}
 
   ngOnInit(): void {
@@ -385,5 +387,9 @@ export class NewTripComponent implements OnInit, OnDestroy {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  isPermissionGranted(module: string, permission: string) {
+    return this.permissionService.isPermitted(module, permission);
   }
 }

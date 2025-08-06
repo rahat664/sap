@@ -10,7 +10,7 @@
       <div class="flex-1 px-8 bg-white divide-y space-y-1">
         <ul class="space-y-3 pb-2 max-h-[calc(100vh-14rem)] overflow-y-auto">
 
-          <li *ngIf="isAdmin()">
+          <li *ngIf="isAdmin() && isPermissionGranted('dashboard', 'view_all')">
             <a
               (click)="ifInMobileDevice()"
               routerLink="/dashboard"
@@ -27,8 +27,8 @@
                 width="24"/>
               <span class="ml-3 font-semibold">Dashboard</span>
             </a>
-          </li>
-          <li *ngIf="isAdmin()">
+          </li> // have to do
+          <li *ngIf="isAdmin() && isPermissionGranted('trip', 'manage_challan')">
             <a
               routerLink="/challan-management"
               (click)="ifInMobileDevice()"
@@ -46,7 +46,7 @@
               <span class="ml-3 font-semibold">Challan Management</span>
             </a>
           </li>
-          <li>
+          <li *ngIf="isPermissionGranted('trip', 'create')">
             <a
               routerLink="/trip-create/customerselection"
               routerLinkActive="active"
@@ -65,7 +65,7 @@
               <span class="ml-3 font-semibold">Create Trip</span>
             </a>
           </li>
-          <li *ngIf="isAdmin()">
+          <li *ngIf="isAdmin() && isPermissionGranted('bid', 'manage_bid')">
             <a
               (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/manage-bid"
@@ -85,7 +85,7 @@
               >
             </a>
           </li>
-          <li>
+          <li *ngIf="isPermissionGranted('trip', 'view_all')">
             <a
               (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/manage-trip"
@@ -105,7 +105,7 @@
               >
             </a>
           </li>
-          <li>
+          <li *ngIf="isPermissionGranted('trip', 'view_all')">
             <a
               (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/trip-list"
@@ -124,7 +124,7 @@
               >
             </a>
           </li>
-          <li *ngIf="isAdmin()">
+          <li *ngIf="isAdmin() && isPermissionGranted('transporter_payment', 'view_all')">
             <a
               (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/transporter-payment"
@@ -142,8 +142,8 @@
               >Transporter Payment</span
               >
             </a>
-          </li>
-          <li *ngIf="isAdmin()">
+          </li> //have to do
+          <li *ngIf="isAdmin() &&isPermissionGranted('admin', 'view_all')">
             <a
               (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/user-management"
@@ -163,7 +163,7 @@
               >
             </a>
           </li>
-          <li *ngIf="!isAdmin() && isCustomerAdmin()">
+          <li *ngIf="!isAdmin() && isCustomerAdmin() && isPermissionGranted('user', 'view_all')">
             <a
               (click)="clearSelectedTemplate(); ifInMobileDevice()"
               routerLink="/user-management-customer"
@@ -183,7 +183,7 @@
               >
             </a>
           </li>
-          <li *ngIf="isAdmin()">
+          <li *ngIf="isAdmin() && (isPermissionGranted('customer', 'view_all') || isPermissionGranted('transporter', 'view_all') || isPermissionGranted('truck', 'view_all') || isPermissionGranted('driver', 'view_all') || isPermissionGranted('tracker', 'view_all'))">
             <button
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: false }"
@@ -218,7 +218,7 @@
               id="dropdown-example"
               class="py-2 px-6 space-y-2"
               *ngIf="dropdownOpen">
-              <li>
+              <li *ngIf="isPermissionGranted('customer', 'view_all')">
                 <a
                   (click)="ifInMobileDevice()"
                   routerLink="/profile/customer"
@@ -227,7 +227,7 @@
                 >Customer</a
                 >
               </li>
-              <li>
+              <li *ngIf="isPermissionGranted('transporter', 'view_all')">
                 <a
                   (click)="ifInMobileDevice()"
                   routerLink="/profile/transporter"
@@ -236,7 +236,7 @@
                 >Transporter</a
                 >
               </li>
-              <li>
+              <li *ngIf="isPermissionGranted('truck', 'view_all')">
                 <a
                   (click)="ifInMobileDevice()"
                   routerLink="/profile/truck"
@@ -245,7 +245,7 @@
                 >Truck</a
                 >
               </li>
-              <li>
+              <li *ngIf="isPermissionGranted('driver', 'view_all')">
                 <a
                   (click)="ifInMobileDevice()"
                   routerLink="/profile/driver"
@@ -254,7 +254,7 @@
                 >Driver</a
                 >
               </li>
-              <li>
+              <li *ngIf="isPermissionGranted('tracker', 'view_all')">
                 <a
                   (click)="ifInMobileDevice()"
                   routerLink="/profile/tracker"
@@ -265,7 +265,7 @@
               </li>
             </ul>
           </li>
-          <li *ngIf="isAdmin()">
+          <li *ngIf="isAdmin() && isPermissionGranted('vehicle_tracking', 'view_all')">
             <a
               (click)="ifInMobileDevice()"
               routerLink="/vehicle-tracking"
