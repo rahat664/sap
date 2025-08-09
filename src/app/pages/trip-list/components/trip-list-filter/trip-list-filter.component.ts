@@ -170,6 +170,10 @@ export class TripListFilterComponent {
     this.updateOverLayStyle(false);
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   onClickFilterButton(event: any, picker: any) {
     this.picker = picker;
     this.event = event;

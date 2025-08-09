@@ -949,4 +949,7 @@ export class CreateTripPageComponent implements OnInit {
       document.body.classList.remove(className);
     }
   }
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
 }

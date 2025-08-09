@@ -119,4 +119,8 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
   isPermissionGranted(module:string, permission: string) {
     return this.permissionService.isPermitted(module, permission);
   }
+
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
 }

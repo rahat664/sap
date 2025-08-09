@@ -23,6 +23,14 @@ export const profileRoutes: Routes = [
     },
   },
   {
+    path: 'customer/:customerCode/details',
+    title: 'Customer Details',
+    loadComponent: () =>
+      import(
+        './components/customer/customer-details/customer-details.component'
+      ).then(c => c.CustomerDetailsComponent),
+  },
+  {
     path: 'transporter',
     title: 'Transporter',
     loadComponent: () =>

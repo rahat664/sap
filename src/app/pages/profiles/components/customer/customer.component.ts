@@ -17,7 +17,7 @@ import { DateEnum } from '../../../trip-list/Enum/date.enum';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { UserFilterComponent } from '../../../user-management/user-filter/user-filter.component';
 import { CustomerFilterComponent } from './customer-filter/customer-filter.component';
-import {ActivatedRoute} from "@angular/router";
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-customer',
@@ -60,7 +60,8 @@ export class CustomerComponent implements OnInit {
     private formBuilder: FormBuilder,
     private shared: DriverEditSharedService,
     private datePipe: DatePipe,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private router: Router
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -377,5 +378,10 @@ export class CustomerComponent implements OnInit {
       this.totalPages = res.data.totalPages;
       this.loading = false;
     })
+  }
+
+  onClickCustomer(customerCode: string) {
+    localStorage.setItem('selectedCustomerCode', customerCode);
+    this.router.navigate(['profile/customer/customerCode/details'], {})
   }
 }

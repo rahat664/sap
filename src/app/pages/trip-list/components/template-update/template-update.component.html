@@ -638,7 +638,7 @@
               </mat-form-field>
             </div>
           </div>
-          <div class="flex flex-col space-y-3" *ngIf="isAdmin()">
+          <div class="flex flex-col space-y-3" *ngIf="isAdmin() && customerIsNotEnterprise()">
             <div class="flex space-x-3 items-center">
               <img
                 loading="lazy"
@@ -649,7 +649,7 @@
                 Customer Rate (CR)
               </h1>
             </div>
-            <div class="flex flex-col space-y-1 w-full">
+            <div class="flex flex-col space-y-1 w-full" *ngIf="customerIsNotEnterprise()">
               <label for="customerRate" class="form-label text-body"
               >Customer rate</label
               >

@@ -256,7 +256,7 @@
               </mat-form-field>
             </ng-container>
           </div>
-          <div class="flex flex-col space-y-2 w-full" *ngIf="isAdmin() && isPermissionGranted('customer', 'view_all')">
+          <div class="flex flex-col space-y-2 w-full" *ngIf="isAdmin() && isPermissionGranted('customer', 'view_all') && customerIsNotEnterprise()">
             <label class="text-base text-secondary">Company name</label>
 
             <mat-form-field

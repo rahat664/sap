@@ -71,6 +71,7 @@ export class AuthEffects {
             localStorage.setItem('image', response.data.image || '');
             localStorage.setItem('role', JSON.stringify(response.data.roles));
             localStorage.setItem('userPhoneNumber', response.data.phone);
+            localStorage.setItem('enterpriseCode', response.data.customer?.enterprise?.enterpriseCode || '');
             response.data.customer ? localStorage.setItem('selectedCustomerCode', response.data.customer.customerCode) : localStorage.removeItem('selectedCustomerCode');
             // Change to your desired route
             this.user.getUserPermissions().subscribe((permissions: any) => {

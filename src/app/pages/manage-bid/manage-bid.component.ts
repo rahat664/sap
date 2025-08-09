@@ -199,6 +199,10 @@ export class ManageBidComponent {
     this.activatedId = null;
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   onClickClear() {
     this.searchValue = '';
     this.page = 0;

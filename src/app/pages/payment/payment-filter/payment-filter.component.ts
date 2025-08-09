@@ -152,6 +152,10 @@ export class PaymentFilterComponent {
       });
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   onApplyFilter() {
     const filterData = {
       startDate: this.startDate,

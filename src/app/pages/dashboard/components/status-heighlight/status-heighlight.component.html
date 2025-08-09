@@ -17,7 +17,7 @@
   <!--    &lt;!&ndash;    </mat-form-field>&ndash;&gt;-->
   <!--  </div>-->
   <div class="grid md:grid-cols-5 gap-3 cursor-pointer">
-    <app-status-card
+    <app-status-card *ngIf="customerIsNotEnterprise()"
       subtitles="Total Revenue"
       [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/trip-list"
@@ -31,7 +31,7 @@
       }} ৳ this month"
       backgroundColor="bg-[#1DBF73]"
       textColor="text-[#009D54]"></app-status-card>
-    <app-status-card
+    <app-status-card *ngIf="customerIsNotEnterprise()"
       subtitles="Total Profit Margin"
       [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/trip-list"
@@ -45,7 +45,7 @@
       }}% this month"
       backgroundColor="bg-[#1DBF73]"
       textColor="text-[#009D54]"></app-status-card>
-    <app-status-card
+    <app-status-card *ngIf="customerIsNotEnterprise()"
       subtitles="Total Customer Rate"
       [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/trip-list"
@@ -103,7 +103,7 @@
       }} trip this month"
       backgroundColor="bg-[#FFA711]"
       textColor="text-[#CD8304]"></app-status-card>
-    <app-status-card
+    <app-status-card *ngIf="customerIsNotEnterprise()"
       subtitles="Total Customer"
       [dateFilterAvailable]="dateFilterAvailable"
       routerLink="/profile/customer"

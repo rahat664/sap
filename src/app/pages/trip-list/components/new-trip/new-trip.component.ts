@@ -97,7 +97,7 @@ export class NewTripComponent implements OnInit, OnDestroy {
       localStorage.removeItem('tripData');
     }
     this.manageStore();
-    if (this.isAdmin()) {
+    if (this.isAdmin() && this.customerIsNotEnterprise()) {
       const selectedCustomer = localStorage.getItem('selectedCustomer');
       if (selectedCustomer) {
         this.customerName = JSON.parse(selectedCustomer).name;
@@ -118,6 +118,10 @@ export class NewTripComponent implements OnInit, OnDestroy {
         this.createButtonEnabled = true;
       });
     }
+  }
+
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
   }
 
   isAdmin() {

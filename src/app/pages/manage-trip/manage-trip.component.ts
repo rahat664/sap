@@ -171,6 +171,10 @@ export class ManageTripComponent implements OnInit {
     });
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   ngOnInit() {
     this.dateSelected = false;
     this.customerSelected = false;

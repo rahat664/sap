@@ -316,6 +316,10 @@ export class TripUpdateComponent implements OnInit {
     });
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   onVehicleTypeClick(item: any) {
     this.tripUpdateForm.get('categoryId').setValue(item.id);
     this.vehicleTypeList.forEach((element: any) => {

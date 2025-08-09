@@ -806,4 +806,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         tripData?.challanStatusCount?.HardCopyReceived || 0;
     })
   }
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
 }

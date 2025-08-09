@@ -60,6 +60,10 @@ export class SessionBidDetailsComponent {
     this.selectedBidReason = null;
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   ngOnChanges() {
     // check tripDetails is not empty object
     this.noTripDetails = !(this.tripDetails && Object.keys(this.tripDetails).length > 0);
