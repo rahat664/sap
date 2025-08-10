@@ -10,7 +10,7 @@
       <div class="flex-1 px-8 bg-white divide-y space-y-1">
         <ul class="space-y-3 pb-2 max-h-[calc(100vh-14rem)] overflow-y-auto">
 
-          <li *ngIf="isAdmin() && isPermissionGranted('dashboard', 'dashboard')">
+          <li *ngIf="isAdmin() && isPermissionGranted('dashboard', 'dashboard') && customerIsNotEnterprise()">
             <a
               (click)="ifInMobileDevice()"
               routerLink="/dashboard"
