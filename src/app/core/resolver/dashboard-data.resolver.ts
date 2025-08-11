@@ -18,7 +18,6 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
     new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
     'yyyy-MM-dd'
   );
-  alert(to)
   const customerCode = route?.queryParams['customerCode'] || '';
   const paymentType = route?.queryParams['paymentType'] || '';
   const tripType = route?.queryParams['tripType'] || '';
