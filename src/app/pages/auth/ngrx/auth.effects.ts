@@ -81,8 +81,10 @@ export class AuthEffects {
                   JSON.stringify(permissions.data)
                 );
                 this.toaster.showSuccess('Login Successful', '');
-                if (this.isAdmin()) {
+                if (this.isAdmin() && this.customerIsNotEnterprise()) {
                   this.router.navigateByUrl('/dashboard').then(r => {});
+                } else if (this.customerIsNotEnterprise() === false) {
+                  this.router.navigateByUrl('/manage-trip').then(r => {});
                 } else {
                   this.router.navigateByUrl('/trip-list').then(r => {});
                 }
@@ -95,6 +97,10 @@ export class AuthEffects {
       ),
     { dispatch: false }
   );
+
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
 
   logout$ = createEffect(
     () =>

@@ -29,7 +29,7 @@ export const routes: Routes = [
       import('./pages/dashboard/dashboard.component').then(
         c => c.DashboardComponent
       ),
-    canActivate: [authGuard, roleGuard],
+    canActivate: [authGuard, roleGuard, ],
     resolve: {
       dashboardData: dashboardDataResolver,
     },

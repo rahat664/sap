@@ -18,6 +18,7 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
     new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
     'yyyy-MM-dd'
   );
+  alert(to)
   const customerCode = route?.queryParams['customerCode'] || '';
   const paymentType = route?.queryParams['paymentType'] || '';
   const tripType = route?.queryParams['tripType'] || '';
@@ -39,7 +40,7 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
   // todate should be the current date
   const toDate = new Date();
   // to date will be the last day of the current month
-  const challanToDate = route?.queryParams['fromDate'] || datePipe.transform(
+  const challanToDate = route?.queryParams['toDate'] || datePipe.transform(
     new Date(toDate.getFullYear(), toDate.getMonth() + 1, 0),
     'yyyy-MM-dd'
   );
