@@ -10,6 +10,7 @@ import {
 } from 'rxjs';
 import { HandleToastrService } from '../../../shared/services/handle-toastr/handle-toastr.service';
 import { map } from 'rxjs/operators';
+import { CustomerCreateModel, UpdateCustomerModel } from '../components/customer/model/customer-create.model';
 
 @Injectable({
   providedIn: 'root',
@@ -122,5 +123,9 @@ export class CustomerService {
 
   getCustomerDetails(customerCode: string): Observable<any> {
     return this.http.get<any>(`${this.url}/customer-code/${customerCode}`)
+  }
+
+  editCustomer(customerModel: UpdateCustomerModel) {
+    return this.http.put<any>(`${this.url}/update`, customerModel, {});
   }
 }

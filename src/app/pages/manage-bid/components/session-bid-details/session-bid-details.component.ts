@@ -371,4 +371,9 @@ export class SessionBidDetailsComponent {
       this.selectedBidAmount !== this.selectedBid?.amount || this.selectedBidReason !== null
     );
   }
+
+  isAdmin() {
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
+  }
 }

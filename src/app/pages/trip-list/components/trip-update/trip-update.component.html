@@ -677,7 +677,7 @@
               </mat-form-field>
             </div>
           </div>
-          <div class="flex flex-col space-y-3" *ngIf="isAdmin() && customerIsNotEnterprise()">
+          <div class="flex flex-col space-y-3" *ngIf="isAdmin()">
             <div class="flex space-x-3 items-center">
               <img
                 loading="lazy"
@@ -685,13 +685,17 @@
                 src="assets/svg/cr.svg"
                 alt="candt"/>
               <h1 class="text-h2 leading-h2 font-semibold">
-                Customer Rate (CR)
+                {{ isAdmin() && customerIsNotEnterprise() ? 'Customer Rate (CR)' : '' }}
+                {{!isAdmin() ? 'Trip Rate' : ''}}
+                {{!customerIsNotEnterprise() ? 'Expected Rate' : ''}}
               </h1>
             </div>
-            <div class="flex flex-col space-y-1 w-full" *ngIf="customerIsNotEnterprise()">
+            <div class="flex flex-col space-y-1 w-full">
               <label for="customerRate" class="form-label text-body"
-              >Customer rate</label
-              >
+              >{{ isAdmin() && customerIsNotEnterprise() ? 'Customer Rate (CR)' : '' }}
+                {{!isAdmin() ? 'Trip Rate' : ''}}
+                {{!customerIsNotEnterprise() ? 'Expected Rate' : ''}}
+              </label>
               <!--Add a bdt icon at the end of the input-->
               <div class="relative bg-input rounded-lg border-none">
                 <mat-form-field

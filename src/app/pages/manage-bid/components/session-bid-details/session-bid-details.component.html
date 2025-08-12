@@ -63,10 +63,12 @@
       </span>
         </div>
         <div
-          class="flex items-center space-x-2" *ngIf="customerIsNotEnterprise()">
+          class="flex items-center space-x-2">
           <img src="./assets/svg/cr.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
           <span class="text-secondary text-start">
-        CR: {{ tripDetails?.customerRate | number }} ৳
+        {{ isAdmin() && customerIsNotEnterprise() ? 'Customer Rate (CR) :' : '' }}
+            {{!isAdmin() ? 'Trip Rate :' : ''}}
+            {{!customerIsNotEnterprise() ? 'Expected Rate :' : ''}} {{ tripDetails?.customerRate | number }} ৳
       </span>
         </div>
       </div>

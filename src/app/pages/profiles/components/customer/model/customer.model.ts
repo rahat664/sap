@@ -33,7 +33,7 @@ export interface Customer {
   creationDate: string;
   createdBy: string;
   updatedBy: string | null;
-  contactPerson: ContactPerson | null;
+  contactPerson: string;
   grossProfit: number | null;
   numberOfTrips: number;
   rank: number;
@@ -42,7 +42,7 @@ export interface Customer {
 }
 
 export interface ContactPerson {
-  name: string;
+  contactPersonName: string;
   phone: string;
   email: string;
 }
