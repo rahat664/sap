@@ -84,6 +84,8 @@ export class TopbarComponent implements OnInit {
   onClickLogo() {
     this.shared.closeInputSelect.next(false);
   }
-
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
   protected readonly environment = environment;
 }
