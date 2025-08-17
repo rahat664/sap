@@ -26,7 +26,7 @@ import {
   ChartComponent,
 } from 'ng-apexcharts';
 import { timer } from 'rxjs';
-import { NgForOf } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 
 export interface ChartOptions {
   series: ApexAxisChartSeries;
@@ -47,7 +47,7 @@ export interface ChartOptions {
 
 @Component({
   selector: 'app-line-chart',
-  imports: [ChartComponent, NgForOf],
+  imports: [ChartComponent, NgForOf, NgIf],
   templateUrl: './line-chart.component.html',
   styleUrl: './line-chart.component.scss',
 })
@@ -69,9 +69,10 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
 
   constructor(private cd: ChangeDetectorRef) {}
 
+
   ngOnChanges(changes: SimpleChanges) {
     if (this.seriesData && this.categories) {
-      timer(1200).subscribe(() => {
+      timer(500).subscribe(() => {
         let colors = [],
           numberOfTrips = [],
           categories = [];
@@ -84,6 +85,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
           series: this.seriesData,
           chart: {
             height: 350,
+            width: this.categories.length * 100,
             type: 'line',
             zoom: {
               enabled: false,
@@ -152,6 +154,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
       });
     }
   }
+
   makeYAxisSticky() {
     timer(200).subscribe(() => {
       if (!this.yAxisContainers?.nativeElement) return;
@@ -196,6 +199,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
     });
     // Delay to ensure chart renders first
   }
+
   ngOnInit() {
     timer(1200).subscribe(() => {
       let colors = [],
@@ -345,7 +349,8 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
     chartContainer.style.width = `${chartContainerWidth}px`;
 
     // Append custom x-axis below the chart
-    chartContainer.appendChild(xAxisDiv);
     // Set the width of the custom x-axis
+
+    chartContainer.appendChild(xAxisDiv);
   }
 }
