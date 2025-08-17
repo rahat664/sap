@@ -66,6 +66,7 @@ export class DashboardComponent implements OnInit {
   tripTypeValue: string;
   filterData: any;
   filterApplied: boolean;
+  transporterCodes: any[] = [];
 
   constructor(
     private customer: CustomerService,
@@ -91,7 +92,7 @@ export class DashboardComponent implements OnInit {
         paymentType: null,
         tripType: null,
         truckTypeId: null,
-        transporterName: null,
+        transporterCodes: null,
       },
       queryParamsHandling: 'merge',
     });
@@ -180,13 +181,14 @@ export class DashboardComponent implements OnInit {
       this.filterData?.tripType ||
       this.filterData?.customerCode ||
       this.filterData?.truckType?.length > 0
-      || this.filterData?.transporterName
+      || this.filterData?.transporterCodes?.length > 0
     ) {
       this.filterApplied = true;
       this.filterOpened = false;
       this.fromDate = this.filterData.startDate;
       this.toDate = this.filterData.endDate;
       this.customerCode = this.filterData.customerCode;
+      this.transporterCodes = this.filterData.transporterCode || [];
       this.paymentTypeValue = this.filterData.paymentType?.toString();
       this.tripTypeValue = this.filterData.tripType?.toString();
       this.router.navigate([], {
@@ -197,7 +199,7 @@ export class DashboardComponent implements OnInit {
           paymentType: this.paymentTypeValue ? this.paymentTypeValue : null,
           tripType: this.tripTypeValue ? this.tripTypeValue : null,
           truckTypeId: this.filterData?.truckType?.toString() ? this.filterData?.truckType?.toString() : null,
-          transporterName: this.filterData?.transporterName ? this.filterData?.transporterName : null,
+          transporterCodes: this.transporterCodes?.toString() ? this.transporterCodes?.toString() : null,
         },
         queryParamsHandling: 'merge',
       })
@@ -217,7 +219,7 @@ export class DashboardComponent implements OnInit {
           paymentType: null,
           tripType: null,
           truckTypeId: null,
-          transporterName: null,
+          transporterCodes: null,
         },
         queryParamsHandling: 'merge',
       });
@@ -247,6 +249,9 @@ export class DashboardComponent implements OnInit {
     if (this.filterData?.truckType?.length > 0) {
       parts.push(`Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`);
     }
+    if (this.filterData?.transporterName?.length > 0) {
+      parts.push(`Transporter: <b>${this.filterData.transporterName?.toString()}</b>`);
+    }
 
     return parts.join(', ');
   }
@@ -267,7 +272,7 @@ export class DashboardComponent implements OnInit {
         paymentType: null,
         tripType: null,
         truckTypeId: null,
-        transporterName: null,
+        transporterCodes: null,
       },
       queryParamsHandling: 'merge',
     });

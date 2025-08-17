@@ -260,7 +260,7 @@ export class MonthWiseRevenueComponent implements OnInit {
           createdTrips.push(created);
           completedTrips.push(completed);
         });
-        res.data?.forEach(data => {
+        res?.data?.forEach(data => {
           const period =
             this.datatype === 'monthly'
               ? this.datePipe.transform(new Date(data.period), 'MMM-yyyy')

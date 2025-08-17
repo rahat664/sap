@@ -36,6 +36,7 @@ export class StatusHeighlightComponent implements OnInit {
   dateFilterAvailable: boolean;
   paymentType: string = '';
   tripType: string = '';
+  transporterName: string = '';
 
   constructor(private activatedRoute: ActivatedRoute) {}
 
@@ -59,6 +60,7 @@ export class StatusHeighlightComponent implements OnInit {
           );
         this.fromDate = params['fromDate'];
         this.toDate = params['toDate'];
+        this.transporterName = params['transporterName'];
         this.dateFilterAvailable = !!(this.fromDate && this.toDate);
       });
   }

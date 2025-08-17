@@ -120,6 +120,9 @@ export class DashboardFilterComponent {
   private selectedTripValue: any[] = [];
   private selectedPaymentValue: any[] = [];
   transporterSearch: Subject<string> = new Subject<string>();
+  transporters: any[] = [];
+  transporterCodes: any[] = [];
+  transporterNames: any[] = [];
 
   constructor(
     private datePipe: DatePipe,
@@ -167,16 +170,13 @@ export class DashboardFilterComponent {
   }
 
   onClickTransporterSearchSuggestion(result: any) {
-    this.transporterName = result.name;
-    this.searchTransporter = result.name;
-    this.transporterSuggestions = [];
+    console.log(result)
+    this.transporters.push(result);
+    this.transporterCodes?.push(result.code);
+    this.transporterNames?.push(result.name);
+    this.transporterName = '';
   }
 
-  onClickClearTransporter() {
-    this.transporterName = '';
-    this.searchTransporter = '';
-    this.transporterSuggestions = [];
-  }
 
   private performTransporterSearch(searchText: string) {
     if (searchText?.length > 0) {
@@ -216,7 +216,6 @@ export class DashboardFilterComponent {
     }
   }
 
-
   onApplyFilter() {
     // emit the filter data and store it to local storage
     const filterData = {
@@ -226,7 +225,9 @@ export class DashboardFilterComponent {
       tripType: this.tripTypeValue,
       customerCode: this.customerCodes,
       customerName: this.customerNames,
-      transporterName: this.transporterName,
+      transporterName: this.transporterNames,
+      transporterCode: this.transporterCodes,
+      transporter: this.transporters,
       truckType: this.truckType,
       customers: this.customers,
       selectedButton: this.selectedButton,
@@ -429,8 +430,9 @@ export class DashboardFilterComponent {
   }
 
   customerIsNotEnterprise() {
-    return localStorage.getItem('enterpriseCode') !== 'E-3'
+    return localStorage.getItem('enterpriseCode') !== 'E-3';
   }
+
   private getDataFromLocalStorage() {
     const tripFilterData = JSON.parse(localStorage.getItem('tripFilterData'));
     if (tripFilterData) {
@@ -445,13 +447,19 @@ export class DashboardFilterComponent {
           ? 'All'
           : tripFilterData?.paymentStatus;
       this.tripTypePlaceholder =
-        tripFilterData?.tripTypeName === '' ? 'All' : tripFilterData?.tripTypeName;
+        tripFilterData?.tripTypeName === ''
+          ? 'All'
+          : tripFilterData?.tripTypeName;
       if (tripFilterData?.customerCode?.length > 0) {
         this.customerCodes = tripFilterData?.customerCode;
         this.customerNames = tripFilterData?.customerName;
         this.customers = tripFilterData?.customers;
       }
-      this.customers = tripFilterData?.customers || [];
+      if (tripFilterData?.transporterCode?.length > 0) {
+        this.transporterCodes = tripFilterData?.transporterCode;
+        this.transporterNames = tripFilterData?.transporterName;
+        this.transporters = tripFilterData?.transporters || [];
+      }
       if (tripFilterData?.truckType?.length > 0) {
         this.truckType = tripFilterData?.truckType;
         if (this.truckType) {
@@ -489,8 +497,16 @@ export class DashboardFilterComponent {
           }
         }
       }
-      this.transporterName = tripFilterData?.transporterName;
+
       localStorage.removeItem('tripFilterData');
     }
+  }
+
+  onClickCloseTransporter(transporters: any) {
+    this.filterLength -= 1;
+    this.previousFilterLength -= 1;
+    this.transporters = this.transporters?.filter(
+      (value: any) => value.code !== transporters.code
+    );
   }
 }
