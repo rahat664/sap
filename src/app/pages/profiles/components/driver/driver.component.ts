@@ -62,7 +62,7 @@ export class DriverComponent implements OnInit {
   height: string;
   loading: boolean;
   newDriverFileType: any[];
-  private page: number;
+  private page: number = 0;
   totalPages: number;
   searchValue: string;
   private size = 30;
