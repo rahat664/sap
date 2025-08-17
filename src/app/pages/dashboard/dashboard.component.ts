@@ -91,6 +91,7 @@ export class DashboardComponent implements OnInit {
         paymentType: null,
         tripType: null,
         truckTypeId: null,
+        transporterName: null,
       },
       queryParamsHandling: 'merge',
     });
@@ -179,6 +180,7 @@ export class DashboardComponent implements OnInit {
       this.filterData?.tripType ||
       this.filterData?.customerCode ||
       this.filterData?.truckType?.length > 0
+      || this.filterData?.transporterName
     ) {
       this.filterApplied = true;
       this.filterOpened = false;
@@ -195,6 +197,7 @@ export class DashboardComponent implements OnInit {
           paymentType: this.paymentTypeValue ? this.paymentTypeValue : null,
           tripType: this.tripTypeValue ? this.tripTypeValue : null,
           truckTypeId: this.filterData?.truckType?.toString() ? this.filterData?.truckType?.toString() : null,
+          transporterName: this.filterData?.transporterName ? this.filterData?.transporterName : null,
         },
         queryParamsHandling: 'merge',
       })
@@ -214,6 +217,7 @@ export class DashboardComponent implements OnInit {
           paymentType: null,
           tripType: null,
           truckTypeId: null,
+          transporterName: null,
         },
         queryParamsHandling: 'merge',
       });
@@ -263,6 +267,7 @@ export class DashboardComponent implements OnInit {
         paymentType: null,
         tripType: null,
         truckTypeId: null,
+        transporterName: null,
       },
       queryParamsHandling: 'merge',
     });

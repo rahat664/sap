@@ -110,8 +110,8 @@ export class DashboardFilterComponent {
   truckType: any;
   vehicleTypeList: any[] = [];
   transporterSuggestions: any[] = [];
-  transporterName: string;
-  searchTransporter: any;
+  transporterName: string = '';
+  searchTransporter: any = '';
   searchId: any;
   tripIdSuggestions: any = [];
   tripId: any;
@@ -119,6 +119,7 @@ export class DashboardFilterComponent {
   truckRegistrationId: string;
   private selectedTripValue: any[] = [];
   private selectedPaymentValue: any[] = [];
+  transporterSearch: Subject<string> = new Subject<string>();
 
   constructor(
     private datePipe: DatePipe,
@@ -130,6 +131,10 @@ export class DashboardFilterComponent {
     this.customerSearch.pipe().subscribe(searchText => {
       this.performCustomerSearch(searchText);
     });
+
+    this.transporterSearch.pipe().subscribe(searchText => {
+      this.performTransporterSearch(searchText);
+    });
   }
 
   ngOnInit() {
@@ -138,6 +143,11 @@ export class DashboardFilterComponent {
 
   onClose() {
     this.filterClosed.emit();
+  }
+
+  onKeyUpTransporterSearch($event: KeyboardEvent) {
+    const searchText = ($event.target as HTMLInputElement).value;
+    this.transporterSearch.next(searchText);
   }
 
   onChangePaymentType($event: any) {
@@ -155,6 +165,41 @@ export class DashboardFilterComponent {
       this.selectedPaymentValue = [];
     }
   }
+
+  onClickTransporterSearchSuggestion(result: any) {
+    this.transporterName = result.name;
+    this.searchTransporter = result.name;
+    this.transporterSuggestions = [];
+  }
+
+  onClickClearTransporter() {
+    this.transporterName = '';
+    this.searchTransporter = '';
+    this.transporterSuggestions = [];
+  }
+
+  private performTransporterSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.transporter
+        .getTransporter(0, 100, searchText)
+        .subscribe((transporter: any) => {
+          this.transporterSuggestions = transporter.data;
+          if (this.transporterSuggestions.length === 0) {
+            this.transporterSuggestions.push('No transporter found');
+          }
+        });
+    } else {
+      this.resetTransporterSearch();
+    }
+  }
+
+  private resetTransporterSearch() {
+    this.transporterName = '';
+    this.transporterName = '';
+    this.transporterSuggestions = [];
+    this.transporterSuggestions.push('No transporter found');
+  }
+
   onChangeTripType($event: any) {
     this.selectedTripValue = [];
     this.tripTypeValue = $event.value;
@@ -181,6 +226,7 @@ export class DashboardFilterComponent {
       tripType: this.tripTypeValue,
       customerCode: this.customerCodes,
       customerName: this.customerNames,
+      transporterName: this.transporterName,
       truckType: this.truckType,
       customers: this.customers,
       selectedButton: this.selectedButton,
@@ -443,6 +489,7 @@ export class DashboardFilterComponent {
           }
         }
       }
+      this.transporterName = tripFilterData?.transporterName;
       localStorage.removeItem('tripFilterData');
     }
   }
