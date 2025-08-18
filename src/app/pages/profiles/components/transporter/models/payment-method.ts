@@ -2,7 +2,7 @@ import { CustomInputSelectModel } from '../../../../../shared/modules/custom-inp
 
 export const paymentMethod: CustomInputSelectModel[] = [
   { id: 1, value: 'Bank', selected: false },
-  { id: 2, value: 'Bkash', selected: false },
+  { id: 2, value: 'bKash', selected: false },
   { id: 3, value: 'Cash', selected: false },
 ];
 
