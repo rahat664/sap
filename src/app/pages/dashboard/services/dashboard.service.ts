@@ -232,7 +232,8 @@ export class DashboardService {
     customerCode?: string,
     paymentType?: string,
     tripType?: string,
-    tripTypeId?: string
+    tripTypeId?: string,
+    transporterCodes?: string
   ) {
     const params = new URLSearchParams();
     if (type) {
@@ -267,6 +268,8 @@ export class DashboardService {
     }
     if (tripTypeId) {
       params.set('tripTypeId', tripTypeId);
+    } if (transporterCodes) {
+      params.set('transporterCodes', transporterCodes);
     }
 
     return this.http.get(

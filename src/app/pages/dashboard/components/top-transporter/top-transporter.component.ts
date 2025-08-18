@@ -38,6 +38,7 @@ export class TopTransporterComponent implements OnInit {
   paymentType: string = '';
   tripType: string = '';
   truckTypeId: any;
+   transporterFilterEnabled: boolean = false;
 
   constructor(
     private service: DashboardService,
@@ -46,14 +47,6 @@ export class TopTransporterComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-
-    this.activatedRoute.data.subscribe(
-      (data: any) => {
-        const dashboardData = data.dashboardData.data;
-        this.topTransporter = dashboardData?.topTransporters?.data.content;
-        this.loading = false;
-      }
-    )
     combineLatest([
       this.activatedRoute.data,
       this.activatedRoute.queryParams
@@ -67,6 +60,8 @@ export class TopTransporterComponent implements OnInit {
       this.paymentType = params['paymentType'] || '';
       this.tripType = params['tripType'] || '';
       this.truckTypeId = params['truckTypeId'] || '';
+      this.customerCode = params['customerCode'] || '';
+      this.transporterFilterEnabled = !!params['transporterCodes']
       this.loading = false;
     });
   }

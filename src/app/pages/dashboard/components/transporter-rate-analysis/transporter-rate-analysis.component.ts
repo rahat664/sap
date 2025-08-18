@@ -62,6 +62,7 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
   districts: any[] = [];
   customerCode = '';
   paymentType = '';
+  transporterCodes = '';
   tripType = '';
   tripTypeId: any;
   unloadingDistrict = '';
@@ -111,6 +112,7 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
           customerCode: params['customerCode'] || '',
           fromDate: params['fromDate'] || '',
           toDate: params['toDate'] || '',
+          transporterCodes: params['transporterCodes'] || '',
         })),
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
         startWith({
@@ -120,6 +122,7 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
           customerCode: this.customerCode,
           fromDate: this.fromDate,
           toDate: this.toDate,
+          transporterCodes: this.transporterCodes
         })
       ),
       this.activatedRoute.data.pipe(startWith({})),
@@ -228,7 +231,8 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
         this.unloadingDistrict,
         this.customerCode,
         this.paymentType,
-        this.tripType
+        this.tripType,
+        this.transporterCodes
       )
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
