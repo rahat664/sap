@@ -282,6 +282,8 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
         this.categoryIndex.set(label, this.categories.length);
         this.categories.push(label);
       }
+      this.categories = this.categories.reverse();
+      console.log(this.categories)
     } else {
       // monthly
       const from = new Date(this.fromDate);
@@ -324,7 +326,7 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
         }
       }
 
-      this.categories = labels;
+      this.categories = labels
       labels.forEach((l, i) => this.categoryIndex.set(l, i));
     }
 
