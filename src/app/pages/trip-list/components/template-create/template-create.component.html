@@ -669,7 +669,9 @@
                     formControlName="customerRate"
                     class="w-full"
                     matInput
-                    placeholder="Enter Customer Rate"/>
+                    placeholder="Enter {{ isAdmin() && customerIsNotEnterprise() ? 'Customer Rate (CR)' : '' }}
+                {{!isAdmin() ? 'Trip Rate' : ''}}
+                {{!customerIsNotEnterprise() ? 'Expected Rate' : ''}}"/>
                 </mat-form-field>
                 <img
                   id="icon"
