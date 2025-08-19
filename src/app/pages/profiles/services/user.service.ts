@@ -77,7 +77,7 @@ export class UserService {
     return this.http.get(`${this.url}/admins?${queryString}`);
   }
 
-  getTransporter(page: number, size: number, search?: string, from?: string, to?: string): Observable<any> {
+  getTransporter(page: number, size: number, search?: string, from?: string, to?: string, truckStand?: string): Observable<any> {
     let apiUrl = `${this.transportersUrl}?page=${page}&size=${size}`;
 
     if (search) {
@@ -88,6 +88,9 @@ export class UserService {
     }
     if (to) {
       apiUrl += `&to=${to}`;
+    }
+    if (truckStand) {
+      apiUrl += `&truckStand=${encodeURIComponent(truckStand)}`;
     }
 
     return this.http.get(apiUrl);
@@ -214,5 +217,9 @@ export class UserService {
 
   updateTransporter(transporter: any) {
     return this.http.put(`${this.transportersUrl}`, transporter);
+  }
+  getTruckStandSuggestions(search:string)
+  {
+    return this.http.get(`${this.transportersUrl}/truck-stand-suggestions?search=${search}`);
   }
 }

@@ -56,6 +56,7 @@ export class TransporterComponent implements OnInit {
   inputPlaceholder: string = '';
   isDateOpened: boolean;
   filterData: any = {};
+  truckStands: any[]= [];
 
   constructor(
     private service: UserService,
@@ -126,9 +127,10 @@ export class TransporterComponent implements OnInit {
           this.size,
           this.searchValue,
           this.from,
-          this.to
+          this.to,
+          this.truckStands.toString()
         )
-        .pipe(debounceTime(1000))
+        .pipe(debounceTime(0))
         .subscribe((res: any) => {
           this.transporterList = res.data;
           this.totalPages = res.meta.totalPageCount;
@@ -136,7 +138,7 @@ export class TransporterComponent implements OnInit {
         });
     } else {
       this.service
-        .getTransporter(this.page, this.size, null, this.from, this.to)
+        .getTransporter(this.page, this.size, null, this.from, this.to, this.truckStands.toString())
         .subscribe((res: any) => {
           this.transporterList = res.data;
           this.totalPages = res.meta.totalPageCount;
@@ -285,16 +287,23 @@ export class TransporterComponent implements OnInit {
       parts.push(
         `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
       );
+    if (this.filterData.truckStands && this.filterData.truckStands.length > 0) {
+      const truckStands = this.filterData.truckStands.map(
+        (stand: any) => stand
+      );
+      parts.push(`Truck Stands: <b>${this.formatTruckStands(truckStands)}</b>`);
+    }
 
     return parts.join(', ');
   }
 
   onFilterApply() {
-    if (this.filterData?.startDate || this.filterData?.endDate) {
+    if (this.filterData?.startDate || this.filterData?.endDate || this.filterData?.truckStands?.length > 0) {
       this.filterApplied = true;
       this.filterOpened = false;
       this.from = this.filterData.startDate;
       this.to = this.filterData.endDate;
+      this.truckStands = this.filterData.truckStands || [];
       this.page = 0;
       this.size = 30;
       this.loading = true;
@@ -307,6 +316,7 @@ export class TransporterComponent implements OnInit {
       this.size = 30;
       this.from = '';
       this.to = '';
+      this.truckStands = [];
       this.filterForm.reset();
       this.getTransporterList();
     }
@@ -323,5 +333,15 @@ export class TransporterComponent implements OnInit {
       this.totalPages = res.meta.totalPageCount;
       this.loading = false;
     })
+  }
+
+  private formatTruckStands(truckStands: any) {
+    if (truckStands.length === 0) {
+      return '';
+    }
+    if (truckStands.length > 3) {
+      return `${truckStands.slice(0, 3).join(', ')} and ${truckStands.length - 3} more`;
+    }
+    return truckStands.join(', ');
   }
 }

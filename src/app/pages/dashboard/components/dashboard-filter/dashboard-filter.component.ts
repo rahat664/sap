@@ -170,7 +170,6 @@ export class DashboardFilterComponent {
   }
 
   onClickTransporterSearchSuggestion(result: any) {
-    console.log(result)
     this.transporters.push(result);
     this.transporterCodes?.push(result.code);
     this.transporterNames?.push(result.name);

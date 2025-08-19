@@ -161,8 +161,8 @@
               matInput
               (keyup)="onKeyUpTransporterSearch($event)"
               placeholder="Select transporter name"
-              [matAutocomplete]="customerSug"/>
-            <mat-autocomplete #customerSug="matAutocomplete">
+              [matAutocomplete]="transporterSug"/>
+            <mat-autocomplete #transporterSug="matAutocomplete">
               @for (option of transporterSuggestions; track option) {
                 <mat-option
                   (click)="onClickTransporterSearchSuggestion(option)"
