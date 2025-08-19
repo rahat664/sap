@@ -286,7 +286,7 @@ export class TransporterDetailsComponent {
   mfsService: CustomInputSelectModel[] = [
     {
       id: 1,
-      value: 'Bkash',
+      value: 'bKash',
       selected: false,
     },
     {
