@@ -1,0 +1,23 @@
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4 px-10 py-6 bg-white rounded-lg">
+  <div class="flex space-x-3 items-center">
+    <img src="assets/svg/rank.svg" class="notPreview">
+    <div class="flex flex-col space-y-0.5">
+      <p class="text-h2 leading-h2 font-semibold text-not-black">{{ customer?.rank ? customer?.rank : 'N/A' }}</p>
+      <p class="text-sm text-not-black">Customer rank</p>
+    </div>
+  </div>
+  <div class="flex space-x-3 items-center">
+    <img src="assets/svg/customer-trip.svg" class="notPreview">
+    <div class="flex flex-col space-y-0.5">
+      <p class="text-h2 leading-h2 font-semibold text-not-black">{{ customer?.numberOfTrips ? customer?.numberOfTrips : '0' }}</p>
+      <p class="text-sm text-not-black">Trip completed</p>
+    </div>
+  </div>
+  <div class="flex space-x-3 items-center">
+    <img src="assets/svg/rank.svg" class="notPreview">
+    <div class="flex flex-col space-y-0.5">
+      <p class="text-h2 leading-h2 font-semibold text-not-black">{{ customer?.grossProfit ? customer?.grossProfit : 'N/A' }}</p>
+      <p class="text-sm text-not-black">Gross profit</p>
+    </div>
+  </div>
+</div>

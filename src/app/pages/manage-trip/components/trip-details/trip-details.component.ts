@@ -26,6 +26,7 @@ import { ConfirmCancelComponent } from '../confirm-cancel/confirm-cancel.compone
 import { Router } from '@angular/router';
 import { ManualTrackingComponent } from '../manual-tracking/manual-tracking.component';
 import { SessionModel } from '../../../manage-bid/models/session.model';
+import { PermissionService } from '../../../../shared/services/permission.service';
 
 @Component({
   selector: 'app-trip-details',
@@ -56,7 +57,8 @@ export class TripDetailsComponent implements OnInit, OnChanges {
   constructor(
     private mobileToggleService: ToggleResponsiveService,
     private trip: TripService,
-    private router: Router
+    private router: Router,
+    private permissionService: PermissionService
   ) {}
 
   tripTimeline: any[] = [
@@ -343,5 +345,9 @@ export class TripDetailsComponent implements OnInit, OnChanges {
 
   isMobileDevice() {
     return localStorage.getItem('isMobileDevice') === 'true';
+  }
+
+  isPermissionGranted(module: string, permission: string): boolean {
+    return this.permissionService.isPermitted(module, permission);
   }
 }

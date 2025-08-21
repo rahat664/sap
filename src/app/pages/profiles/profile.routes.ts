@@ -4,6 +4,7 @@ import { customerResolver } from '../../core/resolver/customer.resolver';
 import { truckResolver } from '../../core/resolver/truck.resolver';
 import { driverResolver } from '../../core/resolver/driver.resolver';
 import { trackerResolver } from '../../core/resolver/tracker.resolver';
+import { enterpriseGuard } from '../auth/guards/enterprise.guard';
 
 export const profileRoutes: Routes = [
   {
@@ -18,9 +19,18 @@ export const profileRoutes: Routes = [
       import('./components/customer/customer.component').then(
         c => c.CustomerComponent
       ),
+    canActivate: [enterpriseGuard],
     resolve: {
       customer: customerResolver,
     },
+  },
+  {
+    path: 'customer/:customerCode/details',
+    title: 'Customer Details',
+    loadComponent: () =>
+      import(
+        './components/customer/customer-details/customer-details.component'
+      ).then(c => c.CustomerDetailsComponent),
   },
   {
     path: 'transporter',

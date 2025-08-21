@@ -36,6 +36,10 @@ export class TripInfoComponent implements OnInit {
     }
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   getButtonName(status: string | undefined) {
     switch (status) {
       case 'Unassigned':

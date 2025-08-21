@@ -1,0 +1,23 @@
+<div class="p-6 m-4 bg-white shadow rounded-lg" *ngIf="!loading && customer">
+  <div class="flex justify-between items-center">
+    <h2 class="text-h1 leading-h1 text-not-black font-semibold ">Customer details</h2>
+    <button
+      (click)="onEdit()"
+      class="w-8 h-8 bg-white flex items-center hover:bg-input justify-center">
+      <i class="far fa-pen text-primary"></i>
+    </button>
+  </div>
+</div>
+<div class="mx-4">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <app-customer-info [customer]="customer"></app-customer-info>
+    <div>
+      <app-customer-stats [customer]="customer"></app-customer-stats>
+      <app-contact-person [contact]="contactPersonObject"></app-contact-person>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="text-center py-8">
+  <i class="fas fa-spinner fa-spin text-2xl text-gray-500"></i>
+</div>

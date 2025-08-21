@@ -100,7 +100,7 @@
             inputPlaceholder="Select Trip Status"
             (selectedId)="onSelectTripStatus($event)"></app-custom-input>
         </div>
-        <div class="flex flex-col space-y-2">
+        <div class="flex flex-col space-y-2" *ngIf="customerIsNotEnterprise()">
           <label class="text-body text-web-text-secondary"
           >Company name</label
           >

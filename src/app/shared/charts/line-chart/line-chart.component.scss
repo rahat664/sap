@@ -22,4 +22,23 @@
   width: 100%;
 }
 
+/* host container around yAxisStickyContainer + scroll area */
+.chart-shell {
+  display: grid;
+  grid-template-columns: auto 1fr; /* sticky y | scrollable chart */
+  align-items: start;
+}
+
+/* the scroll area that contains #chartContainer */
+.chart-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* optional: nicer scrolling */
+.chart-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+
 

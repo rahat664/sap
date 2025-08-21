@@ -382,6 +382,9 @@ export class DashboardFilterComponent {
     });
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
   private getDataFromLocalStorage() {
     const tripFilterData = JSON.parse(localStorage.getItem('tripFilterData'));
     if (tripFilterData) {

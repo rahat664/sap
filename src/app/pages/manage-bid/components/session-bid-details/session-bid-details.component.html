@@ -66,7 +66,9 @@
           class="flex items-center space-x-2">
           <img src="./assets/svg/cr.svg" class="notPreview w-[1.125rem] h-[1.125rem]" alt="select" />
           <span class="text-secondary text-start">
-        CR: {{ tripDetails?.customerRate | number }} ৳
+        {{ isAdmin() && customerIsNotEnterprise() ? 'Customer Rate (CR) :' : '' }}
+            {{!isAdmin() ? 'Trip Rate :' : ''}}
+            {{!customerIsNotEnterprise() ? 'Expected Rate :' : ''}} {{ tripDetails?.customerRate | number }} ৳
       </span>
         </div>
       </div>
@@ -78,7 +80,7 @@
         loading="lazy"
         src="assets/svg/no-data.svg"
         class="notPreview"
-        alt="nodata"/>
+        alt="nodata" />
       <p
         class="text-body_title leading-body_title text-secondary font-semibold">
         No Data Found
@@ -142,7 +144,7 @@
                       <!--                      matTooltipClass="custom-tooltip" matTooltipPosition="below"-->
                       <!--                      matTooltip="{{bid.remarks ? bid.remarks : 'Not available'}}" class="notPreview"-->
                       <!--                      *ngIf="bid.remarks" src="assets/svg/status-refresh.svg">-->
-                      <div  *ngIf="bid?.history?.length > 0" class="group flex items-center justify-center w-6 h-6">
+                      <div *ngIf="bid?.history?.length > 0" class="group flex items-center justify-center w-6 h-6">
                         <!-- Green Circle -->
                         <div class="w-4 h-4 rounded-full bg-green-500 cursor-pointer">
                           <img src="assets/svg/status-refresh.svg" class="notPreview">
@@ -155,12 +157,15 @@
                             <ng-container *ngFor="let hist of bid?.history">
                               <div>
                                 <div class="text-xs text-secondary mb-1 flex space-x-2 items-center">
-                                  <span class="text-body_title font-semibold leading-body_title text-not-black">{{hist?.oldValue}} ৳</span>
-                                  <span>{{hist?.createdAt | date : 'dd MMM yyyy; h:mm a'}}</span>
+                                  <span
+                                    class="text-body_title font-semibold leading-body_title text-not-black">{{ hist?.oldValue }}
+                                    ৳</span>
+                                  <span>{{ hist?.createdAt | date : 'dd MMM yyyy; h:mm a' }}</span>
                                 </div>
-                                <div *ngIf="hist?.remarks" class="font-normal text-[0.875rem] text-not-black text-left flex flex-col space-y-1">
+                                <div *ngIf="hist?.remarks"
+                                     class="font-normal text-[0.875rem] text-not-black text-left flex flex-col space-y-1">
                                 <span *ngFor="let remark of hist?.remarks.split('\n')">
-                                  {{remark}}
+                                  {{ remark }}
                                 </span>
                                 </div>
                               </div>
@@ -222,7 +227,8 @@
         <div class="flex justify-between border-b border-line items-center p-4">
           <h1 class="text-not-black text-body_title leading-body_title font-semibold">Update bid</h1>
           <div class="flex space-x-3 items-center">
-            <button [disabled]="!isAnyThingChangedInModel()" (click)="onUpdateBid()" class="bg-primary rounded-lg px-4 md:px-6 py-2 text-white text-center {{!isAnyThingChangedInModel() ? 'opacity-50 cursor-not-allowed' : ''}}">
+            <button [disabled]="!isAnyThingChangedInModel()" (click)="onUpdateBid()"
+                    class="bg-primary rounded-lg px-4 md:px-6 py-2 text-white text-center {{!isAnyThingChangedInModel() ? 'opacity-50 cursor-not-allowed' : ''}}">
               <i class="fas fa-spinner fa-spin mr-2" *ngIf="isUpdatingBid"></i>
               <span class="hidden md:inline">Update bid</span>
               <i class="md:hidden inline fas fa-check"></i>
@@ -256,16 +262,16 @@
               <label for="updateBid" class="text-not-black text-body_title leading-body_title font-semibold">Update your
                 bid</label>
               <div id="updateBid" class="flex flex-col space-y-3">
-<!--                <div class="p-4 bg-input rounded-lg">-->
-<!--                  <div class="flex space-y-1 flex-col">-->
-<!--                    <span class="text-secondary text-xs">Number of truck</span>-->
-<!--                    <input-->
-<!--                      type="number"-->
-<!--                      [(ngModel)]="selectedBidNumberOfTruck"-->
-<!--                      class="w-full border-none rounded-lg focus:outline-none bg-input focus:border-primary"-->
-<!--                      placeholder="Enter number of truck" />-->
-<!--                  </div>-->
-<!--                </div>-->
+                <!--                <div class="p-4 bg-input rounded-lg">-->
+                <!--                  <div class="flex space-y-1 flex-col">-->
+                <!--                    <span class="text-secondary text-xs">Number of truck</span>-->
+                <!--                    <input-->
+                <!--                      type="number"-->
+                <!--                      [(ngModel)]="selectedBidNumberOfTruck"-->
+                <!--                      class="w-full border-none rounded-lg focus:outline-none bg-input focus:border-primary"-->
+                <!--                      placeholder="Enter number of truck" />-->
+                <!--                  </div>-->
+                <!--                </div>-->
                 <div class="p-4 bg-input rounded-lg">
                   <div class="flex space-y-1 flex-col">
                     <span class="text-secondary text-xs">Bid per amount</span>
@@ -281,7 +287,8 @@
           </div>
           <div class="px-4 py-4">
             <div class="flex flex-col space-y-1">
-              <label for="bidReason" class="text-not-black text-body_title leading-body_title font-semibold">Reason of bid
+              <label for="bidReason" class="text-not-black text-body_title leading-body_title font-semibold">Reason of
+                bid
                 updates<sup>*</sup></label>
               <div id="bidReason" class="flex flex-col space-y-1">
                 <mat-checkbox (change)="onChangeReason($event)"
@@ -339,7 +346,7 @@
                 <div class="flex items-center justify-center w-full h-full">
                   <p
                     class="w-8 h-8 flex items-center justify-center text-white rounded-full shadow-lg {{getBackgroundColor(bid?.amount, sessionBid?.profitExpectation, sessionBid?.customerRate)}}">
-                    <span class="text-body_title leading-body_title font-semibold">{{ i + 1}}</span>
+                    <span class="text-body_title leading-body_title font-semibold">{{ i + 1 }}</span>
                   </p>
                 </div>
               </td>
@@ -354,7 +361,8 @@
           </table>
         </div>
       </div>
-      <div class="bg-white rounded-lg p-4 flex flex-col space-y-3" *ngIf="getNotAcceptedBid(sessionBid?.bids).length > 0">
+      <div class="bg-white rounded-lg p-4 flex flex-col space-y-3"
+           *ngIf="getNotAcceptedBid(sessionBid?.bids).length > 0">
         <div class="flex justify-between items-center">
           <div class="flex space-x-2 items-center">
           <span
@@ -408,7 +416,7 @@
         loading="lazy"
         src="assets/svg/no-data.svg"
         class="notPreview"
-        alt="nodata"/>
+        alt="nodata" />
       <p
         class="text-body_title leading-body_title text-secondary font-semibold">
         No Data Found

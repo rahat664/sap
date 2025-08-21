@@ -34,6 +34,7 @@ import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom
 import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
 import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
 import {ActivatedRoute} from "@angular/router";
+import { PermissionService } from '../../shared/services/permission.service';
 
 @Component({
   selector: 'app-manage-trip',
@@ -155,7 +156,8 @@ export class ManageTripComponent implements OnInit {
     private toggleMobileViewService: ToggleResponsiveService,
     private customer: CustomerService,
     private datePipe: DatePipe,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private permissionService: PermissionService
   ) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       if (searchText) {
@@ -167,6 +169,10 @@ export class ManageTripComponent implements OnInit {
         this.getTripList();
       }
     });
+  }
+
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
   }
 
   ngOnInit() {
@@ -927,5 +933,9 @@ export class ManageTripComponent implements OnInit {
       const trip = data.tripList.data
       this.updateTripList(trip)
     })
+  }
+
+  isPermissionGranted(module: string, permission: string) {
+    return  this.permissionService.isPermitted(module, permission);
   }
 }

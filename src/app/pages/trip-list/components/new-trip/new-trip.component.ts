@@ -28,6 +28,7 @@ import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { TripPoint } from '../../../manage-trip/model/trip.details.model';
+import { PermissionService } from '../../../../shared/services/permission.service';
 
 @Component({
   selector: 'app-new-trip',
@@ -71,7 +72,8 @@ export class NewTripComponent implements OnInit, OnDestroy {
     private customer: CustomerService,
     private service: TripService,
     private router: Router,
-    private toastr: HandleToastrService
+    private toastr: HandleToastrService,
+    private permissionService: PermissionService
   ) {}
 
   ngOnInit(): void {
@@ -95,7 +97,7 @@ export class NewTripComponent implements OnInit, OnDestroy {
       localStorage.removeItem('tripData');
     }
     this.manageStore();
-    if (this.isAdmin()) {
+    if (this.isAdmin() && this.customerIsNotEnterprise()) {
       const selectedCustomer = localStorage.getItem('selectedCustomer');
       if (selectedCustomer) {
         this.customerName = JSON.parse(selectedCustomer).name;
@@ -116,6 +118,10 @@ export class NewTripComponent implements OnInit, OnDestroy {
         this.createButtonEnabled = true;
       });
     }
+  }
+
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
   }
 
   isAdmin() {
@@ -385,5 +391,9 @@ export class NewTripComponent implements OnInit, OnDestroy {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  isPermissionGranted(module: string, permission: string) {
+    return this.permissionService.isPermitted(module, permission);
   }
 }

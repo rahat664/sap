@@ -60,6 +60,10 @@ export class SessionBidDetailsComponent {
     this.selectedBidReason = null;
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   ngOnChanges() {
     // check tripDetails is not empty object
     this.noTripDetails = !(this.tripDetails && Object.keys(this.tripDetails).length > 0);
@@ -366,5 +370,10 @@ export class SessionBidDetailsComponent {
       this.selectedBidNumberOfTruck !== this.selectedBid?.submittedNumberOfTruck ||
       this.selectedBidAmount !== this.selectedBid?.amount || this.selectedBidReason !== null
     );
+  }
+
+  isAdmin() {
+    const role = localStorage.getItem('role');
+    return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
   }
 }

@@ -11,6 +11,7 @@ import {vehicleTrackingResolver} from "./core/resolver/vehicle-tracking.resolver
 import {customerUserResolver} from "./core/resolver/user-customer.resolver";
 import {transporterPaymentResolver} from "./core/resolver/transporter-payment.resolver";
 import {bidResolver} from "./core/resolver/bid.resolver";
+import { enterpriseGuard } from './pages/auth/guards/enterprise.guard';
 
 export const routes: Routes = [
   {
@@ -29,7 +30,7 @@ export const routes: Routes = [
       import('./pages/dashboard/dashboard.component').then(
         c => c.DashboardComponent
       ),
-    canActivate: [authGuard, roleGuard],
+    canActivate: [authGuard, roleGuard, enterpriseGuard],
     resolve: {
       dashboardData: dashboardDataResolver,
     },
@@ -72,19 +73,10 @@ export const routes: Routes = [
       import('./pages/trip-list/trip-list.component').then(
         c => c.TripListComponent
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, enterpriseGuard],
     resolve: {
       tripList: tripListResolver,
     },
-  },
-  {
-    path: 'dashboard',
-    title: 'Dashboard',
-    loadComponent: () =>
-      import('./pages/dashboard/dashboard.component').then(
-        c => c.DashboardComponent
-      ),
-    canActivate: [authGuard],
   },
   {
     path: 'trip-create/customerselection',

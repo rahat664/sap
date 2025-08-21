@@ -155,7 +155,9 @@
                 src="assets/svg/cr.svg"/>
               <h1
                 class="text-body_title leading-body_title text-not-black font-semibold">
-                {{ isAdmin() ? 'Customer Rate' : 'Trip Rate' }}
+                {{ isAdmin() && customerIsNotEnterprise() ? 'Customer Rate (CR)' : '' }}
+                {{!isAdmin() ? 'Trip Rate' : ''}}
+                {{!customerIsNotEnterprise() ? 'Expected Rate' : ''}}
               </h1>
             </div>
             <h1 class="text-body w-1/2 text-wrap text-web-text-secondary">

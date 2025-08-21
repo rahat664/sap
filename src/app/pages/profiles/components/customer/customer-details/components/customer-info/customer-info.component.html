@@ -1,0 +1,33 @@
+<div class="p-4 bg-white shadow rounded-lg">
+  <div class="flex justify-between items-center">
+    <div class="flex items-center space-x-4">
+      <div class="w-12 h-12 rounded-full bg-blue flex items-center justify-center text-white font-bold">
+        <span>{{customer?.name?.toUpperCase().charAt(0)}}</span>
+      </div>
+      <h3 class="text-h2 leading-h2 text-not-black font-semibold">{{ customer?.name }}</h3>
+    </div>
+    <p class="text-body text-web-text-secondary">Code: {{ customer?.customerCode }}</p>
+  </div>
+  <div class="flex flex-col space-y-6 py-6 px-11">
+    <div class="flex flex-col space-y-0.5">
+      <p class="text-body text-web-text-secondary">Address</p>
+      <p class="text-body_title font-semibold leading-body_title text-not-black">{{ customer?.address }}</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3">
+      <div class="flex flex-col space-y-0.5">
+        <p class="text-body  text-web-text-secondary">Preferred payment</p>
+        <p class="text-body_title font-semibold leading-body_title text-not-black">{{ customer?.preferredPaymentType }}</p>
+      </div>
+      <div class="flex flex-col space-y-0.5">
+        <p class="text-body  text-web-text-secondary">Preferred trip</p>
+        <p class="text-body_title font-semibold leading-body_title text-not-black">{{ customer?.tripType }}</p>
+      </div>
+
+      <div class="flex flex-col space-y-0.5">
+        <p class="text-body  text-web-text-secondary">Created on</p>
+        <p class="text-body_title font-semibold leading-body_title text-not-black">{{ customer?.creationDate | date: 'd MMM yyyy   ' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

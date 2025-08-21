@@ -81,7 +81,7 @@
                       customer.name[0]
                     }}</span>
               </div>
-              <span class="flex-1">{{ customer.name }}</span>
+              <span (click)="onClickCustomer(customer.customerCode)"  class="flex-1 cursor-pointer text-link">{{ customer.name }}</span>
             </div>
           </td>
           <td class="text-center md:sticky md:left-[20rem] md:bg-white">{{ customer.customerCode }}</td>

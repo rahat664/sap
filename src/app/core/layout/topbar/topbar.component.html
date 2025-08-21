@@ -8,8 +8,8 @@
           (click)="onClickLogo()"
           class="cursor-pointer text-xl font-bold h-16 object-center object-cover flex items-center md:justify-center py-2">
           <img
-            src="assets/logo/shamolima.png"
-            class="notPreview cursor-pointer"
+            src="assets/logo/{{customerIsNotEnterprise() ? 'shamolima' : 'NOURISH'}}.png"
+            class="notPreview cursor-pointer {{customerIsNotEnterprise() ? '' : 'h-14'}}"
             alt="Shamolima Logo" />
         </a>
         <button

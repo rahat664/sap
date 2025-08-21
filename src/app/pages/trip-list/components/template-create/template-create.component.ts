@@ -134,6 +134,10 @@ export class TemplateCreateComponent implements OnInit {
     }
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   private getGoodsOptions() {
     this.service.getGoodsOptions().subscribe((res: any) => {
       res.data.forEach((element: any) => {

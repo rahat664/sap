@@ -246,4 +246,8 @@ export class TripCreateOverviewComponent implements OnInit {
       return 'N/A';
     }
   }
+
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
 }

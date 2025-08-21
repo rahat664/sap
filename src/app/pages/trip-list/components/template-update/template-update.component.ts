@@ -181,6 +181,10 @@ export class TemplateUpdateComponent implements OnInit {
     });
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   onUpdateTemplate() {
     if (this.templateUpdateForm.invalid) {
       this.templateUpdateForm.markAllAsTouched();

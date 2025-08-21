@@ -828,13 +828,17 @@
                 src="assets/svg/cr.svg"
                 alt="candt"/>
               <h1 class="text-h2 leading-h2 font-semibold">
-                {{ isAdmin() ? 'Customer Rate (CR)' : 'Trip Rate' }}
+                {{ isAdmin() && customerIsNotEnterprise() ? 'Customer Rate (CR)' : '' }}
+                {{!isAdmin() ? 'Trip Rate' : ''}}
+                {{!customerIsNotEnterprise() ? 'Expected Rate' : ''}}
               </h1>
             </div>
-            <div class="flex flex-col space-y-1 w-full">
-              <label for="customerRate" class="form-label text-body">{{
-                  isAdmin() ? 'Customer Rate' : 'Trip Rate'
-                }}</label>
+            <div class="flex flex-col space-y-1 w-full" >
+              <label for="customerRate" class="form-label text-body">
+                {{ isAdmin() && customerIsNotEnterprise() ? 'Customer Rate (CR)' : '' }}
+                {{!isAdmin() ? 'Trip Rate' : ''}}
+                {{!customerIsNotEnterprise() ? 'Expected Rate' : ''}}
+              </label>
               <!--Add a bdt icon at the end of the input-->
               <div class="relative bg-input rounded-lg border-none">
                 <mat-form-field
@@ -854,9 +858,7 @@
                     formControlName="customerRate"
                     class="w-full"
                     matInput
-                    placeholder="Enter {{
-                      isAdmin() ? 'Customer Rate' : 'Trip Rate'
-                    }}"/>
+                    placeholder="Enter {{ isAdmin() && customerIsNotEnterprise() ? 'Customer Rate (CR)' : '' }}{{!isAdmin() ? 'Trip Rate' : ''}}{{!customerIsNotEnterprise() ? 'Expected Rate' : ''}}"/>
                 </mat-form-field>
                 <img
                   id="icon"

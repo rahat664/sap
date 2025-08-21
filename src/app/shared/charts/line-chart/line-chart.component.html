@@ -27,8 +27,8 @@
   <div class="flex w-full items-center justify-center">
     <div class="flex items-center space-x-3 text-secondary text-left ">
       <div class="flex items-center space-x-1.5" *ngFor="let legend of colors; index as i">
-        <div class="w-[13px] h-[13px] bg-[{{legend}}] rounded-[2px]"></div>
-        <span class="text-xs">{{seriesData[i].name}}</span>
+        <div *ngIf="seriesData[i]?.name" class="w-[13px] h-[13px] bg-[{{legend}}] rounded-[2px]"></div>
+        <span class="text-xs">{{seriesData[i]?.name}}</span>
       </div>
     </div>
   </div>

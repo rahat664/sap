@@ -32,7 +32,7 @@
       <div class="h-full md:w-full w-screen md:col-span-2  bg-white rounded-lg">
         <app-top-transporter></app-top-transporter>
       </div>
-      <div
+      <div *ngIf="customerIsNotEnterprise()"
         class="h-full md:w-full w-screen flex  items-start bg-white md:col-span-2 rounded-lg">
         <app-top-customer class="w-full"></app-top-customer>
       </div>

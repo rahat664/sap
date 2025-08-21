@@ -216,7 +216,7 @@
           Trip Number </th>
         <th class="text-left whitespace-nowrap" *ngIf="isColumnVisible('tripDate')">
           Trip Date
-        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('company')">
+        <th class="text-left" *ngIf="isAdmin() && isColumnVisible('company') && customerIsNotEnterprise()">
           Company</th>
         <th class="text-left" *ngIf=" isColumnVisible('transporter')">
           Transporter</th>
@@ -283,7 +283,7 @@
           <td class="whitespace-nowrap" *ngIf="isColumnVisible('tripDate')">
             {{ trip.tripStartDatetime | date: 'd MMM yyyy' }}
           </td>
-          <td class="whitespace-nowrap" *ngIf="isColumnVisible('company')">
+          <td class="whitespace-nowrap" *ngIf="isColumnVisible('company') && customerIsNotEnterprise()" >
             {{ trip.customerName }}</td>
           <td class="whitespace-nowrap {{!trip.transporterName ? 'text-line' : ''}}" *ngIf="isAdmin() && isColumnVisible('transporter')">
             {{ trip.transporterName ? trip.transporterName : 'Transporter not assigned' }}

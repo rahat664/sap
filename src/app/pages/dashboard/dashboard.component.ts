@@ -144,7 +144,9 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
-
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
 
   private resetSearch() {
     this.searchFilter = 0;

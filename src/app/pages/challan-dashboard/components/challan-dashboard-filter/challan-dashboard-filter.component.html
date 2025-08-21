@@ -9,7 +9,6 @@
           <i class="fal fa-times text-xl text-primary"></i>
         </button>
       </div>
-
       <div class="w-full flex flex-col space-y-3">
         <div class="flex-col space-y-2 flex w-full">
           <label class="text-base text-secondary">Date</label>
@@ -86,7 +85,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="flex flex-col space-y-2 w-full">
+        <div class="flex flex-col space-y-2 w-full" *ngIf="customerIsNotEnterprise()">
           <label class="text-base text-secondary">Company name</label>
 
           <mat-form-field

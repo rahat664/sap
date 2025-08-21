@@ -318,6 +318,10 @@ export class ChallanDashboardFilterComponent {
     this.previousFilterLength += 1;
   }
 
+  customerIsNotEnterprise() {
+    return localStorage.getItem('enterpriseCode') !== 'E-3'
+  }
+
   onClickCloseCustomer(customer: CustomerModel) {
     this.filterLength -= 1;
     this.previousFilterLength -= 1;

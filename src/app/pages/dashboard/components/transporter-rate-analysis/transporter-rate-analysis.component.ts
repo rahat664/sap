@@ -1,11 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { LineChartComponent } from '../../../../shared/charts/line-chart/line-chart.component';
 import { MatFormField } from '@angular/material/form-field';
-import {
-  MatOption,
-  MatSelect,
-  MatSelectChange,
-} from '@angular/material/select';
+import { MatOption, MatSelect, MatSelectChange } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { VehicleCategory } from '../../../auth/models/response/trip';
@@ -13,222 +9,214 @@ import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { UserService } from '../../../profiles/services/user.service';
 import { UserModel } from '../../../user-management/models/user.model';
 import { DashboardService } from '../../services/dashboard.service';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Subscription, timer } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Subject, combineLatest } from 'rxjs';
+import { map, startWith, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+
+type ChartType = 'high' | 'low' | 'average' | 'all';
+type DataType = 'daily' | 'monthly';
+
+interface RatePoint {
+  period: string;       // e.g. '2024-07-14' (daily) or '2024-07' (monthly) depending on API
+  maxRate: number | null;
+  minRate: number | null;
+  avgRate: number | null;
+  totalTrips: number | null;
+}
+
+interface Series {
+  name: string;
+  data: (number | null)[];
+  color: string;
+}
 
 @Component({
   selector: 'app-transporter-rate-analysis',
   imports: [
-    LineChartComponent,
     MatFormField,
     MatSelect,
     MatOption,
     FormsModule,
     NgForOf,
     NgIf,
+    LineChartComponent,
   ],
   templateUrl: './transporter-rate-analysis.component.html',
   styleUrl: './transporter-rate-analysis.component.scss',
 })
-export class TransporterRateAnalysisComponent implements OnInit {
-  chartType = 'all';
-  vehicleTypeLists: VehicleCategory[] = [];
-  fromDate = '';
-  toDate = '';
-  districts = [];
-  transporterLists: UserModel[] = [];
+export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
+  // Inject (safer for tree-shaking)
+  private readonly trip = inject(TripService);
+  private readonly user = inject(UserService);
+  private readonly service = inject(DashboardService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly datePipe = inject(DatePipe);
 
-  // make a year array which contain from 2024 to current year
-  yearList = Array.from(
-    { length: new Date().getFullYear() - 2023 },
-    (_, i) => 2024 + i
-  );
-  selectedYear = new Date().getFullYear();
+  // UI state
+  chartType: ChartType = 'all';
+  datatype: DataType = 'daily';
+
+  // Filters
+  vehicleTypeLists: VehicleCategory[] = [];
+  transporterLists: UserModel[] = [];
+  districts: any[] = [];
+  customerCode = '';
+  paymentType = '';
+  tripType = '';
+  tripTypeId: any;
   unloadingDistrict = '';
   loadingDistrict = '';
   vehicleType = '';
   transporter = '';
-  seriesdata = [];
-  numberOfTrips = [];
-  colors = [];
-  categories = [];
-  customerCode: string = '';
-  datatype: string = 'daily';
-  dateFilterApplied: boolean = false;
-  paymentType: string = '';
-  tripType: string = '';
-  private routerSubs: Subscription;
-  tripTypeId: any;
+  fromDate = '';
+  toDate = '';
+  dateFilterApplied = false;
 
-  constructor(
-    private trip: TripService,
-    private user: UserService,
-    private service: DashboardService,
-    private activatedRoute: ActivatedRoute,
-    private datePipe: DatePipe
-  ) {
-    this.resetColorsAndSeriesData();
-  }
+  // Chart data
+  categories: string[] = [];
+  seriesdata: Series[] = [];
+  colors: string[] = [];
+  numberOfTrips: (number | null)[] = [];
+  private categoryIndex = new Map<string, number>(); // label -> index
 
-  changeChartType($event: MatSelectChange) {
-    this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData('event');
-  }
+  // Year list (2024..current)
+  readonly yearList = Array.from(
+    { length: new Date().getFullYear() - 2023 },
+    (_, i) => 2024 + i
+  );
+  selectedYear = new Date().getFullYear();
+
+  // Lifecycle
+  private readonly destroy$ = new Subject<void>();
+
+  // Colors
+  private static readonly COLOR_HIGH = '#1DBF73';
+  private static readonly COLOR_AVG = '#208B99';
+  private static readonly COLOR_LOW = '#F0614E';
 
   ngOnInit() {
-    if (this.routerSubs) {
-      this.routerSubs.unsubscribe();
-    }
-    this.resetColorsAndSeriesData();
+    this.resetAll();
 
-    this.datatype = 'daily';
     this.getVehicleTypeList();
     this.getDistrictList();
     this.getTransporterList();
-    timer(100).subscribe(() => {
-      this.routerSubs = this.activatedRoute.queryParams.subscribe(params => {
-        this.paymentType = params['paymentType'] ? params['paymentType'] : '';
-        this.tripType = params['tripType'] ? params['tripType'] : '';
-        this.vehicleType = params['truckTypeId'] ? params['truckTypeId'] : '';
-        this.customerCode = params['customerCode']
-          ? params['customerCode']
-          : '';
-        if (params['fromDate'] && params['toDate']) {
-          this.resetColorsAndSeriesData();
+
+    // Respond to route params and resolved data in one stream
+    combineLatest([
+      this.activatedRoute.queryParams.pipe(
+        map(params => ({
+          paymentType: params['paymentType'] || '',
+          tripType: params['tripType'] || '',
+          vehicleType: params['truckTypeId'] || '',
+          customerCode: params['customerCode'] || '',
+          fromDate: params['fromDate'] || '',
+          toDate: params['toDate'] || '',
+        })),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+        startWith({
+          paymentType: this.paymentType,
+          tripType: this.tripType,
+          vehicleType: this.vehicleType,
+          customerCode: this.customerCode,
+          fromDate: this.fromDate,
+          toDate: this.toDate,
+        })
+      ),
+      this.activatedRoute.data.pipe(startWith({})),
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([qp, data]: any) => {
+        this.paymentType = qp.paymentType;
+        this.tripType = qp.tripType;
+        this.vehicleType = qp.vehicleType;
+        this.customerCode = qp.customerCode;
+
+        if (qp.fromDate && qp.toDate) {
           this.dateFilterApplied = true;
-          this.fromDate = params['fromDate'];
-          this.toDate = params['toDate'];
-          this.getTransporterRateAnalysisData('init');
+          this.fromDate = qp.fromDate;
+          this.toDate = qp.toDate;
         } else {
-          this.resetColorsAndSeriesData();
           this.dateFilterApplied = false;
           this.calculateFromAndToDate();
-          this.getTransporterRateAnalysisData('init');
+        }
+
+        // initial data pass (resolver if available)
+        const resolved = data?.dashboardData?.data?.transporterRateAnalysisData
+          ?.data as RatePoint[] | undefined;
+        this.buildCategories();
+        if (resolved?.length) {
+          this.buildSeries(resolved);
+        } else {
+          this.fetchAndBuild();
         }
       });
-    });
   }
 
-  getVehicleTypeList() {
-    this.trip.getVehicleTypeList().subscribe(res => {
-      this.vehicleTypeLists = res.data;
-    });
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // ======= UI events =======
+
+  changeChartType(_: MatSelectChange) {
+    this.triggerReload();
+  }
+
+  onUnloadingDistrictChange(_: MatSelectChange) {
+    this.triggerReload();
+  }
+
+  onLoadingDistrictChange(_: MatSelectChange) {
+    this.triggerReload();
+  }
+
+  onTransporterChange(_: MatSelectChange) {
+    this.triggerReload();
+  }
+
+  onDataTypeChange(evt: MatSelectChange) {
+    this.datatype = evt.value as DataType;
+    this.triggerReload();
+  }
+
+  clearAll() {
+    this.transporter = '';
+    this.vehicleType = '';
+    this.loadingDistrict = '';
+    this.unloadingDistrict = '';
+    this.triggerReload();
+  }
+
+  // ======= Data loads =======
+
+  private getVehicleTypeList() {
+    this.trip
+      .getVehicleTypeList()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(res => (this.vehicleTypeLists = res.data ?? []));
   }
 
   private getDistrictList() {
-    this.trip.getDistricts().subscribe((res: any) => {
-      this.districts = res.data;
-    });
+    this.trip
+      .getDistricts()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => (this.districts = res.data ?? []));
   }
 
   private getTransporterList() {
-    this.user.getTransporter(0, 1000).subscribe((res: any) => {
-      this.transporterLists = res.data;
-      // sort the transporter list by name
-      this.transporterLists.sort((a, b) => {
-        if (a.name < b.name) {
-          return -1;
-        }
-        if (a.name > b.name) {
-          return 1;
-        }
-        return 0;
-      });
-    });
-  }
-
-  private getTransporterRateAnalysisData(callFrom: string) {
-    this.categories = [];
-    this.seriesdata = [];
-    this.colors = [];
-    // calculate the number of days will be difference between fromdate and todate
-
-    if (this.datatype === 'daily') {
-      if (!this.dateFilterApplied) {
-        this.calculateFromAndToDate();
-      }
-      const daysDifference = Math.floor(
-        (new Date(this.toDate).getTime() - new Date(this.fromDate).getTime()) /
-          (1000 * 60 * 60 * 24)
-      );
-
-      // catagories will be the dates like 2024-01-01 to 2024-01-31
-      for (let i = 0; i <= daysDifference; i++) {
-        this.categories.push(
-          this.datePipe.transform(
-            new Date(
-              new Date(this.fromDate).getTime() + i * 24 * 60 * 60 * 1000
-            ),
-            'dd-MMM-yyyy'
-          )
+    this.user
+      .getTransporter(0, 1000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        this.transporterLists = (res.data ?? []).sort(
+          (a: UserModel, b: UserModel) =>
+            (a.name || '').localeCompare(b.name || '')
         );
-      }
-      this.categories = this.categories.reverse();
-    } else if (this.datatype === 'monthly') {
-      if (!this.dateFilterApplied) {
-        //fromdate will be the current year first date
-        const fromDate = new Date();
-        fromDate.setMonth(0);
-        fromDate.setDate(1);
-        this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd');
-        // todate will be the current date
-        const toDate = new Date();
-        this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd');
-      }
-      const date = new Date(this.fromDate);
-      date.setDate(1);
-      const endDate = new Date(this.toDate);
-
-      while (date <= endDate) {
-        this.categories.push(this.datePipe.transform(date, 'MMM-yyyy'));
-        date.setMonth(date.getMonth() + 1);
-      }
-      const firstMonthStartingDate = new Date(this.fromDate);
-      // if the first month is not starting from the first date then apply a logic
-
-      //if fromdate and toDate month is same then we need to show only one month
-      if (this.categories.length == 1) {
-        this.categories[0] =
-          this.categories[0] +
-          '|' +
-          firstMonthStartingDate.getDate() +
-          '-' +
-          endDate.getDate();
-      } else {
-        if (firstMonthStartingDate.getDate() != 1) {
-          const firstMonthDays = new Date(
-            firstMonthStartingDate.getFullYear(),
-            firstMonthStartingDate.getMonth() + 1,
-            0
-          ).getDate();
-          this.categories[0] =
-            this.categories[0] +
-            '|' +
-            firstMonthStartingDate.getDate() +
-            '-' +
-            firstMonthDays;
-        }
-
-        const lastMonthEndingDate = new Date(this.toDate);
-        // if the last month is not ending at the last date then apply a logic
-        if (lastMonthEndingDate.getDate() != 1) {
-          const lastMonthDays = new Date(
-            lastMonthEndingDate.getFullYear(),
-            lastMonthEndingDate.getMonth() + 1,
-            0
-          ).getDate();
-          this.categories[this.categories.length - 1] =
-            this.categories[this.categories.length - 1] +
-            '|' +
-            '1-' +
-            lastMonthEndingDate.getDate();
-        }
-      }
-    }
-    callFrom === 'init' ? this.getDataFromResolvedData() : this.callServiceApi();
+      });
   }
 
-  callServiceApi() {
+  private fetchAndBuild() {
     this.service
       .getTransporterRateAnalysisData(
         this.datatype,
@@ -242,219 +230,218 @@ export class TransporterRateAnalysisComponent implements OnInit {
         this.paymentType,
         this.tripType
       )
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
-        this.parseSeriesDataAndColorsFromResponse(res.data);
+        const data: RatePoint[] = res?.data ?? [];
+        this.buildSeries(data);
       });
   }
 
-  getDataFromResolvedData() {
-    this.activatedRoute.data.subscribe((data: any) => {
-      this.seriesdata = []
-      const dashboardData = data?.dashboardData?.data;
-      const resolvedData = dashboardData?.transporterRateAnalysisData?.data;
-      if (resolvedData) {
-        this.parseSeriesDataAndColorsFromResponse(resolvedData);
-      } else {
-        this.callServiceApi();
-      }
-    });
+  // ======= Builders =======
+
+  private triggerReload() {
+    this.resetChartState();
+    if (!this.dateFilterApplied) this.calculateFromAndToDate();
+    this.buildCategories();
+    this.fetchAndBuild();
   }
 
-
-
-  onUnloadingDistrictChange($event: MatSelectChange) {
-    this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData('event');
-  }
-
-  onLoadingDistrictChange($event: MatSelectChange) {
-    this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData('event');
-  }
-
-  onTransporterChange($event: MatSelectChange) {
-    this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData('event');
-  }
-
-
-
-  private parseSeriesDataAndColorsFromResponse(data) {
-    if (this.chartType === 'high') {
-      const singleSeriesData = Array(this.categories.length).fill(null);
-      this.numberOfTrips = Array(this.categories.length).fill(null);
-      data.forEach((item: any) => {
-        const splitedDate = item.period?.split('-');
-        const date =
-          this.datatype === 'daily'
-            ? parseInt(splitedDate[2])
-            : parseInt(splitedDate[1]);
-        // if date starting from 0 then remove the 0
-        const selectedIndex = this.findIndexOfDate(date, this.datatype);
-        singleSeriesData[selectedIndex] =
-          item.minRate != null ? item.maxRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[selectedIndex] = item.totalTrips ? item.totalTrips : 0;
-      });
-      this.seriesdata.push({
-        name: 'Highest Rate',
-        data: singleSeriesData,
-        color: '#1DBF73',
-      });
-
-      this.colors.push('#1DBF73');
-    } else if (this.chartType === 'low') {
-      const singleSeriesData = Array(this.categories.length).fill(null);
-      this.numberOfTrips = Array(this.categories.length).fill(null);
-      data.forEach((item: any) => {
-        const splitedDate = item.period?.split('-');
-        const date =
-          this.datatype === 'daily'
-            ? parseInt(splitedDate[2])
-            : parseInt(splitedDate[1]);
-        // if date starting from 0 then remove the 0
-        const selectedIndex = this.findIndexOfDate(date, this.datatype);
-        singleSeriesData[selectedIndex] =
-          item.minRate != null ? item.minRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[selectedIndex] = item.totalTrips ? item.totalTrips : 0;
-      });
-      this.seriesdata.push({
-        name: 'Lowest Rate',
-        data: singleSeriesData,
-        color: '#F0614E',
-      });
-      this.colors.push('#F0614E');
-    } else if (this.chartType === 'average') {
-      const singleSeriesData = Array(this.categories.length).fill(null);
-      this.numberOfTrips = Array(this.categories.length).fill(null);
-      data.forEach((item: any) => {
-        const splitedDate = item.period?.split('-');
-        const date =
-          this.datatype === 'daily'
-            ? parseInt(splitedDate[2])
-            : parseInt(splitedDate[1]);
-        // if date starting from 0 then remove the 0
-        const selectedIndex = this.findIndexOfDate(date, this.datatype);
-        singleSeriesData[selectedIndex] =
-          item.avgRate != null ? item.avgRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[selectedIndex] = item.totalTrips ? item.totalTrips : 0;
-      });
-      this.seriesdata.push({
-        name: 'Average Rate',
-        data: singleSeriesData,
-        color: '#208B99',
-      });
-      this.colors.push('#208B99');
-    } else if (this.chartType == 'all') {
-      const singleSeriesDataHigh = Array(this.categories.length).fill(null);
-      const singleSeriesDataLow = Array(this.categories.length).fill(null);
-      const singleSeriesDataAverage = Array(this.categories.length).fill(null);
-      this.numberOfTrips = Array(this.categories.length).fill(null);
-      data.forEach((item: any) => {
-        const splitedDate = item.period?.split('-');
-        const date =
-          this.datatype === 'daily'
-            ? parseInt(splitedDate[2])
-            : parseInt(splitedDate[1]);
-        const selectedIndex = this.findIndexOfDate(date, this.datatype);
-        singleSeriesDataHigh[selectedIndex] =
-          item.maxRate != null ? item.maxRate : item.totalTrips ? 0 : null;
-        singleSeriesDataLow[selectedIndex] =
-          item.minRate != null ? item.minRate : item.totalTrips ? 0 : null;
-        singleSeriesDataAverage[selectedIndex] =
-          item.avgRate != null ? item.avgRate : item.totalTrips ? 0 : null;
-        this.numberOfTrips[selectedIndex] = item.totalTrips
-          ? item.totalTrips
-          : 0;
-        // if date starting from 0 then remove the 0
-      });
-      this.seriesdata.push({
-        name: 'Highest Rate',
-        data: singleSeriesDataHigh,
-        color: '#1DBF73',
-      });
-      this.seriesdata.push({
-        name: 'Average Rate',
-        data: singleSeriesDataAverage,
-        color: '#208B99',
-      });
-      this.seriesdata.push({
-        name: 'Lowest Rate',
-        data: singleSeriesDataLow,
-        color: '#F0614E',
-      });
-      this.colors.push('#1DBF73');
-      this.colors.push('#208B99');
-      this.colors.push('#F0614E');
-    }
-  }
-
-  resetColorsAndSeriesData() {
+  private resetChartState() {
     this.seriesdata = [];
     this.categories = [];
+    this.colors = [];
     this.numberOfTrips = [];
-    this.numberOfTrips = [];
+    this.categoryIndex.clear();
   }
 
-  clearAll() {
-    this.transporter = '';
-    this.vehicleType = '';
-    this.loadingDistrict = '';
-    this.unloadingDistrict = '';
-    this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData('event');
+  private resetAll() {
+    this.chartType = 'all';
+    this.datatype = 'daily';
+    this.resetChartState();
   }
 
   private calculateFromAndToDate() {
-    this.fromDate = '';
-    this.toDate = '';
-    // fromdate will be the current month first date
-    const fromDate = new Date();
-    fromDate.setDate(1);
-    this.fromDate = this.datePipe.transform(fromDate, 'yyyy-MM-dd');
-    // todate will be the current date
-    const toDate = new Date();
-    this.toDate = this.datePipe.transform(toDate, 'yyyy-MM-dd');
+    const from = new Date();
+    from.setDate(1);
+    this.fromDate = this.datePipe.transform(from, 'yyyy-MM-dd') || '';
+
+    const to = new Date();
+    this.toDate = this.datePipe.transform(to, 'yyyy-MM-dd') || '';
   }
 
-  onDataTypeChange($event: any) {
-    this.datatype = $event.value;
-    this.resetColorsAndSeriesData();
-    this.getTransporterRateAnalysisData('event');
-  }
+  private buildCategories() {
+    this.categories = [];
+    this.categoryIndex.clear();
 
-  private findIndexOfDate(date: number, datatype: string) {
-    let selectedIndex = 0;
-    if (datatype === 'daily') {
-      for (let i = 0; i < this.categories?.length; i++) {
-        const splitedCategory = this.categories[i].split('-');
-        if (parseInt(splitedCategory[0]) == date) {
-          selectedIndex = i;
-        }
+    if (this.datatype === 'daily') {
+      // Use inclusive range [from..to], chronological order
+      const from = new Date(this.fromDate);
+      const to = new Date(this.toDate);
+      for (let d = new Date(from); d <= to; d.setDate(d.getDate() + 1)) {
+        const label = this.datePipe.transform(d, 'dd-MMM-yyyy')!;
+        this.categoryIndex.set(label, this.categories.length);
+        this.categories.push(label);
       }
+      this.categories = this.categories.reverse();
+      console.log(this.categories)
     } else {
-      const monthNames = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-      ];
+      // monthly
+      const from = new Date(this.fromDate);
+      from.setDate(1);
+      const to = new Date(this.toDate);
+      to.setDate(1);
+      const end = new Date(this.toDate);
 
-      const selectedMonthName = monthNames[date-1];
+      const labels: string[] = [];
+      const cursor = new Date(from);
+      while (cursor <= to) {
+        const base = this.datePipe.transform(cursor, 'MMM-yyyy')!;
+        labels.push(base);
+        cursor.setMonth(cursor.getMonth() + 1);
+      }
 
-      for (let i = 0; i < this.categories?.length; i++) {
-        if (this.categories[i].includes(selectedMonthName)) {
-          selectedIndex = i;
+      // Append day ranges on first/last month if partials
+      if (labels.length === 1) {
+        const first = new Date(this.fromDate);
+        const last = new Date(this.toDate);
+        labels[0] = `${labels[0]}|${first.getDate()}-${last.getDate()}`;
+      } else if (labels.length > 1) {
+        const first = new Date(this.fromDate);
+        if (first.getDate() !== 1) {
+          const daysInFirstMonth = new Date(
+            first.getFullYear(),
+            first.getMonth() + 1,
+            0
+          ).getDate();
+          labels[0] = `${labels[0]}|${first.getDate()}-${daysInFirstMonth}`;
+        }
+        const last = new Date(this.toDate);
+        const lastMonthDays = new Date(
+          last.getFullYear(),
+          last.getMonth() + 1,
+          0
+        ).getDate();
+        if (last.getDate() !== lastMonthDays) {
+          labels[labels.length - 1] = `${labels.at(-1)}|1-${last.getDate()}`;
         }
       }
+
+      this.categories = labels
+      labels.forEach((l, i) => this.categoryIndex.set(l, i));
     }
-    return selectedIndex;
+
+    // ensure numberOfTrips aligned
+    this.numberOfTrips = Array(this.categories.length).fill(null);
+  }
+
+  private buildSeries(data: RatePoint[]) {
+    // Prepare blank arrays
+    const makeBlank = () =>
+      Array(this.categories.length).fill(null) as (number | null)[];
+    const high = makeBlank();
+    const low = makeBlank();
+    const avg = makeBlank();
+
+    const monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    for (const item of data) {
+      // Build the label that exactly matches our categories
+      let label = '';
+      if (this.datatype === 'daily') {
+        // Expecting 'YYYY-MM-DD'
+        const d = new Date(item.period);
+        label = this.datePipe.transform(d, 'dd-MMM-yyyy')!;
+      } else {
+        // Expecting 'YYYY-MM' or 'YYYY-MM-DD' -> normalize to MMM-YYYY
+        const [y, m] = item.period.split('-').map(x => parseInt(x, 10));
+        const monName = monthNames[(m ?? 1) - 1];
+        label = `${monName}-${y}`;
+        // If our categories carry appended day ranges, this still matches because the base string is at the start.
+        // We'll find by startsWith to resolve the exact category entry.
+        const fullLabel = this.categories.find(c => c.startsWith(label));
+        if (fullLabel) label = fullLabel;
+      }
+
+      const idx = this.categoryIndex.get(label);
+      if (idx === undefined) continue;
+
+      // Fill series safely (prefer null -> 0 when there are trips=0)
+      if (item.maxRate != null) high[idx] = item.maxRate;
+      else if (item.totalTrips) high[idx] = 0;
+
+      if (item.minRate != null) low[idx] = item.minRate;
+      else if (item.totalTrips) low[idx] = 0;
+
+      if (item.avgRate != null) avg[idx] = item.avgRate;
+      else if (item.totalTrips) avg[idx] = 0;
+
+      this.numberOfTrips[idx] = item.totalTrips ?? 0;
+    }
+
+    this.seriesdata = [];
+    this.colors = [];
+
+    switch (this.chartType) {
+      case 'high':
+        this.seriesdata.push({
+          name: 'Highest Rate',
+          data: high,
+          color: TransporterRateAnalysisComponent.COLOR_HIGH,
+        });
+        this.colors.push(TransporterRateAnalysisComponent.COLOR_HIGH);
+        break;
+      case 'low':
+        this.seriesdata.push({
+          name: 'Lowest Rate',
+          data: low,
+          color: TransporterRateAnalysisComponent.COLOR_LOW,
+        });
+        this.colors.push(TransporterRateAnalysisComponent.COLOR_LOW);
+        break;
+      case 'average':
+        this.seriesdata.push({
+          name: 'Average Rate',
+          data: avg,
+          color: TransporterRateAnalysisComponent.COLOR_AVG,
+        });
+        this.colors.push(TransporterRateAnalysisComponent.COLOR_AVG);
+        break;
+      case 'all':
+      default:
+        this.seriesdata.push({
+          name: 'Highest Rate',
+          data: high,
+          color: TransporterRateAnalysisComponent.COLOR_HIGH,
+        });
+        this.seriesdata.push({
+          name: 'Average Rate',
+          data: avg,
+          color: TransporterRateAnalysisComponent.COLOR_AVG,
+        });
+        this.seriesdata.push({
+          name: 'Lowest Rate',
+          data: low,
+          color: TransporterRateAnalysisComponent.COLOR_LOW,
+        });
+        this.colors.push(
+          TransporterRateAnalysisComponent.COLOR_HIGH,
+          TransporterRateAnalysisComponent.COLOR_AVG,
+          TransporterRateAnalysisComponent.COLOR_LOW
+        );
+        break;
+    }
   }
 }
