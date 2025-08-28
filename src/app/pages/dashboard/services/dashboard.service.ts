@@ -225,7 +225,6 @@ export class DashboardService {
     type?: string,
     from?: string,
     to?: string,
-    transporterCode?: string,
     truckType?: string,
     loadingPointDistrictName?: string,
     unloadingPointDistrictName?: string,
@@ -244,9 +243,6 @@ export class DashboardService {
     }
     if (to) {
       params.set('to', to);
-    }
-    if (transporterCode) {
-      params.set('transporterCode', transporterCode);
     }
     if (truckType) {
       params.set('categoryId', truckType);

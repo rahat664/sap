@@ -225,7 +225,6 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
         this.datatype,
         this.fromDate,
         this.toDate,
-        this.transporter,
         this.vehicleType,
         this.loadingDistrict,
         this.unloadingDistrict,
