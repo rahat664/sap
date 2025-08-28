@@ -56,6 +56,8 @@ export class PaymentFilterComponent {
     'Custom',
   ];
   selectedButton: any;
+  transporterCodes: any[] = [];
+  transporterNames: any[] = [];
   startDate: string;
   endDate: string;
   customSelected: boolean;
@@ -165,7 +167,9 @@ export class PaymentFilterComponent {
       tripId: this.tripId,
       searchName: this.searchName,
       customerCode: this.customerCode,
-      transporterName: this.transporterName,
+      transporterName: this.transporterNames,
+      transporterCodes: this.transporterCodes,
+      transporters: this.transporters,
       searchId: this.searchId,
       loadingDistrict: this.loadingDistrict,
       unloadingDistrict: this.unloadingDistrict,
@@ -319,6 +323,7 @@ export class PaymentFilterComponent {
   unloadingDistrict: any;
   searchTransporter: string = ''
   transporterSuggestions: any;
+  transporters: any[] = [];
 
   onLoadingDistrictChange($event: MatSelectChange) {
 
@@ -343,8 +348,11 @@ export class PaymentFilterComponent {
       this.unloadingDistrict = filterData.unloadingDistrict;
       this.paymentStatusPlaceholder = filterData.paymentStatus;
       this.tripStatusPlaceholder = filterData.tripStatus;
-      this.searchTransporter = filterData.transporterName;
-      this.transporterName = filterData.transporterName;
+      if (filterData?.transporterCodes?.length > 0) {
+        this.transporterCodes = filterData?.transporterCodes
+        this.transporterNames = filterData?.transporterName;
+        this.transporters = filterData?.transporters;
+      }
       this.tripStatusOptionsArray.forEach(x => {
         if (x.value === filterData.tripStatus) {
           x.selected = true;
@@ -439,10 +447,10 @@ export class PaymentFilterComponent {
   }
 
   onClickTransporterSearchSuggestion(result: any) {
-    this.transporterName = result.name;
-    this.searchTransporter = result.name;
-    this.transporterSuggestions = [];
-    this.isTripSearchedMenuOpened = false;
+    this.transporters.push(result);
+    this.transporterCodes?.push(result.code);
+    this.transporterNames?.push(result.name);
+    this.transporterName = '';
   }
   private performTransporterSearch(searchText: string) {
     if (searchText?.length > 0) {
@@ -470,5 +478,13 @@ export class PaymentFilterComponent {
     this.transporterName = '';
     this.searchTransporter = '';
     this.transporterSuggestions = [];
+  }
+
+  onClickCloseTransporter(transporters: any) {
+    this.filterLength -= 1;
+    this.previousFilterLength -= 1;
+    this.transporters = this.transporters?.filter(
+      (value: any) => value.code !== transporters.code
+    );
   }
 }

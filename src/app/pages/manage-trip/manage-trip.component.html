@@ -37,7 +37,7 @@
             type="text"
             name="email"
             class="border-none text-not-black text-h2 leading-h2 placeholder-input-hint w-full bg-white rounded-lg focus:ring-blue focus:border-blue block pl-10 py-[.875rem]"
-            placeholder="Search by trip ID, customer code" />
+            placeholder="Search by trip ID, customer code, transporter code" />
         </div>
         <button
           [disabled]="loading"
@@ -119,7 +119,7 @@
         <ng-container *ngFor="let filter of filterValues">
           <div
             class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint">
-            <span>{{ filter }}</span>
+            <span>{{ filter.includes('tr_') ? filter.split('_')[1] : filter }}</span>
             <a (click)="onClickCloseFilter(filter)" class="cursor-pointer"
             ><i class="far fa-times"></i
             ></a>
@@ -291,6 +291,48 @@
                   <span>{{ customer?.name }}</span>
                   <a
                     (click)="onClickCloseCustomer(customer)"
+                    class="cursor-pointer"
+                  ><i class="far fa-times"></i
+                  ></a>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="flex flex-col space-y-2 w-full" *ngIf="isAdmin() ">
+            <label class="text-base text-secondary">Transporter name</label>
+
+            <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)"
+              appearance="outline"
+              class="example-full-width filter w-full">
+              <input
+                style="padding-right: 20px"
+                id="transporterName"
+                [(ngModel)]="transporterName"
+                type="text"
+                matInput
+                (keyup)="onKeyUpTransporterSearch($event)"
+                placeholder="Select transporte name"
+                [matAutocomplete]="transporterSug"/>
+              <mat-autocomplete #transporterSug="matAutocomplete">
+                @for (option of transporterSuggestions; track option) {
+                  <mat-option
+                    (click)="onClickTransporterSearchSuggestion(option)"
+                    [value]="option.name"
+                  >{{ option.name }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+            <div
+              class="flex flex-wrap gap-2 text-secondary text-sm"
+              *ngIf="transporters.length > 0">
+              <ng-container *ngFor="let trans of transporters">
+                <div
+                  class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint whitespace-nowrap">
+                  <span>{{ trans?.name }}</span>
+                  <a
+                    (click)="onClickCloseCustomer(trans)"
                     class="cursor-pointer"
                   ><i class="far fa-times"></i
                   ></a>

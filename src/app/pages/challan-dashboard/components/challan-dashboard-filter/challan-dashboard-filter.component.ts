@@ -123,6 +123,9 @@ export class ChallanDashboardFilterComponent {
    searchRegistationId: any;
    selectedPaymentValue: any[] = [];
    selectedTripValue: any[] = [];
+  transporters: any[] = [];
+  transporterCodes: any[] = [];
+  transporterNames: any[] = [];
 
   constructor(
     private datePipe: DatePipe,
@@ -182,7 +185,9 @@ export class ChallanDashboardFilterComponent {
       customerName: this.customerNames,
       truckType: this.truckType,
       customers: this.customers,
-      transporterName: this.transporterName,
+      transporterName: this.transporterNames,
+      transporterCodes: this.transporterCodes,
+      transporter: this.transporters,
       tripId: this.tripId,
       selectedButton: this.selectedButton,
       selectedTruckValues: this.selectedTruckValues,
@@ -428,9 +433,10 @@ export class ChallanDashboardFilterComponent {
   }
 
   onClickTransporterSearchSuggestion(result: any) {
-    this.transporterName = result.name;
-    this.searchTransporter = result.name;
-    this.transporterSuggestions = [];
+    this.transporters.push(result);
+    this.transporterCodes?.push(result.code);
+    this.transporterNames?.push(result.name);
+    this.transporterName = '';
   }
 
   onClickClearTransporter() {
@@ -539,8 +545,11 @@ export class ChallanDashboardFilterComponent {
           }
         }
       }
-      this.transporterName = tripFilterData?.transporterName;
-      this.searchTransporter = tripFilterData?.transporterName;
+      if (tripFilterData?.transporterCodes?.length > 0) {
+        this.transporterCodes = tripFilterData?.transporterCodes;
+        this.transporterNames = tripFilterData?.transporterName;
+        this.transporters = tripFilterData?.transporters;
+      }
       this.tripId = tripFilterData?.tripId;
       this.searchId = tripFilterData?.tripId;
       this.truckRegistrationId = tripFilterData?.truckRegistrationId;
@@ -553,5 +562,13 @@ export class ChallanDashboardFilterComponent {
     this.truckRegistrationId = '';
     this.searchRegistationId = '';
     this.truckRegSuggestions = [];
+  }
+
+  onClickCloseTransporter(transporters: any) {
+    this.filterLength -= 1;
+    this.previousFilterLength -= 1;
+    this.transporters = this.transporters?.filter(
+      (value: any) => value.code !== transporters.code
+    );
   }
 }

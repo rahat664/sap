@@ -127,65 +127,47 @@
               </div>
             </ng-container>
           </div>
-          <div class="flex flex-col space-y-1 w-full">
-            <label class="text-base text-secondary">Vehicle type</label>
-            <mat-form-field appearance="outline" class="filter">
-              <mat-select
-                [(ngModel)]="truckType"
-                (selectionChange)="onChangeTruckType($event)"
-                multiple
-                placeholder="Choose Truck Type">
-                @for (vehicle of vehicleTypeList; track vehicle) {
-                  <mat-option [value]="vehicle.id">{{
-                      vehicle.name
-                    }}
+          <div class="flex flex-col space-y-2 w-full">
+            <label class="text-base text-secondary">Transporter name</label>
+
+            <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)"
+              appearance="outline"
+              class="example-full-width filter w-full">
+              <input
+                style="padding-right: 20px"
+                id="trasporterName"
+                [(ngModel)]="transporterName"
+                type="text"
+                matInput
+                (keyup)="onKeyUpTransporterSearch($event)"
+                placeholder="Select transporter name"
+                [matAutocomplete]="transporterSug"/>
+              <mat-autocomplete #transporterSug="matAutocomplete">
+                @for (option of transporterSuggestions; track option) {
+                  <mat-option
+                    (click)="onClickTransporterSearchSuggestion(option)"
+                    [value]="option.name"
+                  >{{ option.name ? option.name : option }}
                   </mat-option>
                 }
-              </mat-select>
+              </mat-autocomplete>
             </mat-form-field>
-          </div>
-        </div>
-
-        <div class="flex flex-col space-y-2 w-full">
-          <label class="text-base text-secondary">Transporter name</label>
-
-          <mat-form-field
-            (mouseenter)="updateOverLayStyle(false)"
-            appearance="outline"
-            class="example-full-width filter w-full">
-            <input
-              style="padding-right: 20px"
-              id="trasporterName"
-              [(ngModel)]="transporterName"
-              type="text"
-              matInput
-              (keyup)="onKeyUpTransporterSearch($event)"
-              placeholder="Select transporter name"
-              [matAutocomplete]="transporterSug"/>
-            <mat-autocomplete #transporterSug="matAutocomplete">
-              @for (option of transporterSuggestions; track option) {
-                <mat-option
-                  (click)="onClickTransporterSearchSuggestion(option)"
-                  [value]="option.name"
-                >{{ option.name ? option.name : option }}
-                </mat-option>
-              }
-            </mat-autocomplete>
-          </mat-form-field>
-          <div
-            class="flex flex-wrap gap-2 text-secondary text-sm"
-            *ngIf="transporters.length > 0">
-            <ng-container *ngFor="let transporter of transporters">
-              <div
-                class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint whitespace-nowrap">
-                <span>{{ transporter.name }}</span>
-                <a
-                  (click)="onClickCloseTransporter(transporter)"
-                  class="cursor-pointer"
-                ><i class="far fa-times"></i
-                ></a>
-              </div>
-            </ng-container>
+            <div
+              class="flex flex-wrap gap-2 text-secondary text-sm"
+              *ngIf="transporters.length > 0">
+              <ng-container *ngFor="let transporter of transporters">
+                <div
+                  class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint whitespace-nowrap">
+                  <span>{{ transporter.name }}</span>
+                  <a
+                    (click)="onClickCloseTransporter(transporter)"
+                    class="cursor-pointer"
+                  ><i class="far fa-times"></i
+                  ></a>
+                </div>
+              </ng-container>
+            </div>
           </div>
           <div class="flex flex-col space-y-1 w-full">
             <label class="text-base text-secondary">Vehicle type</label>
