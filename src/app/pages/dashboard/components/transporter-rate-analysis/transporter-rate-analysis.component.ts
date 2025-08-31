@@ -97,7 +97,6 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.resetAll();
-
     this.getVehicleTypeList();
     this.getDistrictList();
     this.getTransporterList();
@@ -125,7 +124,7 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
           transporterCodes: this.transporterCodes
         })
       ),
-      this.activatedRoute.data.pipe(startWith({})),
+      this.activatedRoute.data
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([qp, data]: any) => {
@@ -143,13 +142,16 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
           this.calculateFromAndToDate();
         }
 
-        // initial data pass (resolver if available)
-        const resolved = data?.dashboardData?.data?.transporterRateAnalysisData
-          ?.data as RatePoint[] | undefined;
+        // Only build from resolver if data is present
+        const resolved = data?.dashboardData?.data?.transporterRateAnalysisData?.data as RatePoint[] | undefined;
         this.buildCategories();
-        if (resolved?.length) {
+        if (Array.isArray(resolved) && resolved.length > 0) {
           this.buildSeries(resolved);
+        } else if (data && data.dashboardData) {
+          // If resolver ran but no data, don't fetch again
+          this.buildSeries([]);
         } else {
+          // Only fetch if resolver hasn't run yet
           this.fetchAndBuild();
         }
       });
@@ -286,7 +288,6 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
         this.categories.push(label);
       }
       this.categories = this.categories.reverse();
-      console.log(this.categories)
     } else {
       // monthly
       const from = new Date(this.fromDate);
