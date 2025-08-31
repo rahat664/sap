@@ -519,7 +519,7 @@ export class ChallanDashboardFilterComponent {
           }
         }
       }
-
+      this.transporters = tripFilterData?.transporter || [];
       if (tripFilterData?.paymentType?.length > 0) {
         this.paymentTypeValue = tripFilterData?.paymentType;
         if (this.paymentTypeValue) {
@@ -548,7 +548,7 @@ export class ChallanDashboardFilterComponent {
       if (tripFilterData?.transporterCodes?.length > 0) {
         this.transporterCodes = tripFilterData?.transporterCodes;
         this.transporterNames = tripFilterData?.transporterName;
-        this.transporters = tripFilterData?.transporters;
+        this.transporters = tripFilterData?.transporter;
       }
       this.tripId = tripFilterData?.tripId;
       this.searchId = tripFilterData?.tripId;
