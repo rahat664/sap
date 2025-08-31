@@ -268,6 +268,7 @@ export class TransporterComponent implements OnInit {
     this.filterForm.reset();
     this.filterData = {};
     this.filterApplied = false;
+    this.truckStands = [];
     this.page = 0;
     this.size = 30;
     this.loading = true;
