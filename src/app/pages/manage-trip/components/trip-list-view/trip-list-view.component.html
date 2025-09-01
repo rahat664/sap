@@ -1,0 +1,45 @@
+<div
+  *ngIf="!loading && !filterOpen"
+  class="flex flex-col py-1 space-y-4 min-w-96"
+>
+  <div
+    class="flex flex-col space-y-2 overflow-y-auto px-4"
+    appGiveMaxHeight
+    (inBottomEnd)="onScrollBottomReached($event)"
+    [totalPage]="totalPages"
+    [anotherItemsHeight]="anotherItemsHeight"
+  >
+    <app-trip-card
+      (click)="onTripClick(trip)"
+      [isActivated]="trip.tripId === activatedId"
+      *ngFor="let trip of tripList; trackBy: trackByTripId"
+      [tripNumber]="trip.tripId"
+      [companyName]="trip.customerName"
+      [tripStatus]="trip.status"
+      [tripStartDateTime]="trip.tripStartDatetime"
+      [points]="trip.tripPoints"
+      [truckId]="buildRegistration(trip.truck)"
+      [truckType]="trip.vehicleCategory?.name"
+      [goodsName]="trip.good?.name"
+    ></app-trip-card>
+  </div>
+</div>
+
+<div
+  class="flex flex-col items-center justify-center h-[calc(100vh-11.7rem)] min-w-96"
+  *ngIf="loading"
+>
+  <i class="fas fa-spinner fa-spin text-primary text-4xl"></i>
+  <span class="text-center w-full text-secondary">Loading...</span>
+  
+</div>
+
+<div
+  class="flex items-center justify-center h-[calc(100vh-11.7rem)] min-w-96"
+  *ngIf="!loading && tripList.length <= 0 && !filterOpen"
+>
+  <div class="w-full flex flex-col space-y-3 justify-center items-center">
+    <img loading="lazy" src="assets/svg/no-data.svg" class="notPreview" alt="nodata" />
+    <p class="text-body_title leading-body_title text-secondary font-semibold">No Data Found</p>
+  </div>
+</div>

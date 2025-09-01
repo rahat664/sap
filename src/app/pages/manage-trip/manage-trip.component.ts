@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { TripCardComponent } from '../../shared/modules/trip-card/trip-card.component';
 import { GMapComponent } from '../../shared/modules/g-map/g-map.component';
 import { TripService } from '../trip-list/services/trip.service';
@@ -29,7 +29,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomerService } from '../profiles/services/customer.service';
 import { MatSelect } from '@angular/material/select';
 import { CustomerModel } from '../profiles/components/customer/model/customer.model';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Subject, distinctUntilChanged, takeUntil } from 'rxjs';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
 import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
@@ -37,17 +37,25 @@ import {ActivatedRoute} from "@angular/router";
 import { PermissionService } from '../../shared/services/permission.service';
 import { UserService } from '../profiles/services/user.service';
 import { Transporter } from '../profiles/components/transporter/models/transporter-details.model';
+import { TripListViewComponent } from './components/trip-list-view/trip-list-view.component';
+import { TripSearchBarComponent } from './components/trip-search-bar/trip-search-bar.component';
+import { StatusChipsCarouselComponent } from './components/status-chips-carousel/status-chips-carousel.component';
+import { FilterChipsSummaryComponent } from './components/filter-chips-summary/filter-chips-summary.component';
+import { ManageTripFiltersComponent } from './components/manage-trip-filters/manage-trip-filters.component';
 
 @Component({
   selector: 'app-manage-trip',
   imports: [
-    TripCardComponent,
     GMapComponent,
     CommonModule,
     MapButtonsComponent,
-    GiveMaxHeightDirective,
     GetElementHeightDirective,
     TripDetailsComponent,
+    TripListViewComponent,
+    TripSearchBarComponent,
+    StatusChipsCarouselComponent,
+    FilterChipsSummaryComponent,
+    ManageTripFiltersComponent,
     MatFormField,
     MatDateRangeInput,
     MatDatepickerToggle,
@@ -60,16 +68,16 @@ import { Transporter } from '../profiles/components/transporter/models/transport
     MatOption,
     ReactiveFormsModule,
     MatSelect,
-    FormsModule,
-    ButtonChipsComponent,
-    ScrollByButtonDirective,
+    FormsModule
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
   styleUrls: ['./manage-trip.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ManageTripComponent implements OnInit {
+export class ManageTripComponent implements OnInit, OnDestroy {
   searchSubject = new Subject<string>();
+  private destroyed$ = new Subject<void>();
   rightButtonClicked = false;
   leftButtonClicked = false;
   scrollable = true;
@@ -166,9 +174,12 @@ export class ManageTripComponent implements OnInit {
     private datePipe: DatePipe,
     private activatedRoute: ActivatedRoute,
     private permissionService: PermissionService,
-    private transporter: UserService
+    private transporter: UserService,
+    private cdr: ChangeDetectorRef
   ) {
-    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroyed$))
+      .subscribe(searchText => {
       if (searchText) {
         this.performSearch(searchText);
       } else {
@@ -201,14 +212,14 @@ export class ManageTripComponent implements OnInit {
       localStorage.removeItem('fromTripListTruckRegistrationNumber');
     }
 
-    this.tripService.anotherStatusCalled.subscribe(value => {
+    this.tripService.anotherStatusCalled.pipe(takeUntil(this.destroyed$)).subscribe(value => {
       this.anotherStatusCalled = value;
     });
 
     this.getTripListFromResolvedState();
     this.getVehicleTypeList();
     localStorage.removeItem('tripId');
-    this.tripService.reloadManageTripPage.subscribe(value => {
+    this.tripService.reloadManageTripPage.pipe(takeUntil(this.destroyed$)).subscribe(value => {
       if (value) {
         this.page = 0;
         this.size = 30;
@@ -239,6 +250,11 @@ export class ManageTripComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
   private getTripList() {
     this.page == 0 ? (this.loading = true) : (this.loading = false);
     this.tripService
@@ -262,19 +278,33 @@ export class ManageTripComponent implements OnInit {
         this.tripTypeValue?.toString(),
         this.transporterCodes.toString(),
       )
-      .pipe(finalize(() => (this.loading = false)))
+      .pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); }))
       .subscribe(
         (trip: any) => {
           this.updateTripList(trip);
+          this.cdr.markForCheck();
         },
         error => {
           this.loading = false;
+          this.cdr.markForCheck();
         }
       );
   }
 
   onKeyUpSearch(event: KeyboardEvent) {
     this.searchSubject.next((event.target as HTMLInputElement).value);
+  }
+
+  onSearchInput(value: string) {
+    this.searchSubject.next(value ?? '');
+  }
+
+  trackByTripId(index: number, trip: Trip) {
+    return trip?.tripId ?? index;
+  }
+
+  trackByStatusName(index: number, item: { name: string }) {
+    return item?.name ?? index;
   }
 
   getTruckRegistrationNumber(truck: Truck) {
@@ -291,6 +321,9 @@ export class ManageTripComponent implements OnInit {
     status: string,
     truckSizeInFeet: string
   ) {
+    if (this.activatedId === tripId) {
+      return;
+    }
     if (localStorage.getItem('expanded')) {
       localStorage.setItem('expanded', 'false');
     }
@@ -312,18 +345,18 @@ export class ManageTripComponent implements OnInit {
     this.tripStatusFilter(event.name ? event.name : event);
   }
 
-  onClickFilterButton(event: any, picker: any) {
+  onClickFilterButton(event: any, picker?: any) {
     this.selectedButton = event;
     if (event === 'Custom') {
       this.startDate = '';
       this.endDate = '';
       this.customSelected = true;
       this.dateSelected = false;
-      picker.open();
+      if (picker && picker.open) { picker.open(); }
     } else {
       this.customSelected = false;
       this.dateText = event;
-      picker.close();
+      if (picker && picker.close) { picker.close(); }
       if (event === 'Today') {
         this.startDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
         this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
@@ -387,7 +420,7 @@ export class ManageTripComponent implements OnInit {
       this.tripStatus = this.tripList[0].status;
       this.activatedTruckSizeInFeet = Number(this.tripList[0].truckSize);
     } else {
-      this.tripList.push(...trip.data.responses);
+      this.tripList = [...this.tripList, ...trip.data.responses];
     }
   }
 
@@ -527,12 +560,13 @@ export class ManageTripComponent implements OnInit {
   }
 
   private getVehicleTypeList() {
-    this.tripService.getVehicleTypeList().subscribe((res: any) => {
+    this.tripService.getVehicleTypeList().pipe(takeUntil(this.destroyed$)).subscribe((res: any) => {
       this.vehicleTypeList = res.data;
+      this.cdr.markForCheck();
     });
   }
 
-  onChangeStartDate($event: Event) {
+  onChangeStartDate($event: any) {
     this.startDate = ($event.target as HTMLInputElement).value;
     this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
   }
@@ -1023,12 +1057,13 @@ export class ManageTripComponent implements OnInit {
   }
 
   private getTripListFromResolvedState() {
-    this.activatedRoute.data.subscribe((data: { tripList: any }) => {
+    this.activatedRoute.data.pipe(takeUntil(this.destroyed$)).subscribe((data: { tripList: any }) => {
       this.loading = false;
       this.page = 0;
       this.size = 30;
       const trip = data.tripList.data
       this.updateTripList(trip)
+      this.cdr.markForCheck();
     })
   }
 

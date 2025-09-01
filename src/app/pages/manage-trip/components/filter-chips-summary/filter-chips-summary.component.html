@@ -1,0 +1,49 @@
+<div
+  *ngIf="filterValues?.length > 0"
+  class="flex flex-wrap gap-2 text-sm px-4"
+>
+  <ng-container *ngFor="let filter of filterValues">
+    <div
+      *ngIf="!buttonName?.includes(filter) && !filter?.includes('-') && !filter?.includes('tr_')"
+      class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint"
+    >
+      <span>{{ filter }}</span>
+      <a (click)="onClose(filter)" class="cursor-pointer"><i class="far fa-times"></i></a>
+    </div>
+  </ng-container>
+
+  <div *ngIf="selectedTruckValues?.length > 0" class="flex flex-wrap gap-2">
+    <div
+      *ngFor="let truck of selectedTruckValues"
+      class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint"
+    >
+      <span>{{ truck }}</span>
+      <a (click)="onClose(truck)" class="cursor-pointer"><i class="far fa-times"></i></a>
+    </div>
+  </div>
+
+  <div
+    *ngIf="dateText || customDateText"
+    class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint"
+  >
+    <span>{{ customSelected ? customDateText : dateText }}</span>
+    <a (click)="onClose(customSelected ? customDateText : dateText)" class="cursor-pointer"><i class="far fa-times"></i></a>
+  </div>
+
+  <div
+    *ngIf="paymentTypePlaceholder"
+    class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint"
+  >
+    <span>{{ paymentTypePlaceholder }}</span>
+    <a (click)="closePaymentType.emit()" class="cursor-pointer"><i class="far fa-times"></i></a>
+  </div>
+
+  <div
+    *ngIf="tripTypePlaceholder"
+    class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint"
+  >
+    <span>{{ tripTypePlaceholder }}</span>
+    <a (click)="closeTripType.emit()" class="cursor-pointer"><i class="far fa-times"></i></a>
+  </div>
+</div>
+
