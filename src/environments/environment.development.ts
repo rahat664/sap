@@ -1,11 +1,12 @@
 export const environment = {
   production: false,
   userUrl: 'https://user-service-dev.snztech.world',
-  // userUrl: 'http://192.168.1.161:8080',
+  //userUrl: 'http://192.168.1.68:8080',
   backendUrl: 'https://backend-service-dev.snztech.world',
   // backendUrl: 'http://192.168.1.161:8081',
   locationUrl: 'https://location-service-dev.snztech.world',
   API_KEY: 'AIzaSyC2rHKS9XgtjpFkAukMms8AtyTFvJwVLLc',
   placesApiUrl: 'https://maps.googleapis.com/maps/api/place',
-  bidUrl: 'http://13.202.100.198:8084/bidding-service',
+  bidUrl: 'http://3.109.87.202:8084/bidding-service',
+  vehicleUrl: 'http://3.109.87.202:8085/vehicle-service'
 };

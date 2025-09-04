@@ -16,7 +16,7 @@ import { registrationZoneList } from '../models/registration-zone';
 import { registrationCategoryList } from '../models/registration-category';
 import {
   FormBuilder,
-  FormGroup,
+  FormGroup, FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -27,20 +27,28 @@ import { ValidationService } from '../../../../../shared/services/validation/val
 import { HandleToastrService } from '../../../../../shared/services/handle-toastr/handle-toastr.service';
 import { fileUpload } from '../models/file-upload';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import { MatError, MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import {
   MatDatepicker,
   MatDatepickerInput,
-  MatDatepickerToggle,
+  MatDatepickerToggle, MatDateRangeInput, MatDateRangePicker,
 } from '@angular/material/datepicker';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import { TruckFileType, truckFileType } from '../models/truck-file-type';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 import { ImageGalleryComponent } from '../../../../../shared/modules/image-gallery/image-gallery.component';
 import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
+import { MatRadioButton, MatRadioChange, MatRadioGroup } from '@angular/material/radio';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
+import { GiveMaxHeightDirective } from '../../../../../shared/directive/give-max-height.directive';
+import { GetElementHeightDirective } from '../../../../../shared/directive/get-element-height.directive';
+import { TripService } from '../../../../trip-list/services/trip.service';
+import { MatSelect } from '@angular/material/select';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-truck-add',
@@ -63,6 +71,17 @@ import { ImageErrorDirective } from '../../../../../shared/directive/image-error
     MatMenuTrigger,
     FallbackImagePipe,
     ImageErrorDirective,
+    MatRadioGroup,
+    MatRadioButton,
+    FormsModule,
+    MatTabGroup,
+    MatTab,
+    GetElementHeightDirective,
+    GiveMaxHeightDirective,
+    MatSelect,
+    MatOption,
+    MatAutocomplete,
+    MatAutocompleteTrigger,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './truck-add.component.html',
@@ -100,6 +119,26 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
   othersImages: any[] = [];
   selectedFormControlName: any = '';
   maxUploadAble = 0;
+  vehicleTypeList: any = ([] = []);
+  driverSuggestion: any[] = ([] = []);
+  buttonName: any[] = [
+    'Today',
+    'Last 7 Days',
+    'Last 15 Days',
+    'Last 30 Days',
+    'Custom',
+  ];
+  picker: any;
+  event: any;
+  selectedButton: any;
+  startDate: string;
+  endDate: string;
+  customSelected: boolean;
+  dateSelected: boolean;
+  dateText: any;
+  customDateText: any;
+  previousFilterLength: number = 0;
+  filterLength: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -109,7 +148,9 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
     private validation: ValidationService,
     private datePipe: DatePipe,
     private imageGalleryService: ImageGalleryService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private tripService: TripService,
+    private user: UserService
   ) {
     this.truckAddForm = this.fb.group({
       registration_zone: [null, Validators.required],
@@ -195,6 +236,7 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.loading = false;
     this.getPrehireChecklist();
+    this.getVehicleTypeList();
     this.truckAddForm
       .get('registration_serial')
       .valueChanges.subscribe(value => {
@@ -262,6 +304,61 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
         this.everyThingDisabled = true;
       }
     });
+  }
+
+  onClickFilterButton(event: any, picker: any) {
+    this.picker = picker;
+    this.event = event;
+    this.selectedButton = event;
+    if (event === 'Custom') {
+      this.startDate = '';
+      this.endDate = '';
+      this.customSelected = true;
+      this.dateSelected = false;
+      picker.open();
+    } else {
+      this.customSelected = false;
+      this.dateText = event;
+      picker.close();
+      if (event === 'Today') {
+        this.startDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+        this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+        this.dateText = event;
+      } else if (event === 'Last 7 Days') {
+        this.startDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 7)),
+          'yyyy-MM-dd'
+        );
+        // end date should be yesterday
+        this.endDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 1)),
+          'yyyy-MM-dd'
+        );
+        this.dateText = event;
+      } else if (event === 'Last 15 Days') {
+        this.startDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 15)),
+          'yyyy-MM-dd'
+        );
+        // end date should be yesterday
+        this.endDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 1)),
+          'yyyy-MM-dd'
+        );
+        this.dateText = event;
+      } else if (event === 'Last 30 Days') {
+        this.startDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 30)),
+          'yyyy-MM-dd'
+        );
+        // end date should be yesterday
+        this.endDate = this.datePipe.transform(
+          new Date(new Date().setDate(new Date().getDate() - 1)),
+          'yyyy-MM-dd'
+        );
+        this.dateText = event;
+      }
+    }
   }
 
   onClickSave() {
@@ -460,6 +557,8 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
   viewMoreExpiryControlName: string;
 
   pdfSrc = 'assets/Angular.pdf';
+  truckStatus: string = 'Third Party';
+  height: string = '0px';
 
   onFileSelected($event: Event) {
     const input = $event.target as HTMLInputElement;
@@ -796,6 +895,63 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
       document.body.classList.add(className);
     } else {
       document.body.classList.remove(className);
+    }
+  }
+
+  onChangeTruckStatus($event: MatRadioChange) {}
+
+  protected readonly Number = Number;
+  truckType: any;
+
+  getAnotherItemsHeight() {
+    // get number from this.height which is in px
+    return Number(this.height.replace('px', '')) - 32 + 'px';
+  }
+
+  private getVehicleTypeList() {
+    this.tripService.getVehicleTypeList().subscribe((res: any) => {
+      this.vehicleTypeList = res.data;
+    });
+  }
+
+  onChangeTruckType($event: any) {}
+
+  onKeyUpDriverSearch($event: KeyboardEvent) {
+    const value = ($event.target as HTMLInputElement).value;
+    if (value.length > 0) {
+      this.user.getDriver(0, 100, value).subscribe((res: any) => {
+        this.driverSuggestion = res.data.responses;
+      });
+    }
+  }
+
+  onClickDriverSearchSuggestion(option: any) {
+    this.truckAddForm.get('driverCode').setValue(option.userId);
+    this.truckAddForm.get('driverName').setValue(option.name);
+    this.truckAddForm.get('driverPhone').setValue(option.phone);
+  }
+
+  onChangeStartDate($event: Event) {
+    this.startDate = ($event.target as HTMLInputElement).value;
+    this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
+  }
+
+  onChangeEndDate($event: any) {
+    if ($event.target.value) {
+      this.endDate = ($event.target as HTMLInputElement).value;
+      this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
+      this.customDateText = `${this.startDate} - ${this.endDate}`;
+      if (!this.dateSelected) {
+        this.previousFilterLength += 1;
+        this.filterLength += 1;
+      }
+      this.dateSelected = true;
+    } else {
+      this.endDate = '';
+      if (this.dateSelected && this.filterLength > 1) {
+        this.filterLength -= 1;
+        this.previousFilterLength -= 1;
+      }
     }
   }
 }

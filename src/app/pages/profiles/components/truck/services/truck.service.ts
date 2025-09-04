@@ -7,9 +7,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class TruckService {
-  url = `${environment.backendUrl}/api/trucks`;
-  preHireChecklistUrl = `${environment.backendUrl}/api/preHireChecklist`;
-  checklistUrl = `${environment.backendUrl}/api/checklist`;
+  url = `${environment.vehicleUrl}/api/vehicles`;
+  preHireChecklistUrl = `${environment.vehicleUrl}/api/preHireChecklist`;
+  checklistUrl = `${environment.vehicleUrl}/api/checklist`;
 
   constructor(private http: HttpClient) {}
 

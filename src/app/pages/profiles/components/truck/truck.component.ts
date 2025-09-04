@@ -108,6 +108,7 @@ export class TruckComponent implements OnInit {
 
   ngOnInit(): void {
     this.generateDateOptionsArray();
+    this.loading = true;
     this.truckList = [];
     this.getTruckListFromResolvedState();
     this.makeSureUploadCompletedOrNot();
@@ -329,10 +330,10 @@ export class TruckComponent implements OnInit {
     this.getTruckList();
   }
 
-  checkThatFileIsExistOrNot(fileName: any, truckDocumentList: TruckDocument[]) {
+  checkThatFileIsExistOrNot(fileName: any, vehicleDocumentList: TruckDocument[]) {
     let isExist = false;
     let expDate = '';
-    truckDocumentList.forEach(doc => {
+    vehicleDocumentList.forEach(doc => {
       if (doc.documentType == this.truckEnum[fileName]) {
         isExist = true;
         expDate = doc?.expiryDate;

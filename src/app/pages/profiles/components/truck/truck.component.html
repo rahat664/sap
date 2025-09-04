@@ -124,7 +124,7 @@
               class="flex items-center justify-center"
               [style.min-height]="firstColumnHeight">
                 <span>{{
-                    truck.createdOn ? (truck.createdOn | date: 'd MMM yyyy') : ''
+                    truck.createdAt ? (truck.createdAt | date: 'd MMM yyyy') : ''
                   }}</span>
             </div>
           </td>
@@ -145,7 +145,7 @@
                 *ngIf="
                     checkThatFileIsExistOrNot(
                       truckEnum.REG_PAPER_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   "
                 class="fas fa-check text-green"></i>
@@ -154,7 +154,7 @@
                 *ngIf="
                     !checkThatFileIsExistOrNot(
                       truckEnum.REG_PAPER_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   "
                 icon="upload"
@@ -170,20 +170,20 @@
                     'text-red': checkExpiryDate(
                       checkThatFileIsExistOrNot(
                         truckEnum.FITNESS_CERTIFICATE_FILE,
-                        truck.truckDocumentList
+                        truck.vehicleDocumentList
                       ).expDate
                     ),
                   }"
                   *ngIf="
                     checkThatFileIsExistOrNot(
                       truckEnum.FITNESS_CERTIFICATE_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   ">
                   {{
                     checkThatFileIsExistOrNot(
                       truckEnum.FITNESS_CERTIFICATE_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).expDate | date: 'd MMM yyyy'
                   }}
                 </span>
@@ -192,7 +192,7 @@
                 *ngIf="
                     !checkThatFileIsExistOrNot(
                       truckEnum.FITNESS_CERTIFICATE_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   "
                 icon="upload"
@@ -209,20 +209,20 @@
                     'text-red': checkExpiryDate(
                       checkThatFileIsExistOrNot(
                         truckEnum.ROUTE_PERMIT_FILE,
-                        truck.truckDocumentList
+                        truck.vehicleDocumentList
                       ).expDate
                     ),
                   }"
                   *ngIf="
                     checkThatFileIsExistOrNot(
                       truckEnum.ROUTE_PERMIT_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   ">
                   {{
                     checkThatFileIsExistOrNot(
                       truckEnum.ROUTE_PERMIT_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).expDate | date: 'd MMM yyyy'
                   }}
                 </span>
@@ -231,7 +231,7 @@
                 *ngIf="
                     !checkThatFileIsExistOrNot(
                       truckEnum.ROUTE_PERMIT_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   "
                 icon="upload"
@@ -248,20 +248,20 @@
                     'text-red': checkExpiryDate(
                       checkThatFileIsExistOrNot(
                         truckEnum.CASE_FILE,
-                        truck.truckDocumentList
+                        truck.vehicleDocumentList
                       ).expDate
                     ),
                   }"
                   *ngIf="
                     checkThatFileIsExistOrNot(
                       truckEnum.CASE_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   ">
                   {{
                     checkThatFileIsExistOrNot(
                       truckEnum.CASE_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).expDate | date: 'd MMM yyyy'
                   }}
                 </span>
@@ -270,7 +270,7 @@
                 *ngIf="
                     !checkThatFileIsExistOrNot(
                       truckEnum.CASE_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   "
                 icon="upload"
@@ -287,20 +287,20 @@
                     'text-red': checkExpiryDate(
                       checkThatFileIsExistOrNot(
                         truckEnum.TAX_FILE,
-                        truck.truckDocumentList
+                        truck.vehicleDocumentList
                       ).expDate
                     ),
                   }"
                   *ngIf="
                     checkThatFileIsExistOrNot(
                       truckEnum.TAX_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   ">
                   {{
                     checkThatFileIsExistOrNot(
                       truckEnum.TAX_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).expDate | date: 'd MMM yyyy'
                   }}
                 </span>
@@ -309,7 +309,7 @@
                 *ngIf="
                     !checkThatFileIsExistOrNot(
                       truckEnum.TAX_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   "
                 icon="upload"
@@ -326,20 +326,20 @@
                     'text-red': checkExpiryDate(
                       checkThatFileIsExistOrNot(
                         truckEnum.INSURANCE_FILE,
-                        truck.truckDocumentList
+                        truck.vehicleDocumentList
                       ).expDate
                     ),
                   }"
                   *ngIf="
                     checkThatFileIsExistOrNot(
                       truckEnum.INSURANCE_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   ">
                   {{
                     checkThatFileIsExistOrNot(
                       truckEnum.INSURANCE_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).expDate | date: 'd MMM yyyy'
                   }}</span
                 >
@@ -348,7 +348,7 @@
                 *ngIf="
                     !checkThatFileIsExistOrNot(
                       truckEnum.INSURANCE_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   "
                 icon="upload"
@@ -364,7 +364,7 @@
                 *ngIf="
                     checkThatFileIsExistOrNot(
                       truckEnum.OTHER_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   "
                 class="fas fa-check text-green"></i>
@@ -373,7 +373,7 @@
                 *ngIf="
                     !checkThatFileIsExistOrNot(
                       truckEnum.OTHER_FILE,
-                      truck.truckDocumentList
+                      truck.vehicleDocumentList
                     ).isExist
                   "
                 icon="upload"

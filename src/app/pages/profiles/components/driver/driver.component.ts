@@ -420,10 +420,10 @@ export class DriverComponent implements OnInit {
 
   protected readonly driverEnum = DriverDocumentType;
 
-  checkThatFileIsExistOrNot(fileName: any, truckDocumentList: any[]) {
+  checkThatFileIsExistOrNot(fileName: any, vehicleDocumentList: any[]) {
     let isExist = false;
     let expDate = '';
-    truckDocumentList?.forEach(doc => {
+    vehicleDocumentList?.forEach(doc => {
       if (doc.documentType == this.driverEnum[fileName]) {
         isExist = true;
         expDate = doc?.expiryDate;

@@ -66,7 +66,6 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
   @Input() selectedMonth: any = '';
   @Input() numberOfTrips = [];
   private defaultContainerWidth: number = 0;
-  chartContainerWidth: number;
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -86,7 +85,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
           series: this.seriesData,
           chart: {
             height: 350,
-            width: this.chartContainerWidth,
+            width: this.categories.length * 100,
             type: 'line',
             zoom: {
               enabled: false,
@@ -348,8 +347,6 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
     const chartContainerWidth =
       requiredWidth > chartWidth ? requiredWidth : chartWidth;
     chartContainer.style.width = `${chartContainerWidth}px`;
-    // store chartContainerWidth in a variable with px unit
-    this.chartContainerWidth = chartContainerWidth
 
     // Append custom x-axis below the chart
     // Set the width of the custom x-axis

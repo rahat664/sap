@@ -67,8 +67,7 @@ export class TripService {
     truckRegId?: string,
     transporterNameOrPhone?: string,
     paymentType?: string,
-    tripType?: string,
-    transporterCodes?: string
+    tripType?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -120,8 +119,6 @@ export class TripService {
       params = params.set('paymentType', paymentType);
     } if (tripType) {
       params = params.set('tripType', tripType);
-    } if (transporterCodes) {
-      params = params.set('transporterCodes', transporterCodes);
     }
 
     return this.http.get(`${this.url}`, { params });
@@ -289,8 +286,7 @@ export class TripService {
     transporterNameOrPhone?: string,
     transporterPaymentStatus?: string,
     loadingDistrict?: string,
-    unloadingDistrict?: string,
-    transporterCodes?: string
+    unloadingDistrict?: string
   ) {
     let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
 
@@ -318,9 +314,6 @@ export class TripService {
       params = params.set('loadingDistrict', loadingDistrict);
     } if (unloadingDistrict) {
       params = params.set('unloadingDistrict', unloadingDistrict);
-    }
-    if (transporterCodes) {
-      params = params.set('transporterCodes', transporterCodes);
     }
     return this.http.get(`${this.transporterPaymentUrl}`, { params });
   }

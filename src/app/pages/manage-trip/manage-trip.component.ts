@@ -1,55 +1,73 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { TripCardComponent } from '../../shared/modules/trip-card/trip-card.component';
 import { GMapComponent } from '../../shared/modules/g-map/g-map.component';
 import { TripService } from '../trip-list/services/trip.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Trip, Truck } from '../auth/models/response/trip';
 import { MapButtonsComponent } from './components/map-buttons/map-buttons.component';
 import { statusButtons } from '../trip-list/models/status-buttons';
+import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { ToggleResponsiveService } from '../../shared/services/toggle-responsive-services/toggle-responsive.service';
 import { TripDetailsComponent } from './components/trip-details/trip-details.component';
 import { finalize } from 'rxjs/operators';
 import { TripData, TripPoint } from './model/trip.details.model';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import {
+  MatDatepickerModule,
+  MatDatepickerToggle,
+  MatDateRangeInput,
+  MatDateRangePicker,
+} from '@angular/material/datepicker';
+import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatInput } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomerService } from '../profiles/services/customer.service';
+import { MatSelect } from '@angular/material/select';
 import { CustomerModel } from '../profiles/components/customer/model/customer.model';
-import { debounceTime, Subject, distinctUntilChanged, takeUntil } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
-import { DATE_PRESET_BUTTONS, PAYMENT_TYPE_OPTIONS, TRIP_TYPE_OPTIONS } from './manage-trip.config';
+import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
+import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
 import {ActivatedRoute} from "@angular/router";
 import { PermissionService } from '../../shared/services/permission.service';
-import { UserService } from '../profiles/services/user.service';
-import { Transporter } from '../profiles/components/transporter/models/transporter-details.model';
-import { TripListViewComponent } from './components/trip-list-view/trip-list-view.component';
-import { TripSearchBarComponent } from './components/trip-search-bar/trip-search-bar.component';
-import { StatusChipsCarouselComponent } from './components/status-chips-carousel/status-chips-carousel.component';
-import { FilterChipsSummaryComponent } from './components/filter-chips-summary/filter-chips-summary.component';
-import { ManageTripFiltersComponent } from './components/manage-trip-filters/manage-trip-filters.component';
-import { MobileTripDetailsComponent } from './components/mobile-trip-details/mobile-trip-details.component';
 
 @Component({
   selector: 'app-manage-trip',
   imports: [
+    TripCardComponent,
     GMapComponent,
     CommonModule,
     MapButtonsComponent,
+    GiveMaxHeightDirective,
     GetElementHeightDirective,
     TripDetailsComponent,
-    TripListViewComponent,
-    TripSearchBarComponent,
-    StatusChipsCarouselComponent,
-    FilterChipsSummaryComponent,
-    ManageTripFiltersComponent,
-    MobileTripDetailsComponent
+    MatFormField,
+    MatDateRangeInput,
+    MatDatepickerToggle,
+    MatDateRangePicker,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatAutocomplete,
+    MatAutocompleteTrigger,
+    MatInput,
+    MatOption,
+    ReactiveFormsModule,
+    MatSelect,
+    FormsModule,
+    ButtonChipsComponent,
+    ScrollByButtonDirective,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
   styleUrls: ['./manage-trip.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ManageTripComponent implements OnInit, OnDestroy {
+export class ManageTripComponent implements OnInit {
   searchSubject = new Subject<string>();
-  private destroyed$ = new Subject<void>();
   rightButtonClicked = false;
   leftButtonClicked = false;
   scrollable = true;
@@ -84,7 +102,13 @@ export class ManageTripComponent implements OnInit, OnDestroy {
   height: any;
   customerSelected: boolean;
   dateSelected: boolean;
-  buttonName: any[] = DATE_PRESET_BUTTONS;
+  buttonName: any[] = [
+    'Today',
+    'Last 7 Days',
+    'Last 15 Days',
+    'Last 30 Days',
+    'Custom',
+  ];
   customers: CustomerModel[] = [];
   selectedButton: any;
   filterHeight: any;
@@ -102,18 +126,30 @@ export class ManageTripComponent implements OnInit, OnDestroy {
   paymentTypePlaceholder: string = '';
   paymentTypeValue: any[] = [];
   paymentFilter: number = 0;
-  paymentTypeOptionsArray: CustomInputSelectModel[] = PAYMENT_TYPE_OPTIONS as any;
+  paymentTypeOptionsArray: CustomInputSelectModel[] = [
+    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
+    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
+    {
+      id: 3,
+      value: 'CASH_AND_INVOICE',
+      selected: false,
+      showname: 'Cash & Invoice',
+    },
+    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
+  ];
   tripTypeFilter: number = 0;
   tripTypePlaceholder: string = '';
-  tripTypeOptionsArray: CustomInputSelectModel[] = TRIP_TYPE_OPTIONS as any;
+  tripTypeOptionsArray: CustomInputSelectModel[] = [
+    { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
+    {
+      id: 2,
+      value: 'COMMERCIAL',
+      selected: false,
+      showname: 'Commercial Logistics',
+    },
+  ];
   tripTypeValue: any[] = [];
   mobileDeviceDetails: boolean = false;
-  transporterName: string = '';
-  transporterSuggestions: any[] = [];
-  transporters: any[] = [];
-  transporterCodes: string[] = [];
-  transporterNames: string[] = [];
-  transporterSelected: boolean;
 
   constructor(
     private tripService: TripService,
@@ -121,13 +157,9 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     private customer: CustomerService,
     private datePipe: DatePipe,
     private activatedRoute: ActivatedRoute,
-    private permissionService: PermissionService,
-    private transporter: UserService,
-    private cdr: ChangeDetectorRef
+    private permissionService: PermissionService
   ) {
-    this.searchSubject
-      .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroyed$))
-      .subscribe(searchText => {
+    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       if (searchText) {
         this.performSearch(searchText);
       } else {
@@ -146,7 +178,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.dateSelected = false;
     this.customerSelected = false;
-    this.transporterSelected = false
     this.triggerFromParentName = 'All';
     this.isTriggerFromParent = false;
     if (localStorage.getItem('fromTripListTripId')) {
@@ -160,14 +191,14 @@ export class ManageTripComponent implements OnInit, OnDestroy {
       localStorage.removeItem('fromTripListTruckRegistrationNumber');
     }
 
-    this.tripService.anotherStatusCalled.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+    this.tripService.anotherStatusCalled.subscribe(value => {
       this.anotherStatusCalled = value;
     });
 
     this.getTripListFromResolvedState();
     this.getVehicleTypeList();
     localStorage.removeItem('tripId');
-    this.tripService.reloadManageTripPage.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+    this.tripService.reloadManageTripPage.subscribe(value => {
       if (value) {
         this.page = 0;
         this.size = 30;
@@ -183,12 +214,8 @@ export class ManageTripComponent implements OnInit, OnDestroy {
         this.truckType = '';
         this.customerCodes = [];
         this.customerNames = [];
-        this.transporterNames = []
-        this.transporterCodes = []
-        this.transporters = []
         this.customers = [];
         this.customerSelected = false;
-        this.transporterSelected = false
         this.filterLength = 0;
         this.previousFilterLength = 0;
         this.filterHeight = '0px';
@@ -196,11 +223,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
         this.getTripList();
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 
   private getTripList() {
@@ -223,18 +245,15 @@ export class ManageTripComponent implements OnInit, OnDestroy {
         null,
         null,
         this.paymentTypeValue?.toString(),
-        this.tripTypeValue?.toString(),
-        this.transporterCodes.toString(),
+        this.tripTypeValue?.toString()
       )
-      .pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); }))
+      .pipe(finalize(() => (this.loading = false)))
       .subscribe(
         (trip: any) => {
           this.updateTripList(trip);
-          this.cdr.markForCheck();
         },
         error => {
           this.loading = false;
-          this.cdr.markForCheck();
         }
       );
   }
@@ -242,11 +261,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
   onKeyUpSearch(event: KeyboardEvent) {
     this.searchSubject.next((event.target as HTMLInputElement).value);
   }
-
-  onSearchInput(value: string) {
-    this.searchSubject.next(value ?? '');
-  }
-
 
   getTruckRegistrationNumber(truck: Truck) {
     if (truck) {
@@ -262,9 +276,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     status: string,
     truckSizeInFeet: string
   ) {
-    if (this.activatedId === tripId) {
-      return;
-    }
     if (localStorage.getItem('expanded')) {
       localStorage.setItem('expanded', 'false');
     }
@@ -286,18 +297,18 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     this.tripStatusFilter(event.name ? event.name : event);
   }
 
-  onClickFilterButton(event: any, picker?: any) {
+  onClickFilterButton(event: any, picker: any) {
     this.selectedButton = event;
     if (event === 'Custom') {
       this.startDate = '';
       this.endDate = '';
       this.customSelected = true;
       this.dateSelected = false;
-      if (picker && picker.open) { picker.open(); }
+      picker.open();
     } else {
       this.customSelected = false;
       this.dateText = event;
-      if (picker && picker.close) { picker.close(); }
+      picker.close();
       if (event === 'Today') {
         this.startDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
         this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
@@ -356,12 +367,11 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     if (this.page === 0) {
       this.tripList = trip.data.responses;
       this.activatedId = this.tripList[0].tripId;
-      this.getTruckTrackers(this.tripList[0].truck?.fullRegistrationNumber);
       this.getTripDetails(this.tripList[0].tripId);
       this.tripStatus = this.tripList[0].status;
       this.activatedTruckSizeInFeet = Number(this.tripList[0].truckSize);
     } else {
-      this.tripList = [...this.tripList, ...trip.data.responses];
+      this.tripList.push(...trip.data.responses);
     }
   }
 
@@ -380,6 +390,10 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     }
   }
 
+  onclickSideBarClose() {
+    this.sidebarClosed = !this.sidebarClosed;
+    this.toggleMobileViewService.isSidebarOpen.next(this.sidebarClosed);
+  }
 
   private getTripDetails(tripId: string) {
     localStorage.setItem('tripId', tripId);
@@ -434,37 +448,12 @@ export class ManageTripComponent implements OnInit, OnDestroy {
       this.companySuggestions = [];
     }
   }
-  onKeyUpTransporterSearch($event: KeyboardEvent) {
-    this.transporterSuggestions = [];
-    const target = $event.target as HTMLInputElement;
-    if (target.value.length > 0) {
-      this.transporter
-        .getTransporter(0, 100, target.value)
-        .subscribe((transporter: any) => {
-          this.transporterSuggestions = transporter.data;
-          if (this.transporterSuggestions.length === 0) {
-            this.transporterSuggestions.push('No transporter found');
-          }
-        });
-    } else {
-      this.transporterSuggestions = [];
-    }
-  }
 
   onClickCustomerSearchSuggestion(option: CustomerModel) {
     this.customers.push(option);
     this.customerCodes.push(option.customerCode);
     this.customerNames.push(option.name);
     this.customerName = '';
-    this.filterLength += 1;
-    this.previousFilterLength += 1;
-  }
-
-  onClickTransporterSearchSuggestion(option: Transporter) {
-    this.transporters.push(option);
-    this.transporterCodes.push(option.code);
-    this.transporterNames.push(option.name);
-    this.transporterName = '';
     this.filterLength += 1;
     this.previousFilterLength += 1;
   }
@@ -482,28 +471,14 @@ export class ManageTripComponent implements OnInit, OnDestroy {
       (value: any) => value.id !== customer.id
     );
   }
-  onClickCloseTransporter(transporter: Transporter) {
-    this.filterLength -= 1;
-    this.previousFilterLength -= 1;
-    this.transporterCodes = this.transporterCodes.filter(
-      (value: any) => value !== transporter.code
-    );
-    this.customerNames = this.customerNames.filter(
-      (value: any) => value !== transporter.name
-    );
-    this.customers = this.customers.filter(
-      (value: any) => value.id !== transporter.id
-    );
-  }
 
   private getVehicleTypeList() {
-    this.tripService.getVehicleTypeList().pipe(takeUntil(this.destroyed$)).subscribe((res: any) => {
+    this.tripService.getVehicleTypeList().subscribe((res: any) => {
       this.vehicleTypeList = res.data;
-      this.cdr.markForCheck();
     });
   }
 
-  onChangeStartDate($event: any) {
+  onChangeStartDate($event: Event) {
     this.startDate = ($event.target as HTMLInputElement).value;
     this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
   }
@@ -549,11 +524,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     if (this.customerNames.length > 0) {
       this.customerNames.forEach((element: any) => {
         this.filterValues.push(element);
-      });
-    }
-    if (this.transporterNames.length > 0) {
-      this.transporterNames.forEach((element: any) => {
-        this.filterValues.push(`tr_${element}`);
       });
     }
     if (this.dateSelected) {
@@ -604,9 +574,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     this.customSelected = false;
     this.customerCodes = [];
     this.customerNames = [];
-    this.transporterCodes = [];
-    this.transporters = [];
-    this.transporterNames = [];
     this.customers = [];
     this.paymentTypeValue = [];
     this.paymentFilter = 0;
@@ -701,25 +668,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     this.filterValues = this.filterValues.filter(
       (value: any) => value !== filter
     );
-    if (this.transporterNames.includes(filter)) {
-      const transporterCode = this.transporters.find(
-        (element: any) => element.name === filter
-      ).code;
-      this.transporters = this.transporters.filter(
-        (value: any) => value.name !== filter
-      );
-      // find customer code from customer
-
-      this.transporterCodes = this.transporterCodes.filter(
-        (value: any) => value !== transporterCode
-      );
-      this.transporterNames = this.transporterNames.filter(
-        (value: any) => value !== filter
-      );
-      this.transporterSelected = false;
-      this.customerCode = '';
-      this.previousFilterLength -= 1;
-    }
     if (this.customerNames.includes(filter)) {
       const customerCode = this.customers.find(
         (element: any) => element.name === filter
@@ -793,9 +741,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
   onClickFilterOpen() {
     this.truckType = [];
     this.customers = [];
-    this.transporters = [];
-    this.transporterCodes=[]
-    this.transporterNames=[]
     this.selectedButton = '';
     this.startDate = '';
     this.endDate = '';
@@ -881,18 +826,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
           const dates = element.split(' - ');
           this.startDate = dates[0];
           this.endDate = dates[1];
-        } else if (element.includes('tr_')) {
-          const transporterName = element.split('tr_')[1];
-          this.transporter
-            .getTransporter(0, 1000, transporterName)
-            .subscribe((res: any) => {
-              if (res.data.length > 0) {
-                this.transporters.push(res.data[0]);
-                this.transporterCodes.push(res.data[0].code);
-                this.transporterNames.push(res.data[0].name);
-                this.transporterSelected = true;
-              }
-            });
         } else {
           this.customer.searchCustomer(0, 1000, element, null).subscribe(
             (res: any) => {
@@ -916,7 +849,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
       this.customerCodes = [];
       this.customers = [];
       this.customerSelected = false;
-      this.transporterSelected = false;
       this.filterLength = 0;
       this.previousFilterLength = 0;
       this.tripTypeValue = [];
@@ -994,13 +926,12 @@ export class ManageTripComponent implements OnInit, OnDestroy {
   }
 
   private getTripListFromResolvedState() {
-    this.activatedRoute.data.pipe(takeUntil(this.destroyed$)).subscribe((data: { tripList: any }) => {
+    this.activatedRoute.data.subscribe((data: { tripList: any }) => {
       this.loading = false;
       this.page = 0;
       this.size = 30;
       const trip = data.tripList.data
       this.updateTripList(trip)
-      this.cdr.markForCheck();
     })
   }
 

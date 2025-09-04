@@ -10,16 +10,25 @@ import { TruckService } from '../services/truck.service';
 import { PreHireChecklistModel } from '../models/pre-hire-checklist.model';
 import { NgForOf, NgIf } from '@angular/common';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { GetElementHeightDirective } from '../../../../../shared/directive/get-element-height.directive';
+import { GiveMaxHeightDirective } from '../../../../../shared/directive/give-max-height.directive';
 
 @Component({
   selector: 'app-pre-hire-checklist',
-  imports: [MatRadioButton, MatRadioGroup, NgForOf],
+  imports: [
+    MatRadioButton,
+    MatRadioGroup,
+    NgForOf,
+    GetElementHeightDirective,
+    GiveMaxHeightDirective,
+  ],
   templateUrl: './pre-hire-checklist.component.html',
   styleUrl: './pre-hire-checklist.component.scss',
 })
 export class PreHireChecklistComponent implements OnInit, OnChanges {
   @Input() singleTruckId: number;
   @Input() saveButtonEnabled = false;
+  @Input() heightFromParentMenu = '0px';
   preHireCheckList: PreHireChecklistModel[] = [];
   @Output() preHireCheckListObject = new EventEmitter<any>();
   @Input() isDisabled = false;
@@ -29,6 +38,7 @@ export class PreHireChecklistComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(simpleChanges: any) {
+    console.log(this.heightFromParentMenu);
     if (simpleChanges.object?.currentValue) {
       this.setPreHireCheckList();
     } else if (
@@ -95,6 +105,8 @@ export class PreHireChecklistComponent implements OnInit, OnChanges {
   @Input() object!: any;
   shareObject: any = {};
   @Input() passedCheckList = '0';
+  firstItemHeight: string = '0px';
+  tableHeaderHeight: string = '0px';
 
   getChecklistPosition(i: number, j: number) {
     if (i == 0) {
@@ -141,5 +153,21 @@ export class PreHireChecklistComponent implements OnInit, OnChanges {
         });
       }
     });
+  }
+
+  calculateOtherItemsHeight() {
+    // calculate height of firstItemHeight and tableHeaderHeight and parent height be sure to remove px from string
+    const parentHeight = parseInt(this.heightFromParentMenu.replace('px', ''));
+    const firstItemHeight = parseInt(this.firstItemHeight.replace('px', ''));
+    const tableHeaderHeight = parseInt(
+      this.tableHeaderHeight.replace('px', '')
+    );
+    console.log(
+      firstItemHeight,
+      this.firstItemHeight,
+      tableHeaderHeight,
+      parentHeight
+    );
+    return parentHeight + firstItemHeight + tableHeaderHeight + 100 + 'px';
   }
 }

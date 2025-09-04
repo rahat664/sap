@@ -525,6 +525,7 @@ export class VehicleTrackingComponent implements OnInit {
 
   private getTruckListFromResolver() {
     this.activatedRoute.data.subscribe((data: any) => {
+      console.log(data)
       const truck = data.vehicleTracking.data
       this.allTruckList = truck.data.responses;
       this.trackerEnabledTrucks = truck.data.responses;

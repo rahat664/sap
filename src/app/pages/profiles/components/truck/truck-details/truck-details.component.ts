@@ -573,7 +573,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
             if (res && res.data) {
               const truck: TruckModel = res.data;
               this.truckDetails = truck;
-              this.documents = truck.truckDocumentList;
+              this.documents = truck.vehicleDocumentList;
               // split the document by type
               this.splitDoucumentsByType(this.documents);
               this.updateFormValues(truck);

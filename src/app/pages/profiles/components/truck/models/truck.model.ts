@@ -37,8 +37,8 @@ export interface TruckModel {
   caseExpDate: string | null; // Can be null
   createdBy: string;
   updatedBy: string;
-  createdOn: string; // Date format as string
-  updatedOn: string; // Date format as string
+  createdAt: string; // Date format as string
+  updatedAt: string; // Date format as string
   preHireCheckList: number;
   noOfTrips: number;
   condition: string;
@@ -46,8 +46,24 @@ export interface TruckModel {
   lastRecordedLng: number;
   currentSpeed: number;
   status: string;
-  truckDocumentList: TruckDocument[];
+  vehicleDocumentList: TruckDocument[];
   createdByUser: CreatedByUser;
+  year: string,
+  maker: string,
+  model: string,
+  purchaseDate: string,
+  purchaseFrom: string,
+  yard: string,
+  engine: string,
+  chassisNumber: string,
+  engineType: string,
+  displacement: string,
+  enginePower: string,
+  size: string,
+  fuelCapacity: string,
+  tyre: string,
+  wheelBase: string,
+  weightInTon: string,
 }
 
 export interface CreatedByUser {

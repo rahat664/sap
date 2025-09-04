@@ -245,6 +245,18 @@ export const routes: Routes = [
     }
   },
   {
+    path: 'vehicle-management',
+    title: 'Vehicle Management',
+    loadComponent: () =>
+      import('./pages/vehicle-management/vehicle-management.component').then(
+        c => c.VehicleManagementComponent
+      ),
+    canActivate: [authGuard],
+    resolve: {
+      truck: truckResolver,
+    },
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',

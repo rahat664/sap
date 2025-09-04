@@ -95,15 +95,14 @@ export class TransporterComponent implements OnInit {
       this.page++;
       if (this.searchValue) {
         this.service
-          .getTransporter(this.page, this.size, this.searchValue, this.from, this.to, this.truckStands.toString()
-          )
+          .getTransporter(this.page, this.size, this.searchValue, this.from, this.to)
           .pipe(debounceTime(1000))
           .subscribe((res: any) => {
             this.transporterList.push(...res.data);
           });
       } else {
         this.service
-          .getTransporter(this.page, this.size, null, this.from, this.to,this.truckStands.toString())
+          .getTransporter(this.page, this.size, null, this.from, this.to)
           .subscribe((res: any) => {
             this.transporterList.push(...res.data);
           });
