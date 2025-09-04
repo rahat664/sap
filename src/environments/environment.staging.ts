@@ -8,5 +8,5 @@ export const environment = {
   API_KEY: 'AIzaSyC2rHKS9XgtjpFkAukMms8AtyTFvJwVLLc',
   placesApiUrl: 'https://maps.googleapis.com/maps/api/place',
   bidUrl: 'https://bidding-service-staging.snztech.world/bidding-service',
-  vehicleUrl: 'http://3.109.87.202:8085/vehicle-service'
+  vehicleUrl: 'http://13.202.100.198:8085/vehicle-service'
 };
