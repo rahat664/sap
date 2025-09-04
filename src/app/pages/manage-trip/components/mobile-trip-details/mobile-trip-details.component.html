@@ -1,0 +1,34 @@
+<div class="md:hidden w-full h-[calc(100vh-4.5rem)] flex-1 relative">
+  <button
+    (click)="back.emit()"
+    class="absolute top-3 right-14 z-10 bg-white  flex space-x-2 items-center px-4 py-2 shadow-md">
+    <i class="fas fa-arrow-left text-primary"></i>
+    <span class="">Back to list</span>
+  </button>
+  <app-g-map
+    [singleTripData]="singleTripDetails"
+    [truckSizeInFeet]="activatedTruckSizeInFeet"
+    (clearInput)="clearInput.emit($event)"
+    [truckFullRegistrationNumber]="truckRegistrationNumbers"
+    [truckLocationPosition]="truckLocationPosition"
+    [trackerEnabled]="truckerEnabled"
+    [starting]="startingPosition"
+    [destination]="destinationPosition"
+    [tripStatus]="tripStatus"></app-g-map>
+  <app-map-buttons
+    [isButtonDisabled]="loading"
+    [triggeredButtonName]="triggerFromParentName"
+    [triggerFromParent]="isTriggerFromParent"
+    [statusButtons]="statusButtons"
+    (buttonClickEmitter)="buttonClickEmitter.emit($event)"
+    class="hidden md:block absolute top-0 right-1/2 transform translate-x-1/2">
+  </app-map-buttons>
+  <app-trip-details
+    appGetElementHeight
+    (height)="height.emit($event)"
+    (foldUnfoldChange)="foldUnfoldChange.emit($event)"
+    *ngIf="singleTripDetails"
+    [tripDetails]="singleTripDetails"
+    class="absolute bottom-0 w-full slide-top"></app-trip-details>
+</div>
+

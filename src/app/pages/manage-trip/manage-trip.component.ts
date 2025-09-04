@@ -1,38 +1,21 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { TripCardComponent } from '../../shared/modules/trip-card/trip-card.component';
 import { GMapComponent } from '../../shared/modules/g-map/g-map.component';
 import { TripService } from '../trip-list/services/trip.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Trip, Truck } from '../auth/models/response/trip';
 import { MapButtonsComponent } from './components/map-buttons/map-buttons.component';
 import { statusButtons } from '../trip-list/models/status-buttons';
-import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { ToggleResponsiveService } from '../../shared/services/toggle-responsive-services/toggle-responsive.service';
 import { TripDetailsComponent } from './components/trip-details/trip-details.component';
 import { finalize } from 'rxjs/operators';
 import { TripData, TripPoint } from './model/trip.details.model';
-import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
-import {
-  MatDatepickerModule,
-  MatDatepickerToggle,
-  MatDateRangeInput,
-  MatDateRangePicker,
-} from '@angular/material/datepicker';
-import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
-import {
-  MatAutocomplete,
-  MatAutocompleteTrigger,
-} from '@angular/material/autocomplete';
-import { MatInput } from '@angular/material/input';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { CustomerService } from '../profiles/services/customer.service';
-import { MatSelect } from '@angular/material/select';
 import { CustomerModel } from '../profiles/components/customer/model/customer.model';
 import { debounceTime, Subject, distinctUntilChanged, takeUntil } from 'rxjs';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
-import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-chips.component';
-import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
+import { DATE_PRESET_BUTTONS, PAYMENT_TYPE_OPTIONS, TRIP_TYPE_OPTIONS } from './manage-trip.config';
 import {ActivatedRoute} from "@angular/router";
 import { PermissionService } from '../../shared/services/permission.service';
 import { UserService } from '../profiles/services/user.service';
@@ -42,6 +25,7 @@ import { TripSearchBarComponent } from './components/trip-search-bar/trip-search
 import { StatusChipsCarouselComponent } from './components/status-chips-carousel/status-chips-carousel.component';
 import { FilterChipsSummaryComponent } from './components/filter-chips-summary/filter-chips-summary.component';
 import { ManageTripFiltersComponent } from './components/manage-trip-filters/manage-trip-filters.component';
+import { MobileTripDetailsComponent } from './components/mobile-trip-details/mobile-trip-details.component';
 
 @Component({
   selector: 'app-manage-trip',
@@ -56,19 +40,7 @@ import { ManageTripFiltersComponent } from './components/manage-trip-filters/man
     StatusChipsCarouselComponent,
     FilterChipsSummaryComponent,
     ManageTripFiltersComponent,
-    MatFormField,
-    MatDateRangeInput,
-    MatDatepickerToggle,
-    MatDateRangePicker,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
-    MatInput,
-    MatOption,
-    ReactiveFormsModule,
-    MatSelect,
-    FormsModule
+    MobileTripDetailsComponent
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './manage-trip.component.html',
@@ -112,13 +84,7 @@ export class ManageTripComponent implements OnInit, OnDestroy {
   height: any;
   customerSelected: boolean;
   dateSelected: boolean;
-  buttonName: any[] = [
-    'Today',
-    'Last 7 Days',
-    'Last 15 Days',
-    'Last 30 Days',
-    'Custom',
-  ];
+  buttonName: any[] = DATE_PRESET_BUTTONS;
   customers: CustomerModel[] = [];
   selectedButton: any;
   filterHeight: any;
@@ -136,28 +102,10 @@ export class ManageTripComponent implements OnInit, OnDestroy {
   paymentTypePlaceholder: string = '';
   paymentTypeValue: any[] = [];
   paymentFilter: number = 0;
-  paymentTypeOptionsArray: CustomInputSelectModel[] = [
-    { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
-    { id: 2, value: 'INVOICE', selected: false, showname: 'Invoice' },
-    {
-      id: 3,
-      value: 'CASH_AND_INVOICE',
-      selected: false,
-      showname: 'Cash & Invoice',
-    },
-    { id: 4, value: 'COMMISSION', selected: false, showname: 'Commission' },
-  ];
+  paymentTypeOptionsArray: CustomInputSelectModel[] = PAYMENT_TYPE_OPTIONS as any;
   tripTypeFilter: number = 0;
   tripTypePlaceholder: string = '';
-  tripTypeOptionsArray: CustomInputSelectModel[] = [
-    { id: 1, value: 'PROJECT', selected: false, showname: 'Project Logistics' },
-    {
-      id: 2,
-      value: 'COMMERCIAL',
-      selected: false,
-      showname: 'Commercial Logistics',
-    },
-  ];
+  tripTypeOptionsArray: CustomInputSelectModel[] = TRIP_TYPE_OPTIONS as any;
   tripTypeValue: any[] = [];
   mobileDeviceDetails: boolean = false;
   transporterName: string = '';
@@ -299,13 +247,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     this.searchSubject.next(value ?? '');
   }
 
-  trackByTripId(index: number, trip: Trip) {
-    return trip?.tripId ?? index;
-  }
-
-  trackByStatusName(index: number, item: { name: string }) {
-    return item?.name ?? index;
-  }
 
   getTruckRegistrationNumber(truck: Truck) {
     if (truck) {
@@ -439,10 +380,6 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     }
   }
 
-  onclickSideBarClose() {
-    this.sidebarClosed = !this.sidebarClosed;
-    this.toggleMobileViewService.isSidebarOpen.next(this.sidebarClosed);
-  }
 
   private getTripDetails(tripId: string) {
     localStorage.setItem('tripId', tripId);
