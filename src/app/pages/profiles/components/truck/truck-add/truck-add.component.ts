@@ -153,9 +153,9 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
     private user: UserService
   ) {
     this.truckAddForm = this.fb.group({
-      registration_zone: [null, Validators.required],
-      registration_category: [null, Validators.required],
-      registration_serial: [
+      registrationZone: [null, Validators.required],
+      registrationCategory: [null, Validators.required],
+      registrationSerial: [
         null,
         [
           Validators.required,
@@ -164,7 +164,7 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
           Validators.pattern('^[0-9]*$'),
         ],
       ],
-      registration_num: [
+      registrationNum: [
         null,
         [
           Validators.required,
@@ -208,7 +208,7 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
     });
     this.registrationZoneOpened = false;
     this.truckAddForm.patchValue({
-      registration_zone: this.registrationZonePlaceholder,
+      registrationZone: this.registrationZonePlaceholder,
     });
   }
 
@@ -229,7 +229,7 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
     });
     this.registrationOpenedType = false;
     this.truckAddForm.patchValue({
-      registration_category: this.registrationInput,
+      registrationCategory: this.registrationInput,
     });
   }
 
@@ -238,28 +238,28 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
     this.getPrehireChecklist();
     this.getVehicleTypeList();
     this.truckAddForm
-      .get('registration_serial')
+      .get('registrationSerial')
       .valueChanges.subscribe(value => {
         this.numberOnly(value);
         this.registrationSerialErrorMessage =
           this.validation.getRegistrationSerialValidation(
-            this.truckAddForm.get('registration_serial')
+            this.truckAddForm.get('registrationSerial')
           );
       });
-    this.truckAddForm.get('registration_num').valueChanges.subscribe(value => {
+    this.truckAddForm.get('registrationNum').valueChanges.subscribe(value => {
       this.numberOnly(value);
       this.registrationNumErrorMessage =
         this.validation.getRegistrationNoValidation(
-          this.truckAddForm.get('registration_num')
+          this.truckAddForm.get('registrationNum')
         );
     });
     // only listen to registration zone, registration category, registration serial and registration number
-    this.truckAddForm.get('registration_zone')?.valueChanges.subscribe(() => {
+    this.truckAddForm.get('registrationZone')?.valueChanges.subscribe(() => {
       if (
-        this.truckAddForm.get('registration_num')?.valid &&
-        this.truckAddForm.get('registration_serial')?.valid &&
-        this.truckAddForm.get('registration_category')?.valid &&
-        this.truckAddForm.get('registration_zone')?.valid
+        this.truckAddForm.get('registrationNum')?.valid &&
+        this.truckAddForm.get('registrationSerial')?.valid &&
+        this.truckAddForm.get('registrationCategory')?.valid &&
+        this.truckAddForm.get('registrationZone')?.valid
       ) {
         this.validateTruckInformation();
       } else {
@@ -267,37 +267,37 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
       }
     });
     this.truckAddForm
-      .get('registration_category')
+      .get('registrationCategory')
       ?.valueChanges.subscribe(() => {
         if (
-          this.truckAddForm.get('registration_num')?.valid &&
-          this.truckAddForm.get('registration_serial')?.valid &&
-          this.truckAddForm.get('registration_category')?.valid &&
-          this.truckAddForm.get('registration_zone')?.valid
+          this.truckAddForm.get('registrationNum')?.valid &&
+          this.truckAddForm.get('registrationSerial')?.valid &&
+          this.truckAddForm.get('registrationCategory')?.valid &&
+          this.truckAddForm.get('registrationZone')?.valid
         ) {
           this.validateTruckInformation();
         } else {
           this.everyThingDisabled = true;
         }
       });
-    this.truckAddForm.get('registration_serial')?.valueChanges.subscribe(() => {
+    this.truckAddForm.get('registrationSerial')?.valueChanges.subscribe(() => {
       if (
-        this.truckAddForm.get('registration_num')?.valid &&
-        this.truckAddForm.get('registration_serial')?.valid &&
-        this.truckAddForm.get('registration_category')?.valid &&
-        this.truckAddForm.get('registration_zone')?.valid
+        this.truckAddForm.get('registrationNum')?.valid &&
+        this.truckAddForm.get('registrationSerial')?.valid &&
+        this.truckAddForm.get('registrationCategory')?.valid &&
+        this.truckAddForm.get('registrationZone')?.valid
       ) {
         this.validateTruckInformation();
       } else {
         this.everyThingDisabled = true;
       }
     });
-    this.truckAddForm.get('registration_num')?.valueChanges.subscribe(() => {
+    this.truckAddForm.get('registrationNum')?.valueChanges.subscribe(() => {
       if (
-        this.truckAddForm.get('registration_num')?.valid &&
-        this.truckAddForm.get('registration_serial')?.valid &&
-        this.truckAddForm.get('registration_category')?.valid &&
-        this.truckAddForm.get('registration_zone')?.valid
+        this.truckAddForm.get('registrationNum')?.valid &&
+        this.truckAddForm.get('registrationSerial')?.valid &&
+        this.truckAddForm.get('registrationCategory')?.valid &&
+        this.truckAddForm.get('registrationZone')?.valid
       ) {
         this.validateTruckInformation();
       } else {
@@ -422,16 +422,16 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
       let message = '';
       invalidFields.forEach((field, index) => {
         switch (field) {
-          case 'registration_zone':
+          case 'registrationZone':
             field = 'Registration Zone';
             break;
-          case 'registration_category':
+          case 'registrationCategory':
             field = 'Registration Category';
             break;
-          case 'registration_serial':
+          case 'registrationSerial':
             field = 'Registration Serial';
             break;
-          case 'registration_num':
+          case 'registrationNum':
             field = 'Registration Number';
             break;
           case 'fitnessCertExpDate':
@@ -461,19 +461,19 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
       this.toastr.showError(`Please fill the required fields: ${message}`);
       this.loading = false;
       this.registrationErrorMessage = this.validation.getDropdownValidation(
-        this.truckAddForm.get('registration_zone')
+        this.truckAddForm.get('registrationZone')
       );
       this.registrationCategoryErrorMessage =
         this.validation.getDropdownValidation(
-          this.truckAddForm.get('registration_category')
+          this.truckAddForm.get('registrationCategory')
         );
       this.registrationSerialErrorMessage =
         this.validation.getRegistrationSerialValidation(
-          this.truckAddForm.get('registration_serial')
+          this.truckAddForm.get('registrationSerial')
         );
       this.registrationNumErrorMessage =
         this.validation.getRegistrationNoValidation(
-          this.truckAddForm.get('registration_num')
+          this.truckAddForm.get('registrationNum')
         );
     }
   }
@@ -482,8 +482,8 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
     const reg = /^[0-9]*$/;
     if (!reg.test(value)) {
       this.truckAddForm.patchValue({
-        registration_serial: value?.replace(/[^0-9]/g, ''),
-        registration_num: value?.replace(/[^0-9]/g, ''),
+        registrationSerial: value?.replace(/[^0-9]/g, ''),
+        registrationNum: value?.replace(/[^0-9]/g, ''),
       });
     }
   }
@@ -515,12 +515,12 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
 
   private validateTruckInformation() {
     const body = {
-      registeredZone: this.truckAddForm.get('registration_zone').value,
-      registrationCategory: this.truckAddForm.get('registration_category')
+      registeredZone: this.truckAddForm.get('registrationZone').value,
+      registrationCategory: this.truckAddForm.get('registrationCategory')
         .value,
-      registrationSerialNumber: this.truckAddForm.get('registration_serial')
+      registrationSerialNumber: this.truckAddForm.get('registrationSerial')
         .value,
-      registrationNumber: this.truckAddForm.get('registration_num').value,
+      registrationNumber: this.truckAddForm.get('registrationNum').value,
     };
     this.service.validateTruckInformation(body).subscribe({
       next: (res: any) => {

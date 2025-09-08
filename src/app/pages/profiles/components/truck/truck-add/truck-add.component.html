@@ -93,17 +93,17 @@
                     appearance="outline"
                     class="example-full-width">
                     <input
-                      id="registration_serial"
+                      id="registrationSerial"
                       [minLength]="2"
                       [maxLength]="2"
                       type="text"
                       matInput
-                      formControlName="registration_serial"
+                      formControlName="registrationSerial"
                       placeholder="Serial"/>
                   </mat-form-field>
                   <span
                     *ngIf="
-                      truckAddForm.get('registration_serial').touched &&
+                      truckAddForm.get('registrationSerial').touched &&
                       registrationSerialErrorMessage
                     "
                     class="text-red text-xs"
@@ -115,17 +115,17 @@
                     appearance="outline"
                     class="example-full-width">
                     <input
-                      id="registration_num"
+                      id="registrationNum"
                       [minLength]="4"
                       [maxLength]="4"
                       type="text"
                       matInput
-                      formControlName="registration_num"
+                      formControlName="registrationNum"
                       placeholder="Number"/>
                   </mat-form-field>
                   <span
                     *ngIf="
-                      truckAddForm.get('registration_num').touched &&
+                      truckAddForm.get('registrationNum').touched &&
                       registrationNumErrorMessage
                     "
                     class="text-red text-xs"
@@ -148,18 +148,6 @@
                     </mat-option>
                   }
                 </mat-select>
-              </mat-form-field>
-            </div>
-            <div class="flex flex-col space-y-1">
-              <label class="text-body text-web-text-secondary">Yard</label>
-              <mat-form-field
-                appearance="outline"
-                class="example-full-width">
-                <input
-                  type="text"
-                  matInput
-                  formControlName="registration_num"
-                  placeholder="Yard"/>
               </mat-form-field>
             </div>
           </div>
@@ -239,7 +227,7 @@
               <div class="flex flex-col space-y-1">
                 <label class="text-body text-web-text-secondary">Purchase Date</label>
                 <mat-form-field class="w-full" (mouseenter)="updateOverLayStyle(false)" appearance="outline">
-                  <input placeholder="Purchase Date" matInput [matDatepicker]="picker">
+                  <input formControlName="purchaseDate" placeholder="Purchase Date" matInput [matDatepicker]="picker">
                   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                   <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
@@ -254,12 +242,97 @@
                   appearance="outline"
                 >
                   <input
-                    formControlName="driverPhone"
+                    formControlName="purchaseFrom"
                     type="text"
                     matInput
                     placeholder="Workshop address"/>
                 </mat-form-field>
               </div>
+              <div class="flex flex-col space-y-1">
+                <label class="text-body text-web-text-secondary">Yard</label>
+                <mat-form-field
+                  appearance="outline"
+                  class="example-full-width">
+                  <input
+                    type="text"
+                    matInput
+                    formControlName="yard"
+                    placeholder="Yard"/>
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label class="text-body text-web-text-secondary">Engine No.</label>
+                <mat-form-field
+                  appearance="outline"
+                  class="example-full-width">
+                  <input
+                    type="text"
+                    matInput
+                    formControlName="engine"
+                    placeholder="Engine No."/>
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label class="text-body text-web-text-secondary">Chassis Number</label>
+                <mat-form-field
+                  appearance="outline"
+                  class="example-full-width">
+                  <input
+                    type="text"
+                    matInput
+                    formControlName="chassisNumber"
+                    placeholder="Chassis Number"/>
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label class="text-body text-web-text-secondary">Capacity</label>
+                <mat-form-field
+                  appearance="outline"
+                  class="example-full-width">
+                  <input
+                    type="text"
+                    matInput
+                    formControlName="weightInTon"
+                    placeholder="Enter Capacity"/>
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label class="text-body text-web-text-secondary">Size</label>
+                <mat-form-field
+                  appearance="outline"
+                  class="example-full-width">
+                  <input
+                    type="text"
+                    matInput
+                    formControlName="size"
+                    placeholder="Enter Size"/>
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label class="text-body text-web-text-secondary">Fuel Type</label>
+                <mat-form-field
+                  appearance="outline"
+                  class="example-full-width">
+                  <input
+                    type="text"
+                    matInput
+                    formControlName="registrationNum"
+                    placeholder="Engine Type"/>
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <label class="text-body text-web-text-secondary">Fuel Tank Capacity</label>
+                <mat-form-field
+                  appearance="outline"
+                  class="example-full-width">
+                  <input
+                    type="text"
+                    matInput
+                    formControlName="registrationNum"
+                    placeholder="Engine Type"/>
+                </mat-form-field>
+              </div>
+
             </div>
           </mat-tab>
           <mat-tab label="Document">
