@@ -38,7 +38,6 @@ export class PreHireChecklistComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(simpleChanges: any) {
-    console.log(this.heightFromParentMenu);
     if (simpleChanges.object?.currentValue) {
       this.setPreHireCheckList();
     } else if (
@@ -161,12 +160,6 @@ export class PreHireChecklistComponent implements OnInit, OnChanges {
     const firstItemHeight = parseInt(this.firstItemHeight.replace('px', ''));
     const tableHeaderHeight = parseInt(
       this.tableHeaderHeight.replace('px', '')
-    );
-    console.log(
-      firstItemHeight,
-      this.firstItemHeight,
-      tableHeaderHeight,
-      parentHeight
     );
     return parentHeight + firstItemHeight + tableHeaderHeight + 100 + 'px';
   }

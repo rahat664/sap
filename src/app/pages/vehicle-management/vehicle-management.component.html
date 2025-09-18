@@ -25,7 +25,7 @@
               name="email"
               [(ngModel)]="searchValue"
               class="border-none text-input-hint w-full md:w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
-              placeholder="Search truck registration number" />
+              placeholder="Search vehicle registration number" />
           </div>
           <button (click)="onClickFilterOpen()"
                   class="bg-white p-2 rounded-lg flex space-x-1 cursor-pointer text-h2_medium text-primary">
@@ -33,6 +33,10 @@
             <p>Filter</p>
           </button>
         </div>
+        <button (click)="onClickAddTruck()"
+                class="bg-primary px-4 py-2 rounded-lg flex space-x-2 cursor-pointer text-white">
+          <span>Add New Vehicle</span>
+        </button>
       </div>
     </div>
     <div *ngIf="filterApplied"
@@ -55,17 +59,16 @@
       <tr class="whitespace-nowrap bg-white text-not-black">
         <th class="text-left md:bg-white md:sticky md:left-0">Registration Number</th>
         <th class="text-left">Yard</th>
+        <th class="text-left">Vehicle Type</th>
+        <th class="text-left">Vehicle Size</th>
+        <th class="text-left">Fuel Type</th>
         <th class="text-left">Pre-hire Checklist</th>
         <th class="text-left">Documents</th>
         <th class="text-left">No. of Trip</th>
         <th class="text-left">Total Cost</th>
-        <th class="text-center">Total Distance</th>
-        <th class="text-center">Fuel Consumed</th>
-        <th class="text-center whitespace-nowrap">Fuel Efficiency</th>
-        <th class="text-center whitespace-nowrap">Emitted Co2</th>
        </tr>
       <tr>
-        <th class="custom-border" [colSpan]="10"></th>
+        <th class="custom-border" [colSpan]="9"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
@@ -89,6 +92,9 @@
             </div>
           </td>
           <td class="text-left">{{ truck.yard }}</td>
+          <td class="text-left">{{truck.type}}</td>
+          <td>{{truck.size}}</td>
+          <td>{{truck.fuelType}}</td>
           <td class="text-left">
             <div
               class="text-link cursor-pointer flex items-center justify-center">
@@ -98,11 +104,7 @@
           <td class="text-left">
           </td>
           <td class="text-left">{{ truck.noOfTrips }}</td>
-          <td class="text-left"></td>
-          <td class="text-center"></td>
-          <td class="text-center"></td>
-          <td class="text-center"></td>
-          <td class="text-center"></td>
+          <td class="text-left">£{{ truck.totalCost | number:'1.2-2' }}</td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading && truckList?.length === 0">

@@ -3,7 +3,7 @@ import { CommonModule, DatePipe, NgIf } from '@angular/common';
 import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { VehicleStatsButtonComponent } from './shared/buttons/vehicle-stats-button/vehicle-stats-button.component';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TruckModel } from '../profiles/components/truck/models/truck.model';
 import { debounceTime } from 'rxjs';
 import { TruckService } from '../profiles/components/truck/services/truck.service';
@@ -55,7 +55,8 @@ export class VehicleManagementComponent {
     private activatedRoute: ActivatedRoute,
     private service: TruckService,
     private datePipe: DatePipe,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router
   ) {
     this.filterForm = this.formBuilder.group({
       search: [''],
@@ -246,5 +247,9 @@ export class VehicleManagementComponent {
 
   onClickTruckDetails(truck: TruckModel) {
 
+  }
+
+  onClickAddTruck() {
+    this.router.navigate(['/vehicle-management/add-vehicle']);
   }
 }

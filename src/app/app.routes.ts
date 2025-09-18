@@ -257,6 +257,24 @@ export const routes: Routes = [
     },
   },
   {
+    path: 'vehicle-management/:id/vehicle-details',
+    title: 'Vehicle Details',
+    loadComponent: () =>
+      import(
+        './pages/profiles/components/truck/truck-details/truck-details.component'
+      ).then(c => c.TruckDetailsComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'vehicle-management/add-vehicle',
+    title: 'Add Vehicle',
+    loadComponent: () =>
+      import(
+        './pages/profiles/components/truck/truck-add/truck-add.component'
+      ).then(c => c.TruckAddComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',

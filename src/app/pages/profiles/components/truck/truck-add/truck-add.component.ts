@@ -187,6 +187,19 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
       insuranceFiles: [null],
       truckImages: [null],
       insuranceExpDate: [null],
+      ownership: [null],
+      type: [null],
+      purchaseFrom: [null],
+      purchaseDate: [null],
+      yard: [null],
+      engine: [null],
+      chassisNumber: [null],
+      size: [null],
+      fuelType: [null],
+      fuelCapacity: [null],
+      weightInTon: [null],
+      driverPhone: [null],
+      driverName: [null],
     });
   }
 
@@ -898,7 +911,9 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onChangeTruckStatus($event: MatRadioChange) {}
+  onChangeTruckStatus($event: MatRadioChange) {
+
+  }
 
   protected readonly Number = Number;
   truckType: any;
@@ -953,5 +968,11 @@ export class TruckAddComponent implements OnInit, AfterViewInit {
         this.previousFilterLength -= 1;
       }
     }
+  }
+
+  onChangeTruckOwnerShip($event: Event) {
+    const value = $event.target['value'];
+    alert($event)
+    this.truckAddForm.get('ownership').setValue(value);
   }
 }

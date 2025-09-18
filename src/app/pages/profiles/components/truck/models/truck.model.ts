@@ -9,6 +9,9 @@ export class TruckDocument {
 }
 
 export interface TruckModel {
+  type: string;
+  totalCost: number | null; // Can be null
+  fuelType: string;
   currentCondition: string;
   rejectedReason: string | null; // Can be null
   id: number;
