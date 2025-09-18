@@ -20,9 +20,10 @@ import { MatInput } from '@angular/material/input';
 import { Subject } from 'rxjs';
 import { CustomerService } from '../../../profiles/services/customer.service';
 import { CustomerModel } from '../../../profiles/components/customer/model/customer.model';
-import { MatSelect } from '@angular/material/select';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { TripService } from '../../services/trip.service';
 import { UserService } from '../../../profiles/services/user.service';
+import { districts } from '../../../../shared/models/ditrict-with-latlng.model';
 
 @Component({
   selector: 'app-trip-list-filter',
@@ -76,6 +77,8 @@ export class TripListFilterComponent {
   transporterCodes: any[] = [];
   transporterNames: any[] = [];
   filterLength: number = 0;
+  protected districts = [];
+  unloadingDistrict: any;
   paymentStatusPlaceholder: string = '';
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
@@ -122,6 +125,7 @@ export class TripListFilterComponent {
   private selectedTripValue: any[] = [];
   private selectedPaymentValue: any[] = [];
   transporters: any[] = [];
+  loadingDistrict: any;
 
   constructor(
     private datePipe: DatePipe,
@@ -142,6 +146,7 @@ export class TripListFilterComponent {
 
   ngOnInit() {
     this.getVehicleTypeList();
+    this.getDistricts();
   }
 
   onClose() {
@@ -167,6 +172,8 @@ export class TripListFilterComponent {
       selectedTruckValues: this.selectedTruckValues,
       selectedTripValue: this.selectedTripValue,
       selectedPaymentValue: this.selectedPaymentValue,
+      loadingDistrict: this.loadingDistrict,
+      unloadingDistrict: this.unloadingDistrict,
     };
     localStorage.setItem('tripFilterData', JSON.stringify(filterData));
     this.filterData.emit(filterData);
@@ -232,6 +239,14 @@ export class TripListFilterComponent {
         this.dateText = event;
       }
     }
+  }
+
+  onLoadingDistrictChange($event: MatSelectChange) {
+
+  }
+
+  onUnloadingDistrictChange($event: MatSelectChange) {
+
   }
 
   onChangeStartDate($event: Event) {
@@ -448,6 +463,8 @@ export class TripListFilterComponent {
       this.startDate = tripFilterData?.startDate;
       this.endDate = tripFilterData?.endDate;
       this.selectedButton = tripFilterData?.selectedButton;
+      this.loadingDistrict = tripFilterData.loadingDistrict;
+      this.unloadingDistrict = tripFilterData.unloadingDistrict;
       if (this.selectedButton) {
         this.dateText = true;
       }
@@ -542,5 +559,11 @@ export class TripListFilterComponent {
     this.transporters = this.transporters?.filter(
       (value: any) => value.code !== transporters.code
     );
+  }
+
+  private getDistricts() {
+    this.tripService.getDistricts().subscribe((res: any) => {
+      this.districts = res.data;
+    });
   }
 }

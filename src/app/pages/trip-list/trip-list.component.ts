@@ -125,6 +125,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
   filterData: any = {};
   isIndeterminate: boolean;
   transporterCodes: any;
+  loadingDistrict: any;
+  unloadingDistrict: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -187,7 +189,9 @@ export class TripListComponent implements OnInit, AfterViewInit {
         this.transporterName,
         this.paymentTypeValue,
         this.tripTypeValue,
-        this.transporterCodes?.toString()
+        this.transporterCodes?.toString(),
+        this.loadingDistrict,
+        this.unloadingDistrict
       )
       .subscribe(
         (trip: any) => {
@@ -395,6 +399,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
     this.tripTypeValue = '';
     this.from = '';
     this.to = '';
+    this.loadingDistrict = '';
+    this.unloadingDistrict = '';
     this.transporterCodes = [];
     this.loading = true;
     this.tripList = [];
@@ -416,7 +422,9 @@ export class TripListComponent implements OnInit, AfterViewInit {
       this.filterData?.customerCode?.length > 0 ||
       this.filterData?.truckType?.length > 0 ||
       this.filterData?.tripId ||
-      this.filterData?.transporterCodes?.length > 0
+      this.filterData?.transporterCodes?.length > 0 ||
+      this.filterData.loadingDistrict ||
+      this.filterData.unloadingDistrict
     ) {
       this.filterApplied = true;
       this.filterOpened = false;
@@ -429,6 +437,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
       this.transporterCodes = this.filterData.transporterCodes;
       this.paymentTypeValue = this.filterData.paymentType?.toString();
       this.tripTypeValue = this.filterData.tripType?.toString();
+      this.loadingDistrict = this.filterData.loadingDistrict;
+      this.unloadingDistrict = this.filterData.unloadingDistrict;
       this.page = 0;
       this.size = 30;
       this.loading = true;
@@ -483,6 +493,15 @@ export class TripListComponent implements OnInit, AfterViewInit {
     if (this.filterData?.truckType?.length > 0) {
       parts.push(
         `Truck Type: <b>${this.filterData.selectedTruckValues?.toString()}</b>`
+      );
+    }
+
+    if (this.filterData?.loadingDistrict) {
+      parts.push(`Loading District: <b>${this.filterData.loadingDistrict}</b>`);
+    }
+    if (this.filterData?.unloadingDistrict) {
+      parts.push(
+        `Unloading District: <b>${this.filterData.unloadingDistrict}</b>`
       );
     }
 

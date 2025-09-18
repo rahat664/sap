@@ -185,6 +185,34 @@
               </mat-select>
             </mat-form-field>
           </div>
+
+
+          <div class="flex flex-col space-y-2 w-full">
+            <label class="text-body text-web-text-secondary">Loading District</label>
+            <mat-form-field appearance="outline" class="example-full-width filter">
+              <mat-select
+                [(ngModel)]="loadingDistrict"
+                (selectionChange)="onLoadingDistrictChange($event)"
+                placeholder="Loading District">
+                <mat-option *ngFor="let district of districts" [value]="district?.name"
+                >{{ district?.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-2 w-full">
+            <label class="text-body text-web-text-secondary">Unloading District</label>
+            <mat-form-field appearance="outline" class="example-full-width filter">
+              <mat-select
+                [(ngModel)]="unloadingDistrict"
+                (selectionChange)="onUnloadingDistrictChange($event)"
+                placeholder="Unloading District">
+                <mat-option *ngFor="let district of districts" [value]="district?.name"
+                >{{ district?.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
         </div>
         <div class="flex flex-col space-y-2 w-full">
           <label class="text-body text-web-text-secondary "

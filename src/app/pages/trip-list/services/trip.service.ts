@@ -68,7 +68,9 @@ export class TripService {
     transporterNameOrPhone?: string,
     paymentType?: string,
     tripType?: string,
-    transporterCodes?: string
+    transporterCodes?: string,
+    loadingDistrict?: string,
+    unloadingDistrict?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -122,6 +124,10 @@ export class TripService {
       params = params.set('tripType', tripType);
     } if (transporterCodes) {
       params = params.set('transporterCodes', transporterCodes);
+    } if (loadingDistrict) {
+      params = params.set('loadingDistrict', loadingDistrict);
+    } if (unloadingDistrict) {
+      params = params.set('unloadingDistrict', unloadingDistrict);
     }
 
     return this.http.get(`${this.url}`, { params });
