@@ -1,0 +1,88 @@
+<div class="m-3 flex flex-col space-y-3">
+  <div class="bg-white flex justify-between px-6 py-2 rounded-lg">
+    <div>
+
+    </div>
+    <div class="flex space-x-2 items-center">
+      <button  (click)="goBack()" class="bg-another text-white px-4 py-2 rounded hover:bg-another/80">Back</button>
+      <button  (click)="openEditVehicleDialog()" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80">Edit Vehicle</button>
+    </div>
+  </div>
+  <div class="grid lg:grid-cols-2">
+    <div class="bg-white rounded-lg relative">
+      <div class="flex space-x-7 p-6 items-center">
+        <div>
+          <img src="assets/svg/dummy-truck.svg" alt="truck" class="notPreview"/>
+        </div>
+        <div class="flex flex-col space-y-1">
+          <div class="text-h3 leading-h3 font-semibold text-not-black flex space-x-2 items-center">
+            <span>Dhaka metro TA 11 2345</span>
+            <img src="assets/svg/approved.svg" alt="approve" class="inline-block h-6 w-6"/>
+          </div>
+          <span class="text-h2_regular leading-h2_regular text-not-black font-normal">Covered van</span>
+          <span class="text-body text-secondary font-normal">Added by: Alamgir Hossain</span>
+          <span class="text-body text-secondary font-normal">Added on: 13 jan 2024</span>
+        </div>
+      </div>
+      <div class="absolute top-4 right-2">
+        <button mat-button >
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+      </div>
+      <mat-tab-group>
+        <mat-tab label="Details">
+          <div class="p-6">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col space-y-1">
+                <span class="text-body text-secondary font-normal">Registration Number</span>
+                <span class="text-body text-not-black font-semibold">Dhaka metro TA 11 2345</span>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <span class="text-body text-secondary font-normal">Yard</span>
+                <span class="text-body text-not-black font-semibold">Yard A</span>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <span class="text-body text-secondary font-normal">Vehicle Type</span>
+                <span class="text-body text-not-black font-semibold">Covered van</span>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <span class="text-body text-secondary font-normal">Vehicle Size</span>
+                <span class="text-body text-not-black font-semibold">Medium</span>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <span class="text-body text-secondary font-normal">Fuel Type</span>
+                <span class="text-body text-not-black font-semibold">Diesel</span>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <span class="text-body text-secondary font-normal">Pre-Hire Checklist</span>
+                <span class="text-body text-not-black font-semibold">20/22 Completed</span>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <span class="text-body text-secondary font-normal">Documents</span>
+                <span class="text-body text-not-black font-semibold">5/7 Available</span>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <span class="text-body text-secondary font-normal">No of Trips</span>
+                <span class="text-body text-not-black font-semibold">15 Trips</span>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <span class="text-body text-secondary font-normal">Total Cost</span>
+                <span class="text-body text-not-black font-semibold">£1500</span>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Documents">
+          <div class="p-6">
+            <p class="text-body text-not-black font-semibold">Vehicle Documents will be shown here.</p>
+          </div>
+        </mat-tab>
+        <mat-tab label="Pre-Hire Checklist">
+          <div class="p-6">
+            <p class="text-body text-not-black font-semibold">Pre-Hire Checklist will be shown here.</p>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>
