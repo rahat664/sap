@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:dev": "ng serve --configuration development --port 4200 --no-hmr",
+    "start:dev": "ng serve --configuration development --port 4205 --no-hmr",
     "start:qa": "ng serve --configuration qa --port 4201 --no-hmr",
     "start:production": "ng serve --configuration production --port 4202 --no-hmr",
     "start:staging": "ng serve --configuration staging --port 4203 --no-hmr",

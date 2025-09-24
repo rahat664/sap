@@ -84,24 +84,34 @@
                     }}</span>
               </div>
               <a
-                routerLink="/profile/truck/{{ truck.id }}/details"
+                routerLink="/vehicle-management/{{ truck.id }}/vehicle-details"
                 (click)="onClickTruckDetails(truck)"
                 class="flex-1 text-link cursor-pointer"
               >{{ truck.fullRegistrationNumber }}</a
               >
             </div>
           </td>
-          <td class="text-left">{{ truck.yard }}</td>
-          <td class="text-left">{{truck.type}}</td>
-          <td>{{truck.size}}</td>
-          <td>{{truck.fuelType}}</td>
+          <td class="text-left {{truck.yard ? 'text-not-black' : 'text-secondary'}}"
+          >{{ truck.yard ? truck.yard : 'Yard Not Set' }}</td>
+          <td class="text-left {{truck.vehicleCategory?.name ? 'text-not-black' : 'text-secondary'}}"
+          >{{truck.vehicleCategory?.name ? truck.vehicleCategory.name : 'Vehicle type not set' }}</td>
+          <td class="text-left {{truck.size ? 'text-not-black' : 'text-secondary'}}"
+          >{{truck.size ? truck.size : 'Vehicle size not set' }}</td>
+          <td class="text-left {{truck.fuelType ? 'text-not-black' : 'text-secondary'}}"
+          >{{truck.fuelType ? truck.fuelType : 'Fuel type not set' }}</td>
           <td class="text-left">
             <div
               class="text-link cursor-pointer flex items-center justify-center">
               <span>{{ truck.preHireCheckList }}/22</span>
             </div>
           </td>
-          <td class="text-left">
+          <td class="text-left w-full flex justify-center items-center" >
+            <div class="flex space-x-1 items-center">
+              <div>{{checkHowManyDocsAreAvailable(truck) }}/{{ truckFileType.length}}</div>
+              <div matTooltip="{{returnHowManyDocumentIsExpired(truck)}}" matTooltipPosition="above" *ngIf="checkThatAnyDocumentIsExpired(truck)">
+                <img src="/assets/svg/alert.svg" class="notPreview" alt="alert">
+              </div>
+            </div>
           </td>
           <td class="text-left">{{ truck.noOfTrips }}</td>
           <td class="text-left">£{{ truck.totalCost | number:'1.2-2' }}</td>

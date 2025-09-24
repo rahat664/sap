@@ -50,6 +50,20 @@ export class PieChartComponent implements OnChanges, AfterViewInit, OnInit {
   constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
+    // Initialize with safe defaults so Apex never receives undefined
+    this.chartOptions = {
+      series: this.value || [0, 0],
+      chart: { width: 350, type: 'pie' },
+      labels: ['Received', 'Pending'],
+      colors: ['#85DAE5', '#208B99'],
+      dataLabels: { enabled: false },
+      states: { hover: { filter: { type: 'none' } } },
+      legend: { position: 'bottom' },
+      plotOptions: { pie: { customScale: 1, expandOnClick: true } },
+      tooltip: { enabled: true, fillSeriesColor: false },
+      responsive: [],
+      markers: {},
+    } as any;
     timer(1000).subscribe(() => {
       const colors = ['#85DAE5', '#208B99'];
       const total = this.value ? this.value.reduce((a, b) => a + b, 0) : 0;

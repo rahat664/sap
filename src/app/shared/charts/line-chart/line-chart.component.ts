@@ -69,6 +69,32 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
 
   constructor(private cd: ChangeDetectorRef) {}
 
+  ngOnInit() {
+    // Provide a safe baseline so <apx-chart> never receives undefined inputs
+    this.chartOptions = {
+      series: [],
+      chart: {
+        height: 350,
+        width: 0,
+        type: 'line',
+        zoom: { enabled: false, autoScaleYaxis: true },
+        toolbar: { show: false },
+      },
+      xaxis: { categories: [] },
+      yaxis: {},
+      dataLabels: { enabled: false },
+      grid: {},
+      stroke: { curve: 'straight', lineCap: 'round', colors: [] },
+      title: {},
+      legend: { show: false },
+      colors: [],
+      tooltip: { shared: true },
+      responsive: [],
+      plotOptions: {},
+      annotations: {},
+    } as any;
+  }
+
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.seriesData && this.categories) {
@@ -200,7 +226,8 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
     // Delay to ensure chart renders first
   }
 
-  ngOnInit() {
+  // Keep existing delayed initialization but rename to avoid duplicate lifecycle method
+  private initAfterDelay() {
     timer(1200).subscribe(() => {
       let colors = [],
         numberOfTrips = [],
@@ -282,6 +309,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.cd.detectChanges();
+    this.initAfterDelay();
   }
 
   createCustomXAxis() {

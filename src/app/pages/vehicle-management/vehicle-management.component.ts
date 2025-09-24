@@ -11,6 +11,8 @@ import { TruckFilterComponent } from '../profiles/components/truck/truck-filter/
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
 import { LoadingComponent } from '../../shared/modules/loading/loading.component';
 import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
+import { TruckFilesArray, truckFileType, TruckFileType } from '../profiles/components/truck/models/truck-file-type';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-vehicle-management',
@@ -24,6 +26,7 @@ import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
     GiveMaxHeightDirective,
     LoadingComponent,
     RouterLink,
+    MatTooltip,
   ],
   templateUrl: './vehicle-management.component.html',
   styleUrl: './vehicle-management.component.scss',
@@ -50,6 +53,7 @@ export class VehicleManagementComponent {
   filterForm: FormGroup;
   inputPlaceholder: string = '';
   filterOpened: boolean = false;
+  truckFileType: TruckFileType[] = truckFileType;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -246,10 +250,68 @@ export class VehicleManagementComponent {
   protected readonly Number = Number;
 
   onClickTruckDetails(truck: TruckModel) {
-
   }
 
   onClickAddTruck() {
     this.router.navigate(['/vehicle-management/add-vehicle']);
+  }
+
+  checkHowManyDocsAreAvailable(truck: TruckModel) {
+    let count = 0;
+    this.truckFileType.forEach(fileType => {
+      const files = truck.vehicleDocumentList?.filter(
+        doc => doc.documentType === fileType.enumName
+      );
+      if (files && files.length > 0) {
+        count++;
+      }
+    });
+    return count;
+  }
+
+  checkThatAnyDocumentIsExpired(truck: TruckModel) {
+    const today = new Date();
+    let isExpired = false;
+    this.truckFileType.forEach(fileType => {
+      if (fileType.expiryAvailable) {
+        const files = truck.vehicleDocumentList?.filter(
+          doc => doc.documentType === fileType.enumName
+        );
+        if (files && files.length > 0) {
+          files.forEach(file => {
+            if (file.expiryDate) {
+              const expiryDate = new Date(file.expiryDate);
+              if (expiryDate < today) {
+                isExpired = true;
+              }
+            }
+          });
+        }
+      }
+    });
+    return isExpired;
+  }
+
+  returnHowManyDocumentIsExpired(truck: TruckModel) {
+    const today = new Date();
+    let count = 0;
+    this.truckFileType.forEach(fileType => {
+      if (fileType.expiryAvailable) {
+        const files = truck.vehicleDocumentList?.filter(
+          doc => doc.documentType === fileType.enumName
+        );
+        if (files && files.length > 0) {
+          files.forEach(file => {
+            if (file.expiryDate) {
+              const expiryDate = new Date(file.expiryDate);
+              if (expiryDate < today) {
+                count++;
+              }
+            }
+          });
+        }
+      }
+    });
+    return count  > 1 ? `${count} Documents Expired` : `${count} Document Expired`;
   }
 }

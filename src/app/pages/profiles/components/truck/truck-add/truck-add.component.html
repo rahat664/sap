@@ -1,33 +1,23 @@
-<form  [formGroup]="truckAddForm" class="w-full overflow-x-hidden">
+<form [formGroup]="truckAddForm" class="w-full overflow-x-hidden">
   <div class="p-2 sticky top-0 bg-app-bg z-30" appGetElementHeight (height)="height = $event">
     <div class="p-4 rounded-lg bg-white flex justify-between items-center">
       <div class="flex items-center">
-        <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold border-r pr-[1.125rem]">Add Truck</h1>
+        <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold border-r pr-[1.125rem]">
+          Add Truck
+        </h1>
         <div class="pl-[1.125rem] flex">
-          <mat-radio-group
-            formControlName="ownership"
-            (selectionchange)="onChangeTruckOwnerShip($event)"
-          >
-            <mat-radio-button
-              class="text-body_title leading-body_title font-normal mr-6"
-              [value]="'THIRD_PARTY'"
-            >
-              Third Party
+          <mat-radio-group (change)="onChangeTruckOwnerShip($event)">
+            <mat-radio-button class="text-body_title leading-body_title font-normal mr-6" [value]="'THIRD_PARTY'">Third
+              Party
             </mat-radio-button>
-
-            <mat-radio-button
-              class="text-body_title leading-body_title font-normal"
-              [value]="'OWN'"
-            >
-              Own
+            <mat-radio-button class="text-body_title leading-body_title font-normal" [value]="'OWN'">Own
             </mat-radio-button>
           </mat-radio-group>
         </div>
       </div>
       <div>
-        <button
-          (click)="onClickSave()"
-          class="px-4 md:px-12 py-2 text-white bg-primary rounded-lg text-center font-semibold">
+        <button (click)="onClickSave()"
+                class="px-4 md:px-12 py-2 text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
           <span class="hidden sm:inline-block">Save</span>
           <i class="fas fa-save md:hidden"></i>
@@ -35,27 +25,24 @@
       </div>
     </div>
   </div>
+
   <div>
     <div class="grid md:grid-cols-2 gap-3 px-2 text-body">
+      <!-- LEFT COLUMN -->
       <div class="w-full flex flex-col space-y-2">
-        <div
-          class="border-b-2 bg-white rounded-lg border-input px-6 py-5 flex flex-col space-y-3">
+        <!-- Truck Info -->
+        <div class="border-b-2 bg-white rounded-lg border-input px-6 py-5 flex flex-col space-y-3">
           <div class="flex space-x-4 items-center text-not-black">
-            <img
-              class="h-8 w-8 notPreview"
-              loading="lazy"
-              src="assets/svg/truckinfo.svg"
-              alt=""/>
-            <span class="text-h3 leading-h3 text-not-black font-semibold"
-            >Truck Info</span
-            >
+            <img class="h-8 w-8 notPreview" loading="lazy" src="assets/svg/truckinfo.svg" alt="" />
+            <span class="text-h3 leading-h3 text-not-black font-semibold">Truck Info</span>
           </div>
+
           <div class="grid gap-3">
             <div class="flex flex-col space-y-1">
-              <span class="text-web-text-web-text-secondary text-body"
-              >Registration Number</span
-              >
+              <span class="text-web-text-web-text-secondary text-body">Registration Number</span>
+
               <div class="grid grid-cols-2 md:grid-cols-5 w-full gap-3">
+                <!-- Zone -->
                 <div class="flex flex-col w-full md:col-span-2">
                   <app-custom-input
                     [isFilterMenu]="false"
@@ -67,460 +54,345 @@
                     [options]="registrationZoneList"
                     inputPlaceholder="Zone"
                     (selectedId)="onSelectRegistrationZone($event)"
-                    [inputSearch]="
-                      registrationZonePlaceholder
-                    "></app-custom-input>
-                  <span class="text-red text-xs">{{
-                      registrationErrorMessage
-                    }}</span>
+                    [inputSearch]="registrationZonePlaceholder">
+                  </app-custom-input>
+                  <span class="text-red text-xs">{{ registrationErrorMessage }}</span>
                 </div>
+
+                <!-- Category -->
                 <div class="flex flex-col">
                   <app-custom-input
                     class="w-full"
                     [isFilterMenu]="false"
                     appGetClickEvent
-                    [isError]="registrationErrorMessage !== ''"
+                    [isError]="registrationCategoryErrorMessage !== ''"
                     [errorMessage]="registrationCategoryErrorMessage"
                     (clickedElement)="onClickRegistrationType($event)"
                     [options]="registrationListType"
                     inputPlaceholder="Category"
                     (selectedId)="onSelectRegistrationType($event)"
-                    [inputSearch]="
-                      registrationTypePlaceholder
-                    "></app-custom-input>
-                  <span class="text-red text-xs">{{
-                      registrationCategoryErrorMessage
-                    }}</span>
+                    [inputSearch]="registrationTypePlaceholder">
+                  </app-custom-input>
+                  <span class="text-red text-xs">{{ registrationCategoryErrorMessage }}</span>
                 </div>
+
+                <!-- Serial -->
                 <div class="flex flex-col w-full">
-                  <mat-form-field
-                    appearance="outline"
-                    class="example-full-width">
-                    <input
-                      id="registrationSerial"
-                      [minLength]="2"
-                      [maxLength]="2"
-                      type="text"
-                      matInput
-                      formControlName="registrationSerial"
-                      placeholder="Serial"/>
+                  <mat-form-field appearance="outline" class="example-full-width">
+                    <input id="registrationSerial" [minLength]="2" [maxLength]="2" type="text" matInput
+                           formControlName="registrationSerial" placeholder="Serial" />
                   </mat-form-field>
-                  <span
-                    *ngIf="
-                      truckAddForm.get('registrationSerial').touched &&
-                      registrationSerialErrorMessage
-                    "
-                    class="text-red text-xs"
-                  >{{ registrationSerialErrorMessage }}</span
-                  >
+                  <span *ngIf="truckAddForm.get('registrationSerial')?.touched && registrationSerialErrorMessage"
+                        class="text-red text-xs">{{ registrationSerialErrorMessage }}</span>
                 </div>
+
+                <!-- Number -->
                 <div class="flex flex-col w-full">
-                  <mat-form-field
-                    appearance="outline"
-                    class="example-full-width">
-                    <input
-                      id="registrationNum"
-                      [minLength]="4"
-                      [maxLength]="4"
-                      type="text"
-                      matInput
-                      formControlName="registrationNum"
-                      placeholder="Number"/>
+                  <mat-form-field appearance="outline" class="example-full-width">
+                    <input id="registrationNum" [minLength]="4" [maxLength]="4" type="text" matInput
+                           formControlName="registrationNum" placeholder="Number" />
                   </mat-form-field>
-                  <span
-                    *ngIf="
-                      truckAddForm.get('registrationNum').touched &&
-                      registrationNumErrorMessage
-                    "
-                    class="text-red text-xs"
-                  >{{ registrationNumErrorMessage }}</span
-                  >
+                  <span *ngIf="truckAddForm.get('registrationNum')?.touched && registrationNumErrorMessage"
+                        class="text-red text-xs">{{ registrationNumErrorMessage }}</span>
                 </div>
               </div>
             </div>
+
+            <!-- Truck Type -->
             <div class="flex flex-col space-y-1">
               <label class="text-web-text-secondary text-body">Truck Type</label>
               <mat-form-field appearance="outline">
-                <mat-select
-                  formControlName="type"
-                  (selectionChange)="onChangeTruckType($event)"
-                  placeholder="Select Truck Type">
+                <mat-select formControlName="type" (selectionChange)="onChangeTruckType($event)"
+                            placeholder="Select Truck Type">
                   @for (vehicle of vehicleTypeList; track vehicle) {
-                    <mat-option [value]="vehicle.id">{{
-                        vehicle.name
-                      }}
-                    </mat-option>
+                    <mat-option [value]="vehicle.id">{{ vehicle.name }}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
             </div>
           </div>
         </div>
+
+        <!-- Driver (optional) -->
         <div class="bg-white p-6 rounded-lg flex flex-col space-y-3 border border-input">
           <div class="flex space-x-4 items-center text-not-black">
-              <span class="text-h3 leading-h3 text-not-black font-semibold"
-              >Driver (optional)</span
-              >
+            <span class="text-h3 leading-h3 text-not-black font-semibold">Driver (optional)</span>
           </div>
+
           <div class="flex flex-col space-y-1 w-full">
             <label for="driverName" class="text-body text-web-text-secondary">Name</label>
-            <mat-form-field
-              (mouseenter)="updateOverLayStyle(false)"
-              appearance="outline"
-              class="example-full-width w-full"
-              >
-              <input
-                id="driverName"
-                type="text"
-                formControlName="driverName"
-                matInput
-                (keyup)="onKeyUpDriverSearch($event)"
-                placeholder="Driver Name"
-                [matAutocomplete]="driver"/>
+            <mat-form-field (mouseenter)="updateOverLayStyle(false)" appearance="outline"
+                            class="example-full-width w-full">
+              <input id="driverName" type="text" formControlName="driverName" matInput
+                     (keyup)="onKeyUpDriverSearch($event)" placeholder="Driver Name" [matAutocomplete]="driver" />
               <mat-autocomplete #driver="matAutocomplete">
                 @for (option of driverSuggestion; track option) {
-                  <mat-option
-                    (click)="onClickDriverSearchSuggestion(option)"
-                    [value]="option.name"
-                  >{{ option.name }}
+                  <mat-option (click)="onClickDriverSearchSuggestion(option)" [value]="option.name">{{ option.name }}
                   </mat-option>
                 }
               </mat-autocomplete>
             </mat-form-field>
           </div>
+
           <div class="flex flex-col space-y-1">
-            <label for="driverMobile" class="text-body text-web-text-secondary"
-            >Mobile Number</label
-            >
-            <mat-form-field
-              disabled
-              id="driverMobile"
-              appearance="outline"
-            >
-              <input
-                formControlName="driverPhone"
-                [disabled]="true"
-                [readonly]="true"
-                type="text"
-                matInput
-                placeholder="Driver Mobile Number"/>
+            <label for="driverMobile" class="text-body text-web-text-secondary">Mobile Number</label>
+            <mat-form-field id="driverMobile" appearance="outline">
+              <input formControlName="driverPhone" [readonly]="true" type="text" matInput
+                     placeholder="Driver Mobile Number" />
             </mat-form-field>
           </div>
         </div>
       </div>
+
+      <!-- RIGHT COLUMN -->
       <div class="bg-white rounded-lg">
-        <mat-tab-group class="h-20" mat-stretch-tabs appGiveMaxHeight [anotherItemsHeight]="getAnotherItemsHeight()" totalPage="0">
+        <mat-tab-group class="h-20" mat-stretch-tabs appGiveMaxHeight [anotherItemsHeight]="getAnotherItemsHeight()"
+                       totalPage="0">
+          <!-- Details (lazy) -->
           <mat-tab label="Details">
-            <div class="px-16 py-6 flex flex-col space-y-3">
-              <div class="flex flex-col space-y-1">
-                <label for="model" class="text-body text-web-text-secondary"
-                >Model</label
-                >
-                <mat-form-field
-                  id="model"
-                  appearance="outline"
-                >
-                  <input
-                    formControlName="driverPhone"
-                    type="text"
-                    matInput
-                    placeholder="Model"/>
-                </mat-form-field>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <label class="text-body text-web-text-secondary">Purchase Date</label>
-                <mat-form-field class="w-full" (mouseenter)="updateOverLayStyle(false)" appearance="outline">
-                  <input formControlName="purchaseDate" placeholder="Purchase Date" matInput [matDatepicker]="picker">
-                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <label for="purchaseFrom" class="text-body text-web-text-secondary"
-                >Purchase from</label
-                >
-                <mat-form-field
-                  disabled
-                  id="purchaseFrom"
-                  appearance="outline"
-                >
-                  <input
-                    formControlName="purchaseFrom"
-                    type="text"
-                    matInput
-                    placeholder="Workshop address"/>
-                </mat-form-field>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <label class="text-body text-web-text-secondary">Yard</label>
-                <mat-form-field
-                  appearance="outline"
-                  class="example-full-width">
-                  <input
-                    type="text"
-                    matInput
-                    formControlName="yard"
-                    placeholder="Yard"/>
-                </mat-form-field>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <label class="text-body text-web-text-secondary">Engine No.</label>
-                <mat-form-field
-                  appearance="outline"
-                  class="example-full-width">
-                  <input
-                    type="text"
-                    matInput
-                    formControlName="engine"
-                    placeholder="Engine No."/>
-                </mat-form-field>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <label class="text-body text-web-text-secondary">Chassis Number</label>
-                <mat-form-field
-                  appearance="outline"
-                  class="example-full-width">
-                  <input
-                    type="text"
-                    matInput
-                    formControlName="chassisNumber"
-                    placeholder="Chassis Number"/>
-                </mat-form-field>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <label class="text-body text-web-text-secondary">Capacity</label>
-                <mat-form-field
-                  appearance="outline"
-                  class="example-full-width">
-                  <input
-                    type="text"
-                    matInput
-                    formControlName="weightInTon"
-                    placeholder="Enter Capacity"/>
-                </mat-form-field>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <label class="text-body text-web-text-secondary">Size</label>
-                <mat-form-field
-                  appearance="outline"
-                  class="example-full-width">
-                  <input
-                    type="text"
-                    matInput
-                    formControlName="size"
-                    placeholder="Enter Size"/>
-                </mat-form-field>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <label class="text-body text-web-text-secondary">Fuel Type</label>
-                <mat-form-field
-                  appearance="outline"
-                  class="example-full-width">
-                  <input
-                    type="text"
-                    matInput
-                    formControlName="fuelType"
-                    placeholder="Fuel Type"/>
-                </mat-form-field>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <label class="text-body text-web-text-secondary">Fuel Tank Capacity</label>
-                <mat-form-field
-                  appearance="outline"
-                  class="example-full-width">
-                  <input
-                    type="text"
-                    matInput
-                    formControlName="fuelCapacity"
-                    placeholder="Fuel Tank Capacity"/>
-                </mat-form-field>
-              </div>
+            <ng-template matTabContent>
+              <div class="px-16 py-6 flex flex-col space-y-3">
+                <div class="flex flex-col space-y-1">
+                  <label for="model" class="text-body text-web-text-secondary">Model</label>
+                  <mat-form-field id="model" appearance="outline">
+                    <input formControlName="model" type="text" matInput placeholder="Model" />
+                  </mat-form-field>
+                </div>
 
-            </div>
+                <div class="flex flex-col space-y-1">
+                  <label class="text-body text-web-text-secondary">Purchase Date</label>
+                  <mat-form-field class="w-full" (mouseenter)="updateOverLayStyle(false)" appearance="outline">
+                    <input formControlName="purchaseDate" placeholder="Purchase Date" matInput
+                           [matDatepicker]="pickerDetails">
+                    <mat-datepicker-toggle matIconSuffix [for]="pickerDetails"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerDetails></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                  <label for="purchaseFrom" class="text-body text-web-text-secondary">Purchase from</label>
+                  <mat-form-field id="purchaseFrom" appearance="outline">
+                    <input formControlName="purchaseFrom" type="text" matInput placeholder="Workshop address" />
+                  </mat-form-field>
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                  <label class="text-body text-web-text-secondary">Yard</label>
+                  <mat-form-field appearance="outline" class="example-full-width">
+                    <input type="text" matInput formControlName="yard" placeholder="Yard" />
+                  </mat-form-field>
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                  <label class="text-body text-web-text-secondary">Engine No.</label>
+                  <mat-form-field appearance="outline" class="example-full-width">
+                    <input type="text" matInput formControlName="engine" placeholder="Engine No." />
+                  </mat-form-field>
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                  <label class="text-body text-web-text-secondary">Chassis Number</label>
+                  <mat-form-field appearance="outline" class="example-full-width">
+                    <input type="text" matInput formControlName="chassisNumber" placeholder="Chassis Number" />
+                  </mat-form-field>
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                  <label class="text-body text-web-text-secondary">Capacity</label>
+                  <mat-form-field appearance="outline" class="example-full-width">
+                    <input (keyup)="onKeyUpVehicleCapacity($event)" type="text" matInput [matAutocomplete]="capacity" formControlName="weightInTon"
+                           placeholder="Enter Capacity" />
+                    <mat-autocomplete #capacity="matAutocomplete">
+                      @for (capacity of vehicleCapacitySuggestion; track capacity) {
+                        <mat-option (click)="onClickTripCapacitySuggestion(capacity)"
+                                    [value]="capacity.label">{{ capacity.label ? capacity.label : capacity }}
+                        </mat-option>
+                      }
+                    </mat-autocomplete>
+                    <button class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center"
+                            *ngIf="truckAddForm.get('weightInTon')?.value"
+                            type="button"
+                            (click)="onClickClearVehicleCapacity()">
+                      <i class="far fa-times text-input-hint"></i>
+                    </button>
+                  </mat-form-field>
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                  <label class="text-body text-web-text-secondary">Size</label>
+                  <mat-form-field (mouseenter)="updateOverLayStyle(false)" appearance="outline"
+                                  class="example-full-width relative">
+                    <input type="text" matInput (keyup)="onKeyUpVehicleSize($event)" formControlName="size"
+                           [matAutocomplete]="size" placeholder="Enter Size" />
+                    <mat-autocomplete #size="matAutocomplete">
+                      @for (size of vehicleSizeSuggestion; track size) {
+                        <mat-option (click)="onClickTripSizeSuggestion(size)"
+                                    [value]="size.label">{{ size.label ? size.label : size }}
+                        </mat-option>
+                      }
+                    </mat-autocomplete>
+                    <button class="absolute inset-y-0 bottom-5 pl-2 mb-0.5 -right-3 flex items-center"
+                            *ngIf="truckAddForm.get('size')?.value"
+                            type="button"
+                            (click)="onClickClearVehicleSize()">
+                      <i class="far fa-times text-input-hint"></i>
+                    </button>
+                  </mat-form-field>
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                  <label class="text-body text-web-text-secondary">Fuel Type</label>
+                  <mat-form-field appearance="outline" class="example-full-width">
+                    <mat-select formControlName="fuelType" placeholder="Select Fuel Type">
+                      @for (fuel of fuelTypeList; track fuel) {
+                        <mat-option [value]="fuel.value">{{ fuel.value }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                  <label class="text-body text-web-text-secondary">Fuel Tank Capacity</label>
+                  <mat-form-field appearance="outline" class="example-full-width">
+                    <input type="text" matInput formControlName="fuelCapacity" placeholder="Fuel Tank Capacity" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </ng-template>
           </mat-tab>
-          <mat-tab label="Document">
-            <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
-              <div class="flex space-x-4 items-center">
-                <img
-                  src="assets/svg/truckDocument.svg"
-                  class="notPreview"
-                  alt="truck document"/>
-                <span class="text-not-black text-h3 leading-h3 font-semibold"
-                >Document</span
-                >
-              </div>
-              <div class="flex flex-col space-y-1">
-                <ng-container *ngFor="let option of truckFileType; index as i">
-                  <div
-                    class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
-                    <div class="flex space-x-4 items-center">
-                      <img
-                        src="assets/svg/not-available.svg"
-                        class="notPreview"
-                        alt=""
-                        *ngIf="
-                      getFileArray(option?.formControlName)?.length <= 0 ||
-                      (option.expiryAvailable === true &&
-                        truckAddForm.get(option?.expiryFormControlName)
-                          ?.value == null)
-                    "/>
-                      <img
-                        src="assets/svg/available.svg"
-                        alt=""
-                        class="notPreview"
-                        *ngIf="
-                      getFileArray(option?.formControlName).length > 0 &&
-                      (option.expiryAvailable == false ||
-                        truckAddForm.get(option?.expiryFormControlName).value !=
-                          null)
-                    "/>
-                      <div class="flex flex-col space-y-0.5">
-                    <span
-                      class="text-not-black text-body_title leading-body_title font-semibold"
-                    >{{ option.name }}</span
-                    >
-                        <mat-form-field
-                          (mouseenter)="updateOverLayStyle(false)"
-                          *ngIf="option?.expiryAvailable"
-                          class="example-full-width flex-1 custom"
-                          appearance="outline"
-                          [ngClass]="{
-                        error: truckAddForm.get(option.expiryFormControlName)
-                          .invalid,
-                      }">
-                          <input
-                            [disabled]="everyThingDisabled"
-                            [formControlName]="option.expiryFormControlName"
-                            matInput
-                            [matDatepicker]="picker"
-                            placeholder="Expiry Date"
-                            (focusin)="picker.open()"
-                            (selectionchange)="
-                          onDateChange($event, option.expiryFormControlName)
-                        "/>
-                          <mat-datepicker-toggle
-                            matIconSuffix
-                            [for]="picker"></mat-datepicker-toggle>
-                          <mat-datepicker
-                            [disabled]="everyThingDisabled"
-                            #picker></mat-datepicker>
-                        </mat-form-field>
-                      </div>
-                    </div>
 
-                    <div class="flex space-x-6 items-center">
-                      <div class="flex">
-                        <div class="flex space-x-3 relative">
-                          <div
-                            class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
-                            *ngFor="
-                          let file of getSpecificFiles(option?.formControlName)
-                        ">
-                            <ng-container
-                              *ngIf="
-                            file.file.type === 'application/pdf';
-                            else imagePreview
-                          ">
-                              <!-- Display PDF Preview -->
-                              <img
-                                (click)="
-                              $event.stopPropagation(); onClickPdfDocument(file)
-                            "
-                                class="h-full w-full"
-                                src="assets/svg/pdf.svg"
-                                alt=""/>
-                            </ng-container>
-                            <ng-template #imagePreview>
-                              <!-- Display Image Preview -->
-                              <img
-                                class="h-full w-full"
-                                [src]="file.preview | fallbackImage"
-                                appImageError
-                                alt=""/>
-                            </ng-template>
-                            <button
-                              (click)="
-                            onCloseImage(
-                              option?.formControlName,
-                              file,
-                              option?.expiryFormControlName
-                            )
-                          "
-                              class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white">
-                              <i class="far fa-times"></i>
-                            </button>
+          <!-- Document (lazy) -->
+          <mat-tab label="Document">
+            <ng-template matTabContent>
+              <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
+                <div class="flex space-x-4 items-center">
+                  <img src="assets/svg/truckDocument.svg" class="notPreview" alt="truck document" />
+                  <span class="text-not-black text-h3 leading-h3 font-semibold">Document</span>
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                  <ng-container *ngFor="let option of truckFileType; index as i; trackBy: trackByOption">
+                    <!-- cache arrays per row -->
+                    <ng-container *ngIf="getFileArray(option?.formControlName) as files">
+                      <ng-container *ngIf="getSpecificFiles(option?.formControlName) as filesHead">
+                        <div class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
+                          <div class="flex space-x-4 items-center">
+                            <img
+                              src="assets/svg/not-available.svg"
+                              class="notPreview"
+                              alt=""
+                              *ngIf="(files?.length || 0) <= 0 || (option.expiryAvailable === true && truckAddForm.get(option?.expiryFormControlName)?.value == null)" />
+
+                            <img
+                              src="assets/svg/available.svg"
+                              alt=""
+                              class="notPreview"
+                              *ngIf="(files?.length || 0) > 0 && (option.expiryAvailable == false || truckAddForm.get(option?.expiryFormControlName)?.value != null)" />
+
+                            <div class="flex flex-col space-y-0.5">
+                              <span
+                                class="text-not-black text-body_title leading-body_title font-semibold">{{ option.name }}</span>
+
+                              <mat-form-field
+                                *ngIf="option?.expiryAvailable"
+                                (mouseenter)="updateOverLayStyle(false)"
+                                class="example-full-width flex-1 custom"
+                                appearance="outline"
+                                [ngClass]="{ error: truckAddForm.get(option.expiryFormControlName)?.invalid }">
+
+                                <input
+                                  [formControlName]="option.expiryFormControlName"
+                                  matInput
+                                  [matDatepicker]="picker"
+                                  placeholder="Expiry Date"
+                                  (dateChange)="onDateChange($event, option.expiryFormControlName)" />
+
+                                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                              </mat-form-field>
+                            </div>
+                          </div>
+
+                          <div class="flex space-x-6 items-center">
+                            <div class="flex">
+                              <div class="flex space-x-3 relative">
+                                <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+                                     *ngFor="let file of filesHead; trackBy: trackByPreview">
+                                  <ng-container *ngIf="file.file.type === 'application/pdf'; else imagePreview">
+                                    <!-- PDF preview -->
+                                    <img (click)="$event.stopPropagation(); onClickPdfDocument(file)"
+                                         class="h-full w-full" src="assets/svg/pdf.svg" alt="" />
+                                  </ng-container>
+                                  <ng-template #imagePreview>
+                                    <img class="h-full w-full" [src]="file.preview | fallbackImage" appImageError
+                                         alt="" />
+                                  </ng-template>
+                                  <button
+                                    (click)="onCloseImage(option?.formControlName, file, option?.expiryFormControlName)"
+                                    class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white">
+                                    <i class="far fa-times"></i>
+                                  </button>
+                                </div>
+                              </div>
+
+                              <div *ngIf="(files?.length || 0) > 3">
+                                <button
+                                  [matMenuTriggerFor]="truckImagePop"
+                                  (click)="viewMoreFormControlName = option?.formControlName; viewMoreExpiryControlName = option?.expiryFormControlName"
+                                  class="px-2 h-[3.75rem] flex text-link items-center justify-center bg-opacity-10 bg-blue space-x-1 text-h2_medium font-semibold rounded-md">
+                                  <span class="text-link font-semibold">+{{ (files?.length || 0) - 3 }}</span>
+                                </button>
+                              </div>
+                            </div>
+
+                            <!-- Upload buttons -->
+                            <app-upload-button
+                              [buttonColor]="everyThingDisabled ? 'bg-input-hint' : ''"
+                              [textColor]="everyThingDisabled ? 'text-input-hint' : 'text-link'"
+                              [isDisabled]="everyThingDisabled"
+                              *ngIf="(filesHead?.length || 0) === 0"
+                              buttonText="Upload"
+                              [file]="true"
+                              (click)="triggerFileUpload(option?.formControlName, option.max)"
+                              [icon]="everyThingDisabled ? 'disable-upload' : 'upload'">
+                            </app-upload-button>
+
+                            <app-upload-button
+                              [isDisabled]="everyThingDisabled"
+                              *ngIf="(filesHead?.length || 0) > 0 && (filesHead?.length || 0) < option?.max"
+                              (click)="triggerFileUpload(option?.formControlName, option.max)"
+                              icon="plus">
+                            </app-upload-button>
+
+                            <input
+                              [multiple]="option.multiple"
+                              type="file"
+                              capture="environment"
+                              #fileInput
+                              accept=".png, .jpg, .jpeg, .pdf"
+                              style="display: none"
+                              (change)="onFileSelected($event)" />
                           </div>
                         </div>
-                        <div
-                          *ngIf="getFileArray(option?.formControlName).length > 3">
-                          <button
-                            [matMenuTriggerFor]="truckImagePop"
-                            (click)="
-                          viewMoreFormControlName = option?.formControlName;
-                          viewMoreExpiryControlName =
-                            option?.expiryFormControlName
-                        "
-                            class="px-2 h-[3.75rem] flex text-link items-center justify-center bg-opacity-10 bg-blue space-x-1 text-h2_medium font-semibold rounded-md">
-                        <span class="text-link font-semibold"
-                        >+{{
-                            getFileArray(option?.formControlName).length - 3
-                          }}</span
-                        >
-                          </button>
-                        </div>
-                      </div>
-                      <app-upload-button
-                        [buttonColor]="everyThingDisabled ? 'bg-input-hint' : ''"
-                        [textColor]="
-                      everyThingDisabled ? 'text-input-hint' : 'text-link'
-                    "
-                        [isDisabled]="everyThingDisabled"
-                        *ngIf="
-                      getSpecificFiles(option?.formControlName)?.length === 0 ||
-                      !getSpecificFiles(option?.formControlName)
-                    "
-                        buttonText="Upload"
-                        [file]="true"
-                        (click)="
-                      triggerFileUpload(option?.formControlName, option.max)
-                    "
-                        [icon]="
-                      everyThingDisabled ? 'disable-upload' : 'upload'
-                    "></app-upload-button>
-                      <app-upload-button
-                        [isDisabled]="everyThingDisabled"
-                        *ngIf="
-                      getSpecificFiles(option?.formControlName)?.length > 0 &&
-                      getSpecificFiles(option?.formControlName)?.length <
-                        option?.max
-                    "
-                        (click)="
-                      triggerFileUpload(option?.formControlName, option.max)
-                    "
-                        icon="plus"></app-upload-button>
-                      <input
-                        [multiple]="option.multiple"
-                        type="file"
-                        capture="environment"
-                        #fileInput
-                        accept=".png, .jpg, .jpeg, .pdf"
-                        style="display: none"
-                        (change)="onFileSelected($event)"/>
-                    </div>
-                  </div>
-                </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </div>
               </div>
-            </div>
+            </ng-template>
           </mat-tab>
+
+          <!-- Pre-hire Checklist (lazy) -->
           <mat-tab label="Pre-hire Checklist">
-            <app-pre-hire-checklist
-              [heightFromParentMenu]="height"
-              [isDisabled]="everyThingDisabled"
-              [object]="null"
-              [passedCheckList]="countPassCheckList.toString()"
-              (preHireCheckListObject)="
-            onClickPrehiredChecklist($event)
-          "></app-pre-hire-checklist>
+            <ng-template matTabContent>
+              <app-pre-hire-checklist
+                [heightFromParentMenu]="height"
+                [isDisabled]="everyThingDisabled"
+                [object]="null"
+                [passedCheckList]="countPassCheckList.toString()"
+                (preHireCheckListObject)="onClickPrehiredChecklist($event)">
+              </app-pre-hire-checklist>
+            </ng-template>
           </mat-tab>
         </mat-tab-group>
       </div>
@@ -528,53 +400,32 @@
   </div>
 </form>
 
-<!--<ng-template #truckImagePop>-->
-
-<!--</ng-template>-->
-
+<!-- View More Menu -->
 <mat-menu #truckImagePop="matMenu" class="truck-menu">
   <div (click)="$event.stopPropagation()">
     <div class="flex justify-between items-center pl-6 pr-2 py-2">
-      <h1
-        class="text-body_title leading-body_title text-not-black font-semibold">
+      <h1 class="text-body_title leading-body_title text-not-black font-semibold">
         {{ getTruckImageTitle(viewMoreFormControlName) }}
       </h1>
-      <button
-        (click)="onClickClosePopUp()"
-        class="h-6 w-6 rounded-full hover:bg-input">
+      <button (click)="onClickClosePopUp()" class="h-6 w-6 rounded-full hover:bg-input">
         <i class="fal fa-times"></i>
       </button>
     </div>
+
     <div class="grid grid-cols-6 gap-3 px-6 py-4">
-      <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
-        <div
-          class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative">
-          <ng-container
-            *ngIf="file.file.type === 'application/pdf'; else imagePreview">
-            <!-- Display PDF Preview -->
-            <img
-              (click)="$event.stopPropagation(); onClickPdfDocument(file)"
-              class="h-full w-full"
-              src="assets/svg/pdf.svg"
-              alt=""/>
+      <ng-container *ngIf="getFileArray(viewMoreFormControlName) as moreFiles">
+        <div class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+             *ngFor="let file of moreFiles; trackBy: trackByPreview">
+          <ng-container *ngIf="file.file.type === 'application/pdf'; else imagePreview2">
+            <img (click)="$event.stopPropagation(); onClickPdfDocument(file)" class="h-full w-full"
+                 src="assets/svg/pdf.svg" alt="" />
           </ng-container>
-          <ng-template #imagePreview>
-            <!-- Display Image Preview -->
-            <img
-              (click)="onClickImage(file.preview)"
-              class="h-full w-full"
-              [src]="file.preview | fallbackImage"
-              appImageError
-              alt=""/>
+          <ng-template #imagePreview2>
+            <img (click)="onClickImage(file.preview)" class="h-full w-full" [src]="file.preview | fallbackImage"
+                 appImageError alt="" />
           </ng-template>
           <button
-            (click)="
-              onCloseImage(
-                viewMoreFormControlName,
-                file,
-                viewMoreExpiryControlName
-              )
-            "
+            (click)="onCloseImage(viewMoreFormControlName, file, viewMoreExpiryControlName)"
             class="absolute -top-1 -right-2 bg-red flex justify-center items-center w-5 h-5 rounded-full text-white">
             <i class="far fa-times"></i>
           </button>

@@ -261,8 +261,8 @@ export const routes: Routes = [
     title: 'Vehicle Details',
     loadComponent: () =>
       import(
-        './pages/profiles/components/truck/truck-details/truck-details.component'
-      ).then(c => c.TruckDetailsComponent),
+        './pages/vehicle-management/components/vehicle-details/vehicle-details.component'
+      ).then(c => c.VehicleDetailsComponent),
     canActivate: [authGuard],
   },
   {

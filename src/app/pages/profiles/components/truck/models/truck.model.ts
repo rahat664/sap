@@ -1,3 +1,5 @@
+import { VehicleCategory } from '../../../../auth/models/response/trip';
+
 export class TruckDocument {
   id: number;
   fileUrl: string;
@@ -9,6 +11,7 @@ export class TruckDocument {
 }
 
 export interface TruckModel {
+  vehicleCategory: VehicleCategory;
   type: string;
   totalCost: number | null; // Can be null
   fuelType: string;
