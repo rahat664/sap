@@ -100,3 +100,13 @@ export interface CreatedByUser {
   username: string;
   authorities: string[] | null;
 }
+
+export interface ExpenseModel {
+  expenseTypeId: number;
+  expenseTypeName: string;
+  icon: string;
+  totalCostSum: number;
+  paidAmountSum: number;
+  dueAmountSum: number;
+}
+

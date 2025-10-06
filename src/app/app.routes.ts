@@ -266,6 +266,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'vehicle-management/:id/statistics-details',
+    title: 'Vehicle Statistics Details',
+    loadComponent: () =>
+      import(
+        './pages/vehicle-management/components/statistics-details/statistics-details.component'
+      ).then(c => c.StatisticsDetailsComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'vehicle-management/add-vehicle',
     title: 'Add Vehicle',
     loadComponent: () =>

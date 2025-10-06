@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 })
 export class TruckService {
   url = `${environment.vehicleUrl}/api/vehicles`;
+  expenseUrl = `${environment.vehicleUrl}/api/expenses`;
+  workshopUrl = `${environment.vehicleUrl}/api/workshop_histories`;
   preHireChecklistUrl = `${environment.vehicleUrl}/api/preHireChecklist`;
   checklistUrl = `${environment.vehicleUrl}/api/checklist`;
 
@@ -81,4 +83,22 @@ export class TruckService {
   }
 
   getTruckData() {}
+
+  getExpenses(truckId: string): Observable<any> {
+    return this.http.get(`${this.expenseUrl}/statistics?vehicleId=${truckId}`);
+  }
+
+  getWorkshopHistory(body: any, meta?: any): Observable<any> {
+    return this.http.post(`${this.workshopUrl}/list`, {
+      body: body,
+      meta: meta
+    } );
+  }
+
+  getFuelHistory(body: any, meta?: any): Observable<any> {
+    return this.http.post(`${environment.vehicleUrl}/api/fuel_histories/list`, {
+      body: body,
+      meta: meta
+    } );
+  }
 }

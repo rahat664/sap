@@ -325,4 +325,8 @@ export class TripService {
   getPaymentDetails(tripId: string) {
     return this.http.get(`${this.transporterPaymentUrl}/trip/${tripId}`);
   }
+
+  getVehicleStatistics(vehicleId: string): Observable<any> {
+    return this.http.get(`${this.url}/vehicle/statistics?vehicleId=${vehicleId}`);
+  }
 }
