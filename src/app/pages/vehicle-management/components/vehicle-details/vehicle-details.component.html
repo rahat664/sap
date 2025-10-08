@@ -1,20 +1,25 @@
 <div class="m-3 flex flex-col space-y-3">
-  <div class="bg-white flex justify-between px-6 py-2 rounded-lg">
+  <div class="bg-white flex justify-between items-center px-6 py-2 rounded-lg">
     <div>
-
+      <h1 class="text-not-black font-normal text-body">
+        <span *ngIf="singleTruckData?.status !== 'Approved'">This is not an approved truck. Approve now?</span>
+        <span *ngIf="singleTruckData?.status === 'Approved'">This is an approved truck</span>
+      </h1>
     </div>
-    <div class="flex space-x-2 items-center">
-      <button (click)="goBack()" class="bg-another text-white px-4 py-2 rounded hover:bg-another/80">Back</button>
-      <button (click)="openEditVehicleDialog()" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80">Edit
-        Vehicle
+    <div class="flex space-x-2 items-center" *ngIf="singleTruckData?.status !== 'Approved'">
+      <button *ngIf="singleTruckData?.status !== 'Approved'" (click)="onClickChangeStatus('Approve')" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/80">Approve
+      </button>
+      <button *ngIf="singleTruckData?.status !== 'Rejected'" (click)="onClickChangeStatus('Reject')" class="text-red px-4 py-2 rounded-lg hover:bg-red/20">Reject
       </button>
     </div>
+    <button class="text-red px-4 py-2 rounded-lg hover:bg-red/20 {{singleTruckData?.status === 'Approved' ? 'block text-white' : 'hidden'}}">Reject
+    </button>
   </div>
   <div class="grid lg:grid-cols-2 gap-3">
     <div class=" h-[calc(100vh-10rem)]  overflow-auto flex flex-col space-y-3 mb-3">
       <div class="bg-white rounded-lg relative">
         <div class="flex space-x-7 p-6 items-center">
-          <div>
+          <div class="max-w-[8.5rem] min-w-[8.5rem] max-h-24 min-h-24 flex items-center justify-center">
             <img
               [src]="singleTruckData?.vehicleCategory?.imageUrl ? (singleTruckData?.vehicleCategory?.imageUrl | image) : 'assets/svg/dummy-truck.svg'"
               alt="truck" class="notPreview" />
@@ -22,7 +27,7 @@
           <div class="flex flex-col space-y-1">
             <div class="text-h3 leading-h3 font-semibold text-not-black flex space-x-2 items-center">
               <span>{{ singleTruckData?.fullRegistrationNumber }}</span>
-              <img src="assets/svg/verified.svg" alt="approve" class="inline-block h-6 w-6" />
+              <img *ngIf="singleTruckData?.status === 'Approved'" src="assets/svg/verified.svg" alt="approve" class="inline-block h-6 w-6" />
             </div>
             <span
               class="text-h2_regular leading-h2_regular text-not-black font-normal">{{ singleTruckData?.vehicleCategory?.name }}</span>
@@ -33,9 +38,15 @@
           </div>
         </div>
         <div class="absolute top-4 right-2">
-          <button mat-button>
+          <button mat-button [matMenuTriggerFor]="truckMenu">
             <i class="fas fa-ellipsis-v"></i>
           </button>
+          <mat-menu #truckMenu="matMenu">
+            <button mat-menu-item (click)="onClickEditTruck()">
+              <i class="fas fa-pen mr-2"></i>
+              <span>Edit Vehicle</span>
+            </button>
+          </mat-menu>
         </div>
         <mat-tab-group>
           <mat-tab label="Details">
@@ -46,7 +57,7 @@
                     <p
                       class="col-span-1 bg-disabled px-4 py-3 text-body text-not-black font-regular">{{ detail?.name }}</p>
                     <p
-                      class="col-span-2 bg-white px-4 py-3 text-body {{singleTruckData[detail.value] ? 'text-not-black' : 'text-secondary'}} font-regular">{{ singleTruckData[detail.value] ? singleTruckData[detail.value] : 'N/A' }}</p>
+                      class="col-span-2 bg-white px-4 py-3 text-body {{singleTruckData[detail.value] ? 'text-not-black' : 'text-secondary'}} font-regular">{{ singleTruckData[detail.value] ? (detail.value ==='purchaseDate' ? (singleTruckData[detail.value] | date: 'd MMM yyyy') : singleTruckData[detail.value]) : 'N/A' }}</p>
                   </div>
                 </ng-container>
               </div>
@@ -258,13 +269,15 @@
                         title="Workshop"
                         bgColorOfDetails="bg-[#FFE9C3]"
                         textColorOfDetails="text-[#E69811]"
-                        actionButtonText="Add new Record">
+                        actionButtonText="Add new Record"
+                        (reply)="onReply($event)"
+      >
         <div>
           <img src="assets/svg/calendar.svg" alt="calendar" class="notPreview inline-block h-4 w-4 mr-1" />
           <span class="text-sm text-secondary">{{ workshopHistories[0]?.nextScheduledDate ? (workshopHistories[0]?.nextScheduledDate | date : 'd MMM yyyy') : 'date not available' }}</span>
         </div>
       </app-details-card>
-      <app-details-card [details]="fuelHistories[0]" imageUrl="svg/fuel.svg" cardBackgroundColor="bg-[#FFF6F5]"
+      <app-details-card (reply)="onReply($event)" (detailsReply)="onClickFuelDetails()" [details]="fuelHistories[0]" imageUrl="svg/fuel.svg" cardBackgroundColor="bg-[#FFF6F5]"
                         title="Fuel"
                         actionButtonText="Add new Record"
                         bgColorOfDetails="bg-[#FADBD7]" textColorOfDetails="text-[#F0614E]"></app-details-card>

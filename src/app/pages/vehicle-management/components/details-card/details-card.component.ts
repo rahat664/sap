@@ -10,6 +10,7 @@ import { DatePipe, NgIf } from '@angular/common';
 })
 export class DetailsCardComponent {
   @Output() reply = new EventEmitter<string>();
+  @Output() detailsReply = new EventEmitter<any>();
   @Input() actionButtonText: string = 'Action';
   @Input() title: string = 'Title';
   @Input() details: any = {};
@@ -19,6 +20,10 @@ export class DetailsCardComponent {
   @Input() imageUrl: string = 'images/user.png';
 
   actionButtonReply() {
-    this.reply.emit(this.actionButtonText);
+    this.reply.emit(this.title);
+  }
+
+  onClickDetails() {
+    this.detailsReply.emit(this.title);
   }
 }

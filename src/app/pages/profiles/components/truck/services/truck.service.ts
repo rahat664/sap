@@ -82,10 +82,12 @@ export class TruckService {
     return this.http.get(`${this.url}/${id}`);
   }
 
-  getTruckData() {}
-
   getExpenses(truckId: string): Observable<any> {
     return this.http.get(`${this.expenseUrl}/statistics?vehicleId=${truckId}`);
+  }
+
+  addWorkshopHistory(body: any): Observable<any> {
+    return this.http.post(`${this.workshopUrl}`, body);
   }
 
   getWorkshopHistory(body: any, meta?: any): Observable<any> {
@@ -94,6 +96,11 @@ export class TruckService {
       meta: meta
     } );
   }
+
+  addFuelRecord(body: any): Observable<any> {
+    return this.http.post(`${environment.vehicleUrl}/api/fuel_histories`, body);
+  }
+
 
   getFuelHistory(body: any, meta?: any): Observable<any> {
     return this.http.post(`${environment.vehicleUrl}/api/fuel_histories/list`, {

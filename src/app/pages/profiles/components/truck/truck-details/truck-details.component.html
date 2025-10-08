@@ -140,17 +140,17 @@
                     appearance="outline"
                     class="example-full-width">
                     <input
-                      id="registration_serial"
+                      id="registrationSerial"
                       [minLength]="2"
                       [maxLength]="2"
                       type="text"
                       matInput
-                      formControlName="registration_serial"
+                      formControlName="registrationSerial"
                       placeholder="Serial"/>
                   </mat-form-field>
                   <span
                     *ngIf="
-                      truckUpdateForm.get('registration_serial').touched &&
+                      truckUpdateForm.get('registrationSerial').touched &&
                       registrationSerialErrorMessage
                     "
                     class="text-red text-xs"
@@ -162,17 +162,17 @@
                     appearance="outline"
                     class="example-full-width">
                     <input
-                      id="registration_num"
+                      id="registrationNum"
                       [minLength]="4"
                       [maxLength]="4"
                       type="text"
                       matInput
-                      formControlName="registration_num"
+                      formControlName="registrationNum"
                       placeholder="Number"/>
                   </mat-form-field>
                   <span
                     *ngIf="
-                      truckUpdateForm.get('registration_num').touched &&
+                      truckUpdateForm.get('registrationNum').touched &&
                       registrationNumErrorMessage
                     "
                     class="text-red text-xs"

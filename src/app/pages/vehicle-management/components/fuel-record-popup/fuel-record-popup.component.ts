@@ -1,0 +1,151 @@
+import { Component } from '@angular/core';
+import { AlphabetOnlyDirective } from '../../../../shared/directive/alphabet-only.directive';
+import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TruckService } from '../../../profiles/components/truck/services/truck.service';
+import { DriverEditSharedService } from '../../../profiles/services/driver-edit-shared.service';
+import { NgClass, NgIf } from '@angular/common';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
+
+@Component({
+  selector: 'app-fuel-record-popup',
+  imports: [
+    AlphabetOnlyDirective,
+    MatDatepicker,
+    MatDatepickerInput,
+    MatDatepickerToggle,
+    NgIf,
+    ReactiveFormsModule,
+    NgClass,
+    MatFormField,
+    MatSuffix,
+    MatInput,
+    MatOption,
+    MatSelect
+  ],
+  providers: [provideNativeDateAdapter()],
+  templateUrl: './fuel-record-popup.component.html',
+  styleUrl: './fuel-record-popup.component.scss',
+})
+export class FuelRecordPopupComponent {
+  fuelTypeList: any[] = [
+    { id: 1, value: 'Diesel' },
+    { id: 2, value: 'Petrol' },
+    { id: 3, value: 'CNG' },
+    { id: 4, value: 'LPG' },
+    { id: 5, value: 'Electric' },
+  ];
+  protected readonly close = close;
+  fuelForm: FormGroup;
+  textLabels = {
+    mainLabel: 'Mobile number',
+    codePlaceholder: 'Code',
+    searchPlaceholderLabel: 'Search',
+    noEntriesFoundLabel: 'No countries found',
+    nationalNumberLabel: '',
+    hintLabel: '',
+    invalidNumberError: '',
+    requiredError: '',
+  };
+  documentFile: File | null = null;
+  docPreviewUrl: string | null = null;
+  isSubmitting: boolean;
+
+  constructor(
+    private fb: FormBuilder,
+    private service: TruckService,
+    private shared: DriverEditSharedService
+  ) {
+    this.fuelForm = this.fb.group({
+      vehicleId: ['', [Validators.required]],
+      fuelType: ['', [Validators.required]],
+      fuelVolumeInLiters: ['', [Validators.required]],
+      stationName: ['', [Validators.required]],
+      totalCost: ['', [Validators.required]],
+      refuelDateTime: ['', [Validators.required]],
+      notes: [''],
+      document: [null],
+    });
+  }
+
+  ngOnInit() {
+    this.shared.validateInterNationalPhoneNumber();
+    this.fuelForm
+      .get('vehicleId')
+      ?.setValue(localStorage.getItem('vehicleId') || '');
+  }
+
+  get phoneNumber() {
+    return this.fuelForm.get('vendorPhone');
+  }
+
+  updateOverLayStyle(isSpecial: boolean) {
+    const className = 'custom-overlay-bounding-box';
+    if (isSpecial) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
+  }
+  onSubmit() {
+    if (this.fuelForm.valid) {
+      const formData = new FormData();
+      const payload: Record<string, any> = {};
+      Object.keys(this.fuelForm.controls).forEach(key => {
+        const control = this.fuelForm.get(key);
+        if (control) {
+          if (key === 'document' && this.documentFile) {
+            formData.append('receiptFiles', this.documentFile);
+          } else {
+              payload[key] = control.value;
+          }
+        }
+      });
+      formData.append('payload', JSON.stringify(payload));
+      // Submit formData to the server or perform desired actions
+      this.isSubmitting = true;
+      this.service.addWorkshopHistory(formData).subscribe({
+        next: res => {
+          this.isSubmitting = false;
+        },
+        error: err => {
+          this.isSubmitting = false;
+          console.error('Error submitting workshop form:', err);
+        },
+      });
+    } else {
+      this.fuelForm.markAllAsTouched();
+    }
+  }
+
+  onDocSelected(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files && input.files[0] ? input.files[0] : null;
+    this.documentFile = file;
+
+    // bind to form
+    this.fuelForm.get('document')?.setValue(file);
+
+    // create preview/download URL (safe for images/pdf)
+    if (this.docPreviewUrl) URL.revokeObjectURL(this.docPreviewUrl);
+    this.docPreviewUrl = file ? URL.createObjectURL(file) : null;
+  }
+
+  removeDoc(e: MouseEvent) {
+    e.stopPropagation();
+    if (this.docPreviewUrl) URL.revokeObjectURL(this.docPreviewUrl);
+    this.docPreviewUrl = null;
+    this.documentFile = null;
+    this.fuelForm.get('document')?.reset(null);
+  }
+
+  getDocumentError(): string {
+    const c = this.fuelForm.get('document');
+    // Customize as needed
+    if (c?.hasError('required')) return 'Document is required';
+    return 'Invalid file';
+  }
+}

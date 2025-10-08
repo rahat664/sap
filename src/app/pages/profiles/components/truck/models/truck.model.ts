@@ -11,6 +11,7 @@ export class TruckDocument {
 }
 
 export interface TruckModel {
+  ownership: any;
   vehicleCategory: VehicleCategory;
   type: string;
   totalCost: number | null; // Can be null
@@ -60,7 +61,7 @@ export interface TruckModel {
   purchaseDate: string,
   purchaseFrom: string,
   yard: string,
-  engine: string,
+  engineNumber: string,
   chassisNumber: string,
   engineType: string,
   displacement: string,

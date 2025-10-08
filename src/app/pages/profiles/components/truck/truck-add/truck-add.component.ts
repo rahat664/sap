@@ -217,12 +217,12 @@ export class TruckAddComponent implements OnInit, AfterViewInit, OnDestroy {
       truckImages: [null],
 
       // Other fields
-      ownership: [null],
+      ownership: [null, [Validators.required]],
       type: [null],
       purchaseFrom: [null],
       purchaseDate: [null],
       yard: [null],
-      engine: [null],
+      engineNumber: [null],
       chassisNumber: [null],
       size: [null],
       fuelType: [null],
@@ -365,7 +365,7 @@ export class TruckAddComponent implements OnInit, AfterViewInit, OnDestroy {
           this.loading = false;
           if (res.status == 'OK') {
             this.toastr.showSuccess(res.message);
-            this.router.navigate(['/profile/truck']);
+            this.router.navigate(['/vehicle-management']);
           } else {
             this.toastr.showError(res.message);
           }

@@ -16,17 +16,21 @@ import { truckFileType } from '../../../profiles/components/truck/models/truck-f
 import { ImageGalleryComponent } from '../../../../shared/modules/image-gallery/image-gallery.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageGalleryService } from '../../../../shared/services/image-gallery/image-gallery.service';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { PreHireChecklistDetailsComponent } from '../../../profiles/components/truck/pre-hire-checklist-details/pre-hire-checklist-details.component';
 import { TripService } from '../../../trip-list/services/trip.service';
 import { CardComponent } from '../card/card.component';
 import { DetailsCardComponent } from '../details-card/details-card.component';
-import {
-  WorkshopHistoryCreateDto,
-} from '../../../profiles/components/truck/models/workshop-history.model';
+import { WorkshopHistoryCreateDto } from '../../../profiles/components/truck/models/workshop-history.model';
 import { ImagePipe } from '../../../../shared/pipes/image.pipe';
 import { RefuelRecord } from '../../../profiles/components/truck/models/fuel.model';
 import { statisticsSummary } from '../../../profiles/components/truck/models/vehicles-statics.model';
+import { NewWorkshopPopupComponent } from '../new-workshop-popup/new-workshop-popup.component';
+import { WorkshopRecordsComponent } from '../workshop-records/workshop-records.component';
+import { FuelRecordPopupComponent } from '../fuel-record-popup/fuel-record-popup.component';
+import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
+import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -46,6 +50,7 @@ import { statisticsSummary } from '../../../profiles/components/truck/models/veh
     CardComponent,
     DetailsCardComponent,
     ImagePipe,
+    MatMenuItem,
   ],
   templateUrl: './vehicle-details.component.html',
   styleUrl: './vehicle-details.component.scss',
@@ -116,7 +121,8 @@ export class VehicleDetailsComponent implements OnInit {
     private datePipe: DatePipe,
     private imageGalleryService: ImageGalleryService,
     private tripService: TripService,
-    private router: Router
+    private router: Router,
+    private toastr: HandleToastrService
   ) {}
 
   goBack() {}
@@ -436,8 +442,8 @@ export class VehicleDetailsComponent implements OnInit {
     };
     const meta = {
       page: 0,
-      size: 1,
-      sort: [{ field: 'createdAt', direction: 'DESC' }],
+      limit: 1,
+      sort: [{ order: 'DESC', field: 'entryDate' }],
     };
     this.service.getWorkshopHistory(body, meta).subscribe(
       (res: any) => {
@@ -457,7 +463,7 @@ export class VehicleDetailsComponent implements OnInit {
   private getFuelHistories(vehicleId: string) {
     const body = {
       vehicleId: [vehicleId],
-    }
+    };
     const meta = {
       page: 0,
       size: 1,
@@ -489,7 +495,123 @@ export class VehicleDetailsComponent implements OnInit {
     localStorage.setItem(
       'detailedStatistics',
       JSON.stringify(this.vehicleStatics)
-    )
-    this.router.navigateByUrl(`/vehicle-management/${this.singleTruckData.id}/statistics-details`);
+    );
+    this.router.navigateByUrl(
+      `/vehicle-management/${this.singleTruckData.id}/statistics-details`
+    );
+  }
+
+  onReply($event: string) {
+    localStorage.setItem('vehicleId', this.singleTruckData.id.toString());
+    const component =
+      $event === 'Workshop'
+        ? NewWorkshopPopupComponent
+        : FuelRecordPopupComponent;
+    if ($event === 'Workshop') {
+      this.dialog.open(NewWorkshopPopupComponent, {
+        minWidth: '37.125rem',
+      });
+    } else if ($event === 'Fuel') {
+      this.dialog.open(FuelRecordPopupComponent, {
+        minWidth: '37.125rem',
+      });
+    }
+  }
+
+  onClickFuelDetails() {
+    this.dialog.open(WorkshopRecordsComponent, {
+      minWidth: '70vw',
+      data: {
+        isFuelRecord: true,
+        vehicleId: this.singleTruckData.id,
+      },
+    });
+  }
+
+  onClickChangeStatus(status: string) {
+    if (status === 'Approve') {
+      this.dialog
+        .open(ConfirmApproveComponent, {
+          data: {
+            title: 'Attention',
+            textPrefix: 'the truck with registration number ',
+            text: `${this.singleTruckData?.fullRegistrationNumber}?`,
+            buttonText: 'Approve',
+          },
+        })
+        .afterClosed()
+        .subscribe((res: any) => {
+          if (res === 'updated') {
+            // Do something
+            const formData = new FormData();
+            const payload: Record<string, any> = {};
+            payload['id'] = this.singleTruckData?.id;
+            payload['status'] = 'Approved';
+            formData.append('payload', JSON.stringify(payload));
+            this.service.editTruck(formData).subscribe(
+              (res: any) => {
+                // Handle response
+                if (res.status == 'OK') {
+                  this.toastr.showSuccess(res.message);
+                  this.singleTruckData = {} as TruckModel;
+                  this.getVehicleDetails();
+                } else {
+                  this.toastr.showError(res.message);
+                }
+              },
+              error => {
+                // Handle error
+                this.toastr.showError(error.error.message);
+              }
+            );
+          }
+        });
+    } else {
+      this.dialog
+        .open(ConfirmRejectComponent, {
+          data: {
+            title: 'Attention',
+            textPrefix: 'the truck with registration number ',
+            text: `${this.singleTruckData?.fullRegistrationNumber}?`,
+            buttonText: 'Reject',
+            reasonAvailable: true,
+          },
+        })
+        .afterClosed()
+        .subscribe((res: any) => {
+          if (res.status === 'rejected') {
+            // Do something
+            const formData = new FormData();
+            const payload: Record<string, any> = {};
+            payload['id'] = this.singleTruckData?.id;
+            payload['status'] = 'Rejected';
+            payload['rejectedReason'] = res.reason;
+            formData.append('payload', JSON.stringify(payload));
+            this.service.editTruck(formData).subscribe(
+              (res: any) => {
+                // Handle response
+                if (res.status == 'OK') {
+                  this.toastr.showSuccess(res.message);
+                  this.singleTruckData = {} as TruckModel;
+                  this.getVehicleDetails();
+                } else {
+                  this.toastr.showError(res.message);
+                }
+              },
+              error => {
+                // Handle error
+                this.toastr.showError(error.error.message);
+              }
+            );
+          }
+        });
+    }
+  }
+
+  onClickEditTruck() {
+    localStorage.setItem('vehicleDetails', JSON.stringify(this.singleTruckData));
+    this.router.navigateByUrl(
+      `/vehicle-management/${this.singleTruckData.id}/edit-vehicle`
+    );
   }
 }
