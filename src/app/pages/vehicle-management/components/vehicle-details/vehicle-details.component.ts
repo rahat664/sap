@@ -31,6 +31,7 @@ import { FuelRecordPopupComponent } from '../fuel-record-popup/fuel-record-popup
 import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-approve/confirm-approve.component';
 import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { FuelRecordsComponent } from '../fuel-records/fuel-records.component';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -77,22 +78,35 @@ export class VehicleDetailsComponent implements OnInit {
     { name: 'Fuel tank capacity', value: 'fuelCapacity' },
   ];
   displayedStatisticsColumns: {
+    suffix: any;
     name: string;
     value: string;
     imageUrl: string;
   }[] = [
     {
+      suffix: '',
       name: 'Completed trips',
       value: 'completedTrip',
       imageUrl: 'completeStat.svg',
     },
-    { name: 'Total Run', value: 'totalRun', imageUrl: 'totalRun.svg' },
     {
+      suffix: ' Km',
+      name: 'Total Run',
+      value: 'totalRun',
+      imageUrl: 'totalRun.svg',
+    },
+    {
+      suffix: ' L',
       name: 'Fuel Consumed',
       value: 'fuelConsumed',
       imageUrl: 'fuelConsumed.svg',
     },
-    { name: 'CO2 emitted', value: 'carbonOmitted', imageUrl: 'co2Emitted.svg' },
+    {
+      suffix: ' Kg',
+      name: 'CO2 emitted',
+      value: 'carbonOmitted',
+      imageUrl: 'co2Emitted.svg',
+    },
   ];
   savedRegistrationPaper: TruckDocument[] = [];
   savedTaxPaper: TruckDocument[] = [];
@@ -508,18 +522,36 @@ export class VehicleDetailsComponent implements OnInit {
         ? NewWorkshopPopupComponent
         : FuelRecordPopupComponent;
     if ($event === 'Workshop') {
-      this.dialog.open(NewWorkshopPopupComponent, {
-        minWidth: '37.125rem',
-      });
+      this.dialog
+        .open(NewWorkshopPopupComponent, {
+          minWidth: '37.125rem',
+        })
+        .afterClosed()
+        .subscribe((res: any) => {
+          if (res) {
+            this.getWorkshopHistories(this.singleTruckData.id.toString());
+          } else {
+            // Handle error (e.g., show a notification)
+          }
+        });
     } else if ($event === 'Fuel') {
-      this.dialog.open(FuelRecordPopupComponent, {
-        minWidth: '37.125rem',
-      });
+      this.dialog
+        .open(FuelRecordPopupComponent, {
+          minWidth: '37.125rem',
+        })
+        .afterClosed()
+        .subscribe((res: any) => {
+          if (res) {
+            this.getFuelHistories(this.singleTruckData.id.toString());
+          } else {
+            // Handle error (e.g., show a notification)
+          }
+        });
     }
   }
 
   onClickFuelDetails() {
-    this.dialog.open(WorkshopRecordsComponent, {
+    this.dialog.open(FuelRecordsComponent, {
       minWidth: '70vw',
       data: {
         isFuelRecord: true,
@@ -609,9 +641,22 @@ export class VehicleDetailsComponent implements OnInit {
   }
 
   onClickEditTruck() {
-    localStorage.setItem('vehicleDetails', JSON.stringify(this.singleTruckData));
+    localStorage.setItem(
+      'vehicleDetails',
+      JSON.stringify(this.singleTruckData)
+    );
     this.router.navigateByUrl(
       `/vehicle-management/${this.singleTruckData.id}/edit-vehicle`
     );
+  }
+
+  onClickWork() {
+    this.dialog.open(WorkshopRecordsComponent, {
+      minWidth: '70vw',
+      data: {
+        isFuelRecord: true,
+        vehicleId: this.singleTruckData.id,
+      },
+    });
   }
 }

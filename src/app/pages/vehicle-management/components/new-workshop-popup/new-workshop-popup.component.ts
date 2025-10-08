@@ -33,11 +33,8 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
   selector: 'app-new-workshop-popup',
   imports: [
     ReactiveFormsModule,
-    MatLabel,
     MatInput,
     NgIf,
-    MatError,
-    MatLabel,
     MatFormField,
     NgxMaterialIntlTelInputComponent,
     NgClass,

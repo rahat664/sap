@@ -975,11 +975,11 @@ export class TruckAddComponent implements OnInit, AfterViewInit, OnDestroy {
     (opt && (opt as any).formControlName) || _;
   trackByPreview = (_: number, item: any) => item?.preview || _;
   fuelTypeList: any[] = [
-    { id: 1, value: 'Diesel' },
-    { id: 2, value: 'Petrol' },
-    { id: 3, value: 'CNG' },
-    { id: 4, value: 'LPG' },
-    { id: 5, value: 'Electric' },
+    { id: 1, value: 'DIESEL' },
+    { id: 2, value: 'PETROL' },
+    { id: 3, value: 'LPG' },
+    { id: 4, value: 'CNG' },
+    { id: 5, value: 'OCTANE' },
   ];
   vehicleSizes = [
     { value: '7ft', label: '7 Feet' },

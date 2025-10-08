@@ -46,7 +46,7 @@
     </div>
     <div class="flex space-x-3">
       <ng-container *ngFor="let button of showButtons">
-        <app-vehicle-stats-button [title]="button.title" [totalNumber]="button.totalNumber"></app-vehicle-stats-button>
+        <app-vehicle-stats-button [title]="button.title" [totalNumber]="summaryValue[button.property]"></app-vehicle-stats-button>
       </ng-container>
     </div>
   </div>

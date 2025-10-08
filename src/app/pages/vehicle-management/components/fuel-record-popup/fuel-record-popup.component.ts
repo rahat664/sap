@@ -9,6 +9,8 @@ import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 
 @Component({
   selector: 'app-fuel-record-popup',
@@ -32,11 +34,11 @@ import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 })
 export class FuelRecordPopupComponent {
   fuelTypeList: any[] = [
-    { id: 1, value: 'Diesel' },
-    { id: 2, value: 'Petrol' },
-    { id: 3, value: 'CNG' },
-    { id: 4, value: 'LPG' },
-    { id: 5, value: 'Electric' },
+    { id: 1, value: 'DIESEL' },
+    { id: 2, value: 'PETROL' },
+    { id: 3, value: 'LPG' },
+    { id: 4, value: 'CNG' },
+    { id: 5, value: 'OCTANE' },
   ];
   protected readonly close = close;
   fuelForm: FormGroup;
@@ -57,7 +59,9 @@ export class FuelRecordPopupComponent {
   constructor(
     private fb: FormBuilder,
     private service: TruckService,
-    private shared: DriverEditSharedService
+    private shared: DriverEditSharedService,
+    public dialogRef: MatDialogRef<FuelRecordPopupComponent>,
+    private toaster: HandleToastrService
   ) {
     this.fuelForm = this.fb.group({
       vehicleId: ['', [Validators.required]],
@@ -68,6 +72,7 @@ export class FuelRecordPopupComponent {
       refuelDateTime: ['', [Validators.required]],
       notes: [''],
       document: [null],
+      unitPrice: [100.00]
     });
   }
 
@@ -78,9 +83,6 @@ export class FuelRecordPopupComponent {
       ?.setValue(localStorage.getItem('vehicleId') || '');
   }
 
-  get phoneNumber() {
-    return this.fuelForm.get('vendorPhone');
-  }
 
   updateOverLayStyle(isSpecial: boolean) {
     const className = 'custom-overlay-bounding-box';
@@ -107,16 +109,20 @@ export class FuelRecordPopupComponent {
       formData.append('payload', JSON.stringify(payload));
       // Submit formData to the server or perform desired actions
       this.isSubmitting = true;
-      this.service.addWorkshopHistory(formData).subscribe({
+      this.service.addFuelRecord(formData).subscribe({
         next: res => {
           this.isSubmitting = false;
+          this.toaster.showSuccess('Success', 'Fuel record added successfully');
+          this.dialogRef.close(true);
         },
         error: err => {
           this.isSubmitting = false;
-          console.error('Error submitting workshop form:', err);
+          this.dialogRef.close(false);
+          this.toaster.showError('Error', err?.error?.message || 'Something went wrong');
         },
       });
     } else {
+      this.toaster.showError('Error', 'Fuel record not found');
       this.fuelForm.markAllAsTouched();
     }
   }
@@ -147,5 +153,9 @@ export class FuelRecordPopupComponent {
     // Customize as needed
     if (c?.hasError('required')) return 'Document is required';
     return 'Invalid file';
+  }
+
+  closePopup() {
+    this.dialogRef.close(false);
   }
 }

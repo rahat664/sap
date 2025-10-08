@@ -22,7 +22,7 @@
       </div>
       <div class="flex flex-col items-center justify-center" *ngIf="title === 'Fuel'">
         <span
-          class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.fuelVolumeInLiters ? details?.fuelVolumeInLiters : 'N/A' }}</span>
+          class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.fuelVolumeInLiters ? details?.fuelVolumeInLiters + ' L' : '0 L' }}</span>
       </div>
     </div>
     <ng-container *ngIf="title === 'Workshop'">
@@ -33,7 +33,7 @@
       </div>
       <div class="flex flex-col space-y-0 5 text-center">
           <span
-            class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.price ? details?.price : 'N/A' }}</span>
+            class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.price ? details?.price + ' ৳' : '0 ৳' }}</span>
         <span class="text-body text-secondary font-normal">Cost</span>
       </div>
     </ng-container>
@@ -45,7 +45,7 @@
       </div>
       <div class="flex flex-col space-y-0 5 text-center">
           <span
-            class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.totalCost ? details?.totalCost : 'N/A' }}</span>
+            class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.totalCost ? details?.totalCost + ' ৳' : '0 ৳' }}</span>
         <span class="text-body text-secondary font-normal">Cost</span>
       </div>
     </ng-container>

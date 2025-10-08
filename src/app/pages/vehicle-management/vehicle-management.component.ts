@@ -39,9 +39,9 @@ export class VehicleManagementComponent {
   totalPages: number = 0;
   loading: boolean = false;
   showButtons: any[] = [
-    { title: 'Total', totalNumber: '0' },
-    { title: 'Own', totalNumber: '0' },
-    { title: 'Third Party', totalNumber: '0' },
+    { title: 'Total', totalNumber: '0', property: 'All' },
+    { title: 'Own', totalNumber: '0' , property: 'OWN'},
+    { title: 'Third Party', totalNumber: '0' , property: 'THIRD_PARTY'},
   ];
   private page: number = 0;
   private size: number = 20;
@@ -54,6 +54,11 @@ export class VehicleManagementComponent {
   inputPlaceholder: string = '';
   filterOpened: boolean = false;
   truckFileType: TruckFileType[] = truckFileType;
+  summaryValue: {
+    All: number;
+    OWN: number;
+    THIRD_PARTY: number;
+  } = { All: 0, OWN: 0, THIRD_PARTY: 0 };
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -149,6 +154,7 @@ export class VehicleManagementComponent {
       this.truckList = res.data.responses;
       this.totalPages = res.data.totalPages;
       this.loading = false;
+      this.summaryValue = res.data.Summary
     });
   }
 

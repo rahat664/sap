@@ -3,14 +3,14 @@
     <h1 class="text-h3 leading-h3 font-semibold text-not-black mb-6">New fuel record</h1>
     <!--    cross-button-->
     <button class="absolute top-6 right-6 h-8 w-8  rounded-full flex justify-center items-center"
-            (click)="close()">
-      <i class="fas fa-times text-white"></i>
+            (click)="closePopup()">
+      <i class="fal fa-times"></i>
     </button>
   </div>
   <form [formGroup]="fuelForm" (ngSubmit)="onSubmit()" class="">
     <div class="flex flex-col space-y-3">
       <div class="flex flex-col space-y-1">
-        <label for="fuelType" class="text-not-black font-semibold"
+        <label for="fuelType" class="text-not-black text-body"
         >Fuel Type</label
         >
 
@@ -34,7 +34,7 @@
           >
       </div>
       <div class="flex flex-col space-y-1">
-        <label for="fuelVolumeInLiters" class="text-not-black font-semibold"
+        <label for="fuelVolumeInLiters" class="text-not-black text-body"
         >Quantity (L)</label
         >
         <div>
@@ -52,8 +52,8 @@
               id="fuelVolumeInLiters"
               type="text"
               matInput
-              formControlName="vendorAddress"
-              placeholder="Enter vendor Address" />
+              formControlName="fuelVolumeInLiters"
+              placeholder="Enter quantity in litre" />
           </mat-form-field>
           <span
             *ngIf="fuelForm.get('fuelVolumeInLiters').touched &&
@@ -66,7 +66,7 @@
         </div>
       </div>
       <div class="flex flex-col space-y-1">
-        <label for="service" class="text-not-black font-semibold"
+        <label for="service" class="text-not-black text-body"
         >Fuel Station</label
         >
         <div>
@@ -97,7 +97,7 @@
         </div>
       </div>
       <div class="flex flex-col space-y-1">
-        <label for="cost" class="text-not-black font-semibold"
+        <label for="cost" class="text-not-black text-body"
         >Cost</label
         >
         <div>
@@ -127,9 +127,8 @@
           >
         </div>
       </div>
-
       <div class="flex flex-col space-y-1">
-        <label for="date" class="text-not-black font-semibold"
+        <label for="date" class="text-not-black text-body"
         >Date</label>
         <mat-form-field (mouseenter)="updateOverLayStyle(false)" appearance="outline">
           <input id="date" placeholder="Choose Date" matInput
@@ -141,7 +140,7 @@
       </div>
       <!-- Document field -->
       <div class="flex flex-col space-y-1">
-        <label for="document" class="text-not-black font-semibold">Document</label>
+        <label for="document" class="text-not-black text-body">Document</label>
 
         <!-- hidden real file input -->
         <input
@@ -203,8 +202,8 @@
   </span>
       </div>
 
-      <div class="flex flex-col space-y-2 w-full md:col-span-2">
-        <label for="address">Note</label>
+      <div class="flex flex-col space-y-1">
+        <label class="text-body text-not-black" for="address">Note</label>
         <textarea
           placeholder="Enter Note"
           class="bg-input rounded-lg p-4 border border-disabled"
@@ -216,7 +215,7 @@
       <button
         type="submit"
         [disabled]="fuelForm.invalid || isSubmitting"
-        class="px-12 py-2 flex justify-center items-center rounded-lg bg-primary text-white disabled:opacity-50"
+        class="px-12 py-2 w-full flex justify-center items-center rounded-lg bg-primary text-white disabled:opacity-50"
       >
         <span *ngIf="!isSubmitting">Save</span>
         <span *ngIf="isSubmitting" class="flex items-center gap-2">

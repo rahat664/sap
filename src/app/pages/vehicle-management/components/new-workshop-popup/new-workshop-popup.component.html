@@ -8,9 +8,9 @@
     </button>
   </div>
   <form [formGroup]="workshopForm" (ngSubmit)="onSubmit()" class="">
-    <div class="flex flex-col space-y-1">
+    <div class="flex flex-col space-y-3">
       <div class="flex flex-col space-y-1">
-        <label for="vendorName" class="text-not-black font-semibold"
+        <label for="vendorName" class="text-not-black text-body"
         >Name</label
         >
         <div>
@@ -70,7 +70,7 @@
                   </span>
       </div>
       <div class="flex flex-col space-y-1">
-        <label for="vendorAddress" class="text-not-black font-semibold"
+        <label for="vendorAddress" class="text-not-black text-body"
         >Address</label
         >
         <div>
@@ -102,7 +102,7 @@
         </div>
       </div>
       <div class="flex flex-col space-y-1">
-        <label for="date" class="text-not-black font-semibold"
+        <label for="date" class="text-not-black text-body"
         >Date</label>
         <mat-form-field (mouseenter)="updateOverLayStyle(false)" appearance="outline">
           <input id="date" placeholder="Choose Date" matInput
@@ -113,7 +113,7 @@
         </mat-form-field>
       </div>
       <div class="flex flex-col space-y-1">
-        <label for="service" class="text-not-black font-semibold"
+        <label for="service" class="text-not-black text-body"
         >Service</label
         >
         <div>
@@ -144,7 +144,7 @@
         </div>
       </div>
       <div class="flex flex-col space-y-1">
-        <label for="cost" class="text-not-black font-semibold"
+        <label for="cost" class="text-not-black text-body"
         >Cost</label
         >
         <div>
@@ -176,7 +176,7 @@
       </div>
       <!-- Document field -->
       <div class="flex flex-col space-y-1">
-        <label for="document" class="text-not-black font-semibold">Document</label>
+        <label for="document" class="text-not-black text-body">Document</label>
 
         <!-- hidden real file input -->
         <input
@@ -237,7 +237,7 @@
       </div>
 
       <div class="flex flex-col space-y-2 w-full md:col-span-2">
-        <label for="address">Note</label>
+        <label class="text-body text-not-black" for="address">Note</label>
         <textarea
           placeholder="Enter Note"
           class="bg-input rounded-lg p-4 border border-disabled"
