@@ -28,7 +28,7 @@ export class TripService {
   url = `${environment.backendUrl}/api/trips`;
   tripTemplateUrl = `${environment.backendUrl}/api/trip_templates`;
   tripPointUrl = `${environment.backendUrl}/api/tripPointEvents`;
-  vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
+  vehicleTypeUrl = `${environment.vehicleUrl}/api/vehicle-categories`;
   districtUrl = `${environment.backendUrl}/api/districts`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
   reportUrl = `${environment.backendUrl}/api/trip/report`;

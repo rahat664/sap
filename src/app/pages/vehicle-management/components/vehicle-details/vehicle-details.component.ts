@@ -659,4 +659,11 @@ export class VehicleDetailsComponent implements OnInit {
       },
     });
   }
+
+  addNewExpenseRecord() {
+    this.dialog
+      .open(FuelRecordPopupComponent, {
+        minWidth: '37.125rem',
+      }).afterClosed().subscribe()
+  }
 }

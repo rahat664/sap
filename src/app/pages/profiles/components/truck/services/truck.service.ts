@@ -86,6 +86,10 @@ export class TruckService {
     return this.http.get(`${this.expenseUrl}/statistics?vehicleId=${truckId}`);
   }
 
+  getExpenseTypes(): Observable<any> {
+    return this.http.get(`${environment.vehicleUrl}/api/expense_types?showInFrontend=true`);
+  }
+
   addWorkshopHistory(body: any): Observable<any> {
     return this.http.post(`${this.workshopUrl}`, body);
   }
