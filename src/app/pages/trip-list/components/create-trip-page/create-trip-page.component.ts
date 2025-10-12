@@ -796,6 +796,7 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm.get('truckSize').setValue(tripData.truckSize);
     this.tripForm.get('paymentType').setValue(tripData.paymentType);
     this.tripForm.get('tripType').setValue(tripData.paymentType);
+    this.tripForm.get('planNumber').setValue(tripData.planNumber);
     this.paymentType.forEach((paymentType: any) => {
       paymentType.active = paymentType.enumName === tripData.paymentType;
     });
