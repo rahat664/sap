@@ -73,6 +73,7 @@ export interface eventDocuments {
 }
 
 export interface TripData {
+  planNumber: boolean;
   sourceOfTruck: string;
   tripType: string;
   tripCancellationReason: any;

@@ -21,4 +21,5 @@ export class TripCreate {
   paymentType: string;
   points: Point[];
   tripType: string;
+  planNumber: string;
 }

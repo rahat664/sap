@@ -888,10 +888,41 @@
             Additional instruction
           </h1>
         </div>
-        <textarea
-          formControlName="note"
-          class="w-full h-28 border border-none bg-input rounded-lg p-4"
-          placeholder="Enter additional instruction"></textarea>
+
+        <div class="flex flex-col space-y-1 w-full md:col-span-2" *ngIf="tripForm.get('customerCode').value === 'A439'">
+          <label class="form-label text-body" for="planNumber">Plan number</label>
+          <mat-form-field
+            appearance="outline"
+            class="example-full-width"
+            [ngClass]="{
+            error:
+              tripForm.get('planNumber').invalid &&
+              tripForm.get('planNumber').touched,
+          }">
+            <input
+              id="planNumber"
+              type="text"
+              matInput
+              formControlName="planNumber"
+              placeholder="Enter Plan Number"/>
+          </mat-form-field>
+          <!--        error-message-->
+          <div
+            *ngIf="
+            tripForm.get('planNumber').invalid && tripForm.get('planNumber').touched
+          "
+            class="text-red text-xs">
+            Please enter a valid plan number
+          </div>
+        </div>
+        <div class="flex flex-col space-y-1 w-full md:col-span-2">
+          <label class="form-label text-body" for="note">Note</label>
+          <textarea
+            id="note"
+            formControlName="note"
+            class="w-full h-28 border border-none bg-input rounded-lg p-4"
+            placeholder="Enter additional instruction"></textarea>
+        </div>
       </div>
       <div class="mx-4 md:mx-8 pb-8" *ngIf="!isFromTemplate">
         <mat-checkbox (change)="toggleSaveAsTemplateInputField($any($event))">

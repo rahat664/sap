@@ -43,7 +43,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
-import { paymentType, paymentTypes, tripType, tripTypes } from '../../../auth/models/response/trip';
+import { paymentType, paymentTypes, Trip, tripType, tripTypes } from '../../../auth/models/response/trip';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 
@@ -98,6 +98,7 @@ export class TripUpdateComponent implements OnInit {
   isFromTemplate = false;
   driverSuggestion: any;
   transporterSuggestion: any;
+  tripData: Trip;
 
   constructor(
     private service: TripService,
@@ -490,6 +491,7 @@ export class TripUpdateComponent implements OnInit {
       registrationCategory: [''],
       registrationSerialNumber: [''],
       registrationNumber: [''],
+      planNumber: [''],
     });
   }
 
@@ -914,6 +916,7 @@ export class TripUpdateComponent implements OnInit {
 
   private getValueFromTripDetails() {
     const tripData = JSON.parse(localStorage.getItem('updateTripDetails'));
+    this.tripData = tripData;
     if (tripData) {
       this.tripStatus = tripData.status;
       this.customerName = tripData.customerName;
@@ -948,6 +951,7 @@ export class TripUpdateComponent implements OnInit {
       this.tripUpdateForm.get('goodsId').setValue(tripData.good?.id);
       this.tripUpdateForm.get('goodsName').setValue(tripData.good?.name);
       this.tripUpdateForm.get('customerRate').setValue(tripData.customerRate);
+      this.tripUpdateForm.get('planNumber').setValue(tripData.planNumber);
       this.tripUpdateForm.get('note').setValue(tripData.note);
       this.tripUpdateForm.get('source').setValue(tripData?.sourceOfTruck)
       this.truckSourceList.forEach((source: any) => {

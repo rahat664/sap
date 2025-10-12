@@ -46,6 +46,7 @@ import {
   tripType,
   tripTypes,
 } from '../../../auth/models/response/trip';
+import { AlphabetOnlyDirective } from '../../../../shared/directive/alphabet-only.directive';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -130,6 +131,7 @@ export class CreateTripPageComponent implements OnInit {
       this.tripDataModel.paymentType = this.tripForm.get('paymentType').value;
       this.tripDataModel.tripType = this.tripForm.get('tripType').value;
       this.tripDataModel.note = this.tripForm.get('note').value;
+      this.tripDataModel.planNumber = this.tripForm.get('planNumber').value;
       this.tripDataModel.points = [
         ...this.tripForm.get('loadingPoints').value,
         ...this.tripForm.get('unloadingPoints').value,
@@ -221,6 +223,9 @@ export class CreateTripPageComponent implements OnInit {
           case 'note':
             field = 'Note';
             break;
+          case 'planNumber':
+            field = 'Plan Number';
+            break;
           default:
             field = field.charAt(0).toUpperCase() + field.slice(1);
             break;
@@ -260,21 +265,25 @@ export class CreateTripPageComponent implements OnInit {
     if (isFromTemplate) {
       this.setTheValuesFromTemplate();
     } else {
-      this.tripForm.get('tripType').setValue(
-        JSON.parse(
-          localStorage.getItem('selectedCustomer')
-        ).tripType);
+      this.tripForm
+        .get('tripType')
+        .setValue(
+          JSON.parse(localStorage.getItem('selectedCustomer')).tripType
+        );
       this.tripTypes.forEach(element => {
-        element.active = element.enumName === this.tripForm.get('tripType').value;
-      })
-      this.tripForm.get('paymentType').setValue(
-        JSON.parse(
-          localStorage.getItem('selectedCustomer')
-        ).preferredPaymentType);
+        element.active =
+          element.enumName === this.tripForm.get('tripType').value;
+      });
+      this.tripForm
+        .get('paymentType')
+        .setValue(
+          JSON.parse(localStorage.getItem('selectedCustomer'))
+            .preferredPaymentType
+        );
       this.paymentType.forEach(element => {
-        element.active = element.enumName === this.tripForm.get('paymentType').value;
-      })
-
+        element.active =
+          element.enumName === this.tripForm.get('paymentType').value;
+      });
     }
     if (isFromBackEdit) {
       this.setBackEditValues();
@@ -286,9 +295,15 @@ export class CreateTripPageComponent implements OnInit {
     );
     if (this.selectedCustomer) {
       this.customerName = this.selectedCustomer.name;
-      this.tripForm
-        .get('customerCode')
-        .setValue(this.selectedCustomer.customerCode);
+      const customerCode = this.selectedCustomer.customerCode;
+      this.tripForm.get('customerCode').setValue(customerCode);
+      if (customerCode === 'A439') {
+        this.tripForm.get('planNumber').setValidators(Validators.required);
+        this.tripForm.get('planNumber').updateValueAndValidity();
+      } else {
+        this.tripForm.get('planNumber').clearValidators();
+        this.tripForm.get('planNumber').updateValueAndValidity();
+      }
     }
     // set value with extra 6 hours of current date time
     this.tripForm
@@ -394,6 +409,7 @@ export class CreateTripPageComponent implements OnInit {
       note: [''],
       loadingPoints: this.fb.array([this.createLoadingPoint()]),
       unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
+      planNumber: [''],
       tripTemplateName: [''],
     });
   }
@@ -428,7 +444,10 @@ export class CreateTripPageComponent implements OnInit {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.service
-        .getLocationSuggestions(target.value, this.selectedCustomer?.customerCode)
+        .getLocationSuggestions(
+          target.value,
+          this.selectedCustomer?.customerCode
+        )
         .subscribe((res: any) => {
           this.loadingSuggestions = res.data;
         });
@@ -444,8 +463,8 @@ export class CreateTripPageComponent implements OnInit {
   onClickLoadingSuggestion(option: any, i: number) {
     // update above functionality with form array
     this.loadingPoints?.controls[i]
-          ?.get('pointName')
-          .setValue(option.addressText);
+      ?.get('pointName')
+      .setValue(option.addressText);
     if (option.district) {
       this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
       this.loadingPoints?.controls[i]
@@ -489,9 +508,7 @@ export class CreateTripPageComponent implements OnInit {
   onClickUnloadingSuggestion(option: any, i: number) {
     this.unloadingPoints?.controls[i]
       ?.get('pointName')
-      .setValue(
-        option.addressText
-      );
+      .setValue(option.addressText);
     if (option.district) {
       this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue('');
       this.unloadingPoints?.controls[i]
@@ -537,7 +554,10 @@ export class CreateTripPageComponent implements OnInit {
     const target = $event.target as HTMLInputElement;
     if (target.value.length > 1) {
       this.service
-        .getLocationSuggestions(target.value,this.selectedCustomer?.customerCode)
+        .getLocationSuggestions(
+          target.value,
+          this.selectedCustomer?.customerCode
+        )
         .subscribe((res: any) => {
           this.unloadingSuggestions = res.data;
         });
@@ -658,11 +678,11 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm.get('paymentType').setValue(template.paymentType);
     this.paymentType.forEach(element => {
       element.active = element.enumName === template.paymentType;
-    })
+    });
     this.tripForm.get('tripType').setValue(template.tripType);
     this.tripTypes.forEach(element => {
       element.active = element.enumName === template.tripType;
-    })
+    });
     const templateLoadingPoints = template.points.filter(
       point => point.pointType === 'Loading'
     );
@@ -778,10 +798,10 @@ export class CreateTripPageComponent implements OnInit {
     this.tripForm.get('tripType').setValue(tripData.paymentType);
     this.paymentType.forEach((paymentType: any) => {
       paymentType.active = paymentType.enumName === tripData.paymentType;
-    })
+    });
     this.tripTypes.forEach((tripType: any) => {
       tripType.active = tripType.enumName === tripData.tripType;
-    })
+    });
     this.tripForm
       .get('truckCapacityInTon')
       .setValue(tripData.truckCapacityInTon);
@@ -892,13 +912,13 @@ export class CreateTripPageComponent implements OnInit {
         this.tripForm.get('tripType').setValue('COMMERCIAL');
         this.tripTypes.forEach(element => {
           element.active = element.id === 1;
-        })
+        });
         break;
       case 2:
         this.tripForm.get('tripType').setValue('PROJECT');
         this.tripTypes.forEach(element => {
           element.active = element.id === 2;
-        })
+        });
         break;
       default:
         this.tripForm.get('tripType').setValue('COMMERCIAL');
@@ -912,31 +932,31 @@ export class CreateTripPageComponent implements OnInit {
         this.tripForm.get('paymentType').setValue('CASH');
         this.paymentType.forEach(element => {
           element.active = element.id === 1;
-        })
+        });
         break;
       case 2:
         this.tripForm.get('paymentType').setValue('INVOICE');
         this.paymentType.forEach(element => {
           element.active = element.id === 2;
-        })
+        });
         break;
       case 3:
         this.tripForm.get('paymentType').setValue('CASH_AND_INVOICE');
         this.paymentType.forEach(element => {
           element.active = element.id === 3;
-        })
+        });
         break;
       case 4:
         this.tripForm.get('paymentType').setValue('COMMISSION');
         this.paymentType.forEach(element => {
           element.active = element.id === 4;
-        })
+        });
         break;
       default:
         this.tripForm.get('paymentType').setValue('INVOICE');
         this.paymentType.forEach(element => {
           element.active = element.id === 2;
-        })
+        });
         break;
     }
   }
@@ -949,7 +969,8 @@ export class CreateTripPageComponent implements OnInit {
       document.body.classList.remove(className);
     }
   }
+
   customerIsNotEnterprise() {
-    return localStorage.getItem('enterpriseCode') !== 'E-3'
+    return localStorage.getItem('enterpriseCode') !== 'E-3';
   }
 }
