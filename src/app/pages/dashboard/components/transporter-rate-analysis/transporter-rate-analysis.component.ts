@@ -283,7 +283,6 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
         this.categories.push(label);
       }
       this.categories = this.categories.reverse();
-      console.log(this.categories)
     } else {
       // monthly
       const from = new Date(this.fromDate);
