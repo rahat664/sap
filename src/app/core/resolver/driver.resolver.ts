@@ -16,7 +16,7 @@ const hasDocuments = true;
 
   return loadingState.pipe(
     switchMap(() => {
-      return driver.getDriver(page, size, null,null, null, null, hasDocuments).pipe(
+      return driver.getDriver(page, size).pipe(
         map(data => {
           return {
             loading: false,
