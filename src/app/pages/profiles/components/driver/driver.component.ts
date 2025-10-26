@@ -71,8 +71,9 @@ export class DriverComponent implements OnInit {
   private to: any;
   filterForm: FormGroup;
   isDateOpened: boolean;
-  filterApplied: boolean = false;
+  filterApplied: boolean = true;
   filterData: any = {};
+  hasDocument: boolean = true;
 
   constructor(
     private user: UserService,
@@ -110,7 +111,8 @@ export class DriverComponent implements OnInit {
             ? ''
             : this.statusInputPlaceholder,
           this.from,
-          this.to
+          this.to,
+          this.hasDocument
         )
         .pipe(debounceTime(1000))
         .subscribe((res: any) => {
@@ -128,7 +130,8 @@ export class DriverComponent implements OnInit {
             ? ''
             : this.statusInputPlaceholder,
           this.from,
-          this.to
+          this.to,
+          this.hasDocument
         )
         .subscribe((res: any) => {
           this.driverList = res.data.responses;
@@ -564,6 +567,10 @@ export class DriverComponent implements OnInit {
       parts.push(
         `Driver Status: <b>${this.filterData.statusInputPlaceholder}</b>`
       );
+    if (this.hasDocument || this.filterData?.hasDocument)
+      parts.push(
+        `Has Document: <b>${this.hasDocument ? 'Yes' : 'No'}</b>`
+      );
 
     return parts.join(', ');
   }
@@ -572,8 +579,9 @@ export class DriverComponent implements OnInit {
     if (
       this.filterData?.startDate ||
       this.filterData?.endDate ||
-      this.filterData?.statusInputPlaceholder
+      this.filterData?.statusInputPlaceholder || this.filterData?.hasDocument
     ) {
+      this.hasDocument = this.filterData?.hasDocument === 'Yes';
       this.filterApplied = true;
       this.filterOpened = false;
       this.from = this.filterData.startDate;
@@ -586,6 +594,7 @@ export class DriverComponent implements OnInit {
     } else {
       localStorage.removeItem('tripFilterData');
       this.filterApplied = false;
+      this.hasDocument = true
       this.loading = true;
       this.page = 0;
       this.size = 30;
@@ -600,11 +609,12 @@ export class DriverComponent implements OnInit {
   onCLickClearAll() {
     localStorage.removeItem('tripFilterData');
     this.filterForm.reset();
-    this.filterApplied = false;
+    this.filterApplied = true;
     this.filterData = {};
     this.page = 0;
     this.size = 30;
     this.loading = true;
+    this.hasDocument = true
     this.from = '';
     this.to = '';
     this.inputPlaceholder = '';

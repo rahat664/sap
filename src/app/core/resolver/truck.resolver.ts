@@ -8,6 +8,7 @@ export const truckResolver: ResolveFn<Observable<any>> = (route, state) => {
   const truckService = inject(TruckService);
   const page = 0;
   const size = 30;
+  const hasDocuments = true
 
   const loadingState = of({
     loading: true,
@@ -16,7 +17,7 @@ export const truckResolver: ResolveFn<Observable<any>> = (route, state) => {
 
   return loadingState.pipe(
     switchMap(() => {
-      return truckService.getTruckList(page, size).pipe(
+      return truckService.getTruckList(page, size, null, null, null, null, null, null, null, hasDocuments).pipe(
         map(data => {
           return {
             loading: false,

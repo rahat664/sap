@@ -110,7 +110,8 @@ export class UserService {
     search?: string,
     approveStatus?: string,
     from?: string,
-    to?: string
+    to?: string,
+    hasDocuments?: boolean
   ): Observable<any> {
     let apiUrl = `${this.url}/drivers?page=${page}&size=${size}`;
 
@@ -125,6 +126,9 @@ export class UserService {
     }
     if (to) {
       apiUrl += `&to=${to}`;
+    }
+    if (hasDocuments !== undefined) {
+      apiUrl += `&hasDocuments=${hasDocuments}`;
     }
 
     return this.http.get(apiUrl);

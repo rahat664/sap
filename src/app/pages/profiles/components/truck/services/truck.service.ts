@@ -22,7 +22,8 @@ export class TruckService {
     transporterName?: string,
     condition?: string,
     from?: string,
-    to?: string
+    to?: string,
+    hasDocuments?: boolean
   ): Observable<any> {
     let apiUrl = `${this.url}?page=${page}&size=${size}`;
     if (search) {
@@ -45,6 +46,9 @@ export class TruckService {
     }
     if (to) {
       apiUrl += `&to=${to}`;
+    }
+    if (hasDocuments !== undefined) {
+      apiUrl += `&hasDocuments=${hasDocuments}`;
     }
 
     return this.http.get(apiUrl);
