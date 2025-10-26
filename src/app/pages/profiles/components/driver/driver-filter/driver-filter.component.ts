@@ -473,6 +473,7 @@ export class DriverFilterComponent {
       this.endDate = tripFilterData?.endDate;
       this.statusInputPlaceholder = tripFilterData?.statusInputPlaceholder;
       this.selectedButton = tripFilterData?.selectedButton;
+      this.hasDocumentsPlaceholder = tripFilterData?.hasDocument;
       if (this.selectedButton) {
         this.dateText = true
       }
