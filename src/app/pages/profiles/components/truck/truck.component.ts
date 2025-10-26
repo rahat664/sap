@@ -511,7 +511,7 @@ export class TruckComponent implements OnInit {
   }
 
   protected readonly localStorage = localStorage;
-  filterApplied: boolean = true;
+  filterApplied: boolean = false;
 
 
   onClickFilterOpen() {
@@ -574,7 +574,7 @@ export class TruckComponent implements OnInit {
   onCLickClearAll() {
     localStorage.removeItem('tripFilterData');
     this.filterForm.reset();
-    this.filterApplied = true;
+    this.filterApplied = false;
     this.hasDocument = true;
     this.filterData = {};
     this.page = 0;

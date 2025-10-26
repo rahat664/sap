@@ -71,7 +71,7 @@ export class DriverComponent implements OnInit {
   private to: any;
   filterForm: FormGroup;
   isDateOpened: boolean;
-  filterApplied: boolean = true;
+  filterApplied: boolean = false;
   filterData: any = {};
   hasDocument: boolean = true;
 
@@ -609,7 +609,7 @@ export class DriverComponent implements OnInit {
   onCLickClearAll() {
     localStorage.removeItem('tripFilterData');
     this.filterForm.reset();
-    this.filterApplied = true;
+    this.filterApplied = false;
     this.filterData = {};
     this.page = 0;
     this.size = 30;

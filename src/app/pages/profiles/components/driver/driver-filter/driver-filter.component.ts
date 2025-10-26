@@ -182,11 +182,6 @@ export class DriverFilterComponent {
 
   ngOnInit() {
     this.getVehicleTypeList();
-    // by default, document should be 'Yes'
-    this.hasDocumentsOptionsArray[0].selected = true;
-    this.hasDocumentsPlaceholder = this.hasDocumentsOptionsArray[0].showname;
-    this.filterLength = 1; // for date filter
-    this.previousFilterLength = 1;
     this.getDataFromLocalStorage();
   }
 
