@@ -61,7 +61,8 @@ export class AuthEffects {
         ofType(loginSuccess),
         tap(({ response }) => {
           const isGsoRoles = response?.data?.roles?.includes('ROLE_GSO')
-          if (isGsoRoles) {
+          const isDriverRole = response?.data?.roles?.includes('ROLE_DRIVER')
+          if (isGsoRoles || isDriverRole) {
             this.toaster.showError('You are not authorized to login', '');
           }
           else {
