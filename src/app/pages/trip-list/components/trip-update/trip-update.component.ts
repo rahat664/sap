@@ -141,6 +141,7 @@ export class TripUpdateComponent implements OnInit {
               note: this.tripUpdateForm.get('note').value,
               paymentType: this.tripUpdateForm.get('paymentType').value,
               tripType: this.tripUpdateForm.get('tripType').value,
+              planNumber: this.tripUpdateForm.get('planNumber').value,
               points: [
                 ...this.tripUpdateForm.get('loadingPoints').value,
                 ...this.tripUpdateForm.get('unloadingPoints').value,
