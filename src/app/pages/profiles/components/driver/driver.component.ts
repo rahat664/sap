@@ -240,7 +240,8 @@ export class DriverComponent implements OnInit {
             ? ''
             : this.statusInputPlaceholder,
           this.from,
-          this.to
+          this.to,
+          this.hasDocument
         )
         .subscribe((res: any) => {
           this.driverList.push(...res.data.responses);

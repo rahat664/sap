@@ -256,7 +256,8 @@ export class TruckComponent implements OnInit {
             null,
             null,
             this.from,
-            this.to
+            this.to,
+            this.hasDocument
           )
           .pipe(debounceTime(1000))
           .subscribe((res: any) => {
@@ -275,7 +276,8 @@ export class TruckComponent implements OnInit {
             null,
             null,
             this.from,
-            this.to
+            this.to,
+            this.hasDocument
           )
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
