@@ -44,6 +44,7 @@ export class TripService {
   anotherStatusCalled: BehaviorSubject<boolean> = new BehaviorSubject(false);
   historyApi = `${environment.locationUrl}/api/locations/histories`;
   transporterPaymentUrl = `${environment.backendUrl}/api/transporter-payment`;
+  districtSearchUrl = `${environment.backendUrl}/api/districts/search-district`;
 
   constructor(
     private http: HttpClient,
@@ -337,5 +338,9 @@ export class TripService {
 
   getPaymentDetails(tripId: string) {
     return this.http.get(`${this.transporterPaymentUrl}/trip/${tripId}`);
+  }
+
+  searchDistricts(lat:any, lng:any) {
+    return this.http.get(`${this.districtSearchUrl}?lat=${lat}&lon=${lng}`, {})
   }
 }

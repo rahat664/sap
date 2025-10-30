@@ -465,28 +465,6 @@ export class CreateTripPageComponent implements OnInit {
     this.loadingPoints?.controls[i]
       ?.get('pointName')
       .setValue(option.addressText);
-    if (option.district) {
-      this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
-      this.loadingPoints?.controls[i]
-        ?.get('pointDistrict')
-        .setValue(option.district);
-    } else {
-      for (
-        let singleDistrict = 0;
-        singleDistrict < this.district.length;
-        singleDistrict++
-      ) {
-        if (option.addressText.includes(this.district[singleDistrict].name)) {
-          this.loadingPoints?.controls[i]
-            ?.get('pointDistrict')
-            .setValue(this.district[singleDistrict].name);
-          break;
-        } else {
-          this.loadingPoints?.controls[i]?.get('pointDistrict').enable();
-        }
-      }
-    }
-
     if (option.latitude > 0 && option.longitude > 0) {
       this.loadingPoints?.controls[i]
         ?.get('pointLat')
@@ -494,42 +472,39 @@ export class CreateTripPageComponent implements OnInit {
       this.loadingPoints?.controls[i]
         ?.get('pointLon')
         .setValue(option.longitude);
+      const districtName = this.searchDistrict(
+        option.latitude,
+        option.longitude,
+        this.loadingPoints?.controls[i]
+      );
+      this.loadingPoints?.controls[i]
+        ?.get('pointDistrict')
+        .setValue(districtName);
+      alert(districtName);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         const lat = res.location.latitude;
         const lng = res.location.longitude;
         this.loadingPoints?.controls[i]?.get('pointLat').setValue(lat);
         this.loadingPoints?.controls[i]?.get('pointLon').setValue(lng);
+        this.searchDistrict(lat, lng, this.loadingPoints?.controls[i]);
       });
     }
+
     this.loadingSuggestions = [];
+  }
+
+  searchDistrict(lat, lng, control): any {
+    this.service.searchDistricts(lat, lng).subscribe((res: any) => {
+      control.get('pointDistrict').setValue(res.data.name);
+    });
   }
 
   onClickUnloadingSuggestion(option: any, i: number) {
     this.unloadingPoints?.controls[i]
       ?.get('pointName')
       .setValue(option.addressText);
-    if (option.district) {
-      this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue('');
-      this.unloadingPoints?.controls[i]
-        ?.get('pointDistrict')
-        .setValue(option.district);
-    } else {
-      for (
-        let singleDistrict = 0;
-        singleDistrict < this.district.length;
-        singleDistrict++
-      ) {
-        if (option.addressText.includes(this.district[singleDistrict].name)) {
-          this.unloadingPoints?.controls[i]
-            ?.get('pointDistrict')
-            .setValue(this.district[singleDistrict].name);
-          break;
-        } else {
-          this.unloadingPoints?.controls[i]?.get('pointDistrict').enable();
-        }
-      }
-    }
+
     if (option.latitude > 0 && option.longitude > 0) {
       this.unloadingPoints?.controls[i]
         ?.get('pointLat')
@@ -537,6 +512,14 @@ export class CreateTripPageComponent implements OnInit {
       this.unloadingPoints?.controls[i]
         ?.get('pointLon')
         .setValue(option.longitude);
+      const districtName = this.searchDistrict(
+        option.latitude,
+        option.longitude,
+        this.unloadingPoints?.controls[i]
+      );
+      this.unloadingPoints?.controls[i]
+        ?.get('pointDistrict')
+        .setValue(districtName);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         this.unloadingPoints?.controls[i]
@@ -545,6 +528,14 @@ export class CreateTripPageComponent implements OnInit {
         this.unloadingPoints?.controls[i]
           ?.get('pointLon')
           .setValue(res?.location?.longitude);
+        const districtName = this.searchDistrict(
+          res?.location?.latitude,
+          res?.location?.longitude,
+          this.unloadingPoints?.controls[i]
+        );
+        this.unloadingPoints?.controls[i]
+          ?.get('pointDistrict')
+          .setValue(districtName);
       });
     }
     this.unloadingSuggestions = [];
