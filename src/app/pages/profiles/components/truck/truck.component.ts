@@ -127,7 +127,7 @@ export class TruckComponent implements OnInit {
   private getTruckList() {
     this.page = 0;
     this.loading = true;
-    if (this.searchValue) {
+    if (this.searchValue && !this.filterData?.hasDocument) {
       //subscribe with debounced time
       this.service
         .getTruckList(
