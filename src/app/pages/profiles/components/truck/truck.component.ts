@@ -141,6 +141,27 @@ export class TruckComponent implements OnInit {
           null,
           null,
           this.from,
+          this.to
+        )
+        .pipe(debounceTime(1000))
+        .subscribe((res: any) => {
+          this.truckList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
+    } else if (this.searchValue && this.filterData?.hasDocument) {
+      this.service
+        .getTruckList(
+          this.page,
+          this.size,
+          this.searchValue,
+          this.statusInputPlaceholder == 'All'
+            ? ''
+            : this.statusInputPlaceholder,
+          null,
+          null,
+          null,
+          this.from,
           this.to,
           this.hasDocument
         )
@@ -150,7 +171,7 @@ export class TruckComponent implements OnInit {
           this.totalPages = res.data.totalPages;
           this.loading = false;
         });
-    } else {
+    }else {
       this.service
         .getTruckList(
           this.page,
