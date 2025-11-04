@@ -86,8 +86,8 @@ export class TruckService {
     return this.http.get(`${this.expenseUrl}/statistics?vehicleId=${truckId}`);
   }
 
-  getExpenseTypes(): Observable<any> {
-    return this.http.get(`${environment.vehicleUrl}/api/expense_types?showInFrontend=true`);
+  getExpenseTypes(showInFrontend: boolean): Observable<any> {
+    return this.http.get(`${environment.vehicleUrl}/api/expense_types?showInFrontend=${showInFrontend}`);
   }
 
   addWorkshopHistory(body: any): Observable<any> {
@@ -111,5 +111,9 @@ export class TruckService {
       body: body,
       meta: meta
     } );
+  }
+
+  addExpense(formData: FormData) {
+    return this.http.post(`${this.expenseUrl}`, formData);
   }
 }

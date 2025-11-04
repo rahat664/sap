@@ -3,7 +3,7 @@
     <div class="p-4 rounded-lg bg-white flex justify-between items-center">
       <div class="flex items-center">
         <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold border-r pr-[1.125rem]">
-          Add Truck
+          Add Vehicle
         </h1>
         <div class="pl-[1.125rem] flex">
           <mat-radio-group (change)="onChangeTruckOwnerShip($event)">
@@ -34,7 +34,7 @@
         <div class="border-b-2 bg-white rounded-lg border-input px-6 py-5 flex flex-col space-y-3">
           <div class="flex space-x-4 items-center text-not-black">
             <img class="h-8 w-8 notPreview" loading="lazy" src="assets/svg/truckinfo.svg" alt="" />
-            <span class="text-h3 leading-h3 text-not-black font-semibold">Truck Info</span>
+            <span class="text-h3 leading-h3 text-not-black font-semibold">Vehicle Info</span>
           </div>
 
           <div class="grid gap-3">
@@ -100,10 +100,10 @@
 
             <!-- Truck Type -->
             <div class="flex flex-col space-y-1">
-              <label class="text-web-text-secondary text-body">Truck Type</label>
+              <label class="text-web-text-secondary text-body">Vehicle Type</label>
               <mat-form-field appearance="outline">
                 <mat-select formControlName="type" (selectionChange)="onChangeTruckType($event)"
-                            placeholder="Select Truck Type">
+                            placeholder="Select Vehicle Type">
                   @for (vehicle of vehicleTypeList; track vehicle) {
                     <mat-option [value]="vehicle.id">{{ vehicle.name }}</mat-option>
                   }
@@ -266,7 +266,7 @@
             <ng-template matTabContent>
               <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
                 <div class="flex space-x-4 items-center">
-                  <img src="assets/svg/truckDocument.svg" class="notPreview" alt="truck document" />
+                  <img src="assets/svg/truckDocument.svg" class="notPreview" alt="vehicle document" />
                   <span class="text-not-black text-h3 leading-h3 font-semibold">Document</span>
                 </div>
 

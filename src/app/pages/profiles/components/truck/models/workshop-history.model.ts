@@ -77,6 +77,8 @@ export interface WorkshopHistoryCreateDto {
   vendorName: string;
   vendorAddress: string;
 
+  vendorPhone?: string;
+
   /** When the vehicle entered the workshop (ISO 8601) */
   entryDate: string;
 

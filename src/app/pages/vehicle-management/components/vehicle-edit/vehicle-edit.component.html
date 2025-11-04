@@ -266,7 +266,7 @@
             <ng-template matTabContent>
               <div class="px-6 py-5 flex flex-col space-y-3 bg-white rounded-lg">
                 <div class="flex space-x-4 items-center">
-                  <img src="assets/svg/truckDocument.svg" class="notPreview" alt="truck document" />
+                  <img src="assets/svg/truckDocument.svg" class="notPreview" alt="vehicle document" />
                   <span class="text-not-black text-h3 leading-h3 font-semibold">Document</span>
                 </div>
 
@@ -335,7 +335,7 @@
                               [matDatepicker]="picker"
                               placeholder="Expiry Date"
                               (focusin)="picker.open()"
-                              (selectionchange)="
+                              (dateChange)="
                           onDateChange($event, option.expiryFormControlName)
                         "/>
                             <mat-datepicker-toggle

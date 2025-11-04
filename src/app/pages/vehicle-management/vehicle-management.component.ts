@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { VehicleStatsButtonComponent } from './shared/buttons/vehicle-stats-button/vehicle-stats-button.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TruckModel } from '../profiles/components/truck/models/truck.model';
-import { debounceTime } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { TruckService } from '../profiles/components/truck/services/truck.service';
 import { TruckFilterComponent } from '../profiles/components/truck/truck-filter/truck-filter.component';
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
@@ -60,6 +60,10 @@ export class VehicleManagementComponent {
     THIRD_PARTY: number;
   } = { All: 0, OWN: 0, THIRD_PARTY: 0 };
 
+  // Live search stream
+  private searchInput$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private service: TruckService,
@@ -74,11 +78,19 @@ export class VehicleManagementComponent {
     });
   }
 
-  onClickFilterOpen() {}
+  onClickFilterOpen() {
+    this.filterOpened = true;
+  }
 
-  onClickClear() {}
+  onClickClear() {
+    this.searchValue = '';
+    this.page = 0;
+    this.searchInput$.next('');
+  }
 
-  onKeyUpSearch($event: KeyboardEvent) {}
+  onSearchChange(value: string) {
+    this.searchInput$.next(value ?? '');
+  }
 
   get filterSummary(): string {
     const parts: string[] = [];
@@ -146,6 +158,15 @@ export class VehicleManagementComponent {
     this.truckList = [];
     this.loading = true;
     this.getTruckListFromResolvedState();
+
+    // Wire up debounced live-search
+    this.searchInput$
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(value => {
+        this.searchValue = value;
+        this.page = 0;
+        this.getTruckList();
+      });
   }
 
   getTruckListFromResolvedState() {
@@ -180,7 +201,6 @@ export class VehicleManagementComponent {
     this.page = 0;
     this.loading = true;
     if (this.searchValue) {
-      //subscribe with debounced time
       this.service
         .getTruckList(
           this.page,
@@ -195,7 +215,6 @@ export class VehicleManagementComponent {
           this.from,
           this.to
         )
-        .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.truckList = res.data.responses;
           this.totalPages = res.data.totalPages;
@@ -238,6 +257,8 @@ export class VehicleManagementComponent {
       this.page = 0;
       this.size = 30;
       this.loading = true;
+      // Clear current list before fetching filtered results
+      this.truckList = [];
       this.getTruckList();
     } else {
       localStorage.removeItem('tripFilterData');
@@ -254,6 +275,11 @@ export class VehicleManagementComponent {
   }
 
   protected readonly Number = Number;
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   onClickTruckDetails(truck: TruckModel) {
   }

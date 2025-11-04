@@ -20,10 +20,10 @@
               <i class="far fa-times text-gray-500 text-xs"></i>
             </button>
             <input
-              (keyup)="onKeyUpSearch($event)"
               type="text"
               name="email"
               [(ngModel)]="searchValue"
+              (ngModelChange)="onSearchChange($event)"
               class="border-none text-input-hint w-full md:w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
               placeholder="Search vehicle registration number" />
           </div>
@@ -41,7 +41,7 @@
     </div>
     <div *ngIf="filterApplied"
          class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
-      <span class="text-xs text-not-black">Showing results for {{ filterSummary }}</span>
+      <span class="text-xs text-not-black">Showing results for <span [innerHTML]="filterSummary"></span></span>
       <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
     </div>
     <div class="flex space-x-3">
@@ -114,7 +114,7 @@
             </div>
           </td>
           <td class="text-left">{{ truck.noOfTrips }}</td>
-          <td class="text-left">£{{ truck.totalCost | number:'1.2-2' }}</td>
+          <td class="text-left">{{ truck.totalCost ? truck.totalCost : '0' | number }} ৳</td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!loading && truckList?.length === 0">

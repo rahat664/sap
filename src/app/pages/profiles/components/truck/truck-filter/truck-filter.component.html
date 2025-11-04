@@ -44,14 +44,14 @@
                   [disabled]="!customSelected"
                   (focus)="picker.open()"
                   [(ngModel)]="startDate"
-                  (selectionchange)="onChangeStartDate($event)"
+                  (dateChange)="onChangeStartDate($event)"
                   matStartDate
                   placeholder="Start date"/>
                 <input
                   [disabled]="!customSelected"
                   (focus)="picker.open()"
                   [(ngModel)]="endDate"
-                  (selectionchange)="onChangeEndDate($event)"
+                  (dateChange)="onChangeEndDate($event)"
                   matEndDate
                   placeholder="End date"/>
               </mat-date-range-input>

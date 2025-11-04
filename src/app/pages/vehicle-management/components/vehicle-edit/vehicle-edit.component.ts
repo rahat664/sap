@@ -284,6 +284,8 @@ export class VehicleEditComponent {
     // split the document by type
     this.splitDoucumentsByType(this.documents);
     this.updateFormValues(this.truckDetails);
+    // Ensure expiry inputs are disabled until a document exists
+    this.syncExpiryControlsWithFiles();
     this.service.getPreHireChecklist(this.truckDetails?.id.toString()).subscribe(
       (res: any) => {
         if (res && res.data) {
@@ -376,7 +378,14 @@ export class VehicleEditComponent {
               formData.append(key, file)
             );
         } else {
-          payload[key] = value;
+          // Ensure Date objects are serialized; omit disabled controls
+          if (control?.disabled) {
+            payload[key] = null;
+          } else {
+            payload[key] = value instanceof Date
+              ? this.datePipe.transform(value, 'yyyy-MM-ddTHH:mm:ss')
+              : value;
+          }
         }
       });
 
@@ -549,13 +558,68 @@ export class VehicleEditComponent {
     });
   }
 
+  // Enable/disable a specific expiry control
+  private setExpiryControlEnabled(expiryControl: string, enabled: boolean) {
+    const ctrl = this.truckUpdateForm.get(expiryControl);
+    if (!ctrl) return;
+    enabled
+      ? ctrl.enable({ emitEvent: false })
+      : ctrl.disable({ emitEvent: false });
+  }
+
+  // Check if there is any file (new or saved) corresponding to an expiry control
+  private hasAnyFilesForExpiryControl(expiredControl: string): boolean {
+    switch (expiredControl) {
+      case 'fitnessCertExpDate':
+        return (
+          (this.fitnessImages?.length || 0) > 0 ||
+          (this.savedFitnessCertificate?.length || 0) > 0
+        );
+      case 'routePermitExpDate':
+        return (
+          (this.routePermitImages?.length || 0) > 0 ||
+          (this.savedRoutePermit?.length || 0) > 0
+        );
+      case 'caseExpDate':
+        return (
+          (this.casePaperImages?.length || 0) > 0 ||
+          (this.savedCasePaper?.length || 0) > 0
+        );
+      case 'taxExpDate':
+        return (
+          (this.taxImages?.length || 0) > 0 ||
+          (this.savedTaxPaper?.length || 0) > 0
+        );
+      case 'insuranceExpDate':
+        return (
+          (this.insuranceImages?.length || 0) > 0 ||
+          (this.savedInsurancePaper?.length || 0) > 0
+        );
+      default:
+        return false;
+    }
+  }
+
+  // Sync initial enabled/disabled state based on whether any files exist
+  private syncExpiryControlsWithFiles() {
+    const mapping: string[] = [
+      'fitnessCertExpDate',
+      'routePermitExpDate',
+      'caseExpDate',
+      'taxExpDate',
+      'insuranceExpDate',
+    ];
+    mapping.forEach(ctrlName => {
+      const hasFiles = this.hasAnyFilesForExpiryControl(ctrlName);
+      this.setExpiryControlEnabled(ctrlName, hasFiles);
+    });
+  }
+
   // Datepicker (MatDatepickerInputEvent)
   onDateChange($event: any, expiryFormControlName: string) {
     const dateObj: Date | null = $event?.value || null;
-    const date = dateObj
-      ? this.datePipe.transform(dateObj, 'yyyy-MM-ddTHH:mm:ss')
-      : null;
-    this.truckUpdateForm.patchValue({ [expiryFormControlName]: date });
+    // Keep Date object in the control so the input displays correctly
+    this.truckUpdateForm.patchValue({ [expiryFormControlName]: dateObj });
     this.cd.markForCheck();
   }
 
@@ -769,6 +833,8 @@ export class VehicleEditComponent {
         .get(expiredControl)
         ?.setValidators([Validators.required]);
       this.truckUpdateForm.get(expiredControl)?.updateValueAndValidity();
+      // Enable the expiry control when there is at least one file
+      this.setExpiryControlEnabled(expiredControl, true);
       if (this.fileInput?.nativeElement)
         this.fileInput.nativeElement.value = '';
     }
@@ -844,9 +910,13 @@ export class VehicleEditComponent {
       [formControlName as string]: formControlFiles,
     });
 
-    if (formControlFiles.length === 0 && expiredControl) {
-      this.truckUpdateForm.get(expiredControl)?.clearValidators();
-      this.truckUpdateForm.get(expiredControl)?.updateValueAndValidity();
+    if (expiredControl) {
+      const hasFiles = this.hasAnyFilesForExpiryControl(expiredControl);
+      if (!hasFiles) {
+        this.truckUpdateForm.get(expiredControl)?.clearValidators();
+        this.truckUpdateForm.get(expiredControl)?.updateValueAndValidity();
+        this.setExpiryControlEnabled(expiredControl, false);
+      }
     }
     this.cd.markForCheck();
   }
@@ -1238,6 +1308,8 @@ export class VehicleEditComponent {
                   this.truckUpdateForm
                     .get('taxExpDate')
                     ?.updateValueAndValidity();
+                  if ((this.taxImages?.length || 0) === 0)
+                    this.setExpiryControlEnabled('taxExpDate', false);
                 }
                 break;
               case 'fitnessCertificateFile':
@@ -1252,6 +1324,8 @@ export class VehicleEditComponent {
                   this.truckUpdateForm
                     .get('fitnessCertExpDate')
                     ?.updateValueAndValidity();
+                  if ((this.fitnessImages?.length || 0) === 0)
+                    this.setExpiryControlEnabled('fitnessCertExpDate', false);
                 }
                 break;
               case 'routePermitFile':
@@ -1264,6 +1338,8 @@ export class VehicleEditComponent {
                   this.truckUpdateForm
                     .get('routePermitExpDate')
                     ?.updateValueAndValidity();
+                  if ((this.routePermitImages?.length || 0) === 0)
+                    this.setExpiryControlEnabled('routePermitExpDate', false);
                 }
                 break;
               case 'casePaperFile':
@@ -1274,6 +1350,8 @@ export class VehicleEditComponent {
                   this.truckUpdateForm
                     .get('caseExpDate')
                     ?.updateValueAndValidity();
+                  if ((this.casePaperImages?.length || 0) === 0)
+                    this.setExpiryControlEnabled('caseExpDate', false);
                 }
                 break;
               case 'others':
@@ -1292,6 +1370,8 @@ export class VehicleEditComponent {
                   this.truckUpdateForm
                     .get('insuranceExpDate')
                     ?.updateValueAndValidity();
+                  if ((this.insuranceImages?.length || 0) === 0)
+                    this.setExpiryControlEnabled('insuranceExpDate', false);
                 }
                 break;
             }
@@ -1373,7 +1453,7 @@ export class VehicleEditComponent {
       ownership: truck.ownership,
       type: truck.type,
       purchaseFrom: truck.purchaseFrom,
-      purchaseDate: truck.purchaseDate,
+      purchaseDate: truck.purchaseDate ? new Date(truck.purchaseDate) : null,
       yard: truck.yard,
       size: truck.size,
       engine: truck.engineNumber,
@@ -1395,11 +1475,11 @@ export class VehicleEditComponent {
     this.registrationTypePlaceholder = truck.registrationCategory;
   }
 
-  private getExpireDate(fitnesscertificatefile: string) {
+  private getExpireDate(fitnesscertificatefile: string): Date | null {
     const doc = this.documents.find(
       doc => doc.documentType === fitnesscertificatefile
     );
-    return doc?.expiryDate;
+    return doc?.expiryDate ? new Date(doc.expiryDate) : null;
   }
 
   onClickPreHiredChecklist($event: any) {

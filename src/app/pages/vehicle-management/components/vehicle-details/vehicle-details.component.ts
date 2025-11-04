@@ -32,6 +32,7 @@ import { ConfirmApproveComponent } from '../../../../shared/modules/confirm-appr
 import { ConfirmRejectComponent } from '../../../../shared/modules/confirm-reject/confirm-reject.component';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { FuelRecordsComponent } from '../fuel-records/fuel-records.component';
+import { ExpenseRecordPopupComponent } from '../expense-record-popup/expense-record-popup.component';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -661,9 +662,18 @@ export class VehicleDetailsComponent implements OnInit {
   }
 
   addNewExpenseRecord() {
+    localStorage.setItem('vehicleId', this.singleTruckData.id.toString());
     this.dialog
-      .open(FuelRecordPopupComponent, {
+      .open(ExpenseRecordPopupComponent, {
         minWidth: '37.125rem',
-      }).afterClosed().subscribe()
+      }).afterClosed().subscribe(
+        (res: any) => {
+          if (res) {
+            this.getVehicleExpenses(this.singleTruckData.id.toString());
+          } else {
+            // Handle error (e.g., show a notification)
+          }
+        }
+    )
   }
 }
