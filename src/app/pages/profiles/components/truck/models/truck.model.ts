@@ -111,3 +111,17 @@ export interface ExpenseModel {
   dueAmountSum: number;
 }
 
+export interface DailyExpense {
+  date: string;           // e.g. "11-29-2025"
+  list: ExpenseItem[];    // list of expenses for that date
+  total_cost: number;      // total cost for the day
+}
+
+export interface ExpenseItem {
+  date: string;           // e.g. "2025-11-29"
+  type: string;           // e.g. "Driver cost"
+  cost: number;           // e.g. 15000
+}
+
+
+

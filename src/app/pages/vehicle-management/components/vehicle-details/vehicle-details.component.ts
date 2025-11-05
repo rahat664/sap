@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { TruckService } from '../../../profiles/components/truck/services/truck.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   ExpenseModel,
   TruckDocument,
@@ -516,6 +516,16 @@ export class VehicleDetailsComponent implements OnInit {
     );
   }
 
+  onClickCostDetails() {
+    localStorage.setItem(
+      'vehicleId',
+      JSON.stringify(this.singleTruckData.id)
+    );
+    this.router.navigateByUrl(
+      `/vehicle-management/${this.singleTruckData.id}/cost-details`
+    );
+  }
+
   onReply($event: string) {
     localStorage.setItem('vehicleId', this.singleTruckData.id.toString());
     const component =
@@ -666,14 +676,14 @@ export class VehicleDetailsComponent implements OnInit {
     this.dialog
       .open(ExpenseRecordPopupComponent, {
         minWidth: '37.125rem',
-      }).afterClosed().subscribe(
-        (res: any) => {
-          if (res) {
-            this.getVehicleExpenses(this.singleTruckData.id.toString());
-          } else {
-            // Handle error (e.g., show a notification)
-          }
+      })
+      .afterClosed()
+      .subscribe((res: any) => {
+        if (res) {
+          this.getVehicleExpenses(this.singleTruckData.id.toString());
+        } else {
+          // Handle error (e.g., show a notification)
         }
-    )
+      });
   }
 }

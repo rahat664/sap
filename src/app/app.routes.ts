@@ -275,6 +275,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'vehicle-management/:id/cost-details',
+    title: 'Vehicle Cost Details',
+    loadComponent: () =>
+      import(
+        './pages/vehicle-management/components/cost-details/cost-details.component'
+      ).then(c => c.CostDetailsComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'vehicle-management/:id/edit-vehicle',
     title: 'Edit Vehicle',
     loadComponent: () =>

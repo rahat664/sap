@@ -7,20 +7,28 @@
                 (click)="goBack()">
           <i class="fas fa-chevron-left text-white"></i>
         </button>
-        <h1 class="text-h3 leading-h3 font-semibold text-not-black">Statistics Details</h1>
+        <h1 class="text-h3 leading-h3 font-semibold text-not-black">{{ calculateTotalExpenses() }} Total Cost</h1>
       </div>
-      <mat-form-field (mouseenter)="updateOverLayStyle(false)" appearance="outline">
-        <input placeholder="Choose Date" matInput
-               [matDatepicker]="pickerDetails">
-        <mat-datepicker-toggle matIconSuffix [for]="pickerDetails"></mat-datepicker-toggle>
-        <mat-datepicker #pickerDetails></mat-datepicker>
-      </mat-form-field>
+      <div class="flex space-x-2">
+        <mat-date-range-picker #pickerDetails></mat-date-range-picker>
+        <ng-container *ngIf="dateText || customDateText || customSelected">
+          <mat-form-field (mouseenter)="updateOverLayStyle(false)" appearance="outline" class="filter">
+            <mat-date-range-input [rangePicker]="pickerDetails">
+              <input [disabled]="!customSelected" (focus)="pickerDetails.open()" [(ngModel)]="startDate" (dateChange)="onChangeStartDate($event)" matStartDate placeholder="Start date" />
+              <input [disabled]="!customSelected" (focus)="pickerDetails.open()" [(ngModel)]="endDate" (dateChange)="onChangeEndDate($event)" matEndDate placeholder="End date" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="pickerDetails"></mat-datepicker-toggle>
+          </mat-form-field>
+        </ng-container>
+        <a *ngIf="startDate && endDate" class="text-web-text-secondary self-center">
+          <i class="fas fa-times-circle ml-1 cursor-pointer" (click)="clearDateFilter()"></i>
+        </a>
+      </div>
     </div>
     <div class=" flex space-x-8 items-center">
-      <ng-container *ngFor="let stat of displayedStatisticsColumns">
-        <app-card [description]="statisticsSummary ? statisticsSummary[stat?.value]?.toString() : '0'"
-                  [title]="stat?.name"
-                  [imageUrl]="stat?.imageUrl"></app-card>
+      <ng-container *ngFor="let expense of vehicleExpenses">
+        <app-card [fromExpenses]="true" [description]="expense?.totalCostSum?.toString()"
+                  [title]="expense?.expenseTypeName" [imageUrl]="expense?.icon"></app-card>
       </ng-container>
     </div>
   </div>
@@ -31,40 +39,82 @@
       class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
       <tr class="whitespace-nowrap bg-white text-not-black">
-        <th class="text-left md:bg-white md:sticky md:left-0">Trip Number</th>
-        <th class="text-left">Trip Date</th>
-        <th class="text-left">Km Covered</th>
-        <th class="text-left">Fuel Consumed(L)</th>
-        <th class="text-left">CO2 Emitted(kg)</th>
+        <th class="text-left md:bg-white md:sticky md:left-0">Date</th>
+        <th class="text-center">Driver cost (৳)</th>
+        <th class="text-center">Road & others cost (৳)</th>
+        <th class="text-center">Fuel cost (৳)</th>
+        <th class="text-center">Document cost (৳)</th>
+        <th class="text-center">Maintenance cost (৳)</th>
+        <th class="text-center">Total cost (৳)</th>
       </tr>
       <tr>
-        <th class="custom-border" [colSpan]="5"></th>
+        <th class="custom-border" [colSpan]="7"></th>
       </tr>
       </thead>
       <tbody class="text-web-text-secondary">
-      <ng-container *ngFor="let truck of statisticsDetails">
+      <ng-container *ngFor="let expense of expenseList">
         <tr>
           <td>
-            <a class="text-link cursor-pointer"
-               (click)="goToTripDetails(truck.tripId)">{{ truck.tripId }}</a>
+            {{ expense.list[0].date| date: 'dd MMM, yyyy' }}
           </td>
-          <td>
-            {{ truck.startTime | date: 'dd MMM, yyyy' }}
+          <td class="text-center">
+            <span *ngFor="let item of expense.list" >
+              <ng-container *ngIf="item.type.toLowerCase().includes('driver')">
+              {{ item.type.toLowerCase().includes('driver') ? (item.cost | number) : '_' }}
+              </ng-container>
+            </span>
+            <ng-container *ngIf="checkIsThisCostTypeAbsent(expense.list, 'driver')">
+              _
+            </ng-container>
           </td>
-          <td>
-            {{ truck.totalDistance | number: '1.0-2' }}
+          <td class="text-center">
+            <span *ngFor="let item of expense.list" >
+              <ng-container *ngIf="item.type.toLowerCase().includes('road')">
+              {{ item.type.toLowerCase().includes('road') ? (item.cost | number) : '_' }}
+              </ng-container>
+            </span>
+            <ng-container *ngIf="checkIsThisCostTypeAbsent(expense.list, 'road')">
+              _
+            </ng-container>
           </td>
-          <td>
-            {{ truck.fuelConsumed | number: '1.0-2' }}
+          <td class="text-center">
+            <span *ngFor="let item of expense.list" >
+              <ng-container *ngIf="item.type.toLowerCase().includes('fuel')">
+              {{ item.type.toLowerCase().includes('fuel') ? (item.cost | number) : '_' }}
+              </ng-container>
+            </span>
+            <ng-container *ngIf="checkIsThisCostTypeAbsent(expense.list, 'fuel')">
+              _
+            </ng-container>
           </td>
-          <td>
-            {{ truck.carbonOmitted | number: '1.0-2' }}
+          <td class="text-center">
+            <span *ngFor="let item of expense.list" >
+              <ng-container *ngIf="item.type.toLowerCase().includes('document')">
+              {{ item.type.toLowerCase().includes('document') ? (item.cost | number) : '_' }}
+              </ng-container>
+            </span>
+            <ng-container *ngIf="checkIsThisCostTypeAbsent(expense.list, 'document')">
+              _
+            </ng-container>
+          </td>
+          <td class="text-center">
+            <span *ngFor="let item of expense.list" >
+              <ng-container *ngIf="item.type.toLowerCase().includes('maintenance')">
+              {{ item.type.toLowerCase().includes('maintenance') ? (item.cost | number) : '_' }}
+              </ng-container>
+            </span>
+            <ng-container *ngIf="checkIsThisCostTypeAbsent(expense.list, 'maintenance')">
+              _
+            </ng-container>
+          </td>
+          <td class="text-center">
+            {{ expense.total_cost ? (expense.total_cost | number) : '_' }}
           </td>
         </tr>
       </ng-container>
-      <ng-container *ngIf="!loading && statisticsDetails?.length === 0">
+      <ng-container *ngIf="!loading && expenseList?.length === 0">
         <tr>
-          <td class="text-center" [colSpan]="5">
+          <td class="text-center" [colSpan]="7">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
@@ -82,7 +132,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="5">
+          <td class="h-full" [colSpan]="7">
             <app-loading></app-loading>
           </td>
         </tr>

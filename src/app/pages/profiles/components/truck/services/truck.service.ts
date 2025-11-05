@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -116,4 +116,17 @@ export class TruckService {
   addExpense(formData: FormData) {
     return this.http.post(`${this.expenseUrl}`, formData);
   }
+
+  getExpenseListByDate(vehicleId: string, from?: string, to?: string): Observable<any> {
+    let params = new HttpParams();
+    if (from) {
+      params = params.set('from', from);
+    }
+    if (to) {
+      params = params.set('to', to);
+    }
+    return this.http.get(`${this.url}/${vehicleId}/expenses`, { params });
+  }
+
+
 }
