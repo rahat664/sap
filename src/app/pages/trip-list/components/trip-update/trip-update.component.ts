@@ -109,8 +109,8 @@ export class TripUpdateComponent implements OnInit {
   ) {}
 
   onUpdateTrip() {
-    const tripData = JSON.parse(localStorage.getItem('updateTripDetails'));
-    const tripId = localStorage.getItem('tripId');
+    const tripData = JSON.parse(sessionStorage.getItem('updateTripDetails'));
+    const tripId = tripData.tripId;
     if (this.tripUpdateForm.valid) {
       const dialogRef = this.dialog
         .open(ConfirmUpdateComponent, {
