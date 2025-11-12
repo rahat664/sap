@@ -228,7 +228,8 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
         this.loading = false;
         if (res.status === 'OK') {
           this.toastr.showSuccess(res.message);
-          this.router.navigate(['/profile/truck']);
+          this.isInEditMode = false;
+          this.getTruckDetailsByTruckId();
         } else {
           this.toastr.showError(res.message);
         }
