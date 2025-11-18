@@ -44,6 +44,8 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
     'yyyy-MM-dd'
   );
 
+  const transporterCodes = route?.queryParams['transporterCodes'] || '';
+
   // Emit a loading state before data is resolved
   const loadingState = of({
     loading: true,
@@ -53,14 +55,14 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
   return loadingState.pipe(
     switchMap(() => {
       return forkJoin({
-        apiStats: dashboardService.getApiStats(from, to, customerCode, paymentType, tripType, truckTypeId),
-        customerStats: dashboardService.getCustomerStats(from, to, customerCode, paymentType, tripType, truckTypeId),
-        challanStatus: dashboardService.getChallanStatus(challanFromDate, challanToDate , customerCode, paymentType, tripType, truckTypeId),
-        tripCountByDate: dashboardService.getDateWiseTripCount(challanFromDate, challanToDate, tripCountByDateType, customerCode, paymentType, tripType, truckTypeId),
-        topTransporters: dashboardService.getTopTransporters(challanFromDate, challanToDate, sortBy, customerCode, paymentType, tripType, truckTypeId),
-        topCustomers: dashboardService.getTopCustomers(challanFromDate, challanToDate, sortBy, paymentType, tripType, truckTypeId),
+        apiStats: dashboardService.getApiStats(from, to, customerCode, paymentType, tripType, truckTypeId,transporterCodes),
+        customerStats: dashboardService.getCustomerStats(from, to, customerCode, paymentType, tripType, truckTypeId, transporterCodes),
+        challanStatus: dashboardService.getChallanStatus(challanFromDate, challanToDate , customerCode, paymentType, tripType, truckTypeId, transporterCodes),
+        tripCountByDate: dashboardService.getDateWiseTripCount(challanFromDate, challanToDate, tripCountByDateType, customerCode, paymentType, tripType, truckTypeId, transporterCodes),
+        topTransporters: dashboardService.getTopTransporters(challanFromDate, challanToDate, sortBy, customerCode, paymentType, tripType, truckTypeId, transporterCodes),
+        topCustomers: dashboardService.getTopCustomers(challanFromDate, challanToDate, sortBy, paymentType, tripType, truckTypeId, transporterCodes),
         transporterRateAnalysisData:
-          dashboardService.getTransporterRateAnalysisData(type, from, to, null, truckTypeId, null, null, customerCode, paymentType, tripType),
+          dashboardService.getTransporterRateAnalysisData(type, from, to, truckTypeId, null, null, customerCode, paymentType, tripType, null, transporterCodes),
       }).pipe(
         map(data => {
           return {

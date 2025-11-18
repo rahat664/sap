@@ -129,7 +129,12 @@ export class TruckFilterComponent {
     { id: 2, value: 'Pending', selected: false },
     { id: 3, value: 'Rejected', selected: false },
   ];
+  hasDocumentOptionsArray: CustomInputSelectModel[] = [
+    {id: 0, value: 'True', selected: false, showname: 'Yes'},
+    {id: 1, value: 'False', selected: false, showname: 'No'},
+  ];
   statusInputPlaceholder: string;
+  hasDocumentPlaceholder: string = '';
 
   onSelectStatus($event: number) {
     this.statusOptionsArray.forEach(option => {
@@ -139,6 +144,21 @@ export class TruckFilterComponent {
           this.statusInputPlaceholder = option.value;
         } else {
           this.statusInputPlaceholder = 'All';
+        }
+      } else {
+        option.selected = false;
+      }
+    });
+  }
+
+  onSelectHasDocument($event: number) {
+    this.hasDocumentOptionsArray.forEach(option => {
+      if (option.id === $event) {
+        option.selected = !option.selected;
+        if (option.selected) {
+          this.hasDocumentPlaceholder = option.showname;
+        } else {
+          this.hasDocumentPlaceholder = '';
         }
       } else {
         option.selected = false;
@@ -179,6 +199,7 @@ export class TruckFilterComponent {
       endDate: this.endDate,
       statusInputPlaceholder: this.statusInputPlaceholder,
       selectedButton: this.selectedButton,
+      hasDocument: this.hasDocumentPlaceholder
     };
     localStorage.setItem('tripFilterData', JSON.stringify(filterData));
     this.filterData.emit(filterData);
@@ -266,31 +287,7 @@ export class TruckFilterComponent {
     }
   }
 
-  onSelectPayment($event: number) {
-    this.paymentTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.paymentTypePlaceholder =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.paymentTypeValue =
-      this.paymentTypeOptionsArray.find(x => x.id === $event)?.value || '';
-  }
 
-  onSelectTrip($event: number) {
-    if (this.tripTypeFilter === 0) {
-      this.filterLength += 1;
-    }
-    this.tripTypeFilter = 1;
-    this.tripTypeOptionsArray.forEach(x => (x.selected = x.id === $event));
-    this.tripTypePlaceholder =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.showname || '';
-    this.tripTypeValue =
-      this.tripTypeOptionsArray.find(x => x.id === $event)?.value || '';
-  }
-
-  onKeyUpCustomerSearch($event: KeyboardEvent) {
-    const searchText = ($event.target as HTMLInputElement).value;
-    this.searchValue = searchText;
-    this.customerSearch.next(searchText);
-  }
 
   private performCustomerSearch(searchText: string) {
     if (searchText?.length > 0) {
@@ -318,28 +315,6 @@ export class TruckFilterComponent {
     this.companySuggestions = ['No customer found'];
   }
 
-  onClickCustomerSearchSuggestion(option: any) {
-    this.customers.push(option);
-    this.customerCodes?.push(option.customerCode);
-    this.customerNames?.push(option.name);
-    this.customerName = '';
-    this.filterLength += 1;
-    this.previousFilterLength += 1;
-  }
-
-  onClickCloseCustomer(customer: CustomerModel) {
-    this.filterLength -= 1;
-    this.previousFilterLength -= 1;
-    this.customerCodes = this.customerCodes?.filter(
-      (value: any) => value !== customer.customerCode
-    );
-    this.customerNames = this.customerNames?.filter(
-      (value: any) => value !== customer.name
-    );
-    this.customers = this.customers?.filter(
-      (value: any) => value.id !== customer.id
-    );
-  }
 
   updateOverLayStyle(isSpecial: boolean) {
     const className = 'custom-overlay-bounding-box';
@@ -350,22 +325,6 @@ export class TruckFilterComponent {
     }
   }
 
-  onChangeTruckType($event: any) {
-    this.selectedTruckValues = [];
-    this.truckType = $event.value;
-    if (this.truckType) {
-      for (let i = 0; i < this.truckType.length; i++) {
-        this.vehicleTypeList.forEach((element: any) => {
-          if (element.id === this.truckType[i]) {
-            this.selectedTruckValues.push(element.name);
-          }
-        });
-      }
-    } else {
-      this.selectedTruckValues = [];
-    }
-    this.filterLength = this.previousFilterLength + this.truckType?.length;
-  }
 
   private getVehicleTypeList() {
     this.tripService.getVehicleTypeList().subscribe((res: any) => {
@@ -373,10 +332,6 @@ export class TruckFilterComponent {
     });
   }
 
-  onKeyUpTransporterSearch($event: KeyboardEvent) {
-    const searchText = ($event.target as HTMLInputElement).value;
-    this.transporterSearch.next(searchText);
-  }
 
   private performTransporterSearch(searchText: string) {
     if (searchText?.length > 0) {
@@ -400,22 +355,6 @@ export class TruckFilterComponent {
     this.transporterSuggestions.push('No transporter found');
   }
 
-  onClickTransporterSearchSuggestion(result: any) {
-    this.transporterName = result.name;
-    this.searchTransporter = result.name;
-    this.transporterSuggestions = [];
-  }
-
-  onClickClearTransporter() {
-    this.transporterName = '';
-    this.searchTransporter = '';
-    this.transporterSuggestions = [];
-  }
-
-  onKeyUpTripSearch($event: any) {
-    const value = $event.target.value;
-    this.tripIDSearchSubject.next(value); // Trigger the Subject when input changes
-  }
 
   onClickTripSearchSuggestion(option: any) {
     this.tripId = option.tripId;
@@ -458,6 +397,7 @@ export class TruckFilterComponent {
       if (this.selectedButton) {
         this.dateText = true
       }
+      this.hasDocumentPlaceholder = tripFilterData?.hasDocument
       localStorage.removeItem('tripFilterData');
     }
   }

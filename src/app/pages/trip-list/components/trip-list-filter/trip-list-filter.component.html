@@ -36,14 +36,14 @@
                   [(ngModel)]="startDate"
                   (selectionchange)="onChangeStartDate($event)"
                   matStartDate
-                  placeholder="Start date"/>
+                  placeholder="Start date" />
                 <input
                   [disabled]="!customSelected"
                   (focus)="picker.open()"
                   [(ngModel)]="endDate"
                   (selectionchange)="onChangeEndDate($event)"
                   matEndDate
-                  placeholder="End date"/>
+                  placeholder="End date" />
               </mat-date-range-input>
               <mat-datepicker-toggle
                 matIconSuffix
@@ -100,7 +100,7 @@
               matInput
               (keyup)="onKeyUpCustomerSearch($event)"
               placeholder="Select company name"
-              [matAutocomplete]="customerSug"/>
+              [matAutocomplete]="customerSug" />
             <mat-autocomplete #customerSug="matAutocomplete">
               @for (option of companySuggestions; track option) {
                 <mat-option
@@ -126,6 +126,48 @@
               </div>
             </ng-container>
           </div>
+          <div class="flex flex-col space-y-2 w-full">
+            <label class="text-base text-secondary">Transporter name</label>
+
+            <mat-form-field
+              (mouseenter)="updateOverLayStyle(false)"
+              appearance="outline"
+              class="example-full-width filter w-full">
+              <input
+                style="padding-right: 20px"
+                id="trasporterName"
+                [(ngModel)]="transporterName"
+                type="text"
+                matInput
+                (keyup)="onKeyUpTransporterSearch($event)"
+                placeholder="Select transporter name"
+                [matAutocomplete]="transporterSug" />
+              <mat-autocomplete #transporterSug="matAutocomplete">
+                @for (option of transporterSuggestions; track option) {
+                  <mat-option
+                    (click)="onClickTransporterSearchSuggestion(option)"
+                    [value]="option.name"
+                  >{{ option.name ? option.name : option }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+            <div
+              class="flex flex-wrap gap-2 text-secondary text-sm"
+              *ngIf="transporters.length > 0">
+              <ng-container *ngFor="let transporter of transporters">
+                <div
+                  class="flex space-x-[0.625rem] items-center py-1 px-2 rounded-full border border-input-hint whitespace-nowrap">
+                  <span>{{ transporter.name }}</span>
+                  <a
+                    (click)="onClickCloseTransporter(transporter)"
+                    class="cursor-pointer"
+                  ><i class="far fa-times"></i
+                  ></a>
+                </div>
+              </ng-container>
+            </div>
+          </div>
           <div class="flex flex-col space-y-1 w-full">
             <label class="text-base text-secondary">Vehicle type</label>
             <mat-form-field appearance="outline" class="filter">
@@ -140,6 +182,34 @@
                     }}
                   </mat-option>
                 }
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+
+          <div class="flex flex-col space-y-2 w-full">
+            <label class="text-body text-web-text-secondary">Loading District</label>
+            <mat-form-field appearance="outline" class="example-full-width filter">
+              <mat-select
+                [(ngModel)]="loadingDistrict"
+                (selectionChange)="onLoadingDistrictChange($event)"
+                placeholder="Loading District">
+                <mat-option *ngFor="let district of districts" [value]="district?.name"
+                >{{ district?.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="flex flex-col space-y-2 w-full">
+            <label class="text-body text-web-text-secondary">Unloading District</label>
+            <mat-form-field appearance="outline" class="example-full-width filter">
+              <mat-select
+                [(ngModel)]="unloadingDistrict"
+                (selectionChange)="onUnloadingDistrictChange($event)"
+                placeholder="Unloading District">
+                <mat-option *ngFor="let district of districts" [value]="district?.name"
+                >{{ district?.name }}
+                </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -207,7 +277,7 @@
         </div>
       </div>
     </div>
-    <div class="w-full " >
+    <div class="w-full ">
       <button class="bg-primary text-white rounded-lg py-2 font-semibold w-full" (click)="onApplyFilter()">Apply Filter
       </button>
     </div>

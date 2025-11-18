@@ -130,7 +130,12 @@ export class DriverFilterComponent {
     { id: 2, value: 'Pending', selected: false },
     { id: 3, value: 'Rejected', selected: false },
   ];
-  statusInputPlaceholder: string;
+  statusInputPlaceholder: string
+  hasDocumentsPlaceholder: string = '';
+  hasDocumentsOptionsArray: CustomInputSelectModel[] = [
+    {id: 0, value: 'True', selected: false, showname: 'Yes'},
+    {id: 1, value: 'False', selected: false, showname: 'No'},
+  ];
 
   onSelectStatus($event: number) {
     this.statusOptionsArray.forEach(option => {
@@ -141,6 +146,17 @@ export class DriverFilterComponent {
         } else {
           this.statusInputPlaceholder = 'All';
         }
+      } else {
+        option.selected = false;
+      }
+    });
+  }
+
+  hasDocumentSelect($event: number) {
+    this.hasDocumentsOptionsArray.forEach(option => {
+      if (option.id === $event) {
+        option.selected = true;
+        this.hasDocumentsPlaceholder = option.showname;
       } else {
         option.selected = false;
       }
@@ -180,6 +196,7 @@ export class DriverFilterComponent {
       endDate: this.endDate,
       statusInputPlaceholder: this.statusInputPlaceholder,
       selectedButton: this.selectedButton,
+      hasDocument: this.hasDocumentsPlaceholder
     };
     localStorage.setItem('tripFilterData', JSON.stringify(filterData));
     this.filterData.emit(filterData);
@@ -456,6 +473,7 @@ export class DriverFilterComponent {
       this.endDate = tripFilterData?.endDate;
       this.statusInputPlaceholder = tripFilterData?.statusInputPlaceholder;
       this.selectedButton = tripFilterData?.selectedButton;
+      this.hasDocumentsPlaceholder = tripFilterData?.hasDocument;
       if (this.selectedButton) {
         this.dateText = true
       }

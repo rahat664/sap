@@ -43,7 +43,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
-import { paymentType, paymentTypes, tripType, tripTypes } from '../../../auth/models/response/trip';
+import { paymentType, paymentTypes, Trip, tripType, tripTypes } from '../../../auth/models/response/trip';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
 
@@ -98,6 +98,7 @@ export class TripUpdateComponent implements OnInit {
   isFromTemplate = false;
   driverSuggestion: any;
   transporterSuggestion: any;
+  tripData: Trip;
 
   constructor(
     private service: TripService,
@@ -109,8 +110,8 @@ export class TripUpdateComponent implements OnInit {
   ) {}
 
   onUpdateTrip() {
-    const tripData = JSON.parse(sessionStorage.getItem('updateTripDetails'));
-    const tripId = tripData.tripId;
+    const tripData = JSON.parse(localStorage.getItem('updateTripDetails'));
+    const tripId = tripData?.tripId;
     if (this.tripUpdateForm.valid) {
       const dialogRef = this.dialog
         .open(ConfirmUpdateComponent, {
@@ -140,6 +141,7 @@ export class TripUpdateComponent implements OnInit {
               note: this.tripUpdateForm.get('note').value,
               paymentType: this.tripUpdateForm.get('paymentType').value,
               tripType: this.tripUpdateForm.get('tripType').value,
+              planNumber: this.tripUpdateForm.get('planNumber').value,
               points: [
                 ...this.tripUpdateForm.get('loadingPoints').value,
                 ...this.tripUpdateForm.get('unloadingPoints').value,
@@ -490,6 +492,7 @@ export class TripUpdateComponent implements OnInit {
       registrationCategory: [''],
       registrationSerialNumber: [''],
       registrationNumber: [''],
+      planNumber: [''],
     });
   }
 
@@ -571,27 +574,7 @@ export class TripUpdateComponent implements OnInit {
     this.loadingPoints?.controls[i]
           ?.get('pointName')
           .setValue(option.addressText);
-    if (option.district) {
-      this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
-      this.loadingPoints?.controls[i]
-        ?.get('pointDistrict')
-        .setValue(option.district);
-    } else {
-      for (
-        let singleDistrict = 0;
-        singleDistrict < this.district.length;
-        singleDistrict++
-      ) {
-        if (option.addressText.includes(this.district[singleDistrict].name)) {
-          this.loadingPoints?.controls[i]
-            ?.get('pointDistrict')
-            .setValue(this.district[singleDistrict].name);
-          break;
-        } else {
-          this.loadingPoints?.controls[i]?.get('pointDistrict').enable();
-        }
-      }
-    }
+
 
     if (option.latitude > 0 && option.longitude > 0) {
       this.loadingPoints?.controls[i]
@@ -600,44 +583,30 @@ export class TripUpdateComponent implements OnInit {
       this.loadingPoints?.controls[i]
         ?.get('pointLon')
         .setValue(option.longitude);
+      this.searchDistrict(option.latitude, option.longitude, this.loadingPoints?.controls[i]);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         const lat = res.location.latitude;
         const lng = res.location.longitude;
         this.loadingPoints?.controls[i]?.get('pointLat').setValue(lat);
         this.loadingPoints?.controls[i]?.get('pointLon').setValue(lng);
+        this.searchDistrict(lat, lng, this.loadingPoints?.controls[i]);
       });
     }
     this.loadingSuggestions = [];
   }
-
+  searchDistrict(lat, lng, control): any {
+    this.service.searchDistricts(lat, lng).subscribe((res: any) => {
+      control.get('pointDistrict').setValue(res.data.name);
+    });
+  }
   onClickUnloadingSuggestion(option: any, i: number) {
     this.unloadingPoints?.controls[i]
       ?.get('pointName')
       .setValue(
         option.addressText
       );
-    if (option.district) {
-      this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue('');
-      this.unloadingPoints?.controls[i]
-        ?.get('pointDistrict')
-        .setValue(option.district);
-    } else {
-      for (
-        let singleDistrict = 0;
-        singleDistrict < this.district.length;
-        singleDistrict++
-      ) {
-        if (option.addressText.includes(this.district[singleDistrict].name)) {
-          this.unloadingPoints?.controls[i]
-            ?.get('pointDistrict')
-            .setValue(this.district[singleDistrict].name);
-          break;
-        } else {
-          this.unloadingPoints?.controls[i]?.get('pointDistrict').enable();
-        }
-      }
-    }
+
     if (option.latitude > 0 && option.longitude > 0) {
       this.unloadingPoints?.controls[i]
         ?.get('pointLat')
@@ -645,6 +614,7 @@ export class TripUpdateComponent implements OnInit {
       this.unloadingPoints?.controls[i]
         ?.get('pointLon')
         .setValue(option.longitude);
+      this.searchDistrict(option.latitude, option.longitude, this.unloadingPoints?.controls[i]);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         this.unloadingPoints?.controls[i]
@@ -653,6 +623,7 @@ export class TripUpdateComponent implements OnInit {
         this.unloadingPoints?.controls[i]
           ?.get('pointLon')
           .setValue(res?.location?.longitude);
+        this.searchDistrict(res?.location?.latitude, res?.location?.longitude, this.unloadingPoints?.controls[i]);
       });
     }
     this.unloadingSuggestions = [];
@@ -914,6 +885,7 @@ export class TripUpdateComponent implements OnInit {
 
   private getValueFromTripDetails() {
     const tripData = JSON.parse(localStorage.getItem('updateTripDetails'));
+    this.tripData = tripData;
     if (tripData) {
       this.tripStatus = tripData.status;
       this.customerName = tripData.customerName;
@@ -948,6 +920,7 @@ export class TripUpdateComponent implements OnInit {
       this.tripUpdateForm.get('goodsId').setValue(tripData.good?.id);
       this.tripUpdateForm.get('goodsName').setValue(tripData.good?.name);
       this.tripUpdateForm.get('customerRate').setValue(tripData.customerRate);
+      this.tripUpdateForm.get('planNumber').setValue(tripData.planNumber);
       this.tripUpdateForm.get('note').setValue(tripData.note);
       this.tripUpdateForm.get('source').setValue(tripData?.sourceOfTruck)
       this.truckSourceList.forEach((source: any) => {

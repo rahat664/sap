@@ -62,6 +62,7 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
   districts: any[] = [];
   customerCode = '';
   paymentType = '';
+  transporterCodes = '';
   tripType = '';
   tripTypeId: any;
   unloadingDistrict = '';
@@ -96,7 +97,6 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.resetAll();
-
     this.getVehicleTypeList();
     this.getDistrictList();
     this.getTransporterList();
@@ -111,6 +111,7 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
           customerCode: params['customerCode'] || '',
           fromDate: params['fromDate'] || '',
           toDate: params['toDate'] || '',
+          transporterCodes: params['transporterCodes'] || '',
         })),
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
         startWith({
@@ -120,9 +121,10 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
           customerCode: this.customerCode,
           fromDate: this.fromDate,
           toDate: this.toDate,
+          transporterCodes: this.transporterCodes
         })
       ),
-      this.activatedRoute.data.pipe(startWith({})),
+      this.activatedRoute.data
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([qp, data]: any) => {
@@ -140,13 +142,16 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
           this.calculateFromAndToDate();
         }
 
-        // initial data pass (resolver if available)
-        const resolved = data?.dashboardData?.data?.transporterRateAnalysisData
-          ?.data as RatePoint[] | undefined;
+        // Only build from resolver if data is present
+        const resolved = data?.dashboardData?.data?.transporterRateAnalysisData?.data as RatePoint[] | undefined;
         this.buildCategories();
-        if (resolved?.length) {
+        if (Array.isArray(resolved) && resolved.length > 0) {
           this.buildSeries(resolved);
+        } else if (data && data.dashboardData) {
+          // If resolver ran but no data, don't fetch again
+          this.buildSeries([]);
         } else {
+          // Only fetch if resolver hasn't run yet
           this.fetchAndBuild();
         }
       });
@@ -222,13 +227,13 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
         this.datatype,
         this.fromDate,
         this.toDate,
-        this.transporter,
         this.vehicleType,
         this.loadingDistrict,
         this.unloadingDistrict,
         this.customerCode,
         this.paymentType,
-        this.tripType
+        this.tripType,
+        this.transporterCodes
       )
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {

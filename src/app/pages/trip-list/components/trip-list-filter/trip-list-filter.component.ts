@@ -20,9 +20,10 @@ import { MatInput } from '@angular/material/input';
 import { Subject } from 'rxjs';
 import { CustomerService } from '../../../profiles/services/customer.service';
 import { CustomerModel } from '../../../profiles/components/customer/model/customer.model';
-import { MatSelect } from '@angular/material/select';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { TripService } from '../../services/trip.service';
 import { UserService } from '../../../profiles/services/user.service';
+import { districts } from '../../../../shared/models/ditrict-with-latlng.model';
 
 @Component({
   selector: 'app-trip-list-filter',
@@ -73,7 +74,11 @@ export class TripListFilterComponent {
   dateText: any;
   customDateText: any;
   previousFilterLength: number = 0;
+  transporterCodes: any[] = [];
+  transporterNames: any[] = [];
   filterLength: number = 0;
+  protected districts = [];
+  unloadingDistrict: any;
   paymentStatusPlaceholder: string = '';
   paymentTypeOptionsArray: CustomInputSelectModel[] = [
     { id: 1, value: 'CASH', selected: false, showname: 'Cash' },
@@ -119,6 +124,8 @@ export class TripListFilterComponent {
   selectedTruckValues: any = [];
   private selectedTripValue: any[] = [];
   private selectedPaymentValue: any[] = [];
+  transporters: any[] = [];
+  loadingDistrict: any;
 
   constructor(
     private datePipe: DatePipe,
@@ -139,6 +146,7 @@ export class TripListFilterComponent {
 
   ngOnInit() {
     this.getVehicleTypeList();
+    this.getDistricts();
   }
 
   onClose() {
@@ -156,12 +164,16 @@ export class TripListFilterComponent {
       customerName: this.customerNames,
       truckType: this.truckType,
       customers: this.customers,
-      transporterName: this.transporterName,
+      transporterName: this.transporterNames,
+      transporterCodes: this.transporterCodes,
+      transporters: this.transporters,
       tripId: this.tripId,
       selectedButton: this.selectedButton,
       selectedTruckValues: this.selectedTruckValues,
       selectedTripValue: this.selectedTripValue,
       selectedPaymentValue: this.selectedPaymentValue,
+      loadingDistrict: this.loadingDistrict,
+      unloadingDistrict: this.unloadingDistrict,
     };
     localStorage.setItem('tripFilterData', JSON.stringify(filterData));
     this.filterData.emit(filterData);
@@ -227,6 +239,14 @@ export class TripListFilterComponent {
         this.dateText = event;
       }
     }
+  }
+
+  onLoadingDistrictChange($event: MatSelectChange) {
+
+  }
+
+  onUnloadingDistrictChange($event: MatSelectChange) {
+
   }
 
   onChangeStartDate($event: Event) {
@@ -389,9 +409,10 @@ export class TripListFilterComponent {
   }
 
   onClickTransporterSearchSuggestion(result: any) {
-    this.transporterName = result.name;
-    this.searchTransporter = result.name;
-    this.transporterSuggestions = [];
+    this.transporters.push(result);
+    this.transporterCodes?.push(result.code);
+    this.transporterNames?.push(result.name);
+    this.transporterName = '';
   }
 
   onClickClearTransporter() {
@@ -442,6 +463,8 @@ export class TripListFilterComponent {
       this.startDate = tripFilterData?.startDate;
       this.endDate = tripFilterData?.endDate;
       this.selectedButton = tripFilterData?.selectedButton;
+      this.loadingDistrict = tripFilterData.loadingDistrict;
+      this.unloadingDistrict = tripFilterData.unloadingDistrict;
       if (this.selectedButton) {
         this.dateText = true;
       }
@@ -451,6 +474,12 @@ export class TripListFilterComponent {
         this.customers = tripFilterData?.customers;
       }
       this.customers = tripFilterData?.customers || [];
+      if (tripFilterData?.transporterCodes?.length > 0) {
+        this.transporterCodes = tripFilterData?.transporterCodes
+        this.transporterNames = tripFilterData?.transporterName;
+        this.transporters = tripFilterData?.transporters;
+      }
+      this.transporters = tripFilterData?.transporters || [];
       if (tripFilterData?.truckType?.length > 0) {
         this.truckType = tripFilterData?.truckType;
         if (this.truckType) {
@@ -488,8 +517,6 @@ export class TripListFilterComponent {
           }
         }
       }
-      this.transporterName = tripFilterData?.transporterName;
-      this.searchTransporter = tripFilterData?.transporterName;
       this.tripId = tripFilterData?.tripId;
       this.searchId = tripFilterData?.tripId;
     }
@@ -524,5 +551,19 @@ export class TripListFilterComponent {
     } else {
       this.selectedTripValue = [];
     }
+  }
+
+  onClickCloseTransporter(transporters: any) {
+    this.filterLength -= 1;
+    this.previousFilterLength -= 1;
+    this.transporters = this.transporters?.filter(
+      (value: any) => value.code !== transporters.code
+    );
+  }
+
+  private getDistricts() {
+    this.tripService.getDistricts().subscribe((res: any) => {
+      this.districts = res.data;
+    });
   }
 }

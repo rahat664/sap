@@ -14,7 +14,7 @@
       </div>
     </div>
     <div *ngIf="filterApplied" class="w-full justify-between flex border border-blue items-center px-2 py-2 bg-input rounded-lg">
-      <span class="text-xs text-not-black">Showing results for {{filterSummary}}</span>
+      <span class="text-xs text-not-black">Showing results for <span [innerHTML]="filterSummary"></span></span>
       <a class="text-red test xs cursor-pointer" (click)="onCLickClearAll()">Clear all</a>
     </div>
 

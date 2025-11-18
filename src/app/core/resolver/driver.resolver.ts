@@ -8,7 +8,7 @@ export const driverResolver: ResolveFn<Observable<any>> = (route, state) => {
   const driver = inject(UserService);
   const page = 0;
   const size = 30;
-
+const hasDocuments = true;
   const loadingState = of({
     loading: true,
     data: null,

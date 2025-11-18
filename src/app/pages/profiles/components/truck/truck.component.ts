@@ -89,6 +89,7 @@ export class TruckComponent implements OnInit {
   inputPlaceholder: any;
   dateOptionArray: CustomInputSelectModel[];
   filterData: any = {};
+  hasDocument: boolean = true;
 
   constructor(
     private service: TruckService,
@@ -140,7 +141,8 @@ export class TruckComponent implements OnInit {
           null,
           null,
           this.from,
-          this.to
+          this.to,
+          this.hasDocument
         )
         .pipe(debounceTime(1000))
         .subscribe((res: any) => {
@@ -161,7 +163,8 @@ export class TruckComponent implements OnInit {
           null,
           null,
           this.from,
-          this.to
+          this.to,
+          this.hasDocument
         )
         .subscribe((res: any) => {
           this.truckList = res.data.responses;
@@ -253,7 +256,8 @@ export class TruckComponent implements OnInit {
             null,
             null,
             this.from,
-            this.to
+            this.to,
+            this.hasDocument
           )
           .pipe(debounceTime(1000))
           .subscribe((res: any) => {
@@ -272,7 +276,8 @@ export class TruckComponent implements OnInit {
             null,
             null,
             this.from,
-            this.to
+            this.to,
+            this.hasDocument
           )
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
@@ -529,6 +534,10 @@ export class TruckComponent implements OnInit {
       parts.push(
         `Truck Status: <b>${this.filterData.statusInputPlaceholder}</b>`
       );
+    if (this.hasDocument || this.filterData?.hasDocument)
+      parts.push(
+        `Has Document: <b>${this.hasDocument ? 'Yes' : 'No'}</b>`
+      );
 
     return parts.join(', ');
   }
@@ -537,8 +546,9 @@ export class TruckComponent implements OnInit {
     if (
       this.filterData?.startDate ||
       this.filterData?.endDate ||
-      this.filterData?.statusInputPlaceholder
+      this.filterData?.statusInputPlaceholder || this.filterData?.hasDocument
     ) {
+      this.hasDocument = this.filterData?.hasDocument === 'Yes' ? true : this.filterData?.hasDocument === 'No' ? false : null;
       this.filterApplied = true;
       this.filterOpened = false;
       this.from = this.filterData.startDate;
@@ -556,6 +566,7 @@ export class TruckComponent implements OnInit {
       this.size = 30;
       this.from = '';
       this.to = '';
+      this.hasDocument = true;
       this.statusInputPlaceholder = '';
       this.filterForm.reset();
       this.getTruckList();
@@ -566,6 +577,7 @@ export class TruckComponent implements OnInit {
     localStorage.removeItem('tripFilterData');
     this.filterForm.reset();
     this.filterApplied = false;
+    this.hasDocument = true;
     this.filterData = {};
     this.page = 0;
     this.size = 30;

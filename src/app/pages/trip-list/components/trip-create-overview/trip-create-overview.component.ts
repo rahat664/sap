@@ -176,7 +176,7 @@ export class TripCreateOverviewComponent implements OnInit {
             width: '21.375rem',
             data: {
               title: 'Error',
-              text: res.error.message,
+              text: res.message,
               buttonText: 'Okay',
             },
           });

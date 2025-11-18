@@ -110,8 +110,8 @@ export class DashboardFilterComponent {
   truckType: any;
   vehicleTypeList: any[] = [];
   transporterSuggestions: any[] = [];
-  transporterName: string;
-  searchTransporter: any;
+  transporterName: string = '';
+  searchTransporter: any = '';
   searchId: any;
   tripIdSuggestions: any = [];
   tripId: any;
@@ -119,6 +119,10 @@ export class DashboardFilterComponent {
   truckRegistrationId: string;
   private selectedTripValue: any[] = [];
   private selectedPaymentValue: any[] = [];
+  transporterSearch: Subject<string> = new Subject<string>();
+  transporters: any[] = [];
+  transporterCodes: any[] = [];
+  transporterNames: any[] = [];
 
   constructor(
     private datePipe: DatePipe,
@@ -130,6 +134,10 @@ export class DashboardFilterComponent {
     this.customerSearch.pipe().subscribe(searchText => {
       this.performCustomerSearch(searchText);
     });
+
+    this.transporterSearch.pipe().subscribe(searchText => {
+      this.performTransporterSearch(searchText);
+    });
   }
 
   ngOnInit() {
@@ -138,6 +146,11 @@ export class DashboardFilterComponent {
 
   onClose() {
     this.filterClosed.emit();
+  }
+
+  onKeyUpTransporterSearch($event: KeyboardEvent) {
+    const searchText = ($event.target as HTMLInputElement).value;
+    this.transporterSearch.next(searchText);
   }
 
   onChangePaymentType($event: any) {
@@ -155,6 +168,37 @@ export class DashboardFilterComponent {
       this.selectedPaymentValue = [];
     }
   }
+
+  onClickTransporterSearchSuggestion(result: any) {
+    this.transporters.push(result);
+    this.transporterCodes?.push(result.code);
+    this.transporterNames?.push(result.name);
+    this.transporterName = '';
+  }
+
+
+  private performTransporterSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.transporter
+        .getTransporter(0, 100, searchText)
+        .subscribe((transporter: any) => {
+          this.transporterSuggestions = transporter.data;
+          if (this.transporterSuggestions.length === 0) {
+            this.transporterSuggestions.push('No transporter found');
+          }
+        });
+    } else {
+      this.resetTransporterSearch();
+    }
+  }
+
+  private resetTransporterSearch() {
+    this.transporterName = '';
+    this.transporterName = '';
+    this.transporterSuggestions = [];
+    this.transporterSuggestions.push('No transporter found');
+  }
+
   onChangeTripType($event: any) {
     this.selectedTripValue = [];
     this.tripTypeValue = $event.value;
@@ -171,7 +215,6 @@ export class DashboardFilterComponent {
     }
   }
 
-
   onApplyFilter() {
     // emit the filter data and store it to local storage
     const filterData = {
@@ -181,6 +224,9 @@ export class DashboardFilterComponent {
       tripType: this.tripTypeValue,
       customerCode: this.customerCodes,
       customerName: this.customerNames,
+      transporterName: this.transporterNames,
+      transporterCode: this.transporterCodes,
+      transporter: this.transporters,
       truckType: this.truckType,
       customers: this.customers,
       selectedButton: this.selectedButton,
@@ -383,8 +429,9 @@ export class DashboardFilterComponent {
   }
 
   customerIsNotEnterprise() {
-    return localStorage.getItem('enterpriseCode') !== 'E-3'
+    return localStorage.getItem('enterpriseCode') !== 'E-3';
   }
+
   private getDataFromLocalStorage() {
     const tripFilterData = JSON.parse(localStorage.getItem('tripFilterData'));
     if (tripFilterData) {
@@ -399,13 +446,19 @@ export class DashboardFilterComponent {
           ? 'All'
           : tripFilterData?.paymentStatus;
       this.tripTypePlaceholder =
-        tripFilterData?.tripTypeName === '' ? 'All' : tripFilterData?.tripTypeName;
+        tripFilterData?.tripTypeName === ''
+          ? 'All'
+          : tripFilterData?.tripTypeName;
       if (tripFilterData?.customerCode?.length > 0) {
         this.customerCodes = tripFilterData?.customerCode;
         this.customerNames = tripFilterData?.customerName;
         this.customers = tripFilterData?.customers;
       }
-      this.customers = tripFilterData?.customers || [];
+      if (tripFilterData?.transporterCode?.length > 0) {
+        this.transporterCodes = tripFilterData?.transporterCode;
+        this.transporterNames = tripFilterData?.transporterName;
+        this.transporters = tripFilterData?.transporters || [];
+      }
       if (tripFilterData?.truckType?.length > 0) {
         this.truckType = tripFilterData?.truckType;
         if (this.truckType) {
@@ -443,7 +496,16 @@ export class DashboardFilterComponent {
           }
         }
       }
+
       localStorage.removeItem('tripFilterData');
     }
+  }
+
+  onClickCloseTransporter(transporters: any) {
+    this.filterLength -= 1;
+    this.previousFilterLength -= 1;
+    this.transporters = this.transporters?.filter(
+      (value: any) => value.code !== transporters.code
+    );
   }
 }

@@ -239,7 +239,7 @@ export class PaymentComponent {
       this.filterData.paymentStatus ||
       this.filterData.loadingDistrict ||
       this.filterData.unloadingDistrict ||
-      this.filterData.transporterName
+      this.filterData.transporterCodes?.length > 0
     ) {
       this.filterApplied = true;
       this.filterOpened = false;
@@ -258,7 +258,8 @@ export class PaymentComponent {
         this.filterData.transporterName,
         this.filterData.paymentStatus,
         this.filterData.loadingDistrict,
-        this.filterData.unloadingDistrict
+        this.filterData.unloadingDistrict,
+        this.filterData.transporterCodes
       ).subscribe(
         (res: any) => {
           this.transportersPaymentList = res.data.responses;
@@ -297,24 +298,47 @@ export class PaymentComponent {
 
   }
 
+
   get filterSummary(): string {
     const parts: string[] = [];
 
-    if (this.filterData.searchName) parts.push(`Company: ${this.filterData.searchName}`);
-    if(this.filterData.transporterName) parts.push(`Transporter: ${this.filterData.transporterName}`);
-    if (this.filterData.startDate) parts.push(`From: ${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}`);
-    if (this.filterData.endDate) parts.push(`To: ${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}`);
-    if (this.filterData.paymentStatus) parts.push(`Payment Status: ${this.filterData.paymentStatus}`);
-    if (this.filterData.tripStatus) parts.push(`Trip Status: ${this.filterData.tripStatus}`);
-    if (this.filterData.tripId) parts.push(`Trip ID: ${this.filterData.tripId}`);
-    if (this.filterData.loadingDistrict) parts.push(`Loading District: ${this.filterData.loadingDistrict}`);
-    if (this.filterData.unloadingDistrict) parts.push(`Unloading District: ${this.filterData.unloadingDistrict}`);
-
+    if (this.filterData.searchName)
+      parts.push(`Company: <b>${this.filterData.searchName}</b>`);
+    if (this.filterData.startDate)
+      parts.push(
+        `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.endDate)
+      parts.push(
+        `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData?.paymentStatus)
+      parts.push(
+        `Payment Status: <b>${this.filterData.paymentStatus}</b>`
+      );
+    if (this.filterData?.tripStatus)
+      parts.push(
+        `Trip Status: <b>${this.filterData.tripStatus}</b>`
+      );
+    if (this.filterData.tripId)
+      parts.push(`Trip ID: <b>${this.filterData.tripId}</b>`);
+    if (this.filterData?.loadingDistrict) {
+      parts.push(`Loading District: <b>${this.filterData.loadingDistrict}</b>`);
+    }
+    if (this.filterData?.unloadingDistrict) {
+      parts.push(
+        `Unloading District: <b>${this.filterData.unloadingDistrict}</b>`
+      );
+    }
+    if (this.filterData?.transporterCodes?.length > 0) {
+      parts.push(`Transporter: <b>${this.filterData.transporterName?.toString()}</b>`);
+    }
     return parts.join(', ');
   }
 
   onCLickClearAll() {
     this.filterData = {};
+    this.transportersPaymentList = [];
     this.filterApplied = false;
     this.filterOpened = false;
     this.loading = true;

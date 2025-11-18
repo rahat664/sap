@@ -44,6 +44,7 @@ export class TripService {
   anotherStatusCalled: BehaviorSubject<boolean> = new BehaviorSubject(false);
   historyApi = `${environment.locationUrl}/api/locations/histories`;
   transporterPaymentUrl = `${environment.backendUrl}/api/transporter-payment`;
+  districtSearchUrl = `${environment.backendUrl}/api/districts/search-district`;
 
   constructor(
     private http: HttpClient,
@@ -67,7 +68,10 @@ export class TripService {
     truckRegId?: string,
     transporterNameOrPhone?: string,
     paymentType?: string,
-    tripType?: string
+    tripType?: string,
+    transporterCodes?: string,
+    loadingDistrict?: string,
+    unloadingDistrict?: string
   ): Observable<any> {
     let params = new HttpParams().set('page', page.toString());
     if (size) {
@@ -119,6 +123,12 @@ export class TripService {
       params = params.set('paymentType', paymentType);
     } if (tripType) {
       params = params.set('tripType', tripType);
+    } if (transporterCodes) {
+      params = params.set('transporterCodes', transporterCodes);
+    } if (loadingDistrict) {
+      params = params.set('loadingDistrict', loadingDistrict);
+    } if (unloadingDistrict) {
+      params = params.set('unloadingDistrict', unloadingDistrict);
     }
 
     return this.http.get(`${this.url}`, { params });
@@ -286,7 +296,8 @@ export class TripService {
     transporterNameOrPhone?: string,
     transporterPaymentStatus?: string,
     loadingDistrict?: string,
-    unloadingDistrict?: string
+    unloadingDistrict?: string,
+    transporterCodes?: string
   ) {
     let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
 
@@ -315,6 +326,9 @@ export class TripService {
     } if (unloadingDistrict) {
       params = params.set('unloadingDistrict', unloadingDistrict);
     }
+    if (transporterCodes) {
+      params = params.set('transporterCodes', transporterCodes);
+    }
     return this.http.get(`${this.transporterPaymentUrl}`, { params });
   }
 
@@ -324,5 +338,9 @@ export class TripService {
 
   getPaymentDetails(tripId: string) {
     return this.http.get(`${this.transporterPaymentUrl}/trip/${tripId}`);
+  }
+
+  searchDistricts(lat:any, lng:any) {
+    return this.http.get(`${this.districtSearchUrl}?lat=${lat}&lon=${lng}`, {})
   }
 }

@@ -731,10 +731,40 @@
             Additional instruction
           </h1>
         </div>
-        <textarea
-          formControlName="note"
-          class="w-full h-28 border border-none bg-input rounded-lg p-4"
-          placeholder="Enter additional instruction"></textarea>
+        <div class="flex flex-col space-y-1 w-full md:col-span-2" *ngIf="tripData.customerCode === 'A439'">
+          <label class="form-label text-body" for="planNumber">Plan number</label>
+          <mat-form-field
+            appearance="outline"
+            class="example-full-width"
+            [ngClass]="{
+            error:
+              tripUpdateForm.get('planNumber').invalid &&
+              tripUpdateForm.get('planNumber').touched,
+          }">
+            <input
+              id="planNumber"
+              type="text"
+              matInput
+              formControlName="planNumber"
+              placeholder="Enter Plan Number"/>
+          </mat-form-field>
+          <!--        error-message-->
+          <div
+            *ngIf="
+            tripUpdateForm.get('planNumber').invalid && tripUpdateForm.get('planNumber').touched
+          "
+            class="text-red text-xs">
+            Please enter a valid plan number
+          </div>
+        </div>
+        <div class="flex flex-col space-y-1 w-full md:col-span-2">
+          <label class="form-label text-body" for="note">Note</label>
+          <textarea
+            id="note"
+            formControlName="note"
+            class="w-full h-28 border border-none bg-input rounded-lg p-4"
+            placeholder="Enter additional instruction"></textarea>
+        </div>
       </div>
 
       <div

@@ -8,8 +8,6 @@ import {
 import { FormsModule } from '@angular/forms';
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
-import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
-import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import {
   MatAutocomplete,
   MatAutocompleteTrigger,
@@ -38,6 +36,10 @@ import { CustomerModel } from '../../customer/model/customer.model';
     NgIf,
     MatDateRangeInput,
     MatFormFieldModule,
+    MatAutocomplete,
+    MatInput,
+    MatAutocompleteTrigger,
+    MatOption,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './transporter-filter.component.html',
@@ -50,6 +52,7 @@ export class TransporterFilterComponent {
   customerSearch: Subject<string> = new Subject<string>();
   transporterSearch: Subject<string> = new Subject<string>();
   tripIDSearchSubject: Subject<string> = new Subject<string>();
+  truckStandSearchSubject: Subject<string> = new Subject<string>();
   tripIdSearch: Subject<string> = new Subject<string>();
   buttonName: any[] = [
     'Today',
@@ -124,12 +127,16 @@ export class TransporterFilterComponent {
   tripId: any;
   truckName: any;
   selectedTruckValues: any = [];
+  truckStand: string = '';
+  truckStandSuggestions: any[] = [];
+  truckStands: any[] = [];
 
   constructor(
     private datePipe: DatePipe,
     private customer: CustomerService,
     private tripService: TripService,
-    private transporter: UserService
+    private transporter: UserService,
+    private service: UserService
   ) {
     this.customerSearch.pipe().subscribe(searchText => {
       this.performCustomerSearch(searchText);
@@ -140,10 +147,12 @@ export class TransporterFilterComponent {
     this.tripIDSearchSubject.pipe().subscribe(searchText => {
       this.performTripIdSearch(searchText);
     });
+    this.truckStandSearchSubject.pipe().subscribe(searchText => {
+      this.performTruckStandSearch(searchText);
+    })
   }
 
   ngOnInit() {
-    this.getVehicleTypeList();
     this.getDataFromLocalStorage();
   }
 
@@ -157,6 +166,7 @@ export class TransporterFilterComponent {
       startDate: this.startDate,
       endDate: this.endDate,
       selectedButton: this.selectedButton,
+      truckStands: this.truckStands,
     };
     localStorage.setItem('tripFilterData', JSON.stringify(filterData));
     this.filterData.emit(filterData);
@@ -435,7 +445,40 @@ export class TransporterFilterComponent {
       if (this.selectedButton) {
         this.dateText = true;
       }
+      this.truckStands = tripFilterData?.truckStands || [];
       localStorage.removeItem('tripFilterData');
+    }
+  }
+
+  private performTruckStandSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.service
+        .getTruckStandSuggestions(searchText)
+        .subscribe((truckStand: any) => {
+          this.truckStandSuggestions = truckStand.data;
+          if (this.truckStandSuggestions.length === 0) {
+            this.truckStandSuggestions.push('No truck stand found');
+          }
+        });
+    }
+  }
+
+  onKeyUpTruckStandSearch($event: KeyboardEvent) {
+    const searchText = ($event.target as HTMLInputElement).value;
+    this.truckStandSearchSubject.next(searchText);
+  }
+
+  onClickTruckStandSearchSuggestion(option: any) {
+    this.truckStands.push(option);
+    this.truckStand = '';
+  }
+
+  onClickCloseTruckStand(truckStand: any) {
+    this.truckStands = this.truckStands?.filter(
+      (value: any) => value !== truckStand
+    );
+    if (this.truckStands.length === 0) {
+      this.truckStand = '';
     }
   }
 }
