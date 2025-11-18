@@ -108,6 +108,12 @@ export class TruckComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const truckFilterData = localStorage.getItem('truckFilterData');
+    if (truckFilterData) {
+      this.filterData = JSON.parse(truckFilterData);
+      this.hasDocument = this.filterData?.hasDocument === 'Yes' ? true : this.filterData?.hasDocument === 'No' ? false : null;
+      this.filterApplied = true;
+    }
     this.generateDateOptionsArray();
     this.truckList = [];
     this.getTruckListFromResolvedState();
@@ -559,7 +565,7 @@ export class TruckComponent implements OnInit {
       this.loading = true;
       this.getTruckList();
     } else {
-      localStorage.removeItem('tripFilterData');
+      localStorage.removeItem('truckFilterData');
       this.filterApplied = false;
       this.loading = true;
       this.page = 0;
@@ -574,7 +580,7 @@ export class TruckComponent implements OnInit {
   }
 
   onCLickClearAll() {
-    localStorage.removeItem('tripFilterData');
+    localStorage.removeItem('truckFilterData');
     this.filterForm.reset();
     this.filterApplied = false;
     this.hasDocument = true;

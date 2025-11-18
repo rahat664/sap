@@ -201,7 +201,7 @@ export class TruckFilterComponent {
       selectedButton: this.selectedButton,
       hasDocument: this.hasDocumentPlaceholder
     };
-    localStorage.setItem('tripFilterData', JSON.stringify(filterData));
+    localStorage.setItem('truckFilterData', JSON.stringify(filterData));
     this.filterData.emit(filterData);
     this.filterApplied.emit(true);
     this.filterClosed.emit();
@@ -388,17 +388,17 @@ export class TruckFilterComponent {
   }
 
   private getDataFromLocalStorage() {
-    const tripFilterData = JSON.parse(localStorage.getItem('tripFilterData'));
-    if (tripFilterData) {
-      this.startDate = tripFilterData?.startDate;
-      this.endDate = tripFilterData?.endDate;
-      this.statusInputPlaceholder = tripFilterData?.statusInputPlaceholder;
-      this.selectedButton = tripFilterData?.selectedButton;
+    const truckFilterData = JSON.parse(localStorage.getItem('truckFilterData'));
+    if (truckFilterData) {
+      this.startDate = truckFilterData?.startDate;
+      this.endDate = truckFilterData?.endDate;
+      this.statusInputPlaceholder = truckFilterData?.statusInputPlaceholder;
+      this.selectedButton = truckFilterData?.selectedButton;
       if (this.selectedButton) {
         this.dateText = true
       }
-      this.hasDocumentPlaceholder = tripFilterData?.hasDocument
-      localStorage.removeItem('tripFilterData');
+      this.hasDocumentPlaceholder = truckFilterData?.hasDocument
+      localStorage.removeItem('truckFilterData');
     }
   }
 }
