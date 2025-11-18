@@ -101,10 +101,12 @@ export class DriverComponent implements OnInit {
       this.statusInputPlaceholder = this.filterData.statusInputPlaceholder;
       this.filterForm.get('startDate')?.setValue(this.filterData.startDate);
       this.filterForm.get('endDate')?.setValue(this.filterData.endDate);
+      this.getDriverList()
+    } else {
+      this.getDriverListFromResolver();
     }
     this.generateDateOptionsArray();
     this.driverList = [];
-    this.getDriverListFromResolver();
     this.makeSureUploadCompletedOrNot();
   }
 

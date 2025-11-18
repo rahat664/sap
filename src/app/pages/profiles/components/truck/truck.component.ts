@@ -113,10 +113,15 @@ export class TruckComponent implements OnInit {
       this.filterData = JSON.parse(truckFilterData);
       this.hasDocument = this.filterData?.hasDocument === 'Yes' ? true : this.filterData?.hasDocument === 'No' ? false : null;
       this.filterApplied = true;
+      this.from = this.filterData.startDate;
+      this.to = this.filterData.endDate;
+      this.statusInputPlaceholder = this.filterData.statusInputPlaceholder;
+      this.getTruckList()
+    } else {
+      this.getTruckListFromResolvedState();
     }
     this.generateDateOptionsArray();
     this.truckList = [];
-    this.getTruckListFromResolvedState();
     this.makeSureUploadCompletedOrNot();
   }
 
