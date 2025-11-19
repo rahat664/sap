@@ -93,6 +93,7 @@ export class DriverComponent implements OnInit {
   ngOnInit(): void {
     const driverFilterData = localStorage.getItem('driverFilterData');
     if (driverFilterData) {
+      this.driverList = [];
       this.filterData = JSON.parse(driverFilterData);
       this.hasDocument = this.filterData?.hasDocument === 'Yes';
       this.filterApplied = true;
@@ -103,10 +104,10 @@ export class DriverComponent implements OnInit {
       this.filterForm.get('endDate')?.setValue(this.filterData.endDate);
       this.getDriverList()
     } else {
+      this.driverList = [];
       this.getDriverListFromResolver();
     }
     this.generateDateOptionsArray();
-    this.driverList = [];
     this.makeSureUploadCompletedOrNot();
   }
 

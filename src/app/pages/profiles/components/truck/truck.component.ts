@@ -116,12 +116,13 @@ export class TruckComponent implements OnInit {
       this.from = this.filterData.startDate;
       this.to = this.filterData.endDate;
       this.statusInputPlaceholder = this.filterData.statusInputPlaceholder;
+      this.truckList = [];
       this.getTruckList()
     } else {
+      this.truckList = [];
       this.getTruckListFromResolvedState();
     }
     this.generateDateOptionsArray();
-    this.truckList = [];
     this.makeSureUploadCompletedOrNot();
   }
 
