@@ -71,7 +71,7 @@ export class VehicleDetailsComponent implements OnInit {
     { name: 'Purchase date', value: 'purchaseDate' },
     { name: 'Purchase from', value: 'purchaseFrom' },
     { name: 'Yard', value: 'yard' },
-    { name: 'Engine number', value: 'engine' },
+    { name: 'Engine number', value: 'engineNumber' },
     { name: 'Chassis number', value: 'chassisNumber' },
     { name: 'Capacity', value: 'weightInTon' },
     { name: 'Size', value: 'size' },

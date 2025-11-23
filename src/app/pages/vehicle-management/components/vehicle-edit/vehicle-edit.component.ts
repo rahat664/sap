@@ -1456,7 +1456,7 @@ export class VehicleEditComponent {
       purchaseDate: truck.purchaseDate ? new Date(truck.purchaseDate) : null,
       yard: truck.yard,
       size: truck.size,
-      engine: truck.engineNumber,
+      engineNumber: truck.engineNumber,
       chassisNumber: truck.chassisNumber,
       weightInTon: truck.weightInTon,
       fuelType: truck.fuelType,
