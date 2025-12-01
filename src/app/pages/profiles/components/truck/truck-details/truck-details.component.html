@@ -1,9 +1,20 @@
-<div>
+<form [formGroup]="truckUpdateForm">
   <div class="p-2 sticky top-16 bg-app-bg z-30">
     <div class="p-4 rounded-lg bg-white flex justify-between items-center">
-      <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">
-        {{ isInEditMode ? 'Truck Edit' : 'Truck Details' }}
-      </h1>
+      <div class="flex items-center">
+        <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">
+          {{ isInEditMode ? 'Truck Edit' : 'Truck Details' }}
+        </h1>
+        <div class="pl-[1.125rem] flex">
+          <mat-radio-group formControlName="ownership" (change)="onChangeTruckOwnerShip($event)">
+            <mat-radio-button class="text-body_title leading-body_title font-normal mr-6" [value]="'THIRD_PARTY'">Third
+              Party
+            </mat-radio-button>
+            <mat-radio-button class="text-body_title leading-body_title font-normal" [value]="'OWN'">Own
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
       <div class="flex space-x-4 items-center">
         <button
           *ngIf="isInEditMode"
@@ -49,7 +60,7 @@
       </div>
     </div>
   </div>
-  <form [formGroup]="truckUpdateForm">
+  <div>
     <div class="grid md:grid-cols-2 gap-3 px-2 text-body">
       <div class="w-full flex flex-col space-y-2">
         <div
@@ -466,8 +477,8 @@
           [object]="preHiredCheckList"></app-pre-hire-checklist>
       </div>
     </div>
-  </form>
-</div>
+  </div>
+</form>
 
 <!--<ng-template #truckImagePop>-->
 

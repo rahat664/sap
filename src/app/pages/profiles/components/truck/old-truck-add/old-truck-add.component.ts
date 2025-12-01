@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewChild,
   AfterViewInit,
+  NgZone,
 } from '@angular/core';
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import {
@@ -25,6 +26,9 @@ import {
 } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatRadioButton, MatRadioChange, MatRadioGroup } from '@angular/material/radio';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { merge } from 'rxjs';
 import { CustomInputComponent } from '../../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../../shared/directive/get-click-event.directive';
 import { UploadButtonComponent } from '../../../../../shared/modules/upload-button/upload-button.component';
@@ -63,6 +67,8 @@ import { ImageGalleryComponent } from '../../../../../shared/modules/image-galle
     MatMenuTrigger,
     FallbackImagePipe,
     ImageErrorDirective,
+    MatRadioGroup,
+    MatRadioButton,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './old-truck-add.component.html',
@@ -88,8 +94,9 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
   countPassCheckList = 0;
   preHireCheckList: any;
   registrationInput: string;
-  everyThingDisabled = true;
   loading = false;
+  isValidating = false;
+  isDuplicateVehicle = false;
   truckImages: any[] = [];
   insuranceImages: any[] = [];
   casePaperImages: any[] = [];
@@ -109,12 +116,13 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
     private validation: ValidationService,
     private datePipe: DatePipe,
     private imageGalleryService: ImageGalleryService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private zone: NgZone
   ) {
     this.truckAddForm = this.fb.group({
-      registration_zone: [null, Validators.required],
-      registration_category: [null, Validators.required],
-      registration_serial: [
+      registrationZone: [null, Validators.required],
+      registrationCategory: [null, Validators.required],
+      registrationSerial: [
         null,
         [
           Validators.required,
@@ -123,7 +131,7 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
           Validators.pattern('^[0-9]*$'),
         ],
       ],
-      registration_num: [
+      registrationNum: [
         null,
         [
           Validators.required,
@@ -132,6 +140,7 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
           Validators.pattern('^[0-9]*$'),
         ],
       ],
+      ownership: [null, Validators.required],
       fitnessCertExpDate: [null],
       routePermitExpDate: [null],
       caseExpDate: [null],
@@ -167,7 +176,7 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
     });
     this.registrationZoneOpened = false;
     this.truckAddForm.patchValue({
-      registration_zone: this.registrationZonePlaceholder,
+      registrationZone: this.registrationZonePlaceholder,
     });
   }
 
@@ -188,83 +197,84 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
     });
     this.registrationOpenedType = false;
     this.truckAddForm.patchValue({
-      registration_category: this.registrationInput,
+      registrationCategory: this.registrationInput,
     });
   }
 
   ngOnInit(): void {
     this.loading = false;
     this.getPrehireChecklist();
+
+    // Number-only validation for serial field
     this.truckAddForm
-      .get('registration_serial')
-      .valueChanges.subscribe(value => {
-      this.numberOnly(value);
-      this.registrationSerialErrorMessage =
-        this.validation.getRegistrationSerialValidation(
-          this.truckAddForm.get('registration_serial')
-        );
-    });
-    this.truckAddForm.get('registration_num').valueChanges.subscribe(value => {
-      this.numberOnly(value);
-      this.registrationNumErrorMessage =
-        this.validation.getRegistrationNoValidation(
-          this.truckAddForm.get('registration_num')
-        );
-    });
-    // only listen to registration zone, registration category, registration serial and registration number
-    this.truckAddForm.get('registration_zone')?.valueChanges.subscribe(() => {
-      if (
-        this.truckAddForm.get('registration_num')?.valid &&
-        this.truckAddForm.get('registration_serial')?.valid &&
-        this.truckAddForm.get('registration_category')?.valid &&
-        this.truckAddForm.get('registration_zone')?.valid
-      ) {
-        this.validateTruckInformation();
-      } else {
-        this.everyThingDisabled = true;
-      }
-    });
+      .get('registrationSerial')
+      ?.valueChanges.subscribe(value => {
+        this.numberOnly(value, 'registrationSerial');
+        this.registrationSerialErrorMessage =
+          this.validation.getRegistrationSerialValidation(
+            this.truckAddForm.get('registrationSerial')
+          );
+      });
+
+    // Number-only validation for num field
     this.truckAddForm
-      .get('registration_category')
-      ?.valueChanges.subscribe(() => {
-      if (
-        this.truckAddForm.get('registration_num')?.valid &&
-        this.truckAddForm.get('registration_serial')?.valid &&
-        this.truckAddForm.get('registration_category')?.valid &&
-        this.truckAddForm.get('registration_zone')?.valid
-      ) {
-        this.validateTruckInformation();
-      } else {
-        this.everyThingDisabled = true;
-      }
+      .get('registrationNum')
+      ?.valueChanges.subscribe(value => {
+        this.numberOnly(value, 'registrationNum');
+        this.registrationNumErrorMessage =
+          this.validation.getRegistrationNoValidation(
+            this.truckAddForm.get('registrationNum')
+          );
+      });
+
+    // Create a single merged stream for validation
+    const zone$ = this.truckAddForm.get('registrationZone')!.valueChanges;
+    const category$ = this.truckAddForm.get('registrationCategory')!.valueChanges;
+    const serial$ = this.truckAddForm.get('registrationSerial')!.valueChanges;
+    const num$ = this.truckAddForm.get('registrationNum')!.valueChanges;
+
+    merge(zone$, category$, serial$, num$)
+      .pipe(
+        debounceTime(800),
+        distinctUntilChanged()
+      )
+      .subscribe(() => {
+        console.log('=== SUBSCRIPTION FIRED ===');
+        console.log('Checking registration fields...');
+        this.checkAndValidateRegistration();
+      });
+  }
+
+  private checkAndValidateRegistration(): void {
+    const numCtrl = this.truckAddForm.get('registrationNum');
+    const serialCtrl = this.truckAddForm.get('registrationSerial');
+    const categoryCtrl = this.truckAddForm.get('registrationCategory');
+    const zoneCtrl = this.truckAddForm.get('registrationZone');
+
+    const allValid = numCtrl?.valid && serialCtrl?.valid && categoryCtrl?.valid && zoneCtrl?.valid;
+
+    console.log('Field validity:', {
+      num: numCtrl?.valid,
+      serial: serialCtrl?.valid,
+      category: categoryCtrl?.valid,
+      zone: zoneCtrl?.valid,
+      allValid
     });
-    this.truckAddForm.get('registration_serial')?.valueChanges.subscribe(() => {
-      if (
-        this.truckAddForm.get('registration_num')?.valid &&
-        this.truckAddForm.get('registration_serial')?.valid &&
-        this.truckAddForm.get('registration_category')?.valid &&
-        this.truckAddForm.get('registration_zone')?.valid
-      ) {
-        this.validateTruckInformation();
-      } else {
-        this.everyThingDisabled = true;
-      }
-    });
-    this.truckAddForm.get('registration_num')?.valueChanges.subscribe(() => {
-      if (
-        this.truckAddForm.get('registration_num')?.valid &&
-        this.truckAddForm.get('registration_serial')?.valid &&
-        this.truckAddForm.get('registration_category')?.valid &&
-        this.truckAddForm.get('registration_zone')?.valid
-      ) {
-        this.validateTruckInformation();
-      } else {
-        this.everyThingDisabled = true;
-      }
-    });
+
+    if (allValid) {
+      this.validateTruckInformation();
+    } else {
+      this.isDuplicateVehicle = false;
+    }
   }
 
   onClickSave() {
+    // Prevent saving if vehicle is duplicate
+    if (this.isDuplicateVehicle) {
+      this.toastr.showError('Cannot save: This vehicle is already registered');
+      return;
+    }
+
     this.loading = true;
     if (this.truckAddForm.valid) {
       if (this.truckAddForm.get('checklist')?.value === null) {
@@ -325,17 +335,20 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
       let message = '';
       invalidFields.forEach((field, index) => {
         switch (field) {
-          case 'registration_zone':
+          case 'registrationZone':
             field = 'Registration Zone';
             break;
-          case 'registration_category':
+          case 'registrationCategory':
             field = 'Registration Category';
             break;
-          case 'registration_serial':
+          case 'registrationSerial':
             field = 'Registration Serial';
             break;
-          case 'registration_num':
+          case 'registrationNum':
             field = 'Registration Number';
+            break;
+          case 'ownership':
+            field = 'Ownership';
             break;
           case 'fitnessCertExpDate':
             field = 'Fitness Certificate Expiry Date';
@@ -364,30 +377,32 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
       this.toastr.showError(`Please fill the required fields: ${message}`);
       this.loading = false;
       this.registrationErrorMessage = this.validation.getDropdownValidation(
-        this.truckAddForm.get('registration_zone')
+        this.truckAddForm.get('registrationZone')
       );
       this.registrationCategoryErrorMessage =
         this.validation.getDropdownValidation(
-          this.truckAddForm.get('registration_category')
+          this.truckAddForm.get('registrationCategory')
         );
       this.registrationSerialErrorMessage =
         this.validation.getRegistrationSerialValidation(
-          this.truckAddForm.get('registration_serial')
+          this.truckAddForm.get('registrationSerial')
         );
       this.registrationNumErrorMessage =
         this.validation.getRegistrationNoValidation(
-          this.truckAddForm.get('registration_num')
+          this.truckAddForm.get('registrationNum')
         );
     }
   }
 
-  private numberOnly(value: any) {
+  private numberOnly(value: any, fieldName: string) {
     const reg = /^[0-9]*$/;
     if (!reg.test(value)) {
-      this.truckAddForm.patchValue({
-        registration_serial: value?.replace(/[^0-9]/g, ''),
-        registration_num: value?.replace(/[^0-9]/g, ''),
-      });
+      this.truckAddForm.patchValue(
+        {
+          [fieldName]: value?.replace(/[^0-9]/g, ''),
+        },
+        { emitEvent: false }
+      );
     }
   }
 
@@ -417,24 +432,55 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
   }
 
   private validateTruckInformation() {
+    console.log('validateTruckInformation called, isValidating:', this.isValidating);
+
+    // Prevent multiple simultaneous validation calls
+    if (this.isValidating) {
+      console.log('Already validating, skipping...');
+      return;
+    }
+
+    // Validate all required fields have values
+    const zone = this.truckAddForm.get('registrationZone')?.value;
+    const category = this.truckAddForm.get('registrationCategory')?.value;
+    const serial = this.truckAddForm.get('registrationSerial')?.value;
+    const num = this.truckAddForm.get('registrationNum')?.value;
+
+    console.log('Field values:', { zone, category, serial, num });
+
+    if (!zone || !category || !serial || !num) {
+      console.log('Some fields are empty');
+      this.isDuplicateVehicle = false;
+      return;
+    }
+
+    console.log('Making API call to validate registration...');
+    this.isValidating = true;
     const body = {
-      registeredZone: this.truckAddForm.get('registration_zone').value,
-      registrationCategory: this.truckAddForm.get('registration_category')
-        .value,
-      registrationSerialNumber: this.truckAddForm.get('registration_serial')
-        .value,
-      registrationNumber: this.truckAddForm.get('registration_num').value,
+      registeredZone: zone,
+      registrationCategory: category,
+      registrationSerialNumber: serial,
+      registrationNumber: num,
     };
+
     this.service.validateTruckInformation(body).subscribe({
       next: (res: any) => {
+        console.log('API response:', res);
+        this.isValidating = false;
+
         if (res.data == false) {
+          // Vehicle is NOT registered (data = false means available)
+          console.log('Vehicle is available!');
           this.registrationErrorMessage = '';
           this.registrationCategoryErrorMessage = '';
           this.registrationSerialErrorMessage = '';
           this.registrationNumErrorMessage = '';
-          this.everyThingDisabled = false;
+          this.isDuplicateVehicle = false;
+          console.log('Ready to save!');
         } else {
-          this.everyThingDisabled = true;
+          // Vehicle is already registered (data = true means duplicate)
+          console.log('Vehicle already registered! Showing warning...');
+          this.isDuplicateVehicle = true; // Mark as duplicate to disable Save
           this.registrationErrorMessage = 'This vehicle is already registered';
           this.registrationCategoryErrorMessage =
             'This vehicle is already registered';
@@ -442,10 +488,17 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
             'This vehicle is already registered';
           this.registrationNumErrorMessage =
             'This vehicle is already registered';
+          console.log('Duplicate warning shown, Save button disabled');
         }
+      },
+      error: (err) => {
+        console.error('Validation API error:', err);
+        this.isValidating = false;
+        // Don't disable form on network errors - allow user to continue
       },
     });
   }
+
 
   onDateChange($event: Event, expiryFormControlName: string) {
     let date = ($event.target as HTMLInputElement).value;
@@ -797,5 +850,10 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  onChangeTruckOwnerShip($event: MatRadioChange) {
+    const value = $event?.value;
+    this.truckAddForm.get('ownership')?.setValue(value);
   }
 }

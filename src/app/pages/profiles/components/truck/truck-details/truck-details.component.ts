@@ -45,6 +45,7 @@ import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confi
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 
 @Component({
   selector: 'app-truck-details',
@@ -68,6 +69,8 @@ import { ImageErrorDirective } from '../../../../../shared/directive/image-error
     MatSuffix,
     FallbackImagePipe,
     ImageErrorDirective,
+    MatRadioButton,
+    MatRadioGroup,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './truck-details.component.html',
@@ -207,8 +210,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
       this.deletedFileUrls.forEach(url => {
         this.service.deleteTruckFiles(url, this.truckDetails.id).subscribe(
           (res: any) => {},
-          error => {
-          }
+          error => {}
         );
       });
     }
@@ -622,6 +624,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
       insuranceExpDate: this.getExpireDate('INSURANCE_FILE'),
       regPaperFile: truck.regPaperFile,
       taxFile: truck.taxFile,
+      ownership: truck.ownership,
     };
 
     // Update the form with the truck values
@@ -656,6 +659,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
       registrationCategory: [null],
       registrationSerial: [null],
       registrationNum: [null],
+      ownership: [null],
 
       // Expiry Dates
       fitnessCertExpDate: [null],
@@ -1181,5 +1185,10 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  onChangeTruckOwnerShip($event: any) {
+    const value = $event?.value ? $event?.value : $event;
+    this.truckUpdateForm.get('ownership')?.setValue(value);
   }
 }
