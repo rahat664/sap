@@ -74,8 +74,6 @@ export class TripListFilterComponent {
   dateText: any;
   customDateText: any;
   previousFilterLength: number = 0;
-  transporterCodes: any[] = [];
-  transporterNames: any[] = [];
   filterLength: number = 0;
   protected districts = [];
   unloadingDistrict: any;
@@ -164,9 +162,7 @@ export class TripListFilterComponent {
       customerName: this.customerNames,
       truckType: this.truckType,
       customers: this.customers,
-      transporterName: this.transporterNames,
-      transporterCodes: this.transporterCodes,
-      transporters: this.transporters,
+      transporterName: this.transporterName,
       tripId: this.tripId,
       selectedButton: this.selectedButton,
       selectedTruckValues: this.selectedTruckValues,
@@ -409,10 +405,9 @@ export class TripListFilterComponent {
   }
 
   onClickTransporterSearchSuggestion(result: any) {
-    this.transporters.push(result);
-    this.transporterCodes?.push(result.code);
-    this.transporterNames?.push(result.name);
-    this.transporterName = '';
+    this.transporterName = result.name;
+    this.searchTransporter = result.name;
+    this.transporterSuggestions = [];
   }
 
   onClickClearTransporter() {
@@ -474,12 +469,6 @@ export class TripListFilterComponent {
         this.customers = tripFilterData?.customers;
       }
       this.customers = tripFilterData?.customers || [];
-      if (tripFilterData?.transporterCodes?.length > 0) {
-        this.transporterCodes = tripFilterData?.transporterCodes
-        this.transporterNames = tripFilterData?.transporterName;
-        this.transporters = tripFilterData?.transporters;
-      }
-      this.transporters = tripFilterData?.transporters || [];
       if (tripFilterData?.truckType?.length > 0) {
         this.truckType = tripFilterData?.truckType;
         if (this.truckType) {
@@ -517,6 +506,8 @@ export class TripListFilterComponent {
           }
         }
       }
+      this.transporterName = tripFilterData?.transporterName;
+      this.searchTransporter = tripFilterData?.transporterName;
       this.tripId = tripFilterData?.tripId;
       this.searchId = tripFilterData?.tripId;
     }

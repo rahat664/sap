@@ -4,11 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:dev": "ng serve --configuration development --port 4200 --no-hmr",
+    "start:dev": "ng serve --configuration development --port 4205 --no-hmr",
     "start:qa": "ng serve --configuration qa --port 4201 --no-hmr",
     "start:production": "ng serve --configuration production --port 4202 --no-hmr",
     "start:staging": "ng serve --configuration staging --port 4203 --no-hmr",
-    "start:mobile": "ng serve --host 0.0.0.0 --configuration qa --port 4204 --no-hmr",
+    "start:mobile": "ng serve --host 0.0.0.0 --configuration developmentY6 --port 4204 --no-hmr",
     "build": "ng build",
     "build:production": "ng build --configuration production",
     "build:qa": "ng build --configuration qa",

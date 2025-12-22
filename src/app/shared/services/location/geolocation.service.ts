@@ -43,7 +43,9 @@ export class GeolocationService {
       }
 
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.API_KEY}`;
+      // Use Google's recommended async loader params for optimal performance
+      // Include the marker library to enable AdvancedMarkerElement
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.API_KEY}&v=weekly&loading=async&libraries=marker`;
       script.defer = true;
       script.async = true;
       script.type = 'text/javascript';

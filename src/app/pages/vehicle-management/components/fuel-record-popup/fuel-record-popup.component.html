@@ -1,0 +1,233 @@
+<div class="bg-white rounded-lg px-16 py-10">
+  <div>
+    <h1 class="text-h3 leading-h3 font-semibold text-not-black mb-6">New fuel record</h1>
+    <!--    cross-button-->
+    <button class="absolute top-6 right-6 h-8 w-8  rounded-full flex justify-center items-center"
+            (click)="closePopup()">
+      <i class="fal fa-times"></i>
+    </button>
+  </div>
+  <form [formGroup]="fuelForm" (ngSubmit)="onSubmit()" class="">
+    <div class="flex flex-col space-y-3">
+      <div class="flex flex-col space-y-1">
+        <label for="fuelType" class="text-not-black text-body"
+        >Fuel Type</label
+        >
+
+        <mat-form-field appearance="outline" class="example-full-width" [ngClass]="{
+                        error:
+                          fuelForm.get('fuelType').invalid &&
+                          fuelForm.get('fuelType').touched,
+                      }">
+          <mat-select id="fuelType" formControlName="fuelType" placeholder="Select Fuel Type">
+            @for (fuel of fuelTypeList; track fuel) {
+              <mat-option [value]="fuel.value">{{ fuel.value }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <span
+          *ngIf="fuelForm.get('fuelType').touched && fuelForm.get('fuelType').invalid"
+          class="text-red text-xs"
+        >
+            Fuel type is required
+          </span
+          >
+      </div>
+      <div class="flex flex-col space-y-1">
+        <label for="fuelVolumeInLiters" class="text-not-black text-body"
+        >Quantity (L)</label
+        >
+        <div>
+          <mat-form-field
+            (mouseenter)="updateOverLayStyle(false)"
+            appearance="outline"
+            class="example-full-width w-full"
+            [ngClass]="{
+                        error:
+                          fuelForm.get('fuelVolumeInLiters').invalid &&
+                          fuelForm.get('fuelVolumeInLiters').touched,
+                      }">
+            <input
+              appAlphabetOnly
+              id="fuelVolumeInLiters"
+              type="text"
+              matInput
+              formControlName="fuelVolumeInLiters"
+              placeholder="Enter quantity in litre" />
+          </mat-form-field>
+          <span
+            *ngIf="fuelForm.get('fuelVolumeInLiters').touched &&
+                      fuelForm.get('fuelVolumeInLiters').invalid"
+            class="text-red text-xs"
+          >
+            Fuel
+          </span
+          >
+        </div>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <label for="service" class="text-not-black text-body"
+        >Fuel Station</label
+        >
+        <div>
+          <mat-form-field
+            (mouseenter)="updateOverLayStyle(false)"
+            appearance="outline"
+            class="example-full-width w-full"
+            [ngClass]="{
+                        error:
+                          fuelForm.get('stationName').invalid &&
+                          fuelForm.get('stationName').touched,
+                      }">
+            <input
+              id="service"
+              type="text"
+              matInput
+              formControlName="stationName"
+              placeholder="Enter fuel station Name" />
+          </mat-form-field>
+          <span
+            *ngIf="fuelForm.get('stationName').touched &&
+                      fuelForm.get('stationName').invalid"
+            class="text-red text-xs"
+          >
+            Fuel station name is required
+          </span
+          >
+        </div>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <label for="cost" class="text-not-black text-body"
+        >Cost</label
+        >
+        <div>
+          <mat-form-field
+            (mouseenter)="updateOverLayStyle(false)"
+            appearance="outline"
+            class="example-full-width w-full"
+            [ngClass]="{
+                        error:
+                          fuelForm.get('totalCost').invalid &&
+                          fuelForm.get('totalCost').touched,
+                      }">
+            <input
+              id="cost"
+              min="0"
+              type="number"
+              matInput
+              formControlName="totalCost"
+              placeholder="Enter Cost" />
+          </mat-form-field>
+          <span
+            *ngIf="fuelForm.get('totalCost').touched && fuelForm.get('totalCost').invalid"
+            class="text-red text-xs"
+          >
+            Cost is required and must be a positive number
+          </span
+          >
+        </div>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <label for="date" class="text-not-black text-body"
+        >Date</label>
+        <mat-form-field (mouseenter)="updateOverLayStyle(false)" appearance="outline">
+          <input id="date" placeholder="Choose Date" matInput
+                 formControlName="refuelDateTime"
+                 [matDatepicker]="pickerDetails">
+          <mat-datepicker-toggle matIconSuffix [for]="pickerDetails"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDetails></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <!-- Document field -->
+      <div class="flex flex-col space-y-1">
+        <label for="document" class="text-not-black text-body">Document</label>
+
+        <!-- hidden real file input -->
+        <input
+          id="document"
+          type="file"
+          #docInput
+          class="hidden"
+          accept="image/*,.pdf"
+          (change)="onDocSelected($event)"
+        />
+
+        <!-- pretty shell (click to open file dialog) -->
+        <div
+          (click)="docInput.click()"
+          class="w-full cursor-pointer rounded-md border border-transparent bg-[#F2FBFC] px-4 py-3 flex items-center justify-between"
+        >
+          <!-- Empty state -->
+          <ng-container *ngIf="!documentFile; else hasFile">
+            <span class="text-[rgba(17,24,39,0.6)]">Upload image</span>
+
+            <!-- camera icon (inline SVG) -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-[#0B5D5A]" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M4 7h3l2-2h6l2 2h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z" />
+              <circle cx="12" cy="13" r="4" />
+            </svg>
+          </ng-container>
+
+          <!-- Filled state -->
+          <ng-template #hasFile>
+            <div class="flex items-center gap-3 w-full">
+              <a
+                *ngIf="docPreviewUrl"
+                [href]="docPreviewUrl"
+                target="_blank"
+                (click)="$event.stopPropagation()"
+                class="underline text-[#0B5D5A] hover:opacity-80 truncate"
+              >
+                {{ documentFile?.name }}
+              </a>
+
+              <!-- remove (X) -->
+              <button
+                type="button"
+                (click)="removeDoc($event)"
+                class="ml-auto text-[#EF4444] hover:opacity-90 text-lg leading-none"
+                aria-label="Remove file"
+              >
+                ×
+              </button>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- validation -->
+        <span *ngIf="fuelForm.get('document')?.touched && fuelForm.get('document')?.invalid"
+              class="text-red text-xs">
+    {{ getDocumentError() }}
+  </span>
+      </div>
+
+      <div class="flex flex-col space-y-1">
+        <label class="text-body text-not-black" for="address">Note</label>
+        <textarea
+          placeholder="Enter Note"
+          class="bg-input rounded-lg p-4 border border-disabled"
+          id="address"
+          formControlName="notes"></textarea>
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end">
+      <button
+        type="submit"
+        [disabled]="fuelForm.invalid || isSubmitting"
+        class="px-12 py-2 w-full flex justify-center items-center rounded-lg bg-primary text-white disabled:opacity-50"
+      >
+        <span *ngIf="!isSubmitting">Save</span>
+        <span *ngIf="isSubmitting" class="flex items-center gap-2">
+          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+               viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Saving...
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

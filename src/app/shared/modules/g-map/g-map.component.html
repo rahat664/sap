@@ -4,9 +4,7 @@
   [center]="center"
   [zoom]="zoom"
   [options]="options">
-  <map-marker
-    *ngIf="initialMarker.position"
-    [options]="initialMarker"></map-marker>
+  <!-- initial marker handled with AdvancedMarkerElement in TS -->
   <!--  <ng-container *ngFor="let marker of startMarker, index as i">-->
   <!--    <map-marker (mapClick)="onClickMap($event, i)"-->
   <!--                [options]="marker"></map-marker>-->

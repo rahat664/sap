@@ -1,0 +1,93 @@
+<div class="flex flex-col space-y-6 bg-white rounded-lg px-6 py-4 m-4">
+  <div class="flex flex-col space-y-6" appGetElementHeight
+       (height)="height = $event">
+    <div class="flex justify-between items-center">
+      <div class="flex space-x-3 items-center">
+        <button class="h-8 w-8 bg-primary rounded-full flex justify-center items-center"
+                (click)="goBack()">
+          <i class="fas fa-chevron-left text-white"></i>
+        </button>
+        <h1 class="text-h3 leading-h3 font-semibold text-not-black">Statistics Details</h1>
+      </div>
+      <mat-form-field (mouseenter)="updateOverLayStyle(false)" appearance="outline">
+        <input placeholder="Choose Date" matInput
+               [matDatepicker]="pickerDetails">
+        <mat-datepicker-toggle matIconSuffix [for]="pickerDetails"></mat-datepicker-toggle>
+        <mat-datepicker #pickerDetails></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class=" flex space-x-8 items-center">
+      <ng-container *ngFor="let stat of displayedStatisticsColumns">
+        <app-card [description]="statisticsSummary ? statisticsSummary[stat?.value]?.toString() : '0'"
+                  [title]="stat?.name"
+                  [imageUrl]="stat?.imageUrl"></app-card>
+      </ng-container>
+    </div>
+  </div>
+  <div appGiveMaxHeight (inBottomEnd)="onBottom($event)" [totalPage]="totalPages" [anotherItemsHeight]="getHeight()"
+       class="bg-white w-full rounded-lg overflow-auto relative"
+  >
+    <table
+      class="table-auto w-full text-body_title leading-body_title rounded-sm">
+      <thead class="bg-white">
+      <tr class="whitespace-nowrap bg-white text-not-black">
+        <th class="text-left md:bg-white md:sticky md:left-0">Trip Number</th>
+        <th class="text-left">Trip Date</th>
+        <th class="text-left">Km Covered</th>
+        <th class="text-left">Fuel Consumed(L)</th>
+        <th class="text-left">CO2 Emitted(kg)</th>
+      </tr>
+      <tr>
+        <th class="custom-border" [colSpan]="5"></th>
+      </tr>
+      </thead>
+      <tbody class="text-web-text-secondary">
+      <ng-container *ngFor="let truck of statisticsDetails">
+        <tr>
+          <td>
+            <a class="text-link cursor-pointer"
+               (click)="goToTripDetails(truck.tripId)">{{ truck.tripId }}</a>
+          </td>
+          <td>
+            {{ truck.startTime | date: 'dd MMM, yyyy' }}
+          </td>
+          <td>
+            {{ truck.totalDistance | number: '1.0-2' }}
+          </td>
+          <td>
+            {{ truck.fuelConsumed | number: '1.0-2' }}
+          </td>
+          <td>
+            {{ truck.carbonOmitted | number: '1.0-2' }}
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!loading && statisticsDetails?.length === 0">
+        <tr>
+          <td class="text-center" [colSpan]="5">
+            <div
+              class="w-full flex flex-col space-y-3 justify-center items-center">
+              <img
+                loading="lazy"
+                src="assets/svg/no-data.svg"
+                class="notPreview"
+                alt="nodata" />
+              <p
+                class="text-body_title leading-body_title text-secondary font-semibold">
+                No Data Found
+              </p>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="loading">
+        <tr>
+          <td class="h-full" [colSpan]="5">
+            <app-loading></app-loading>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>

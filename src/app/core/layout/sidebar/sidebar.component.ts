@@ -29,7 +29,7 @@ import { PermissionService } from '../../../shared/services/permission.service';
 export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
   willShow = false;
   dropdownOpen = false;
-  private subs: Subscription;
+  private subs: Subscription = new Subscription();
   currentYear: number = new Date().getFullYear();
 
   constructor(
@@ -42,29 +42,29 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('sideBar') myDiv!: ElementRef;
 
   ngOnInit(): void {
-    this.myDiv?.nativeElement?.classList?.remove('slide-right');
-    this.subs = this.mobileViewService.isSidebarOpen.subscribe(value => {
-      if (value) {
-        this.myDiv.nativeElement.classList.remove('slide-right');
-        this.myDiv.nativeElement.classList.add('slide-left');
-        setTimeout(() => {
+    // React to sidebar toggle; guard DOM access until view is initialized
+    this.subs.add(
+      this.mobileViewService.isSidebarOpen.subscribe(value => {
+        if (value) {
+          this.myDiv?.nativeElement?.classList?.remove('slide-right');
+          this.myDiv?.nativeElement?.classList?.add('slide-left');
+          setTimeout(() => {
+            this.willShow = value;
+          }, 500);
+        } else {
           this.willShow = value;
-        }, 500);
-      } else {
-        this.willShow = value;
-        setTimeout(() => {
-          this.myDiv.nativeElement.classList.add('slide-right');
-          this.myDiv.nativeElement.classList.remove('slide-left');
-        }, 0);
-      }
-    });
-    this.subs = this.mobileViewService.isMobileDevice.subscribe(value => {
-      if (value) {
-        this.willShow = value
-      } else  {
-        this.willShow = value
-      }
-    });
+          setTimeout(() => {
+            this.myDiv?.nativeElement?.classList?.add('slide-right');
+            this.myDiv?.nativeElement?.classList?.remove('slide-left');
+          }, 0);
+        }
+      })
+    );
+    this.subs.add(
+      this.mobileViewService.isMobileDevice.subscribe(value => {
+        this.willShow = !!value;
+      })
+    );
   }
 
   ngAfterViewInit() {
@@ -94,12 +94,13 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   isAdmin() {
-    const role = localStorage.getItem('role');
+    const role = localStorage.getItem('role') || '';
     return role.includes('ROLE_ADMIN') || role.includes('ROLE_KAM');
   }
 
   isCustomerAdmin() {
-    return localStorage.getItem('role').includes('ROLE_CUSTOMER_ADMIN');
+    const role = localStorage.getItem('role') || '';
+    return role.includes('ROLE_CUSTOMER_ADMIN');
   }
 
   isMobileDevice() {

@@ -263,15 +263,17 @@ export class TruckFilterComponent {
     }
   }
 
-  onChangeStartDate($event: Event) {
-    this.startDate = ($event.target as HTMLInputElement).value;
-    this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
+  onChangeStartDate($event: any) {
+    const raw = $event?.value ?? $event?.target?.value ?? '';
+    const dateVal = raw instanceof Date ? raw : new Date(raw);
+    this.startDate = this.datePipe.transform(dateVal, 'yyyy-MM-dd');
   }
 
   onChangeEndDate($event: any) {
-    if ($event.target.value) {
-      this.endDate = ($event.target as HTMLInputElement).value;
-      this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
+    const raw = $event?.value ?? $event?.target?.value ?? '';
+    if (raw) {
+      const dateVal = raw instanceof Date ? raw : new Date(raw);
+      this.endDate = this.datePipe.transform(dateVal, 'yyyy-MM-dd');
       this.customDateText = `${this.startDate} - ${this.endDate}`;
       if (!this.dateSelected) {
         this.previousFilterLength += 1;

@@ -35,8 +35,6 @@ import { ButtonChipsComponent } from '../trip-list/modules/button-chips/button-c
 import { ScrollByButtonDirective } from '../../shared/directive/scroll-by-button.directive';
 import {ActivatedRoute} from "@angular/router";
 import { PermissionService } from '../../shared/services/permission.service';
-import { UserService } from '../profiles/services/user.service';
-import { Transporter } from '../profiles/components/transporter/models/transporter-details.model';
 
 @Component({
   selector: 'app-manage-trip',
@@ -152,12 +150,6 @@ export class ManageTripComponent implements OnInit {
   ];
   tripTypeValue: any[] = [];
   mobileDeviceDetails: boolean = false;
-  transporterName: string = '';
-  transporterSuggestions: any[] = [];
-  transporters: any[] = [];
-  transporterCodes: string[] = [];
-  transporterNames: string[] = [];
-  transporterSelected: boolean;
 
   constructor(
     private tripService: TripService,
@@ -165,8 +157,7 @@ export class ManageTripComponent implements OnInit {
     private customer: CustomerService,
     private datePipe: DatePipe,
     private activatedRoute: ActivatedRoute,
-    private permissionService: PermissionService,
-    private transporter: UserService
+    private permissionService: PermissionService
   ) {
     this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
       if (searchText) {
@@ -187,7 +178,6 @@ export class ManageTripComponent implements OnInit {
   ngOnInit() {
     this.dateSelected = false;
     this.customerSelected = false;
-    this.transporterSelected = false
     this.triggerFromParentName = 'All';
     this.isTriggerFromParent = false;
     if (localStorage.getItem('fromTripListTripId')) {
@@ -224,12 +214,8 @@ export class ManageTripComponent implements OnInit {
         this.truckType = '';
         this.customerCodes = [];
         this.customerNames = [];
-        this.transporterNames = []
-        this.transporterCodes = []
-        this.transporters = []
         this.customers = [];
         this.customerSelected = false;
-        this.transporterSelected = false
         this.filterLength = 0;
         this.previousFilterLength = 0;
         this.filterHeight = '0px';
@@ -259,8 +245,7 @@ export class ManageTripComponent implements OnInit {
         null,
         null,
         this.paymentTypeValue?.toString(),
-        this.tripTypeValue?.toString(),
-        this.transporterCodes.toString(),
+        this.tripTypeValue?.toString()
       )
       .pipe(finalize(() => (this.loading = false)))
       .subscribe(
@@ -382,7 +367,6 @@ export class ManageTripComponent implements OnInit {
     if (this.page === 0) {
       this.tripList = trip.data.responses;
       this.activatedId = this.tripList[0].tripId;
-      this.getTruckTrackers(this.tripList[0].truck?.fullRegistrationNumber);
       this.getTripDetails(this.tripList[0].tripId);
       this.tripStatus = this.tripList[0].status;
       this.activatedTruckSizeInFeet = Number(this.tripList[0].truckSize);
@@ -464,37 +448,12 @@ export class ManageTripComponent implements OnInit {
       this.companySuggestions = [];
     }
   }
-  onKeyUpTransporterSearch($event: KeyboardEvent) {
-    this.transporterSuggestions = [];
-    const target = $event.target as HTMLInputElement;
-    if (target.value.length > 0) {
-      this.transporter
-        .getTransporter(0, 100, target.value)
-        .subscribe((transporter: any) => {
-          this.transporterSuggestions = transporter.data;
-          if (this.transporterSuggestions.length === 0) {
-            this.transporterSuggestions.push('No transporter found');
-          }
-        });
-    } else {
-      this.transporterSuggestions = [];
-    }
-  }
 
   onClickCustomerSearchSuggestion(option: CustomerModel) {
     this.customers.push(option);
     this.customerCodes.push(option.customerCode);
     this.customerNames.push(option.name);
     this.customerName = '';
-    this.filterLength += 1;
-    this.previousFilterLength += 1;
-  }
-
-  onClickTransporterSearchSuggestion(option: Transporter) {
-    this.transporters.push(option);
-    this.transporterCodes.push(option.code);
-    this.transporterNames.push(option.name);
-    this.transporterName = '';
     this.filterLength += 1;
     this.previousFilterLength += 1;
   }
@@ -510,19 +469,6 @@ export class ManageTripComponent implements OnInit {
     );
     this.customers = this.customers.filter(
       (value: any) => value.id !== customer.id
-    );
-  }
-  onClickCloseTransporter(transporter: Transporter) {
-    this.filterLength -= 1;
-    this.previousFilterLength -= 1;
-    this.transporterCodes = this.transporterCodes.filter(
-      (value: any) => value !== transporter.code
-    );
-    this.customerNames = this.customerNames.filter(
-      (value: any) => value !== transporter.name
-    );
-    this.customers = this.customers.filter(
-      (value: any) => value.id !== transporter.id
     );
   }
 
@@ -580,11 +526,6 @@ export class ManageTripComponent implements OnInit {
         this.filterValues.push(element);
       });
     }
-    if (this.transporterNames.length > 0) {
-      this.transporterNames.forEach((element: any) => {
-        this.filterValues.push(`tr_${element}`);
-      });
-    }
     if (this.dateSelected) {
       this.filterValues.push(
         this.customSelected ? this.customDateText : this.dateText
@@ -633,9 +574,6 @@ export class ManageTripComponent implements OnInit {
     this.customSelected = false;
     this.customerCodes = [];
     this.customerNames = [];
-    this.transporterCodes = [];
-    this.transporters = [];
-    this.transporterNames = [];
     this.customers = [];
     this.paymentTypeValue = [];
     this.paymentFilter = 0;
@@ -730,25 +668,6 @@ export class ManageTripComponent implements OnInit {
     this.filterValues = this.filterValues.filter(
       (value: any) => value !== filter
     );
-    if (this.transporterNames.includes(filter)) {
-      const transporterCode = this.transporters.find(
-        (element: any) => element.name === filter
-      ).code;
-      this.transporters = this.transporters.filter(
-        (value: any) => value.name !== filter
-      );
-      // find customer code from customer
-
-      this.transporterCodes = this.transporterCodes.filter(
-        (value: any) => value !== transporterCode
-      );
-      this.transporterNames = this.transporterNames.filter(
-        (value: any) => value !== filter
-      );
-      this.transporterSelected = false;
-      this.customerCode = '';
-      this.previousFilterLength -= 1;
-    }
     if (this.customerNames.includes(filter)) {
       const customerCode = this.customers.find(
         (element: any) => element.name === filter
@@ -822,9 +741,6 @@ export class ManageTripComponent implements OnInit {
   onClickFilterOpen() {
     this.truckType = [];
     this.customers = [];
-    this.transporters = [];
-    this.transporterCodes=[]
-    this.transporterNames=[]
     this.selectedButton = '';
     this.startDate = '';
     this.endDate = '';
@@ -910,18 +826,6 @@ export class ManageTripComponent implements OnInit {
           const dates = element.split(' - ');
           this.startDate = dates[0];
           this.endDate = dates[1];
-        } else if (element.includes('tr_')) {
-          const transporterName = element.split('tr_')[1];
-          this.transporter
-            .getTransporter(0, 1000, transporterName)
-            .subscribe((res: any) => {
-              if (res.data.length > 0) {
-                this.transporters.push(res.data[0]);
-                this.transporterCodes.push(res.data[0].code);
-                this.transporterNames.push(res.data[0].name);
-                this.transporterSelected = true;
-              }
-            });
         } else {
           this.customer.searchCustomer(0, 1000, element, null).subscribe(
             (res: any) => {
@@ -945,7 +849,6 @@ export class ManageTripComponent implements OnInit {
       this.customerCodes = [];
       this.customers = [];
       this.customerSelected = false;
-      this.transporterSelected = false;
       this.filterLength = 0;
       this.previousFilterLength = 0;
       this.tripTypeValue = [];

@@ -4,7 +4,7 @@
       Transporter Rate Analysis
       <a
         *ngIf="
-           vehicleType || loadingDistrict || unloadingDistrict
+          transporter || vehicleType || loadingDistrict || unloadingDistrict
         "
         (click)="clearAll()"
         class="font-semibold ml-2 text-red cursor-pointer text-body_title"
@@ -36,6 +36,18 @@
         <mat-option value="high">Highest rate</mat-option>
         <mat-option value="average">Average rate</mat-option>
         <mat-option value="low">Lowest rate</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="md:w-[12rem] w-full filter">
+      <mat-select
+        [(ngModel)]="transporter"
+        (selectionChange)="onTransporterChange($event)"
+        placeholder="Transporter">
+        <mat-option
+          *ngFor="let transporter of transporterLists"
+          [value]="transporter?.code"
+        >{{ transporter?.name }}
+        </mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full md:w-[12rem] filter">

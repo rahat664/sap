@@ -66,9 +66,34 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
   @Input() selectedMonth: any = '';
   @Input() numberOfTrips = [];
   private defaultContainerWidth: number = 0;
-  chartContainerWidth: number;
 
   constructor(private cd: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    // Provide a safe baseline so <apx-chart> never receives undefined inputs
+    this.chartOptions = {
+      series: [],
+      chart: {
+        height: 350,
+        width: 0,
+        type: 'line',
+        zoom: { enabled: false, autoScaleYaxis: true },
+        toolbar: { show: false },
+      },
+      xaxis: { categories: [] },
+      yaxis: {},
+      dataLabels: { enabled: false },
+      grid: {},
+      stroke: { curve: 'straight', lineCap: 'round', colors: [] },
+      title: {},
+      legend: { show: false },
+      colors: [],
+      tooltip: { shared: true },
+      responsive: [],
+      plotOptions: {},
+      annotations: {},
+    } as any;
+  }
 
 
   ngOnChanges(changes: SimpleChanges) {
@@ -86,7 +111,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
           series: this.seriesData,
           chart: {
             height: 350,
-            width: this.chartContainerWidth,
+            width: this.categories.length * 100,
             type: 'line',
             zoom: {
               enabled: false,
@@ -201,7 +226,8 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
     // Delay to ensure chart renders first
   }
 
-  ngOnInit() {
+  // Keep existing delayed initialization but rename to avoid duplicate lifecycle method
+  private initAfterDelay() {
     timer(1200).subscribe(() => {
       let colors = [],
         numberOfTrips = [],
@@ -283,6 +309,7 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.cd.detectChanges();
+    this.initAfterDelay();
   }
 
   createCustomXAxis() {
@@ -348,8 +375,6 @@ export class LineChartComponent implements OnChanges, OnInit, AfterViewInit {
     const chartContainerWidth =
       requiredWidth > chartWidth ? requiredWidth : chartWidth;
     chartContainer.style.width = `${chartContainerWidth}px`;
-    // store chartContainerWidth in a variable with px unit
-    this.chartContainerWidth = chartContainerWidth
 
     // Append custom x-axis below the chart
     // Set the width of the custom x-axis

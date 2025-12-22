@@ -62,7 +62,7 @@ export const dashboardDataResolver: ResolveFn<Observable<any>> = (
         topTransporters: dashboardService.getTopTransporters(challanFromDate, challanToDate, sortBy, customerCode, paymentType, tripType, truckTypeId, transporterCodes),
         topCustomers: dashboardService.getTopCustomers(challanFromDate, challanToDate, sortBy, paymentType, tripType, truckTypeId, transporterCodes),
         transporterRateAnalysisData:
-          dashboardService.getTransporterRateAnalysisData(type, from, to, truckTypeId, null, null, customerCode, paymentType, tripType, null, transporterCodes),
+          dashboardService.getTransporterRateAnalysisData(type, from, to, null, truckTypeId, null, null, customerCode, paymentType, tripType, null, transporterCodes),
       }).pipe(
         map(data => {
           return {

@@ -28,7 +28,7 @@ export class TripService {
   url = `${environment.backendUrl}/api/trips`;
   tripTemplateUrl = `${environment.backendUrl}/api/trip_templates`;
   tripPointUrl = `${environment.backendUrl}/api/tripPointEvents`;
-  vehicleTypeUrl = `${environment.backendUrl}/api/vehicle-categories`;
+  vehicleTypeUrl = `${environment.vehicleUrl}/api/vehicle-categories`;
   districtUrl = `${environment.backendUrl}/api/districts`;
   goodsOptionsUrl = `${environment.backendUrl}/api/goods`;
   reportUrl = `${environment.backendUrl}/api/trip/report`;
@@ -342,5 +342,9 @@ export class TripService {
 
   searchDistricts(lat:any, lng:any) {
     return this.http.get(`${this.districtSearchUrl}?lat=${lat}&lon=${lng}`, {})
+  }
+
+  getVehicleStatistics(vehicleId: string): Observable<any> {
+    return this.http.get(`${this.url}/vehicle/statistics?vehicleId=${vehicleId}`);
   }
 }

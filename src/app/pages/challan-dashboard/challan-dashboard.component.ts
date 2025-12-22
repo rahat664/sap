@@ -150,7 +150,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   searchName: any;
   tripId: any;
   tripIdSuggestions: any;
-  transpoterCodes: any[] = [];
 
   constructor(
     private datePipe: DatePipe,
@@ -241,7 +240,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
         this.truckRegistrationId,
         this.transporterName,
         this.paymentTypeValue?.toString(),
-        this.tripTypeValue, this.transpoterCodes.toString()
+        this.tripTypeValue
       )
       .subscribe(
         (trip: any) => {
@@ -637,7 +636,7 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.filterData?.customerCode?.length > 0 ||
       this.filterData?.truckType?.length > 0 ||
       this.filterData?.tripId ||
-      this.filterData?.transporterCodes?.length > 0 ||
+      this.filterData?.transporterName ||
       this.filterData?.truckRegistrationId
     ) {
       this.filterApplied = true;
@@ -648,7 +647,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       this.customerCode = this.filterData.customerCode;
       this.tripId = this.filterData.tripId;
       this.truckType = this.filterData.truckType;
-      this.transpoterCodes = this.filterData.transporterCodes;
       this.transporterName = this.filterData.transporterName;
       this.paymentTypeValue = this.filterData.paymentType?.toString();
       this.tripTypeValue = this.filterData.tripType?.toString();
@@ -685,6 +683,8 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
 
     if (this.filterData.searchName)
       parts.push(`Company: <b>${this.filterData.searchName}</b>`);
+    if (this.filterData.transporterName)
+      parts.push(`Transporter: <b>${this.filterData.transporterName}</b>`);
     if (this.filterData.startDate)
       parts.push(
         `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`
@@ -705,9 +705,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
       parts.push(`Trip ID: <b>${this.filterData.tripId}</b>`);
     if (this.filterData?.customerCode?.length > 0) {
       parts.push(`Company: <b>${this.filterData.customerName?.toString()}</b>`);
-    }
-    if (this.filterData?.transporterCodes?.length > 0) {
-      parts.push(`Transporter: <b>${this.filterData.transporterName?.toString()}</b>`);
     }
     if (this.filterData?.truckType?.length > 0) {
       parts.push(
@@ -735,7 +732,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.paymentTypeValue = '';
     this.tripTypeValue = '';
     this.truckRegistrationId = '';
-    this.transpoterCodes = [];
     this.from = '';
     this.to = '';
     this.filterForm.reset();

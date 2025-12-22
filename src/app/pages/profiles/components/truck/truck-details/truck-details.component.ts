@@ -45,6 +45,7 @@ import { ConfirmDeleteComponent } from '../../../../manage-trip/components/confi
 import { ImageGalleryService } from '../../../../../shared/services/image-gallery/image-gallery.service';
 import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 
 @Component({
   selector: 'app-truck-details',
@@ -68,6 +69,8 @@ import { ImageErrorDirective } from '../../../../../shared/directive/image-error
     MatSuffix,
     FallbackImagePipe,
     ImageErrorDirective,
+    MatRadioButton,
+    MatRadioGroup,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './truck-details.component.html',
@@ -150,7 +153,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
       // Update form value and close the dropdown
       this.registrationOpenedType = false;
       this.truckUpdateForm.patchValue({
-        registration_category: this.registrationTypePlaceholder,
+        registrationCategory: this.registrationTypePlaceholder,
       });
     }
   }
@@ -177,7 +180,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
       // Close the dropdown and update the form value
       this.registrationZoneOpened = false;
       this.truckUpdateForm.patchValue({
-        registration_zone: this.registrationZonePlaceholder,
+        registrationZone: this.registrationZonePlaceholder,
       });
     }
   }
@@ -207,8 +210,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
       this.deletedFileUrls.forEach(url => {
         this.service.deleteTruckFiles(url, this.truckDetails.id).subscribe(
           (res: any) => {},
-          error => {
-          }
+          error => {}
         );
       });
     }
@@ -281,16 +283,16 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
     let message = '';
     invalidFields.forEach((field, index) => {
       switch (field) {
-        case 'registration_zone':
+        case 'registrationZone':
           field = 'Registration Zone';
           break;
-        case 'registration_category':
+        case 'registrationCategory':
           field = 'Registration Category';
           break;
-        case 'registration_serial':
+        case 'registrationSerial':
           field = 'Registration Serial';
           break;
-        case 'registration_num':
+        case 'registrationNum':
           field = 'Registration Number';
           break;
         case 'fitnessCertExpDate':
@@ -318,19 +320,19 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
     this.loading = false;
 
     this.registrationErrorMessage = this.validation.getDropdownValidation(
-      this.truckUpdateForm.get('registration_zone')
+      this.truckUpdateForm.get('registrationZone')
     );
     this.registrationCategoryErrorMessage =
       this.validation.getDropdownValidation(
-        this.truckUpdateForm.get('registration_category')
+        this.truckUpdateForm.get('registrationCategory')
       );
     this.registrationSerialErrorMessage =
       this.validation.getRegistrationSerialValidation(
-        this.truckUpdateForm.get('registration_serial')
+        this.truckUpdateForm.get('registrationSerial')
       );
     this.registrationNumErrorMessage =
       this.validation.getRegistrationNoValidation(
-        this.truckUpdateForm.get('registration_num')
+        this.truckUpdateForm.get('registrationNum')
       );
   }
 
@@ -573,7 +575,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
             if (res && res.data) {
               const truck: TruckModel = res.data;
               this.truckDetails = truck;
-              this.documents = truck.truckDocumentList;
+              this.documents = truck.vehicleDocumentList;
               // split the document by type
               this.splitDoucumentsByType(this.documents);
               this.updateFormValues(truck);
@@ -611,10 +613,10 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
 
   private updateFormValues(truck: TruckModel) {
     const formValues = {
-      registration_zone: truck.registrationZone,
-      registration_category: truck.registrationCategory,
-      registration_serial: truck.registrationSerial,
-      registration_num: truck.registrationNum,
+      registrationZone: truck.registrationZone,
+      registrationCategory: truck.registrationCategory,
+      registrationSerial: truck.registrationSerial,
+      registrationNum: truck.registrationNum,
       fitnessCertExpDate: this.getExpireDate('FITNESS_CERTIFICATE_FILE'),
       routePermitExpDate: this.getExpireDate('ROUTE_PERMIT_FILE'),
       caseExpDate: this.getExpireDate('CASE_FILE'),
@@ -622,6 +624,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
       insuranceExpDate: this.getExpireDate('INSURANCE_FILE'),
       regPaperFile: truck.regPaperFile,
       taxFile: truck.taxFile,
+      ownership: truck.ownership,
     };
 
     // Update the form with the truck values
@@ -652,10 +655,11 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
   private initiateForm() {
     this.truckUpdateForm = this.fb.group({
       id: [null],
-      registration_zone: [null],
-      registration_category: [null],
-      registration_serial: [null],
-      registration_num: [null],
+      registrationZone: [null],
+      registrationCategory: [null],
+      registrationSerial: [null],
+      registrationNum: [null],
+      ownership: [null],
 
       // Expiry Dates
       fitnessCertExpDate: [null],
@@ -1181,5 +1185,10 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
     } else {
       document.body.classList.remove(className);
     }
+  }
+
+  onChangeTruckOwnerShip($event: any) {
+    const value = $event?.value ? $event?.value : $event;
+    this.truckUpdateForm.get('ownership')?.setValue(value);
   }
 }

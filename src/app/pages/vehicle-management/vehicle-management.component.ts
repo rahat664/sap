@@ -1,0 +1,349 @@
+import { Component } from '@angular/core';
+import { CommonModule, DatePipe, NgIf } from '@angular/common';
+import { GetElementHeightDirective } from '../../shared/directive/get-element-height.directive';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { VehicleStatsButtonComponent } from './shared/buttons/vehicle-stats-button/vehicle-stats-button.component';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TruckModel } from '../profiles/components/truck/models/truck.model';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { TruckService } from '../profiles/components/truck/services/truck.service';
+import { TruckFilterComponent } from '../profiles/components/truck/truck-filter/truck-filter.component';
+import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
+import { LoadingComponent } from '../../shared/modules/loading/loading.component';
+import { numberPipe } from '../../shared/pipes/number-seperator.pipe';
+import { TruckFilesArray, truckFileType, TruckFileType } from '../profiles/components/truck/models/truck-file-type';
+import { MatTooltip } from '@angular/material/tooltip';
+
+@Component({
+  selector: 'app-vehicle-management',
+  imports: [
+    CommonModule,
+    GetElementHeightDirective,
+    ReactiveFormsModule,
+    FormsModule,
+    VehicleStatsButtonComponent,
+    TruckFilterComponent,
+    GiveMaxHeightDirective,
+    LoadingComponent,
+    RouterLink,
+    MatTooltip,
+  ],
+  templateUrl: './vehicle-management.component.html',
+  styleUrl: './vehicle-management.component.scss',
+})
+export class VehicleManagementComponent {
+  height: any;
+  isOffCanvasVisible: any;
+  searchValue: any;
+  truckList: TruckModel[] = [];
+  totalPages: number = 0;
+  loading: boolean = false;
+  showButtons: any[] = [
+    { title: 'Total', totalNumber: '0', property: 'All' },
+    { title: 'Own', totalNumber: '0' , property: 'OWN'},
+    { title: 'Third Party', totalNumber: '0' , property: 'THIRD_PARTY'},
+  ];
+  private page: number = 0;
+  private size: number = 20;
+  statusInputPlaceholder: string = '';
+  private from: any;
+  private to: any;
+  filterApplied: boolean = false;
+  filterData: any = {};
+  filterForm: FormGroup;
+  inputPlaceholder: string = '';
+  filterOpened: boolean = false;
+  truckFileType: TruckFileType[] = truckFileType;
+  summaryValue: {
+    All: number;
+    OWN: number;
+    THIRD_PARTY: number;
+  } = { All: 0, OWN: 0, THIRD_PARTY: 0 };
+
+  // Live search stream
+  private searchInput$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private service: TruckService,
+    private datePipe: DatePipe,
+    private formBuilder: FormBuilder,
+    private router: Router
+  ) {
+    this.filterForm = this.formBuilder.group({
+      search: [''],
+      startDate: [''],
+      endDate: [''],
+    });
+  }
+
+  onClickFilterOpen() {
+    this.filterOpened = true;
+  }
+
+  onClickClear() {
+    this.searchValue = '';
+    this.page = 0;
+    this.searchInput$.next('');
+  }
+
+  onSearchChange(value: string) {
+    this.searchInput$.next(value ?? '');
+  }
+
+  get filterSummary(): string {
+    const parts: string[] = [];
+    if (this.filterData.startDate)
+      parts.push(
+        `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.endDate)
+      parts.push(
+        `To: <b>${this.datePipe.transform(this.filterData.endDate, 'dd MMM yyyy')}</b>`
+      );
+    if (this.filterData.statusInputPlaceholder)
+      parts.push(
+        `Truck Status: <b>${this.filterData.statusInputPlaceholder}</b>`
+      );
+
+    return parts.join(', ');
+  }
+
+  onBottom($event: boolean) {
+    if ($event && this.page < this.totalPages - 1) {
+      this.page++;
+      if (this.searchValue) {
+        this.service
+          .getTruckList(
+            this.page,
+            this.size,
+            this.searchValue,
+            this.statusInputPlaceholder == 'All'
+              ? ''
+              : this.statusInputPlaceholder,
+            null,
+            null,
+            null,
+            this.from,
+            this.to
+          )
+          .pipe(debounceTime(1000))
+          .subscribe((res: any) => {
+            this.truckList.push(...res.data.responses);
+          });
+      } else {
+        this.service
+          .getTruckList(
+            this.page,
+            this.size,
+            null,
+            this.statusInputPlaceholder == 'All'
+              ? ''
+              : this.statusInputPlaceholder,
+            null,
+            null,
+            null,
+            this.from,
+            this.to
+          )
+          .subscribe((res: any) => {
+            this.truckList.push(...res.data.responses);
+          });
+      }
+    }
+  }
+
+  ngOnInit() {
+    this.truckList = [];
+    this.loading = true;
+    this.getTruckListFromResolvedState();
+
+    // Wire up debounced live-search
+    this.searchInput$
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(value => {
+        this.searchValue = value;
+        this.page = 0;
+        this.getTruckList();
+      });
+  }
+
+  getTruckListFromResolvedState() {
+    this.activatedRoute.data.subscribe((data: any) => {
+      const res = data.truck.data;
+      this.truckList = res.data.responses;
+      this.totalPages = res.data.totalPages;
+      this.loading = false;
+      this.summaryValue = res.data.Summary
+    });
+  }
+
+  onCLickClearAll() {
+    localStorage.removeItem('tripFilterData');
+    this.filterForm.reset();
+    this.filterApplied = false;
+    this.filterData = {};
+    this.page = 0;
+    this.size = 30;
+    this.loading = true;
+    this.from = '';
+    this.to = '';
+    this.inputPlaceholder = '';
+    this.statusInputPlaceholder = '';
+    this.getTruckList();
+  }
+  onFilterData($event: any) {
+    this.filterData = $event;
+  }
+
+  private getTruckList() {
+    this.page = 0;
+    this.loading = true;
+    if (this.searchValue) {
+      this.service
+        .getTruckList(
+          this.page,
+          this.size,
+          this.searchValue,
+          this.statusInputPlaceholder == 'All'
+            ? ''
+            : this.statusInputPlaceholder,
+          null,
+          null,
+          null,
+          this.from,
+          this.to
+        )
+        .subscribe((res: any) => {
+          this.truckList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
+    } else {
+      this.service
+        .getTruckList(
+          this.page,
+          this.size,
+          null,
+          this.statusInputPlaceholder == 'All'
+            ? ''
+            : this.statusInputPlaceholder,
+          null,
+          null,
+          null,
+          this.from,
+          this.to
+        )
+        .subscribe((res: any) => {
+          this.truckList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
+    }
+  }
+
+  onFilterApply() {
+    if (
+      this.filterData?.startDate ||
+      this.filterData?.endDate ||
+      this.filterData?.statusInputPlaceholder
+    ) {
+      this.filterApplied = true;
+      this.filterOpened = false;
+      this.from = this.filterData.startDate;
+      this.to = this.filterData.endDate;
+      this.statusInputPlaceholder = this.filterData.statusInputPlaceholder;
+      this.page = 0;
+      this.size = 30;
+      this.loading = true;
+      // Clear current list before fetching filtered results
+      this.truckList = [];
+      this.getTruckList();
+    } else {
+      localStorage.removeItem('tripFilterData');
+      this.filterApplied = false;
+      this.loading = true;
+      this.page = 0;
+      this.size = 30;
+      this.from = '';
+      this.to = '';
+      this.statusInputPlaceholder = '';
+      this.filterForm.reset();
+      this.getTruckList();
+    }
+  }
+
+  protected readonly Number = Number;
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onClickTruckDetails(truck: TruckModel) {
+  }
+
+  onClickAddTruck() {
+    this.router.navigate(['/vehicle-management/add-vehicle']);
+  }
+
+  checkHowManyDocsAreAvailable(truck: TruckModel) {
+    let count = 0;
+    this.truckFileType.forEach(fileType => {
+      const files = truck.vehicleDocumentList?.filter(
+        doc => doc.documentType === fileType.enumName
+      );
+      if (files && files.length > 0) {
+        count++;
+      }
+    });
+    return count;
+  }
+
+  checkThatAnyDocumentIsExpired(truck: TruckModel) {
+    const today = new Date();
+    let isExpired = false;
+    this.truckFileType.forEach(fileType => {
+      if (fileType.expiryAvailable) {
+        const files = truck.vehicleDocumentList?.filter(
+          doc => doc.documentType === fileType.enumName
+        );
+        if (files && files.length > 0) {
+          files.forEach(file => {
+            if (file.expiryDate) {
+              const expiryDate = new Date(file.expiryDate);
+              if (expiryDate < today) {
+                isExpired = true;
+              }
+            }
+          });
+        }
+      }
+    });
+    return isExpired;
+  }
+
+  returnHowManyDocumentIsExpired(truck: TruckModel) {
+    const today = new Date();
+    let count = 0;
+    this.truckFileType.forEach(fileType => {
+      if (fileType.expiryAvailable) {
+        const files = truck.vehicleDocumentList?.filter(
+          doc => doc.documentType === fileType.enumName
+        );
+        if (files && files.length > 0) {
+          files.forEach(file => {
+            if (file.expiryDate) {
+              const expiryDate = new Date(file.expiryDate);
+              if (expiryDate < today) {
+                count++;
+              }
+            }
+          });
+        }
+      }
+    });
+    return count  > 1 ? `${count} Documents Expired` : `${count} Document Expired`;
+  }
+}

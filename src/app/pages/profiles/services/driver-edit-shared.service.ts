@@ -54,10 +54,10 @@ export class DriverEditSharedService {
 
     this.truckUpdateForm = this.fb.group({
       id: [''],
-      registration_zone: [null, Validators.required],
-      registration_category: [null, Validators.required],
-      registration_serial: [null, Validators.required],
-      registration_num: [null, Validators.required],
+      registrationZone: [null, Validators.required],
+      registrationCategory: [null, Validators.required],
+      registrationSerial: [null, Validators.required],
+      registrationNum: [null, Validators.required],
       fitnessCertExpDate: [null],
       routePermitExpDate: [null],
       caseExpDate: [null],
@@ -121,10 +121,10 @@ export class DriverEditSharedService {
   bindTruckValueWithForm(singleTruck: TruckModel) {
     this.truckUpdateForm.patchValue({
       id: singleTruck.id,
-      registration_zone: singleTruck.registrationZone,
-      registration_category: singleTruck.registrationCategory,
-      registration_serial: singleTruck.registrationSerial,
-      registration_num: singleTruck.registrationNum,
+      registrationZone: singleTruck.registrationZone,
+      registrationCategory: singleTruck.registrationCategory,
+      registrationSerial: singleTruck.registrationSerial,
+      registrationNum: singleTruck.registrationNum,
     });
   }
 
