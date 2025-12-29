@@ -64,6 +64,7 @@ const STORAGE_KEY = 'trip-list-column-settings';
   styleUrl: './challan-dashboard.component.scss',
 })
 export class ChallanDashboardComponent implements OnInit, AfterViewInit {
+  private readonly statusFilterStorageKey = 'challanStatusFilter';
   private customerCode: any[] = [];
   private to: string;
   private from: string;
@@ -172,13 +173,19 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     localStorage.removeItem('tripFilterData');
     this.loadColumnSettings();
-    this.activatedChallanStatus = 'Completed';
-    this.chalanStatus = '';
-    this.status = 'Completed';
     this.getFromDateAndToDate();
     this.loading = true;
     this.anotherStatusCalled = false;
-    this.getTripListFromResolver();
+    this.getChallanStatus();
+    const storedStatus = this.getStoredStatusFilter();
+    if (storedStatus) {
+      this.applyStatusFilter(storedStatus, false);
+    } else {
+      this.activatedChallanStatus = 'Completed';
+      this.chalanStatus = '';
+      this.status = 'Completed';
+      this.getTripListFromResolver();
+    }
     const isFromBack = localStorage.getItem('isBack');
     if (isFromBack !== 'true') {
     } else {
@@ -261,8 +268,6 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.pendingAmount = trip.data?.challanStatusCount['In-progress'] || 0;
     this.approvedAmount = trip.data?.challanStatusCount?.Approved || 0;
     this.rejectedAmount = trip.data?.challanStatusCount?.Rejected || 0;
-    this.pendingChallanAmount =
-      trip.data?.challanStatusCount?.totalCustomerRateForPendingChallans || 0;
     this.hardCopyReceived =
       trip.data?.challanStatusCount?.HardCopyReceived || 0;
     if (this.page === 0) {
@@ -300,6 +305,10 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
   }
 
   onClickStatusButtons(status: any) {
+    this.applyStatusFilter(status, true);
+  }
+
+  private applyStatusFilter(status: string, remember: boolean) {
     this.loading = true;
     this.challanHardCopyReceived = false;
     this.activatedChallanStatus = status;
@@ -316,6 +325,9 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.loading = true;
     this.tripList = [];
     this.trip.anotherStatusCalled.next(true);
+    if (remember) {
+      this.storeStatusFilter(status);
+    }
     this.getTripList();
   }
 
@@ -736,7 +748,29 @@ export class ChallanDashboardComponent implements OnInit, AfterViewInit {
     this.to = '';
     this.filterForm.reset();
     localStorage.removeItem('tripFilterData');
+    sessionStorage.removeItem(this.statusFilterStorageKey);
     this.getTripList();
+  }
+
+  private storeStatusFilter(status: string) {
+    const payload = {
+      status,
+    };
+    sessionStorage.setItem(this.statusFilterStorageKey, JSON.stringify(payload));
+  }
+
+  private getStoredStatusFilter(): string | null {
+    const stored = sessionStorage.getItem(this.statusFilterStorageKey);
+    if (!stored) {
+      return null;
+    }
+    try {
+      const parsed = JSON.parse(stored);
+      return parsed?.status || null;
+    } catch (error) {
+      sessionStorage.removeItem(this.statusFilterStorageKey);
+      return null;
+    }
   }
 
   toggleAllColumns() {
