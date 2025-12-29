@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { VehicleStatsButtonComponent } from './shared/buttons/vehicle-stats-button/vehicle-stats-button.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TruckModel } from '../profiles/components/truck/models/truck.model';
-import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs';
 import { TruckService } from '../profiles/components/truck/services/truck.service';
 import { TruckFilterComponent } from '../profiles/components/truck/truck-filter/truck-filter.component';
 import { GiveMaxHeightDirective } from '../../shared/directive/give-max-height.directive';
@@ -161,7 +161,12 @@ export class VehicleManagementComponent {
 
     // Wire up debounced live-search
     this.searchInput$
-      .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(
+        map(value => (value || '').trim()),
+        debounceTime(400),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe(value => {
         this.searchValue = value;
         this.page = 0;
