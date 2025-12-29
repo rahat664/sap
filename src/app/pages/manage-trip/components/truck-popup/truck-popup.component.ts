@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { FormsModule } from '@angular/forms';
-import { timer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, Subject, takeUntil, timer } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -23,6 +23,8 @@ import { RouterLink } from '@angular/router';
 })
 export class TruckPopupComponent implements OnInit, OnDestroy {
   totalPages: number;
+  private searchInput$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private service: TruckService,
@@ -47,6 +49,21 @@ export class TruckPopupComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.truckList = [];
     this.getTruckList();
+    this.searchInput$
+      .pipe(
+        map(value => (value || '').trim()),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(value => {
+        this.page = 0;
+        this.size = 20;
+        this.truckList = [];
+        this.loading = true;
+        this.searchValue = value;
+        this.getTruckList();
+      });
   }
 
   ngAfterViewInit() {
@@ -67,6 +84,8 @@ export class TruckPopupComponent implements OnInit, OnDestroy {
     this.truckList = [];
     this.page = 0;
     this.size = 20;
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   protected readonly onselect = onselect;
@@ -85,17 +104,7 @@ export class TruckPopupComponent implements OnInit, OnDestroy {
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
-    this.page = 0;
-    this.size = 20;
-    this.truckList = [];
-    this.loading = true;
-    const target = ($event.target as HTMLInputElement).value;
-    if (target?.length) {
-      this.searchValue = target;
-    } else {
-      this.searchValue = '';
-    }
-    this.getTruckList();
+    this.searchInput$.next(($event.target as HTMLInputElement).value || '');
   }
 
   private implementScrollToLoadMoreData() {
@@ -126,7 +135,9 @@ export class TruckPopupComponent implements OnInit, OnDestroy {
     if (this.page > this.totalPages - 1) return;
     this.page++;
 
-    this.service.getTruckList(this.page, this.size).subscribe((res: any) => {
+    this.service
+      .getTruckList(this.page, this.size, this.searchValue)
+      .subscribe((res: any) => {
       this.truckList.push(...res.data.responses);
     });
   }
