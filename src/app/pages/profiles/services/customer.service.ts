@@ -3,8 +3,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import {
   catchError,
-  debounceTime,
-  distinctUntilChanged,
   Observable,
   throwError,
 } from 'rxjs';
@@ -64,8 +62,6 @@ export class CustomerService {
     return this.http
       .get(apiUrl)
       .pipe(
-        debounceTime(1000),
-        distinctUntilChanged(),
         catchError(this.handleError)
       );
   }

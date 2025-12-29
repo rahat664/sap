@@ -47,6 +47,7 @@ export class AddTrackerComponent implements OnInit {
   vendorList: VendorModel[] = [];
   trackAddModel: TrackerRequestModel = new TrackerRequestModel();
   truckSuggestion: TruckModel[] = [];
+  private truckSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private service: TrackerService,
@@ -107,17 +108,22 @@ export class AddTrackerComponent implements OnInit {
   }
 
   onKeyUpTruckSearch($event: any) {
-    const value = $event.target.value;
-    if (value.length > 0) {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    if (this.truckSearchTimer) {
+      clearTimeout(this.truckSearchTimer);
+    }
+    if (!value) {
+      this.truckSuggestion = [];
+      return;
+    }
+    this.truckSearchTimer = setTimeout(() => {
       this.truckSuggestion = [];
       this.truck.getTruckList(0, 500, value).subscribe((res: any) => {
         res.data.responses.forEach((truck: TruckModel) => {
           this.truckSuggestion.push(truck);
         });
       });
-    } else {
-      this.truckSuggestion = [];
-    }
+    }, 350);
   }
 
   onClickTruckSearchSuggestion(option: TruckModel) {

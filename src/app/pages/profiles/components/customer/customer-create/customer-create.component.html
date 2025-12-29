@@ -74,7 +74,7 @@
         </mat-form-field>
         <!--        error-message-->
         <div
-          class="text-red text-xs min-h-[1.5rem]"
+          class="text-red text-xs"
           [ngClass]="{
             invisible: !(
               (customerForm.get('code').invalid &&
@@ -112,12 +112,19 @@
         </mat-form-field>
         <!--        error-message-->
         <div
-          *ngIf="
+          class="text-red text-xs"
+          [ngClass]="{
+            invisible: !(
+              customerForm.get('contactPerson').invalid &&
+              customerForm.get('contactPerson').touched
+            )
+          }">
+          {{
             customerForm.get('contactPerson').invalid &&
             customerForm.get('contactPerson').touched
-          "
-          class="text-red text-xs">
-          {{ getContactPersonErrorMessage() }}
+              ? getContactPersonErrorMessage()
+              : ''
+          }}
         </div>
       </div>
       <div class="flex flex-col space-y-2 w-full">

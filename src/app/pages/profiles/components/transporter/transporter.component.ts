@@ -11,7 +11,7 @@ import { GetClickEventDirective } from '../../../../shared/directive/get-click-e
 import { UserService } from '../../services/user.service';
 import { TransporterAddComponent } from './transporter-add/transporter-add.component';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
-import { debounceTime } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CheckTheHeightCrossMaxHeightOrNotDirective } from '../../../../shared/directive/check-the-height-cross-max-height-or-not.directive';
 import { MatDialog } from '@angular/material/dialog';
 import { numberPipe } from '../../../../shared/pipes/number-seperator.pipe';
@@ -57,6 +57,7 @@ export class TransporterComponent implements OnInit {
   isDateOpened: boolean;
   filterData: any = {};
   truckStands: any[]= [];
+  private searchSubject = new Subject<string>();
 
   constructor(
     private service: UserService,
@@ -71,6 +72,11 @@ export class TransporterComponent implements OnInit {
       startDate: [''],
       endDate: [''],
     });
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.applySearch(searchText);
+      });
   }
 
   onClickAddTransporter() {
@@ -78,16 +84,8 @@ export class TransporterComponent implements OnInit {
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
-    this.page = 0;
-    this.size = 20;
-    const value = ($event.target as HTMLInputElement).value;
-    if (value?.length > 0) {
-      this.searchValue = value;
-    } else {
-      this.searchValue = '';
-    }
-    this.transporterList = [];
-    this.getTransporterList();
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.searchSubject.next(value);
   }
 
   onBottom($event: boolean) {
@@ -96,7 +94,6 @@ export class TransporterComponent implements OnInit {
       if (this.searchValue) {
         this.service
           .getTransporter(this.page, this.size, this.searchValue, this.from, this.to)
-          .pipe(debounceTime(1000))
           .subscribe((res: any) => {
             this.transporterList.push(...res.data);
           });
@@ -130,7 +127,6 @@ export class TransporterComponent implements OnInit {
           this.to,
           this.truckStands.toString()
         )
-        .pipe(debounceTime(0))
         .subscribe((res: any) => {
           this.transporterList = res.data;
           this.totalPages = res.meta.totalPageCount;
@@ -150,6 +146,14 @@ export class TransporterComponent implements OnInit {
   onClickTransporter($event: boolean) {
     this.page = 0;
     this.isOpen = !$event;
+    this.transporterList = [];
+    this.getTransporterList();
+  }
+
+  private applySearch(searchText: string) {
+    this.page = 0;
+    this.size = 20;
+    this.searchValue = searchText || '';
     this.transporterList = [];
     this.getTransporterList();
   }

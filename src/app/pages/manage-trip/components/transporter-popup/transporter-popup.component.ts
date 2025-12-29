@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UserService } from '../../../profiles/services/user.service';
-import { debounceTime, timer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
@@ -16,6 +16,7 @@ import { RouterLink } from '@angular/router';
 export class TransporterPopupComponent implements OnInit {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   private totalPages: number;
+  private searchInput$ = new Subject<string>();
 
   constructor(
     private user: UserService,
@@ -38,6 +39,16 @@ export class TransporterPopupComponent implements OnInit {
     this.loading = true;
     this.transporterList = [];
     this.getTransporterList();
+    this.searchInput$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.loading = true;
+        this.page = 0;
+        this.size = 20;
+        this.searchValue = searchText;
+        this.transporterList = [];
+        this.getTransporterList();
+      });
   }
 
   ngAfterViewInit() {
@@ -67,17 +78,8 @@ export class TransporterPopupComponent implements OnInit {
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
-    this.loading = true;
-    this.page = 0;
-    this.size = 20;
-    const target = ($event.target as HTMLInputElement).value;
-    if (target?.length) {
-      this.searchValue = target;
-    } else {
-      this.searchValue = '';
-    }
-    this.transporterList = [];
-    this.getTransporterList();
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.searchInput$.next(value);
   }
 
   private implementScrollToLoadMoreData() {
@@ -110,7 +112,6 @@ export class TransporterPopupComponent implements OnInit {
 
     this.user
       .getTransporter(this.page, this.size, this.searchValue)
-      .pipe(debounceTime(1000))
       .subscribe((res: any) => {
         this.transporterList.push(...res.data);
         this.totalPages = res.meta.totalPageCount;

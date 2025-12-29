@@ -21,7 +21,7 @@ import { ConfirmRejectComponent } from '../../shared/modules/confirm-reject/conf
 import { ConfirmReceiveeComponentComponent } from '../../shared/modules/confirm-receivee-component/confirm-receivee-component.component';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
-import { debounceTime, of, Subject } from 'rxjs';
+import { of } from 'rxjs';
 import { CustomerService } from '../profiles/services/customer.service';
 import { DateEnum } from '../trip-list/Enum/date.enum';
 import { DriverEditSharedService } from '../profiles/services/driver-edit-shared.service';

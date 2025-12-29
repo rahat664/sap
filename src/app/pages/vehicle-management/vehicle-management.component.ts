@@ -128,7 +128,6 @@ export class VehicleManagementComponent {
             this.from,
             this.to
           )
-          .pipe(debounceTime(1000))
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
           });

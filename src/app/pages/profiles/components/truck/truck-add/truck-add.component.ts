@@ -139,6 +139,7 @@ export class TruckAddComponent implements OnInit, AfterViewInit, OnDestroy {
 
   vehicleTypeList: any = ([] = []);
   driverSuggestion: any[] = ([] = []);
+  private driverSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
   buttonName: any[] = [
     'Today',
@@ -1000,13 +1001,20 @@ export class TruckAddComponent implements OnInit, AfterViewInit, OnDestroy {
   onChangeTruckType(_$event: any) {}
 
   onKeyUpDriverSearch($event: KeyboardEvent) {
-    const value = ($event.target as HTMLInputElement).value;
-    if (value?.length > 0) {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    if (this.driverSearchTimer) {
+      clearTimeout(this.driverSearchTimer);
+    }
+    if (!value) {
+      this.driverSuggestion = [];
+      return;
+    }
+    this.driverSearchTimer = setTimeout(() => {
       this.user.getDriver(0, 100, value).subscribe((res: any) => {
         this.driverSuggestion = res.data.responses;
         this.cd.markForCheck();
       });
-    }
+    }, 350);
   }
   onClickDriverSearchSuggestion(option: Driver) {
     this.truckAddForm.get('driverCode')?.setValue(option.userId);

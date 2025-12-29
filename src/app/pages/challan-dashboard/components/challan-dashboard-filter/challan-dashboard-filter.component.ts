@@ -16,7 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { CustomerService } from '../../../profiles/services/customer.service';
 import { TripService } from '../../../trip-list/services/trip.service';
@@ -131,18 +131,26 @@ export class ChallanDashboardFilterComponent {
     private transporter: UserService,
     private truck: TruckService
   ) {
-    this.customerSearch.pipe().subscribe(searchText => {
-      this.performCustomerSearch(searchText);
-    });
-    this.transporterSearch.pipe().subscribe(searchText => {
-      this.performTransporterSearch(searchText);
-    });
-    this.tripIDSearchSubject.pipe().subscribe(searchText => {
-      this.performTripIdSearch(searchText);
-    });
-    this.truckSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performTruckSearch(searchText);
-    });
+    this.customerSearch
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performCustomerSearch(searchText);
+      });
+    this.transporterSearch
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performTransporterSearch(searchText);
+      });
+    this.tripIDSearchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performTripIdSearch(searchText);
+      });
+    this.truckSearchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performTruckSearch(searchText);
+      });
   }
 
   ngOnInit() {
@@ -278,7 +286,7 @@ export class ChallanDashboardFilterComponent {
 
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {
-    const searchText = ($event.target as HTMLInputElement).value;
+    const searchText = ($event.target as HTMLInputElement).value?.trim() || '';
     this.searchValue = searchText;
     this.customerSearch.next(searchText);
   }
@@ -401,7 +409,7 @@ export class ChallanDashboardFilterComponent {
   }
 
   onKeyUpTransporterSearch($event: KeyboardEvent) {
-    const searchText = ($event.target as HTMLInputElement).value;
+    const searchText = ($event.target as HTMLInputElement).value?.trim() || '';
     this.transporterSearch.next(searchText);
   }
 
@@ -440,7 +448,7 @@ export class ChallanDashboardFilterComponent {
   }
 
   onKeyUpTripSearch($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.tripIDSearchSubject.next(value); // Trigger the Subject when input changes
   }
 
@@ -482,7 +490,7 @@ export class ChallanDashboardFilterComponent {
   }
 
   onKeyUpTruckSearch($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.truckSearchSubject.next(value); // Trigger the Subject when input changes
   }
 

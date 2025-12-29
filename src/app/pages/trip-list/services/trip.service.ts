@@ -8,8 +8,6 @@ import { environment } from '../../../../environments/environment';
 import {
   BehaviorSubject,
   catchError,
-  debounceTime,
-  distinctUntilChanged,
   map,
   Observable,
   of,
@@ -140,8 +138,6 @@ export class TripService {
 
   getTripSuggestions(tripId: string): Observable<any> {
     return this.http.get<ApiResponse>(`${this.url}?tripId=${tripId}`).pipe(
-      debounceTime(1000), // Adjust debounce time to optimize user experience
-      distinctUntilChanged(),
       map(response => response.data),
       catchError(this.handleError)
     );

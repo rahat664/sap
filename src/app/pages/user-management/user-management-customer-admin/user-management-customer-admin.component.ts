@@ -27,6 +27,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmUpdateComponent } from '../../manage-trip/components/confirm-update/confirm-update.component';
 import { UserFilterComponent } from '../user-filter/user-filter.component';
 import {ActivatedRoute} from "@angular/router";
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-user-management-customer-admin',
@@ -84,6 +85,7 @@ export class UserManagementCustomerAdminComponent implements OnInit {
   size = 30;
   filterApplied: boolean = true;
   filterData: any = {};
+  private searchSubject = new Subject<string>();
 
   constructor(
     private service: UserService,
@@ -92,7 +94,13 @@ export class UserManagementCustomerAdminComponent implements OnInit {
     private shared: DriverEditSharedService,
     private customer: CustomerService,
     private activatedRoute: ActivatedRoute,
-  ) {}
+  ) {
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.applySearch(searchText);
+      });
+  }
 
   ngOnInit() {
     this.loading = true;
@@ -315,13 +323,13 @@ export class UserManagementCustomerAdminComponent implements OnInit {
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.searchSubject.next(value);
+  }
+
+  private applySearch(searchText: string) {
     this.loading = true;
-    const target = ($event.target as HTMLInputElement).value;
-    if (target?.length) {
-      this.searchValue = target;
-    } else {
-      this.searchValue = '';
-    }
+    this.searchValue = searchText;
     this.Users = [];
     this.getUserList();
   }

@@ -37,6 +37,9 @@ export class CustomerUpdateComponent {
   customerForm: FormGroup;
   customerModel = new UpdateCustomerModel();
   private subs: Subscription;
+  private isCodeManuallyEdited = false;
+  private lastRequestedCustomerCode = '';
+  private lastValidatedCustomerCode = '';
   @Output() formCreated: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
@@ -167,6 +170,38 @@ export class CustomerUpdateComponent {
     }
   }
 
+  private checkCustomerCodeIsAlreadyExistOrNot(fourDigitName: string) {
+    if (fourDigitName.length !== 4) {
+      return;
+    }
+    if (
+      fourDigitName === this.lastRequestedCustomerCode ||
+      fourDigitName === this.lastValidatedCustomerCode
+    ) {
+      return;
+    }
+    this.customerCodeLoading = true;
+    this.lastRequestedCustomerCode = fourDigitName;
+    this.service.customerCodeValidation(fourDigitName).subscribe(
+      (res: any) => {
+        this.customerCodeLoading = false;
+        this.lastRequestedCustomerCode = '';
+        this.lastValidatedCustomerCode = fourDigitName;
+        if (res.data.validation == 'Failed') {
+          this.customerForm.get('code').setErrors({
+            invalidCustomerCode: true,
+            message: `Code already exists. Use  '${res.data.Suggestion}' instead`,
+          });
+          this.customerForm.get('code').markAsTouched();
+        }
+      },
+      error => {
+        this.customerCodeLoading = false;
+        this.lastRequestedCustomerCode = '';
+      }
+    );
+  }
+
 
   getContactPersonErrorMessage() {
     if (this.customerForm?.get('contactPerson').hasError('required')) {
@@ -195,6 +230,44 @@ export class CustomerUpdateComponent {
   onClickClose() {
     this.customerForm.reset();
     this.dialogRef.close(false);
+  }
+
+  onCodeKeyPress($event: Event) {
+    const value = $event.target['value'];
+    const valueWithoutSpace = value?.toString().replace(/\s/g, '');
+    const codeControl = this.customerForm.get('code');
+    this.isCodeManuallyEdited = valueWithoutSpace?.length > 0;
+    if (value?.length > 0) {
+      let fourDigitName = '';
+      if (valueWithoutSpace?.length > 0 && valueWithoutSpace?.length <= 4) {
+        if (valueWithoutSpace?.length < 4) {
+          this.lastRequestedCustomerCode = '';
+          this.lastValidatedCustomerCode = '';
+          if (codeControl?.hasError('invalidCustomerCode')) {
+            const errors = { ...(codeControl.errors || {}) };
+            delete errors['invalidCustomerCode'];
+            delete errors['message'];
+            codeControl.setErrors(Object.keys(errors).length ? errors : null);
+          }
+        }
+        fourDigitName = valueWithoutSpace
+          ?.toString()
+          .substring(0, 4)
+          .toUpperCase();
+        codeControl?.setValue(fourDigitName);
+        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
+      }
+    } else {
+      this.lastRequestedCustomerCode = '';
+      this.lastValidatedCustomerCode = '';
+      codeControl?.setValue('');
+      if (codeControl?.hasError('invalidCustomerCode')) {
+        const errors = { ...(codeControl.errors || {}) };
+        delete errors['invalidCustomerCode'];
+        delete errors['message'];
+        codeControl.setErrors(Object.keys(errors).length ? errors : null);
+      }
+    }
   }
 
 

@@ -305,19 +305,38 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   onCodeKeyPress($event: Event) {
     const value = $event.target['value'];
     const valueWithoutSpace = value?.toString().replace(/\s/g, '');
+    const codeControl = this.customerForm.get('code');
     this.isCodeManuallyEdited = valueWithoutSpace?.length > 0;
     if (value?.length > 0) {
       let fourDigitName = '';
       if (valueWithoutSpace?.length > 0 && valueWithoutSpace?.length <= 4) {
+        if (valueWithoutSpace?.length < 4) {
+          this.lastRequestedCustomerCode = '';
+          this.lastValidatedCustomerCode = '';
+          if (codeControl?.hasError('invalidCustomerCode')) {
+            const errors = { ...(codeControl.errors || {}) };
+            delete errors['invalidCustomerCode'];
+            delete errors['message'];
+            codeControl.setErrors(Object.keys(errors).length ? errors : null);
+          }
+        }
         fourDigitName = valueWithoutSpace
           ?.toString()
           .substring(0, 4)
           .toUpperCase();
-        this.customerForm.get('code').setValue(fourDigitName);
+        codeControl?.setValue(fourDigitName);
         this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
       }
     } else {
-      this.customerForm.get('code').setValue('');
+      this.lastRequestedCustomerCode = '';
+      this.lastValidatedCustomerCode = '';
+      codeControl?.setValue('');
+      if (codeControl?.hasError('invalidCustomerCode')) {
+        const errors = { ...(codeControl.errors || {}) };
+        delete errors['invalidCustomerCode'];
+        delete errors['message'];
+        codeControl.setErrors(Object.keys(errors).length ? errors : null);
+      }
     }
   }
 

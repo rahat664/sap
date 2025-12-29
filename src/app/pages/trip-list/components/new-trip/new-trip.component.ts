@@ -30,6 +30,7 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { TripPoint } from '../../../manage-trip/model/trip.details.model';
 import { PermissionService } from '../../../../shared/services/permission.service';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-new-trip',
@@ -68,6 +69,7 @@ export class NewTripComponent implements OnInit, OnDestroy {
   height: string;
   templateCustomer: any;
   favouriteCustomer: any;
+  private customerSearch$ = new Subject<string>();
 
   constructor(
     private customer: CustomerService,
@@ -75,7 +77,13 @@ export class NewTripComponent implements OnInit, OnDestroy {
     private router: Router,
     private toastr: HandleToastrService,
     private permissionService: PermissionService
-  ) {}
+  ) {
+    this.customerSearch$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performCustomerSearch(searchText);
+      });
+  }
 
   ngOnInit(): void {
 
@@ -131,11 +139,15 @@ export class NewTripComponent implements OnInit, OnDestroy {
   }
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.customerSearch$.next(value);
+  }
+
+  private performCustomerSearch(searchText: string) {
     this.companySuggestions = [];
-    const target = $event.target as HTMLInputElement;
-    if (target.value) {
+    if (searchText?.length > 0) {
       this.customer
-        .searchCustomer(0, 1000, target.value, null)
+        .searchCustomer(0, 1000, searchText, null)
         .subscribe((company: any) => {
           this.isCustomerMenuOpened = true;
           this.companySuggestions = company.data.content;

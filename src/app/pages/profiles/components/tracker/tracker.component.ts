@@ -29,6 +29,7 @@ import { TruckModel } from '../truck/models/truck.model';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-tracker',
@@ -69,6 +70,8 @@ export class TrackerComponent implements OnInit {
   trackerUpdateForm: FormGroup;
   truckSuggestion: TruckModel[] = [];
   private selectedTrackerId: number;
+  private searchSubject = new Subject<string>();
+  private truckSearchSubject = new Subject<string>();
 
   constructor(
     private service: TrackerService,
@@ -81,6 +84,16 @@ export class TrackerComponent implements OnInit {
     this.trackerUpdateForm = this.fb.group({
       truckRegNo: [''],
     });
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.applySearch(searchText);
+      });
+    this.truckSearchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performTruckSearch(searchText);
+      });
   }
 
   ngOnInit() {
@@ -104,9 +117,8 @@ export class TrackerComponent implements OnInit {
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
-    this.page = 0;
-    this.searchValue = ($event.target as HTMLInputElement).value;
-    this.getTrackers();
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.searchSubject.next(value);
   }
 
   private getTrackers() {
@@ -136,10 +148,20 @@ export class TrackerComponent implements OnInit {
   }
 
   onKeyUpTruckSearch($event: any) {
-    const value = $event.target.value;
-    if (value.length > 0) {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.truckSearchSubject.next(value);
+  }
+
+  private applySearch(searchText: string) {
+    this.page = 0;
+    this.searchValue = searchText;
+    this.getTrackers();
+  }
+
+  private performTruckSearch(searchText: string) {
+    if (searchText.length > 0) {
       this.truckSuggestion = [];
-      this.truck.getTruckList(0, 500, value).subscribe((res: any) => {
+      this.truck.getTruckList(0, 500, searchText).subscribe((res: any) => {
         res.data.responses.forEach((truck: TruckModel) => {
           this.truckSuggestion.push(truck);
         });

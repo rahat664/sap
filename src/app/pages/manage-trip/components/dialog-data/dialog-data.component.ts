@@ -36,6 +36,7 @@ import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/
 import { TripData } from '../../model/trip.details.model';
 import { SessionModel } from '../../../manage-bid/models/session.model';
 import { hasPhoneCountryMismatch } from '../../../../shared/utils/phone-validation';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-data',
@@ -58,6 +59,9 @@ export class DialogDataComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   driverSuggestion: any;
   helperSuggestion: any;
+  private transporterSearch$ = new Subject<string>();
+  private driverSearch$ = new Subject<string>();
+  private helperSearch$ = new Subject<string>();
 
   constructor(
     public dialogRef: MatDialogRef<DialogDataComponent>,
@@ -86,34 +90,68 @@ export class DialogDataComponent implements OnInit {
       registrationSerialNumber: [{ value: '', disabled: true }],
       registrationNumber: [{ value: '', disabled: true }],
     });
+
+    this.transporterSearch$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performTransporterSearch(searchText);
+      });
+    this.driverSearch$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performDriverSearch(searchText);
+      });
+    this.helperSearch$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performHelperSearch(searchText);
+      });
   }
 
   transporterSuggestion: any;
 
   onKeyUpTransporterSearch($event: KeyboardEvent) {
-    const value = ($event.target as HTMLInputElement).value;
-    if (value.length > 0) {
-      this.user.getTransporter(0, 100, value).subscribe((res: any) => {
-        this.transporterSuggestion = res.data;
-      });
-    }
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.transporterSearch$.next(value);
   }
 
   onKeyUpDriverSearch($event: KeyboardEvent) {
-    const value = ($event.target as HTMLInputElement).value;
-    if (value.length > 0) {
-      this.user.getDriver(0, 100, value).subscribe((res: any) => {
-        this.driverSuggestion = res.data.responses;
-      });
-    }
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.driverSearch$.next(value);
   }
 
   onKeyUpHelperSearch($event: KeyboardEvent) {
-    const value = ($event.target as HTMLInputElement).value;
-    if (value.length > 0) {
-      this.user.getHelpers(0, 100, value).subscribe((res: any) => {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.helperSearch$.next(value);
+  }
+
+  private performTransporterSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.user.getTransporter(0, 100, searchText).subscribe((res: any) => {
+        this.transporterSuggestion = res.data;
+      });
+    } else {
+      this.transporterSuggestion = [];
+    }
+  }
+
+  private performDriverSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.user.getDriver(0, 100, searchText).subscribe((res: any) => {
+        this.driverSuggestion = res.data.responses;
+      });
+    } else {
+      this.driverSuggestion = [];
+    }
+  }
+
+  private performHelperSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.user.getHelpers(0, 100, searchText).subscribe((res: any) => {
         this.helperSuggestion = res.data.responses;
       });
+    } else {
+      this.helperSuggestion = [];
     }
   }
 

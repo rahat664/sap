@@ -16,7 +16,7 @@ import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autoc
 import { MatInput } from '@angular/material/input';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { districts } from '../../../shared/models/ditrict-with-latlng.model';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CustomerService } from '../../profiles/services/customer.service';
 import { TripService } from '../../trip-list/services/trip.service';
 import { UserService } from '../../profiles/services/user.service';
@@ -137,16 +137,18 @@ export class PaymentFilterComponent {
   transporterName: string = '';
 
   constructor(private datePipe: DatePipe, private customer: CustomerService, private trip: TripService, private transporter: UserService) {
-    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performSearch(searchText);
-    });
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performSearch(searchText);
+      });
     this.customerSearchSubject
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(searchText => {
         this.performCustomerSearch(searchText);
       });
     this.transporterSearchSubject
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(searchText => {
         this.performTransporterSearch(searchText);
       });
@@ -267,7 +269,7 @@ export class PaymentFilterComponent {
   }
 
   onKeyUpTripSearch($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.customerSearchSubject.next(value);
   }
 
@@ -293,7 +295,7 @@ export class PaymentFilterComponent {
   }
 
   onSearchInputChange($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.searchSubject.next(value); // Trigger the Subject when input changes
   }
 
@@ -434,7 +436,7 @@ export class PaymentFilterComponent {
   }
 
   onKeyUpTransporterSearch($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.transporterSearchSubject.next(value); // Trigger the Subject when input changes
   }
 
