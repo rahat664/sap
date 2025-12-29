@@ -1,6 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { UserService } from '../../../profiles/services/user.service';
-import { debounceTime, timer } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Subject,
+  takeUntil,
+  timer,
+} from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
@@ -16,6 +23,8 @@ import { RouterLink } from '@angular/router';
 export class DriverPopupComponent implements OnInit, OnDestroy {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   private totalPages: number;
+  private searchInput$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private user: UserService,
@@ -38,6 +47,21 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.driverList = [];
     this.getDriverList();
+    this.searchInput$
+      .pipe(
+        map(value => (value || '').trim()),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(value => {
+        this.page = 0;
+        this.size = 20;
+        this.loading = true;
+        this.searchValue = value;
+        this.driverList = [];
+        this.getDriverList();
+      });
   }
 
   private getDriverList() {
@@ -54,6 +78,8 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
     this.driverList = [];
     this.page = 0;
     this.size = 20;
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onSelectDriver(driver) {
@@ -69,17 +95,7 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
-    this.page = 0;
-    this.size = 20;
-    this.loading = true;
-    const target = ($event.target as HTMLInputElement).value;
-    if (target?.length) {
-      this.searchValue = target;
-    } else {
-      this.searchValue = '';
-    }
-    this.driverList = [];
-    this.getDriverList();
+    this.searchInput$.next(($event.target as HTMLInputElement).value || '');
   }
 
   ngAfterViewInit() {
@@ -116,7 +132,6 @@ export class DriverPopupComponent implements OnInit, OnDestroy {
 
     this.user
       .getDriver(this.page, this.size, this.searchValue)
-      .pipe(debounceTime(1000))
       .subscribe((res: any) => {
         this.driverList.push(...res.data.responses);
         this.totalPages = res.data.totalPages;
