@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, inject, Input } from '@angular/core';
 import { Bid, SessionModel } from '../../models/session.model';
 import { DatePipe, DecimalPipe, NgForOf, NgIf } from '@angular/common';
@@ -97,7 +98,7 @@ export class SessionBidDetailsComponent {
           this.selectedBidId = bid.id;
           this.bidService.acceptBid(body).subscribe({
             next: (res: any) => {
-              if (res.status === 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.dialog
                   .open(SuccessModalComponent, {
                     width: '30rem',
@@ -224,7 +225,7 @@ export class SessionBidDetailsComponent {
 
     this.bidService.updateBid(body).subscribe({
       next: (res: any) => {
-        if (res.status === 'OK') {
+        if (isSuccessStatus(res?.status)) {
           this.isUpdatingBid = false;
           this.dialog
             .open(SuccessModalComponent, {

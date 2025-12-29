@@ -47,6 +47,7 @@ import {
   tripTypes,
 } from '../../../auth/models/response/trip';
 import { AlphabetOnlyDirective } from '../../../../shared/directive/alphabet-only.directive';
+import { hasPhoneCountryMismatch } from '../../../../shared/utils/phone-validation';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -235,7 +236,13 @@ export class CreateTripPageComponent implements OnInit {
           message += ', ';
         }
       });
-      this.toaster.showError(`Please fill the required fields: ${message}`);
+      if (hasPhoneCountryMismatch(this.tripForm)) {
+        this.toaster.showError(
+          'Phone number does not match selected country code'
+        );
+      } else {
+        this.toaster.showError(`Please fill the required fields: ${message}`);
+      }
     }
   }
 
@@ -462,9 +469,11 @@ export class CreateTripPageComponent implements OnInit {
 
   onClickLoadingSuggestion(option: any, i: number) {
     // update above functionality with form array
+    const addressText =
+      option?.addressText || option?.name || option?.address || option?.label || '';
     this.loadingPoints?.controls[i]
       ?.get('pointName')
-      .setValue(option.addressText);
+      .setValue(addressText);
     if (option.latitude > 0 && option.longitude > 0) {
       this.loadingPoints?.controls[i]
         ?.get('pointLat')
@@ -472,15 +481,11 @@ export class CreateTripPageComponent implements OnInit {
       this.loadingPoints?.controls[i]
         ?.get('pointLon')
         .setValue(option.longitude);
-      const districtName = this.searchDistrict(
+      this.searchDistrict(
         option.latitude,
         option.longitude,
         this.loadingPoints?.controls[i]
       );
-      this.loadingPoints?.controls[i]
-        ?.get('pointDistrict')
-        .setValue(districtName);
-      alert(districtName);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         const lat = res.location.latitude;
@@ -494,16 +499,18 @@ export class CreateTripPageComponent implements OnInit {
     this.loadingSuggestions = [];
   }
 
-  searchDistrict(lat, lng, control): any {
+  searchDistrict(lat, lng, control): void {
     this.service.searchDistricts(lat, lng).subscribe((res: any) => {
-      control.get('pointDistrict').setValue(res.data.name);
+      control.get('pointDistrict').setValue(res?.data?.name || '');
     });
   }
 
   onClickUnloadingSuggestion(option: any, i: number) {
+    const addressText =
+      option?.addressText || option?.name || option?.address || option?.label || '';
     this.unloadingPoints?.controls[i]
       ?.get('pointName')
-      .setValue(option.addressText);
+      .setValue(addressText);
 
     if (option.latitude > 0 && option.longitude > 0) {
       this.unloadingPoints?.controls[i]
@@ -512,14 +519,11 @@ export class CreateTripPageComponent implements OnInit {
       this.unloadingPoints?.controls[i]
         ?.get('pointLon')
         .setValue(option.longitude);
-      const districtName = this.searchDistrict(
+      this.searchDistrict(
         option.latitude,
         option.longitude,
         this.unloadingPoints?.controls[i]
       );
-      this.unloadingPoints?.controls[i]
-        ?.get('pointDistrict')
-        .setValue(districtName);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         this.unloadingPoints?.controls[i]
@@ -528,14 +532,11 @@ export class CreateTripPageComponent implements OnInit {
         this.unloadingPoints?.controls[i]
           ?.get('pointLon')
           .setValue(res?.location?.longitude);
-        const districtName = this.searchDistrict(
+        this.searchDistrict(
           res?.location?.latitude,
           res?.location?.longitude,
           this.unloadingPoints?.controls[i]
         );
-        this.unloadingPoints?.controls[i]
-          ?.get('pointDistrict')
-          .setValue(districtName);
       });
     }
     this.unloadingSuggestions = [];

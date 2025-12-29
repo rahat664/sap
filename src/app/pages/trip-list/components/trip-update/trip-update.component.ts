@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import {
   MatAutocomplete,
@@ -237,7 +238,7 @@ export class TripUpdateComponent implements OnInit {
             }
             this.service.updateTrip(body, tripId).subscribe(
               (res: any) => {
-                if (res.status == 'OK') {
+                if (isSuccessStatus(res?.status)) {
                   this.dialog
                     .open(SuccessModalComponent, {
                       width: '21.375rem',
@@ -465,7 +466,7 @@ export class TripUpdateComponent implements OnInit {
     this.tripUpdateForm = this.fb.group({
       tripStartDatetime: [''],
       categoryId: [''],
-      numOfTrucks: [''],
+      numOfTrucks: [{ value: '', disabled: true }],
       truckSize: [''],
       truckCapacityInTon: [''],
       goodsId: [''],
@@ -479,19 +480,19 @@ export class TripUpdateComponent implements OnInit {
       unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
       transporterCode: [''],
       transporterName: [''],
-      transporterPhone: [''],
+      transporterPhone: [{ value: '', disabled: true }],
       transporterRate: [''],
       truckId: [''],
       driverCode: [''],
       driverName: [''],
-      driverPhone: [''],
+      driverPhone: [{ value: '', disabled: true }],
       helperCode: [''],
       helperName: [''],
-      helperPhone: [''],
-      registrationZone: [''],
-      registrationCategory: [''],
-      registrationSerialNumber: [''],
-      registrationNumber: [''],
+      helperPhone: [{ value: '', disabled: true }],
+      registrationZone: [{ value: '', disabled: true }],
+      registrationCategory: [{ value: '', disabled: true }],
+      registrationSerialNumber: [{ value: '', disabled: true }],
+      registrationNumber: [{ value: '', disabled: true }],
       planNumber: [''],
     });
   }

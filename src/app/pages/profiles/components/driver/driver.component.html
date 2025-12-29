@@ -24,7 +24,7 @@
             type="text"
             name="email"
             class="border-none text-input-hint w-full md:w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
-            placeholder="Search name, mobile" />
+            placeholder="Search Name, Mobile" />
         </div>
         <button
           routerLink="/profile/driver/add"
@@ -376,4 +376,5 @@
   </div>
 </div>
 <app-driver-filter (filterData)="onFilterData($event)" (filterApplied)="onFilterApply()" (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-driver-filter>
+
 

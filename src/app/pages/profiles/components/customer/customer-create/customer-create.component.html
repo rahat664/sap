@@ -70,22 +70,27 @@
             type="text"
             matInput
             formControlName="code"
-            placeholder="Enter customer code"/>
+            placeholder="Enter Customer Code"/>
         </mat-form-field>
         <!--        error-message-->
         <div
-          *ngIf="
+          class="text-red text-xs min-h-[1.5rem]"
+          [ngClass]="{
+            invisible: !(
+              (customerForm.get('code').invalid &&
+                customerForm.get('code').touched) ||
+              (customerForm.get('code')?.value?.length === 4 &&
+                customerCodeLoading)
+            )
+          }">
+          {{
             customerForm.get('code').invalid && customerForm.get('code').touched
-          "
-          class="text-red text-xs">
-          {{ getCustomerCodeError() }}
-        </div>
-        <div
-          *ngIf="
-          customerForm.get('code').value.length  === 4 && customerCodeLoading
-          "
-          class="text-red text-xs invisible">
-         abc
+              ? getCustomerCodeError()
+              : customerForm.get('code')?.value?.length === 4 &&
+                customerCodeLoading
+                ? 'Checking customer code...'
+                : ''
+          }}
         </div>
       </div>
       <div class="flex flex-col space-y-2 w-full">
@@ -126,9 +131,11 @@
           [preferredCountries]="[CountryISO.Bangladesh]"
           [fieldControl]="phoneNumber"
           [numberValidation]="true"
+          [useMask]="true"
           [hidePhoneIcon]="true"
           [required]="true"
           [autoIpLookup]="false"
+          (focusout)="phoneNumber?.markAsTouched()"
           [ngClass]="{
             customError:
               customerForm.get('phone').invalid &&
@@ -137,9 +144,7 @@
 
         <!--        error-message-->
         <div *ngIf="customerForm.get('phone').touched && customerForm.get('phone').invalid" class="text-red text-xs">
-          <span>
-            <span>Phone number is required</span>
-          </span>
+          <span>{{ getPhoneErrorMessageWithTouch() }}</span>
         </div>
       </div>
       <div class="flex flex-col space-y-2 w-full">
@@ -150,7 +155,7 @@
             type="text"
             matInput
             formControlName="email"
-            placeholder="Enter email"/>
+            placeholder="Enter Email"/>
         </mat-form-field>
         <!--        error-message-->
         <div *ngIf="customerForm.get('email').touched" class="text-red text-xs">
@@ -174,7 +179,7 @@
           formControlName="note"></textarea>
       </div>
       <div class="flex flex-col space-y-1 w-full">
-        <label for="preferredPaymentType">Preferred payment type</label>
+        <label for="preferredPaymentType">Preferred Payment Type</label>
         <mat-radio-group id="preferredPaymentType" class="flex flex-col"
           formControlName="preferredPaymentType"
           (change)="onSelectPaymentType($event)"
@@ -193,7 +198,7 @@
       </div>
 
       <div class="flex flex-col space-y-1 w-full">
-        <label for="tripType">Preferred trip type</label>
+        <label for="tripType">Preferred Trip Type</label>
         <mat-radio-group id="tripType"
           formControlName="tripType"
           (change)="onSelectTripType($event)"
@@ -224,3 +229,4 @@
     </form>
   </div>
 </div>
+

@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../../shared/utils/response-status';
 import {
   ChangeDetectorRef,
   Component,
@@ -72,7 +73,7 @@ export class EditTrackerComponent implements OnInit, AfterViewInit {
         .updateTracker(this.singleTrackerDetails?.id, this.trackAddModel)
         .subscribe(
           (res: any) => {
-            if (res.status == 'OK') {
+            if (isSuccessStatus(res?.status)) {
               this.router.navigate(['/profile/tracker']);
               this.toast.showSuccess(res.message);
               this.trackerAddForm.reset();

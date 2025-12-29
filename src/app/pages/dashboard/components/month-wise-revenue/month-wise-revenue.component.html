@@ -21,7 +21,7 @@
     <mat-form-field appearance="outline" class="w-[12rem] filter ">
       <mat-select [(ngModel)]="datatype"
                   (selectionChange)="changeType($event)"
-                  placeholder="Select sorting">
+                  placeholder="Select Sorting">
         <mat-option value="monthly">Monthly</mat-option>
         <mat-option value="daily">Daily</mat-option>
       </mat-select>
@@ -34,3 +34,4 @@
                       [categories]="months"></app-column-chart>
   </div>
 </div>
+

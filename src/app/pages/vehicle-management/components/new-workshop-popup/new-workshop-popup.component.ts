@@ -28,6 +28,7 @@ import { TruckService } from '../../../profiles/components/truck/services/truck.
 import { DriverEditSharedService } from '../../../profiles/services/driver-edit-shared.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { hasPhoneCountryMismatch } from '../../../../shared/utils/phone-validation';
 
 @Component({
   selector: 'app-new-workshop-popup',
@@ -53,7 +54,7 @@ export class NewWorkshopPopupComponent {
   workshopForm: FormGroup;
   protected readonly CountryISO = CountryISO;
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',
@@ -96,6 +97,26 @@ export class NewWorkshopPopupComponent {
 
   get phoneNumber() {
     return this.workshopForm.get('vendorPhone');
+  }
+
+  getPhoneErrorMessageWithTouch() {
+    const control = this.workshopForm?.get('vendorPhone');
+    if (!control) {
+      return '';
+    }
+    if (control.hasError('required')) {
+      return 'Vendor number required';
+    }
+    if (
+      control.hasError('invalidNumber') ||
+      control.hasError('minlength') ||
+      control.hasError('maxlength') ||
+      control.hasError('minLength') ||
+      control.hasError('maxLength')
+    ) {
+      return 'Phone number does not match selected country code';
+    }
+    return '';
   }
 
   updateOverLayStyle(isSpecial: boolean) {
@@ -141,7 +162,13 @@ export class NewWorkshopPopupComponent {
       });
     } else {
       this.isSubmitting = false;
-      this.toaster.showInfo('Please fill all required fields');
+      if (hasPhoneCountryMismatch(this.workshopForm, ['vendorPhone'])) {
+        this.toaster.showInfo(
+          'Phone number does not match selected country code'
+        );
+      } else {
+        this.toaster.showInfo('Please fill all required fields');
+      }
       this.workshopForm.markAllAsTouched();
     }
   }

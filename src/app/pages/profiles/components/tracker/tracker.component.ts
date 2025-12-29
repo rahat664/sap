@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, inject, TemplateRef, OnInit } from '@angular/core';
 import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
 import { DatePipe, NgForOf, NgIf } from '@angular/common';
@@ -163,7 +164,7 @@ export class TrackerComponent implements OnInit {
       };
       this.service.updateTracker(this.selectedTrackerId, body).subscribe(
         (res: any) => {
-          if (res.status == 'OK') {
+          if (isSuccessStatus(res?.status)) {
             this.page = 0;
             this.getTrackers();
             this.dialog.closeAll();

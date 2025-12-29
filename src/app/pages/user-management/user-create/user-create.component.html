@@ -52,9 +52,11 @@
           [preferredCountries]="[CountryISO.Bangladesh]"
           [fieldControl]="phoneNumber"
           [numberValidation]="true"
+          [useMask]="true"
           [hidePhoneIcon]="true"
           [required]="true"
-          [autoIpLookup]="false"></ngx-material-intl-tel-input>
+          [autoIpLookup]="false"
+          (focusout)="phoneNumber?.markAsTouched()"></ngx-material-intl-tel-input>
         <!--        error-message-->
       </div>
       <div class="flex flex-col space-y-2 w-full">
@@ -71,7 +73,7 @@
             type="text"
             matInput
             formControlName="email"
-            placeholder="Enter email"/>
+            placeholder="Enter Email"/>
         </mat-form-field>
         <!--        error-message-->
         <div *ngIf="userForm.get('email').touched" class="text-red text-xs">
@@ -87,7 +89,7 @@
             type="text"
             matInput
             formControlName="designation"
-            placeholder="Enter designation"/>
+            placeholder="Enter Designation"/>
         </mat-form-field>
         <!--        error-message-->
       </div>
@@ -111,3 +113,4 @@
     </form>
   </div>
 </div>
+

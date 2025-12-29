@@ -43,7 +43,7 @@ export class FuelRecordPopupComponent {
   protected readonly close = close;
   fuelForm: FormGroup;
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',

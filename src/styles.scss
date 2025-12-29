@@ -367,5 +367,25 @@ ngx-material-intl-tel-input .main-label {
   font-weight: 400 !important;
 }
 
+ngx-material-intl-tel-input .mat-mdc-select-trigger .country-option:has(.country-code__bd) > div:last-child,
+ngx-material-intl-tel-input .mat-select-trigger .country-option:has(.country-code__bd) > div:last-child {
+  font-size: 0 !important;
+}
+
+ngx-material-intl-tel-input .mat-mdc-select-trigger .country-option:has(.country-code__bd) > div:last-child::after,
+ngx-material-intl-tel-input .mat-select-trigger .country-option:has(.country-code__bd) > div:last-child::after {
+  content: '+88';
+  font-size: 0.875rem;
+  color: #242424;
+}
+
+.hot-toast-close-btn {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.hot-toast-icon {
+  display: none;
+}
 
 

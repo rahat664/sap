@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, inject, OnInit } from '@angular/core';
 import { CreatePopupComponent } from '../../../../shared/modal/create-popup/create-popup.component';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
@@ -352,7 +353,7 @@ export class DriverComponent implements OnInit {
           this.user.editDriver(formData).subscribe(
             (res: any) => {
               // Handle response
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
                 this.driverList = [];
                 this.getDriverList();
@@ -395,7 +396,7 @@ export class DriverComponent implements OnInit {
           this.user.editDriver(formData).subscribe(
             (res: any) => {
               // Handle response
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
                 this.driverList = [];
                 this.getDriverList();

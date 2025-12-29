@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, Inject, inject, OnInit } from '@angular/core';
 import {
   MatAutocomplete,
@@ -34,6 +35,7 @@ import { GetClickEventDirective } from '../../../../shared/directive/get-click-e
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { TripData } from '../../model/trip.details.model';
 import { SessionModel } from '../../../manage-bid/models/session.model';
+import { hasPhoneCountryMismatch } from '../../../../shared/utils/phone-validation';
 
 @Component({
   selector: 'app-dialog-data',
@@ -69,20 +71,20 @@ export class DialogDataComponent implements OnInit {
     this.tripUpdateForm = this.fb.group({
       transporterCode: ['', Validators.required],
       transporterName: ['', Validators.required],
-      transporterPhone: ['', Validators.required],
+      transporterPhone: [{ value: '', disabled: true }, Validators.required],
       transporterRate: [''],
       truckId: [''],
       driverCode: [''],
       driverName: [''],
       source: ['Agency'],
-      driverPhone: [''],
+      driverPhone: [{ value: '', disabled: true }],
       helperCode: [''],
       helperName: [''],
-      helperPhone: [''],
-      registrationZone: [''],
-      registrationCategory: [''],
-      registrationSerialNumber: [''],
-      registrationNumber: [''],
+      helperPhone: [{ value: '', disabled: true }],
+      registrationZone: [{ value: '', disabled: true }],
+      registrationCategory: [{ value: '', disabled: true }],
+      registrationSerialNumber: [{ value: '', disabled: true }],
+      registrationNumber: [{ value: '', disabled: true }],
     });
   }
 
@@ -322,7 +324,7 @@ export class DialogDataComponent implements OnInit {
           (res: any) => {
             this.loading = false;
             this.dialogRef.close('updated');
-            if (res.status == 'OK') {
+            if (isSuccessStatus(res?.status)) {
               this.dialog
                 .open(SuccessModalComponent, {
                   width: '21.375rem',
@@ -379,7 +381,13 @@ export class DialogDataComponent implements OnInit {
         );
       } else {
         this.tripUpdateForm.markAllAsTouched();
-        this.toaster.showError('Please fill all the required fields');
+        if (hasPhoneCountryMismatch(this.tripUpdateForm)) {
+          this.toaster.showError(
+            'Phone number does not match selected country code'
+          );
+        } else {
+          this.toaster.showError('Please fill all the required fields');
+        }
         this.loading = false;
       }
     } else if (buttonName === 'Start Trip') {
@@ -443,7 +451,7 @@ export class DialogDataComponent implements OnInit {
           this.trip.updateTrip(body, this.data.trip?.tripId).subscribe(
             (res: any) => {
               this.loading = false;
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.dialogRef.close('updated');
                 this.dialog
                   .open(SuccessModalComponent, {
@@ -491,7 +499,13 @@ export class DialogDataComponent implements OnInit {
           );
         } else {
           this.tripUpdateForm.markAllAsTouched();
-          this.toaster.showError('Please fill all the required fields');
+          if (hasPhoneCountryMismatch(this.tripUpdateForm)) {
+            this.toaster.showError(
+              'Phone number does not match selected country code'
+            );
+          } else {
+            this.toaster.showError('Please fill all the required fields');
+          }
           this.loading = false;
         }
       }
@@ -574,7 +588,7 @@ export class DialogDataComponent implements OnInit {
         this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
           (res: any) => {
             this.loading = false;
-            if (res.status == 'OK') {
+            if (isSuccessStatus(res?.status)) {
               this.dialogRef.close('updated');
               this.dialog
                 .open(SuccessModalComponent, {
@@ -622,7 +636,13 @@ export class DialogDataComponent implements OnInit {
         );
       } else {
         this.tripUpdateForm.markAllAsTouched();
-        this.toaster.showError('Please fill all the required fields');
+        if (hasPhoneCountryMismatch(this.tripUpdateForm)) {
+          this.toaster.showError(
+            'Phone number does not match selected country code'
+          );
+        } else {
+          this.toaster.showError('Please fill all the required fields');
+        }
         this.loading = false;
       }
     }

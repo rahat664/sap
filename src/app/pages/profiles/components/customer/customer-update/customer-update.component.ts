@@ -136,7 +136,23 @@ export class CustomerUpdateComponent {
   }
 
   getPhoneErrorMessageWithTouch() {
-    return this.validation.getErrorMessageWithTouch(this.customerForm);
+    const control = this.customerForm?.get('phone');
+    if (!control) {
+      return '';
+    }
+    if (control.hasError('required')) {
+      return 'Phone number required';
+    }
+    if (
+      control.hasError('invalidNumber') ||
+      control.hasError('minlength') ||
+      control.hasError('maxlength') ||
+      control.hasError('minLength') ||
+      control.hasError('maxLength')
+    ) {
+      return 'Phone number does not match selected country code';
+    }
+    return '';
   }
 
   getCustomerCodeError() {
@@ -185,14 +201,14 @@ export class CustomerUpdateComponent {
   protected readonly CountryISO = CountryISO;
 
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',
     nationalNumberLabel: '',
     hintLabel: '',
     invalidNumberError: '',
-    requiredError: 'This field is required',
+    requiredError: '',
   };
 
   get phoneNumber() {

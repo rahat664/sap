@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
@@ -594,7 +595,7 @@ export class VehicleDetailsComponent implements OnInit {
             this.service.editTruck(formData).subscribe(
               (res: any) => {
                 // Handle response
-                if (res.status == 'OK') {
+                if (isSuccessStatus(res?.status)) {
                   this.toastr.showSuccess(res.message);
                   this.singleTruckData = {} as TruckModel;
                   this.getVehicleDetails();
@@ -633,7 +634,7 @@ export class VehicleDetailsComponent implements OnInit {
             this.service.editTruck(formData).subscribe(
               (res: any) => {
                 // Handle response
-                if (res.status == 'OK') {
+                if (isSuccessStatus(res?.status)) {
                   this.toastr.showSuccess(res.message);
                   this.singleTruckData = {} as TruckModel;
                   this.getVehicleDetails();

@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../../shared/utils/response-status';
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -56,14 +57,14 @@ export class TransporterDetailsComponent {
   loading: boolean;
   transporterUpdateForm: FormGroup;
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',
     nationalNumberLabel: '',
     hintLabel: '',
     invalidNumberError: '',
-    requiredError: 'This field is required',
+    requiredError: '',
   };
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   transporterDocuments: TransporterDocument[] = [];
@@ -188,7 +189,7 @@ export class TransporterDetailsComponent {
 
     this.service.updateTransporter(formData).subscribe(
       (res: any) => {
-        if (res.status === 'OK') {
+        if (isSuccessStatus(res?.status)) {
           this.toastr.showSuccess(res.message);
           this.router.navigate(['/profile/transporter']);
           this.isInEditMode = false;
@@ -298,6 +299,26 @@ export class TransporterDetailsComponent {
 
   get phoneNumber() {
     return this.transporterUpdateForm.get('phone');
+  }
+
+  getPhoneErrorMessageWithTouch() {
+    const control = this.transporterUpdateForm?.get('phone');
+    if (!control) {
+      return '';
+    }
+    if (control.hasError('required')) {
+      return 'Phone number is required';
+    }
+    if (
+      control.hasError('invalidNumber') ||
+      control.hasError('minlength') ||
+      control.hasError('maxlength') ||
+      control.hasError('minLength') ||
+      control.hasError('maxLength')
+    ) {
+      return 'Phone number does not match selected country code';
+    }
+    return '';
   }
 
   setPreferredPaymentMethod($any: any, paymentMethod: string) {

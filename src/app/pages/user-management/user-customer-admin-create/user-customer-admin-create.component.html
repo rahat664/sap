@@ -52,9 +52,11 @@
           [preferredCountries]="[CountryISO.Bangladesh]"
           [fieldControl]="phoneNumber"
           [numberValidation]="true"
+          [useMask]="true"
           [hidePhoneIcon]="true"
           [required]="true"
           [autoIpLookup]="false"
+          (focusout)="phoneNumber?.markAsTouched()"
           [ngClass]="{
             customError:
               userForm.get('phone').invalid && userForm.get('phone').touched,
@@ -66,7 +68,7 @@
               userForm.get('phone').touched && userForm.get('phone').invalid
             "
             class="text-red text-xs">
-            <span>Phone number is required</span>
+            <span>{{ getPhoneErrorMessageWithTouch() }}</span>
           </span>
         </div>
       </div>
@@ -84,7 +86,7 @@
             type="text"
             matInput
             formControlName="email"
-            placeholder="Enter email"/>
+            placeholder="Enter Email"/>
         </mat-form-field>
         <!--        error-message-->
         <div *ngIf="userForm.get('email').touched" class="text-red text-xs">
@@ -135,3 +137,4 @@
     </form>
   </div>
 </div>
+

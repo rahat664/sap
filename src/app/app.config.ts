@@ -35,7 +35,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(BrowserAnimationsModule, CommonModule),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideHotToastConfig({}),
+    provideHotToastConfig({ dismissible: true }),
     provideStore({ auth: authReducer }, { metaReducers }),
     provideEffects([AuthEffects]),
     provideStoreDevtools({ maxAge: 25 }),

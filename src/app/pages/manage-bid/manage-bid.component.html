@@ -37,7 +37,7 @@
             type="text"
             name="email"
             class="border-none text-not-black text-h2 leading-h2 placeholder-input-hint w-full bg-white rounded-lg focus:ring-blue focus:border-blue block pl-10 py-[.875rem]"
-            placeholder="Search by trip ID, customer code" />
+            placeholder="Search By Trip ID, Customer Code" />
         </div>
         <button
           [disabled]="loading"
@@ -60,7 +60,7 @@
 
       <div *ngIf="!filterOpen" class="bg-white rounded-lg px-4 py-2  text-sm">
         <div class="flex flex-col space-y-1">
-          <label class="text-not-black">Sort by</label>
+          <label class="text-not-black">Sort By</label>
           <div class="flex space-x-2">
             <button type="button" (click)="onSortingChange(button.id)"
                     class="px-4 py-1 rounded-full {{button?.selected ? 'bg-primary text-white': 'border border-primary text-secondary'}}"
@@ -147,7 +147,7 @@
       <div class="flex flex-col space-y-6">
         <div class="flex flex-col space-y-3">
           <div class="flex flex-col space-y-2 w-full" *ngIf="isAdmin() && customerIsNotEnterprise()">
-            <label class="text-base text-secondary">Company name</label>
+            <label class="text-base text-secondary">Company Name</label>
 
             <mat-form-field
               (mouseenter)="updateOverLayStyle(false)"
@@ -160,7 +160,7 @@
                 type="text"
                 matInput
                 (keyup)="onKeyUpCustomerSearch($event)"
-                placeholder="Select company name"
+                placeholder="Select Company Name"
                 [matAutocomplete]="customerSug" />
               <mat-autocomplete #customerSug="matAutocomplete">
                 @for (option of companySuggestions; track option) {
@@ -213,3 +213,5 @@
   <app-session-bid-details *ngIf="!bidLoading" [tripDetails]="singleTripDetails" [sessionBid]="totalBidOfSession"></app-session-bid-details>
   <app-loading *ngIf="bidLoading"></app-loading>
 </div>
+
+

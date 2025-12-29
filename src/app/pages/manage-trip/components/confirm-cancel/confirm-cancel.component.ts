@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, Inject, inject, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
@@ -49,7 +50,7 @@ export class ConfirmCancelComponent implements OnInit {
     body['tripCancellationReason'] = this.reason;
     this.trip.updateTrip(body, this.data.trip.tripId).subscribe((res: any) => {
       this.dialogRef.close('updated');
-      if (res.status == 'OK') {
+      if (isSuccessStatus(res?.status)) {
         this.dialog
           .open(SuccessModalComponent, {
             width: '21.375rem',

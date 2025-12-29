@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CustomDatePickerComponent } from '../../../../shared/modules/custom-date-picker/custom-date-picker.component';
 import { GMapComponent } from '../../../../shared/modules/g-map/g-map.component';
@@ -317,7 +318,7 @@ export class NewTripComponent implements OnInit, OnDestroy {
           if (res === 'deleted') {
             this.service.deleteTemplate(template.id).subscribe(
               (res: any) => {
-                if (res.status === 'OK') {
+                if (isSuccessStatus(res?.status)) {
                   this.toastr.showSuccess('Template deleted successfully');
                   this.getTripTemplate(
                     JSON.parse(localStorage.getItem('selectedCustomer'))

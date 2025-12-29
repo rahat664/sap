@@ -25,7 +25,7 @@
               [(ngModel)]="searchValue"
               (ngModelChange)="onSearchChange($event)"
               class="border-none text-input-hint w-full md:w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
-              placeholder="Search vehicle registration number" />
+              placeholder="Search Vehicle Registration Number" />
           </div>
           <button (click)="onClickFilterOpen()"
                   class="bg-white p-2 rounded-lg flex space-x-1 cursor-pointer text-h2_medium text-primary">
@@ -149,5 +149,6 @@
 
 <app-truck-filter (filterData)="onFilterData($event)" (filterApplied)="onFilterApply()"
                   (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-truck-filter>
+
 
 

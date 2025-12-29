@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../../shared/utils/response-status';
 import { Component, OnInit } from '@angular/core';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
 import { FileUploadPopupComponent } from '../../truck/file-upload-popup/file-upload-popup.component';
@@ -76,7 +77,7 @@ export class AddTrackerComponent implements OnInit {
         this.trackerAddForm.get('truckRegNo').value;
       this.service.addTracker(this.trackAddModel).subscribe(
         (res: any) => {
-          if (res.status == 'OK') {
+          if (isSuccessStatus(res?.status)) {
             this.router.navigate(['/profile/tracker']);
             this.toast.showSuccess(res.message);
             this.trackerAddForm.reset();

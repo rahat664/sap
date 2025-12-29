@@ -14,8 +14,8 @@
         <ng-container *ngIf="dateText || customDateText || customSelected">
           <mat-form-field (mouseenter)="updateOverLayStyle(false)" appearance="outline" class="filter">
             <mat-date-range-input [rangePicker]="pickerDetails">
-              <input [disabled]="!customSelected" (focus)="pickerDetails.open()" [(ngModel)]="startDate" (dateChange)="onChangeStartDate($event)" matStartDate placeholder="Start date" />
-              <input [disabled]="!customSelected" (focus)="pickerDetails.open()" [(ngModel)]="endDate" (dateChange)="onChangeEndDate($event)" matEndDate placeholder="End date" />
+              <input [disabled]="!customSelected" (focus)="pickerDetails.open()" [(ngModel)]="startDate" (dateChange)="onChangeStartDate($event)" matStartDate placeholder="Start Date" />
+              <input [disabled]="!customSelected" (focus)="pickerDetails.open()" [(ngModel)]="endDate" (dateChange)="onChangeEndDate($event)" matEndDate placeholder="End Date" />
             </mat-date-range-input>
             <mat-datepicker-toggle matIconSuffix [for]="pickerDetails"></mat-datepicker-toggle>
           </mat-form-field>
@@ -141,3 +141,4 @@
     </table>
   </div>
 </div>
+

@@ -37,7 +37,7 @@
             type="text"
             name="email"
             class="border-none text-not-black text-h2 leading-h2 placeholder-input-hint w-full bg-white rounded-lg focus:ring-blue focus:border-blue block pl-10 py-[.875rem]"
-            placeholder="Search by trip ID, customer code" />
+            placeholder="Search By Trip ID, Customer Code" />
         </div>
         <button
           [disabled]="loading"
@@ -241,14 +241,14 @@
                     [(ngModel)]="startDate"
                     (selectionchange)="onChangeStartDate($event)"
                     matStartDate
-                    placeholder="Start date"/>
+                    placeholder="Start Date"/>
                   <input
                     [disabled]="!customSelected"
                     (focus)="picker.open()"
                     [(ngModel)]="endDate"
                     (selectionchange)="onChangeEndDate($event)"
                     matEndDate
-                    placeholder="End date"/>
+                    placeholder="End Date"/>
                 </mat-date-range-input>
                 <mat-datepicker-toggle
                   matIconSuffix
@@ -257,7 +257,7 @@
             </ng-container>
           </div>
           <div class="flex flex-col space-y-2 w-full" *ngIf="isAdmin() && isPermissionGranted('customer', 'view_all') && customerIsNotEnterprise()">
-            <label class="text-base text-secondary">Company name</label>
+            <label class="text-base text-secondary">Company Name</label>
 
             <mat-form-field
               (mouseenter)="updateOverLayStyle(false)"
@@ -270,7 +270,7 @@
                 type="text"
                 matInput
                 (keyup)="onKeyUpCustomerSearch($event)"
-                placeholder="Select company name"
+                placeholder="Select Company Name"
                 [matAutocomplete]="customerSug"/>
               <mat-autocomplete #customerSug="matAutocomplete">
                 @for (option of companySuggestions; track option) {
@@ -299,7 +299,7 @@
             </div>
           </div>
           <div class="flex flex-col space-y-1 w-full">
-            <label class="text-base text-secondary">Vehicle type</label>
+            <label class="text-base text-secondary">Vehicle Type</label>
             <mat-form-field appearance="outline" class="filter">
               <mat-select
                 [(ngModel)]="truckType"
@@ -316,7 +316,7 @@
             </mat-form-field>
           </div>
           <div class="flex flex-col space-y-1 w-full">
-            <label class="text-base text-secondary">Payment type</label>
+            <label class="text-base text-secondary">Payment Type</label>
             <mat-form-field appearance="outline" class="filter">
               <mat-select
                 [(ngModel)]="paymentTypeValue"
@@ -333,7 +333,7 @@
             </mat-form-field>
           </div>
           <div class="flex flex-col space-y-1 w-full">
-            <label class="text-base text-secondary">Trip type</label>
+            <label class="text-base text-secondary">Trip Type</label>
             <mat-form-field appearance="outline" class="filter">
               <mat-select
                 [(ngModel)]="tripTypeValue"
@@ -421,4 +421,6 @@
     [tripDetails]="singleTripDetails"
     class="absolute bottom-0 w-full slide-top"></app-trip-details>
 </div>
+
+
 

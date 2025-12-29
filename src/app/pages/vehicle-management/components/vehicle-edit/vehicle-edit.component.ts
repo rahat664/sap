@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import {
   ChangeDetectorRef,
   Component,
@@ -59,6 +60,7 @@ import { MatInput } from '@angular/material/input';
 import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe';
 import { TruckDocument, TruckModel } from '../../../profiles/components/truck/models/truck.model';
 import { ConfirmDeleteComponent } from '../../../manage-trip/components/confirm-delete/confirm-delete.component';
+import { hasPhoneCountryMismatch } from '../../../../shared/utils/phone-validation';
 
 @Component({
   selector: 'app-vehicle-edit',
@@ -394,7 +396,7 @@ export class VehicleEditComponent {
       this.service.editTruck(formData).subscribe(
         (res: any) => {
           this.loading = false;
-          if (res.status == 'OK') {
+          if (isSuccessStatus(res?.status)) {
             this.toastr.showSuccess(res.message);
             this.router.navigate(['/vehicle-management']);
           } else {
@@ -410,6 +412,19 @@ export class VehicleEditComponent {
       );
     } else {
       this.truckUpdateForm.markAllAsTouched();
+      if (hasPhoneCountryMismatch(this.truckUpdateForm)) {
+        this.toastr.showError(
+          'Phone number does not match selected country code'
+        );
+        this.loading = false;
+        return;
+      }
+      const missingExpiryMessage = this.getMissingExpiryDateMessage();
+      if (missingExpiryMessage) {
+        this.toastr.showError(missingExpiryMessage);
+        this.loading = false;
+        return;
+      }
       const invalidFields = Object.keys(this.truckUpdateForm.controls).filter(
         key => this.truckUpdateForm.controls[key].invalid
       );
@@ -486,6 +501,48 @@ export class VehicleEditComponent {
         { emitEvent: false }
       );
     }
+  }
+
+  private getMissingExpiryDateMessage(): string | null {
+    const expiryChecks = [
+      {
+        control: 'fitnessCertExpDate',
+        message: 'Fitness certificate expiry date required',
+      },
+      {
+        control: 'routePermitExpDate',
+        message: 'Route permit expiry date required',
+      },
+      {
+        control: 'caseExpDate',
+        message: 'Case expiry date required',
+      },
+      {
+        control: 'taxExpDate',
+        message: 'Tax expiry date required',
+      },
+      {
+        control: 'insuranceExpDate',
+        message: 'Insurance expiry date required',
+      },
+    ];
+
+    for (const check of expiryChecks) {
+      if (!this.hasAnyFilesForExpiryControl(check.control)) {
+        continue;
+      }
+      const control = this.truckUpdateForm.get(check.control);
+      if (control?.disabled) {
+        continue;
+      }
+      if (!control?.value) {
+        control.setErrors({ required: true });
+        control.markAsTouched();
+        return check.message;
+      }
+    }
+
+    return null;
   }
 
   onClickPrehiredChecklist($event: any) {

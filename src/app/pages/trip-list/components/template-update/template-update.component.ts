@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, OnInit } from '@angular/core';
 import {
   MatAutocomplete,
@@ -26,6 +27,7 @@ import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe'
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { paymentType, paymentTypes, tripType, tripTypes } from '../../../auth/models/response/trip';
+import { hasPhoneCountryMismatch } from '../../../../shared/utils/phone-validation';
 
 @Component({
   selector: 'app-template-update',
@@ -188,7 +190,13 @@ export class TemplateUpdateComponent implements OnInit {
   onUpdateTemplate() {
     if (this.templateUpdateForm.invalid) {
       this.templateUpdateForm.markAllAsTouched();
-      this.handleToaster.showError('Please fill in all required fields');
+      if (hasPhoneCountryMismatch(this.templateUpdateForm)) {
+        this.handleToaster.showError(
+          'Phone number does not match selected country code'
+        );
+      } else {
+        this.handleToaster.showError('Please fill in all required fields');
+      }
       return;
     } else {
       this.tripTemplateData.name = this.templateUpdateForm.get('name').value;
@@ -225,7 +233,7 @@ export class TemplateUpdateComponent implements OnInit {
       this.service
         .updateTemplate(this.templateId, this.tripTemplateData)
         .subscribe((res: any) => {
-          if (res.status === 'OK') {
+          if (isSuccessStatus(res?.status)) {
             this.handleToaster.showSuccess('Template updated successfully');
             localStorage.removeItem('templateEdit');
             localStorage.setItem('backFromTemplateEditOrUpdate', 'true');

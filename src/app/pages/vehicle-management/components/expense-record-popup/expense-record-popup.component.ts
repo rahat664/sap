@@ -35,7 +35,7 @@ export class ExpenseRecordPopupComponent {
   protected readonly close = close;
   expenseForm: FormGroup;
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',

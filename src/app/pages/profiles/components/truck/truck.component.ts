@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, inject, OnInit } from '@angular/core';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
@@ -416,7 +417,7 @@ export class TruckComponent implements OnInit {
           this.service.editTruck(formData).subscribe(
             (res: any) => {
               // Handle response
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
                 this.truckList = [];
                 this.getTruckList();
@@ -461,7 +462,7 @@ export class TruckComponent implements OnInit {
           this.service.editTruck(formData).subscribe(
             (res: any) => {
               // Handle response
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
                 this.truckList = [];
                 this.getTruckList();
@@ -519,7 +520,7 @@ export class TruckComponent implements OnInit {
     this.service.editTruck(formData).subscribe(
       (res: any) => {
         // Handle response
-        if (res.status == 'OK') {
+        if (isSuccessStatus(res?.status)) {
           this.toastr.showSuccess('Checklist updated successfully');
           this.truckList = [];
           this.getTruckList();

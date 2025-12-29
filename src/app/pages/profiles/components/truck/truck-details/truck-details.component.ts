@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../../shared/utils/response-status';
 import {
   ChangeDetectorRef,
   Component,
@@ -46,6 +47,7 @@ import { ImageGalleryService } from '../../../../../shared/services/image-galler
 import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { hasPhoneCountryMismatch } from '../../../../../shared/utils/phone-validation';
 
 @Component({
   selector: 'app-truck-details',
@@ -228,7 +230,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
     this.service.editTruck(formData).subscribe(
       (res: any) => {
         this.loading = false;
-        if (res.status === 'OK') {
+        if (isSuccessStatus(res?.status)) {
           this.toastr.showSuccess(res.message);
           this.router.navigate(['/profile/truck']);
         } else {
@@ -276,6 +278,13 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
   // Handles form errors and validation messages
   handleFormErrors() {
     this.truckUpdateForm.markAllAsTouched();
+    if (hasPhoneCountryMismatch(this.truckUpdateForm)) {
+      this.toastr.showError(
+        'Phone number does not match selected country code'
+      );
+      this.loading = false;
+      return;
+    }
     const invalidFields = Object.keys(this.truckUpdateForm.controls).filter(
       key => this.truckUpdateForm.controls[key].invalid
     );
@@ -857,7 +866,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
           this.service.editTruck(formData).subscribe(
             (res: any) => {
               // Handle response
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
                 this.router.navigate(['/profile/truck']);
               } else {
@@ -895,7 +904,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
           this.service.editTruck(formData).subscribe(
             (res: any) => {
               // Handle response
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
                 this.router.navigate(['/profile/truck']);
               } else {

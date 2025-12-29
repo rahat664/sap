@@ -431,7 +431,7 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   protected readonly CountryISO = CountryISO;
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',

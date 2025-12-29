@@ -24,7 +24,7 @@
             type="text"
             name="email"
             class="border-none text-input-hint w-full md:w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
-            placeholder="Search  name, mobile, truck stand"/>
+            placeholder="Search  Name, Mobile, Truck Stand"/>
         </div>
         <button
           (click)="onClickAddTransporter()"
@@ -159,5 +159,6 @@
   </div>
 </div>
 <app-transporter-filter (filterData)="onFilterData($event)" (filterApplied)="onFilterApply()" (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-transporter-filter>
+
 
 

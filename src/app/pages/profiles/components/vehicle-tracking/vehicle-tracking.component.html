@@ -78,7 +78,7 @@
             name="email"
             [(ngModel)]="searchTruckValue"
             class="border-line bg-input text-input-hint w-full md:w-[24rem] sm:text-sm rounded-lg focus:ring-link focus:border-link block pl-10 p-2.5"
-            placeholder="Enter truck registration number"/>
+            placeholder="Enter Truck Registration Number"/>
         </div>
         <div
           appGiveMaxHeight
@@ -147,4 +147,5 @@
 </div>
 
 <app-vehicle-tracking-filter (filterData)="onFilterData($event)" (filterApplied)="onFilterApply()" (filterClosed)="filterOpened = false" *ngIf="filterOpened"></app-vehicle-tracking-filter>
+
 
