@@ -104,6 +104,7 @@ export class CreateTripPageComponent implements OnInit {
   tripDataModel: TripCreate = new TripCreate();
   numberOfTrucksSuggestions: any;
   isFromTemplate = false;
+  private searchDebounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   constructor(
     private service: TripService,
@@ -449,15 +450,19 @@ export class CreateTripPageComponent implements OnInit {
 
   onKeyUpLoadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
-      this.service
-        .getLocationSuggestions(
-          target.value,
-          this.selectedCustomer?.customerCode
-        )
-        .subscribe((res: any) => {
-          this.loadingSuggestions = res.data;
-        });
+    const value = (target.value || '').trim();
+    this.clearSearchDebounce(`loading-point-${i}`);
+    if (value.length > 1) {
+      this.debounceSearch(`loading-point-${i}`, () => {
+        this.service
+          .getLocationSuggestions(
+            value,
+            this.selectedCustomer?.customerCode
+          )
+          .subscribe((res: any) => {
+            this.loadingSuggestions = res.data;
+          });
+      });
     } else {
       this.loadingSuggestions = [];
       this.loadingPoints?.controls[i]?.get('pointDistrict').enable();
@@ -544,15 +549,19 @@ export class CreateTripPageComponent implements OnInit {
 
   onKeyUpUnloadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
-      this.service
-        .getLocationSuggestions(
-          target.value,
-          this.selectedCustomer?.customerCode
-        )
-        .subscribe((res: any) => {
-          this.unloadingSuggestions = res.data;
-        });
+    const value = (target.value || '').trim();
+    this.clearSearchDebounce(`unloading-point-${i}`);
+    if (value.length > 1) {
+      this.debounceSearch(`unloading-point-${i}`, () => {
+        this.service
+          .getLocationSuggestions(
+            value,
+            this.selectedCustomer?.customerCode
+          )
+          .subscribe((res: any) => {
+            this.unloadingSuggestions = res.data;
+          });
+      });
     } else {
       this.unloadingSuggestions = [];
       this.unloadingPoints?.controls[i]?.get('pointDistrict').enable();
@@ -565,9 +574,10 @@ export class CreateTripPageComponent implements OnInit {
   onKeyUpLoadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
+    const value = (target.value || '').trim();
+    if (value.length > 1) {
       this.loadingDistrictSuggestions = districts.filter((district: any) =>
-        district.name.toLowerCase().includes(target.value.toLowerCase())
+        district.name.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.loadingDistrictSuggestions = [];
@@ -601,9 +611,10 @@ export class CreateTripPageComponent implements OnInit {
   onKeyUpUnloadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
+    const value = (target.value || '').trim();
+    if (value.length > 1) {
       this.unloadingDistrictSuggestions = districts.filter((district: any) =>
-        district.name.toLowerCase().includes(target.value.toLowerCase())
+        district.name.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.unloadingDistrictSuggestions = [];
@@ -640,12 +651,31 @@ export class CreateTripPageComponent implements OnInit {
   onKeyUpGoods($event: KeyboardEvent) {
     const target = $event.target as HTMLInputElement;
     const goodsOptions = JSON.parse(JSON.stringify(this.goodsOptionsArray));
-    if (target.value.length > 1) {
+    const value = (target.value || '').trim();
+    if (value.length > 1) {
       this.loadingGoodsSuggestions = goodsOptions.filter((option: any) =>
-        option.value.toLowerCase().includes(target.value.toLowerCase())
+        option.value.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.loadingGoodsSuggestions = [];
+    }
+  }
+
+  private debounceSearch(
+    key: string,
+    callback: () => void,
+    delay: number = 300
+  ) {
+    this.clearSearchDebounce(key);
+    const timeout = setTimeout(callback, delay);
+    this.searchDebounceTimers.set(key, timeout);
+  }
+
+  private clearSearchDebounce(key: string) {
+    const timeout = this.searchDebounceTimers.get(key);
+    if (timeout) {
+      clearTimeout(timeout);
+      this.searchDebounceTimers.delete(key);
     }
   }
 
