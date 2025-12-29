@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../../../profiles/services/user.service';
-import { debounceTime } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
@@ -19,6 +19,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class HelperPopupComponent implements OnInit, OnDestroy {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   private totalPages: number;
+  private searchInput$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private user: UserService,
@@ -41,12 +43,29 @@ export class HelperPopupComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.helperList = [];
     this.getHelperList();
+    this.searchInput$
+      .pipe(
+        map(value => (value || '').trim()),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(value => {
+        this.loading = true;
+        this.page = 0;
+        this.size = 20;
+        this.searchValue = value;
+        this.helperList = [];
+        this.getHelperList();
+      });
   }
 
   ngOnDestroy() {
     this.helperList = [];
     this.page = 0;
     this.size = 20;
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private getHelperList() {
@@ -72,16 +91,6 @@ export class HelperPopupComponent implements OnInit, OnDestroy {
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
-    this.loading = true;
-    this.page = 0;
-    this.size = 20;
-    const target = ($event.target as HTMLInputElement).value;
-    if (target?.length) {
-      this.searchValue = target;
-    } else {
-      this.searchValue = '';
-    }
-    this.helperList = [];
-    this.getHelperList();
+    this.searchInput$.next(($event.target as HTMLInputElement).value || '');
   }
 }
