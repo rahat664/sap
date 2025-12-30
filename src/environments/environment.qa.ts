@@ -12,7 +12,7 @@ export const environment = {
   // backendUrl: 'http://65.0.112.219:8081',
   // locationUrl: 'http://65.0.112.219:8082',
   API_KEY: 'AIzaSyA2o390_V2B8OO77wWQMP-hP22fIdVtw4w',
-  MAP_ID: '',
+  MAP_ID: '56c5b9da0d7d4e40ebac934056c5b9da0d7d4e40ebac9340',
   placesApiUrl: 'https://places.googleapis.com/v1/places:autocomplete',
   //bidUrl: 'https://bidding-service-qa.snztech.world/bidding-service',
   bidUrl: 'https://api-qa.snztech.world/bidding-service',
