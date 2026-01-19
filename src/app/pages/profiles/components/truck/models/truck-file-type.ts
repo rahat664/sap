@@ -7,6 +7,7 @@ export const truckFileType: TruckFileType[] = [
     uploaded: false,
     multiple: true,
     formControlName: 'truckImages',
+    enumName: 'TRUCK_IMAGE',
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ export const truckFileType: TruckFileType[] = [
     uploaded: false,
     multiple: true,
     formControlName: 'regPaperFile',
+    enumName: 'REG_PAPER_FILE',
   },
   {
     id: 3,
@@ -26,6 +28,7 @@ export const truckFileType: TruckFileType[] = [
     multiple: true,
     formControlName: 'fitnessCertificateFile',
     expiryFormControlName: 'fitnessCertExpDate',
+    enumName: 'FITNESS_CERTIFICATE_FILE',
   },
   {
     id: 4,
@@ -36,6 +39,7 @@ export const truckFileType: TruckFileType[] = [
     multiple: true,
     formControlName: 'routePermitFile',
     expiryFormControlName: 'routePermitExpDate',
+    enumName: 'ROUTE_PERMIT_FILE',
   },
   {
     id: 5,
@@ -46,6 +50,7 @@ export const truckFileType: TruckFileType[] = [
     multiple: true,
     formControlName: 'taxFile',
     expiryFormControlName: 'taxExpDate',
+    enumName: 'TAX_FILE',
   },
   {
     id: 6,
@@ -56,6 +61,7 @@ export const truckFileType: TruckFileType[] = [
     multiple: true,
     formControlName: 'insuranceFiles',
     expiryFormControlName: 'insuranceExpDate',
+    enumName: 'INSURANCE_FILE',
   },
   {
     id: 7,
@@ -66,6 +72,7 @@ export const truckFileType: TruckFileType[] = [
     multiple: true,
     formControlName: 'casePaperFile',
     expiryFormControlName: 'caseExpDate',
+    enumName: 'CASE_FILE',
   },
   {
     id: 8,
@@ -75,6 +82,7 @@ export const truckFileType: TruckFileType[] = [
     uploaded: false,
     multiple: true,
     formControlName: 'others',
+    enumName: 'OTHERS',
   },
 ];
 
@@ -87,6 +95,7 @@ export interface TruckFileType {
   uploaded: boolean;
   formControlName?: string;
   expiryFormControlName?: string;
+  enumName: string;
 }
 
 export class TruckFilesArray {

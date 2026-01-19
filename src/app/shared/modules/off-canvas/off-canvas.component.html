@@ -108,7 +108,7 @@
               class="example-full-width w-full">
               <input
                 [(ngModel)]="paymentDate"
-                placeholder="Select date time"
+                placeholder="Select Date Time"
                 matInput/>
               <mat-datepicker-toggle matIconSuffix></mat-datepicker-toggle>
             </mat-form-field>
@@ -178,7 +178,7 @@
         <div class="bg-input rounded-lg py-2">
           <h1 class="text-secondary  text-sm text-center w-full">Pay now(৳)</h1>
           <mat-form-field appearance="outline" class="w-full" style="outline: none !important;">
-            <input (focusout)="onFocusOut()" class=" text-center" matInput type="number" placeholder="Enter amount here" [(ngModel)]="amount" (input)="onPaymentAmountChange($event, transporterDetails)" />
+            <input [disabled]="isInputDisabled" (focusout)="onFocusOut()" class=" text-center" matInput type="number" placeholder="Enter Amount Here" [(ngModel)]="amount" (input)="onPaymentAmountChange($event, transporterDetails)" />
           </mat-form-field>
         </div>
         <!--        error message if amount not given or invalid-->
@@ -272,3 +272,4 @@
     </div>
   </div>
 </div>
+

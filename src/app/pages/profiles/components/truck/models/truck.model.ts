@@ -1,3 +1,5 @@
+import { VehicleCategory } from '../../../../auth/models/response/trip';
+
 export class TruckDocument {
   id: number;
   fileUrl: string;
@@ -9,6 +11,11 @@ export class TruckDocument {
 }
 
 export interface TruckModel {
+  ownership: any;
+  vehicleCategory: VehicleCategory;
+  type: string;
+  totalCost: number | null; // Can be null
+  fuelType: string;
   currentCondition: string;
   rejectedReason: string | null; // Can be null
   id: number;
@@ -37,8 +44,8 @@ export interface TruckModel {
   caseExpDate: string | null; // Can be null
   createdBy: string;
   updatedBy: string;
-  createdOn: string; // Date format as string
-  updatedOn: string; // Date format as string
+  createdAt: string; // Date format as string
+  updatedAt: string; // Date format as string
   preHireCheckList: number;
   noOfTrips: number;
   condition: string;
@@ -46,8 +53,24 @@ export interface TruckModel {
   lastRecordedLng: number;
   currentSpeed: number;
   status: string;
-  truckDocumentList: TruckDocument[];
+  vehicleDocumentList: TruckDocument[];
   createdByUser: CreatedByUser;
+  year: string,
+  maker: string,
+  model: string,
+  purchaseDate: string,
+  purchaseFrom: string,
+  yard: string,
+  engineNumber: string,
+  chassisNumber: string,
+  engineType: string,
+  displacement: string,
+  enginePower: string,
+  size: string,
+  fuelCapacity: string,
+  tyre: string,
+  wheelBase: string,
+  weightInTon: string,
 }
 
 export interface CreatedByUser {
@@ -78,3 +101,27 @@ export interface CreatedByUser {
   username: string;
   authorities: string[] | null;
 }
+
+export interface ExpenseModel {
+  expenseTypeId: number;
+  expenseTypeName: string;
+  icon: string;
+  totalCostSum: number;
+  paidAmountSum: number;
+  dueAmountSum: number;
+}
+
+export interface DailyExpense {
+  date: string;           // e.g. "11-29-2025"
+  list: ExpenseItem[];    // list of expenses for that date
+  total_cost: number;      // total cost for the day
+}
+
+export interface ExpenseItem {
+  date: string;           // e.g. "2025-11-29"
+  type: string;           // e.g. "Driver cost"
+  cost: number;           // e.g. 15000
+}
+
+
+

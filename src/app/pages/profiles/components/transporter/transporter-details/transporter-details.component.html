@@ -76,7 +76,7 @@
         </div>
         <div class="w-full grid md:grid-cols-2 gap-3" *ngIf="isInEditMode">
             <div class="flex flex-col space-y-1">
-              <label for="name">Transporter name</label>
+              <label for="name">Transporter Name</label>
               <mat-form-field
                 appearance="outline"
                 class="example-full-width"
@@ -96,7 +96,7 @@
               </mat-form-field>
             </div>
             <div class="flex flex-col space-y-1">
-              <label for="contactPersonName">Contact person name</label>
+              <label for="contactPersonName">Contact Person Name</label>
               <mat-form-field
                 appearance="outline"
                 class="example-full-width"
@@ -125,9 +125,11 @@
                 [preferredCountries]="[CountryISO.Bangladesh]"
                 [fieldControl]="phoneNumber"
                 [numberValidation]="true"
+                [useMask]="true"
                 [hidePhoneIcon]="true"
                 [required]="true"
                 [autoIpLookup]="false"
+                (focusout)="phoneNumber?.markAsTouched()"
                 [ngClass]="{
             customError:
               transporterUpdateForm.get('phone').invalid &&
@@ -141,7 +143,7 @@
               transporterUpdateForm.get('phone').invalid
             "
             class="text-red text-xs">
-            <span>Phone number is required</span>
+            <span>{{ getPhoneErrorMessageWithTouch() }}</span>
           </span>
               </div>
             </div>
@@ -349,4 +351,5 @@
     </div>
   </form>
 </div>
+
 

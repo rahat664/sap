@@ -97,6 +97,7 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.resetAll();
+
     this.getVehicleTypeList();
     this.getDistrictList();
     this.getTransporterList();
@@ -124,7 +125,7 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
           transporterCodes: this.transporterCodes
         })
       ),
-      this.activatedRoute.data
+      this.activatedRoute.data.pipe(startWith({})),
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([qp, data]: any) => {
@@ -142,16 +143,13 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
           this.calculateFromAndToDate();
         }
 
-        // Only build from resolver if data is present
-        const resolved = data?.dashboardData?.data?.transporterRateAnalysisData?.data as RatePoint[] | undefined;
+        // initial data pass (resolver if available)
+        const resolved = data?.dashboardData?.data?.transporterRateAnalysisData
+          ?.data as RatePoint[] | undefined;
         this.buildCategories();
-        if (Array.isArray(resolved) && resolved.length > 0) {
+        if (resolved?.length) {
           this.buildSeries(resolved);
-        } else if (data && data.dashboardData) {
-          // If resolver ran but no data, don't fetch again
-          this.buildSeries([]);
         } else {
-          // Only fetch if resolver hasn't run yet
           this.fetchAndBuild();
         }
       });
@@ -227,6 +225,7 @@ export class TransporterRateAnalysisComponent implements OnInit, OnDestroy {
         this.datatype,
         this.fromDate,
         this.toDate,
+        this.transporter,
         this.vehicleType,
         this.loadingDistrict,
         this.unloadingDistrict,

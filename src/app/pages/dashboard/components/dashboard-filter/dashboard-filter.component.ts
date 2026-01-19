@@ -19,7 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { CustomerService } from '../../../profiles/services/customer.service';
 import { TripService } from '../../../trip-list/services/trip.service';
@@ -131,13 +131,17 @@ export class DashboardFilterComponent {
     private transporter: UserService,
     private truck: TruckService
   ) {
-    this.customerSearch.pipe().subscribe(searchText => {
-      this.performCustomerSearch(searchText);
-    });
+    this.customerSearch
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performCustomerSearch(searchText);
+      });
 
-    this.transporterSearch.pipe().subscribe(searchText => {
-      this.performTransporterSearch(searchText);
-    });
+    this.transporterSearch
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performTransporterSearch(searchText);
+      });
   }
 
   ngOnInit() {
@@ -149,7 +153,7 @@ export class DashboardFilterComponent {
   }
 
   onKeyUpTransporterSearch($event: KeyboardEvent) {
-    const searchText = ($event.target as HTMLInputElement).value;
+    const searchText = ($event.target as HTMLInputElement).value?.trim() || '';
     this.transporterSearch.next(searchText);
   }
 
@@ -341,7 +345,7 @@ export class DashboardFilterComponent {
   }
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {
-    const searchText = ($event.target as HTMLInputElement).value;
+    const searchText = ($event.target as HTMLInputElement).value?.trim() || '';
     this.searchValue = searchText;
     this.customerSearch.next(searchText);
   }

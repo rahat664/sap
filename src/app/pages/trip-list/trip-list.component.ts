@@ -424,7 +424,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
       this.filterData?.tripId ||
       this.filterData?.transporterCodes?.length > 0 ||
       this.filterData.loadingDistrict ||
-      this.filterData.unloadingDistrict
+      this.filterData.unloadingDistrict,
+      this.filterData?.transporterName
     ) {
       this.filterApplied = true;
       this.filterOpened = false;
@@ -434,7 +435,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
       this.customerCode = this.filterData.customerCode;
       this.tripId = this.filterData.tripId;
       this.truckType = this.filterData.truckType;
-      this.transporterCodes = this.filterData.transporterCodes;
+      this.transporterName = this.filterData.transporterName;
       this.paymentTypeValue = this.filterData.paymentType?.toString();
       this.tripTypeValue = this.filterData.tripType?.toString();
       this.loadingDistrict = this.filterData.loadingDistrict;
@@ -466,6 +467,8 @@ export class TripListComponent implements OnInit, AfterViewInit {
 
   get filterSummary(): string {
     const parts: string[] = [];
+    if (this.filterData.transporterName)
+      parts.push(`Transporter: <b>${this.filterData.transporterName}</b>`);
     if (this.filterData.startDate)
       parts.push(
         `From: <b>${this.datePipe.transform(this.filterData.startDate, 'dd MMM yyyy')}</b>`

@@ -73,8 +73,8 @@ export const profileRoutes: Routes = [
     path: 'truck/add',
     title: 'Add Truck',
     loadComponent: () =>
-      import('./components/truck/truck-add/truck-add.component').then(
-        c => c.TruckAddComponent
+      import('./components/truck/old-truck-add/old-truck-add.component').then(
+        c => c.OldTruckAddComponent
       ),
   },
   {

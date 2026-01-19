@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { DatePipe, NgIf } from '@angular/common';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
 import { DateEnum } from '../trip-list/Enum/date.enum';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CustomerService } from '../profiles/services/customer.service';
 import { ToggleResponsiveService } from '../../shared/services/toggle-responsive-services/toggle-responsive.service';
 import { DashboardFilterComponent } from './components/dashboard-filter/dashboard-filter.component';
@@ -73,9 +73,11 @@ export class DashboardComponent implements OnInit {
     private datePipe: DatePipe,
     private router: Router,
   ) {
-    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performSearch(searchText);
-    });
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performSearch(searchText?.trim() || '');
+      });
   }
 
   ngOnInit() {

@@ -12,10 +12,21 @@ export class HandleToastrService implements OnInit {
 
   ngOnInit(): void {}
 
+  private getBaseOptions() {
+    return {
+      duration: 3000,
+      position: 'top-right' as const,
+      dismissible: true,
+      closeStyle: {
+        filter: 'invert(1)',
+        opacity: '0.9',
+      },
+    };
+  }
+
   showSuccess(message: string, title?: string) {
     this.toast.success(message, {
-      duration: 3000,
-      position: 'top-right',
+      ...this.getBaseOptions(),
       style: {
         backgroundColor: '#51A351',
         color: 'white',
@@ -30,8 +41,7 @@ export class HandleToastrService implements OnInit {
 
   showError(message: string, title?: string) {
     this.toast.error(message, {
-      duration: 3000,
-      position: 'top-right',
+      ...this.getBaseOptions(),
       style: {
         backgroundColor: '#BD362F',
         color: 'white',
@@ -46,8 +56,7 @@ export class HandleToastrService implements OnInit {
 
   showInfo(message: string, title?: string) {
     this.toast.info(message, {
-      duration: 3000,
-      position: 'top-right',
+      ...this.getBaseOptions(),
       style: {
         backgroundColor: '#fff',
         padding: '10px',
@@ -57,8 +66,7 @@ export class HandleToastrService implements OnInit {
 
   showWarning(message: string, title?: string) {
     this.toast.warning(message, {
-      duration: 3000,
-      position: 'top-right',
+      ...this.getBaseOptions(),
       style: {
         backgroundColor: '#F89406',
         color: 'white',
@@ -69,8 +77,7 @@ export class HandleToastrService implements OnInit {
 
   showCustom(message: string, title?: string) {
     this.toast.show(message, {
-      duration: 3000,
-      position: 'top-right',
+      ...this.getBaseOptions(),
       style: {
         backgroundColor: '#F89406',
         color: 'white',

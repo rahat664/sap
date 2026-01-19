@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../../shared/utils/response-status';
 import {
   Component,
   EventEmitter,
@@ -51,6 +52,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   customerForm: FormGroup;
   customerModel = new CustomerCreateModel();
   private subs: Subscription;
+  private isCodeManuallyEdited = false;
+  private lastRequestedCustomerCode = '';
+  private lastValidatedCustomerCode = '';
   @Output() formCreated: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
@@ -135,7 +139,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   private submitCustomer() {
     this.service.addCustomer(this.customerModel).subscribe(
       (res: any) => {
-        if (res.status == 'OK') {
+        if (isSuccessStatus(res?.status)) {
           this.toastr.showSuccess('Customer created successfully');
           this.customerForm.reset();
           this.dialogRef.close(true);
@@ -168,7 +172,23 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   }
 
   getPhoneErrorMessageWithTouch() {
-    return this.validation.getErrorMessageWithTouch(this.customerForm);
+    const control = this.customerForm?.get('phone');
+    if (!control) {
+      return '';
+    }
+    if (control.hasError('required')) {
+      return 'Phone number required';
+    }
+    if (
+      control.hasError('invalidNumber') ||
+      control.hasError('minlength') ||
+      control.hasError('maxlength') ||
+      control.hasError('minLength') ||
+      control.hasError('maxLength')
+    ) {
+      return 'Phone number does not match selected country code';
+    }
+    return '';
   }
 
   getCustomerCodeError() {
@@ -184,26 +204,37 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   }
 
   private checkCustomerCodeIsAlreadyExistOrNot(fourDigitName: string) {
-    if (fourDigitName.length === 4) {
-      this.customerCodeLoading = true;
-      this.service.customerCodeValidation(fourDigitName).subscribe(
-        (res: any) => {
-          this.customerCodeLoading = false;
-          if (res.data.validation == 'Failed') {
-            this.customerForm.get('code').setErrors({
-              invalidCustomerCode: true,
-              message: `Code already exists. Use  '${res.data.Suggestion}' instead`,
-            });
-            this.customerForm.get('code').markAsTouched();
-          } else {
-            this.customerModel.customerCode = fourDigitName;
-          }
-        },
-        error => {
-          this.customerCodeLoading = false;
-        }
-      );
+    if (fourDigitName.length !== 4) {
+      return;
     }
+    if (
+      fourDigitName === this.lastRequestedCustomerCode ||
+      fourDigitName === this.lastValidatedCustomerCode
+    ) {
+      return;
+    }
+    this.customerCodeLoading = true;
+    this.lastRequestedCustomerCode = fourDigitName;
+    this.service.customerCodeValidation(fourDigitName).subscribe(
+      (res: any) => {
+        this.customerCodeLoading = false;
+        this.lastRequestedCustomerCode = '';
+        this.lastValidatedCustomerCode = fourDigitName;
+        if (res.data.validation == 'Failed') {
+          this.customerForm.get('code').setErrors({
+            invalidCustomerCode: true,
+            message: `Code already exists. Use  '${res.data.Suggestion}' instead`,
+          });
+          this.customerForm.get('code').markAsTouched();
+        } else {
+          this.customerModel.customerCode = fourDigitName;
+        }
+      },
+      error => {
+        this.customerCodeLoading = false;
+        this.lastRequestedCustomerCode = '';
+      }
+    );
   }
 
   getContactPersonErrorMessage() {
@@ -236,70 +267,90 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   }
 
   onNameKeyPress($event: Event) {
+    const codeControl = this.customerForm.get('code');
+    const currentCode = (codeControl?.value || '').toString();
+    if (this.isCodeManuallyEdited && currentCode.length === 4) {
+      return;
+    }
     const value = $event.target['value'];
     const valueWithoutSpace = value?.toString().replace(/\s/g, '');
-    if (value?.length > 0) {
-      let fourDigitName = '';
-      if (valueWithoutSpace?.length > 0 && valueWithoutSpace?.length <= 4) {
-        fourDigitName = valueWithoutSpace
-          ?.toString()
-          .substring(0, 4)
-          .toUpperCase();
-        this.customerForm.get('code').setValue(fourDigitName);
-        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
-      } else {
-        fourDigitName = valueWithoutSpace
-          ?.toString()
-          .substring(0, 4)
-          .toUpperCase();
-        this.customerForm.get('code').setValue(fourDigitName);
-        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
-      }
-      if (valueWithoutSpace?.length < 4) {
-        // fill the missing characters with random numbers
-        const randomNumbers = Math.floor(Math.random() * 10000).toString();
-        fourDigitName =
-          valueWithoutSpace +
-          randomNumbers
-            .substring(0, 4 - valueWithoutSpace?.length)
-            .toUpperCase();
-        this.customerForm.get('code').setValue(fourDigitName.toUpperCase());
-        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
-      }
-    } else {
+    if (!value || valueWithoutSpace?.length === 0) {
       this.customerForm.get('code').setValue('');
+      this.customerCodeLoading = false;
+      this.lastRequestedCustomerCode = '';
+      this.lastValidatedCustomerCode = '';
+      return;
     }
+
+    const upperValue = valueWithoutSpace.toString().toUpperCase();
+    if (upperValue.length < 4) {
+      // fill the missing characters with random numbers
+      const randomNumbers = Math.floor(Math.random() * 10000)
+        .toString()
+        .padStart(4, '0');
+      const fourDigitName =
+        upperValue + randomNumbers.substring(0, 4 - upperValue.length);
+      this.customerForm.get('code').setValue(fourDigitName);
+      return;
+    }
+
+    const fourDigitName = upperValue.substring(0, 4);
+    if (fourDigitName === currentCode) {
+      return;
+    }
+    this.customerForm.get('code').setValue(fourDigitName);
+    this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
   }
 
   onCodeKeyPress($event: Event) {
     const value = $event.target['value'];
     const valueWithoutSpace = value?.toString().replace(/\s/g, '');
+    const codeControl = this.customerForm.get('code');
+    this.isCodeManuallyEdited = valueWithoutSpace?.length > 0;
     if (value?.length > 0) {
       let fourDigitName = '';
       if (valueWithoutSpace?.length > 0 && valueWithoutSpace?.length <= 4) {
+        if (valueWithoutSpace?.length < 4) {
+          this.lastRequestedCustomerCode = '';
+          this.lastValidatedCustomerCode = '';
+          if (codeControl?.hasError('invalidCustomerCode')) {
+            const errors = { ...(codeControl.errors || {}) };
+            delete errors['invalidCustomerCode'];
+            delete errors['message'];
+            codeControl.setErrors(Object.keys(errors).length ? errors : null);
+          }
+        }
         fourDigitName = valueWithoutSpace
           ?.toString()
           .substring(0, 4)
           .toUpperCase();
-        this.customerForm.get('code').setValue(fourDigitName);
+        codeControl?.setValue(fourDigitName);
         this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
       }
     } else {
-      this.customerForm.get('code').setValue('');
+      this.lastRequestedCustomerCode = '';
+      this.lastValidatedCustomerCode = '';
+      codeControl?.setValue('');
+      if (codeControl?.hasError('invalidCustomerCode')) {
+        const errors = { ...(codeControl.errors || {}) };
+        delete errors['invalidCustomerCode'];
+        delete errors['message'];
+        codeControl.setErrors(Object.keys(errors).length ? errors : null);
+      }
     }
   }
 
   protected readonly CountryISO = CountryISO;
 
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',
     nationalNumberLabel: '',
     hintLabel: '',
     invalidNumberError: '',
-    requiredError: 'This field is required',
+    requiredError: '',
   };
 
   get phoneNumber() {

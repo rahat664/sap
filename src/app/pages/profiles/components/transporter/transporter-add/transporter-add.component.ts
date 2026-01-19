@@ -38,6 +38,8 @@ import { PaymentType } from '../../../../../shared/Enums/payment-type';
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { CustomInputSelectModel } from '../../../../../shared/modules/custom-input/custom-input-select.model';
 import { MatRadioButton } from '@angular/material/radio';
+import { isSuccessStatus } from '../../../../../shared/utils/response-status';
+import { hasPhoneCountryMismatch } from '../../../../../shared/utils/phone-validation';
 
 @Component({
   selector: 'app-transporter-add',
@@ -75,14 +77,14 @@ export class TransporterAddComponent implements OnInit {
   loading: boolean;
   transporterAddForm: FormGroup;
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',
     nationalNumberLabel: '',
     hintLabel: '',
     invalidNumberError: '',
-    requiredError: 'Transporter phone number is required',
+    requiredError: '',
   };
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   transporterDocuments: TransporterDocument[] = [];
@@ -117,7 +119,13 @@ export class TransporterAddComponent implements OnInit {
   onClickSave() {
     this.transporterAddForm.markAllAsTouched();
     if (this.transporterAddForm.invalid) {
-      this.toastr.showError('Please fill all required fields');
+      if (hasPhoneCountryMismatch(this.transporterAddForm, ['phone'])) {
+        this.toastr.showError(
+          'Phone number does not match selected country code'
+        );
+      } else {
+        this.toastr.showError('Please fill all required fields');
+      }
       return;
     }
     this.loading = true;
@@ -201,7 +209,7 @@ export class TransporterAddComponent implements OnInit {
 
     this.service.addTransporter(payloadFormData).subscribe(
       (response: any) => {
-        if (response && response.status === 'OK') {
+        if (response && isSuccessStatus(response.status)) {
           this.toastr.showSuccess(response.message);
           this.router.navigate(['/profile/transporter']);
         } else {
@@ -303,6 +311,26 @@ export class TransporterAddComponent implements OnInit {
 
   get phoneNumber() {
     return this.transporterAddForm.get('phone');
+  }
+
+  getPhoneErrorMessageWithTouch() {
+    const control = this.transporterAddForm?.get('phone');
+    if (!control) {
+      return '';
+    }
+    if (control.hasError('required')) {
+      return 'Phone number is required';
+    }
+    if (
+      control.hasError('invalidNumber') ||
+      control.hasError('minlength') ||
+      control.hasError('maxlength') ||
+      control.hasError('minLength') ||
+      control.hasError('maxLength')
+    ) {
+      return 'Phone number does not match selected country code';
+    }
+    return '';
   }
 
   setPreferredPaymentMethod($any: any, paymentMethod: string) {

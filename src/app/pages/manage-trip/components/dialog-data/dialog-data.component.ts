@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, Inject, inject, OnInit } from '@angular/core';
 import {
   MatAutocomplete,
@@ -34,6 +35,8 @@ import { GetClickEventDirective } from '../../../../shared/directive/get-click-e
 import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/custom-input-select.model';
 import { TripData } from '../../model/trip.details.model';
 import { SessionModel } from '../../../manage-bid/models/session.model';
+import { hasPhoneCountryMismatch } from '../../../../shared/utils/phone-validation';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-data',
@@ -56,6 +59,9 @@ export class DialogDataComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   driverSuggestion: any;
   helperSuggestion: any;
+  private transporterSearch$ = new Subject<string>();
+  private driverSearch$ = new Subject<string>();
+  private helperSearch$ = new Subject<string>();
 
   constructor(
     public dialogRef: MatDialogRef<DialogDataComponent>,
@@ -69,49 +75,83 @@ export class DialogDataComponent implements OnInit {
     this.tripUpdateForm = this.fb.group({
       transporterCode: ['', Validators.required],
       transporterName: ['', Validators.required],
-      transporterPhone: ['', Validators.required],
+      transporterPhone: [{ value: '', disabled: true }, Validators.required],
       transporterRate: [''],
       truckId: [''],
       driverCode: [''],
       driverName: [''],
       source: ['Agency'],
-      driverPhone: [''],
+      driverPhone: [{ value: '', disabled: true }],
       helperCode: [''],
       helperName: [''],
-      helperPhone: [''],
-      registrationZone: [''],
-      registrationCategory: [''],
-      registrationSerialNumber: [''],
-      registrationNumber: [''],
+      helperPhone: [{ value: '', disabled: true }],
+      registrationZone: [{ value: '', disabled: true }],
+      registrationCategory: [{ value: '', disabled: true }],
+      registrationSerialNumber: [{ value: '', disabled: true }],
+      registrationNumber: [{ value: '', disabled: true }],
     });
+
+    this.transporterSearch$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performTransporterSearch(searchText);
+      });
+    this.driverSearch$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performDriverSearch(searchText);
+      });
+    this.helperSearch$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performHelperSearch(searchText);
+      });
   }
 
   transporterSuggestion: any;
 
   onKeyUpTransporterSearch($event: KeyboardEvent) {
-    const value = ($event.target as HTMLInputElement).value;
-    if (value.length > 0) {
-      this.user.getTransporter(0, 100, value).subscribe((res: any) => {
-        this.transporterSuggestion = res.data;
-      });
-    }
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.transporterSearch$.next(value);
   }
 
   onKeyUpDriverSearch($event: KeyboardEvent) {
-    const value = ($event.target as HTMLInputElement).value;
-    if (value.length > 0) {
-      this.user.getDriver(0, 100, value).subscribe((res: any) => {
-        this.driverSuggestion = res.data.responses;
-      });
-    }
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.driverSearch$.next(value);
   }
 
   onKeyUpHelperSearch($event: KeyboardEvent) {
-    const value = ($event.target as HTMLInputElement).value;
-    if (value.length > 0) {
-      this.user.getHelpers(0, 100, value).subscribe((res: any) => {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.helperSearch$.next(value);
+  }
+
+  private performTransporterSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.user.getTransporter(0, 100, searchText).subscribe((res: any) => {
+        this.transporterSuggestion = res.data;
+      });
+    } else {
+      this.transporterSuggestion = [];
+    }
+  }
+
+  private performDriverSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.user.getDriver(0, 100, searchText).subscribe((res: any) => {
+        this.driverSuggestion = res.data.responses;
+      });
+    } else {
+      this.driverSuggestion = [];
+    }
+  }
+
+  private performHelperSearch(searchText: string) {
+    if (searchText?.length > 0) {
+      this.user.getHelpers(0, 100, searchText).subscribe((res: any) => {
         this.helperSuggestion = res.data.responses;
       });
+    } else {
+      this.helperSuggestion = [];
     }
   }
 
@@ -322,7 +362,7 @@ export class DialogDataComponent implements OnInit {
           (res: any) => {
             this.loading = false;
             this.dialogRef.close('updated');
-            if (res.status == 'OK') {
+            if (isSuccessStatus(res?.status)) {
               this.dialog
                 .open(SuccessModalComponent, {
                   width: '21.375rem',
@@ -379,7 +419,13 @@ export class DialogDataComponent implements OnInit {
         );
       } else {
         this.tripUpdateForm.markAllAsTouched();
-        this.toaster.showError('Please fill all the required fields');
+        if (hasPhoneCountryMismatch(this.tripUpdateForm)) {
+          this.toaster.showError(
+            'Phone number does not match selected country code'
+          );
+        } else {
+          this.toaster.showError('Please fill all the required fields');
+        }
         this.loading = false;
       }
     } else if (buttonName === 'Start Trip') {
@@ -443,7 +489,7 @@ export class DialogDataComponent implements OnInit {
           this.trip.updateTrip(body, this.data.trip?.tripId).subscribe(
             (res: any) => {
               this.loading = false;
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.dialogRef.close('updated');
                 this.dialog
                   .open(SuccessModalComponent, {
@@ -491,7 +537,13 @@ export class DialogDataComponent implements OnInit {
           );
         } else {
           this.tripUpdateForm.markAllAsTouched();
-          this.toaster.showError('Please fill all the required fields');
+          if (hasPhoneCountryMismatch(this.tripUpdateForm)) {
+            this.toaster.showError(
+              'Phone number does not match selected country code'
+            );
+          } else {
+            this.toaster.showError('Please fill all the required fields');
+          }
           this.loading = false;
         }
       }
@@ -574,7 +626,7 @@ export class DialogDataComponent implements OnInit {
         this.trip.updateTrip(body, this.data.trip.tripId).subscribe(
           (res: any) => {
             this.loading = false;
-            if (res.status == 'OK') {
+            if (isSuccessStatus(res?.status)) {
               this.dialogRef.close('updated');
               this.dialog
                 .open(SuccessModalComponent, {
@@ -622,7 +674,13 @@ export class DialogDataComponent implements OnInit {
         );
       } else {
         this.tripUpdateForm.markAllAsTouched();
-        this.toaster.showError('Please fill all the required fields');
+        if (hasPhoneCountryMismatch(this.tripUpdateForm)) {
+          this.toaster.showError(
+            'Phone number does not match selected country code'
+          );
+        } else {
+          this.toaster.showError('Please fill all the required fields');
+        }
         this.loading = false;
       }
     }

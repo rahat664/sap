@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../../shared/utils/response-status';
 import {
   ChangeDetectorRef,
   Component,
@@ -46,6 +47,7 @@ import { ConfirmRejectComponent } from '../../../../../shared/modules/confirm-re
 import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
 import { AlphabetOnlyDirective } from '../../../../../shared/directive/alphabet-only.directive';
+import { hasPhoneCountryMismatch } from '../../../../../shared/utils/phone-validation';
 
 @Component({
   selector: 'app-driver-details',
@@ -654,7 +656,7 @@ export class DriverDetailsComponent implements OnInit, AfterViewInit {
     this.service.editDriver(formData).subscribe(
       (res: any) => {
         this.loading = false;
-        if (res.status === 'OK') {
+        if (isSuccessStatus(res?.status)) {
           this.toastr.showSuccess(res.message);
           this.router.navigate(['/profile/driver']);
         } else {
@@ -670,6 +672,11 @@ export class DriverDetailsComponent implements OnInit, AfterViewInit {
 
   handleFormErrors() {
     this.driverUpdateForm.markAllAsTouched();
+    if (hasPhoneCountryMismatch(this.driverUpdateForm, ['driverPhone'])) {
+      this.toastr.showError('Phone number does not match selected country code');
+      this.loading = false;
+      return;
+    }
     const invalidFields = Object.keys(this.driverUpdateForm.controls).filter(
       key => this.driverUpdateForm.controls[key].invalid
     );
@@ -761,7 +768,7 @@ export class DriverDetailsComponent implements OnInit, AfterViewInit {
           this.service.editDriver(formData).subscribe(
             (res: any) => {
               // Handle response
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
                 this.router.navigate(['/profile/driver']);
               } else {
@@ -803,7 +810,7 @@ export class DriverDetailsComponent implements OnInit, AfterViewInit {
           this.service.editDriver(formData).subscribe(
             (res: any) => {
               // Handle response
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
                 this.router.navigate(['/profile/driver']);
               } else {
@@ -911,7 +918,7 @@ export class DriverDetailsComponent implements OnInit, AfterViewInit {
   protected readonly CountryISO = CountryISO;
 
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',

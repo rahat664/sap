@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../shared/utils/response-status';
 import { Injectable } from '@angular/core';
 import { UserModel } from '../../user-management/models/user.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -11,6 +12,13 @@ import {
   TruckModel,
 } from '../components/truck/models/truck.model';
 import { TruckDocumentType } from '../../../shared/Enums/registration_type';
+
+type TelFormElement = HTMLElement;
+type TelInputElement = HTMLInputElement & {
+  __telCaretFixAttached?: boolean;
+  __telPointerDown?: boolean;
+  __telWasAtEnd?: boolean;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -54,10 +62,10 @@ export class DriverEditSharedService {
 
     this.truckUpdateForm = this.fb.group({
       id: [''],
-      registration_zone: [null, Validators.required],
-      registration_category: [null, Validators.required],
-      registration_serial: [null, Validators.required],
-      registration_num: [null, Validators.required],
+      registrationZone: [null, Validators.required],
+      registrationCategory: [null, Validators.required],
+      registrationSerial: [null, Validators.required],
+      registrationNum: [null, Validators.required],
       fitnessCertExpDate: [null],
       routePermitExpDate: [null],
       caseExpDate: [null],
@@ -76,55 +84,94 @@ export class DriverEditSharedService {
 
   validateInterNationalPhoneNumber() {
     timer(10).subscribe(() => {
-      const flagInput = document
-        .getElementsByClassName('tel-form')[0]
-        ?.children[0]?.getElementsByClassName('country-option')[0].children[1];
-      let isBangladeshiNumber = false;
-      if (flagInput) {
-        // remove 0 from last of the phone number
-        if (
-          flagInput.innerHTML.endsWith('0') &&
-          flagInput.innerHTML == '+880'
-        ) {
-          isBangladeshiNumber = true;
-          flagInput.innerHTML = '+88';
-        } else {
-          isBangladeshiNumber = false;
-        }
-      }
-      const arrow = document
-        .getElementsByClassName('tel-form')[0]
-        ?.getElementsByClassName('mat-mdc-select-arrow')[0];
-      if (arrow) {
-        arrow.classList.add('pr-1');
-        // change svg arrow icon color
-        arrow.children[0].setAttribute('fill', '#fff');
-      }
-      const numberInput = document
-        .getElementsByClassName('tel-form')[0]
-        ?.children[1]?.getElementsByTagName('input')[0];
-      document.getElementsByClassName('tel-form')[0]?.classList.add('mt-1');
-      if (numberInput) {
-        numberInput.maxLength = numberInput?.placeholder.length;
-        numberInput.minLength = numberInput?.placeholder.length;
-        numberInput.addEventListener('keypress', e => {
-          if (isNaN(Number(e.key))) {
-            e.preventDefault();
+      const telForms = Array.from(document.getElementsByClassName('tel-form'));
+      telForms.forEach(form => {
+        const formElement = form as TelFormElement;
+        const arrow = formElement.getElementsByClassName(
+          'mat-mdc-select-arrow'
+        )[0] as HTMLElement | undefined;
+        if (arrow) {
+          arrow.classList.add('pr-1');
+          const arrowSvg = arrow.querySelector('svg');
+          if (arrowSvg) {
+            arrowSvg.setAttribute('fill', '#fff');
           }
-        });
-        // disable number input value changes default behavior
-      }
-      // number input should not accept text
+        }
+        formElement.classList.add('mt-1');
+        this.attachTelInputCaretFix(formElement);
+      });
     });
+  }
+
+  private attachTelInputCaretFix(container: Element) {
+    const input = container.querySelector(
+      'input[type="tel"]'
+    ) as TelInputElement | null;
+    if (!input || input.__telCaretFixAttached) {
+      return;
+    }
+    input.__telCaretFixAttached = true;
+    const recordCaretState = () => {
+      input.__telWasAtEnd = input.selectionStart === input.value.length;
+    };
+    input.addEventListener('beforeinput', recordCaretState);
+    input.addEventListener('keydown', event => {
+      if (this.isCaretMoveKey(event)) {
+        input.__telWasAtEnd = false;
+        return;
+      }
+      recordCaretState();
+    });
+    input.addEventListener('mousedown', () => {
+      input.__telPointerDown = true;
+    });
+    input.addEventListener('touchstart', () => {
+      input.__telPointerDown = true;
+    });
+    input.addEventListener('focus', () => {
+      if (!input.__telPointerDown) {
+        this.scheduleCaretToEnd(input);
+      }
+      input.__telPointerDown = false;
+    });
+    input.addEventListener('input', () => {
+      const shouldLock =
+        input.__telWasAtEnd ?? input.selectionStart === input.value.length;
+      input.__telWasAtEnd = false;
+      if (shouldLock) {
+        this.scheduleCaretToEnd(input);
+      }
+    });
+  }
+
+  private scheduleCaretToEnd(input: HTMLInputElement) {
+    setTimeout(() => {
+      if (document.activeElement !== input) {
+        return;
+      }
+      const end = input.value.length;
+      input.setSelectionRange(end, end);
+    }, 10);
+  }
+
+  private isCaretMoveKey(event: KeyboardEvent) {
+    return (
+      event.key === 'ArrowLeft' ||
+      event.key === 'ArrowRight' ||
+      event.key === 'ArrowUp' ||
+      event.key === 'ArrowDown' ||
+      event.key === 'Home' ||
+      event.key === 'End'
+    );
   }
 
   bindTruckValueWithForm(singleTruck: TruckModel) {
     this.truckUpdateForm.patchValue({
       id: singleTruck.id,
-      registration_zone: singleTruck.registrationZone,
-      registration_category: singleTruck.registrationCategory,
-      registration_serial: singleTruck.registrationSerial,
-      registration_num: singleTruck.registrationNum,
+      registrationZone: singleTruck.registrationZone,
+      registrationCategory: singleTruck.registrationCategory,
+      registrationSerial: singleTruck.registrationSerial,
+      registrationNum: singleTruck.registrationNum,
     });
   }
 
@@ -260,7 +307,7 @@ export class DriverEditSharedService {
           )
           .subscribe({
             next: (res: any) => {
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.deletedTruckFiles = [];
                 this.submitUpdateForm(
                   this.truckUpdateForm,
@@ -309,7 +356,7 @@ export class DriverEditSharedService {
           )
           .subscribe({
             next: (res: any) => {
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.deletedDriverFiles = [];
                 this.submitUpdateForm(
                   this.driverUpdateForm,
@@ -384,7 +431,7 @@ export class DriverEditSharedService {
 
     serviceMethod(formData).subscribe(
       (res: any) => {
-        if (res.status === 'OK') {
+        if (isSuccessStatus(res?.status)) {
           this.handleToastr.showSuccess(res.message, 'Success');
           this.isUploadPopupOpen.next(false);
           completeSubject.next(true);

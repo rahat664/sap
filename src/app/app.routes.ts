@@ -245,6 +245,63 @@ export const routes: Routes = [
     }
   },
   {
+    path: 'vehicle-management',
+    title: 'Vehicle Management',
+    loadComponent: () =>
+      import('./pages/vehicle-management/vehicle-management.component').then(
+        c => c.VehicleManagementComponent
+      ),
+    canActivate: [authGuard],
+    resolve: {
+      truck: truckResolver,
+    },
+  },
+  {
+    path: 'vehicle-management/:id/vehicle-details',
+    title: 'Vehicle Details',
+    loadComponent: () =>
+      import(
+        './pages/vehicle-management/components/vehicle-details/vehicle-details.component'
+      ).then(c => c.VehicleDetailsComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'vehicle-management/:id/statistics-details',
+    title: 'Vehicle Statistics Details',
+    loadComponent: () =>
+      import(
+        './pages/vehicle-management/components/statistics-details/statistics-details.component'
+      ).then(c => c.StatisticsDetailsComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'vehicle-management/:id/cost-details',
+    title: 'Vehicle Cost Details',
+    loadComponent: () =>
+      import(
+        './pages/vehicle-management/components/cost-details/cost-details.component'
+      ).then(c => c.CostDetailsComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'vehicle-management/:id/edit-vehicle',
+    title: 'Edit Vehicle',
+    loadComponent: () =>
+      import(
+        './pages/vehicle-management/components/vehicle-edit/vehicle-edit.component'
+      ).then(c => c.VehicleEditComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'vehicle-management/add-vehicle',
+    title: 'Add Vehicle',
+    loadComponent: () =>
+      import(
+        './pages/profiles/components/truck/truck-add/truck-add.component'
+      ).then(c => c.TruckAddComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full',

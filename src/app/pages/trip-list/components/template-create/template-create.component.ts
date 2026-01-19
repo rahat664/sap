@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, OnInit } from '@angular/core';
 import {
   FormArray,
@@ -40,6 +41,7 @@ import { FallbackImagePipe } from '../../../../shared/pipes/fallback-image.pipe'
 import { ImageErrorDirective } from '../../../../shared/directive/image-error.directive';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { paymentType, paymentTypes, tripType, tripTypes } from '../../../auth/models/response/trip';
+import { hasPhoneCountryMismatch } from '../../../../shared/utils/phone-validation';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -95,6 +97,7 @@ export class TemplateCreateComponent implements OnInit {
   district: any;
   tripTemplateData: TripTemplate = new TripTemplate();
   numberOfTrucksSuggestions: any;
+  private searchDebounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   constructor(
     private service: TripService,
@@ -153,7 +156,13 @@ export class TemplateCreateComponent implements OnInit {
   onCreateTemplate() {
     if (this.templateForm.invalid) {
       this.templateForm.markAllAsTouched();
-      this.handleToaster.showError('Please fill in all required fields');
+      if (hasPhoneCountryMismatch(this.templateForm)) {
+        this.handleToaster.showError(
+          'Phone number does not match selected country code'
+        );
+      } else {
+        this.handleToaster.showError('Please fill in all required fields');
+      }
       return;
     } else {
       this.tripTemplateData.name = this.templateForm.get('name').value;
@@ -199,7 +208,7 @@ export class TemplateCreateComponent implements OnInit {
       this.service
         .postTripTemplate(this.tripTemplateData)
         .subscribe((res: any) => {
-          if (res.status === 'OK') {
+          if (isSuccessStatus(res?.status)) {
             this.handleToaster.showSuccess('Template created successfully');
             this.router.navigate(['/trip-create/customerselection']);
           } else {
@@ -213,13 +222,20 @@ export class TemplateCreateComponent implements OnInit {
 
   onKeyUpLoadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
-      this.service
-        .getLocationSuggestions(target.value, this.selectedCustomer?.customerCode)
-        .subscribe((res: any) => {
-          this.loadingSuggestions = res.data;
-        });
+    const value = target.value?.trim() || '';
+    if (value.length > 1) {
+      this.debounceSearch('loadingPoint', value, searchText => {
+        this.service
+          .getLocationSuggestions(
+            searchText,
+            this.selectedCustomer?.customerCode
+          )
+          .subscribe((res: any) => {
+            this.loadingSuggestions = res.data;
+          });
+      });
     } else {
+      this.clearSearchDebounce('loadingPoint');
       this.loadingSuggestions = [];
       this.loadingPoints?.controls[i]?.get('pointDistrict').enable();
       this.loadingPoints?.controls[i]?.get('pointDistrict').setValue('');
@@ -232,7 +248,9 @@ export class TemplateCreateComponent implements OnInit {
     // update above functionality with form array
     this.loadingPoints?.controls[i]
           ?.get('pointName')
-          .setValue(option.addressText);
+          .setValue(
+            option.addressText || option.name || option.address || option.label || ''
+          );
 
     if (option.latitude > 0 && option.longitude > 0) {
       this.loadingPoints?.controls[i]
@@ -256,7 +274,7 @@ export class TemplateCreateComponent implements OnInit {
 
   searchDistrict(lat, lng, control): any {
     this.service.searchDistricts(lat, lng).subscribe((res: any) => {
-      control.get('pointDistrict').setValue(res.data.name);
+      control.get('pointDistrict').setValue(res?.data?.name || '');
     });
   }
 
@@ -264,7 +282,7 @@ export class TemplateCreateComponent implements OnInit {
     this.unloadingPoints?.controls[i]
       ?.get('pointName')
       .setValue(
-        option.addressText
+        option.addressText || option.name || option.address || option.label || ''
       );
     if (option.latitude > 0 && option.longitude > 0) {
       this.unloadingPoints?.controls[i]
@@ -289,13 +307,20 @@ export class TemplateCreateComponent implements OnInit {
   }
   onKeyUpUnloadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
-      this.service
-        .getLocationSuggestions(target.value, this.selectedCustomer?.customerCode)
-        .subscribe((res: any) => {
-          this.unloadingSuggestions = res.data;
-        });
+    const value = target.value?.trim() || '';
+    if (value.length > 1) {
+      this.debounceSearch('unloadingPoint', value, searchText => {
+        this.service
+          .getLocationSuggestions(
+            searchText,
+            this.selectedCustomer?.customerCode
+          )
+          .subscribe((res: any) => {
+            this.unloadingSuggestions = res.data;
+          });
+      });
     } else {
+      this.clearSearchDebounce('unloadingPoint');
       this.unloadingSuggestions = [];
       this.unloadingPoints?.controls[i]?.get('pointDistrict').enable();
       this.unloadingPoints?.controls[i]?.get('pointDistrict').setValue('');
@@ -307,9 +332,10 @@ export class TemplateCreateComponent implements OnInit {
   onKeyUpLoadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
+    const value = target.value?.trim() || '';
+    if (value.length > 1) {
       this.loadingDistrictSuggestions = districts.filter((district: any) =>
-        district.name.toLowerCase().includes(target.value.toLowerCase())
+        district.name.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.loadingDistrictSuggestions = [];
@@ -343,9 +369,10 @@ export class TemplateCreateComponent implements OnInit {
   onKeyUpUnloadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
+    const value = target.value?.trim() || '';
+    if (value.length > 1) {
       this.unloadingDistrictSuggestions = districts.filter((district: any) =>
-        district.name.toLowerCase().includes(target.value.toLowerCase())
+        district.name.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.unloadingDistrictSuggestions = [];
@@ -411,9 +438,10 @@ export class TemplateCreateComponent implements OnInit {
   onKeyUpGoods($event: KeyboardEvent) {
     const target = $event.target as HTMLInputElement;
     const goodsOptions = JSON.parse(JSON.stringify(this.goodsOptionsArray));
-    if (target.value.length > 1) {
+    const value = target.value?.trim() || '';
+    if (value.length > 1) {
       this.loadingGoodsSuggestions = goodsOptions.filter((option: any) =>
-        option.value.toLowerCase().includes(target.value.toLowerCase())
+        option.value.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.loadingGoodsSuggestions = [];
@@ -516,6 +544,27 @@ export class TemplateCreateComponent implements OnInit {
     this.service.getDistricts().subscribe((res: any) => {
       this.district = res.data;
     });
+  }
+
+  private clearSearchDebounce(key: string) {
+    const timer = this.searchDebounceTimers.get(key);
+    if (timer) {
+      clearTimeout(timer);
+      this.searchDebounceTimers.delete(key);
+    }
+  }
+
+  private debounceSearch(
+    key: string,
+    value: string,
+    callback: (value: string) => void,
+    delay = 350
+  ) {
+    this.clearSearchDebounce(key);
+    const timer = setTimeout(() => {
+      callback(value);
+    }, delay);
+    this.searchDebounceTimers.set(key, timer);
   }
 
   private createLoadingPoint() {

@@ -10,7 +10,7 @@
           (click)="onClickSave()"
           class="px-4 md:px-[44px] py-[10.5px] text-white bg-primary rounded-lg text-center font-semibold">
           <i *ngIf="loading" class="fas fa-spinner fa-spin text-white mr-2"></i>
-          <span class="hidden md:inline">Save</span>
+          <span class="hidden md:inline">Update</span>
           <i class="fas fa-check text-white md:hidden"></i>
         </button>
         <button
@@ -117,7 +117,7 @@
                     type="text"
                     matInput
                     formControlName="driverName"
-                    placeholder="Enter driver Name"/>
+                    placeholder="Enter Driver Name"/>
                 </mat-form-field>
                 <span
                   *ngIf="driverUpdateForm.get('driverName').touched"
@@ -137,9 +137,11 @@
                 [preferredCountries]="[CountryISO.Bangladesh]"
                 [fieldControl]="phoneNumber"
                 [numberValidation]="true"
+                [useMask]="true"
                 [hidePhoneIcon]="true"
                 [required]="true"
-                [autoIpLookup]="false"></ngx-material-intl-tel-input>
+                [autoIpLookup]="false"
+                (focusout)="phoneNumber?.markAsTouched()"></ngx-material-intl-tel-input>
               <!--        error-message-->
             </div>
           </ng-container>
@@ -496,3 +498,4 @@
     </div>
   </div>
 </mat-menu>
+

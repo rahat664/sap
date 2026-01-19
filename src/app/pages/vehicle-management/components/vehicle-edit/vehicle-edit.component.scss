@@ -1,0 +1,94 @@
+.custom ::ng-deep .mat-mdc-icon-button * {
+  height: 18px !important;
+  width: 18px !important;
+}
+
+.custom {
+  font-size: 14px !important;
+  font-weight: 400;
+}
+
+.custom ::ng-deep .mat-mdc-form-field-icon-suffix {
+  height: 18px !important;
+  width: 18px !important;
+  margin-right: 1rem !important;
+}
+
+.custom ::ng-deep .mat-mdc-form-field-infix {
+  height: 28px !important;
+  margin: 0 !important;
+  padding: 0 1rem !important;
+}
+
+.custom ::ng-deep .mat-mdc-form-field {
+  height: 28px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.custom ::ng-deep .mat-mdc-text-field-wrapper {
+  height: 28px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.custom ::ng-deep .mat-mdc-form-field-flex {
+  height: 28px !important;
+}
+
+.custom ::ng-deep .mat-mdc-icon-button.mat-mdc-button-base {
+  height: 18px !important;
+  width: 18px !important;
+  padding: 0 !important;
+  margin-right: 1rem !important;
+}
+
+.error {
+  outline: 1px solid #f7cad0;
+  border-radius: 0.25rem;
+}
+
+::ng-deep .error .mat-mdc-text-field-wrapper {
+  width: 100%;
+  border-radius: 0.25rem !important;
+  background-color: #fffafb !important;
+  height: 2.4rem !important;
+}
+
+::ng-deep .mat-mdc-menu-panel {
+  max-width: 25rem !important;
+}
+
+::ng-deep .mat-mdc-form-field-icon-suffix{
+  margin-bottom: 0 !important;
+}
+
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: #11484f !important;
+  font-weight: bolder !important;
+  font-size: 0.875rem !important;
+}
+
+::ng-deep .mat-mdc-tab .mdc-tab__text-label {
+  color: #777777 !important;
+  font-weight: bolder !important;
+  font-size: 0.875rem !important;
+}
+
+::ng-deep .mat-mdc-tab-labels {
+  border-bottom: 1px solid #d3dbdc !important;
+}
+
+::ng-deep .mat-mdc-tab .mdc-tab-indicator__content--underline {
+  border: 1px solid #11484f !important;
+  width: 50% !important;
+}
+
+::ng-deep .mat-mdc-tab-ripple {
+  visibility: hidden !important;
+}
+
+::ng-deep .mat-mdc-icon-button {
+  margin-bottom: 16px !important;
+}
+

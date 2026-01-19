@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CustomDatePickerComponent } from '../../../../shared/modules/custom-date-picker/custom-date-picker.component';
 import { GMapComponent } from '../../../../shared/modules/g-map/g-map.component';
@@ -29,6 +30,7 @@ import { HandleToastrService } from '../../../../shared/services/handle-toastr/h
 import { GiveMaxHeightDirective } from '../../../../shared/directive/give-max-height.directive';
 import { TripPoint } from '../../../manage-trip/model/trip.details.model';
 import { PermissionService } from '../../../../shared/services/permission.service';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-new-trip',
@@ -67,6 +69,7 @@ export class NewTripComponent implements OnInit, OnDestroy {
   height: string;
   templateCustomer: any;
   favouriteCustomer: any;
+  private customerSearch$ = new Subject<string>();
 
   constructor(
     private customer: CustomerService,
@@ -74,7 +77,13 @@ export class NewTripComponent implements OnInit, OnDestroy {
     private router: Router,
     private toastr: HandleToastrService,
     private permissionService: PermissionService
-  ) {}
+  ) {
+    this.customerSearch$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performCustomerSearch(searchText);
+      });
+  }
 
   ngOnInit(): void {
 
@@ -130,11 +139,15 @@ export class NewTripComponent implements OnInit, OnDestroy {
   }
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.customerSearch$.next(value);
+  }
+
+  private performCustomerSearch(searchText: string) {
     this.companySuggestions = [];
-    const target = $event.target as HTMLInputElement;
-    if (target.value) {
+    if (searchText?.length > 0) {
       this.customer
-        .searchCustomer(0, 1000, target.value, null)
+        .searchCustomer(0, 1000, searchText, null)
         .subscribe((company: any) => {
           this.isCustomerMenuOpened = true;
           this.companySuggestions = company.data.content;
@@ -317,7 +330,7 @@ export class NewTripComponent implements OnInit, OnDestroy {
           if (res === 'deleted') {
             this.service.deleteTemplate(template.id).subscribe(
               (res: any) => {
-                if (res.status === 'OK') {
+                if (isSuccessStatus(res?.status)) {
                   this.toastr.showSuccess('Template deleted successfully');
                   this.getTripTemplate(
                     JSON.parse(localStorage.getItem('selectedCustomer'))

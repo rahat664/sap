@@ -41,7 +41,7 @@
               type="text"
               matInput
               formControlName="email"
-              placeholder="User email"/>
+              placeholder="User Email"/>
           </mat-form-field>
           <!--        error-message-->
           <div
@@ -64,9 +64,11 @@
             [preferredCountries]="[CountryISO.Bangladesh]"
             [fieldControl]="phoneNumber"
             [numberValidation]="true"
+            [useMask]="true"
             [hidePhoneIcon]="true"
             [required]="true"
-            [autoIpLookup]="false"></ngx-material-intl-tel-input>
+            [autoIpLookup]="false"
+            (focusout)="phoneNumber?.markAsTouched()"></ngx-material-intl-tel-input>
           <!--        error-message-->
         </div>
         <div
@@ -136,7 +138,7 @@
                 type="password"
                 matInput
                 formControlName="password"
-                placeholder="password"/>
+                placeholder="Password"/>
             </mat-form-field>
             <i
               id="icon"
@@ -226,3 +228,4 @@
     </div>
   </div>
 </div>
+

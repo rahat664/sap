@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TruckService {
-  url = `${environment.backendUrl}/api/trucks`;
-  preHireChecklistUrl = `${environment.backendUrl}/api/preHireChecklist`;
-  checklistUrl = `${environment.backendUrl}/api/checklist`;
+  url = `${environment.vehicleUrl}/api/vehicles`;
+  expenseUrl = `${environment.vehicleUrl}/api/expenses`;
+  workshopUrl = `${environment.vehicleUrl}/api/workshop_histories`;
+  preHireChecklistUrl = `${environment.vehicleUrl}/api/preHireChecklist`;
+  checklistUrl = `${environment.vehicleUrl}/api/checklist`;
 
   constructor(private http: HttpClient) {}
 
@@ -84,5 +86,51 @@ export class TruckService {
     return this.http.get(`${this.url}/${id}`);
   }
 
-  getTruckData() {}
+  getExpenses(truckId: string): Observable<any> {
+    return this.http.get(`${this.expenseUrl}/statistics?vehicleId=${truckId}`);
+  }
+
+  getExpenseTypes(showInFrontend: boolean): Observable<any> {
+    return this.http.get(`${environment.vehicleUrl}/api/expense_types?showInFrontend=${showInFrontend}`);
+  }
+
+  addWorkshopHistory(body: any): Observable<any> {
+    return this.http.post(`${this.workshopUrl}`, body);
+  }
+
+  getWorkshopHistory(body: any, meta?: any): Observable<any> {
+    return this.http.post(`${this.workshopUrl}/list`, {
+      body: body,
+      meta: meta
+    } );
+  }
+
+  addFuelRecord(body: any): Observable<any> {
+    return this.http.post(`${environment.vehicleUrl}/api/fuel_histories`, body);
+  }
+
+
+  getFuelHistory(body: any, meta?: any): Observable<any> {
+    return this.http.post(`${environment.vehicleUrl}/api/fuel_histories/list`, {
+      body: body,
+      meta: meta
+    } );
+  }
+
+  addExpense(formData: FormData) {
+    return this.http.post(`${this.expenseUrl}`, formData);
+  }
+
+  getExpenseListByDate(vehicleId: string, from?: string, to?: string): Observable<any> {
+    let params = new HttpParams();
+    if (from) {
+      params = params.set('from', from);
+    }
+    if (to) {
+      params = params.set('to', to);
+    }
+    return this.http.get(`${this.url}/${vehicleId}/expenses`, { params });
+  }
+
+
 }

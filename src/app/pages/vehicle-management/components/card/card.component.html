@@ -1,0 +1,12 @@
+<div  class="flex space-x-3 items-center">
+  <div class="{{fromDetail ? 'w-16 h-16' : 'w-12 h-12'}} rounded-full bg-[#E7FCFF] overflow-hidden flex justify-center items-center">
+    <img *ngIf="!fromExpenses" src="assets/svg/{{imageUrl ? imageUrl : 'user.svg'}}"
+         class="notPreview {{fromDetail ? 'w-7 h-7' : 'w-6 h-6'}}">
+    <img *ngIf="fromExpenses" src="{{imageUrl ? imageUrl : 'assets/images/user.png'}}"
+         class="notPreview {{fromDetail ? 'w-7 h-7' : 'w-6 h-6'}}">
+  </div>
+  <div class="flex flex-col space-y-0.5">
+    <h1 class="text-h2 font-semibold leading-h2 text-not-black">{{description ? description : 'N/A'}}<span *ngIf="fromExpenses"> ৳</span></h1>
+    <span class="text-sm font-normal text-not-black">{{title ? title : 'N/A'}}</span>
+  </div>
+</div>
