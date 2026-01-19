@@ -394,7 +394,7 @@ export class DialogDataComponent implements OnInit {
                 width: '21.375rem',
                 data: {
                   title: 'Error',
-                  text: 'Something went wrong',
+                  text: res.message,
                   buttonText: 'Okay',
                 },
               }).afterClosed().subscribe(() => {
@@ -518,7 +518,7 @@ export class DialogDataComponent implements OnInit {
                   width: '21.375rem',
                   data: {
                     title: 'Error',
-                    text: 'Something went wrong',
+                    text: res.message,
                     buttonText: 'Okay',
                   },
                 });
@@ -655,7 +655,7 @@ export class DialogDataComponent implements OnInit {
                 width: '21.375rem',
                 data: {
                   title: 'Error',
-                  text: 'Something went wrong',
+                  text: res.message,
                   buttonText: 'Okay',
                 },
               });

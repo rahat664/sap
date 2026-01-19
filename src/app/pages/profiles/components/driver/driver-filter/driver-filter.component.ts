@@ -204,7 +204,7 @@ export class DriverFilterComponent {
       selectedButton: this.selectedButton,
       hasDocument: this.hasDocumentsPlaceholder
     };
-    localStorage.setItem('tripFilterData', JSON.stringify(filterData));
+    localStorage.setItem('driverFilterData', JSON.stringify(filterData));
     this.filterData.emit(filterData);
     this.filterApplied.emit(true);
     this.filterClosed.emit();
@@ -473,17 +473,17 @@ export class DriverFilterComponent {
   }
 
   private getDataFromLocalStorage() {
-    const tripFilterData = JSON.parse(localStorage.getItem('tripFilterData'));
-    if (tripFilterData) {
-      this.startDate = tripFilterData?.startDate;
-      this.endDate = tripFilterData?.endDate;
-      this.statusInputPlaceholder = tripFilterData?.statusInputPlaceholder;
-      this.selectedButton = tripFilterData?.selectedButton;
-      this.hasDocumentsPlaceholder = tripFilterData?.hasDocument;
+    const driverFilterData = JSON.parse(localStorage.getItem('driverFilterData'));
+    if (driverFilterData) {
+      this.startDate = driverFilterData?.startDate;
+      this.endDate = driverFilterData?.endDate;
+      this.statusInputPlaceholder = driverFilterData?.statusInputPlaceholder;
+      this.selectedButton = driverFilterData?.selectedButton;
+      this.hasDocumentsPlaceholder = driverFilterData?.hasDocument;
       if (this.selectedButton) {
         this.dateText = true
       }
-      localStorage.removeItem('tripFilterData');
+      localStorage.removeItem('driverFilterData');
     }
   }
 }

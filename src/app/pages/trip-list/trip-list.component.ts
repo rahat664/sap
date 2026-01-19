@@ -273,7 +273,7 @@ export class TripListComponent implements OnInit, AfterViewInit {
   }
 
   onClickTripNumber(tripId: string) {
-    localStorage.setItem('fromTripListTripId', tripId);
+    sessionStorage.setItem('fromTripListTripId', tripId);
     this.router.navigateByUrl('/manage-trip');
   }
 
