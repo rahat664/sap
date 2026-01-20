@@ -218,8 +218,8 @@ export class ManageTripComponent implements OnInit, OnDestroy {
     this.customerSelected = false;
     this.triggerFromParentName = 'All';
     this.isTriggerFromParent = false;
-    if (localStorage.getItem('fromTripListTripId')) {
-      this.tripId = localStorage.getItem('fromTripListTripId');
+    if (sessionStorage.getItem('fromTripListTripId')) {
+      this.tripId = sessionStorage.getItem('fromTripListTripId');
       this.getTripDetails(this.tripId);
       this.searchValue = this.tripId;
       this.getTruckTrackers(

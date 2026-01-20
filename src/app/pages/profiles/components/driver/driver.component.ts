@@ -98,9 +98,23 @@ export class DriverComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const driverFilterData = localStorage.getItem('driverFilterData');
+    if (driverFilterData) {
+      this.driverList = [];
+      this.filterData = JSON.parse(driverFilterData);
+      this.hasDocument = this.filterData?.hasDocument === 'Yes';
+      this.filterApplied = true;
+      this.from = this.filterData.startDate;
+      this.to = this.filterData.endDate;
+      this.statusInputPlaceholder = this.filterData.statusInputPlaceholder;
+      this.filterForm.get('startDate')?.setValue(this.filterData.startDate);
+      this.filterForm.get('endDate')?.setValue(this.filterData.endDate);
+      this.getDriverList()
+    } else {
+      this.driverList = [];
+      this.getDriverListFromResolver();
+    }
     this.generateDateOptionsArray();
-    this.driverList = [];
-    this.getDriverListFromResolver();
     this.makeSureUploadCompletedOrNot();
   }
 
@@ -598,7 +612,7 @@ export class DriverComponent implements OnInit {
       this.loading = true;
       this.getDriverList();
     } else {
-      localStorage.removeItem('tripFilterData');
+      localStorage.removeItem('driverFilterData');
       this.filterApplied = false;
       this.hasDocument = true
       this.loading = true;
@@ -613,7 +627,7 @@ export class DriverComponent implements OnInit {
   }
 
   onCLickClearAll() {
-    localStorage.removeItem('tripFilterData');
+    localStorage.removeItem('driverFilterData');
     this.filterForm.reset();
     this.filterApplied = false;
     this.filterData = {};

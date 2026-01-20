@@ -112,7 +112,7 @@ export class TripUpdateComponent implements OnInit {
   ) {}
 
   onUpdateTrip() {
-    const tripData = JSON.parse(localStorage.getItem('updateTripDetails'));
+    const tripData = JSON.parse(sessionStorage.getItem('updateTripDetails'));
     const tripId = tripData?.tripId;
     if (this.tripUpdateForm.valid) {
       const dialogRef = this.dialog
@@ -307,9 +307,9 @@ export class TripUpdateComponent implements OnInit {
   private getVehicleTypeList() {
     this.service.getVehicleTypeList().subscribe((res: any) => {
       this.vehicleTypeList = res.data;
-      if (JSON.parse(localStorage.getItem('updateTripDetails'))) {
+      if (JSON.parse(sessionStorage.getItem('updateTripDetails'))) {
         const selectedTemplate = JSON.parse(
-          localStorage.getItem('updateTripDetails')
+          sessionStorage.getItem('updateTripDetails')
         );
         this.vehicleTypeList.forEach((element: any) => {
           if (element.id == selectedTemplate.vehicleCategory.id) {
@@ -936,7 +936,7 @@ export class TripUpdateComponent implements OnInit {
   }
 
   private getValueFromTripDetails() {
-    const tripData = JSON.parse(localStorage.getItem('updateTripDetails'));
+    const tripData = JSON.parse(sessionStorage.getItem('updateTripDetails'));
     this.tripData = tripData;
     if (tripData) {
       this.tripStatus = tripData.status;

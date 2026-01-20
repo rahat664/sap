@@ -331,7 +331,7 @@ export class TripDetailsComponent implements OnInit, OnChanges {
   }
 
   onClickTripUpdate(tripDetails: TripData) {
-    localStorage.setItem('updateTripDetails', JSON.stringify(tripDetails));
+    sessionStorage.setItem('updateTripDetails', JSON.stringify(tripDetails));
     this.router.navigate(['/update-trip']);
   }
 

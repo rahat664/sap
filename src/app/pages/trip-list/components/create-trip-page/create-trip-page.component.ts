@@ -305,7 +305,7 @@ export class CreateTripPageComponent implements OnInit {
       this.customerName = this.selectedCustomer.name;
       const customerCode = this.selectedCustomer.customerCode;
       this.tripForm.get('customerCode').setValue(customerCode);
-      if (customerCode === 'A439') {
+      if (customerCode === 'MGIF') {
         this.tripForm.get('planNumber').setValidators(Validators.required);
         this.tripForm.get('planNumber').updateValueAndValidity();
       } else {

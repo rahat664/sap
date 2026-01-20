@@ -80,6 +80,16 @@ export class ConfirmUpdateComponent implements OnInit {
                 buttonText: 'Okay',
               },
             });
+          } else {
+            this.dialogRef.close('error');
+            this.dialog.open(ErrorModalComponent, {
+              width: '21.375rem',
+              data: {
+                title: 'Error',
+                text: res.message,
+                buttonText: 'Okay',
+              },
+            });
           }
         },
         err => {
