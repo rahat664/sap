@@ -23,11 +23,12 @@ export class AuthEffects {
       mergeMap(action =>
         this.authService.login(action.payload).pipe(
           map(response => {
-            // @ts-ignore
-            if (response.status === 'OK') {
+            if (response?.status === 'OK') {
               return loginSuccess({ response });
             } else {
-              return loginFailure({ error: response.message });
+              return loginFailure({
+                error: response?.message ?? 'Login failed',
+              });
             }
           }),
           catchError(error => of(loginFailure({ error })))
@@ -42,11 +43,12 @@ export class AuthEffects {
       mergeMap(action =>
         this.authService.verifyOtp(action.payload).pipe(
           map(response => {
-            // @ts-ignore
-            if (response.status === 'OK') {
+            if (response?.status === 'OK') {
               return loginSuccess({ response });
             } else {
-              return loginFailure({ error: response.message });
+              return loginFailure({
+                error: response?.message ?? 'Login failed',
+              });
             }
           }),
           catchError(error => of(loginFailure({ error })))
