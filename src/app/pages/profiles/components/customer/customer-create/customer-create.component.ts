@@ -123,7 +123,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
         .customerCodeValidation(this.customerModel.customerCode)
         .subscribe((res: any) => {
           if (res.data.validation == 'Failed') {
-            this.subs.unsubscribe();
+            this.subs?.unsubscribe();
             this.customerForm.get('code').setValue(res.data.Suggestion);
             this.customerModel.customerCode = res.data.Suggestion;
             this.submitCustomer();
@@ -144,11 +144,15 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
           this.customerForm.reset();
           this.dialogRef.close(true);
         } else {
-          this.toastr.showError(res.error.message);
+          const message =
+            this.getCustomerErrorMessage(res) ?? 'Failed to create customer';
+          this.toastr.showError(message);
         }
       },
       (error: any) => {
-        this.toastr.showError(error.error.message);
+        const message =
+          this.getCustomerErrorMessage(error) ?? 'Failed to create customer';
+        this.toastr.showError(message);
       }
     );
   }
@@ -201,6 +205,28 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     } else {
       return '';
     }
+  }
+
+  private getCustomerErrorMessage(error: any): string | null {
+    if (!error) {
+      return null;
+    }
+    if (typeof error === 'string') {
+      return error;
+    }
+    if (typeof error.message === 'string') {
+      return error.message;
+    }
+    if (typeof error.error?.message === 'string') {
+      return error.error.message;
+    }
+    if (typeof error.error === 'string') {
+      return error.error;
+    }
+    if (typeof error.statusText === 'string') {
+      return error.statusText;
+    }
+    return null;
   }
 
   private checkCustomerCodeIsAlreadyExistOrNot(fourDigitName: string) {
