@@ -102,6 +102,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.shared.validateInterNationalPhoneNumber();
+    this.customerForm.get('email')?.valueChanges.subscribe(() => {
+      this.clearEmailExistsError();
+    });
   }
 
   onSave() {
@@ -113,7 +116,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       this.customerModel.phone = this.customerForm.get('phone').value;
       // remove space and - from phone number
       this.customerModel.phone = this.customerModel.phone.replace(/[\s-]/g, '');
-      this.customerModel.email = this.customerForm.get('email').value;
+      this.customerModel.email = this.normalizeEmail(
+        this.customerForm.get('email').value
+      );
       this.customerModel.address = this.customerForm.get('address').value;
       this.customerModel.note = this.customerForm.get('note').value;
       this.customerModel.tripType = this.customerForm.get('tripType').value;
@@ -137,7 +142,13 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   }
 
   private submitCustomer() {
-    this.service.addCustomer(this.customerModel).subscribe(
+    const payload: CustomerCreateModel & { email?: string | null } = {
+      ...this.customerModel,
+    };
+    if (!payload.email) {
+      delete payload.email;
+    }
+    this.service.addCustomer(payload).subscribe(
       (res: any) => {
         if (isSuccessStatus(res?.status)) {
           this.toastr.showSuccess('Customer created successfully');
@@ -146,12 +157,14 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
         } else {
           const message =
             this.getCustomerErrorMessage(res) ?? 'Failed to create customer';
+          this.setEmailExistsErrorIfNeeded(message);
           this.toastr.showError(message);
         }
       },
       (error: any) => {
         const message =
           this.getCustomerErrorMessage(error) ?? 'Failed to create customer';
+        this.setEmailExistsErrorIfNeeded(message);
         this.toastr.showError(message);
       }
     );
@@ -166,9 +179,12 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   }
 
   getEmailErrorMessage() {
-    if (this.customerForm?.get('email').hasError('email')) {
+    const emailControl = this.customerForm?.get('email');
+    if (emailControl?.hasError('emailExists')) {
+      return emailControl.getError('message') || 'Email already exists';
+    } else if (emailControl?.hasError('email')) {
       return 'Invalid email address';
-    } else if (this.customerForm?.get('email').hasError('required')) {
+    } else if (emailControl?.hasError('required')) {
       return 'Email address required';
     } else {
       return '';
@@ -227,6 +243,45 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       return error.statusText;
     }
     return null;
+  }
+
+  private normalizeEmail(email: string | null | undefined): string | null {
+    const normalized = (email || '').toString().trim();
+    return normalized.length > 0 ? normalized : null;
+  }
+
+  private setEmailExistsErrorIfNeeded(message: string | null) {
+    if (!message) {
+      return;
+    }
+    const lowerMessage = message.toLowerCase();
+    if (!lowerMessage.includes('email')) {
+      return;
+    }
+    if (!lowerMessage.includes('exist') && !lowerMessage.includes('already')) {
+      return;
+    }
+    const emailControl = this.customerForm?.get('email');
+    if (!emailControl) {
+      return;
+    }
+    emailControl.setErrors({
+      ...(emailControl.errors || {}),
+      emailExists: true,
+      message,
+    });
+    emailControl.markAsTouched();
+  }
+
+  private clearEmailExistsError() {
+    const emailControl = this.customerForm?.get('email');
+    if (!emailControl?.hasError('emailExists')) {
+      return;
+    }
+    const errors = { ...(emailControl.errors || {}) };
+    delete errors['emailExists'];
+    delete errors['message'];
+    emailControl.setErrors(Object.keys(errors).length ? errors : null);
   }
 
   private checkCustomerCodeIsAlreadyExistOrNot(fourDigitName: string) {
