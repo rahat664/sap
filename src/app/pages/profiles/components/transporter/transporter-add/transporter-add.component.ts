@@ -40,6 +40,7 @@ import { CustomInputSelectModel } from '../../../../../shared/modules/custom-inp
 import { MatRadioButton } from '@angular/material/radio';
 import { isSuccessStatus } from '../../../../../shared/utils/response-status';
 import { hasPhoneCountryMismatch } from '../../../../../shared/utils/phone-validation';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-transporter-add',
@@ -207,20 +208,28 @@ export class TransporterAddComponent implements OnInit {
 
     payloadFormData.append('payload', JSON.stringify(payload));
 
-    this.service.addTransporter(payloadFormData).subscribe(
-      (response: any) => {
-        if (response && isSuccessStatus(response.status)) {
-          this.toastr.showSuccess(response.message);
-          this.router.navigate(['/profile/transporter']);
-        } else {
-          this.toastr.showError(response.message);
+    this.service
+      .addTransporter(payloadFormData)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe(
+        (response: any) => {
+          if (response && isSuccessStatus(response.status)) {
+            this.toastr.showSuccess(response.message);
+            this.router.navigate(['/profile/transporter']);
+          } else {
+            const message =
+              this.getTransporterErrorMessage(response) ??
+              'Failed to save transporter';
+            this.toastr.showError(message);
+          }
+        },
+        error => {
+          const message =
+            this.getTransporterErrorMessage(error) ??
+            'Failed to save transporter';
+          this.toastr.showError(message);
         }
-      },
-      error => {
-        this.loading = false;
-        this.toastr.showError(error.error.message);
-      }
-    );
+      );
   }
 
   retrieveFilesForUpload() {
@@ -473,4 +482,84 @@ export class TransporterAddComponent implements OnInit {
   }
 
   protected readonly paymentMethod = paymentMethod;
+
+  private getTransporterErrorMessage(error: any): string | null {
+    const message = this.extractErrorMessage(error);
+    if (this.isPhoneAlreadyRegisteredError(error, message)) {
+      return 'This phone number is already registered.';
+    }
+    return message;
+  }
+
+  private extractErrorMessage(error: any): string | null {
+    if (!error) {
+      return null;
+    }
+    if (typeof error === 'string') {
+      return error;
+    }
+    if (typeof error.message === 'string') {
+      return error.message;
+    }
+    if (typeof error.error?.message === 'string') {
+      return error.error.message;
+    }
+    if (typeof error.error === 'string') {
+      return error.error;
+    }
+    if (typeof error.statusText === 'string') {
+      return error.statusText;
+    }
+    return null;
+  }
+
+  private isPhoneAlreadyRegisteredError(
+    error: any,
+    message: string | null
+  ): boolean {
+    const duplicateTokens = ['already', 'exists', 'duplicate', 'registered', 'in use'];
+    const phoneTokens = [
+      'phone',
+      'mobile',
+      'contactpersonnumber',
+      'contact person',
+      'contact_person_number',
+    ];
+    const messageLower = (message || '').toLowerCase();
+    const hasDuplicateToken = duplicateTokens.some(token =>
+      messageLower.includes(token)
+    );
+    const hasPhoneToken = phoneTokens.some(token =>
+      messageLower.includes(token)
+    );
+    if (hasDuplicateToken && hasPhoneToken) {
+      return true;
+    }
+    const field = typeof error?.error?.field === 'string'
+      ? error.error.field.toLowerCase()
+      : '';
+    if (field && phoneTokens.some(token => field.includes(token))) {
+      return hasDuplicateToken;
+    }
+    const errors = error?.error?.errors;
+    if (errors && typeof errors === 'object') {
+      const keys = Object.keys(errors).map(key => key.toLowerCase());
+      const hasPhoneKey = keys.some(key =>
+        phoneTokens.some(token => key.includes(token))
+      );
+      if (hasPhoneKey) {
+        const values = Object.values(errors).flatMap(value =>
+          Array.isArray(value) ? value : [value]
+        );
+        return values.some(value => {
+          if (typeof value !== 'string') {
+            return false;
+          }
+          const valueLower = value.toLowerCase();
+          return duplicateTokens.some(token => valueLower.includes(token));
+        });
+      }
+    }
+    return false;
+  }
 }

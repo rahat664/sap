@@ -249,6 +249,9 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
       this.loading = true;
       const formData = new FormData();
       const payload: Record<string, any> = {};
+      const normalizedPhone = this.normalizePhone(
+        this.driverAddForm.get('driverPhone')?.value
+      );
 
       // Iterate over form controls
       Object.keys(this.driverAddForm.controls).forEach(key => {
@@ -270,7 +273,7 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
         } else {
           // Add other controls to the payload object
           if (key === 'driverPhone') {
-            payload[key] = value.replace(/[\s-]/g, '');
+            payload[key] = normalizedPhone;
           } else {
             payload[key] = value;
           }
@@ -286,6 +289,7 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
           // Handle response
           if (isSuccessStatus(res?.status)) {
             localStorage.removeItem('driver');
+            this.setRecentDriver(payload.driverPhone, payload.driverName);
             this.toastr.showSuccess(
               res?.message || 'Driver created successfully'
             );
@@ -310,6 +314,24 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
         this.driverNameErrorMessage = 'You must enter a value';
       }
     }
+  }
+
+  private normalizePhone(phone: string | null | undefined): string {
+    return (phone || '').toString().replace(/[\s-]/g, '');
+  }
+
+  private setRecentDriver(phone: string, name: string) {
+    if (!phone) {
+      return;
+    }
+    localStorage.setItem(
+      'recentDriver',
+      JSON.stringify({
+        phone: phone,
+        name: name || '',
+        createdAt: new Date().toISOString(),
+      })
+    );
   }
 
   getDriverPhoneErrorWithoutTouch() {

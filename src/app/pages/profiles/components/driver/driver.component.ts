@@ -76,6 +76,10 @@ export class DriverComponent implements OnInit {
   filterData: any = {};
   hasDocument: boolean = true;
   private searchSubject = new Subject<string>();
+  private recentDriverPhone: string | null = null;
+  private recentDriverRetries = 0;
+  private readonly recentDriverMaxRetries = 2;
+  private readonly recentDriverRetryDelayMs = 800;
 
   constructor(
     private user: UserService,
@@ -98,6 +102,7 @@ export class DriverComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadRecentDriver();
     const driverFilterData = localStorage.getItem('driverFilterData');
     if (driverFilterData) {
       this.driverList = [];
@@ -138,6 +143,7 @@ export class DriverComponent implements OnInit {
           this.driverList = res.data.responses;
           this.totalPages = res.data.totalPages;
           this.loading = false;
+          this.ensureRecentDriverVisible();
         });
     } else {
       this.user
@@ -156,6 +162,7 @@ export class DriverComponent implements OnInit {
           this.driverList = res.data.responses;
           this.totalPages = res.data.totalPages;
           this.loading = false;
+          this.ensureRecentDriverVisible();
         });
     }
   }
@@ -652,6 +659,59 @@ export class DriverComponent implements OnInit {
       this.driverList = res.data.responses;
       this.totalPages = res.data.totalPages;
       this.loading = false;
+      this.ensureRecentDriverVisible();
     })
+  }
+
+  private loadRecentDriver() {
+    const stored = localStorage.getItem('recentDriver');
+    if (!stored) {
+      return;
+    }
+    try {
+      const parsed = JSON.parse(stored);
+      const createdAt = parsed?.createdAt
+        ? new Date(parsed.createdAt).getTime()
+        : 0;
+      if (createdAt && Date.now() - createdAt > 5 * 60 * 1000) {
+        this.clearRecentDriver();
+        return;
+      }
+      this.recentDriverPhone = this.normalizePhone(parsed?.phone);
+    } catch {
+      this.clearRecentDriver();
+    }
+  }
+
+  private ensureRecentDriverVisible() {
+    if (!this.recentDriverPhone || this.filterApplied || this.searchValue) {
+      return;
+    }
+    const hasRecentDriver = this.driverList?.some(
+      driver =>
+        this.normalizePhone(driver?.phone) === this.recentDriverPhone
+    );
+    if (hasRecentDriver) {
+      this.clearRecentDriver();
+      return;
+    }
+    if (this.recentDriverRetries >= this.recentDriverMaxRetries) {
+      this.clearRecentDriver();
+      return;
+    }
+    this.recentDriverRetries += 1;
+    setTimeout(() => {
+      this.getDriverList();
+    }, this.recentDriverRetryDelayMs);
+  }
+
+  private clearRecentDriver() {
+    localStorage.removeItem('recentDriver');
+    this.recentDriverPhone = null;
+    this.recentDriverRetries = 0;
+  }
+
+  private normalizePhone(phone: string | null | undefined): string {
+    return (phone || '').toString().replace(/[\s-]/g, '');
   }
 }

@@ -629,16 +629,20 @@ export class CreateTripPageComponent implements OnInit {
       this.unloadingPoints?.controls[i]?.get('pointLat').value === '' ||
       this.unloadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.unloadingPoints?.controls[i].setValue(
-        this.unloadingPoints?.controls[i]?.get('pointLat').value
-          ? this.unloadingPoints?.controls[i]?.get('pointLat').value
-          : option.lat
-      );
-      this.unloadingPoints?.controls[i].setValue(
-        this.unloadingPoints?.controls[i]?.get('pointLon').value
-          ? this.unloadingPoints?.controls[i]?.get('pointLon').value
-          : option.lon
-      );
+      this.unloadingPoints?.controls[i]
+        ?.get('pointLat')
+        .setValue(
+          this.unloadingPoints?.controls[i]?.get('pointLat').value
+            ? this.unloadingPoints?.controls[i]?.get('pointLat').value
+            : option.lat
+        );
+      this.unloadingPoints?.controls[i]
+        ?.get('pointLon')
+        .setValue(
+          this.unloadingPoints?.controls[i]?.get('pointLon').value
+            ? this.unloadingPoints?.controls[i]?.get('pointLon').value
+            : option.lon
+        );
     }
     this.unloadingDistrictSuggestions = [];
   }
