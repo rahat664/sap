@@ -289,7 +289,7 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
           // Handle response
           if (isSuccessStatus(res?.status)) {
             localStorage.removeItem('driver');
-            this.setRecentDriver(payload.driverPhone, payload.driverName);
+            this.setRecentDriver(payload['driverPhone'], payload['driverName']);
             this.toastr.showSuccess(
               res?.message || 'Driver created successfully'
             );
