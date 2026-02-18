@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -26,7 +26,8 @@ import {
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { TruckService } from '../../../profiles/components/truck/services/truck.service';
 import { DriverEditSharedService } from '../../../profiles/services/driver-edit-shared.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { WorkshopHistoryCreateDto } from '../../../profiles/components/truck/models/workshop-history.model';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
 import { hasPhoneCountryMismatch } from '../../../../shared/utils/phone-validation';
 
@@ -66,12 +67,15 @@ export class NewWorkshopPopupComponent {
   documentFile: File | null = null;
   docPreviewUrl: string | null = null;
   isSubmitting: boolean;
+  isEditMode = false;
+  private record?: WorkshopHistoryCreateDto;
 
   constructor(
     private fb: FormBuilder,
     private service: TruckService,
     private shared: DriverEditSharedService,
     public dialogRef: MatDialogRef<NewWorkshopPopupComponent>,
+    @Inject(MAT_DIALOG_DATA) public dialogData: { record?: WorkshopHistoryCreateDto },
     private toaster: HandleToastrService
   ) {
     this.workshopForm = this.fb.group({
@@ -93,6 +97,29 @@ export class NewWorkshopPopupComponent {
     this.workshopForm
       .get('vehicleId')
       ?.setValue(localStorage.getItem('vehicleId') || '');
+    if (this.dialogData?.record) {
+      this.isEditMode = true;
+      this.record = this.dialogData.record;
+      this.patchFormForEdit(this.record);
+    }
+  }
+
+  private patchFormForEdit(record: WorkshopHistoryCreateDto) {
+    this.workshopForm.patchValue({
+      vehicleId: record.vehicleId,
+      vendorName: record.vendorName,
+      vendorPhone: record.vendorPhone || '',
+      vendorAddress: record.vendorAddress,
+      entryDate: record.entryDate ? new Date(record.entryDate) : '',
+      maintenanceDescription: record.maintenanceDescription,
+      price: record.price,
+      note: (record as any).note || '',
+      status: record.status,
+    });
+  }
+
+  get heading(): string {
+    return this.isEditMode ? 'Edit Workshop record' : 'New Workshop record';
   }
 
   get phoneNumber() {
@@ -146,14 +173,24 @@ export class NewWorkshopPopupComponent {
           }
         }
       });
+      if (this.isEditMode && this.record?.id) {
+        payload['id'] = this.record.id;
+      }
       formData.append('payload', JSON.stringify(payload));
       // Submit formData to the server or perform desired actions
       this.isSubmitting = true;
-      this.service.addWorkshopHistory(formData).subscribe({
+      const request = this.isEditMode
+        ? this.service.editWorkshopHistory(formData)
+        : this.service.addWorkshopHistory(formData);
+      request.subscribe({
         next: res => {
           this.isSubmitting = false;
           this.dialogRef.close(true);
-          this.toaster.showSuccess('Workshop history added successfully');
+          this.toaster.showSuccess(
+            this.isEditMode
+              ? 'Workshop history updated successfully'
+              : 'Workshop history added successfully'
+          );
         },
         error: err => {
           this.isSubmitting = false;

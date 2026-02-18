@@ -6,6 +6,7 @@ import { TruckService } from '../../../profiles/components/truck/services/truck.
 import { WorkshopHistoryCreateDto } from '../../../profiles/components/truck/models/workshop-history.model';
 import { ImageGalleryService } from '../../../../shared/services/image-gallery/image-gallery.service';
 import { ImageGalleryComponent } from '../../../../shared/modules/image-gallery/image-gallery.component';
+import { NewWorkshopPopupComponent } from '../new-workshop-popup/new-workshop-popup.component';
 
 @Component({
   selector: 'app-workshop-records',
@@ -22,6 +23,7 @@ export class WorkshopRecordsComponent implements OnInit {
 
   loading = false;
   records: any[] = [];
+  private readonly editableWindowMs = 30 * 24 * 60 * 60 * 1000;
 
   constructor(public dialogRef: MatDialogRef<WorkshopRecordsComponent>) {}
 
@@ -67,6 +69,36 @@ export class WorkshopRecordsComponent implements OnInit {
         : { images: url },
       minWidth: isPdf ? '70vw' : undefined,
       minHeight: isPdf ? '80vh' : undefined,
+    });
+  }
+
+  canEditRecord(date?: string): boolean {
+    if (!date) return false;
+    const recordDate = new Date(date);
+    const now = new Date();
+    const diff = now.getTime() - recordDate.getTime();
+    return diff <= this.editableWindowMs;
+  }
+
+  getEditTooltip(date?: string): string {
+    return this.canEditRecord(date)
+      ? 'Edit workshop record'
+      : 'Editable up to 30 days after the visit';
+  }
+
+  onEditWorkshopRecord(record: WorkshopHistoryCreateDto) {
+    if (!this.canEditRecord(record.entryDate)) return;
+    const vehicleId = this.dialogData?.vehicleId;
+    const dialogRef = this.dialog.open(NewWorkshopPopupComponent, {
+      minWidth: '37.125rem',
+      data: {
+        record,
+      },
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res && vehicleId) {
+        this.fetchWorkshopRecords(String(vehicleId));
+      }
     });
   }
 
