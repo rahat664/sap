@@ -96,8 +96,11 @@ export class WorkshopRecordsComponent implements OnInit {
       },
     });
     dialogRef.afterClosed().subscribe(res => {
-      if (res && vehicleId) {
-        this.fetchWorkshopRecords(String(vehicleId));
+      if (res) {
+        this.dialogData?.onRecordChange?.();
+        if (vehicleId) {
+          this.fetchWorkshopRecords(String(vehicleId));
+        }
       }
     });
   }

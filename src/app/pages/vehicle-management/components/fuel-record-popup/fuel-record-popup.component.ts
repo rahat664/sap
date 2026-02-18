@@ -126,7 +126,10 @@ export class FuelRecordPopupComponent {
           if (key === 'document' && this.documentFile) {
             formData.append('receiptFiles', this.documentFile);
           } else {
-            payload[key] = control.value;
+            payload[key] =
+              key === 'refuelDateTime'
+                ? this.normalizeDateForSubmit(control.value)
+                : control.value;
           }
         }
       });
@@ -163,6 +166,17 @@ export class FuelRecordPopupComponent {
       this.toaster.showError('Error', 'Fuel record not found');
       this.fuelForm.markAllAsTouched();
     }
+  }
+
+  private normalizeDateForSubmit(value: Date | string | null | undefined) {
+    if (!value) {
+      return null;
+    }
+    const date = value instanceof Date ? value : new Date(value);
+    const adjusted = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12)
+    );
+    return adjusted.toISOString();
   }
 
   onDocSelected(e: Event) {

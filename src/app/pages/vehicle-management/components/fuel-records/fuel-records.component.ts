@@ -89,8 +89,11 @@ export class FuelRecordsComponent implements OnInit {
       },
     });
     dialogRef.afterClosed().subscribe(res => {
-      if (res && vehicleId) {
-        this.fetchFuelRecords(String(vehicleId));
+      if (res) {
+        this.dialogData?.onRecordChange?.();
+        if (vehicleId) {
+          this.fetchFuelRecords(String(vehicleId));
+        }
       }
     });
   }

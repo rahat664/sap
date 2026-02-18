@@ -118,6 +118,17 @@ export class NewWorkshopPopupComponent {
     });
   }
 
+  private normalizeDateForSubmit(value: Date | string | null | undefined) {
+    if (!value) {
+      return null;
+    }
+    const date = value instanceof Date ? value : new Date(value);
+    const adjusted = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12)
+    );
+    return adjusted.toISOString();
+  }
+
   get heading(): string {
     return this.isEditMode ? 'Edit Workshop record' : 'New Workshop record';
   }
@@ -168,7 +179,10 @@ export class NewWorkshopPopupComponent {
             if (key === 'vendorPhone') {
               payload[key] = control.value.replace(/[\s-]/g, '');
             } else {
-              payload[key] = control.value;
+              payload[key] =
+                key === 'entryDate'
+                  ? this.normalizeDateForSubmit(control.value)
+                  : control.value;
             }
           }
         }
