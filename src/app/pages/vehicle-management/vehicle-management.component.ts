@@ -46,7 +46,7 @@ export class VehicleManagementComponent {
   private page: number = 0;
   private size: number = 20;
   statusInputPlaceholder: string = '';
-  hasDocument: boolean = true;
+  hasDocument: boolean | null = null;
   private from: any;
   private to: any;
   filterApplied: boolean = false;
@@ -113,7 +113,7 @@ export class VehicleManagementComponent {
       parts.push(
         `Truck Status: <b>${this.filterData.statusInputPlaceholder}</b>`
       );
-    if (this.hasDocument || this.filterData?.hasDocument)
+    if (this.filterData?.hasDocument)
       parts.push(`Has Document: <b>${this.hasDocument ? 'Yes' : 'No'}</b>`);
 
     return parts.join(', ');
@@ -122,6 +122,9 @@ export class VehicleManagementComponent {
   onBottom($event: boolean) {
     if ($event && this.page < this.totalPages - 1) {
       this.page++;
+      const hasDocumentsFilter = this.filterData?.hasDocument
+        ? this.hasDocument
+        : undefined;
       if (this.searchValue) {
         this.service
           .getTruckList(
@@ -136,7 +139,7 @@ export class VehicleManagementComponent {
             null,
             this.from,
             this.to,
-            this.hasDocument
+            hasDocumentsFilter
           )
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
@@ -155,7 +158,7 @@ export class VehicleManagementComponent {
             null,
             this.from,
             this.to,
-            this.hasDocument
+            hasDocumentsFilter
           )
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
@@ -216,7 +219,7 @@ export class VehicleManagementComponent {
     localStorage.removeItem('truckFilterData');
     this.filterForm.reset();
     this.filterApplied = false;
-    this.hasDocument = true;
+    this.hasDocument = null;
     this.filterData = {};
     this.page = 0;
     this.size = 30;
@@ -234,6 +237,9 @@ export class VehicleManagementComponent {
   private getTruckList() {
     this.page = 0;
     this.loading = true;
+    const hasDocumentsFilter = this.filterData?.hasDocument
+      ? this.hasDocument
+      : undefined;
     if (this.searchValue && !this.filterData?.hasDocument) {
       this.service
         .getTruckList(
@@ -269,7 +275,7 @@ export class VehicleManagementComponent {
           null,
           this.from,
           this.to,
-          this.hasDocument
+          hasDocumentsFilter
         )
         .subscribe((res: any) => {
           this.truckList = res.data.responses;
@@ -291,7 +297,7 @@ export class VehicleManagementComponent {
           null,
           this.from,
           this.to,
-          this.hasDocument
+          hasDocumentsFilter
         )
         .subscribe((res: any) => {
           this.truckList = res.data.responses;
@@ -334,7 +340,7 @@ export class VehicleManagementComponent {
       this.size = 30;
       this.from = '';
       this.to = '';
-      this.hasDocument = true;
+      this.hasDocument = null;
       this.statusInputPlaceholder = '';
       this.filterForm.reset();
       this.getTruckList();
