@@ -5,37 +5,36 @@
     class="flex flex-col space-y-3">
     <div
       class="flex flex-col py-[1.375rem] sm:py-[1.125rem]  md:py-[0.875rem] xl:py-[0.75rem] 2xl:py-[0.625rem] space-y-3 md:space-y-0 md:flex-row justify-between">
-      <div class="flex items-center justify-between w-full">
-        <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">Vehicle List</h1>
-        <div class="flex space-x-2 items-center">
-          <div class="relative">
-            <div
-              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <img src="assets/svg/search.svg" class="notPreview" alt="search" />
-            </div>
-            <button
-              (click)="onClickClear()"
-              *ngIf="searchValue"
-              class="absolute inset-y-0 right-0 pr-3 flex items-center">
-              <i class="far fa-times text-gray-500 text-xs"></i>
-            </button>
-            <input
-              type="text"
-              name="email"
-              [(ngModel)]="searchValue"
-              (ngModelChange)="onSearchChange($event)"
-              class="border-none text-input-hint w-full md:w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
-              placeholder="Search Vehicle Registration Number" />
+      <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">Vehicle List</h1>
+      <div class="flex space-x-2 items-center">
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <img src="assets/svg/search.svg" class="notPreview" alt="search" />
           </div>
-          <button (click)="onClickFilterOpen()"
-                  class="bg-white p-2 rounded-lg flex space-x-1 cursor-pointer text-h2_medium text-primary">
-            <img class="notPreview" src="assets/svg/filter.svg" alt="">
-            <p>Filter</p>
+          <button
+            (click)="onClickClear()"
+            *ngIf="searchValue"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <i class="far fa-times text-gray-500 text-xs"></i>
           </button>
+          <input
+            (keyup)="onKeyUpSearch($event)"
+            type="text"
+            name="email"
+            [(ngModel)]="searchValue"
+            class="border-none text-input-hint w-full md:w-[24rem] bg-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block pl-10 p-2.5"
+            placeholder="Search Vehicle Registration Number" />
         </div>
-        <button (click)="onClickAddTruck()"
-                class="bg-primary px-4 py-2 rounded-lg flex space-x-2 cursor-pointer text-white">
-          <span>Add New Vehicle</span>
+        <button
+          (click)="onClickAddTruck()"
+          class="px-4 flex space-x-4 items-center py-3 md:py-2 bg-primary text-white rounded-lg">
+          <i class="fas fa-plus-circle"></i>
+          <span class="hidden md:inline">Add Vehicle</span>
+        </button>
+        <button (click)="onClickFilterOpen()" class="cursor-pointer flex space-x-1 text-h2_medium text-primary">
+          <img class="notPreview" src="assets/svg/filter.svg" alt="">
+          <p>Filter</p>
         </button>
       </div>
     </div>
@@ -57,15 +56,15 @@
       class="table-auto w-full text-body_title leading-body_title rounded-sm">
       <thead class="bg-white">
       <tr class="whitespace-nowrap bg-white text-not-black">
-        <th class="text-left md:bg-white md:sticky md:left-0">Registration Number</th>
+        <th class="text-left md:bg-white md:sticky md:left-0">Registration number</th>
         <th class="text-left">Yard</th>
-        <th class="text-left">Vehicle Type</th>
+        <th class="text-left">Vehicle type</th>
         <th class="text-left">Vehicle Size</th>
         <th class="text-left">Fuel Type</th>
-        <th class="text-left">Pre-hire Checklist</th>
+        <th class="text-left">Pre-hire checklist</th>
         <th class="text-left">Documents</th>
-        <th class="text-left">No. of Trip</th>
-        <th class="text-left">Total Cost</th>
+        <th class="text-left">No. of trip</th>
+        <th class="text-left">Total cost</th>
        </tr>
       <tr>
         <th class="custom-border" [colSpan]="9"></th>
@@ -109,7 +108,7 @@
             <div class="flex space-x-1 items-center">
               <div>{{checkHowManyDocsAreAvailable(truck) }}/{{ truckFileType.length}}</div>
               <div matTooltip="{{returnHowManyDocumentIsExpired(truck)}}" matTooltipPosition="above" *ngIf="checkThatAnyDocumentIsExpired(truck)">
-                <img src="/assets/svg/alert.svg" class="notPreview" alt="alert">
+                <img src="assets/svg/alert.svg" class="notPreview" alt="alert">
               </div>
             </div>
           </td>
@@ -119,7 +118,7 @@
       </ng-container>
       <ng-container *ngIf="!loading && truckList?.length === 0">
         <tr>
-          <td class="text-center" [colSpan]="10">
+          <td class="text-center" [colSpan]="9">
             <div
               class="w-full flex flex-col space-y-3 justify-center items-center">
               <img
@@ -137,7 +136,7 @@
       </ng-container>
       <ng-container *ngIf="loading">
         <tr>
-          <td class="h-full" [colSpan]="10">
+          <td class="h-full" [colSpan]="9">
             <app-loading></app-loading>
           </td>
         </tr>

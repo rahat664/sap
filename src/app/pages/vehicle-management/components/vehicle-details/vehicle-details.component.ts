@@ -562,12 +562,17 @@ export class VehicleDetailsComponent implements OnInit {
     }
   }
 
+  private refreshVehicleAfterRecordChange() {
+    this.getVehicleDetails();
+  }
+
   onClickFuelDetails() {
     this.dialog.open(FuelRecordsComponent, {
       minWidth: '70vw',
       data: {
         isFuelRecord: true,
         vehicleId: this.singleTruckData.id,
+        onRecordChange: () => this.refreshVehicleAfterRecordChange(),
       },
     });
   }
@@ -668,6 +673,7 @@ export class VehicleDetailsComponent implements OnInit {
       data: {
         isFuelRecord: true,
         vehicleId: this.singleTruckData.id,
+        onRecordChange: () => this.refreshVehicleAfterRecordChange(),
       },
     });
   }

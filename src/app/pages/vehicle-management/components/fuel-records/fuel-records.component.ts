@@ -4,6 +4,8 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { TruckService } from '../../../profiles/components/truck/services/truck.service';
 import { ImageGalleryService } from '../../../../shared/services/image-gallery/image-gallery.service';
 import { ImageGalleryComponent } from '../../../../shared/modules/image-gallery/image-gallery.component';
+import { FuelRecordPopupComponent } from '../fuel-record-popup/fuel-record-popup.component';
+import { RefuelRecord } from '../../../profiles/components/truck/models/fuel.model';
 
 @Component({
   selector: 'app-fuel-records',
@@ -19,6 +21,7 @@ export class FuelRecordsComponent implements OnInit {
 
   loading = false;
   records: any[] = [];
+  private readonly editableWindowMs = 30 * 24 * 60 * 60 * 1000;
 
   constructor(public dialogRef: MatDialogRef<FuelRecordsComponent>) {}
 
@@ -59,6 +62,39 @@ export class FuelRecordsComponent implements OnInit {
         : { images: url },
       minWidth: isPdf ? '70vw' : undefined,
       minHeight: isPdf ? '80vh' : undefined,
+    });
+  }
+
+  canEditRecord(date?: string): boolean {
+    if (!date) return false;
+    const recordDate = new Date(date);
+    const now = new Date();
+    const diff = now.getTime() - recordDate.getTime();
+    return diff <= this.editableWindowMs;
+  }
+
+  getEditTooltip(date?: string): string {
+    return this.canEditRecord(date)
+      ? 'Edit fuel record'
+      : 'Editable up to 30 days after the fuel entry';
+  }
+
+  onEditFuelRecord(record: RefuelRecord) {
+    if (!this.canEditRecord(record.refuelDateTime)) return;
+    const vehicleId = this.dialogData?.vehicleId;
+    const dialogRef = this.dialog.open(FuelRecordPopupComponent, {
+      minWidth: '37.125rem',
+      data: {
+        record,
+      },
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.dialogData?.onRecordChange?.();
+        if (vehicleId) {
+          this.fetchFuelRecords(String(vehicleId));
+        }
+      }
     });
   }
 
