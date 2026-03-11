@@ -46,6 +46,7 @@ export class VehicleManagementComponent {
   private page: number = 0;
   private size: number = 20;
   statusInputPlaceholder: string = '';
+  hasDocument: boolean | null = null;
   private from: any;
   private to: any;
   filterApplied: boolean = false;
@@ -84,12 +85,18 @@ export class VehicleManagementComponent {
 
   onClickClear() {
     this.searchValue = '';
+    this.truckList = [];
     this.page = 0;
-    this.searchInput$.next('');
+    this.getTruckList();
   }
 
   onSearchChange(value: string) {
     this.searchInput$.next(value ?? '');
+  }
+
+  onKeyUpSearch($event: KeyboardEvent) {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.searchInput$.next(value);
   }
 
   get filterSummary(): string {
@@ -106,6 +113,8 @@ export class VehicleManagementComponent {
       parts.push(
         `Truck Status: <b>${this.filterData.statusInputPlaceholder}</b>`
       );
+    if (this.filterData?.hasDocument)
+      parts.push(`Has Document: <b>${this.hasDocument ? 'Yes' : 'No'}</b>`);
 
     return parts.join(', ');
   }
@@ -113,6 +122,9 @@ export class VehicleManagementComponent {
   onBottom($event: boolean) {
     if ($event && this.page < this.totalPages - 1) {
       this.page++;
+      const hasDocumentsFilter = this.filterData?.hasDocument
+        ? this.hasDocument
+        : undefined;
       if (this.searchValue) {
         this.service
           .getTruckList(
@@ -126,7 +138,8 @@ export class VehicleManagementComponent {
             null,
             null,
             this.from,
-            this.to
+            this.to,
+            hasDocumentsFilter
           )
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
@@ -144,7 +157,8 @@ export class VehicleManagementComponent {
             null,
             null,
             this.from,
-            this.to
+            this.to,
+            hasDocumentsFilter
           )
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
@@ -154,9 +168,26 @@ export class VehicleManagementComponent {
   }
 
   ngOnInit() {
-    this.truckList = [];
-    this.loading = true;
-    this.getTruckListFromResolvedState();
+    const truckFilterData = localStorage.getItem('truckFilterData');
+    if (truckFilterData) {
+      this.filterData = JSON.parse(truckFilterData);
+      this.hasDocument =
+        this.filterData?.hasDocument === 'Yes'
+          ? true
+          : this.filterData?.hasDocument === 'No'
+            ? false
+            : null;
+      this.filterApplied = true;
+      this.from = this.filterData.startDate;
+      this.to = this.filterData.endDate;
+      this.statusInputPlaceholder = this.filterData.statusInputPlaceholder;
+      this.truckList = [];
+      this.getTruckList();
+    } else {
+      this.truckList = [];
+      this.loading = true;
+      this.getTruckListFromResolvedState();
+    }
 
     // Wire up debounced live-search
     this.searchInput$
@@ -168,6 +199,7 @@ export class VehicleManagementComponent {
       )
       .subscribe(value => {
         this.searchValue = value;
+        this.truckList = [];
         this.page = 0;
         this.getTruckList();
       });
@@ -184,9 +216,10 @@ export class VehicleManagementComponent {
   }
 
   onCLickClearAll() {
-    localStorage.removeItem('tripFilterData');
+    localStorage.removeItem('truckFilterData');
     this.filterForm.reset();
     this.filterApplied = false;
+    this.hasDocument = null;
     this.filterData = {};
     this.page = 0;
     this.size = 30;
@@ -204,7 +237,10 @@ export class VehicleManagementComponent {
   private getTruckList() {
     this.page = 0;
     this.loading = true;
-    if (this.searchValue) {
+    const hasDocumentsFilter = this.filterData?.hasDocument
+      ? this.hasDocument
+      : undefined;
+    if (this.searchValue && !this.filterData?.hasDocument) {
       this.service
         .getTruckList(
           this.page,
@@ -223,6 +259,29 @@ export class VehicleManagementComponent {
           this.truckList = res.data.responses;
           this.totalPages = res.data.totalPages;
           this.loading = false;
+          this.summaryValue = res.data.Summary;
+        });
+    } else if (this.searchValue && this.filterData?.hasDocument) {
+      this.service
+        .getTruckList(
+          this.page,
+          this.size,
+          this.searchValue,
+          this.statusInputPlaceholder == 'All'
+            ? ''
+            : this.statusInputPlaceholder,
+          null,
+          null,
+          null,
+          this.from,
+          this.to,
+          hasDocumentsFilter
+        )
+        .subscribe((res: any) => {
+          this.truckList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+          this.summaryValue = res.data.Summary;
         });
     } else {
       this.service
@@ -237,12 +296,14 @@ export class VehicleManagementComponent {
           null,
           null,
           this.from,
-          this.to
+          this.to,
+          hasDocumentsFilter
         )
         .subscribe((res: any) => {
           this.truckList = res.data.responses;
           this.totalPages = res.data.totalPages;
           this.loading = false;
+          this.summaryValue = res.data.Summary;
         });
     }
   }
@@ -251,8 +312,15 @@ export class VehicleManagementComponent {
     if (
       this.filterData?.startDate ||
       this.filterData?.endDate ||
-      this.filterData?.statusInputPlaceholder
+      this.filterData?.statusInputPlaceholder ||
+      this.filterData?.hasDocument
     ) {
+      this.hasDocument =
+        this.filterData?.hasDocument === 'Yes'
+          ? true
+          : this.filterData?.hasDocument === 'No'
+            ? false
+            : null;
       this.filterApplied = true;
       this.filterOpened = false;
       this.from = this.filterData.startDate;
@@ -265,13 +333,14 @@ export class VehicleManagementComponent {
       this.truckList = [];
       this.getTruckList();
     } else {
-      localStorage.removeItem('tripFilterData');
+      localStorage.removeItem('truckFilterData');
       this.filterApplied = false;
       this.loading = true;
       this.page = 0;
       this.size = 30;
       this.from = '';
       this.to = '';
+      this.hasDocument = null;
       this.statusInputPlaceholder = '';
       this.filterForm.reset();
       this.getTruckList();

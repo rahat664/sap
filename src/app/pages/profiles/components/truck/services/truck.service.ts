@@ -98,6 +98,10 @@ export class TruckService {
     return this.http.post(`${this.workshopUrl}`, body);
   }
 
+  editWorkshopHistory(body: any): Observable<any> {
+    return this.http.put(`${this.workshopUrl}`, body);
+  }
+
   getWorkshopHistory(body: any, meta?: any): Observable<any> {
     return this.http.post(`${this.workshopUrl}/list`, {
       body: body,
@@ -107,6 +111,10 @@ export class TruckService {
 
   addFuelRecord(body: any): Observable<any> {
     return this.http.post(`${environment.vehicleUrl}/api/fuel_histories`, body);
+  }
+
+  editFuelRecord(body: any): Observable<any> {
+    return this.http.put(`${environment.vehicleUrl}/api/fuel_histories`, body);
   }
 
 

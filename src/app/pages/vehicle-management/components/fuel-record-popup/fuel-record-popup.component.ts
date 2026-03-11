@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { AlphabetOnlyDirective } from '../../../../shared/directive/alphabet-only.directive';
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -9,8 +9,9 @@ import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HandleToastrService } from '../../../../shared/services/handle-toastr/handle-toastr.service';
+import { RefuelRecord } from '../../../profiles/components/truck/models/fuel.model';
 
 @Component({
   selector: 'app-fuel-record-popup',
@@ -55,12 +56,15 @@ export class FuelRecordPopupComponent {
   documentFile: File | null = null;
   docPreviewUrl: string | null = null;
   isSubmitting: boolean;
+  isEditMode = false;
+  private record?: RefuelRecord;
 
   constructor(
     private fb: FormBuilder,
     private service: TruckService,
     private shared: DriverEditSharedService,
     public dialogRef: MatDialogRef<FuelRecordPopupComponent>,
+    @Inject(MAT_DIALOG_DATA) public dialogData: { record?: RefuelRecord },
     private toaster: HandleToastrService
   ) {
     this.fuelForm = this.fb.group({
@@ -81,6 +85,26 @@ export class FuelRecordPopupComponent {
     this.fuelForm
       .get('vehicleId')
       ?.setValue(localStorage.getItem('vehicleId') || '');
+    if (this.dialogData?.record) {
+      this.isEditMode = true;
+      this.record = this.dialogData.record;
+      this.patchFormForEdit(this.record);
+    }
+  }
+
+  private patchFormForEdit(record: RefuelRecord) {
+    this.fuelForm.patchValue({
+      vehicleId: record.vehicleId,
+      fuelType: record.fuelType,
+      fuelVolumeInLiters: record.fuelVolumeInLiters,
+      stationName: record.stationName,
+      totalCost: record.totalCost,
+      refuelDateTime: record.refuelDateTime
+        ? new Date(record.refuelDateTime)
+        : '',
+      notes: record.notes ?? '',
+      unitPrice: record.unitPrice ?? this.fuelForm.get('unitPrice')?.value,
+    });
   }
 
 
@@ -102,29 +126,57 @@ export class FuelRecordPopupComponent {
           if (key === 'document' && this.documentFile) {
             formData.append('receiptFiles', this.documentFile);
           } else {
-              payload[key] = control.value;
+            payload[key] =
+              key === 'refuelDateTime'
+                ? this.normalizeDateForSubmit(control.value)
+                : control.value;
           }
         }
       });
+      if (this.isEditMode && this.record?.id) {
+        payload['id'] = this.record.id;
+      }
       formData.append('payload', JSON.stringify(payload));
       // Submit formData to the server or perform desired actions
       this.isSubmitting = true;
-      this.service.addFuelRecord(formData).subscribe({
+      const request = this.isEditMode
+        ? this.service.editFuelRecord(formData)
+        : this.service.addFuelRecord(formData);
+      request.subscribe({
         next: res => {
           this.isSubmitting = false;
-          this.toaster.showSuccess('Success', 'Fuel record added successfully');
+          this.toaster.showSuccess(
+            'Success',
+            this.isEditMode
+              ? 'Fuel record updated successfully'
+              : 'Fuel record added successfully'
+          );
           this.dialogRef.close(true);
         },
         error: err => {
           this.isSubmitting = false;
           this.dialogRef.close(false);
-          this.toaster.showError('Error', err?.error?.message || 'Something went wrong');
+          this.toaster.showError(
+            'Error',
+            err?.error?.message || 'Something went wrong'
+          );
         },
       });
     } else {
       this.toaster.showError('Error', 'Fuel record not found');
       this.fuelForm.markAllAsTouched();
     }
+  }
+
+  private normalizeDateForSubmit(value: Date | string | null | undefined) {
+    if (!value) {
+      return null;
+    }
+    const date = value instanceof Date ? value : new Date(value);
+    const adjusted = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12)
+    );
+    return adjusted.toISOString();
   }
 
   onDocSelected(e: Event) {
@@ -153,6 +205,10 @@ export class FuelRecordPopupComponent {
     // Customize as needed
     if (c?.hasError('required')) return 'Document is required';
     return 'Invalid file';
+  }
+
+  get heading(): string {
+    return this.isEditMode ? 'Edit fuel record' : 'New fuel record';
   }
 
   closePopup() {

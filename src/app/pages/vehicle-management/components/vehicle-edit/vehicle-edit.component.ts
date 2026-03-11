@@ -155,9 +155,9 @@ export class VehicleEditComponent {
 
   buttonName: any[] = [
     'Today',
-    'Last 7 Days',
-    'Last 15 Days',
-    'Last 30 Days',
+    'Current month',
+    'Last week',
+    'Last month',
     'Custom',
   ];
   picker: any;
@@ -696,37 +696,26 @@ export class VehicleEditComponent {
       this.customSelected = false;
       this.dateText = event;
       picker.close();
+      const today = new Date();
+      let startValue: Date;
+      let endValue: Date;
       if (event === 'Today') {
-        this.startDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd')!;
-        this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd')!;
-      } else if (event === 'Last 7 Days') {
-        this.startDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 7)),
-          'yyyy-MM-dd'
-        )!;
-        this.endDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 1)),
-          'yyyy-MM-dd'
-        )!;
-      } else if (event === 'Last 15 Days') {
-        this.startDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 15)),
-          'yyyy-MM-dd'
-        )!;
-        this.endDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 1)),
-          'yyyy-MM-dd'
-        )!;
-      } else if (event === 'Last 30 Days') {
-        this.startDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 30)),
-          'yyyy-MM-dd'
-        )!;
-        this.endDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 1)),
-          'yyyy-MM-dd'
-        )!;
+        startValue = new Date(today);
+        endValue = new Date(today);
+      } else if (event === 'Current month') {
+        startValue = new Date(today.getFullYear(), today.getMonth(), 1);
+        endValue = new Date(today);
+      } else if (event === 'Last week') {
+        startValue = new Date(today);
+        startValue.setDate(startValue.getDate() - 7);
+        endValue = new Date(today);
+        endValue.setDate(endValue.getDate() - 1);
+      } else {
+        startValue = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        endValue = new Date(today.getFullYear(), today.getMonth(), 0);
       }
+      this.startDate = this.datePipe.transform(startValue, 'yyyy-MM-dd')!;
+      this.endDate = this.datePipe.transform(endValue, 'yyyy-MM-dd')!;
     }
   }
 

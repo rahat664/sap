@@ -73,6 +73,7 @@ export const APPROVAL_STATUS_OPTIONS: ReadonlyArray<ApprovalStatus> = [
 export interface WorkshopHistoryCreateDto {
   /** Prefer number. If your API accepts string IDs, you may use number | string in your app layer. */
   vehicleId: number;
+  id?: number;
 
   vendorName: string;
   vendorAddress: string;
