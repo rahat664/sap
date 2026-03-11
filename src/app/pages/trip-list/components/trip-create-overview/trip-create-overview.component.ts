@@ -173,6 +173,7 @@ export class TripCreateOverviewComponent implements OnInit {
               });
           }
         } else {
+          this.loading = false;
           this.dialog.open(ErrorModalComponent, {
             width: '21.375rem',
             data: {
@@ -184,6 +185,7 @@ export class TripCreateOverviewComponent implements OnInit {
         }
       },
       (error: any) => {
+        this.loading = false;
         this.dialog.open(ErrorModalComponent, {
           width: '21.375rem',
           data: {
