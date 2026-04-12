@@ -39,9 +39,9 @@ export class VehicleManagementComponent {
   totalPages: number = 0;
   loading: boolean = false;
   showButtons: any[] = [
-    { title: 'Total', totalNumber: '0', property: 'All' },
-    { title: 'Own', totalNumber: '0' , property: 'OWN'},
-    { title: 'Third Party', totalNumber: '0' , property: 'THIRD_PARTY'},
+    { title: 'Total', totalNumber: '0', property: 'All', active: true },
+    { title: 'Own', totalNumber: '0' , property: 'OWN', active: false},
+    { title: 'Third Party', totalNumber: '0' , property: 'THIRD_PARTY', active: false},
   ];
   private page: number = 0;
   private size: number = 20;
@@ -418,5 +418,11 @@ export class VehicleManagementComponent {
       }
     });
     return count  > 1 ? `${count} Documents Expired` : `${count} Document Expired`;
+  }
+
+  onClickOwnership(property: any) {
+    this.showButtons.forEach(button => {
+      button.active = button.property === property
+    });
   }
 }

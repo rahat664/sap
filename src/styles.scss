@@ -288,6 +288,21 @@ textarea:focus {
   color: #a5b8bb !important;
 }
 
+/* Datepicker panel: enforce opaque background for all overlays */
+.cdk-overlay-container .mat-mdc-datepicker-content,
+.cdk-overlay-container .mat-datepicker-content {
+  background-color: #ffffff !important;
+  color: #242424 !important;
+  box-shadow: 0 10px 24px rgba(17, 72, 79, 0.18) !important;
+}
+
+.cdk-overlay-container .mat-mdc-calendar,
+.cdk-overlay-container .mat-calendar,
+.cdk-overlay-container .mat-mdc-calendar-table,
+.cdk-overlay-container .mat-calendar-table {
+  background-color: #ffffff !important;
+}
+
 
 img:hover {
   cursor: pointer;

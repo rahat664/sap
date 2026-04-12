@@ -312,7 +312,7 @@ export class DriverEditSharedService {
                 this.submitUpdateForm(
                   this.truckUpdateForm,
                   this.truck.editTruck.bind(this.truck),
-                  '/profile/truck',
+                  '/profile/vehicle',
                   this.completeTruckUpload
                 );
               }
@@ -338,7 +338,7 @@ export class DriverEditSharedService {
         this.submitUpdateForm(
           this.truckUpdateForm,
           this.truck.editTruck.bind(this.truck),
-          '/profile/truck',
+          '/profile/vehicle',
           this.completeTruckUpload
         );
       }

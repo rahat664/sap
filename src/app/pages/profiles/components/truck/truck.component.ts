@@ -448,7 +448,7 @@ export class TruckComponent implements OnInit {
   }
 
   onClickGenerateReport() {
-    this.router.navigateByUrl('/profile/truck/report');
+    this.router.navigateByUrl('/profile/vehicle/report');
   }
 
   onClickReject(truckDetails: TruckModel) {

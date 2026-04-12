@@ -318,7 +318,7 @@ export class OldTruckAddComponent implements OnInit, AfterViewInit {
           // Handle response
           if (isSuccessStatus(res?.status)) {
             this.toastr.showSuccess(res.message);
-            this.router.navigate(['/profile/truck']);
+            this.router.navigate(['/profile/vehicle']);
           } else {
             this.toastr.showError(res.message);
           }
