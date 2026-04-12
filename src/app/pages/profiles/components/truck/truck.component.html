@@ -5,7 +5,7 @@
     class="flex flex-col space-y-3">
     <div
       class="flex flex-col space-y-3 md:space-y-0 md:flex-row justify-between">
-      <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">Truck</h1>
+      <h1 class="text-h1_mobile leading-h1_mobile md:text-h1 md:leading-h1 font-semibold">Vehicle</h1>
       <div class="flex space-x-2 items-center">
         <div class="relative">
           <div
@@ -28,13 +28,13 @@
         </div>
 <!--        <button-->
 <!--          (click)="onClickGenerateReport()"-->
-<!--          routerLink="/profile/truck/add"-->
+<!--          routerLink="/profile/vehicle/add"-->
 <!--          class="px-16 flex space-x-4 items-center py-3 md:py-2 border border-primary text-primary rounded-lg">-->
 <!--          <span class="hidden md:block">Report</span>-->
 <!--        </button>-->
         <button
           (click)="onClickAddTruck()"
-          routerLink="/profile/truck/add"
+          routerLink="/profile/vehicle/add"
           class="px-4 flex space-x-4 items-center py-3 md:py-2 bg-primary text-white rounded-lg">
           <i class="fas fa-plus-circle"></i>
           <span class="hidden md:inline">Add Truck</span>
@@ -104,7 +104,7 @@
                     }}</span>
               </div>
               <a
-                routerLink="/profile/truck/{{ truck.id }}/details"
+                routerLink="/profile/vehicle/{{ truck.id }}/details"
                 (click)="onClickTruckDetails(truck)"
                 class="flex-1 text-link cursor-pointer"
               >{{ getFullRegistrationName(truck) }}</a
@@ -432,7 +432,7 @@
                 </div>
               </button>
               <button
-                routerLink="/profile/truck/{{ truck.id }}/details"
+                routerLink="/profile/vehicle/{{ truck.id }}/details"
                 (click)="localStorage.setItem('directEdit', 'true')"
                 mat-menu-item>
                 <div class="flex space-x-2 items-center">

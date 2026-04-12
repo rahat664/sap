@@ -239,10 +239,10 @@
               <li *ngIf="isPermissionGranted('truck', 'view_all')">
                 <a
                   (click)="ifInMobileDevice()"
-                  routerLink="/profile/truck"
+                  routerLink="/profile/vehicle"
                   routerLinkActive="active"
                   class="cursor-pointer text-base text-secondary leading-normal font-normal rounded-lg flex items-center py-3 px-4 hover:bg-disabled group"
-                >Truck</a
+                >Vehicle</a
                 >
               </li>
               <li *ngIf="isPermissionGranted('driver', 'view_all')">

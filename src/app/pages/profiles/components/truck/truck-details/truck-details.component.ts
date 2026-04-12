@@ -869,7 +869,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
               // Handle response
               if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
-                this.router.navigate(['/profile/truck']);
+                this.router.navigate(['/profile/vehicle']);
               } else {
                 this.toastr.showError(res.message);
               }
@@ -907,7 +907,7 @@ export class TruckDetailsComponent implements OnInit, AfterViewInit {
               // Handle response
               if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
-                this.router.navigate(['/profile/truck']);
+                this.router.navigate(['/profile/vehicle']);
               } else {
                 this.toastr.showError(res.message);
               }

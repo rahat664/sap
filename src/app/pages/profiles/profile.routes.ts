@@ -61,7 +61,7 @@ export const profileRoutes: Routes = [
       ).then(c => c.TransporterDetailsComponent),
   },
   {
-    path: 'truck',
+    path: 'vehicle',
     title: 'Truck',
     loadComponent: () =>
       import('./components/truck/truck.component').then(c => c.TruckComponent),
