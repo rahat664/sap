@@ -27,7 +27,7 @@ import { finalize } from 'rxjs/operators';
 import { statusButtons } from '../trip-list/models/status-buttons';
 import { Trip, Truck } from '../auth/models/response/trip';
 import { TripData, TripPoint } from '../manage-trip/model/trip.details.model';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CustomerService } from '../profiles/services/customer.service';
 import { ToggleResponsiveService } from '../../shared/services/toggle-responsive-services/toggle-responsive.service';
 import { CustomInputSelectModel } from '../../shared/modules/custom-input/custom-input-select.model';
@@ -63,6 +63,7 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class ManageBidComponent {
   searchSubject = new Subject<string>();
+  customerSearchSubject = new Subject<string>();
   height: any;
   tripList: Trip[] = [];
   filterOpen: boolean = false;
@@ -176,7 +177,9 @@ export class ManageBidComponent {
         this.getBidList();
       }
     })
-    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
       if (searchText) {
         this.performSearch(searchText);
       } else {
@@ -187,6 +190,11 @@ export class ManageBidComponent {
         this.getBidList();
       }
     });
+    this.customerSearchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performCustomerSearch(searchText);
+      });
   }
 
   ngOnInit() {
@@ -290,7 +298,8 @@ export class ManageBidComponent {
   }
 
   onKeyUpSearch(event: KeyboardEvent) {
-    this.searchSubject.next((event.target as HTMLInputElement).value);
+    const value = (event.target as HTMLInputElement).value?.trim() || '';
+    this.searchSubject.next(value);
   }
 
   private performSearch(searchText: string) {
@@ -655,11 +664,15 @@ export class ManageBidComponent {
   }
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.customerSearchSubject.next(value);
+  }
+
+  private performCustomerSearch(searchText: string) {
     this.companySuggestions = [];
-    const target = $event.target as HTMLInputElement;
-    if (target.value.length > 0) {
+    if (searchText?.length > 0) {
       this.customer
-        .searchCustomer(0, 1000, target.value, null)
+        .searchCustomer(0, 1000, searchText, null)
         .subscribe((company: any) => {
           this.companySuggestions = company.data.content;
           if (this.customers.length > 0) {

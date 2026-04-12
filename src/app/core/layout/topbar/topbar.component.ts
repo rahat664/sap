@@ -11,6 +11,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { environment } from '../../../../environments/environment';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-topbar',
@@ -33,6 +34,7 @@ export class TopbarComponent implements OnInit {
   isSearchedMenuOpened = false;
   name: string;
   image: string;
+  private searchInput$ = new Subject<string>();
 
   constructor(
     private toggleMobileViewService: ToggleResponsiveService,
@@ -47,6 +49,22 @@ export class TopbarComponent implements OnInit {
     this.toggleMobileViewService.isSidebarOpen.subscribe(value => {
       this.isSideBarOpen = value;
     });
+    this.searchInput$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(search => {
+        if (search?.length > 0) {
+          this.searchSuggestions = [];
+          this.trip.getTripSuggestions(search).subscribe({
+            next: (response: any) => {
+              this.searchSuggestions = response;
+              this.isSearchedMenuOpened = this.searchSuggestions?.length !== 0;
+            },
+          });
+        } else {
+          this.searchSuggestions = [];
+          this.isSearchedMenuOpened = false;
+        }
+      });
   }
 
   toggleMobileSideBar() {
@@ -66,19 +84,8 @@ export class TopbarComponent implements OnInit {
   }
 
   onSearch($event: any) {
-    const search = $event.target.value;
-    if (search?.length > 0) {
-      this.searchSuggestions = [];
-      this.trip.getTripSuggestions(search).subscribe({
-        next: (response: any) => {
-          this.searchSuggestions = response;
-          this.isSearchedMenuOpened = this.searchSuggestions?.length !== 0;
-        },
-      });
-    } else {
-      this.searchSuggestions = [];
-      this.isSearchedMenuOpened = false;
-    }
+    const search = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.searchInput$.next(search);
   }
 
   onClickLogo() {

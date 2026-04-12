@@ -47,6 +47,7 @@ import {
   tripTypes,
 } from '../../../auth/models/response/trip';
 import { AlphabetOnlyDirective } from '../../../../shared/directive/alphabet-only.directive';
+import { hasPhoneCountryMismatch } from '../../../../shared/utils/phone-validation';
 
 @Component({
   selector: 'app-create-trip-page',
@@ -103,6 +104,7 @@ export class CreateTripPageComponent implements OnInit {
   tripDataModel: TripCreate = new TripCreate();
   numberOfTrucksSuggestions: any;
   isFromTemplate = false;
+  private searchDebounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   constructor(
     private service: TripService,
@@ -235,7 +237,13 @@ export class CreateTripPageComponent implements OnInit {
           message += ', ';
         }
       });
-      this.toaster.showError(`Please fill the required fields: ${message}`);
+      if (hasPhoneCountryMismatch(this.tripForm)) {
+        this.toaster.showError(
+          'Phone number does not match selected country code'
+        );
+      } else {
+        this.toaster.showError(`Please fill the required fields: ${message}`);
+      }
     }
   }
 
@@ -442,15 +450,19 @@ export class CreateTripPageComponent implements OnInit {
 
   onKeyUpLoadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
-      this.service
-        .getLocationSuggestions(
-          target.value,
-          this.selectedCustomer?.customerCode
-        )
-        .subscribe((res: any) => {
-          this.loadingSuggestions = res.data;
-        });
+    const value = (target.value || '').trim();
+    this.clearSearchDebounce(`loading-point-${i}`);
+    if (value.length > 1) {
+      this.debounceSearch(`loading-point-${i}`, () => {
+        this.service
+          .getLocationSuggestions(
+            value,
+            this.selectedCustomer?.customerCode
+          )
+          .subscribe((res: any) => {
+            this.loadingSuggestions = res.data;
+          });
+      });
     } else {
       this.loadingSuggestions = [];
       this.loadingPoints?.controls[i]?.get('pointDistrict').enable();
@@ -462,9 +474,11 @@ export class CreateTripPageComponent implements OnInit {
 
   onClickLoadingSuggestion(option: any, i: number) {
     // update above functionality with form array
+    const addressText =
+      option?.addressText || option?.name || option?.address || option?.label || '';
     this.loadingPoints?.controls[i]
       ?.get('pointName')
-      .setValue(option.addressText);
+      .setValue(addressText);
     if (option.latitude > 0 && option.longitude > 0) {
       this.loadingPoints?.controls[i]
         ?.get('pointLat')
@@ -472,15 +486,11 @@ export class CreateTripPageComponent implements OnInit {
       this.loadingPoints?.controls[i]
         ?.get('pointLon')
         .setValue(option.longitude);
-      const districtName = this.searchDistrict(
+      this.searchDistrict(
         option.latitude,
         option.longitude,
         this.loadingPoints?.controls[i]
       );
-      this.loadingPoints?.controls[i]
-        ?.get('pointDistrict')
-        .setValue(districtName);
-      alert(districtName);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         const lat = res.location.latitude;
@@ -494,16 +504,18 @@ export class CreateTripPageComponent implements OnInit {
     this.loadingSuggestions = [];
   }
 
-  searchDistrict(lat, lng, control): any {
+  searchDistrict(lat, lng, control): void {
     this.service.searchDistricts(lat, lng).subscribe((res: any) => {
-      control.get('pointDistrict').setValue(res.data.name);
+      control.get('pointDistrict').setValue(res?.data?.name || '');
     });
   }
 
   onClickUnloadingSuggestion(option: any, i: number) {
+    const addressText =
+      option?.addressText || option?.name || option?.address || option?.label || '';
     this.unloadingPoints?.controls[i]
       ?.get('pointName')
-      .setValue(option.addressText);
+      .setValue(addressText);
 
     if (option.latitude > 0 && option.longitude > 0) {
       this.unloadingPoints?.controls[i]
@@ -512,14 +524,11 @@ export class CreateTripPageComponent implements OnInit {
       this.unloadingPoints?.controls[i]
         ?.get('pointLon')
         .setValue(option.longitude);
-      const districtName = this.searchDistrict(
+      this.searchDistrict(
         option.latitude,
         option.longitude,
         this.unloadingPoints?.controls[i]
       );
-      this.unloadingPoints?.controls[i]
-        ?.get('pointDistrict')
-        .setValue(districtName);
     } else {
       this.locationService.getLatLong(option.placeId).subscribe((res: any) => {
         this.unloadingPoints?.controls[i]
@@ -528,14 +537,11 @@ export class CreateTripPageComponent implements OnInit {
         this.unloadingPoints?.controls[i]
           ?.get('pointLon')
           .setValue(res?.location?.longitude);
-        const districtName = this.searchDistrict(
+        this.searchDistrict(
           res?.location?.latitude,
           res?.location?.longitude,
           this.unloadingPoints?.controls[i]
         );
-        this.unloadingPoints?.controls[i]
-          ?.get('pointDistrict')
-          .setValue(districtName);
       });
     }
     this.unloadingSuggestions = [];
@@ -543,15 +549,19 @@ export class CreateTripPageComponent implements OnInit {
 
   onKeyUpUnloadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
-      this.service
-        .getLocationSuggestions(
-          target.value,
-          this.selectedCustomer?.customerCode
-        )
-        .subscribe((res: any) => {
-          this.unloadingSuggestions = res.data;
-        });
+    const value = (target.value || '').trim();
+    this.clearSearchDebounce(`unloading-point-${i}`);
+    if (value.length > 1) {
+      this.debounceSearch(`unloading-point-${i}`, () => {
+        this.service
+          .getLocationSuggestions(
+            value,
+            this.selectedCustomer?.customerCode
+          )
+          .subscribe((res: any) => {
+            this.unloadingSuggestions = res.data;
+          });
+      });
     } else {
       this.unloadingSuggestions = [];
       this.unloadingPoints?.controls[i]?.get('pointDistrict').enable();
@@ -564,9 +574,10 @@ export class CreateTripPageComponent implements OnInit {
   onKeyUpLoadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
+    const value = (target.value || '').trim();
+    if (value.length > 1) {
       this.loadingDistrictSuggestions = districts.filter((district: any) =>
-        district.name.toLowerCase().includes(target.value.toLowerCase())
+        district.name.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.loadingDistrictSuggestions = [];
@@ -600,9 +611,10 @@ export class CreateTripPageComponent implements OnInit {
   onKeyUpUnloadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
+    const value = (target.value || '').trim();
+    if (value.length > 1) {
       this.unloadingDistrictSuggestions = districts.filter((district: any) =>
-        district.name.toLowerCase().includes(target.value.toLowerCase())
+        district.name.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.unloadingDistrictSuggestions = [];
@@ -617,16 +629,20 @@ export class CreateTripPageComponent implements OnInit {
       this.unloadingPoints?.controls[i]?.get('pointLat').value === '' ||
       this.unloadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.unloadingPoints?.controls[i].setValue(
-        this.unloadingPoints?.controls[i]?.get('pointLat').value
-          ? this.unloadingPoints?.controls[i]?.get('pointLat').value
-          : option.lat
-      );
-      this.unloadingPoints?.controls[i].setValue(
-        this.unloadingPoints?.controls[i]?.get('pointLon').value
-          ? this.unloadingPoints?.controls[i]?.get('pointLon').value
-          : option.lon
-      );
+      this.unloadingPoints?.controls[i]
+        ?.get('pointLat')
+        .setValue(
+          this.unloadingPoints?.controls[i]?.get('pointLat').value
+            ? this.unloadingPoints?.controls[i]?.get('pointLat').value
+            : option.lat
+        );
+      this.unloadingPoints?.controls[i]
+        ?.get('pointLon')
+        .setValue(
+          this.unloadingPoints?.controls[i]?.get('pointLon').value
+            ? this.unloadingPoints?.controls[i]?.get('pointLon').value
+            : option.lon
+        );
     }
     this.unloadingDistrictSuggestions = [];
   }
@@ -639,12 +655,31 @@ export class CreateTripPageComponent implements OnInit {
   onKeyUpGoods($event: KeyboardEvent) {
     const target = $event.target as HTMLInputElement;
     const goodsOptions = JSON.parse(JSON.stringify(this.goodsOptionsArray));
-    if (target.value.length > 1) {
+    const value = (target.value || '').trim();
+    if (value.length > 1) {
       this.loadingGoodsSuggestions = goodsOptions.filter((option: any) =>
-        option.value.toLowerCase().includes(target.value.toLowerCase())
+        option.value.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.loadingGoodsSuggestions = [];
+    }
+  }
+
+  private debounceSearch(
+    key: string,
+    callback: () => void,
+    delay: number = 300
+  ) {
+    this.clearSearchDebounce(key);
+    const timeout = setTimeout(callback, delay);
+    this.searchDebounceTimers.set(key, timeout);
+  }
+
+  private clearSearchDebounce(key: string) {
+    const timeout = this.searchDebounceTimers.get(key);
+    if (timeout) {
+      clearTimeout(timeout);
+      this.searchDebounceTimers.delete(key);
     }
   }
 

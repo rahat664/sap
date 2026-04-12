@@ -17,7 +17,7 @@ import {
   MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
 import { MatInput } from '@angular/material/input';
-import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CustomerService } from '../../../profiles/services/customer.service';
 import { CustomerModel } from '../../../profiles/components/customer/model/customer.model';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
@@ -74,8 +74,6 @@ export class TripListFilterComponent {
   dateText: any;
   customDateText: any;
   previousFilterLength: number = 0;
-  transporterCodes: any[] = [];
-  transporterNames: any[] = [];
   filterLength: number = 0;
   protected districts = [];
   unloadingDistrict: any;
@@ -133,15 +131,21 @@ export class TripListFilterComponent {
     private tripService: TripService,
     private transporter: UserService
   ) {
-    this.customerSearch.pipe().subscribe(searchText => {
-      this.performCustomerSearch(searchText);
-    });
-    this.transporterSearch.pipe().subscribe(searchText => {
-      this.performTransporterSearch(searchText);
-    });
-    this.tripIDSearchSubject.pipe().subscribe(searchText => {
-      this.performTripIdSearch(searchText);
-    });
+    this.customerSearch
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performCustomerSearch(searchText);
+      });
+    this.transporterSearch
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performTransporterSearch(searchText);
+      });
+    this.tripIDSearchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performTripIdSearch(searchText);
+      });
   }
 
   ngOnInit() {
@@ -164,9 +168,7 @@ export class TripListFilterComponent {
       customerName: this.customerNames,
       truckType: this.truckType,
       customers: this.customers,
-      transporterName: this.transporterNames,
-      transporterCodes: this.transporterCodes,
-      transporters: this.transporters,
+      transporterName: this.transporterName,
       tripId: this.tripId,
       selectedButton: this.selectedButton,
       selectedTruckValues: this.selectedTruckValues,
@@ -294,7 +296,7 @@ export class TripListFilterComponent {
   }
 
   onKeyUpCustomerSearch($event: KeyboardEvent) {
-    const searchText = ($event.target as HTMLInputElement).value;
+    const searchText = ($event.target as HTMLInputElement).value?.trim() || '';
     this.searchValue = searchText;
     this.customerSearch.next(searchText);
   }
@@ -382,7 +384,7 @@ export class TripListFilterComponent {
   }
 
   onKeyUpTransporterSearch($event: KeyboardEvent) {
-    const searchText = ($event.target as HTMLInputElement).value;
+    const searchText = ($event.target as HTMLInputElement).value?.trim() || '';
     this.transporterSearch.next(searchText);
   }
 
@@ -409,10 +411,9 @@ export class TripListFilterComponent {
   }
 
   onClickTransporterSearchSuggestion(result: any) {
-    this.transporters.push(result);
-    this.transporterCodes?.push(result.code);
-    this.transporterNames?.push(result.name);
-    this.transporterName = '';
+    this.transporterName = result.name;
+    this.searchTransporter = result.name;
+    this.transporterSuggestions = [];
   }
 
   onClickClearTransporter() {
@@ -422,7 +423,7 @@ export class TripListFilterComponent {
   }
 
   onKeyUpTripSearch($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.tripIDSearchSubject.next(value); // Trigger the Subject when input changes
   }
 
@@ -474,12 +475,6 @@ export class TripListFilterComponent {
         this.customers = tripFilterData?.customers;
       }
       this.customers = tripFilterData?.customers || [];
-      if (tripFilterData?.transporterCodes?.length > 0) {
-        this.transporterCodes = tripFilterData?.transporterCodes
-        this.transporterNames = tripFilterData?.transporterName;
-        this.transporters = tripFilterData?.transporters;
-      }
-      this.transporters = tripFilterData?.transporters || [];
       if (tripFilterData?.truckType?.length > 0) {
         this.truckType = tripFilterData?.truckType;
         if (this.truckType) {
@@ -517,6 +512,8 @@ export class TripListFilterComponent {
           }
         }
       }
+      this.transporterName = tripFilterData?.transporterName;
+      this.searchTransporter = tripFilterData?.transporterName;
       this.tripId = tripFilterData?.tripId;
       this.searchId = tripFilterData?.tripId;
     }

@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../../shared/utils/response-status';
 import {
   Component,
   EventEmitter,
@@ -51,6 +52,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   customerForm: FormGroup;
   customerModel = new CustomerCreateModel();
   private subs: Subscription;
+  private isCodeManuallyEdited = false;
+  private lastRequestedCustomerCode = '';
+  private lastValidatedCustomerCode = '';
   @Output() formCreated: EventEmitter<boolean> = new EventEmitter<boolean>(
     false
   );
@@ -98,6 +102,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.shared.validateInterNationalPhoneNumber();
+    this.customerForm.get('email')?.valueChanges.subscribe(() => {
+      this.clearEmailExistsError();
+    });
   }
 
   onSave() {
@@ -109,7 +116,9 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
       this.customerModel.phone = this.customerForm.get('phone').value;
       // remove space and - from phone number
       this.customerModel.phone = this.customerModel.phone.replace(/[\s-]/g, '');
-      this.customerModel.email = this.customerForm.get('email').value;
+      this.customerModel.email = this.normalizeEmail(
+        this.customerForm.get('email').value
+      );
       this.customerModel.address = this.customerForm.get('address').value;
       this.customerModel.note = this.customerForm.get('note').value;
       this.customerModel.tripType = this.customerForm.get('tripType').value;
@@ -119,7 +128,7 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
         .customerCodeValidation(this.customerModel.customerCode)
         .subscribe((res: any) => {
           if (res.data.validation == 'Failed') {
-            this.subs.unsubscribe();
+            this.subs?.unsubscribe();
             this.customerForm.get('code').setValue(res.data.Suggestion);
             this.customerModel.customerCode = res.data.Suggestion;
             this.submitCustomer();
@@ -133,18 +142,30 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   }
 
   private submitCustomer() {
-    this.service.addCustomer(this.customerModel).subscribe(
+    const payload: CustomerCreateModel & { email?: string | null } = {
+      ...this.customerModel,
+    };
+    if (!payload.email) {
+      delete payload.email;
+    }
+    this.service.addCustomer(payload).subscribe(
       (res: any) => {
-        if (res.status == 'OK') {
+        if (isSuccessStatus(res?.status)) {
           this.toastr.showSuccess('Customer created successfully');
           this.customerForm.reset();
           this.dialogRef.close(true);
         } else {
-          this.toastr.showError(res.error.message);
+          const message =
+            this.getCustomerErrorMessage(res) ?? 'Failed to create customer';
+          this.setEmailExistsErrorIfNeeded(message);
+          this.toastr.showError(message);
         }
       },
       (error: any) => {
-        this.toastr.showError(error.error.message);
+        const message =
+          this.getCustomerErrorMessage(error) ?? 'Failed to create customer';
+        this.setEmailExistsErrorIfNeeded(message);
+        this.toastr.showError(message);
       }
     );
   }
@@ -158,9 +179,12 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   }
 
   getEmailErrorMessage() {
-    if (this.customerForm?.get('email').hasError('email')) {
+    const emailControl = this.customerForm?.get('email');
+    if (emailControl?.hasError('emailExists')) {
+      return emailControl.getError('message') || 'Email already exists';
+    } else if (emailControl?.hasError('email')) {
       return 'Invalid email address';
-    } else if (this.customerForm?.get('email').hasError('required')) {
+    } else if (emailControl?.hasError('required')) {
       return 'Email address required';
     } else {
       return '';
@@ -168,7 +192,23 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   }
 
   getPhoneErrorMessageWithTouch() {
-    return this.validation.getErrorMessageWithTouch(this.customerForm);
+    const control = this.customerForm?.get('phone');
+    if (!control) {
+      return '';
+    }
+    if (control.hasError('required')) {
+      return 'Phone number required';
+    }
+    if (
+      control.hasError('invalidNumber') ||
+      control.hasError('minlength') ||
+      control.hasError('maxlength') ||
+      control.hasError('minLength') ||
+      control.hasError('maxLength')
+    ) {
+      return 'Phone number does not match selected country code';
+    }
+    return '';
   }
 
   getCustomerCodeError() {
@@ -183,27 +223,99 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkCustomerCodeIsAlreadyExistOrNot(fourDigitName: string) {
-    if (fourDigitName.length === 4) {
-      this.customerCodeLoading = true;
-      this.service.customerCodeValidation(fourDigitName).subscribe(
-        (res: any) => {
-          this.customerCodeLoading = false;
-          if (res.data.validation == 'Failed') {
-            this.customerForm.get('code').setErrors({
-              invalidCustomerCode: true,
-              message: `Code already exists. Use  '${res.data.Suggestion}' instead`,
-            });
-            this.customerForm.get('code').markAsTouched();
-          } else {
-            this.customerModel.customerCode = fourDigitName;
-          }
-        },
-        error => {
-          this.customerCodeLoading = false;
-        }
-      );
+  private getCustomerErrorMessage(error: any): string | null {
+    if (!error) {
+      return null;
     }
+    if (typeof error === 'string') {
+      return error;
+    }
+    if (typeof error.message === 'string') {
+      return error.message;
+    }
+    if (typeof error.error?.message === 'string') {
+      return error.error.message;
+    }
+    if (typeof error.error === 'string') {
+      return error.error;
+    }
+    if (typeof error.statusText === 'string') {
+      return error.statusText;
+    }
+    return null;
+  }
+
+  private normalizeEmail(email: string | null | undefined): string | null {
+    const normalized = (email || '').toString().trim();
+    return normalized.length > 0 ? normalized : null;
+  }
+
+  private setEmailExistsErrorIfNeeded(message: string | null) {
+    if (!message) {
+      return;
+    }
+    const lowerMessage = message.toLowerCase();
+    if (!lowerMessage.includes('email')) {
+      return;
+    }
+    if (!lowerMessage.includes('exist') && !lowerMessage.includes('already')) {
+      return;
+    }
+    const emailControl = this.customerForm?.get('email');
+    if (!emailControl) {
+      return;
+    }
+    emailControl.setErrors({
+      ...(emailControl.errors || {}),
+      emailExists: true,
+      message,
+    });
+    emailControl.markAsTouched();
+  }
+
+  private clearEmailExistsError() {
+    const emailControl = this.customerForm?.get('email');
+    if (!emailControl?.hasError('emailExists')) {
+      return;
+    }
+    const errors = { ...(emailControl.errors || {}) };
+    delete errors['emailExists'];
+    delete errors['message'];
+    emailControl.setErrors(Object.keys(errors).length ? errors : null);
+  }
+
+  private checkCustomerCodeIsAlreadyExistOrNot(fourDigitName: string) {
+    if (fourDigitName.length !== 4) {
+      return;
+    }
+    if (
+      fourDigitName === this.lastRequestedCustomerCode ||
+      fourDigitName === this.lastValidatedCustomerCode
+    ) {
+      return;
+    }
+    this.customerCodeLoading = true;
+    this.lastRequestedCustomerCode = fourDigitName;
+    this.service.customerCodeValidation(fourDigitName).subscribe(
+      (res: any) => {
+        this.customerCodeLoading = false;
+        this.lastRequestedCustomerCode = '';
+        this.lastValidatedCustomerCode = fourDigitName;
+        if (res.data.validation == 'Failed') {
+          this.customerForm.get('code').setErrors({
+            invalidCustomerCode: true,
+            message: `Code already exists. Use  '${res.data.Suggestion}' instead`,
+          });
+          this.customerForm.get('code').markAsTouched();
+        } else {
+          this.customerModel.customerCode = fourDigitName;
+        }
+      },
+      error => {
+        this.customerCodeLoading = false;
+        this.lastRequestedCustomerCode = '';
+      }
+    );
   }
 
   getContactPersonErrorMessage() {
@@ -236,70 +348,90 @@ export class CustomerCreateComponent implements OnInit, OnDestroy {
   }
 
   onNameKeyPress($event: Event) {
+    const codeControl = this.customerForm.get('code');
+    const currentCode = (codeControl?.value || '').toString();
+    if (this.isCodeManuallyEdited && currentCode.length === 4) {
+      return;
+    }
     const value = $event.target['value'];
     const valueWithoutSpace = value?.toString().replace(/\s/g, '');
-    if (value?.length > 0) {
-      let fourDigitName = '';
-      if (valueWithoutSpace?.length > 0 && valueWithoutSpace?.length <= 4) {
-        fourDigitName = valueWithoutSpace
-          ?.toString()
-          .substring(0, 4)
-          .toUpperCase();
-        this.customerForm.get('code').setValue(fourDigitName);
-        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
-      } else {
-        fourDigitName = valueWithoutSpace
-          ?.toString()
-          .substring(0, 4)
-          .toUpperCase();
-        this.customerForm.get('code').setValue(fourDigitName);
-        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
-      }
-      if (valueWithoutSpace?.length < 4) {
-        // fill the missing characters with random numbers
-        const randomNumbers = Math.floor(Math.random() * 10000).toString();
-        fourDigitName =
-          valueWithoutSpace +
-          randomNumbers
-            .substring(0, 4 - valueWithoutSpace?.length)
-            .toUpperCase();
-        this.customerForm.get('code').setValue(fourDigitName.toUpperCase());
-        this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
-      }
-    } else {
+    if (!value || valueWithoutSpace?.length === 0) {
       this.customerForm.get('code').setValue('');
+      this.customerCodeLoading = false;
+      this.lastRequestedCustomerCode = '';
+      this.lastValidatedCustomerCode = '';
+      return;
     }
+
+    const upperValue = valueWithoutSpace.toString().toUpperCase();
+    if (upperValue.length < 4) {
+      // fill the missing characters with random numbers
+      const randomNumbers = Math.floor(Math.random() * 10000)
+        .toString()
+        .padStart(4, '0');
+      const fourDigitName =
+        upperValue + randomNumbers.substring(0, 4 - upperValue.length);
+      this.customerForm.get('code').setValue(fourDigitName);
+      return;
+    }
+
+    const fourDigitName = upperValue.substring(0, 4);
+    if (fourDigitName === currentCode) {
+      return;
+    }
+    this.customerForm.get('code').setValue(fourDigitName);
+    this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
   }
 
   onCodeKeyPress($event: Event) {
     const value = $event.target['value'];
     const valueWithoutSpace = value?.toString().replace(/\s/g, '');
+    const codeControl = this.customerForm.get('code');
+    this.isCodeManuallyEdited = valueWithoutSpace?.length > 0;
     if (value?.length > 0) {
       let fourDigitName = '';
       if (valueWithoutSpace?.length > 0 && valueWithoutSpace?.length <= 4) {
+        if (valueWithoutSpace?.length < 4) {
+          this.lastRequestedCustomerCode = '';
+          this.lastValidatedCustomerCode = '';
+          if (codeControl?.hasError('invalidCustomerCode')) {
+            const errors = { ...(codeControl.errors || {}) };
+            delete errors['invalidCustomerCode'];
+            delete errors['message'];
+            codeControl.setErrors(Object.keys(errors).length ? errors : null);
+          }
+        }
         fourDigitName = valueWithoutSpace
           ?.toString()
           .substring(0, 4)
           .toUpperCase();
-        this.customerForm.get('code').setValue(fourDigitName);
+        codeControl?.setValue(fourDigitName);
         this.checkCustomerCodeIsAlreadyExistOrNot(fourDigitName);
       }
     } else {
-      this.customerForm.get('code').setValue('');
+      this.lastRequestedCustomerCode = '';
+      this.lastValidatedCustomerCode = '';
+      codeControl?.setValue('');
+      if (codeControl?.hasError('invalidCustomerCode')) {
+        const errors = { ...(codeControl.errors || {}) };
+        delete errors['invalidCustomerCode'];
+        delete errors['message'];
+        codeControl.setErrors(Object.keys(errors).length ? errors : null);
+      }
     }
   }
 
   protected readonly CountryISO = CountryISO;
 
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',
     nationalNumberLabel: '',
     hintLabel: '',
     invalidNumberError: '',
-    requiredError: 'This field is required',
+    requiredError: '',
   };
 
   get phoneNumber() {

@@ -16,7 +16,7 @@ import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autoc
 import { MatInput } from '@angular/material/input';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { districts } from '../../../shared/models/ditrict-with-latlng.model';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CustomerService } from '../../profiles/services/customer.service';
 import { TripService } from '../../trip-list/services/trip.service';
 import { UserService } from '../../profiles/services/user.service';
@@ -56,8 +56,6 @@ export class PaymentFilterComponent {
     'Custom',
   ];
   selectedButton: any;
-  transporterCodes: any[] = [];
-  transporterNames: any[] = [];
   startDate: string;
   endDate: string;
   customSelected: boolean;
@@ -139,16 +137,18 @@ export class PaymentFilterComponent {
   transporterName: string = '';
 
   constructor(private datePipe: DatePipe, private customer: CustomerService, private trip: TripService, private transporter: UserService) {
-    this.searchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performSearch(searchText);
-    });
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performSearch(searchText);
+      });
     this.customerSearchSubject
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(searchText => {
         this.performCustomerSearch(searchText);
       });
     this.transporterSearchSubject
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(searchText => {
         this.performTransporterSearch(searchText);
       });
@@ -167,9 +167,7 @@ export class PaymentFilterComponent {
       tripId: this.tripId,
       searchName: this.searchName,
       customerCode: this.customerCode,
-      transporterName: this.transporterNames,
-      transporterCodes: this.transporterCodes,
-      transporters: this.transporters,
+      transporterName: this.transporterName,
       searchId: this.searchId,
       loadingDistrict: this.loadingDistrict,
       unloadingDistrict: this.unloadingDistrict,
@@ -271,7 +269,7 @@ export class PaymentFilterComponent {
   }
 
   onKeyUpTripSearch($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.customerSearchSubject.next(value);
   }
 
@@ -297,7 +295,7 @@ export class PaymentFilterComponent {
   }
 
   onSearchInputChange($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.searchSubject.next(value); // Trigger the Subject when input changes
   }
 
@@ -323,7 +321,6 @@ export class PaymentFilterComponent {
   unloadingDistrict: any;
   searchTransporter: string = ''
   transporterSuggestions: any;
-  transporters: any[] = [];
 
   onLoadingDistrictChange($event: MatSelectChange) {
 
@@ -348,11 +345,8 @@ export class PaymentFilterComponent {
       this.unloadingDistrict = filterData.unloadingDistrict;
       this.paymentStatusPlaceholder = filterData.paymentStatus;
       this.tripStatusPlaceholder = filterData.tripStatus;
-      if (filterData?.transporterCodes?.length > 0) {
-        this.transporterCodes = filterData?.transporterCodes
-        this.transporterNames = filterData?.transporterName;
-        this.transporters = filterData?.transporters;
-      }
+      this.searchTransporter = filterData.transporterName;
+      this.transporterName = filterData.transporterName;
       this.tripStatusOptionsArray.forEach(x => {
         if (x.value === filterData.tripStatus) {
           x.selected = true;
@@ -442,15 +436,15 @@ export class PaymentFilterComponent {
   }
 
   onKeyUpTransporterSearch($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.transporterSearchSubject.next(value); // Trigger the Subject when input changes
   }
 
   onClickTransporterSearchSuggestion(result: any) {
-    this.transporters.push(result);
-    this.transporterCodes?.push(result.code);
-    this.transporterNames?.push(result.name);
-    this.transporterName = '';
+    this.transporterName = result.name;
+    this.searchTransporter = result.name;
+    this.transporterSuggestions = [];
+    this.isTripSearchedMenuOpened = false;
   }
   private performTransporterSearch(searchText: string) {
     if (searchText?.length > 0) {
@@ -478,13 +472,5 @@ export class PaymentFilterComponent {
     this.transporterName = '';
     this.searchTransporter = '';
     this.transporterSuggestions = [];
-  }
-
-  onClickCloseTransporter(transporters: any) {
-    this.filterLength -= 1;
-    this.previousFilterLength -= 1;
-    this.transporters = this.transporters?.filter(
-      (value: any) => value.code !== transporters.code
-    );
   }
 }

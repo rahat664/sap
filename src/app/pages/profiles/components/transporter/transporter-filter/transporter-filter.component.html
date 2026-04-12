@@ -37,14 +37,14 @@
                   [(ngModel)]="startDate"
                   (selectionchange)="onChangeStartDate($event)"
                   matStartDate
-                  placeholder="Start date"/>
+                  placeholder="Start Date"/>
                 <input
                   [disabled]="!customSelected"
                   (focus)="picker.open()"
                   [(ngModel)]="endDate"
                   (selectionchange)="onChangeEndDate($event)"
                   matEndDate
-                  placeholder="End date"/>
+                  placeholder="End Date"/>
               </mat-date-range-input>
               <mat-datepicker-toggle
                 matIconSuffix
@@ -68,7 +68,7 @@
             type="text"
             matInput
             (keyup)="onKeyUpTruckStandSearch($event)"
-            placeholder="Select truck stand"
+            placeholder="Select Truck Stand"
             [matAutocomplete]="truckStandSug"/>
           <mat-autocomplete #truckStandSug="matAutocomplete">
             @for (option of truckStandSuggestions; track option) {
@@ -103,3 +103,4 @@
     </div>
   </div>
 </div>
+

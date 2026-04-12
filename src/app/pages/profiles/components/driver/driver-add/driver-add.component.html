@@ -53,7 +53,7 @@
                         type="text"
                         matInput
                         formControlName="driverName"
-                        placeholder="Enter driver Name"/>
+                        placeholder="Enter Driver Name"/>
                     </mat-form-field>
                     <span
                       *ngIf="driverAddForm.get('driverName').touched"
@@ -73,9 +73,11 @@
                     [preferredCountries]="[CountryISO.Bangladesh]"
                     [fieldControl]="phoneNumber"
                     [numberValidation]="true"
+                    [useMask]="true"
                     [hidePhoneIcon]="true"
                     [required]="true"
                     [autoIpLookup]="false"
+                    (focusout)="phoneNumber?.markAsTouched()"
                     [ngClass]="{
                       customError:
                         driverAddForm.get('driverPhone').invalid &&
@@ -88,7 +90,7 @@
                       driverAddForm.get('driverPhone').invalid
                     "
                     class="text-red text-xs">
-                    <span>Driver number required</span>
+                    <span>{{ getDriverPhoneErrorWithTouch() }}</span>
                   </span>
                 </div>
               </div>
@@ -161,6 +163,16 @@
                         [disabled]="everyThingDisabled"
                         #picker></mat-datepicker>
                     </mat-form-field>
+                    <span
+                      *ngIf="
+                        option?.expiryAvailable &&
+                        driverAddForm.get(option.expiryFormControlName)
+                          ?.touched &&
+                        driverAddForm.get(option.expiryFormControlName)
+                          ?.invalid
+                      "
+                      class="text-red text-xs"
+                    >{{ getDrivingLicenseExpiryError() }}</span>
                   </div>
                 </div>
 
@@ -327,3 +339,4 @@
     </div>
   </div>
 </mat-menu>
+

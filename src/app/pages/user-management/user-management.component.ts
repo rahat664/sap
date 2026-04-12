@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CustomInputComponent } from '../../shared/modules/custom-input/custom-input.component';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -79,6 +79,7 @@ export class UserManagementComponent implements OnInit {
   size = 30;
   filterData: any = {};
   filterApplied: boolean = true;
+  private searchSubject = new Subject<string>();
 
   constructor(
     private service: UserService,
@@ -86,7 +87,13 @@ export class UserManagementComponent implements OnInit {
     private toastr: HandleToastrService,
     private shared: DriverEditSharedService,
     private activatedRoute: ActivatedRoute,
-  ) {}
+  ) {
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.applySearch(searchText);
+      });
+  }
 
   ngOnInit() {
     localStorage.removeItem('tripFilterData')
@@ -177,7 +184,6 @@ export class UserManagementComponent implements OnInit {
 
     this.service
       .getUsers(params)
-      .pipe(debounceTime(1000))
       .subscribe((res: any) => {
         this.Users = res.data.responses;
         this.totalPages = res.data.totalPages;
@@ -247,6 +253,11 @@ export class UserManagementComponent implements OnInit {
   }
 
   onKeyUpSearch(event: KeyboardEvent): void {
+    const value = (event.target as HTMLInputElement).value?.trim() || '';
+    this.searchSubject.next(value);
+  }
+
+  private applySearch(searchText: string): void {
     this.page = 0;
     this.size = 30;
     this.statusValue = '';
@@ -254,7 +265,7 @@ export class UserManagementComponent implements OnInit {
     this.statusInputPlaceholder = 'All';
     this.statusOptionsArray.forEach(item => (item.selected = false));
     this.loading = true;
-    this.searchValue = (event.target as HTMLInputElement).value || '';
+    this.searchValue = searchText;
     this.Users = [];
     this.getUserList();
   }

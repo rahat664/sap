@@ -62,6 +62,7 @@ export class ColumnChartComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnInit() {
     const colors = ['#85DAE5', '#208B99'];
+    // Initialize with safe defaults to avoid undefined inputs
     this.chartOptions = {
       series: [
         {

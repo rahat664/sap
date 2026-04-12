@@ -158,7 +158,7 @@
             class="example-full-width w-full">
             <input
               [value]="getSelectedDate()"
-              placeholder="Select date time"
+              placeholder="Select Date Time"
               matInput />
             <mat-datepicker-toggle matIconSuffix></mat-datepicker-toggle>
           </mat-form-field>
@@ -191,7 +191,7 @@
           *ngIf="imageTypes?.length > 1">
           <mat-select
             (selectionChange)="onChangeImageType($event)"
-            placeholder="Select image type">
+            placeholder="Select Image Type">
             @for (imageType of imageTypes; track imageType) {
               <mat-option [value]="imageType.viewValue">{{
                   imageType?.viewValue
@@ -248,3 +248,4 @@
     </div>
   </div>
 </div>
+

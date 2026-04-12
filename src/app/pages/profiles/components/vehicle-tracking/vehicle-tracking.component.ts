@@ -9,7 +9,7 @@ import {
 } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { debounceTime, Subject, timer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, timer } from 'rxjs';
 import { TruckService } from '../truck/services/truck.service';
 import { UserService } from '../../services/user.service';
 import { TruckingMapComponent } from './trucking-map/trucking-map.component';
@@ -135,16 +135,18 @@ export class VehicleTrackingComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {
     this.isMobileDevice() ? this.trucklistOpened = false : this.trucklistOpened = true;
-    this.truckSearchSubject.pipe(debounceTime(1000)).subscribe(searchText => {
-      this.performTruckSearch(searchText);
-    });
+    this.truckSearchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performTruckSearch(searchText);
+      });
     this.transporterSearchSubject
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(searchText => {
         this.performTransporterSearch(searchText);
       });
     this.allTruckSearchSubject
-      .pipe(debounceTime(1000))
+      .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(searchText => {
         this.performAllTruckSearch(searchText);
       });
@@ -186,7 +188,7 @@ export class VehicleTrackingComponent implements OnInit {
   }
 
   onKeyUpTransporterSearch($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.transporterSearchSubject.next(value);
   }
 
@@ -200,12 +202,12 @@ export class VehicleTrackingComponent implements OnInit {
   }
 
   onKeyUpTruckSearch($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.truckSearchSubject.next(value);
   }
 
   onKeyUpAllTruckSearch($event: any) {
-    const value = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     this.allTruckSearchSubject.next(value);
   }
 
@@ -425,7 +427,6 @@ export class VehicleTrackingComponent implements OnInit {
             null,
             this.condition !== 'All' ? this.condition : ''
           )
-          .pipe(debounceTime(1000))
           .subscribe((res: any) => {
             this.allTruckList.push(...res.data.responses);
           });

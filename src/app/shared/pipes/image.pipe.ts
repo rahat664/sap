@@ -9,7 +9,8 @@ export class ImagePipe implements PipeTransform {
     if (value) {
       return value;
     } else {
-      return 'assets/images/user.png';
+      // Use lightweight, scalable SVG to avoid large intrinsic image warnings
+      return 'assets/svg/user.svg';
     }
   }
 }

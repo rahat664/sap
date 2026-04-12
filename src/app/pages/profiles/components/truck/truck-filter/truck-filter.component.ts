@@ -52,9 +52,9 @@ export class TruckFilterComponent {
   tripIdSearch: Subject<string> = new Subject<string>();
   buttonName: any[] = [
     'Today',
-    'Last 7 Days',
-    'Last 15 Days',
-    'Last 30 Days',
+    'Current month',
+    'Last week',
+    'Last month',
     'Custom',
   ];
   picker: any;
@@ -222,56 +222,54 @@ export class TruckFilterComponent {
       this.customSelected = false;
       this.dateText = event;
       picker.close();
+      const today = new Date();
+      let startDateValue: Date;
+      let endDateValue: Date;
       if (event === 'Today') {
-        this.startDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-        this.endDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-        this.dateText = event;
-      } else if (event === 'Last 7 Days') {
-        this.startDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 7)),
-          'yyyy-MM-dd'
+        startDateValue = new Date(today);
+        endDateValue = new Date(today);
+      } else if (event === 'Current month') {
+        startDateValue = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          1
         );
-        // end date should be yesterday
-        this.endDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 1)),
-          'yyyy-MM-dd'
+        endDateValue = new Date(today);
+      } else if (event === 'Last week') {
+        startDateValue = new Date(today);
+        startDateValue.setDate(startDateValue.getDate() - 7);
+        endDateValue = new Date(today);
+        endDateValue.setDate(endDateValue.getDate() - 1);
+      } else {
+        // event === 'Last month'
+        startDateValue = new Date(
+          today.getFullYear(),
+          today.getMonth() - 1,
+          1
         );
-        this.dateText = event;
-      } else if (event === 'Last 15 Days') {
-        this.startDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 15)),
-          'yyyy-MM-dd'
+        endDateValue = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          0
         );
-        // end date should be yesterday
-        this.endDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 1)),
-          'yyyy-MM-dd'
-        );
-        this.dateText = event;
-      } else if (event === 'Last 30 Days') {
-        this.startDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 30)),
-          'yyyy-MM-dd'
-        );
-        // end date should be yesterday
-        this.endDate = this.datePipe.transform(
-          new Date(new Date().setDate(new Date().getDate() - 1)),
-          'yyyy-MM-dd'
-        );
-        this.dateText = event;
       }
+      this.startDate = this.datePipe.transform(startDateValue, 'yyyy-MM-dd');
+      this.endDate = this.datePipe.transform(endDateValue, 'yyyy-MM-dd');
+      this.dateText = event;
     }
   }
 
-  onChangeStartDate($event: Event) {
-    this.startDate = ($event.target as HTMLInputElement).value;
-    this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
+  onChangeStartDate($event: any) {
+    const raw = $event?.value ?? $event?.target?.value ?? '';
+    const dateVal = raw instanceof Date ? raw : new Date(raw);
+    this.startDate = this.datePipe.transform(dateVal, 'yyyy-MM-dd');
   }
 
   onChangeEndDate($event: any) {
-    if ($event.target.value) {
-      this.endDate = ($event.target as HTMLInputElement).value;
-      this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
+    const raw = $event?.value ?? $event?.target?.value ?? '';
+    if (raw) {
+      const dateVal = raw instanceof Date ? raw : new Date(raw);
+      this.endDate = this.datePipe.transform(dateVal, 'yyyy-MM-dd');
       this.customDateText = `${this.startDate} - ${this.endDate}`;
       if (!this.dateSelected) {
         this.previousFilterLength += 1;

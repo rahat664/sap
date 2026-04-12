@@ -18,6 +18,7 @@ import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/
 import { UserFilterComponent } from '../../../user-management/user-filter/user-filter.component';
 import { CustomerFilterComponent } from './customer-filter/customer-filter.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-customer',
@@ -54,6 +55,7 @@ export class CustomerComponent implements OnInit {
   dateOptionArray: CustomInputSelectModel[];
   filterApplied: boolean = false;
   filterData: any = {};
+  private searchSubject = new Subject<string>();
 
   constructor(
     private service: CustomerService,
@@ -68,6 +70,11 @@ export class CustomerComponent implements OnInit {
       startDate: [''],
       endDate: [''],
     });
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.performSearch(searchText);
+      });
   }
 
   ngOnInit(): void {
@@ -113,19 +120,24 @@ export class CustomerComponent implements OnInit {
   }
 
   onKeyUpSearch($event: any) {
-    this.searchValue = $event.target.value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.searchSubject.next(value);
+  }
+
+  private performSearch(searchText: string) {
+    this.searchValue = searchText;
     this.loading = true;
-    const target = $event.target.value;
-    if (target?.length > 0) {
+    this.page = 0;
+    if (searchText?.length > 0) {
       this.customers = [];
-      if (target?.length == 11) {
-        if (this.checkIfAllInputIsNumber(target)) {
+      if (searchText?.length == 11) {
+        if (this.checkIfAllInputIsNumber(searchText)) {
           this.service
             .searchCustomer(
               this.page,
               this.size,
               null,
-              target,
+              searchText,
               this.from,
               this.to
             )
@@ -139,7 +151,7 @@ export class CustomerComponent implements OnInit {
             .searchCustomer(
               this.page,
               this.size,
-              target,
+              searchText,
               null,
               this.from,
               this.to
@@ -152,7 +164,7 @@ export class CustomerComponent implements OnInit {
         }
       } else {
         this.service
-          .searchCustomer(this.page, this.size, target, null)
+          .searchCustomer(this.page, this.size, searchText, null)
           .subscribe((res: any) => {
             this.customers = res.data.content;
             this.totalPages = res.data.totalPages;
@@ -160,7 +172,6 @@ export class CustomerComponent implements OnInit {
           });
       }
     } else {
-      this.page = 0;
       this.getCustomer();
     }
   }

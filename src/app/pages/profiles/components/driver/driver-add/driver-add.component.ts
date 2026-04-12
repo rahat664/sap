@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../../shared/utils/response-status';
 import {
   ChangeDetectorRef,
   Component,
@@ -44,6 +45,7 @@ import {
 import { DriverEditSharedService } from '../../../services/driver-edit-shared.service';
 import { FallbackImagePipe } from '../../../../../shared/pipes/fallback-image.pipe';
 import { ImageErrorDirective } from '../../../../../shared/directive/image-error.directive';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-driver-add',
@@ -131,7 +133,6 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
     this.driverAddForm
       .get('driverPhone')
       .valueChanges.subscribe((value: string) => {
-        this.numberOnlyValidation(value);
         this.driverPhoneErrorMessage =
           this.validation.getDriverNumberValidation(
             this.driverAddForm.get('driverPhone')
@@ -174,7 +175,9 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
           this.driverAddForm
             .get('drivingLicenseExpiryDate')
             ?.setValidators([Validators.required]);
-          this.driverAddForm.get('insuranceExpDate')?.updateValueAndValidity();
+          this.driverAddForm
+            .get('drivingLicenseExpiryDate')
+            ?.updateValueAndValidity();
         }
         break;
       case 'drivingLicenseBack':
@@ -187,7 +190,9 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
           this.driverAddForm
             .get('drivingLicenseExpiryDate')
             ?.setValidators([Validators.required]);
-          this.driverAddForm.get('insuranceExpDate')?.updateValueAndValidity();
+          this.driverAddForm
+            .get('drivingLicenseExpiryDate')
+            ?.updateValueAndValidity();
         }
         break;
       case 'other':
@@ -242,11 +247,11 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
   onDriverSave() {
     if (this.driverAddForm.valid) {
       this.loading = true;
-      if (!this.driverAddForm.get('drivingLicenseExpiryDate')?.value) {
-        this.driverAddForm.removeControl('drivingLicenseExpiryDate');
-      }
       const formData = new FormData();
       const payload: Record<string, any> = {};
+      const normalizedPhone = this.normalizePhone(
+        this.driverAddForm.get('driverPhone')?.value
+      );
 
       // Iterate over form controls
       Object.keys(this.driverAddForm.controls).forEach(key => {
@@ -268,7 +273,7 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
         } else {
           // Add other controls to the payload object
           if (key === 'driverPhone') {
-            payload[key] = value.replace(/[\s-]/g, '');
+            payload[key] = normalizedPhone;
           } else {
             payload[key] = value;
           }
@@ -276,22 +281,28 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
       });
       formData.append('payload', JSON.stringify(payload));
 
-      this.service.addDriver(formData).subscribe(
+      this.service
+        .addDriver(formData)
+        .pipe(finalize(() => (this.loading = false)))
+        .subscribe(
         (res: any) => {
           // Handle response
-          if (res.status == 'OK') {
-            this.loading = false;
+          if (isSuccessStatus(res?.status)) {
             localStorage.removeItem('driver');
-            this.toastr.showSuccess(res.message);
+            this.setRecentDriver(payload['driverPhone'], payload['driverName']);
+            this.toastr.showSuccess(
+              res?.message || 'Driver created successfully'
+            );
             this.router.navigate(['/profile/driver']);
           } else {
-            this.toastr.showError(res.message);
+            this.toastr.showError(res?.message || 'Failed to add driver');
           }
         },
         error => {
           // Handle error
-          this.loading = false;
-          this.toastr.showError(error.error.message);
+          this.toastr.showError(
+            error?.error?.message || error?.message || 'Failed to add driver'
+          );
         }
       );
     } else {
@@ -305,46 +316,56 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private numberOnlyValidation(value: any) {
-    if (isNaN(value)) {
-      this.driverAddForm?.get('driverPhone').setValue('');
+  private normalizePhone(phone: string | null | undefined): string {
+    return (phone || '').toString().replace(/[\s-]/g, '');
+  }
+
+  private setRecentDriver(phone: string, name: string) {
+    if (!phone) {
+      return;
     }
-    if (value?.substring(0, 1) != '0' && value?.substring(0, 1)) {
-      this.driverAddForm?.get('driverPhone').setErrors({ invalidNumber: true });
-    }
-    if (value?.substring(1, 2) != '1' && value?.substring(1, 2)) {
-      this.driverAddForm?.get('driverPhone').setErrors({ invalidNumber: true });
-    }
-    const onlyNumbers = value?.replace(/[^\d]/g, '');
-    if (onlyNumbers?.length > 11) {
-      this.driverAddForm
-        ?.get('driverPhone')
-        .setValue(onlyNumbers.substring(0, 11));
-    }
+    localStorage.setItem(
+      'recentDriver',
+      JSON.stringify({
+        phone: phone,
+        name: name || '',
+        createdAt: new Date().toISOString(),
+      })
+    );
   }
 
   getDriverPhoneErrorWithoutTouch() {
-    if (this.driverAddForm?.get('driverPhone').hasError('invalidNumber')) {
-      return 'Invalid driver number';
-    } else {
-      return '';
+    const control = this.driverAddForm?.get('driverPhone');
+    if (
+      control?.hasError('invalidNumber') ||
+      control?.hasError('minlength') ||
+      control?.hasError('maxlength') ||
+      control?.hasError('minLength') ||
+      control?.hasError('maxLength')
+    ) {
+      return 'Phone number does not match selected country code';
     }
+    return '';
   }
 
   getDriverPhoneErrorWithTouch() {
-    if (this.driverAddForm?.get('driverPhone').hasError('required')) {
-      return 'Driver number required';
-    } else if (this.driverAddForm?.get('driverPhone').hasError('minlength')) {
-      return 'Invalid driver number';
-    } else if (this.driverAddForm?.get('driverPhone').hasError('maxlength')) {
-      return 'Invalid driver number';
-    } else if (
-      this.driverAddForm?.get('driverPhone').hasError('invalidNumber')
-    ) {
-      return 'Invalid driver number';
-    } else {
+    const control = this.driverAddForm?.get('driverPhone');
+    if (!control) {
       return '';
     }
+    if (control.hasError('required')) {
+      return 'Driver number required';
+    }
+    if (
+      control.hasError('invalidNumber') ||
+      control.hasError('minlength') ||
+      control.hasError('maxlength') ||
+      control.hasError('minLength') ||
+      control.hasError('maxLength')
+    ) {
+      return 'Phone number does not match selected country code';
+    }
+    return '';
   }
 
   getDriverNameError() {
@@ -359,6 +380,14 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
     }
   }
 
+  getDrivingLicenseExpiryError() {
+    const control = this.driverAddForm?.get('drivingLicenseExpiryDate');
+    if (control?.hasError('required')) {
+      return 'Driving license expiry date required';
+    }
+    return '';
+  }
+
   protected readonly CountryISO = CountryISO;
 
   get phoneNumber() {
@@ -366,7 +395,7 @@ export class DriverAddComponent implements OnInit, AfterViewInit {
   }
 
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',

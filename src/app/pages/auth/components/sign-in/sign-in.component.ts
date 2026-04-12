@@ -89,7 +89,8 @@ export class SignInComponent implements OnInit, OnDestroy {
       .pipe(select(selectAuthError))
       .subscribe(error => {
         if (error) {
-          this.toaster.showError(error.error?.message, '');
+          const message = this.getAuthErrorMessage(error) ?? 'Login failed';
+          this.toaster.showError(message, '');
           this.loginRequestPayload = {
             email: '',
             password: '',
@@ -131,6 +132,25 @@ export class SignInComponent implements OnInit, OnDestroy {
       otp3: [''],
       otp4: [''],
     });
+  }
+
+  private getAuthErrorMessage(error: any): string | null {
+    if (!error) {
+      return null;
+    }
+    if (typeof error === 'string') {
+      return error;
+    }
+    if (typeof error.error?.message === 'string') {
+      return error.error.message;
+    }
+    if (typeof error.error === 'string') {
+      return error.error;
+    }
+    if (typeof error.message === 'string') {
+      return error.message;
+    }
+    return null;
   }
 
   get email() {
@@ -431,7 +451,7 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   protected readonly CountryISO = CountryISO;
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',

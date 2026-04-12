@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, HostListener, OnInit } from '@angular/core';
 import {
   CurrencyPipe,
@@ -70,7 +71,7 @@ export class TripCreateOverviewComponent implements OnInit {
     this.loading = true;
     this.service.createTrip(this.tripData).subscribe(
       (res: any) => {
-        if (res.status === 'OK') {
+        if (isSuccessStatus(res?.status)) {
           const tripOrTrips = res.data.length > 1 ? 'trips' : 'trip';
           let startText = `Your ${tripOrTrips}`;
           const tripMessage = `been created successfully.
@@ -102,7 +103,7 @@ export class TripCreateOverviewComponent implements OnInit {
             };
             this.service.postTripTemplate(templateData).subscribe(
               (res: any) => {
-                if (res.status === 'OK') {
+                if (isSuccessStatus(res?.status)) {
                   localStorage.removeItem('tripData');
                   localStorage.removeItem('templateName');
                   localStorage.removeItem('selectedCustomer');
@@ -172,6 +173,7 @@ export class TripCreateOverviewComponent implements OnInit {
               });
           }
         } else {
+          this.loading = false;
           this.dialog.open(ErrorModalComponent, {
             width: '21.375rem',
             data: {
@@ -183,6 +185,7 @@ export class TripCreateOverviewComponent implements OnInit {
         }
       },
       (error: any) => {
+        this.loading = false;
         this.dialog.open(ErrorModalComponent, {
           width: '21.375rem',
           data: {

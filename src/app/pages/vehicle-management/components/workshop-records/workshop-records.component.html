@@ -1,0 +1,85 @@
+<div class="w-full  rounded-xl bg-white shadow-2xl ring-1 ring-gray-200">
+  <!-- Header -->
+  <div class="relative px-6 pt-6 pb-4">
+    <h2 id="ws-title" class="text-[20px] font-semibold leading-6 text-gray-900">
+      Workshop record
+    </h2>
+    <p class="mt-1 flex items-center gap-2 text-sm text-gray-500">
+      <span>Showing all {{ records?.length || 0 }} workshop</span>
+      <span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+    </p>
+
+    <!-- Close -->
+    <button
+      type="button"
+      class="absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-full"
+      aria-label="Close"
+      (click)="onClosePopup()"
+    >
+      <!-- x icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2">
+        <path d="M18 6 6 18M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Table card -->
+  <div class="mx-6 mb-6 rounded-lg border border-gray-200">
+    <div class="overflow-x-auto">
+      <table class="min-w-full table-fixed">
+        <thead class="border-b border-gray-200 text-left">
+        <tr class="text-sm text-gray-600">
+          <th class="px-5 py-3 w-[28%] font-medium">Workshop</th>
+          <th class="px-5 py-3 w-[28%] font-medium">Address</th>
+          <th class="px-5 py-3 w-[14%] font-medium">Date</th>
+          <th class="px-5 py-3 w-[18%] font-medium">Service</th>
+          <th class="px-5 py-3 w-[8%]  font-medium">Document</th>
+          <th class="px-5 py-3 w-[10%] font-medium text-right">Cost(৳)</th>
+          <th class="px-3 py-3 w-10"></th>
+        </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+        <tr class="text-[13px] text-gray-700" *ngFor="let rec of records">
+          <td class="px-5 py-4">
+            <div class="flex items-center gap-3">
+                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-amber-400 font-semibold text-white">{{ initial(rec.vendorName) }}</span>
+              <div class="min-w-0">
+                <div class="truncate font-medium text-sky-700">{{ rec.vendorName || '-' }}</div>
+                <div class="text-gray-500">{{ rec.vendorPhone || '' }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-4 text-gray-700">{{ rec.vendorAddress || '-' }}</td>
+          <td class="px-5 py-4">{{ rec.entryDate | date: 'd MMM yyyy' }}</td>
+          <td class="px-5 py-4">
+            <div class="inline-flex items-center gap-2">
+              <span>{{ rec.maintenanceDescription || '-' }}</span>
+            </div>
+          </td>
+          <td class="px-5 py-4 text-center">
+            <a *ngIf="rec.documents?.length" (click)="onClickViewDoc(rec.documents[0])" class="text-sky-600 hover:opacity-80 cursor-pointer">View</a>
+            <span *ngIf="!rec.documents?.length" class="text-gray-400">—</span>
+          </td>
+          <td class="px-5 py-4 text-right">{{ rec.payableAmount || rec.price || 0 }}</td>
+          <td class="px-3 py-4">
+            <button
+              type="button"
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-300"
+              aria-label="Edit workshop record"
+              (click)="onEditWorkshopRecord(rec)"
+              [disabled]="!canEditRecord(rec.entryDate)"
+              [attr.title]="getEditTooltip(rec.entryDate)"
+            >
+              <i class="fas fa-edit text-gray-600"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="!loading && (!records || records.length === 0)">
+          <td colspan="7" class="px-5 py-6 text-center text-gray-500">No workshop records found</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

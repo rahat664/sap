@@ -10,6 +10,7 @@ import { TruckService } from '../services/truck.service';
   styleUrl: './pre-hire-checklist-details.component.scss',
 })
 export class PreHireChecklistDetailsComponent implements OnChanges {
+  @Input() fromVehicleDetails = false;
   preHireCheckList: PreHireChecklistModel[] = [];
   @Input() object: any[] = [];
 

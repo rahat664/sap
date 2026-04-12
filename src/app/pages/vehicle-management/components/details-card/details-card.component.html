@@ -1,0 +1,57 @@
+<div class="bg-white rounded-lg p-4 flex flex-col space-y-3">
+  <div class="flex justify-between items-center">
+    <h1 class="text-h3 leading-h3 font-semibold text-not-black">{{ title }}</h1>
+    <a (click)="actionButtonReply()" class=" text-link text-body cursor-pointer">{{ actionButtonText }}</a>
+  </div>
+  <div class="{{cardBackgroundColor}} p-4 flex justify-between items-center rounded-lg">
+    <div class="flex space-x-3 items-center">
+      <div class="h-[2.5rem] w-[2.5rem] rounded-full overflow-hidden">
+        <img src="assets/{{imageUrl}}" class="notPreview">
+      </div>
+      <div class="flex flex-col space-y-0.5" *ngIf="title === 'Driver'">
+              <span
+                class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.driverName ? details?.driverName : 'N/A' }}</span>
+        <span
+          class="text-body text-secondary font-normal">{{ details?.driverPhone ? details?.driverPhone : 'N/A' }}</span>
+      </div>
+      <div class="flex flex-col space-y-0.5" *ngIf="title === 'Workshop'">
+              <span
+                class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.vendorName ? details?.vendorName : 'N/A' }}</span>
+        <span
+          class="text-body text-secondary font-normal">{{ details?.vendorAddress ? details?.vendorAddress : 'N/A' }}</span>
+      </div>
+      <div class="flex flex-col items-center justify-center" *ngIf="title === 'Fuel'">
+        <span
+          class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.fuelVolumeInLiters ? details?.fuelVolumeInLiters + ' L' : '0 L' }}</span>
+      </div>
+    </div>
+    <ng-container *ngIf="title === 'Workshop'">
+      <div class="flex flex-col space-y-0 5 text-center">
+          <span
+            class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.entryDate ? (details?.entryDate | date : 'd MMM yyyy') : 'N/A' }}</span>
+        <span class="text-body text-secondary font-normal">Last visited</span>
+      </div>
+      <div class="flex flex-col space-y-0 5 text-center">
+          <span
+            class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.price ? details?.price + ' ৳' : '0 ৳' }}</span>
+        <span class="text-body text-secondary font-normal">Cost</span>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="title === 'Fuel'">
+      <div class="flex flex-col space-y-0 5 text-center">
+          <span
+            class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.refuelDateTime ? (details?.refuelDateTime | date : 'd MMM yyyy') : 'N/A' }}</span>
+        <span class="text-body text-secondary font-normal">Date</span>
+      </div>
+      <div class="flex flex-col space-y-0 5 text-center">
+          <span
+            class="text-body_title leading-body_title text-not-black font-semibold">{{ details?.totalCost ? details?.totalCost + ' ৳' : '0 ৳' }}</span>
+        <span class="text-body text-secondary font-normal">Cost</span>
+      </div>
+    </ng-container>
+    <button (click)="onClickDetails()" class="flex justify-center items-center cursor-pointer {{bgColorOfDetails}} w-[2rem] h-[2rem] rounded-full">
+      <i class="fas fa-chevron-right font-bold {{textColorOfDetails}}"></i>
+    </button>
+  </div>
+  <ng-content></ng-content>
+</div>

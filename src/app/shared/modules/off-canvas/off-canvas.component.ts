@@ -100,6 +100,9 @@ export class OffCanvasComponent {
       this.amount =
         this.transporterDetails?.transporterRate -
         this.transporterDetails?.paymentAmountToTransporter;
+      this.isInputDisabled = true;
+    } else {
+      this.isInputDisabled = false;
     }
   }
 
@@ -222,6 +225,7 @@ export class OffCanvasComponent {
   }
   mfsTypePlaceholder: string = '';
   paidOnDate: any;
+  isInputDisabled: boolean = false;
 
   onSelectMFSType($event: number) {
     this.mfsTypePlaceholder = this.mfsService.find(

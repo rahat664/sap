@@ -1,0 +1,352 @@
+<div class="m-3 flex flex-col space-y-3">
+  <div class="bg-white flex justify-between items-center px-6 py-2 rounded-lg">
+    <div>
+      <h1 class="text-not-black font-normal text-body">
+        <span *ngIf="singleTruckData?.status !== 'Approved'">This is not an approved truck. Approve now?</span>
+        <span *ngIf="singleTruckData?.status === 'Approved'">This is an approved truck</span>
+      </h1>
+    </div>
+    <div class="flex space-x-2 items-center" *ngIf="singleTruckData?.status !== 'Approved'">
+      <button *ngIf="singleTruckData?.status !== 'Approved'" (click)="onClickChangeStatus('Approve')"
+              class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/80">Approve
+      </button>
+      <button *ngIf="singleTruckData?.status !== 'Rejected'" (click)="onClickChangeStatus('Reject')"
+              class="text-red px-4 py-2 rounded-lg hover:bg-red/20">Reject
+      </button>
+    </div>
+    <button
+      class="text-red px-4 py-2 rounded-lg hover:bg-red/20 {{singleTruckData?.status === 'Approved' ? 'block text-white' : 'hidden'}}">
+      Reject
+    </button>
+  </div>
+  <div class="grid lg:grid-cols-2 gap-3">
+    <div class=" h-[calc(100vh-10rem)]  overflow-auto flex flex-col space-y-3 mb-3">
+      <div class="bg-white rounded-lg relative">
+        <div class="flex space-x-7 p-6 items-center">
+          <div class="max-w-[8.5rem] min-w-[8.5rem] max-h-24 min-h-24 flex items-center justify-center">
+            <img
+              [src]="singleTruckData?.vehicleCategory?.imageUrl ? (singleTruckData?.vehicleCategory?.imageUrl | image) : 'assets/svg/dummy-truck.svg'"
+              alt="truck" class="notPreview" />
+          </div>
+          <div class="flex flex-col space-y-1">
+            <div class="text-h3 leading-h3 font-semibold text-not-black flex space-x-2 items-center">
+              <span>{{ singleTruckData?.fullRegistrationNumber }}</span>
+              <img *ngIf="singleTruckData?.status === 'Approved'" src="assets/svg/verified.svg" alt="approve"
+                   class="inline-block h-6 w-6" />
+            </div>
+            <span
+              class="text-h2_regular leading-h2_regular text-not-black font-normal">{{ singleTruckData?.vehicleCategory?.name }}</span>
+            <span
+              class="text-body text-secondary font-normal">Added by: {{ singleTruckData?.createdByUser?.name }}</span>
+            <span
+              class="text-body text-secondary font-normal">Added on: {{ singleTruckData?.createdAt | date : 'd MMM yyyy h:m a' }}</span>
+          </div>
+        </div>
+        <div class="absolute top-4 right-2">
+          <button mat-button [matMenuTriggerFor]="truckMenu">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <mat-menu #truckMenu="matMenu">
+            <button mat-menu-item (click)="onClickEditTruck()">
+              <i class="fas fa-pen mr-2"></i>
+              <span>Edit Vehicle</span>
+            </button>
+          </mat-menu>
+        </div>
+        <mat-tab-group>
+          <mat-tab label="Details">
+            <div class="m-6 max-h-[calc(100vh-22rem)] overflow-auto">
+              <div class="rounded-lg overflow-hidden border border-app-bg">
+                <ng-container *ngFor="let detail of displayedColumns">
+                  <div class="grid grid-cols-3 border-b border-app-bg last:border-none">
+                    <p
+                      class="col-span-1 bg-disabled px-4 py-3 text-body text-not-black font-regular">{{ detail?.name }}</p>
+                    <p
+                      class="col-span-2 bg-white px-4 py-3 text-body {{singleTruckData[detail.value] ? 'text-not-black' : 'text-secondary'}} font-regular">{{ singleTruckData[detail.value] ? (detail.value === 'purchaseDate' ? (singleTruckData[detail.value] | date: 'd MMM yyyy') : singleTruckData[detail.value]) : 'N/A' }}</p>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Documents">
+            <div class="p-6 max-h-[calc(100vh-22rem)] overflow-auto">
+              <div class="flex flex-col space-y-1">
+                <ng-container *ngFor="let option of truckFileType; index as i">
+                  <div
+                    class="flex justify-between items-center min-h-[4.25rem] bg-input rounded-lg pl-3 pr-6">
+                    <div class="flex space-x-4 items-center">
+                      <img
+                        src="assets/svg/not-available.svg"
+                        class="notPreview"
+                        alt=""
+                        *ngIf="
+                      !checkThatFileIsAvailableOrNot(option.name).length
+                    " />
+                      <img
+                        src="assets/svg/available.svg"
+                        alt=""
+                        class="notPreview"
+                        *ngIf="
+                      checkThatFileIsAvailableOrNot(option.name).length > 0
+                    " />
+                      <div class="flex flex-col space-y-0.5">
+                    <span
+                      class="text-not-black text-body_title leading-body_title font-semibold"
+                    >{{ option.name }}</span
+                    >
+                        <span
+                          *ngIf="
+                        option.expiryAvailable &&
+                        checkThatFileIsAvailableOrNot(option.name) &&
+                        checkThatFileIsAvailableOrNot(option.name)[0]
+                          ?.expiryDate
+                      "
+                          class="{{
+                        checkDateIsExpiredOrNot(
+                          checkThatFileIsAvailableOrNot(option.name)[0]
+                            ?.expiryDate
+                        ).isExpired
+                          ? 'text-red'
+                          : 'text-not-black'
+                      }} text-body"
+                        >{{
+                            checkDateIsExpiredOrNot(
+                              checkThatFileIsAvailableOrNot(option.name)[0]
+                                ?.expiryDate
+                            ).text
+                          }}</span
+                        >
+                      </div>
+                    </div>
+
+                    <div class="flex space-x-6 items-center">
+                      <div class="flex">
+                        <div class="flex space-x-3 relative">
+                          <ng-container
+                            *ngIf="
+                          checkThatFileIsAvailableOrNot(option.name)?.length < 3
+                        ">
+                            <div
+                              class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+                              *ngFor="
+                            let file of getSpecificFiles(
+                              option?.formControlName,
+                              checkThatFileIsAvailableOrNot(option.name).length
+                            )
+                          ">
+                              <ng-container
+                                *ngIf="
+                              file.file.type === 'application/pdf';
+                              else imagePreview
+                            ">
+                                <!-- Display PDF Preview -->
+                                <img
+                                  (click)="
+                                $event.stopPropagation();
+                                onClickPdfDocument(file)
+                              "
+                                  class="h-full w-full"
+                                  src="assets/svg/pdf.svg"
+                                  alt="" />
+                              </ng-container>
+                              <ng-template #imagePreview>
+                                <!-- Display Image Preview -->
+                                <img
+                                  class="h-full w-full"
+                                  [src]="file.preview | fallbackImage"
+                                  appImageError
+                                  alt="" />
+                              </ng-template>
+                            </div>
+                          </ng-container>
+                          <div
+                            class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative"
+                            *ngFor="
+                          let file of checkThatFileIsAvailableOrNot(option.name)
+                        ">
+                            <img
+                              *ngIf="checkThatFileIsImageOrPdf(file) === 'image'"
+                              (click)="
+                            $event.stopPropagation();
+                            onClickImage(file, 'image')
+                          "
+                              class="h-full w-full"
+                              [src]="file.preSignedFileUrl | fallbackImage"
+                              appImageError
+                              alt="" />
+                            <img
+                              *ngIf="checkThatFileIsImageOrPdf(file) === 'pdf'"
+                              (click)="
+                            $event.stopPropagation(); onClickImage(file, 'pdf')
+                          "
+                              class="h-full w-full"
+                              src="assets/svg/pdf.svg"
+                              alt="" />
+                          </div>
+                        </div>
+                        <div
+                          *ngIf="
+                        getSavedFileArray(option?.formControlName)?.length +
+                          getFileArray(option.formControlName).length >
+                          3 &&
+                        getSavedFileArray(option?.formControlName)?.length +
+                          getFileArray(option.formControlName).length >
+                          0
+                      ">
+                          <button
+                            [matMenuTriggerFor]="truckImagePop"
+                            (click)="
+                          viewMoreFormControlName = option?.formControlName
+                        "
+                            class="px-2 h-[3.75rem] flex text-link items-center justify-center bg-opacity-10 bg-blue space-x-1 text-h2_medium font-semibold rounded-md">
+                        <span class="text-link font-semibold"
+                        >+{{
+                            getSavedFileArray(option?.formControlName)
+                              .length - 3
+                          }}</span
+                        >
+                          </button>
+                        </div>
+                      </div>
+                      <span
+                        class="text-web-text-secondary text-body"
+                        *ngIf="
+                      getSavedFileArray(option?.formControlName)?.length <= 0
+                    "
+                      >Not Uploaded Yet</span
+                      >
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Pre-Hire Checklist">
+            <div class="p-6 max-h-[calc(100vh-22rem)] overflow-auto">
+              <app-pre-hire-checklist-details
+                [fromVehicleDetails]="true"
+                [passedCheckList]="countPassCheckList.toString()"
+                [object]="preHiredCheckList"></app-pre-hire-checklist-details>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <app-details-card imageUrl="images/user.png" [details]="singleTruckData" title="Driver"
+                        actionButtonText="Change Driver"
+                        cardBackgroundColor="bg-[#F5FBFC]"
+                        bgColorOfDetails="bg-[#D0ECF1]" textColorOfDetails="text-[#11484F]"></app-details-card>
+    </div>
+    <div class="h-[calc(100vh-10rem)]  overflow-auto flex flex-col space-y-3 mb-3">
+      <div class="bg-white rounded-lg p-4 flex flex-col space-y-6">
+        <div class="flex justify-between items-center">
+          <div class="flex space-x-3 items-center">
+            <h1 class="text-h3 leading-h3 font-semibold text-not-black">Statistics</h1>
+            <span class="text-secondary">{{ currentMonth | date : 'MMM YYYY' }}</span>
+          </div>
+          <a class="text-body font-normal text-link cursor-pointer" (click)="onClickStatisticsDetails()">Details</a>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <ng-container *ngFor="let stat of displayedStatisticsColumns">
+            <app-card
+              [description]="vehicleStatics ? vehicleStatics[stat?.value]?.toString() + `${stat?.suffix}` : `0{{stat?.suffix}`"
+              [title]="stat?.name"
+              [imageUrl]="stat?.imageUrl"></app-card>
+          </ng-container>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg p-4 flex flex-col space-y-6">
+        <div class="flex justify-between items-center">
+          <div class="flex space-x-3 items-center">
+            <h1 class="text-h3 leading-h3 font-semibold text-not-black">Total Cost</h1>
+            <span class="text-secondary">{{ calculateTotalExpenses() }} ৳</span>
+            <div class="inline-block h-1 w-1 rounded-full bg-input-hint"></div>
+            <span class="text-secondary">{{ currentMonth | date : 'MMM YYYY' }}</span>
+          </div>
+          <div class="flex space-x-3 items-center">
+            <a (click)="addNewExpenseRecord()" class="text-body font-normal cursor-pointer text-link">Add new record</a>
+            <a (click)="onClickCostDetails()"
+               class="text-body font-normal cursor-pointer text-link">Details</a>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <ng-container *ngFor="let expense of vehicleExpenses">
+            <app-card [fromExpenses]="true" [description]="expense?.totalCostSum?.toString()"
+                      [title]="expense?.expenseTypeName" [imageUrl]="expense?.icon"></app-card>
+          </ng-container>
+        </div>
+      </div>
+      <app-details-card (detailsReply)="onClickWork()" [details]="workshopHistories[0]" imageUrl="svg/workshop.svg" cardBackgroundColor="bg-[#FFF9EF]"
+                        title="Workshop"
+                        bgColorOfDetails="bg-[#FFE9C3]"
+                        textColorOfDetails="text-[#E69811]"
+                        actionButtonText="Add new Record"
+                        (reply)="onReply($event)"
+      >
+        <div>
+          <img src="assets/svg/calendar.svg" alt="calendar" class="notPreview inline-block h-4 w-4 mr-1" />
+          <span class="text-sm text-secondary">{{ workshopHistories[0]?.nextScheduledDate ? (workshopHistories[0]?.nextScheduledDate | date : 'd MMM yyyy') : 'date not available' }}</span>
+        </div>
+      </app-details-card>
+      <app-details-card (reply)="onReply($event)" (detailsReply)="onClickFuelDetails()" [details]="fuelHistories[0]"
+                        imageUrl="svg/fuel.svg" cardBackgroundColor="bg-[#FFF6F5]"
+                        title="Fuel"
+                        actionButtonText="Add new Record"
+                        bgColorOfDetails="bg-[#FADBD7]" textColorOfDetails="text-[#F0614E]"></app-details-card>
+    </div>
+  </div>
+</div>
+
+<mat-menu #truckImagePop="matMenu" class="truck-menu">
+  <div (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center pl-6 pr-2 py-2">
+      <h1
+        class="text-body_title leading-body_title text-not-black font-semibold">
+        {{ getTruckImageTitle(viewMoreFormControlName) }}
+      </h1>
+      <button
+        (click)="onClickClosePopUp()"
+        class="h-6 w-6 rounded-full hover:bg-input">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+    <div class="grid grid-cols-6 gap-3 px-6 py-4">
+      <ng-container
+        *ngFor="let file of getSavedFileArray(viewMoreFormControlName)">
+        <div
+          class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative">
+          <img
+            *ngIf="checkThatFileIsImageOrPdf(file) === 'image'"
+            (click)="$event.stopPropagation(); onClickImage(file, 'image')"
+            class="h-full w-full"
+            [src]="file.preSignedFileUrl | fallbackImage"
+            appImageError
+            alt="" />
+          <img
+            *ngIf="checkThatFileIsImageOrPdf(file) === 'pdf'"
+            (click)="$event.stopPropagation(); onClickImage(file, 'pdf')"
+            class="h-full w-full"
+            src="assets/svg/pdf.svg"
+            alt="" />
+        </div>
+      </ng-container>
+      <ng-container *ngFor="let file of getFileArray(viewMoreFormControlName)">
+        <div
+          class="w-[2.75rem] h-[3.75rem] object-center border border-blue relative">
+          <ng-container
+            *ngIf="file.file.type === 'application/pdf'; else imagePreview">
+            <!-- Display PDF Preview -->
+            <img
+              (click)="$event.stopPropagation(); onClickPdfDocument(file)"
+              class="h-full w-full"
+              src="assets/svg/pdf.svg"
+              alt="" />
+          </ng-container>
+          <ng-template #imagePreview>
+            <!-- Display Image Preview -->
+            <img class="h-full w-full" [src]="file.preview | fallbackImage" appImageError alt="" />
+          </ng-template>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</mat-menu>

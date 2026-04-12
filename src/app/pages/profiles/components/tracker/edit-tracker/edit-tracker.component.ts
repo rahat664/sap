@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../../shared/utils/response-status';
 import {
   ChangeDetectorRef,
   Component,
@@ -45,6 +46,7 @@ export class EditTrackerComponent implements OnInit, AfterViewInit {
   truckSuggestion: TruckModel[] = [];
   private singleTrackerDetails: VehicleTracker = null;
   isDisabled = true;
+  private truckSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private service: TrackerService,
@@ -72,7 +74,7 @@ export class EditTrackerComponent implements OnInit, AfterViewInit {
         .updateTracker(this.singleTrackerDetails?.id, this.trackAddModel)
         .subscribe(
           (res: any) => {
-            if (res.status == 'OK') {
+            if (isSuccessStatus(res?.status)) {
               this.router.navigate(['/profile/tracker']);
               this.toast.showSuccess(res.message);
               this.trackerAddForm.reset();
@@ -109,17 +111,22 @@ export class EditTrackerComponent implements OnInit, AfterViewInit {
   }
 
   onKeyUpTruckSearch($event: any) {
-    const value = $event.target.value;
-    if (value.length > 0) {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    if (this.truckSearchTimer) {
+      clearTimeout(this.truckSearchTimer);
+    }
+    if (!value) {
+      this.truckSuggestion = [];
+      return;
+    }
+    this.truckSearchTimer = setTimeout(() => {
       this.truckSuggestion = [];
       this.truck.getTruckList(0, 500, value).subscribe((res: any) => {
         res.data.responses.forEach((truck: TruckModel) => {
           this.truckSuggestion.push(truck);
         });
       });
-    } else {
-      this.truckSuggestion = [];
-    }
+    }, 350);
   }
 
   onClickTruckSearchSuggestion(option: TruckModel) {

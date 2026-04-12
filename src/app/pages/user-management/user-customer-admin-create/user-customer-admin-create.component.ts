@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../shared/utils/response-status';
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { AlphabetOnlyDirective } from '../../../shared/directive/alphabet-only.directive';
 import { CustomInputComponent } from '../../../shared/modules/custom-input/custom-input.component';
@@ -100,7 +101,7 @@ export class UserCustomerAdminCreateComponent implements OnInit {
           )
           .subscribe((res: any) => {
             this.formCreated.emit(true);
-            if (res.status === 'OK') {
+            if (isSuccessStatus(res?.status)) {
               this.userForm.reset();
               this.dialogRef.close(true);
               this.toastr.showSuccess('User created successfully');
@@ -167,7 +168,23 @@ export class UserCustomerAdminCreateComponent implements OnInit {
   }
 
   getPhoneErrorMessageWithTouch() {
-    return this.validation.getErrorMessageWithTouch(this.userForm);
+    const control = this.userForm?.get('phone');
+    if (!control) {
+      return '';
+    }
+    if (control.hasError('required')) {
+      return 'Phone number is required';
+    }
+    if (
+      control.hasError('invalidNumber') ||
+      control.hasError('minlength') ||
+      control.hasError('maxlength') ||
+      control.hasError('minLength') ||
+      control.hasError('maxLength')
+    ) {
+      return 'Phone number does not match selected country code';
+    }
+    return '';
   }
 
   closeModal() {
@@ -179,7 +196,7 @@ export class UserCustomerAdminCreateComponent implements OnInit {
   }
 
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',

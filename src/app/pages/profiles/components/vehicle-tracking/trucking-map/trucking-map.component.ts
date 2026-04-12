@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { mapStyles } from '../../../../../shared/models/map-options';
 import { GoogleMap } from '@angular/google-maps';
+import { environment } from '../../../../../../environments/environment';
 import { TruckData } from '../../../../../shared/models/truck-data.model';
 import { CommonModule } from '@angular/common';
 import { GeolocationService } from '../../../../../shared/services/location/geolocation.service';
@@ -54,7 +55,6 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
   center: google.maps.LatLngLiteral;
   zoom = 12;
   options: google.maps.MapOptions = {
-    styles: mapStyles,
     zoomControl: false,
     streetViewControl: false,
     mapTypeControl: false,
@@ -63,9 +63,12 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
     fullscreenControlOptions: {
       position: google.maps.ControlPosition.LEFT_BOTTOM,
     },
+    ...(environment.MAP_ID
+      ? { mapId: environment.MAP_ID }
+      : { styles: mapStyles }),
   };
 
-  truckLocationMarker: google.maps.Marker[] = [];
+  truckLocationMarker: any[] = [];
 
   polylines: google.maps.PolylineOptions[] = [];
   bottomHeight = '0px';
@@ -98,10 +101,10 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
     this.cd.detectChanges();
   }
 
-  showLoadingSpinner(marker: google.maps.Marker): void {
+  showLoadingSpinner(marker: any): void {
     this.loading = true;
     this.infoWindow.setContent(this.getLoadingSpinnerContent());
-    this.infoWindow.open(this.map, marker);
+    this.infoWindow.open({ map: this.map.googleMap, anchor: marker });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -140,7 +143,7 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
     if (this.truckLocationMarker.length > 0) {
       // Clear the markers if they exist
       this.truckLocationMarker.forEach(marker => {
-        marker.setMap(null);
+        marker.map = null;
       });
       this.truckLocationMarker = [];
     }
@@ -156,15 +159,16 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
           west: truck.position.lng - 1.2,
         });
 
-        // Create a new marker for each truck
-        const truckLocationMarker = new google.maps.Marker({
-          position: truck.position,
-          icon: {
-            url: `/assets/svg/trucking-${truck?.image}.svg`, // Set appropriate icon
-            scaledSize: new google.maps.Size(48, 48), // Set appropriate size
-          },
+        // Create a new advanced marker for each truck
+        const img = document.createElement('img');
+        img.src = `/assets/svg/trucking-${truck?.image}.svg`;
+        img.style.width = '48px';
+        img.style.height = '48px';
+        const truckLocationMarker = new google.maps.marker.AdvancedMarkerElement({
+          position: truck.position as any,
+          map: this.map.googleMap,
           title: truckPosition[index].fullRegistrationNumber,
-          map: this.map.googleMap, // Ensure the map is set
+          content: img,
         });
         this.truckLocationMarker.push(truckLocationMarker);
         // Create an InfoWindow for this marker
@@ -239,7 +243,7 @@ export class TruckingMapComponent implements AfterViewInit, OnInit, OnChanges {
 
   updateInfoWindow(marker: any): void {
     this.infoWindow.setContent(this.getInfoWindowContent());
-    this.infoWindow.open(this.map, marker);
+    this.infoWindow.open({ map: this.map.googleMap, anchor: marker });
 
     // Add event listener for the close button
     timer(100).subscribe(() => {

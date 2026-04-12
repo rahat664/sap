@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../shared/utils/response-status';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
 import {
@@ -89,7 +90,7 @@ export class UserCreateComponent implements OnInit {
       this.userModel.designation = this.userForm.get('designation').value;
       this.service.addUser(this.userModel).subscribe(
         (res: any) => {
-          if (res.status === 'OK') {
+          if (isSuccessStatus(res?.status)) {
             this.dialogRef.close(true);
             this.userForm.reset();
             this.toastr.showSuccess('User created successfully');
@@ -156,7 +157,23 @@ export class UserCreateComponent implements OnInit {
   }
 
   getPhoneErrorMessageWithTouch() {
-    return this.validation.getErrorMessageWithTouch(this.userForm);
+    const control = this.userForm?.get('phone');
+    if (!control) {
+      return '';
+    }
+    if (control.hasError('required')) {
+      return 'Phone number required';
+    }
+    if (
+      control.hasError('invalidNumber') ||
+      control.hasError('minlength') ||
+      control.hasError('maxlength') ||
+      control.hasError('minLength') ||
+      control.hasError('maxLength')
+    ) {
+      return 'Phone number does not match selected country code';
+    }
+    return '';
   }
 
   closeModal() {
@@ -171,7 +188,7 @@ export class UserCreateComponent implements OnInit {
   }
 
   textLabels = {
-    mainLabel: 'Mobile number',
+    mainLabel: 'Mobile Number',
     codePlaceholder: 'Code',
     searchPlaceholderLabel: 'Search',
     noEntriesFoundLabel: 'No countries found',

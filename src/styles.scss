@@ -288,6 +288,21 @@ textarea:focus {
   color: #a5b8bb !important;
 }
 
+/* Datepicker panel: enforce opaque background for all overlays */
+.cdk-overlay-container .mat-mdc-datepicker-content,
+.cdk-overlay-container .mat-datepicker-content {
+  background-color: #ffffff !important;
+  color: #242424 !important;
+  box-shadow: 0 10px 24px rgba(17, 72, 79, 0.18) !important;
+}
+
+.cdk-overlay-container .mat-mdc-calendar,
+.cdk-overlay-container .mat-calendar,
+.cdk-overlay-container .mat-mdc-calendar-table,
+.cdk-overlay-container .mat-calendar-table {
+  background-color: #ffffff !important;
+}
+
 
 img:hover {
   cursor: pointer;
@@ -361,6 +376,31 @@ body.custom-overlay-bounding-box {
     }
   }
 }
+ngx-material-intl-tel-input .main-label {
+  font-size: 0.875rem !important;
+  color: #242424 !important;
+  font-weight: 400 !important;
+}
 
+ngx-material-intl-tel-input .mat-mdc-select-trigger .country-option:has(.country-code__bd) > div:last-child,
+ngx-material-intl-tel-input .mat-select-trigger .country-option:has(.country-code__bd) > div:last-child {
+  font-size: 0 !important;
+}
+
+ngx-material-intl-tel-input .mat-mdc-select-trigger .country-option:has(.country-code__bd) > div:last-child::after,
+ngx-material-intl-tel-input .mat-select-trigger .country-option:has(.country-code__bd) > div:last-child::after {
+  content: '+88';
+  font-size: 0.875rem;
+  color: #242424;
+}
+
+.hot-toast-close-btn {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.hot-toast-icon {
+  display: none;
+}
 
 

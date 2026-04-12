@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import {
   MatAutocomplete,
@@ -99,6 +100,7 @@ export class TripUpdateComponent implements OnInit {
   driverSuggestion: any;
   transporterSuggestion: any;
   tripData: Trip;
+  private searchDebounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   constructor(
     private service: TripService,
@@ -237,7 +239,7 @@ export class TripUpdateComponent implements OnInit {
             }
             this.service.updateTrip(body, tripId).subscribe(
               (res: any) => {
-                if (res.status == 'OK') {
+                if (isSuccessStatus(res?.status)) {
                   this.dialog
                     .open(SuccessModalComponent, {
                       width: '21.375rem',
@@ -465,7 +467,7 @@ export class TripUpdateComponent implements OnInit {
     this.tripUpdateForm = this.fb.group({
       tripStartDatetime: [''],
       categoryId: [''],
-      numOfTrucks: [''],
+      numOfTrucks: [{ value: '', disabled: true }],
       truckSize: [''],
       truckCapacityInTon: [''],
       goodsId: [''],
@@ -479,19 +481,19 @@ export class TripUpdateComponent implements OnInit {
       unloadingPoints: this.fb.array([this.createUnloadingPoint()]),
       transporterCode: [''],
       transporterName: [''],
-      transporterPhone: [''],
+      transporterPhone: [{ value: '', disabled: true }],
       transporterRate: [''],
       truckId: [''],
       driverCode: [''],
       driverName: [''],
-      driverPhone: [''],
+      driverPhone: [{ value: '', disabled: true }],
       helperCode: [''],
       helperName: [''],
-      helperPhone: [''],
-      registrationZone: [''],
-      registrationCategory: [''],
-      registrationSerialNumber: [''],
-      registrationNumber: [''],
+      helperPhone: [{ value: '', disabled: true }],
+      registrationZone: [{ value: '', disabled: true }],
+      registrationCategory: [{ value: '', disabled: true }],
+      registrationSerialNumber: [{ value: '', disabled: true }],
+      registrationNumber: [{ value: '', disabled: true }],
       planNumber: [''],
     });
   }
@@ -544,13 +546,20 @@ export class TripUpdateComponent implements OnInit {
 
   onKeyUpLoadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
-      this.service
-        .getLocationSuggestions(target.value, this.selectedCustomer?.customerCode)
-        .subscribe((res: any) => {
-          this.loadingSuggestions = res.data;
-        });
+    const value = target.value?.trim() || '';
+    if (value.length > 1) {
+      this.debounceSearch('loadingPoint', value, searchText => {
+        this.service
+          .getLocationSuggestions(
+            searchText,
+            this.selectedCustomer?.customerCode
+          )
+          .subscribe((res: any) => {
+            this.loadingSuggestions = res.data;
+          });
+      });
     } else {
+      this.clearSearchDebounce('loadingPoint');
       this.loadingSuggestions = [];
 
       this.loadingPoints?.controls[i]?.get('pointDistrict').enable();
@@ -561,11 +570,16 @@ export class TripUpdateComponent implements OnInit {
   }
 
   onKeyUpTransporterSearch($event: KeyboardEvent) {
-    const value = ($event.target as HTMLInputElement).value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     if (value.length > 0) {
-      this.user.getTransporter(0, 100, value).subscribe((res: any) => {
-        this.transporterSuggestion = res.data;
+      this.debounceSearch('transporter', value, searchText => {
+        this.user.getTransporter(0, 100, searchText).subscribe((res: any) => {
+          this.transporterSuggestion = res.data;
+        });
       });
+    } else {
+      this.clearSearchDebounce('transporter');
+      this.transporterSuggestion = [];
     }
   }
 
@@ -573,7 +587,9 @@ export class TripUpdateComponent implements OnInit {
     // update above functionality with form array
     this.loadingPoints?.controls[i]
           ?.get('pointName')
-          .setValue(option.addressText);
+          .setValue(
+            option.addressText || option.name || option.address || option.label || ''
+          );
 
 
     if (option.latitude > 0 && option.longitude > 0) {
@@ -597,14 +613,14 @@ export class TripUpdateComponent implements OnInit {
   }
   searchDistrict(lat, lng, control): any {
     this.service.searchDistricts(lat, lng).subscribe((res: any) => {
-      control.get('pointDistrict').setValue(res.data.name);
+      control.get('pointDistrict').setValue(res?.data?.name || '');
     });
   }
   onClickUnloadingSuggestion(option: any, i: number) {
     this.unloadingPoints?.controls[i]
       ?.get('pointName')
       .setValue(
-        option.addressText
+        option.addressText || option.name || option.address || option.label || ''
       );
 
     if (option.latitude > 0 && option.longitude > 0) {
@@ -631,13 +647,20 @@ export class TripUpdateComponent implements OnInit {
 
   onKeyUpUnloadingPoint($event: KeyboardEvent, i: number) {
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
-      this.service
-        .getLocationSuggestions(target.value, this.selectedCustomer?.customerCode)
-        .subscribe((res: any) => {
-          this.unloadingSuggestions = res.data;
-        });
+    const value = target.value?.trim() || '';
+    if (value.length > 1) {
+      this.debounceSearch('unloadingPoint', value, searchText => {
+        this.service
+          .getLocationSuggestions(
+            searchText,
+            this.selectedCustomer?.customerCode
+          )
+          .subscribe((res: any) => {
+            this.unloadingSuggestions = res.data;
+          });
+      });
     } else {
+      this.clearSearchDebounce('unloadingPoint');
       this.unloadingSuggestions = [];
 
       this.unloadingPoints?.controls[i]?.get('pointDistrict').enable();
@@ -650,9 +673,10 @@ export class TripUpdateComponent implements OnInit {
   onKeyUpLoadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
+    const value = target.value?.trim() || '';
+    if (value.length > 1) {
       this.loadingDistrictSuggestions = districts.filter((district: any) =>
-        district.name.toLowerCase().includes(target.value.toLowerCase())
+        district.name.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.loadingDistrictSuggestions = [];
@@ -686,9 +710,10 @@ export class TripUpdateComponent implements OnInit {
   onKeyUpUnloadingDistrict($event: KeyboardEvent, i: number) {
     const districts = JSON.parse(JSON.stringify(this.district));
     const target = $event.target as HTMLInputElement;
-    if (target.value.length > 1) {
+    const value = target.value?.trim() || '';
+    if (value.length > 1) {
       this.unloadingDistrictSuggestions = districts.filter((district: any) =>
-        district.name.toLowerCase().includes(target.value.toLowerCase())
+        district.name.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.unloadingDistrictSuggestions = [];
@@ -703,16 +728,20 @@ export class TripUpdateComponent implements OnInit {
       this.unloadingPoints?.controls[i]?.get('pointLat').value === '' ||
       this.unloadingPoints?.controls[i]?.get('pointLon').value === ''
     ) {
-      this.unloadingPoints?.controls[i].setValue(
-        this.unloadingPoints?.controls[i]?.get('pointLat').value
-          ? this.unloadingPoints?.controls[i]?.get('pointLat').value
-          : option.lat
-      );
-      this.unloadingPoints?.controls[i].setValue(
-        this.unloadingPoints?.controls[i]?.get('pointLon').value
-          ? this.unloadingPoints?.controls[i]?.get('pointLon').value
-          : option.lon
-      );
+      this.unloadingPoints?.controls[i]
+        ?.get('pointLat')
+        .setValue(
+          this.unloadingPoints?.controls[i]?.get('pointLat').value
+            ? this.unloadingPoints?.controls[i]?.get('pointLat').value
+            : option.lat
+        );
+      this.unloadingPoints?.controls[i]
+        ?.get('pointLon')
+        .setValue(
+          this.unloadingPoints?.controls[i]?.get('pointLon').value
+            ? this.unloadingPoints?.controls[i]?.get('pointLon').value
+            : option.lon
+        );
     }
     this.unloadingDistrictSuggestions = [];
   }
@@ -725,13 +754,14 @@ export class TripUpdateComponent implements OnInit {
   onKeyUpGoods($event: KeyboardEvent) {
     const target = $event.target as HTMLInputElement;
     const goodsOptions = JSON.parse(JSON.stringify(this.goodsOptionsArray));
-    if (target.value.length > 1) {
+    const value = target.value?.trim() || '';
+    if (value.length > 1) {
       this.loadingGoodsSuggestions = goodsOptions.filter((option: any) =>
-        option.value.toLowerCase().includes(target.value.toLowerCase())
+        option.value.toLowerCase().includes(value.toLowerCase())
       );
       if (this.loadingGoodsSuggestions.length === 0) {
         this.tripUpdateForm.get('goodsId').setValue('');
-        this.tripUpdateForm.get('goodsName').setValue(target.value);
+        this.tripUpdateForm.get('goodsName').setValue(value);
         this.tripUpdateForm.get('goodsName').updateValueAndValidity();
         this.tripUpdateForm.get('goodsId').updateValueAndValidity();
       }
@@ -797,6 +827,27 @@ export class TripUpdateComponent implements OnInit {
     });
   }
 
+  private clearSearchDebounce(key: string) {
+    const timer = this.searchDebounceTimers.get(key);
+    if (timer) {
+      clearTimeout(timer);
+      this.searchDebounceTimers.delete(key);
+    }
+  }
+
+  private debounceSearch(
+    key: string,
+    value: string,
+    callback: (value: string) => void,
+    delay = 350
+  ) {
+    this.clearSearchDebounce(key);
+    const timer = setTimeout(() => {
+      callback(value);
+    }, delay);
+    this.searchDebounceTimers.set(key, timer);
+  }
+
   getTransporterList() {
     const dialogRef = this.dialog
       .open(TransporterPopupComponent, {
@@ -835,11 +886,16 @@ export class TripUpdateComponent implements OnInit {
   }
 
   onKeyUpDriverSearch($event: KeyboardEvent) {
-    const value = ($event.target as HTMLInputElement).value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     if (value.length > 0) {
-      this.user.getDriver(0, 100, value).subscribe((res: any) => {
-        this.driverSuggestion = res.data.responses;
+      this.debounceSearch('driver', value, searchText => {
+        this.user.getDriver(0, 100, searchText).subscribe((res: any) => {
+          this.driverSuggestion = res.data.responses;
+        });
       });
+    } else {
+      this.clearSearchDebounce('driver');
+      this.driverSuggestion = [];
     }
   }
 
@@ -1017,11 +1073,16 @@ export class TripUpdateComponent implements OnInit {
   }
 
   onKeyUpHelperSearch($event: KeyboardEvent) {
-    const value = ($event.target as HTMLInputElement).value;
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
     if (value.length > 0) {
-      this.user.getHelpers(0, 100, value).subscribe((res: any) => {
-        this.helperSuggestion = res.data.responses;
+      this.debounceSearch('helper', value, searchText => {
+        this.user.getHelpers(0, 100, searchText).subscribe((res: any) => {
+          this.helperSuggestion = res.data.responses;
+        });
       });
+    } else {
+      this.clearSearchDebounce('helper');
+      this.helperSuggestion = [];
     }
   }
 

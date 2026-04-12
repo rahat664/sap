@@ -1,3 +1,4 @@
+import { isSuccessStatus } from '../../../../shared/utils/response-status';
 import { Component, inject, OnInit } from '@angular/core';
 import { CustomInputComponent } from '../../../../shared/modules/custom-input/custom-input.component';
 import { GetClickEventDirective } from '../../../../shared/directive/get-click-event.directive';
@@ -17,7 +18,7 @@ import { CustomInputSelectModel } from '../../../../shared/modules/custom-input/
 import { FileUploadPopupComponent } from './file-upload-popup/file-upload-popup.component';
 import { LoadingComponent } from '../../../../shared/modules/loading/loading.component';
 import { DriverEditSharedService } from '../../services/driver-edit-shared.service';
-import { debounceTime } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TruckDocument, TruckModel } from './models/truck.model';
 import { TruckDocumentType } from '../../../../shared/Enums/registration_type';
@@ -90,6 +91,7 @@ export class TruckComponent implements OnInit {
   dateOptionArray: CustomInputSelectModel[];
   filterData: any = {};
   hasDocument: boolean = true;
+  private searchSubject = new Subject<string>();
 
   constructor(
     private service: TruckService,
@@ -105,6 +107,11 @@ export class TruckComponent implements OnInit {
       startDate: [''],
       endDate: [''],
     });
+    this.searchSubject
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(searchText => {
+        this.applySearch(searchText);
+      });
   }
 
   ngOnInit(): void {
@@ -139,8 +146,27 @@ export class TruckComponent implements OnInit {
   private getTruckList() {
     this.page = 0;
     this.loading = true;
-    if (this.searchValue) {
-      //subscribe with debounced time
+    if (this.searchValue && !this.filterData?.hasDocument) {
+      this.service
+        .getTruckList(
+          this.page,
+          this.size,
+          this.searchValue,
+          this.statusInputPlaceholder == 'All'
+            ? ''
+            : this.statusInputPlaceholder,
+          null,
+          null,
+          null,
+          this.from,
+          this.to
+        )
+        .subscribe((res: any) => {
+          this.truckList = res.data.responses;
+          this.totalPages = res.data.totalPages;
+          this.loading = false;
+        });
+    } else if (this.searchValue && this.filterData?.hasDocument) {
       this.service
         .getTruckList(
           this.page,
@@ -156,13 +182,12 @@ export class TruckComponent implements OnInit {
           this.to,
           this.hasDocument
         )
-        .pipe(debounceTime(1000))
         .subscribe((res: any) => {
           this.truckList = res.data.responses;
           this.totalPages = res.data.totalPages;
           this.loading = false;
         });
-    } else {
+    }else {
       this.service
         .getTruckList(
           this.page,
@@ -271,7 +296,6 @@ export class TruckComponent implements OnInit {
             this.to,
             this.hasDocument
           )
-          .pipe(debounceTime(1000))
           .subscribe((res: any) => {
             this.truckList.push(...res.data.responses);
           });
@@ -299,13 +323,13 @@ export class TruckComponent implements OnInit {
   }
 
   onKeyUpSearch($event: KeyboardEvent) {
+    const value = ($event.target as HTMLInputElement).value?.trim() || '';
+    this.searchSubject.next(value);
+  }
+
+  private applySearch(searchText: string) {
     this.loading = true;
-    const target = ($event.target as HTMLInputElement).value;
-    if (target?.length) {
-      this.searchValue = target;
-    } else {
-      this.searchValue = null;
-    }
+    this.searchValue = searchText?.length > 0 ? searchText : null;
     this.truckList = [];
     this.page = 0;
     this.getTruckList();
@@ -346,10 +370,10 @@ export class TruckComponent implements OnInit {
     this.getTruckList();
   }
 
-  checkThatFileIsExistOrNot(fileName: any, truckDocumentList: TruckDocument[]) {
+  checkThatFileIsExistOrNot(fileName: any, vehicleDocumentList: TruckDocument[]) {
     let isExist = false;
     let expDate = '';
-    truckDocumentList.forEach(doc => {
+    vehicleDocumentList.forEach(doc => {
       if (doc.documentType == this.truckEnum[fileName]) {
         isExist = true;
         expDate = doc?.expiryDate;
@@ -406,7 +430,7 @@ export class TruckComponent implements OnInit {
           this.service.editTruck(formData).subscribe(
             (res: any) => {
               // Handle response
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
                 this.truckList = [];
                 this.getTruckList();
@@ -424,7 +448,7 @@ export class TruckComponent implements OnInit {
   }
 
   onClickGenerateReport() {
-    this.router.navigateByUrl('/profile/truck/report');
+    this.router.navigateByUrl('/profile/vehicle/report');
   }
 
   onClickReject(truckDetails: TruckModel) {
@@ -451,7 +475,7 @@ export class TruckComponent implements OnInit {
           this.service.editTruck(formData).subscribe(
             (res: any) => {
               // Handle response
-              if (res.status == 'OK') {
+              if (isSuccessStatus(res?.status)) {
                 this.toastr.showSuccess(res.message);
                 this.truckList = [];
                 this.getTruckList();
@@ -509,7 +533,7 @@ export class TruckComponent implements OnInit {
     this.service.editTruck(formData).subscribe(
       (res: any) => {
         // Handle response
-        if (res.status == 'OK') {
+        if (isSuccessStatus(res?.status)) {
           this.toastr.showSuccess('Checklist updated successfully');
           this.truckList = [];
           this.getTruckList();
