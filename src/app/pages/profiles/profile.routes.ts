@@ -62,7 +62,7 @@ export const profileRoutes: Routes = [
   },
   {
     path: 'vehicle',
-    title: 'Truck',
+    title: 'Vehicle',
     loadComponent: () =>
       import('./components/truck/truck.component').then(c => c.TruckComponent),
     resolve: {
@@ -70,15 +70,15 @@ export const profileRoutes: Routes = [
     },
   },
   {
-    path: 'truck/add',
-    title: 'Add Truck',
+    path: 'vehicle/add',
+    title: 'Add Vehicle',
     loadComponent: () =>
       import('./components/truck/old-truck-add/old-truck-add.component').then(
         c => c.OldTruckAddComponent
       ),
   },
   {
-    path: 'truck/:id/details',
+    path: 'vehicle/:id/details',
     title: 'Truck Details',
     loadComponent: () =>
       import('./components/truck/truck-details/truck-details.component').then(
